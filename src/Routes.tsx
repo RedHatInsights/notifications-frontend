@@ -1,0 +1,70 @@
+import * as React from 'react';
+import { RouteProps, Route, Switch } from 'react-router';
+
+import { ErrorPage } from './pages/Error/Page';
+
+const IntegrationsPagePlaceholder = () => <div>I am the integrations page</div>;
+const NotificationsPagePlaceholder = () => <div>I am the notifications page</div>;
+
+interface Path {
+    path: string;
+    component: React.ComponentType;
+    rootClass: string;
+}
+
+export const linkTo = {
+    integrations: () => '/integrations',
+    notifications: () => '/notifications'
+};
+
+const pathRoutes: Path[] = [
+    {
+        path: linkTo.integrations(),
+        component: IntegrationsPagePlaceholder,
+        rootClass: 'integrations'
+    },
+    {
+        path: linkTo.notifications(),
+        component: NotificationsPagePlaceholder,
+        rootClass: 'notifications'
+    }
+];
+
+type InsightsRouteProps = {
+    rootClass: string;
+} & RouteProps;
+
+const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: InsightsRouteProps) => {
+    const { rootClass, ...rest } = props;
+    const root = document.getElementById(('root'));
+    if (!root) {
+        throw new Error('Root element not found');
+    }
+
+    root.removeAttribute('class');
+    root.classList.add(`page__${rootClass}`, 'pf-c-page__main');
+    root.setAttribute('role', 'main');
+
+    return (
+        <ErrorPage>
+            <Route { ...rest }/>
+        </ErrorPage>
+    );
+};
+
+type RoutesProps = {};
+
+export const Routes: React.FunctionComponent<RoutesProps> = () => {
+    return (
+        <Switch>
+            { pathRoutes.map(pathRoute => (
+                <InsightsRoute
+                    key={ pathRoute.path }
+                    rootClass={ pathRoute.rootClass }
+                    component={ pathRoute.component }
+                    path={ pathRoute.path }
+                />
+            ))}
+        </Switch>
+    );
+};
