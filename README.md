@@ -1,6 +1,6 @@
-[![Build Status](https://travis-ci.org/RedHatInsights/notifications-ui-frontend.svg?branch=master)](https://travis-ci.org/RedHatInsights/notifications-ui-frontend)
+[![Build Status](https://travis-ci.org/RedHatInsights/notifications-frontend.svg?branch=master)](https://travis-ci.org/RedHatInsights/notifications-frontend)
 
-# notifications-ui-frontend
+# notifications-frontend
 
 Notifications frontend for Red Hat Insights
 
@@ -25,7 +25,7 @@ Notifications frontend for Red Hat Insights
 To run locally, we need the following:
 
 1. Run insights proxy
-2. Run `notifications-ui-frontend` application.
+2. Run `notifications-frontend` application.
 
 ### Running insights proxy
 
@@ -48,7 +48,7 @@ To do that, simple start the proxy by running:
 yarn proxy-ui
 ```
 
-### Running notifications-ui-frontend
+### Running notifications-frontend
 
 Install the dependencies:
 

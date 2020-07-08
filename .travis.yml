@@ -13,7 +13,7 @@ after_success:
   - bash <(curl -s https://codecov.io/bash)
 env:
  global:
- - REPO="git@github.com:RedHatInsights/notifications-ui-frontend-build"
- - REPO_DIR="notifications-ui-frontend-build"
+ - REPO="git@github.com:RedHatInsights/notifications-frontend-build"
+ - REPO_DIR="notifications-frontend-build"
  - BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
  - NODE_OPTIONS="--max-old-space-size=4096 --max_old_space_size=4096"

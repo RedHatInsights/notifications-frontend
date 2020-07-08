@@ -28,7 +28,7 @@ jobs:
         run: >
           [[ -z $(git status --porcelain) ]] ||
           (
-            echo "openapi.json types are out of sync, see https://github.com/RedHatInsights/notifications-ui-frontend#generating-types-from-openapi-file" &&
+            echo "openapi.json types are out of sync, see https://github.com/RedHatInsights/notifications-frontend#generating-types-from-openapi-file" &&
             git status &&
             git diff &&
             false
