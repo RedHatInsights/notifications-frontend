@@ -1,2 +1,2 @@
-export * from './DisabledPolicyIcon';
-export * from './EnabledPolicyIcon';
+export * from './DisabledIntegrationIcon';
+export * from './EnabledIntegrationIcon';

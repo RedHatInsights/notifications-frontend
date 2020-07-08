@@ -7,7 +7,7 @@ import './App.scss';
 
 import { Routes } from '../Routes';
 import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
-
+import Config from '../config/Config';
 import { AppContext } from './AppContext';
 import { useApp } from './useApp';
 
@@ -31,7 +31,7 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
                     <Routes/>
                 </>
             ) : (
-                <NotAuthorized/>
+                <NotAuthorized serviceName={ Config.appId } />
             ) }
         </AppContext.Provider>
     );

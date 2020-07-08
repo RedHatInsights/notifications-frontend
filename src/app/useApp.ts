@@ -23,7 +23,8 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
     useEffect(() => {
         waitForInsights().then(insights => {
             insights.chrome.auth.getUser().then(() => {
-                fetchRBAC(Config.appId).then(setRbac);
+                // Todo: Change to Config.appId
+                fetchRBAC('policies').then(setRbac);
             });
         });
     }, []);

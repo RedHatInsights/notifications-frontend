@@ -60,4 +60,10 @@ declare module '@redhat-cloud-services/frontend-components' {
     }
 
     export const DarkContext: React.ContextType;
+
+    export class NotAuthorized extends React.Component<{
+        serviceName: React.ReactNode;
+    }> {
+
+    }
 }
