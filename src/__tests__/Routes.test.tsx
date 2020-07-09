@@ -1,39 +1,13 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Route } from 'react-router';
 import { Routes } from '../Routes';
 import { MemoryRouter } from 'react-router-dom';
-jest.mock('../pages/ListPage/ListPage', (): React.FunctionComponent => () => {
-    return <div>ListPage</div>;
-});
-
-const getWrapper = (path: string) => {
-    const data = {} as any;
-    const Wrapper: React.FunctionComponent = (props) => {
-        return (
-            <MemoryRouter initialEntries={ [ path ] }>
-                <Route
-                    path="*"
-                    render={ ({ location }) => {
-                        data.location = location;
-                        return null;
-                    } }
-                />
-                <div id="root">{ props.children }</div>
-            </MemoryRouter>
-        );
-    };
-
-    return {
-        Wrapper,
-        data
-    };
-};
+import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
 
 describe('src/Routes', () => {
     it('Should throw when no id=root element found', () => {
         const LocalWrapper: React.FunctionComponent = (props) => {
-            return <MemoryRouter>{ props.children }</MemoryRouter>;
+            return <MemoryRouter initialEntries={ [ '/integrations' ] } >{ props.children }</MemoryRouter>;
         };
 
         // Silence the exception, this is being logged because react will recommend to use
@@ -48,36 +22,65 @@ describe('src/Routes', () => {
         mockConsole.mockRestore();
     });
 
-    it('Should render the ListPage on /', async () => {
-        jest.useFakeTimers();
-        const { Wrapper, data } = getWrapper('/');
-        render(<Routes/>, {
-            wrapper: Wrapper
+    describe('App Wrapped', () => {
+
+        beforeEach(() => {
+            appWrapperSetup();
         });
 
-        expect(data.location.pathname).toBe('/list');
-        expect(screen.getByText('ListPage')).toBeVisible();
-    });
-
-    it('Should render the ListPage on /list', async () => {
-        jest.useFakeTimers();
-        const { Wrapper, data } = getWrapper('/');
-        render(<Routes/>, {
-            wrapper: Wrapper
+        afterEach(() => {
+            appWrapperCleanup();
         });
 
-        expect(data.location.pathname).toBe('/list');
-        expect(screen.getByText('ListPage')).toBeVisible();
-    });
+        it('Nothing is rendered in /', async () => {
+            jest.useFakeTimers();
+            const getLocation = jest.fn();
+            const Wrapper = getConfiguredAppWrapper({
+                router: {
+                    initialEntries: [ '/' ]
+                },
+                getLocation
+            });
+            render(<Routes/>, {
+                wrapper: Wrapper
+            });
 
-    it('Should render the ListPage on /random-stuff', async () => {
-        jest.useFakeTimers();
-        const { Wrapper, data } = getWrapper('/random-stuff');
-        render(<Routes/>, {
-            wrapper: Wrapper
+            expect(getLocation().pathname).toBe('/');
+            expect(document.body.firstChild).toBeEmpty();
         });
 
-        expect(data.location.pathname).toBe('/list');
-        expect(screen.getByText('ListPage')).toBeVisible();
+        it('Should render the placeholder on /integrations', async () => {
+            jest.useFakeTimers();
+            const getLocation = jest.fn();
+            const Wrapper = getConfiguredAppWrapper({
+                router: {
+                    initialEntries: [ '/integrations' ]
+                },
+                getLocation
+            });
+            render(<Routes/>, {
+                wrapper: Wrapper
+            });
+
+            expect(getLocation().pathname).toBe('/integrations');
+            expect(screen.getByText(/integrations/i)).toBeVisible();
+        });
+
+        it('Should render the placeholder on /notifications', async () => {
+            jest.useFakeTimers();
+            const getLocation = jest.fn();
+            const Wrapper = getConfiguredAppWrapper({
+                router: {
+                    initialEntries: [ '/notifications' ]
+                },
+                getLocation
+            });
+            render(<Routes/>, {
+                wrapper: Wrapper
+            });
+
+            expect(getLocation().pathname).toBe('/notifications');
+            expect(screen.getByText(/notifications/i)).toBeVisible();
+        });
     });
 });

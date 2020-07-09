@@ -13,7 +13,6 @@ jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
         fetchRBAC: jest.fn(real.fetchRBAC)
     };
 });
-jest.mock('../../services/useUserSettingsEmailQuery');
 jest.mock('../../Routes', () => {
     const MockedRoutes: React.FunctionComponent = () => <div data-testid="content"/>;
     return {

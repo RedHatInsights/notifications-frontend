@@ -52,11 +52,6 @@ const defaultAppContextSettings = {
     rbac: {
         canReadAll: true,
         canWriteAll: true
-    },
-    userSettings: {
-        settings: undefined,
-        isSubscribedForNotifications: false,
-        refresh: () => {}
     }
 };
 
