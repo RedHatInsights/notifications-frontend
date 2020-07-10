@@ -19,6 +19,23 @@ const MutableMessages = {
                 }
             }
         }
+    },
+    components: {
+        integrations: {
+            toolbar: {
+                actions: {
+                    addIntegration: 'Add integration'
+                }
+            },
+            table: {
+                title: 'Integrations',
+                columns: {
+                    name: 'Name',
+                    type: 'Type',
+                    enabled: 'Enabled'
+                }
+            }
+        }
     }
 };
 

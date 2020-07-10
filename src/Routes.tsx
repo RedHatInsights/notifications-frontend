@@ -2,8 +2,8 @@ import * as React from 'react';
 import { RouteProps, Route, Switch } from 'react-router';
 
 import { ErrorPage } from './pages/Error/Page';
+import { IntegrationsListPage } from './pages/Integrations/List/Page';
 
-const IntegrationsPagePlaceholder = () => <div>I am the integrations page</div>;
 const NotificationsPagePlaceholder = () => <div>I am the notifications page</div>;
 
 interface Path {
@@ -20,7 +20,7 @@ export const linkTo = {
 const pathRoutes: Path[] = [
     {
         path: linkTo.integrations(),
-        component: IntegrationsPagePlaceholder,
+        component: IntegrationsListPage,
         rootClass: 'integrations'
     },
     {
@@ -63,6 +63,7 @@ export const Routes: React.FunctionComponent<RoutesProps> = () => {
                     rootClass={ pathRoute.rootClass }
                     component={ pathRoute.component }
                     path={ pathRoute.path }
+                    exact={ true }
                 />
             ))}
         </Switch>
