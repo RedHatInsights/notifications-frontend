@@ -5,6 +5,7 @@ import { ErrorPage } from './pages/Error/Page';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
 
 const NotificationsPagePlaceholder = () => <div>I am the notifications page</div>;
+const AddNotificationPagePlaceholder = () => <div>I am the add notification page</div>;
 
 interface Path {
     path: string;
@@ -14,6 +15,7 @@ interface Path {
 
 export const linkTo = {
     integrations: () => '/integrations',
+    addIntegration: () => '/integrations/add',
     notifications: () => '/notifications'
 };
 
@@ -21,6 +23,11 @@ const pathRoutes: Path[] = [
     {
         path: linkTo.integrations(),
         component: IntegrationsListPage,
+        rootClass: 'integrations'
+    },
+    {
+        path: linkTo.addIntegration(),
+        component: AddNotificationPagePlaceholder,
         rootClass: 'integrations'
     },
     {
