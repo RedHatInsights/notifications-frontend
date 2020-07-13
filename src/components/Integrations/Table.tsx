@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Table, TableHeader, TableBody, IRow, IRowData, expandable, ICell } from '@patternfly/react-table';
+import { Table, TableHeader, TableBody, IRow, IRowData, expandable, ICell, RowWrapperProps } from '@patternfly/react-table';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import { Switch } from '@patternfly/react-core';
 import { Messages } from '../../properties/Messages';
@@ -7,7 +7,6 @@ import { Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { style } from 'typestyle';
 import { Spacer } from '@redhat-cloud-services/insights-common-typescript';
-import { RowWrapperProps } from '@patternfly/react-table/src/components/Table/RowWrapper';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
 
