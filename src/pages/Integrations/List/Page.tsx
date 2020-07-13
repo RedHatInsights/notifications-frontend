@@ -7,6 +7,9 @@ import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { Integration, IntegrationType } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
 import { linkTo } from '../../../Routes';
+import { useActionResolver } from './useActionResolver';
+import { useContext } from 'react';
+import { AppContext } from '../../../app/AppContext';
 
 const onExport = (type: string) => console.log('export to ' + type);
 const integrations: Array<Integration> = [
@@ -28,12 +31,22 @@ const integrations: Array<Integration> = [
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
+    const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationRows = useIntegrationRows(integrations);
     const history = useHistory();
 
     const onAddIntegration = React.useCallback(() => {
         history.push(linkTo.addIntegration());
     }, [ history ]);
+
+    const onEdit = React.useCallback((integration: Integration) => {
+        console.log('edit', integration.id);
+    }, [ ]);
+
+    const actionResolver = useActionResolver({
+        canWriteAll,
+        onEdit
+    });
 
     return (
         <>
@@ -46,6 +59,8 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                     <IntegrationsTable
                         integrations={ integrationRows.rows }
                         onCollapse={ integrationRows.onCollapse }
+                        onEnable={ integrationRows.onEnable }
+                        actionResolver={ actionResolver }
                     />
                 </Section>
             </Main>

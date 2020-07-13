@@ -1,5 +1,5 @@
 import { Integration } from '../../../types/Integration';
-import { useCallback, useEffect, useState } from 'react';
+import { default as React, useCallback, useEffect, useState } from 'react';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { usePrevious } from 'react-use';
 
@@ -12,7 +12,8 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
             setIntegrationRows(integrations.map(integration => ({
                 ...integration,
                 isOpen: false,
-                isSelected: false
+                isSelected: false,
+                isEnabledLoading: false
             })));
         }
     }, [ prevIntegrations, integrations ]);
@@ -25,8 +26,26 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
         });
     }, [ setIntegrationRows ]);
 
+    // Todo: Fake implementation just to test UI
+    const onEnable = React.useCallback((integration, index, isEnabled) => {
+        setIntegrationRows(prevIntegrations => {
+            const newIntegrations = [ ...prevIntegrations ];
+            newIntegrations[index] = { ...integration, isEnabledLoading: true };
+            return newIntegrations;
+        });
+
+        new Promise(resolve => {
+            setTimeout(resolve, 1000);
+        }).then(() => setIntegrationRows(prevIntegrations => {
+            const newIntegrations = [ ...prevIntegrations ];
+            newIntegrations[index] = { ...integration, isEnabled, isEnabledLoading: false };
+            return newIntegrations;
+        }));
+    }, [ setIntegrationRows ]);
+
     return {
         rows: integrationRows,
-        onCollapse
+        onCollapse,
+        onEnable
     };
 };

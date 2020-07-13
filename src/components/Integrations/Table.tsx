@@ -1,7 +1,17 @@
 import * as React from 'react';
-import { Table, TableHeader, TableBody, IRow, IRowData, expandable, ICell, RowWrapperProps } from '@patternfly/react-table';
+import {
+    Table,
+    TableHeader,
+    TableBody,
+    IRow,
+    IRowData,
+    expandable,
+    ICell,
+    RowWrapperProps,
+    IActions, IActionsResolver
+} from '@patternfly/react-table';
 import styles from '@patternfly/react-styles/css/components/Table/table';
-import { Switch } from '@patternfly/react-core';
+import { Spinner, Switch } from '@patternfly/react-core';
 import { Messages } from '../../properties/Messages';
 import { Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
@@ -10,14 +20,19 @@ import { Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
 
+type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
+
 interface IntegrationsTableProps {
     integrations: Array<IntegrationRow>;
     onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
+    onEnable?: OnEnable;
+    actionResolver: (row: IntegrationRow) => IActions;
 }
 
 export type IntegrationRow = Integration & {
     isOpen: boolean;
     isSelected: boolean;
+    isEnabledLoading: boolean;
 }
 
 const expandedContentClassName = style({
@@ -25,7 +40,11 @@ const expandedContentClassName = style({
     paddingBottom: Spacer.LG
 });
 
-const toTableRows = (integrations: Array<IntegrationRow>): Array<IRow> => {
+const isEnabledLoadingClassName = style({
+    marginLeft: 10
+});
+
+const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): Array<IRow> => {
     return integrations.reduce((rows, integration, idx) => {
         rows.push({
             id: integration.id,
@@ -36,11 +55,16 @@ const toTableRows = (integrations: Array<IntegrationRow>): Array<IRow> => {
                 integration.name,
                 integration.type.toString().toUpperCase(),
                 <>
-                    <Switch
-                        id={ `table-row-switch-id-${integration.id}` }
-                        aria-label="Enabled"
-                        isChecked={ integration.isEnabled }
-                    />
+                    { integration.isEnabledLoading ? (
+                        <Spinner className={ isEnabledLoadingClassName } size="md" />
+                    ) : (
+                        <Switch
+                            id={ `table-row-switch-id-${integration.id}` }
+                            aria-label="Enabled"
+                            isChecked={ integration.isEnabled }
+                            onChange={ isChecked => onEnable && onEnable(integration, idx, isChecked) }
+                        />
+                    ) }
                 </>
             ]
         });
@@ -142,8 +166,20 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     }, [ props.integrations, props.onCollapse ]);
 
     const rows = React.useMemo(() => {
-        return toTableRows(props.integrations);
-    }, [ props.integrations ]);
+        return toTableRows(props.integrations, props.onEnable);
+    }, [ props.integrations, props.onEnable ]);
+
+    const actionsResolverCallback: IActionsResolver = React.useCallback(rowData => {
+        const actionResolver = props.actionResolver;
+        if (rowData.parent === undefined && rowData && props.integrations) {
+            const integrationRow = props.integrations.find(i => i.id === rowData.id);
+            if (integrationRow) {
+                return actionResolver(integrationRow);
+            }
+        }
+
+        return [];
+    }, [ props.actionResolver, props.integrations ]);
 
     return (
         <Table
@@ -153,6 +189,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
             cells={ columns }
             onCollapse={ onCollapseHandler }
             rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
+            actionResolver={ actionsResolverCallback }
         >
             <TableHeader/>
             <TableBody/>
