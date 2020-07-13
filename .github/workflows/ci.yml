@@ -1,0 +1,19 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: '12'
+      - run: yarn --frozen-lockfile --non-interactive || (echo 'package.json is not in sync with yarn.lock, check that you included the yarn.lock file' && false)
+      - run: yarn ci
+      - uses: codecov/codecov-action@v1
