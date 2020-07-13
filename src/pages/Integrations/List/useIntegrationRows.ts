@@ -18,19 +18,19 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
         }
     }, [ prevIntegrations, integrations ]);
 
-    const onCollapse = useCallback((integration: IntegrationRow, index: number, isOpen: boolean) => {
+    const onCollapse = useCallback((_integration: IntegrationRow, index: number, isOpen: boolean) => {
         setIntegrationRows(prevIntegrations => {
             const newIntegrations = [ ...prevIntegrations ];
-            newIntegrations[index] = { ...integration, isOpen };
+            newIntegrations[index] = { ...newIntegrations[index], isOpen };
             return newIntegrations;
         });
     }, [ setIntegrationRows ]);
 
     // Todo: Fake implementation just to test UI
-    const onEnable = React.useCallback((integration, index, isEnabled) => {
+    const onEnable = React.useCallback((_integration, index, isEnabled) => {
         setIntegrationRows(prevIntegrations => {
             const newIntegrations = [ ...prevIntegrations ];
-            newIntegrations[index] = { ...integration, isEnabledLoading: true };
+            newIntegrations[index] = { ...newIntegrations[index], isEnabledLoading: true };
             return newIntegrations;
         });
 
@@ -38,7 +38,7 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
             setTimeout(resolve, 1000);
         }).then(() => setIntegrationRows(prevIntegrations => {
             const newIntegrations = [ ...prevIntegrations ];
-            newIntegrations[index] = { ...integration, isEnabled, isEnabledLoading: false };
+            newIntegrations[index] = { ...newIntegrations[index], isEnabled, isEnabledLoading: false };
             return newIntegrations;
         }));
     }, [ setIntegrationRows ]);
