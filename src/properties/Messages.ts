@@ -2,6 +2,7 @@ import { DeepReadonly } from 'ts-essentials';
 
 //Capture some strings we reuse. Possibly use in i18n later?
 const MutableMessages = {
+    appName: 'Notifications',
     pages: {
         integrations: {
             list: {
