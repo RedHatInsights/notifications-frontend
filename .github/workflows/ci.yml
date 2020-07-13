@@ -17,5 +17,3 @@ jobs:
       - run: yarn --frozen-lockfile --non-interactive || (echo 'package.json is not in sync with yarn.lock, check that you included the yarn.lock file' && false)
       - run: yarn ci
       - uses: codecov/codecov-action@v1
-        with:
-          file: ./packages/*/coverage/lcov.info
