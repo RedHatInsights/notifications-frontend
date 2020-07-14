@@ -10,28 +10,40 @@ import {
     TextInput
 } from '@patternfly/react-core';
 import { useEffect, useState } from 'react';
+import { IntegrationType } from "../../../types/Integration";
 
 const EMPTY = '';
-const onExport = (type: string) => console.log('[CreatePage]:export to ' + type);
 const title = Messages.components.integrations.toolbar.actions;
 const choose = Messages.common.choose;
 const webhookType = Messages.pages.integrations.types.hooks;
 
 const CreatePage = props => {
-    // console.log('CreatePage.initial:props:'+props+':props.isModalOpen:'+props.isModalOpen+':');
-    const [isModalOpen, updateModal] = useState({...props.isModalOpen});
-    const [newUrl, updateUrl] = useState("");
-    const handleModalToggle = (evt) => {
-        updateModal(!isModalOpen);
+    const [pageModal, updatePageModal] = useState({...props.isModalOpen});
+    const [newUrl, updateUrl] = useState("(enter hooks url)");
+    const [intCount,updateIntCount] = useState(0);
+    const handleTextFieldChanges = (evt) => {
+        updateUrl(evt);
     };
+    const handleSubmit = () => {
+        if(newUrl){
+            updateIntCount(intCount+1);
+            props.updateModel(
+                ...props.model,{
+                id: 'newAddition-'+intCount,
+                isEnabled: true,
+                name: 'Pager duty'+intCount,
+                type: IntegrationType.HTTP,
+                url: newUrl
+            }
+            );
+        }
+    }
     const handleExit = () => {
-        updateModal(!isModalOpen);
-        // isModalOpen: !isModalOpen
-        // props.updateModalState(!isModalOpen);
-        props.isModalOpen = false;
+        updatePageModal(!pageModal);
+        props.updateModal(!pageModal);
     }
     useEffect(() => {
-    },[isModalOpen]);
+    },[pageModal]);
     const options = [
         { value: 'please choose', label: { choose }, disabled: false },
         { value: 'webhook', label: { webhookType }, disabled: false }
@@ -40,7 +52,6 @@ const CreatePage = props => {
         updateUrl(newUrl)
     }
     const handleChange = () => {
-        //TODO
     }
     return (
         <div>
@@ -50,14 +61,12 @@ const CreatePage = props => {
                 // title={Messages.components.integrations.toolbar.actions}
                 // isOpen={isModalOpen}
                 isOpen={props.isModalOpen}
-                // isOpen={isModalOpen}
                 onClose={ handleExit }
-                // onClose={() => updateModal(!isModalOpen)}
                 actions={[
-                    <Button key="confirm" variant="primary" onClick={handleModalToggle}>
+                    <Button key="confirm" variant="primary" onClick={handleSubmit}>
                         Submit
                     </Button>,
-                    <Button key="cancel" variant="link" onClick={handleModalToggle}>
+                    <Button key="cancel" variant="link" onClick={handleExit}>
                         Cancel
                     </Button>
                 ]}
@@ -65,7 +74,6 @@ const CreatePage = props => {
                 <Form>
                     <FormGroup
                         label={ Messages.pages.integrations.add.name }
-                        type="string"
                         fieldId="age-1"
                     >
                     <FormSelect
@@ -80,24 +88,16 @@ const CreatePage = props => {
                             <FormSelectOption isDisabled={option.disabled} key={index} value={option.value} label="Webhook" />
                         ))}
                     </FormSelect>
-                    <TextInput
-                        isRequired
-                        type="text"
-                        id="simple-form-name"
-                        name="simple-form-name"
-                        aria-describedby="simple-form-name-helper"
-                        // value={value1}
-                        value=""
-                        onChange={handleChange}
-                    />
-                    <TextInput
-                        value="newUrl"
-                        onChange={handleChange}
-                        isRequired
-                        type="url"
-                        id="horizontal-form-email"
-                        name="horizontal-form-email"
-                    />
+                        <FormGroup label={Messages.pages.integrations.types.hooksUrl} isRequired fieldId="form-url">
+                            <TextInput
+                                value={newUrl}
+                                onChange={handleTextFieldChanges}
+                                isRequired
+                                type="text"
+                                id="horizontal-form-url"
+                                name="horizontal-form-url"
+                            />
+                        </FormGroup>
                     </FormGroup>
                 </Form>
             </Modal>

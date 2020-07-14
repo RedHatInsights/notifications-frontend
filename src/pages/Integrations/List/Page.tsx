@@ -31,11 +31,13 @@ const integrations: Array<Integration> = [
 ];
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
-    const [activateModal,updateModal] = useState(false);
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationRows = useIntegrationRows(integrations);
     const history = useHistory();
+
+    const [activateModal,updateModal] = useState(false);
+    const [model,updateModel] = useState([integrationRows.rows]);
 
     const onAddIntegration = React.useCallback(() => {
         // history.push(linkTo.addIntegration());
@@ -65,7 +67,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         onEnable={ integrationRows.onEnable }
                         actionResolver={ actionResolver }
                     />
-                    <CreatePage isModalOpen={activateModal} />
+                    <CreatePage isModalOpen={activateModal} updateModal={updateModal} updateModel={updateModel} model={model} />
                 </Section>
             </Main>
         </>
