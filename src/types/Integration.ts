@@ -1,15 +1,18 @@
 
-enum IntegrationType {
+export enum IntegrationType {
     HTTP = 'http'
 }
 
-interface Integration {
+export interface IntegrationBase {
+    id: string;
     name: string;
     type: IntegrationType;
     isEnabled: boolean;
 }
 
-type IntegrationHttp = Integration & {
+export interface IntegrationHttp extends IntegrationBase {
     type: IntegrationType.HTTP;
     url: string;
 }
+
+export type Integration = IntegrationHttp;

@@ -7,9 +7,9 @@ import './App.scss';
 
 import { Routes } from '../Routes';
 import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
-import Config from '../config/Config';
 import { AppContext } from './AppContext';
 import { useApp } from './useApp';
+import { Messages } from '../properties/Messages';
 
 const App: React.FunctionComponent<RouteComponentProps> = () => {
 
@@ -31,7 +31,7 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
                     <Routes/>
                 </>
             ) : (
-                <NotAuthorized serviceName={ Config.appId } />
+                <NotAuthorized serviceName={ Messages.appName } />
             ) }
         </AppContext.Provider>
     );
