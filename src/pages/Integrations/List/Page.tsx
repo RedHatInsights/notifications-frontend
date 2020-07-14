@@ -8,8 +8,9 @@ import { Integration, IntegrationType } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
 import { linkTo } from '../../../Routes';
 import { useActionResolver } from './useActionResolver';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AppContext } from '../../../app/AppContext';
+import CreatePage from '../Create/CreatePage';
 
 const onExport = (type: string) => console.log('export to ' + type);
 const integrations: Array<Integration> = [
@@ -30,13 +31,15 @@ const integrations: Array<Integration> = [
 ];
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
+    const [activateModal,updateModal] = useState(false);
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationRows = useIntegrationRows(integrations);
     const history = useHistory();
 
     const onAddIntegration = React.useCallback(() => {
-        history.push(linkTo.addIntegration());
+        // history.push(linkTo.addIntegration());
+        updateModal(true);
     }, [ history ]);
 
     const onEdit = React.useCallback((integration: Integration) => {
@@ -62,6 +65,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         onEnable={ integrationRows.onEnable }
                         actionResolver={ actionResolver }
                     />
+                    <CreatePage isModalOpen={activateModal} />
                 </Section>
             </Main>
         </>
