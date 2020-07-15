@@ -13,31 +13,31 @@ import { AppContext } from '../../../app/AppContext';
 import CreatePage from '../Create/CreatePage';
 
 const onExport = (type: string) => console.log('export to ' + type);
-const integrations: Array<Integration> = [
-    {
-        id: 'foo',
-        isEnabled: true,
-        name: 'Aha',
-        type: IntegrationType.HTTP,
-        url: 'https://aha.com'
-    },
-    {
-        id: 'foo-2',
-        isEnabled: true,
-        name: 'Pager duty',
-        type: IntegrationType.HTTP,
-        url: 'https://pagerduty.com/weebhook/thatthis'
-    }
-];
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
+    const [integrations,setIntegrations] = useState<Array<Integration>>([
+        {
+            id: 'foo',
+            isEnabled: true,
+            name: 'Aha',
+            type: IntegrationType.HTTP,
+            url: 'https://aha.com'
+        },
+        {
+            id: 'foo-2',
+            isEnabled: true,
+            name: 'Pager duty',
+            type: IntegrationType.HTTP,
+            url: 'https://pagerduty.com/weebhook/thatthis'
+        }
+    ]);
     const integrationRows = useIntegrationRows(integrations);
     const history = useHistory();
 
     const [activateModal,updateModal] = useState(false);
-    const [model,updateModel] = useState([integrationRows.rows]);
+    const [currentRow,updateCurrentRow] = useState('');
 
     const onAddIntegration = React.useCallback(() => {
         // history.push(linkTo.addIntegration());
@@ -45,7 +45,9 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ history ]);
 
     const onEdit = React.useCallback((integration: Integration) => {
-        console.log('edit', integration.id);
+        // console.log('edit', integration.id);
+        updateCurrentRow(integration.id);
+        updateModal(true);
     }, [ ]);
 
     const actionResolver = useActionResolver({
@@ -67,7 +69,8 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         onEnable={ integrationRows.onEnable }
                         actionResolver={ actionResolver }
                     />
-                    <CreatePage isModalOpen={activateModal} updateModal={updateModal} updateModel={updateModel} model={model} />
+                    <CreatePage isModalOpen={activateModal} updateModal={updateModal} updateModel={setIntegrations}
+                                model={integrations} currentRow={currentRow} updateCurrentRow={updateCurrentRow}/>
                 </Section>
             </Main>
         </>

@@ -35,7 +35,8 @@ const MutableMessages = {
         integrations: {
             toolbar: {
                 actions: {
-                    addIntegration: 'Add integration'
+                    addIntegration: 'Add integration',
+                    editIntegration: 'Edit integration'
                 }
             },
             table: {
