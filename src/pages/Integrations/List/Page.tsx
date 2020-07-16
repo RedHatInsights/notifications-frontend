@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import { useHistory } from 'react-router-dom';
+// import { useHistory } from 'react-router-dom';
 import { Messages } from '../../../properties/Messages';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { Integration, IntegrationType } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
-import { linkTo } from '../../../Routes';
 import { useActionResolver } from './useActionResolver';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../../app/AppContext';
@@ -17,7 +16,7 @@ const onExport = (type: string) => console.log('export to ' + type);
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
-    const [integrations,setIntegrations] = useState<Array<Integration>>([
+    const [ integrations, setIntegrations ] = useState<Array<Integration>>([
         {
             id: 'foo',
             isEnabled: true,
@@ -34,15 +33,16 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         }
     ]);
     const integrationRows = useIntegrationRows(integrations);
-    const history = useHistory();
+    // const history = useHistory();
 
-    const [activateModal,updateModal] = useState(false);
-    const [currentRow,updateCurrentRow] = useState('');
+    const [ activateModal, updateModal ] = useState(false);
+    const [ currentRow, updateCurrentRow ] = useState('');
 
     const onAddIntegration = React.useCallback(() => {
         // history.push(linkTo.addIntegration());
         updateModal(true);
-    }, [ history ]);
+        // }, [ history ]);
+    }, []);
 
     const onEdit = React.useCallback((integration: Integration) => {
         // console.log('edit', integration.id);
@@ -69,8 +69,8 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         onEnable={ integrationRows.onEnable }
                         actionResolver={ actionResolver }
                     />
-                    <CreatePage isModalOpen={activateModal} updateModal={updateModal} updateModel={setIntegrations}
-                                model={integrations} currentRow={currentRow} updateCurrentRow={updateCurrentRow}/>
+                    <CreatePage isModalOpen={ activateModal } updateModal={ updateModal } updateModel={ setIntegrations }
+                        model={ integrations } currentRow={ currentRow } updateCurrentRow={ updateCurrentRow }/>
                 </Section>
             </Main>
         </>
