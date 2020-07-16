@@ -7,6 +7,16 @@ const MutableMessages = {
         integrations: {
             list: {
                 title: 'Integrations'
+            },
+            add: {
+                name: 'Integration name',
+                type: 'Type',
+                submit: 'Submit',
+                cancel: 'Cancel'
+            },
+            types: {
+                hooks: 'Webhook',
+                hooksUrl: 'Webhook URL'
             }
         },
         error: {
@@ -25,7 +35,8 @@ const MutableMessages = {
         integrations: {
             toolbar: {
                 actions: {
-                    addIntegration: 'Add integration'
+                    addIntegration: 'Add integration',
+                    editIntegration: 'Edit integration'
                 }
             },
             table: {
@@ -37,6 +48,9 @@ const MutableMessages = {
                 }
             }
         }
+    },
+    common: {
+        choose: 'Please choose'
     }
 };
 
