@@ -3,14 +3,14 @@ import { default as React, useCallback, useEffect, useState } from 'react';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { usePrevious } from 'react-use';
 
-export const useIntegrationRows = (integrations: Array<Integration>) => {
+export const useIntegrationRows = (integrations?: Array<Integration>) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
     const prevIntegrations = usePrevious(integrations);
 
     useEffect(() => {
         if (integrations !== prevIntegrations) {
             setIntegrationRows(prev => {
-                return integrations.map(integration => ({
+                return (integrations || []).map(integration => ({
                     isOpen: false,
                     isSelected: false,
                     isEnabledLoading: false,
@@ -19,7 +19,7 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
                 }));
             });
         }
-    }, [ prevIntegrations, integrations ]);
+    }, [ prevIntegrations, integrations, setIntegrationRows ]);
 
     const onCollapse = useCallback((_integration: IntegrationRow, index: number, isOpen: boolean) => {
         setIntegrationRows(prevIntegrations => {

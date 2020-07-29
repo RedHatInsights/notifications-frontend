@@ -10,15 +10,19 @@ import { useContext, useState } from 'react';
 import { AppContext } from '../../../app/AppContext';
 import { CreatePage } from '../Create/CreatePage';
 import { useIntegrationFilter } from './useIntegrationFilter';
+import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { makeCreateAction, makeEditAction, makeNoneAction, useOpenModalReducer } from './useOpenModalReducer';
 
 const onExport = (type: string) => console.log('export to ' + type);
 
+const emptyArray = [];
+
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
+    const integrationsQuery = useListIntegrationsQuery();
 
-    const [ integrations, setIntegrations ] = useState<Array<Integration>>([
+    /*const [ integrations, setIntegrations ] = useState<Array<Integration>>([
         {
             id: 'foo',
             isEnabled: true,
@@ -33,8 +37,9 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             type: IntegrationType.HTTP,
             url: 'https://pagerduty.com/weebhook/thatthis'
         }
-    ]);
-    const integrationRows = useIntegrationRows(integrations);
+    ]);*/
+    console.log(integrationsQuery.payload);
+    const integrationRows = useIntegrationRows(integrationsQuery.payload);
     const integrationFilter = useIntegrationFilter();
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useOpenModalReducer();
@@ -57,6 +62,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ dispatchModalIsOpen ]);
 
     const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
+        /* Pending to add the save/edit calls
         if (integration.id) {
             setIntegrations(prev => {
                 return prev.map(i => {
@@ -78,10 +84,10 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                     id: 'random' + Math.random() * 5000
                 }]);
             });
-        }
+        }*/
 
         closeModal();
-    }, [ closeModal, setIntegrations ]);
+    }, [ closeModal /*, setIntegrations */ ]);
 
     return (
         <>
