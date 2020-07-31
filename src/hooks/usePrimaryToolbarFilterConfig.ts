@@ -1,10 +1,8 @@
-import { Filters, SetFilters, ClearFilters, FilterBase } from './useFilters';
 import { useCallback, useMemo, useState } from 'react';
+import { ClearFilters, EnumElement, FilterBase, Filters, SetFilters, StandardFilterEnum } from '../types/Filters';
 
-type StandardEnum<T> = Record<keyof T, string>;
-
-const filterItem = <FilterColumn extends StandardEnum<any>>(
-    column: FilterColumn[keyof FilterColumn],
+const filterItem = <FilterColumn extends StandardFilterEnum<any>>(
+    column: EnumElement<FilterColumn>,
     filters: Filters<FilterColumn>,
     setFilters: SetFilters<FilterColumn>,
     meta: ColumnsMetada<FilterColumn>
@@ -17,11 +15,11 @@ const filterItem = <FilterColumn extends StandardEnum<any>>(
             placeholder: meta[column].placeholder,
             onChange: (_event, value: string) => setFilters[column](value)
         }
-});
+    });
 
-const getFilterConfig = <FilterColumn extends StandardEnum<any>>(
+const getFilterConfig = <FilterColumn extends StandardFilterEnum<any>>(
     filters: Filters<FilterColumn>,
-    column: FilterColumn[keyof FilterColumn],
+    column: EnumElement<FilterColumn>,
     meta: ColumnsMetada<FilterColumn>
 ) => {
     const value = filters[column].trim();
@@ -45,9 +43,9 @@ export interface FilterColumnMetadata {
     placeholder: string;
 }
 
-export type ColumnsMetada<Enum extends StandardEnum<any>> = FilterBase<Enum, FilterColumnMetadata>;
+export type ColumnsMetada<Enum extends StandardFilterEnum<any>> = FilterBase<Enum, FilterColumnMetadata>;
 
-export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardEnum<any>>(
+export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardFilterEnum<any>>(
     initEnum: FilterColumn,
     filters: Filters<FilterColumn>,
     setFilters: SetFilters<FilterColumn>,
@@ -58,19 +56,19 @@ export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardEnum<
     const [ Enum ] = useState(initEnum);
 
     const filterConfig = useMemo(() => ({
-        items: (Object.values(Enum) as unknown as Array<FilterColumn[keyof FilterColumn]>).map(
+        items: (Object.values(Enum) as unknown as Array<EnumElement<FilterColumn>>).map(
             column => filterItem(column, filters, setFilters, meta)
         )
     }), [ filters, setFilters, meta, Enum ]);
 
     const onFilterDelete = useCallback((_event, rawFilterConfigs: any[]) => {
-        const toClear: Array<FilterColumn[keyof FilterColumn]> = [];
+        const toClear: Array<EnumElement<FilterColumn>> = [];
         for (const element of rawFilterConfigs) {
             const key = Object.keys(
                 meta
             ).find(
                 key => meta[key].label === element.category
-            ) as undefined | FilterColumn[keyof FilterColumn];
+            ) as undefined | EnumElement<FilterColumn>;
             if (key && Object.values(Enum).includes(key)) {
                 toClear.push(key);
             } else {
@@ -83,7 +81,7 @@ export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardEnum<
 
     const activeFiltersConfig = useMemo(() => {
         const filterConfig: Array<ReturnType<typeof getFilterConfig>> = [];
-        for (const column of Object.values(Enum) as Array<FilterColumn[keyof FilterColumn]>) {
+        for (const column of Object.values(Enum) as Array<EnumElement<FilterColumn>>) {
             const config = getFilterConfig(filters, column, meta);
             if (config) {
                 filterConfig.push(config);

@@ -1,26 +1,19 @@
 import { useCallback, useMemo, useState } from 'react';
 import { useDebouncedState } from '@redhat-cloud-services/insights-common-typescript';
+import { ClearFilters, EnumElement, FilterBase, Filters, SetFilters, StandardFilterEnum } from '../types/Filters';
 
 const DEFAULT_DEBOUNCE_MS = 250;
 
-type StandardEnum<T> = Record<keyof T, string>;
-export type FilterBase<Enum extends StandardEnum<any>, T> = Record<Enum[keyof Enum], T>;
-type Setter<T> = (val: T) => void;
+type FilterUseStateFunctions<Enum extends StandardFilterEnum<any>> = FilterBase<Enum, typeof useState | undefined>;
 
-export type Filters<Enum extends StandardEnum<any>> = FilterBase<Enum, string>;
-export type SetFilters<Enum extends StandardEnum<any>> = FilterBase<Enum, Setter<string>>;
-export type ClearFilters<Enum> = (columns: Array<Enum[keyof Enum]>) => void;
-
-type FilterUseStateFunctions<Enum extends StandardEnum<any>> = FilterBase<Enum, typeof useState | undefined>;
-
-export const useFilters = <FilterColumn extends StandardEnum<any>>(
+export const useFilters = <FilterColumn extends StandardFilterEnum<any>>(
     initEnum: FilterColumn,
     debounce = DEFAULT_DEBOUNCE_MS,
-    initUseStateFactory?: (column: FilterColumn[keyof FilterColumn]) => typeof useState | undefined
+    initUseStateFactory?: (column: EnumElement<FilterColumn>) => typeof useState | undefined
 ) => {
 
     const [ columns ] = useState(() => Object.values(initEnum).sort()) as unknown as [
-        Array<FilterColumn[keyof FilterColumn]>
+        Array<EnumElement<FilterColumn>>
     ];
     const [ useStateFunctions ] = useState(() => {
         if (initUseStateFactory) {

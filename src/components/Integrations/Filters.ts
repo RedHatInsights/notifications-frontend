@@ -1,4 +1,4 @@
-import { ClearFilters, Filters, SetFilters } from '../../hooks/useFilters';
+import { ClearFilters, Filters, SetFilters } from '../../types/Filters';
 
 export enum IntegrationFilterColumn {
     NAME = 'name'
