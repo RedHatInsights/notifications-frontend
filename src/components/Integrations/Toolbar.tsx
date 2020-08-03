@@ -39,11 +39,11 @@ const filterMetadata: Record<IntegrationFilterColumn, FilterColumnMetadata> = {
                 },
                 {
                     value: 'Enabled',
-                    label: <><EnabledIntegrationIcon/> <span className={enabledTextClassName}>Enabled</span></>
+                    label: <><EnabledIntegrationIcon/> <span className={ enabledTextClassName }>Enabled</span></>
                 },
                 {
                     value: 'Disabled',
-                    label: <><DisabledIntegrationIcon/> <span className={enabledTextClassName}>Disabled</span></>
+                    label: <><DisabledIntegrationIcon/> <span className={ enabledTextClassName }>Disabled</span></>
                 }
             ],
             default: 'all',

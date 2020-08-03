@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useState, ReactNode, useEffect } from 'react';
+import { useCallback, useMemo, useState, ReactNode } from 'react';
 import { ClearFilters, EnumElement, FilterBase, Filters, SetFilters, StandardFilterEnum } from '../types/Filters';
 
 const getFilterItemType = <FilterColumn extends StandardFilterEnum<any>>(
@@ -50,8 +50,17 @@ const filterItem = <FilterColumn extends StandardFilterEnum<any>>(
             value: getFilterItemValue(column, filters, meta),
             placeholder: meta[column].placeholder,
             onChange: (_event, value: string) => {
-                if (meta[column].options?.exclude?.includes(value)) {
-                    setFilters[column]('');
+                const options = meta[column].options;
+                if (options) {
+                    if (options.exclusive) {
+                        if (options.exclude?.includes(value)) {
+                            setFilters[column]('');
+                        } else if (options.items.find(i => i.value === value)) {
+                            setFilters[column](value);
+                        }
+                    } else {
+                        throw new Error('Inclusive options are not yet implemented');
+                    }
                 } else {
                     setFilters[column](value);
                 }

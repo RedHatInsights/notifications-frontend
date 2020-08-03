@@ -97,6 +97,441 @@ describe('src/hooks/usePrimaryToolbarFilterConfig', () => {
         }));
     });
 
+    it('Filter config can have options', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                {
+                    ...metaFoo,
+                    [Foo.A]: {
+                        placeholder: 'placeholder',
+                        label: 'label',
+                        options: {
+                            items: [{ value: 'false', label: 'false' }, { value: 'true', label: 'true' }],
+                            exclusive: true
+                        }
+                    }
+                }
+            );
+        });
+
+        expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
+            items: [
+                {
+                    label: 'label',
+                    type: 'radio',
+                    filterValues: {
+                        id: `filter-a`,
+                        value: '',
+                        placeholder: 'placeholder',
+                        items: [
+                            {
+                                value: 'false',
+                                label: 'false'
+                            },
+                            {
+                                value: 'true',
+                                label: 'true'
+                            }
+                        ],
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.B',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-b`,
+                        value: '',
+                        placeholder: 'Im Foo.B',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'foobarbaz',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-c`,
+                        value: '',
+                        placeholder: 'I find your lack of foo disturbing',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.z',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-x`,
+                        value: '',
+                        placeholder: 'Im Foo.Z',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                }
+            ]
+        }));
+    });
+
+    it('Filter config with exclusive options throws error', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                {
+                    ...metaFoo,
+                    [Foo.A]: {
+                        placeholder: 'placeholder',
+                        label: 'label',
+                        options: {
+                            items: [{ value: 'false', label: 'false' }, { value: 'true', label: 'true' }],
+                            exclusive: false
+                        }
+                    }
+                }
+            );
+        });
+
+        expect(() => result.current.filterConfig).toThrowError();
+    });
+
+    it('Filter config only sets options', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+            useEffect(() => {
+                setFilters[Foo.A]('true');
+            }, [ setFilters ]);
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                {
+                    ...metaFoo,
+                    [Foo.A]: {
+                        placeholder: 'placeholder',
+                        label: 'label',
+                        options: {
+                            items: [{ value: 'false', label: 'false' }, { value: 'true', label: 'true' }],
+                            exclusive: true
+                        }
+                    }
+                }
+            );
+        });
+
+        act(() => {
+            result.current.filterConfig.items.find(i => i.label === 'label')?.filterValues.onChange(undefined, 'foo');
+        });
+
+        expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
+            items: [
+                {
+                    label: 'label',
+                    type: 'radio',
+                    filterValues: {
+                        id: `filter-a`,
+                        value: 'true',
+                        placeholder: 'placeholder',
+                        items: [
+                            {
+                                value: 'false',
+                                label: 'false'
+                            },
+                            {
+                                value: 'true',
+                                label: 'true'
+                            }
+                        ],
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.B',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-b`,
+                        value: '',
+                        placeholder: 'Im Foo.B',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'foobarbaz',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-c`,
+                        value: '',
+                        placeholder: 'I find your lack of foo disturbing',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.z',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-x`,
+                        value: '',
+                        placeholder: 'Im Foo.Z',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                }
+            ]
+        }));
+
+        act(() => {
+            result.current.filterConfig.items.find(i => i.label === 'label')?.filterValues.onChange(undefined, 'false');
+        });
+
+        expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
+            items: [
+                {
+                    label: 'label',
+                    type: 'radio',
+                    filterValues: {
+                        id: `filter-a`,
+                        value: 'false',
+                        placeholder: 'placeholder',
+                        items: [
+                            {
+                                value: 'false',
+                                label: 'false'
+                            },
+                            {
+                                value: 'true',
+                                label: 'true'
+                            }
+                        ],
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.B',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-b`,
+                        value: '',
+                        placeholder: 'Im Foo.B',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'foobarbaz',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-c`,
+                        value: '',
+                        placeholder: 'I find your lack of foo disturbing',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.z',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-x`,
+                        value: '',
+                        placeholder: 'Im Foo.Z',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                }
+            ]
+        }));
+    });
+
+    it('Setting a value that is inside the options.exclude sets to empty string (onChange)', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+            useEffect(() => {
+                setFilters[Foo.A]('true');
+            }, [ setFilters ]);
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                {
+                    ...metaFoo,
+                    [Foo.A]: {
+                        placeholder: 'placeholder',
+                        label: 'label',
+                        options: {
+                            items: [{ value: 'false', label: 'false' }, { value: 'true', label: 'true' }],
+                            exclusive: true,
+                            exclude: [ 'false' ]
+                        }
+                    }
+                }
+            );
+        });
+
+        act(() => {
+            result.current.filterConfig.items.find(i => i.label === 'label')?.filterValues.onChange(undefined, 'false');
+        });
+
+        expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
+            items: [
+                {
+                    label: 'label',
+                    type: 'radio',
+                    filterValues: {
+                        id: `filter-a`,
+                        value: '',
+                        placeholder: 'placeholder',
+                        items: [
+                            {
+                                value: 'false',
+                                label: 'false'
+                            },
+                            {
+                                value: 'true',
+                                label: 'true'
+                            }
+                        ],
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.B',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-b`,
+                        value: '',
+                        placeholder: 'Im Foo.B',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'foobarbaz',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-c`,
+                        value: '',
+                        placeholder: 'I find your lack of foo disturbing',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.z',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-x`,
+                        value: '',
+                        placeholder: 'Im Foo.Z',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                }
+            ]
+        }));
+    });
+
+    it('Setting a value that is inside the options.exclude sets to empty string (setters)', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+            useEffect(() => {
+                setFilters[Foo.A]('false');
+            }, [ setFilters ]);
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                {
+                    ...metaFoo,
+                    [Foo.A]: {
+                        placeholder: 'placeholder',
+                        label: 'label',
+                        options: {
+                            items: [{ value: 'false', label: 'false' }, { value: 'true', label: 'true' }],
+                            exclusive: true,
+                            exclude: [ 'false' ]
+                        }
+                    }
+                }
+            );
+        });
+
+        expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
+            items: [
+                {
+                    label: 'label',
+                    type: 'radio',
+                    filterValues: {
+                        id: `filter-a`,
+                        value: '',
+                        placeholder: 'placeholder',
+                        items: [
+                            {
+                                value: 'false',
+                                label: 'false'
+                            },
+                            {
+                                value: 'true',
+                                label: 'true'
+                            }
+                        ],
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.B',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-b`,
+                        value: '',
+                        placeholder: 'Im Foo.B',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'foobarbaz',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-c`,
+                        value: '',
+                        placeholder: 'I find your lack of foo disturbing',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.z',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-x`,
+                        value: '',
+                        placeholder: 'Im Foo.Z',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                }
+            ]
+        }));
+    });
+
     it('Changes in the init enum are ignored', () => {
         const { result, rerender } = renderHook((theEnum) => {
             const { filters, setFilters, clearFilter } = useFilters<typeof Foo>(Foo);
@@ -161,7 +596,7 @@ describe('src/hooks/usePrimaryToolbarFilterConfig', () => {
         }));
     });
 
-    it('FilterConfig onChange calls the setter', () => {
+    it('FilterConfig values takes value from filters', () => {
         const { result } = renderHook(() => {
             const { filters, setFilters, clearFilter } = useFilters(Foo);
 
@@ -176,6 +611,73 @@ describe('src/hooks/usePrimaryToolbarFilterConfig', () => {
                 clearFilter,
                 metaFoo
             );
+        });
+
+        expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
+            items: [
+                {
+                    label: 'Foo.A',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-a`,
+                        value: '',
+                        placeholder: 'Im Foo.A',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.B',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-b`,
+                        value: 'hello world',
+                        placeholder: 'Im Foo.B',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'foobarbaz',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-c`,
+                        value: '',
+                        placeholder: 'I find your lack of foo disturbing',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                },
+                {
+                    label: 'Foo.z',
+                    type: 'text',
+                    filterValues: {
+                        id: `filter-x`,
+                        value: '',
+                        placeholder: 'Im Foo.Z',
+                        // eslint-disable-next-line @typescript-eslint/no-empty-function
+                        onChange() {}
+                    }
+                }
+            ]
+        }));
+    });
+
+    it('FilterConfig changes value with onChange', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                metaFoo
+            );
+        });
+
+        act(() => {
+            result.current.filterConfig.items.find(i => i.label === 'Foo.B')?.filterValues.onChange(undefined, 'hello world');
         });
 
         expect(JSON.stringify(result.current.filterConfig)).toEqual(JSON.stringify({
@@ -317,5 +819,34 @@ describe('src/hooks/usePrimaryToolbarFilterConfig', () => {
             }
         ]);
     });
+
+    it('Active filter config onDelete throws when using an unknown label', () => {
+        const { result } = renderHook(() => {
+            const { filters, setFilters, clearFilter } = useFilters(Foo);
+            useEffect(() => {
+                setFilters[Foo.A]('foo');
+                setFilters[Foo.B]('bar');
+            }, [ setFilters ]);
+            return usePrimaryToolbarFilterConfig(
+                Foo,
+                filters,
+                setFilters,
+                clearFilter,
+                metaFoo
+            );
+        });
+
+        act(() => {
+            expect(() => {
+                result.current.activeFiltersConfig.onDelete(
+                    undefined,
+                    [
+                        { category: 'foobar' }
+                    ]
+                );
+            }).toThrowError();
+        });
+    });
+
 
 });
