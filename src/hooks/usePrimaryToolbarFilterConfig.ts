@@ -17,7 +17,7 @@ const filterItem = <FilterColumn extends StandardFilterEnum<any>>(
         }
     });
 
-const getFilterConfig = <FilterColumn extends StandardFilterEnum<any>>(
+const getActiveFilterConfigItem = <FilterColumn extends StandardFilterEnum<any>>(
     filters: Filters<FilterColumn>,
     column: EnumElement<FilterColumn>,
     meta: ColumnsMetada<FilterColumn>
@@ -72,7 +72,7 @@ export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardFilte
             if (key && Object.values(Enum).includes(key)) {
                 toClear.push(key);
             } else {
-                throw new Error(`Unexpected filter column found: ${key}`);
+                throw new Error(`Unexpected filter column label found: ${element.category}`);
             }
         }
 
@@ -80,9 +80,9 @@ export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardFilte
     }, [ clearFilters, Enum, meta ]);
 
     const activeFiltersConfig = useMemo(() => {
-        const filterConfig: Array<ReturnType<typeof getFilterConfig>> = [];
+        const filterConfig: Array<ReturnType<typeof getActiveFilterConfigItem>> = [];
         for (const column of Object.values(Enum) as Array<EnumElement<FilterColumn>>) {
-            const config = getFilterConfig(filters, column, meta);
+            const config = getActiveFilterConfigItem(filters, column, meta);
             if (config) {
                 filterConfig.push(config);
             }
