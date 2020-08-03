@@ -3,6 +3,8 @@ import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import { Messages } from '../../properties/Messages';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
 import { FilterColumnMetadata, usePrimaryToolbarFilterConfig } from '../../hooks/usePrimaryToolbarFilterConfig';
+import { style } from 'typestyle';
+import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 
 interface IntegrationsToolbarProps {
     onAddIntegration: () => void;
@@ -11,6 +13,10 @@ interface IntegrationsToolbarProps {
     setFilters: SetIntegrationFilters;
     clearFilters: ClearIntegrationFilters;
 }
+
+const enabledTextClassName = style({
+    marginLeft: 4
+});
 
 const filterMetadata: Record<IntegrationFilterColumn, FilterColumnMetadata> = {
     [IntegrationFilterColumn.NAME]: {
@@ -33,11 +39,11 @@ const filterMetadata: Record<IntegrationFilterColumn, FilterColumnMetadata> = {
                 },
                 {
                     value: 'Enabled',
-                    label: <>Enabled</>
+                    label: <><EnabledIntegrationIcon/> <span className={enabledTextClassName}>Enabled</span></>
                 },
                 {
                     value: 'Disabled',
-                    label: <>Disabled</>
+                    label: <><DisabledIntegrationIcon/> <span className={enabledTextClassName}>Disabled</span></>
                 }
             ],
             default: 'all',
