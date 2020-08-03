@@ -1,7 +1,9 @@
 import { ClearFilters, Filters, SetFilters } from '../../types/Filters';
 
 export enum IntegrationFilterColumn {
-    NAME = 'name'
+    NAME = 'name',
+    TYPE = 'type',
+    ENABLED = 'enabled'
 }
 
 export type IntegrationFilters = Filters<typeof IntegrationFilterColumn>;

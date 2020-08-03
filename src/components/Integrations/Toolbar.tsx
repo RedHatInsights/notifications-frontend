@@ -16,6 +16,33 @@ const filterMetadata: Record<IntegrationFilterColumn, FilterColumnMetadata> = {
     [IntegrationFilterColumn.NAME]: {
         label: 'Name',
         placeholder: 'Filter by name'
+    },
+    [IntegrationFilterColumn.TYPE]: {
+        label: 'Type',
+        placeholder: 'Filter by type'
+    },
+    [IntegrationFilterColumn.ENABLED]: {
+        label: 'Enabled',
+        placeholder: 'Filter by enabled',
+        options: {
+            exclusive: true,
+            items: [
+                {
+                    value: 'all',
+                    label: <>All</>
+                },
+                {
+                    value: 'Enabled',
+                    label: <>Enabled</>
+                },
+                {
+                    value: 'Disabled',
+                    label: <>Disabled</>
+                }
+            ],
+            default: 'all',
+            exclude: [ 'all' ]
+        }
     }
 };
 

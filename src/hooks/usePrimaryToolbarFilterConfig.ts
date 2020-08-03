@@ -1,5 +1,41 @@
-import { useCallback, useMemo, useState } from 'react';
+import { useCallback, useMemo, useState, ReactNode, useEffect } from 'react';
 import { ClearFilters, EnumElement, FilterBase, Filters, SetFilters, StandardFilterEnum } from '../types/Filters';
+
+const getFilterItemType = <FilterColumn extends StandardFilterEnum<any>>(
+    column: EnumElement<FilterColumn>,
+    meta: ColumnsMetada<FilterColumn>
+) => {
+    const options = meta[column].options;
+    if (options) {
+        if (options.exclusive) {
+            return 'radio';
+        } else {
+            throw new Error('Inclusive options are not yet implemented');
+        }
+    }
+
+    return 'text';
+};
+
+const getFilterItemValue = <FilterColumn extends StandardFilterEnum<any>>(
+    column: EnumElement<FilterColumn>,
+    filters: Filters<FilterColumn>,
+    meta: ColumnsMetada<FilterColumn>
+) => {
+    const options = meta[column].options;
+    let value = filters[column];
+    if (options) {
+        if (options.exclude && options.exclude.includes(value)) {
+            value = '';
+        }
+
+        if (options.default && (value === undefined || value === '')) {
+            return options.default;
+        }
+    }
+
+    return value;
+};
 
 const filterItem = <FilterColumn extends StandardFilterEnum<any>>(
     column: EnumElement<FilterColumn>,
@@ -8,12 +44,19 @@ const filterItem = <FilterColumn extends StandardFilterEnum<any>>(
     meta: ColumnsMetada<FilterColumn>
 ) => ({
         label: meta[column].label,
-        type: 'text',
+        type: getFilterItemType(column, meta),
         filterValues: {
             id: `filter-${column}`,
-            value: filters[column],
+            value: getFilterItemValue(column, filters, meta),
             placeholder: meta[column].placeholder,
-            onChange: (_event, value: string) => setFilters[column](value)
+            onChange: (_event, value: string) => {
+                if (meta[column].options?.exclude?.includes(value)) {
+                    setFilters[column]('');
+                } else {
+                    setFilters[column](value);
+                }
+            },
+            items: meta[column].options?.items
         }
     });
 
@@ -22,8 +65,9 @@ const getActiveFilterConfigItem = <FilterColumn extends StandardFilterEnum<any>>
     column: EnumElement<FilterColumn>,
     meta: ColumnsMetada<FilterColumn>
 ) => {
-    const value = filters[column].trim();
-    if (value === '') {
+    const value = filters[column]?.trim();
+    const options = meta[column].options;
+    if (value === undefined || value === '' || options?.exclude?.includes(value)) {
         return undefined;
     }
 
@@ -41,6 +85,15 @@ const getActiveFilterConfigItem = <FilterColumn extends StandardFilterEnum<any>>
 export interface FilterColumnMetadata {
     label: string;
     placeholder: string;
+    options?: {
+        exclusive?: boolean;
+        items: Array<{
+            value: string;
+            label: ReactNode;
+        }>;
+        default?: string;
+        exclude?: Array<string>;
+    };
 }
 
 export type ColumnsMetada<Enum extends StandardFilterEnum<any>> = FilterBase<Enum, FilterColumnMetadata>;
