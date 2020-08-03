@@ -847,6 +847,4 @@ describe('src/hooks/usePrimaryToolbarFilterConfig', () => {
             }).toThrowError();
         });
     });
-
-
 });
