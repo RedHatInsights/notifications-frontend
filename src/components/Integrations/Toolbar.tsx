@@ -2,9 +2,9 @@ import * as React from 'react';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import { Messages } from '../../properties/Messages';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
-import { FilterColumnMetadata, usePrimaryToolbarFilterConfig } from '../../hooks/usePrimaryToolbarFilterConfig';
 import { style } from 'typestyle';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
+import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
 
 interface IntegrationsToolbarProps {
     onAddIntegration: () => void;
@@ -18,7 +18,7 @@ const enabledTextClassName = style({
     marginLeft: 4
 });
 
-const filterMetadata: Record<IntegrationFilterColumn, FilterColumnMetadata> = {
+const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
     [IntegrationFilterColumn.NAME]: {
         label: 'Name',
         placeholder: 'Filter by name'

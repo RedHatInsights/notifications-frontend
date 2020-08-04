@@ -1,4 +1,4 @@
-import { ClearFilters, Filters, SetFilters } from '../../types/Filters';
+import { ClearFilters, Filters, SetFilters } from '@redhat-cloud-services/insights-common-typescript';
 
 export enum IntegrationFilterColumn {
     NAME = 'name',

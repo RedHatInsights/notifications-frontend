@@ -1,7 +1,6 @@
 import { IntegrationFilterColumn } from '../../../components/Integrations/Filters';
 import { assertNever, useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
-import { useFilters } from '../../../hooks/useFilters';
-import { useUrlStateExclusiveOptions } from '../../../hooks/useUrlStateExclusiveOptions';
+import { useFilters, useUrlStateExclusiveOptions } from '@redhat-cloud-services/insights-common-typescript';
 
 const DEBOUNCE_MS = 250;
 
