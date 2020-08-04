@@ -3,8 +3,7 @@ import { RouteProps, Route, Switch } from 'react-router';
 
 import { ErrorPage } from './pages/Error/Page';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
-
-const NotificationsPagePlaceholder = () => <div>I am the notifications page</div>;
+import { NotificationsListPage } from './pages/Notifications/List/Page';
 
 interface Path {
     path: string;
@@ -26,7 +25,7 @@ const pathRoutes: Path[] = [
     },
     {
         path: linkTo.notifications(),
-        component: NotificationsPagePlaceholder,
+        component: NotificationsListPage,
         rootClass: 'notifications'
     }
 ];
