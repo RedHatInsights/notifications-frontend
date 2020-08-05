@@ -1176,10 +1176,10 @@
   resolved "https://registry.yarnpkg.com/@popperjs/core/-/core-2.4.2.tgz#7c6dc4ecef16149fd7a736710baa1b811017fdca"
   integrity sha512-JlGTGRYHC2QK+DDbePyXdBdooxFq2+noLfWpRqJtkxcb/oYWzOF0kcbfvvbWrwevCC1l6hLUg1wHYT+ona5BWQ==
 
-"@redhat-cloud-services/frontend-components-config@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config/-/frontend-components-config-2.1.0.tgz#c699ce6810d68f2d1a9b5c2782696e495333c89f"
-  integrity sha512-XYAFHAjIDSRf0kydIY96AYk0QLnrOBZgV4aAgWrPFLcnYY0MexJXss0skq/iCm+vmMtjHlsQPIoir+uUD0atKw==
+"@redhat-cloud-services/frontend-components-config@2.1.1":
+  version "2.1.1"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config/-/frontend-components-config-2.1.1.tgz#2318d995e3acbe2b6af1467eb82e8f0133ccbac5"
+  integrity sha512-RcPUzG09PXCO9fZDTBaF5Q99rCBgOcJ6THY8U3UmgPLKF8kN9XqCBU8IpwQqPt+SlhKqqjIu71xK5FHcOsSo4A==
   dependencies:
     babel-loader "^8.0.6"
     clean-webpack-plugin "^2.0.2"
@@ -1203,14 +1203,14 @@
     webpack-serve "1.0.2"
     write-file-webpack-plugin "^4.5.0"
 
-"@redhat-cloud-services/frontend-components-notifications@2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-notifications/-/frontend-components-notifications-2.1.0.tgz#440d6da5983f92306eb504bb559a8799211e3caa"
-  integrity sha512-MNZ8edZnRLb+0S8xBhk3DmAr3vdYRXY73QcuFrQdUojY6vGSN8Q6RqwMXlzYBn5AJVCSYeIuqsKxT36WTdFo+A==
+"@redhat-cloud-services/frontend-components-notifications@2.1.2":
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-notifications/-/frontend-components-notifications-2.1.2.tgz#7d3897b5b3ea460140f2c5c35c37c3b99ee794b1"
+  integrity sha512-NnRfoWpJ67HweKbR8WGwvr5sMTyz8z4FnB7sWKaJkFhuACR+KSy+tw91cRK1DV+iFuYgOygnkXMMJEJdWxi/DA==
   dependencies:
     "@redhat-cloud-services/frontend-components-utilities" "2.1.0-beta"
 
-"@redhat-cloud-services/frontend-components-utilities@*", "@redhat-cloud-services/frontend-components-utilities@2.1.0":
+"@redhat-cloud-services/frontend-components-utilities@*":
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-utilities/-/frontend-components-utilities-2.1.0.tgz#578f2732b124a45fca6cfd0156e96b71ff8353b8"
   integrity sha512-CeEaT/LA9icJDEZZBfodTOwg7jsLpzivL0htCUJBw5YCsCMLQ141FDOQaSgFAv7R5ZTo+bqlo0RpvkC9G2Bl0w==
@@ -1232,10 +1232,21 @@
     commander ">=2.20.0"
     react-content-loader ">=3.4.1"
 
-"@redhat-cloud-services/frontend-components@2.1.2":
+"@redhat-cloud-services/frontend-components-utilities@2.1.2":
   version "2.1.2"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components/-/frontend-components-2.1.2.tgz#56163ce53b02e4ea1791cb0f77fa067f6bc93c10"
-  integrity sha512-F4PnNSGuk6Sdfs7ivxY/b73RkQwWM50IGUHIFDMVQM2IrCkFi24Nt6mBBTk2ZlGV4pvZ0Wr3lVOgPz6b00I4Jg==
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-utilities/-/frontend-components-utilities-2.1.2.tgz#8d453d5d34ef33f42fc82adf22b37cb5d2382d58"
+  integrity sha512-4q2CoR45ZODAn/bSaHiW7I8fKCRTRBNXHAsoimzkkQDRl7GJOjIlCuzvYpjX9gJitiQyolm7kzyksLS6KNAEkg==
+  dependencies:
+    "@sentry/browser" "^5.4.0"
+    awesome-debounce-promise "^2.1.0"
+    axios "^0.19.0"
+    commander ">=2.20.0"
+    react-content-loader ">=3.4.1"
+
+"@redhat-cloud-services/frontend-components@2.3.11":
+  version "2.3.11"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components/-/frontend-components-2.3.11.tgz#1761687b4a46b894a47493b848abb3064ca4cb83"
+  integrity sha512-EHw+u7/1MZkfpvyqaiyIblxI4Rsh1osGfZUwPm7hiJAOMOUCnpk1jrrzSiC6QORuiAUJ0aSnCRgVAnb3RduPxw==
   dependencies:
     "@redhat-cloud-services/frontend-components-utilities" "*"
     sanitize-html "^1.25.0"
@@ -1253,10 +1264,10 @@
     node-jq "^1.11.1"
     openapi3-typescript-codegen "^0.0.13"
 
-"@redhat-cloud-services/rbac-client@1.0.67":
-  version "1.0.67"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/rbac-client/-/rbac-client-1.0.67.tgz#409c83f50d566ef48d6db443db856a7261d6b2dd"
-  integrity sha512-NUjau+F8QQPWy/YPyQZLQPGHSNLFrgGnOIpEkHhKISxz6MIyrf2DGr/rICU4ZQh8yBc/aIiy9yGE18YP+Qv/sg==
+"@redhat-cloud-services/rbac-client@1.0.71":
+  version "1.0.71"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/rbac-client/-/rbac-client-1.0.71.tgz#4a3b052e68d71a343fefe094249ac36bd8e4d33d"
+  integrity sha512-4Ha+7BxYs5k8kAHmiwfQlXMzw9eWjjL2Pyk/jK7+W6W7RKuHZ0dgOFykmrXm5MMS27+seYlToL91f8aM3jLK+g==
   dependencies:
     axios "^0.19.2"
 
