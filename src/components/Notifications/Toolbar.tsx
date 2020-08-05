@@ -6,7 +6,7 @@ import {
     NotificationFilters,
     SetNotificationFilters
 } from './Filter';
-import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '../../hooks/usePrimaryToolbarFilterConfig';
+import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
 
 interface NotificationsToolbarProps {
     filters: NotificationFilters;
