@@ -15,7 +15,8 @@ install: yarn --frozen-lockfile --non-interactive || (echo 'package.json is not 
 jobs:
   include:
   - stage: Check Schema
-    if: branch = prod
+    if: branch = prod OR branch = prod-stable
+    script: ./.travis/schema-check.sh
   - stage: Lint
     script: yarn lint
   - stage: Test
@@ -23,6 +24,7 @@ jobs:
   - stage: Build
     script: yarn build:prod
   - stage: Deploy
+    if: type = push
     script: yarn verify && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
 env:
   global:
