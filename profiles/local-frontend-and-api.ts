@@ -1,6 +1,6 @@
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const goodGuyLib = require('good-guy-http');
-const SECTION = 'insights';
+const SECTION = 'settings';
 const APP_ID = 'notifications';
 const APP_MOUNTS = [ 'notifications', 'integrations' ];
 const FRONTEND_PORT = 8002;
@@ -15,7 +15,6 @@ APP_MOUNTS.forEach(mount => {
 });
 
 routes[`/api/${APP_ID}/`] = { host: `http://localhost:${API_PORT}` };
-routes[`/beta/config`]            = { host: `http://localhost:8889` };
 
 module.exports = {
     routes,
