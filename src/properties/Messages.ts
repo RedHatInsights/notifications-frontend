@@ -19,6 +19,11 @@ const MutableMessages = {
                 hooksUrl: 'Webhook URL'
             }
         },
+        notifications: {
+            list: {
+                title: 'Notifications'
+            }
+        },
         error: {
             title: 'Notifications',
             emptyState: {
