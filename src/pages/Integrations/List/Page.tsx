@@ -10,6 +10,7 @@ import { useActionResolver } from './useActionResolver';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../../app/AppContext';
 import CreatePage from '../Create/CreatePage';
+import { useIntegrationFilter } from './useIntegrationFilter';
 
 const onExport = (type: string) => console.log('export to ' + type);
 
@@ -33,7 +34,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         }
     ]);
     const integrationRows = useIntegrationRows(integrations);
-    // const history = useHistory();
+    const integrationFilter = useIntegrationFilter();
 
     const [ activateModal, updateModal ] = useState(false);
     const [ currentRow, updateCurrentRow ] = useState('');
@@ -62,13 +63,20 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             </PageHeader>
             <Main>
                 <Section>
-                    <IntegrationsToolbar onAddIntegration={ onAddIntegration } onExport={ onExport }/>
-                    <IntegrationsTable
-                        integrations={ integrationRows.rows }
-                        onCollapse={ integrationRows.onCollapse }
-                        onEnable={ integrationRows.onEnable }
-                        actionResolver={ actionResolver }
-                    />
+                    <IntegrationsToolbar
+                        onAddIntegration={ onAddIntegration }
+                        onExport={ onExport }
+                        filters={ integrationFilter.filters }
+                        setFilters={ integrationFilter.setFilters }
+                        clearFilters={ integrationFilter.clearFilter }
+                    >
+                        <IntegrationsTable
+                            integrations={ integrationRows.rows }
+                            onCollapse={ integrationRows.onCollapse }
+                            onEnable={ integrationRows.onEnable }
+                            actionResolver={ actionResolver }
+                        />
+                    </IntegrationsToolbar>
                     <CreatePage isModalOpen={ activateModal } updateModal={ updateModal } updateModel={ setIntegrations }
                         model={ integrations } currentRow={ currentRow } updateCurrentRow={ updateCurrentRow }/>
                 </Section>
