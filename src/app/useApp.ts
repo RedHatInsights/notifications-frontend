@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useHistory } from 'react-router-dom';
-import { getInsights, waitForInsights, Rbac, fetchRBAC } from '@redhat-cloud-services/insights-common-typescript';
+import { waitForInsights, Rbac, fetchRBAC } from '@redhat-cloud-services/insights-common-typescript';
 import Config from '../config/Config';
 import { AppContext } from './AppContext';
 
@@ -12,18 +12,24 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
     useEffect(() => {
         waitForInsights().then((insights) => {
             insights.chrome.init();
-            insights.chrome.identifyApp(Config.appId);
+            const appId = (insights.chrome as any).getApp();
+            switch (appId) {
+                case Config.notifications.appId:
+                    document.title = Config.notifications.title;
+                    break;
+                case Config.integrations.appId:
+                    document.title = Config.integrations.title;
+                    break;
+            }
+
+            insights.chrome.identifyApp(appId);
         });
-        return () => {
-            const insights = getInsights();
-            insights.chrome.on('APP_NAVIGATION', (event: any) => history.push(`/${event.navId}`));
-        };
     }, [ history ]);
 
     useEffect(() => {
         waitForInsights().then(insights => {
             insights.chrome.auth.getUser().then(() => {
-                // Todo: Change to Config.appId
+                // Todo: Change to insights.chrome.getApp()
                 fetchRBAC('policies').then(setRbac);
             });
         });
