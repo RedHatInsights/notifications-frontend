@@ -12,7 +12,7 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
     useEffect(() => {
         waitForInsights().then((insights) => {
             insights.chrome.init();
-            const appId = (insights.chrome as any).getApp();
+            const appId = insights.chrome.getApp();
             switch (appId) {
                 case Config.notifications.appId:
                     document.title = Config.notifications.title;
