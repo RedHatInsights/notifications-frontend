@@ -34,7 +34,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         <>
             <PrimaryToolbar
                 filterConfig={ primaryToolbarFilterConfig.filterConfig }
-                activeFilterConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
             />
             { props.children }
             <PrimaryToolbar/>
