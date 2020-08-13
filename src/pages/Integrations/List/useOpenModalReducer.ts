@@ -44,7 +44,10 @@ const reducer = (state: UseOpenModalReducerState, action: UseOpenModalReducerAct
             return {
                 isOpen: true,
                 isEdit: false,
-                template: action.template,
+                template: action.template ? {
+                    ...action.template,
+                    name: `Copy of ${action.template.name}`
+                } : undefined,
                 isCopy: !!action.template
             };
         case UseOpenModalReducerActionType.EDIT:

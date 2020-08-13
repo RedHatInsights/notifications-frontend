@@ -18,12 +18,10 @@ interface CreatePageProps {
     onSave: (integration: NewIntegration) => void;
     onClose: () => void;
     isEdit: boolean;
-    isCopy: boolean;
 }
 
 interface IntegrationFormProps {
     isEdit: boolean;
-    isCopy: boolean;
     onClose: () => void;
 }
 
@@ -73,30 +71,18 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
         props.onSave(transformedIntegration);
     };
 
-    const initialValue = React.useMemo(() => {
-        if (props.isCopy) {
-            return {
-                ...props.initialValue,
-                name: `Copy of ${props.initialValue.name}`
-            };
-        }
-
-        return props.initialValue;
-    }, [ props.initialValue, props.isCopy ]);
-
     if (!props.isModalOpen) {
         return <></>;
     }
 
     return (
         <Formik<PartialIntegration>
-            initialValues={ initialValue }
+            initialValues={ props.initialValue }
             validationSchema={ IntegrationSchema }
             onSubmit={ onSubmit }
         >
             <CreateIntegrationModal
                 isEdit={ props.isEdit }
-                isCopy={ props.isCopy }
                 onClose={ props.onClose }
             />
         </Formik>

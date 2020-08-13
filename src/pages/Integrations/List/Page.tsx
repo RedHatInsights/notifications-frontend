@@ -107,7 +107,6 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                     <CreatePage
                         isModalOpen={ modalIsOpenState.isOpen }
                         isEdit={ modalIsOpenState.isEdit }
-                        isCopy={ modalIsOpenState.isCopy }
                         initialValue={ modalIsOpenState.template || {} }
                         onClose={ closeModal }
                         onSave={ onSaveIntegration }
