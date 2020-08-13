@@ -1,22 +1,23 @@
 import * as React from 'react';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-// import { useHistory } from 'react-router-dom';
 import { Messages } from '../../../properties/Messages';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
-import { Integration, IntegrationType } from '../../../types/Integration';
+import { Integration, IntegrationType, NewIntegration } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useActionResolver } from './useActionResolver';
 import { useContext, useState } from 'react';
 import { AppContext } from '../../../app/AppContext';
-import CreatePage from '../Create/CreatePage';
+import { CreatePage } from '../Create/CreatePage';
 import { useIntegrationFilter } from './useIntegrationFilter';
+import { makeCreateAction, makeEditAction, makeNoneAction, useOpenModalReducer } from './useOpenModalReducer';
 
 const onExport = (type: string) => console.log('export to ' + type);
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
+
     const [ integrations, setIntegrations ] = useState<Array<Integration>>([
         {
             id: 'foo',
@@ -36,25 +37,51 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const integrationRows = useIntegrationRows(integrations);
     const integrationFilter = useIntegrationFilter();
 
-    const [ activateModal, updateModal ] = useState(false);
-    const [ currentRow, updateCurrentRow ] = useState('');
+    const [ modalIsOpenState, dispatchModalIsOpen ] = useOpenModalReducer();
 
-    const onAddIntegration = React.useCallback(() => {
-        // history.push(linkTo.addIntegration());
-        updateModal(true);
-        // }, [ history ]);
-    }, []);
+    const onAddIntegrationClicked = React.useCallback(() => {
+        dispatchModalIsOpen(makeCreateAction());
+    }, [ dispatchModalIsOpen ]);
 
     const onEdit = React.useCallback((integration: Integration) => {
-        // console.log('edit', integration.id);
-        updateCurrentRow(integration.id);
-        updateModal(true);
-    }, [ ]);
+        dispatchModalIsOpen(makeEditAction(integration));
+    }, [ dispatchModalIsOpen ]);
 
     const actionResolver = useActionResolver({
         canWriteAll,
         onEdit
     });
+
+    const closeModal = React.useCallback(() => {
+        dispatchModalIsOpen(makeNoneAction());
+    }, [ dispatchModalIsOpen ]);
+
+    const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
+        if (integration.id) {
+            setIntegrations(prev => {
+                return prev.map(i => {
+                    if (i.id === integration.id) {
+                        return {
+                            ...i,
+                            ...integration
+                        };
+                    }
+
+                    return i;
+                });
+            });
+        } else {
+            setIntegrations(prev => {
+                return prev.concat([{
+                    ...integration,
+                    isEnabled: true,
+                    id: 'random' + Math.random() * 5000
+                }]);
+            });
+        }
+
+        closeModal();
+    }, [ closeModal, setIntegrations ]);
 
     return (
         <>
@@ -64,7 +91,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             <Main>
                 <Section>
                     <IntegrationsToolbar
-                        onAddIntegration={ onAddIntegration }
+                        onAddIntegration={ onAddIntegrationClicked }
                         onExport={ onExport }
                         filters={ integrationFilter.filters }
                         setFilters={ integrationFilter.setFilters }
@@ -77,8 +104,14 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                             actionResolver={ actionResolver }
                         />
                     </IntegrationsToolbar>
-                    <CreatePage isModalOpen={ activateModal } updateModal={ updateModal } updateModel={ setIntegrations }
-                        model={ integrations } currentRow={ currentRow } updateCurrentRow={ updateCurrentRow }/>
+                    <CreatePage
+                        isModalOpen={ modalIsOpenState.isOpen }
+                        isEdit={ modalIsOpenState.isEdit }
+                        isCopy={ modalIsOpenState.isCopy }
+                        initialValue={ modalIsOpenState.template || {} }
+                        onClose={ closeModal }
+                        onSave={ onSaveIntegration }
+                    />
                 </Section>
             </Main>
         </>

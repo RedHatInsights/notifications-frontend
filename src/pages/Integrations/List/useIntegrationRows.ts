@@ -9,12 +9,15 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
 
     useEffect(() => {
         if (integrations !== prevIntegrations) {
-            setIntegrationRows(integrations.map(integration => ({
-                ...integration,
-                isOpen: false,
-                isSelected: false,
-                isEnabledLoading: false
-            })));
+            setIntegrationRows(prev => {
+                return integrations.map(integration => ({
+                    isOpen: false,
+                    isSelected: false,
+                    isEnabledLoading: false,
+                    ...prev.find(i => i.id === integration.id),
+                    ...integration
+                }));
+            });
         }
     }, [ prevIntegrations, integrations ]);
 

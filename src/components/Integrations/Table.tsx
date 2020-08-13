@@ -53,7 +53,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             selected: integration.isSelected,
             cells: [
                 integration.name,
-                integration.type.toString().toUpperCase(),
+                Messages.components.integrations.integrationType[integration.type],
                 <>
                     { integration.isEnabledLoading ? (
                         <Spinner className={ isEnabledLoadingClassName } size="md" />
