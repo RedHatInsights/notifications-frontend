@@ -9,10 +9,10 @@ const MutableMessages = {
                 title: 'Integrations'
             },
             add: {
-                name: 'Integration name',
-                type: 'Type',
-                submit: 'Submit',
-                cancel: 'Cancel'
+                title: 'Add Integration'
+            },
+            edit: {
+                title: 'Edit Integration'
             },
             types: {
                 hooks: 'Webhook',
@@ -51,6 +51,9 @@ const MutableMessages = {
                     type: 'Type',
                     enabled: 'Enabled'
                 }
+            },
+            integrationType: {
+                http: 'Webhook'
             }
         }
     },
