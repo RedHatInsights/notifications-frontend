@@ -4,9 +4,14 @@ import { Messages } from '../../properties/Messages';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
 import { style } from 'typestyle';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
-import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    ColumnsMetada,
+    OuiaComponentProps,
+    usePrimaryToolbarFilterConfig
+} from '@redhat-cloud-services/insights-common-typescript';
+import { getOuiaProps } from '../../utils/getOuiaProps';
 
-interface IntegrationsToolbarProps {
+interface IntegrationsToolbarProps extends OuiaComponentProps {
     onAddIntegration: () => void;
     onExport: (type: string) => void;
     filters: IntegrationFilters;
@@ -95,15 +100,16 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
     }, [ props.onExport ]);
 
     return (
-        <>
+        <div { ...getOuiaProps('Integrations/DualToolbar', props) }>
             <PrimaryToolbar
                 actionsConfig={ actionsConfig }
                 exportConfig={ exportConfig }
                 filterConfig={ primaryToolbarFilterConfig.filterConfig }
                 activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                id="integrations-top-toolbar"
             />
             { props.children }
-            <PrimaryToolbar/>
-        </>
+            <PrimaryToolbar id="integrations-bottom-toolbar" />
+        </div>
     );
 };

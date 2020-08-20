@@ -7,14 +7,16 @@ import {
     TextListItemVariants,
     TextListVariants
 } from '@patternfly/react-core';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
 
-interface ExpandedContentProps {
+interface ExpandedContentProps extends OuiaComponentProps {
     integration: Integration;
 }
 
 export const ExpandedContent: React.FunctionComponent<ExpandedContentProps> = (props) => {
     return (
-        <TextContent>
+        <TextContent { ...getOuiaProps('Integrations/Table/ExpandedContent', props) }>
             <TextList component={ TextListVariants.dl }>
                 <TextListItem component={ TextListItemVariants.dt }>
                     Webhook URL

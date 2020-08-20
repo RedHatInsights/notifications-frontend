@@ -1,17 +1,17 @@
 import * as React from 'react';
-import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 
 import { IntegrationType } from '../../../types/Integration';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 
-interface IntegrationTypeForm {
+export interface IntegrationTypeForm extends OuiaComponentProps {
     type: IntegrationType;
 }
 
 export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
     switch (props.type) {
         case IntegrationType.HTTP:
-            return <IntegrationTypeHttpForm/>;
+            return <IntegrationTypeHttpForm { ...props }/>;
         default:
             assertNever(props.type);
     }
