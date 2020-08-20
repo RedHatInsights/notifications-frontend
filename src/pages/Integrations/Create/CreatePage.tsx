@@ -50,10 +50,10 @@ const CreateIntegrationModal: React.FunctionComponent<IntegrationFormProps> = (p
             onClose={ props.onClose }
             variant={ ModalVariant.small }
             actions={ [
-                <Button key="submit" variant={ ButtonVariant.primary } isDisabled={ !isValid } onClick={ onSubmitClicked }>
+                <Button ouiaId="submit" key="submit" variant={ ButtonVariant.primary } isDisabled={ !isValid } onClick={ onSubmitClicked }>
                     Submit
                 </Button>,
-                <Button key="cancel" variant={ ButtonVariant.plain } onClick={ props.onClose }>
+                <Button ouiaId="cancel" key="cancel" variant={ ButtonVariant.plain } onClick={ props.onClose }>
                     Cancel
                 </Button>
             ] }

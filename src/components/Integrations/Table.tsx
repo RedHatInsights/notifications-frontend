@@ -16,13 +16,14 @@ import { Messages } from '../../properties/Messages';
 import { Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { style } from 'typestyle';
-import { Spacer } from '@redhat-cloud-services/insights-common-typescript';
+import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
+import { getOuiaProps } from '../../utils/getOuiaProps';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
-interface IntegrationsTableProps {
+interface IntegrationsTableProps extends OuiaComponentProps {
     integrations: Array<IntegrationRow>;
     onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
     onEnable?: OnEnable;
@@ -56,13 +57,14 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                 Messages.components.integrations.integrationType[integration.type],
                 <>
                     { integration.isEnabledLoading ? (
-                        <Spinner className={ isEnabledLoadingClassName } size="md" />
+                        <Spinner className={ isEnabledLoadingClassName } size="md"/>
                     ) : (
                         <Switch
                             id={ `table-row-switch-id-${integration.id}` }
                             aria-label="Enabled"
                             isChecked={ integration.isEnabled }
                             onChange={ isChecked => onEnable && onEnable(integration, idx, isChecked) }
+                            ouiaId={ `enabled-${integration.id}` }
                         />
                     ) }
                 </>
@@ -76,7 +78,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             cells: [
                 <>
                     <div className={ expandedContentClassName }>
-                        <ExpandedContent integration={ integration } />
+                        <ExpandedContent integration={ integration } ouiaId={ integration.id } />
                     </div>
                 </>
             ]
@@ -182,17 +184,19 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     }, [ props.actionResolver, props.integrations ]);
 
     return (
-        <Table
-            className={ tableClassName }
-            aria-label={ Messages.components.integrations.table.title }
-            rows={ rows }
-            cells={ columns }
-            onCollapse={ onCollapseHandler }
-            rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
-            actionResolver={ actionsResolverCallback }
-        >
-            <TableHeader/>
-            <TableBody/>
-        </Table>
+        <div { ...getOuiaProps('Integrations/Table', props) }>
+            <Table
+                className={ tableClassName }
+                aria-label={ Messages.components.integrations.table.title }
+                rows={ rows }
+                cells={ columns }
+                onCollapse={ onCollapseHandler }
+                rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
+                actionResolver={ actionsResolverCallback }
+            >
+                <TableHeader/>
+                <TableBody/>
+            </Table>
+        </div>
     );
 };

@@ -6,9 +6,14 @@ import {
     NotificationFilters,
     SetNotificationFilters
 } from './Filter';
-import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    ColumnsMetada,
+    OuiaComponentProps,
+    usePrimaryToolbarFilterConfig
+} from '@redhat-cloud-services/insights-common-typescript';
+import { getOuiaProps } from '../../utils/getOuiaProps';
 
-interface NotificationsToolbarProps {
+interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
     setFilters: SetNotificationFilters;
     clearFilter: ClearNotificationFilters;
@@ -31,13 +36,13 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
     );
 
     return (
-        <>
+        <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
             <PrimaryToolbar
                 filterConfig={ primaryToolbarFilterConfig.filterConfig }
                 activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
             />
             { props.children }
             <PrimaryToolbar/>
-        </>
+        </div>
     );
 };

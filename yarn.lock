@@ -1251,10 +1251,10 @@
     "@redhat-cloud-services/frontend-components-utilities" "*"
     sanitize-html "^1.25.0"
 
-"@redhat-cloud-services/insights-common-typescript@0.1.2":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-0.1.2.tgz#fab4856c1e13f6963e7fb8e652f56c785342a49b"
-  integrity sha512-EJFPaEW9Ft0oQt8TDIYzb0SS9kYf0CnlQIEj6KjPmfQCXLuFoJSGujKCAquRaw88EZ6qdvXx71205dbPTqmAFQ==
+"@redhat-cloud-services/insights-common-typescript@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-1.0.0.tgz#68e15a659c3dc4fc18ec44f166516d5bafd235e6"
+  integrity sha512-QsRGQpVIcSCWMjki6DMdA9Yah4hELvIczSf6R74hXP77FII9bYQyin5MbXCH4z11vspGoss8kyhfWACCI54UOw==
   dependencies:
     camelcase "5.3.1"
     classnames "^2.2.6"
@@ -2222,16 +2222,6 @@ ansi-styles@^4.0.0, ansi-styles@^4.1.0:
   dependencies:
     "@types/color-name" "^1.1.1"
     color-convert "^2.0.1"
-
-antlr4ts-cli@^0.5.0-alpha.3:
-  version "0.5.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/antlr4ts-cli/-/antlr4ts-cli-0.5.0-alpha.3.tgz#1f581b2a3c840d3921a2f3b1e739e48c7e7c18cd"
-  integrity sha512-i6oyxfaXU6qnw4HgyeSIsOLlsvT7zU3vmenoJKFNVFP1QNodtJMZYpnyxc8TmOFpJs7fEoWanLavSSDEmcCZBQ==
-
-antlr4ts@^0.5.0-alpha.3:
-  version "0.5.0-alpha.3"
-  resolved "https://registry.yarnpkg.com/antlr4ts/-/antlr4ts-0.5.0-alpha.3.tgz#fa6d39d88d6b96341a8afef45867af9abcb38766"
-  integrity sha512-La89tKkGcHFIVuruv4Bm1esc3zLmES2NOTEwwNS1pudz+zx/0FNqQeUu9p48i9/QHKPVqjN87LB+q3buTg7oDQ==
 
 any-promise@^1.0.0, any-promise@^1.1.0:
   version "1.3.0"
