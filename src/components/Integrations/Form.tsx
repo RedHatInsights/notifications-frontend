@@ -15,7 +15,7 @@ import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 import { Messages } from '../../properties/Messages';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 
-const options = Object.values(IntegrationType)
+const options = [ IntegrationType.WEBHOOK ]
 .map(type => Messages.components.integrations.integrationType[type])
 .map(label => (<FormSelectOption key={ label } label={ label }/>));
 

@@ -1,23 +1,28 @@
 /**
 * Generated code, DO NOT modify directly.
 */
+/* eslint-disable @typescript-eslint/no-empty-interface */
+
 export interface Attributes {
 }
 
 export type Date = string;
+
+export interface EmailAttributes {
+}
 
 export interface Endpoint {
   description?: string;
   enabled?: boolean;
   id?: Uuid;
   name?: string;
-  properties?: Attributes;
+  properties?: Attributes & WebhookAttributes | EmailAttributes;
   type?: EndpointType;
 }
 
 export enum EndpointType {
-  EMAIL = 'EMAIL',
-  WEBHOOK = 'WEBHOOK',
+  webhook = 'webhook',
+  email = 'email',
 }
 
 export interface EntityTag {
@@ -32,6 +37,11 @@ export enum Family {
   REDIRECTION = 'REDIRECTION',
   SERVER_ERROR = 'SERVER_ERROR',
   SUCCESSFUL = 'SUCCESSFUL',
+}
+
+export enum HttpType {
+  GET = 'GET',
+  POST = 'POST',
 }
 
 export type JsonObject = Array<{
@@ -150,5 +160,12 @@ export type Uri = string;
 export type Uuid = string;
 
 export interface UriBuilder {
+}
+
+export interface WebhookAttributes {
+  disable_ssl_verification?: boolean;
+  method?: HttpType;
+  secret_token?: string;
+  url?: string;
 }
 

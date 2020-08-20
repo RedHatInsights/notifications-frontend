@@ -13,12 +13,12 @@ export const IntegrationSchemaBase = Yup.object<NewIntegrationBase>().shape({
 });
 
 export const IntegrationHttpSchema = Yup.object<NewIntegrationTemplate<IntegrationHttp>>().shape({
-    type: Yup.mixed<IntegrationType.HTTP>().oneOf([ IntegrationType.HTTP ]).required(),
+    type: Yup.mixed<IntegrationType.WEBHOOK>().oneOf([ IntegrationType.WEBHOOK ]).required(),
     url: Yup.string().url().required('Write a valid url for this Integration.')
 }).concat(IntegrationSchemaBase);
 
 export const IntegrationSchema = Yup.lazy<NewIntegration | NewIntegrationBase>(value => {
-    if (value.type === IntegrationType.HTTP) {
+    if (value.type === IntegrationType.WEBHOOK) {
         return IntegrationHttpSchema;
     } else {
         return IntegrationSchemaBase;

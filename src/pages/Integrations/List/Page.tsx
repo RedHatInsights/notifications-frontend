@@ -3,42 +3,26 @@ import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-servic
 import { Messages } from '../../../properties/Messages';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
-import { Integration, IntegrationType, NewIntegration } from '../../../types/Integration';
+import { Integration, NewIntegration } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useActionResolver } from './useActionResolver';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AppContext } from '../../../app/AppContext';
 import { CreatePage } from '../Create/CreatePage';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { makeCreateAction, makeEditAction, makeNoneAction, useOpenModalReducer } from './useOpenModalReducer';
+import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
+import { toServerIntegrationRequest } from '../../../types/adapters/IntegrationAdapter';
 
 const onExport = (type: string) => console.log('export to ' + type);
-
-const emptyArray = [];
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationsQuery = useListIntegrationsQuery();
 
-    /*const [ integrations, setIntegrations ] = useState<Array<Integration>>([
-        {
-            id: 'foo',
-            isEnabled: true,
-            name: 'Aha',
-            type: IntegrationType.HTTP,
-            url: 'https://aha.com'
-        },
-        {
-            id: 'foo-2',
-            isEnabled: true,
-            name: 'Pager duty',
-            type: IntegrationType.HTTP,
-            url: 'https://pagerduty.com/weebhook/thatthis'
-        }
-    ]);*/
-    console.log(integrationsQuery.payload);
+    const saveIntegrationMutation = useSaveIntegrationMutation();
     const integrationRows = useIntegrationRows(integrationsQuery.payload);
     const integrationFilter = useIntegrationFilter();
 
@@ -62,32 +46,20 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ dispatchModalIsOpen ]);
 
     const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
-        /* Pending to add the save/edit calls
-        if (integration.id) {
-            setIntegrations(prev => {
-                return prev.map(i => {
-                    if (i.id === integration.id) {
-                        return {
-                            ...i,
-                            ...integration
-                        };
-                    }
+        const closeAndReload = () => {
+            closeModal();
+            integrationsQuery.query();
+        };
 
-                    return i;
-                });
-            });
+        if (integration.id) {
+            // Todo: Update integration flow
+            closeModal();
         } else {
-            setIntegrations(prev => {
-                return prev.concat([{
-                    ...integration,
-                    isEnabled: true,
-                    id: 'random' + Math.random() * 5000
-                }]);
-            });
-        }*/
+            saveIntegrationMutation.mutate(toServerIntegrationRequest(integration)).then(closeAndReload);
+        }
 
         closeModal();
-    }, [ closeModal /*, setIntegrations */ ]);
+    }, [ closeModal, saveIntegrationMutation, integrationsQuery ]);
 
     return (
         <>

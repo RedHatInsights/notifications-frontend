@@ -1,6 +1,8 @@
 import * as Generated from '../generated/Types';
-import IntegrationType = Generated.EndpointType;
-export { EndpointType as IntegrationType } from '../generated/Types';
+
+export enum IntegrationType {
+    WEBHOOK = 'webhook'
+}
 
 export interface IntegrationBase {
     id: string;

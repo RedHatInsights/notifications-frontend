@@ -1,6 +1,8 @@
 /**
 * Generated code, DO NOT modify directly.
 */
+/* eslint-disable max-len */
+
 import { actionBuilder } from '@redhat-cloud-services/insights-common-typescript';
 import { Action } from 'react-fetching-library';
 import * as schemas from './Types';
@@ -62,7 +64,7 @@ export const actionPostApiNotificationsV10Endpoints = (params: UsePostApiNotific
 
 export const actionGetApiNotificationsV10EndpointsId = (params: UseGetApiNotificationsV10EndpointsIdParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}'
-    .replace('{id}', params.id);
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 
@@ -73,7 +75,7 @@ export const actionGetApiNotificationsV10EndpointsId = (params: UseGetApiNotific
 
 export const actionPutApiNotificationsV10EndpointsId = (params: UsePutApiNotificationsV10EndpointsIdParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}'
-    .replace('{id}', params.id);
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 
@@ -85,7 +87,7 @@ export const actionPutApiNotificationsV10EndpointsId = (params: UsePutApiNotific
 
 export const actionDeleteApiNotificationsV10EndpointsId = (params: UseDeleteApiNotificationsV10EndpointsIdParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}'
-    .replace('{id}', params.id);
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 
@@ -96,7 +98,7 @@ export const actionDeleteApiNotificationsV10EndpointsId = (params: UseDeleteApiN
 
 export const actionPutApiNotificationsV10EndpointsIdEnable = (params: UsePutApiNotificationsV10EndpointsIdEnableParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}/enable'
-    .replace('{id}', params.id);
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 
@@ -107,7 +109,7 @@ export const actionPutApiNotificationsV10EndpointsIdEnable = (params: UsePutApiN
 
 export const actionDeleteApiNotificationsV10EndpointsIdEnable = (params: UseDeleteApiNotificationsV10EndpointsIdEnableParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}/enable'
-    .replace('{id}', params.id);
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 
@@ -118,7 +120,7 @@ export const actionDeleteApiNotificationsV10EndpointsIdEnable = (params: UseDele
 
 export const actionGetApiNotificationsV10EndpointsIdHistory = (params: UseGetApiNotificationsV10EndpointsIdHistoryParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}/history'
-    .replace('{id}', params.id);
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 
@@ -129,8 +131,8 @@ export const actionGetApiNotificationsV10EndpointsIdHistory = (params: UseGetApi
 
 export const actionGetApiNotificationsV10EndpointsIdHistoryHistoryId = (params: UseGetApiNotificationsV10EndpointsIdHistoryHistoryIdParams): Action => {
     const path = '/api/notifications/v1.0/endpoints/{id}/history/{history_id}'
-    .replace('{history_id}', params.historyId)
-    .replace('{id}', params.id);
+    .replace('{history_id}', params.historyId.toString())
+    .replace('{id}', params.id.toString());
 
     const query = {} as Record<string, any>;
 

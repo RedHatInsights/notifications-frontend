@@ -1,4 +1,5 @@
 import { DeepReadonly } from 'ts-essentials';
+import { IntegrationType } from '../types/Integration';
 
 //Capture some strings we reuse. Possibly use in i18n later?
 const MutableMessages = {
@@ -53,7 +54,7 @@ const MutableMessages = {
                 }
             },
             integrationType: {
-                http: 'Webhook'
+                [IntegrationType.WEBHOOK]: 'Webhook'
             }
         }
     },
