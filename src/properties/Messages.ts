@@ -14,10 +14,6 @@ const MutableMessages = {
             },
             edit: {
                 title: 'Edit Integration'
-            },
-            types: {
-                hooks: 'Webhook',
-                hooksUrl: 'Webhook URL'
             }
         },
         notifications: {
@@ -52,6 +48,14 @@ const MutableMessages = {
                     type: 'Type',
                     enabled: 'Enabled'
                 }
+            },
+            enableError: {
+                title: 'Unable to enable the Integration',
+                description: 'There was a problem trying to enable the integration: "{0}".\nPlease try again.'
+            },
+            disableError: {
+                title: 'Unable to disable the Integration',
+                description: 'There was a problem trying to disable the integration: "{0}".\nPlease try again.'
             },
             integrationType: {
                 [IntegrationType.WEBHOOK]: 'Webhook'

@@ -2,10 +2,16 @@ import { Integration } from '../../../types/Integration';
 import { default as React, useCallback, useEffect, useState } from 'react';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { usePrevious } from 'react-use';
+import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
+import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
+import { Messages } from '../../../properties/Messages';
+import { format } from 'react-string-format';
 
 export const useIntegrationRows = (integrations?: Array<Integration>) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
     const prevIntegrations = usePrevious(integrations);
+
+    const switchStatus = useSwitchIntegrationEnabledStatus();
 
     useEffect(() => {
         if (integrations !== prevIntegrations) {
@@ -29,22 +35,35 @@ export const useIntegrationRows = (integrations?: Array<Integration>) => {
         });
     }, [ setIntegrationRows ]);
 
-    // Todo: Fake implementation just to test UI
-    const onEnable = React.useCallback((_integration, index, isEnabled) => {
+    const onEnable = React.useCallback((_integration: Integration, index: number, isEnabled: boolean) => {
         setIntegrationRows(prevIntegrations => {
             const newIntegrations = [ ...prevIntegrations ];
             newIntegrations[index] = { ...newIntegrations[index], isEnabledLoading: true };
             return newIntegrations;
         });
 
-        new Promise(resolve => {
-            setTimeout(resolve, 1000);
-        }).then(() => setIntegrationRows(prevIntegrations => {
-            const newIntegrations = [ ...prevIntegrations ];
-            newIntegrations[index] = { ...newIntegrations[index], isEnabled, isEnabledLoading: false };
-            return newIntegrations;
-        }));
-    }, [ setIntegrationRows ]);
+        switchStatus.mutate(_integration).then((response) => {
+            if (response.status === 200) {
+                setIntegrationRows(prevIntegrations => {
+                    const newIntegrations = [ ...prevIntegrations ];
+                    newIntegrations[index] = { ...newIntegrations[index], isEnabled, isEnabledLoading: false };
+                    return newIntegrations;
+                });
+            } else {
+                const message = isEnabled ? Messages.components.integrations.enableError : Messages.components.integrations.disableError;
+                addDangerNotification(
+                    message.title,
+                    format(message.description, _integration.name),
+                    true);
+                setIntegrationRows(prevIntegrations => {
+                    const newIntegrations = [ ...prevIntegrations ];
+                    newIntegrations[index] = { ...newIntegrations[index], isEnabled: _integration.isEnabled, isEnabledLoading: false };
+                    return newIntegrations;
+                });
+            }
+        });
+
+    }, [ setIntegrationRows, switchStatus ]);
 
     return {
         rows: integrationRows,
