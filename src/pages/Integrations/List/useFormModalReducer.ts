@@ -2,29 +2,29 @@ import { useReducer } from 'react';
 import { Integration } from '../../../types/Integration';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
 
-enum UseOpenModalReducerActionType {
+enum UseFormModalReducerActionType {
     EDIT = 'edit',
     CREATE = 'create',
     NONE = 'none'
 }
 
-interface UseOpenModalReducerActionCreate {
-    type: UseOpenModalReducerActionType.CREATE;
+interface UseFormModalReducerActionCreate {
+    type: UseFormModalReducerActionType.CREATE;
     template?: Partial<Integration>;
 }
 
-interface UseOpenModalReducerActionEdit {
-    type: UseOpenModalReducerActionType.EDIT;
+interface UseFormModalReducerActionEdit {
+    type: UseFormModalReducerActionType.EDIT;
     template: Integration;
 }
 
-interface UseOpenModalReducerActionNone {
-    type: UseOpenModalReducerActionType.NONE;
+interface UseFormModalReducerActionNone {
+    type: UseFormModalReducerActionType.NONE;
 }
 
-type UseOpenModalReducerAction = UseOpenModalReducerActionCreate | UseOpenModalReducerActionEdit | UseOpenModalReducerActionNone;
+type UseFormModalReducerAction = UseFormModalReducerActionCreate | UseFormModalReducerActionEdit | UseFormModalReducerActionNone;
 
-interface UseOpenModalReducerState {
+interface UseFormModalReducerState {
     isOpen: boolean;
     isEdit: boolean;
     template: Integration | Partial<Integration> | undefined;
@@ -38,9 +38,9 @@ const noneState = {
     isCopy: false
 };
 
-const reducer = (state: UseOpenModalReducerState, action: UseOpenModalReducerAction): UseOpenModalReducerState => {
+const reducer = (state: UseFormModalReducerState, action: UseFormModalReducerAction): UseFormModalReducerState => {
     switch (action.type) {
-        case UseOpenModalReducerActionType.CREATE:
+        case UseFormModalReducerActionType.CREATE:
             return {
                 isOpen: true,
                 isEdit: false,
@@ -50,34 +50,34 @@ const reducer = (state: UseOpenModalReducerState, action: UseOpenModalReducerAct
                 } : undefined,
                 isCopy: !!action.template
             };
-        case UseOpenModalReducerActionType.EDIT:
+        case UseFormModalReducerActionType.EDIT:
             return {
                 isOpen: true,
                 isEdit: true,
                 template: action.template,
                 isCopy: false
             };
-        case UseOpenModalReducerActionType.NONE:
+        case UseFormModalReducerActionType.NONE:
             return noneState;
         default:
             assertNever(action);
     }
 };
 
-export const makeCreateAction = (template?: Partial<Integration>): UseOpenModalReducerActionCreate => ({
-    type: UseOpenModalReducerActionType.CREATE,
+export const makeCreateAction = (template?: Partial<Integration>): UseFormModalReducerActionCreate => ({
+    type: UseFormModalReducerActionType.CREATE,
     template
 });
 
-export const makeEditAction = (template: Integration): UseOpenModalReducerActionEdit => ({
-    type: UseOpenModalReducerActionType.EDIT,
+export const makeEditAction = (template: Integration): UseFormModalReducerActionEdit => ({
+    type: UseFormModalReducerActionType.EDIT,
     template
 });
 
-export const makeNoneAction = (): UseOpenModalReducerActionNone => ({
-    type: UseOpenModalReducerActionType.NONE
+export const makeNoneAction = (): UseFormModalReducerActionNone => ({
+    type: UseFormModalReducerActionType.NONE
 });
 
-export const useOpenModalReducer = () => {
+export const useFormModalReducer = () => {
     return useReducer(reducer, noneState);
 };

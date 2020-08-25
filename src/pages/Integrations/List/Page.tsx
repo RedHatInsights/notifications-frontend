@@ -11,9 +11,11 @@ import { AppContext } from '../../../app/AppContext';
 import { CreatePage } from '../Create/CreatePage';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
-import { makeCreateAction, makeEditAction, makeNoneAction, useOpenModalReducer } from './useOpenModalReducer';
+import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
 import { toServerIntegrationRequest } from '../../../types/adapters/IntegrationAdapter';
+import { DeleteIntegrationModal } from '../Delete/DeleteModal';
+import { useDeleteModalReducer } from './useDeleteModalReducer';
 
 const onExport = (type: string) => console.log('export to ' + type);
 
@@ -26,7 +28,8 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const integrationRows = useIntegrationRows(integrationsQuery.payload);
     const integrationFilter = useIntegrationFilter();
 
-    const [ modalIsOpenState, dispatchModalIsOpen ] = useOpenModalReducer();
+    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
+    const [ deleteModalState, dispatchDeleteModal ] = useDeleteModalReducer();
 
     const onAddIntegrationClicked = React.useCallback(() => {
         dispatchModalIsOpen(makeCreateAction());
@@ -36,30 +39,45 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         dispatchModalIsOpen(makeEditAction(integration));
     }, [ dispatchModalIsOpen ]);
 
+    const onDelete = React.useCallback((integration: Integration) => {
+        dispatchDeleteModal(useDeleteModalReducer.makeDeleteAction(integration));
+    }, [ dispatchDeleteModal ]);
+
     const actionResolver = useActionResolver({
         canWriteAll,
-        onEdit
+        onEdit,
+        onDelete
     });
 
-    const closeModal = React.useCallback(() => {
+    const closeFormModal = React.useCallback(() => {
         dispatchModalIsOpen(makeNoneAction());
     }, [ dispatchModalIsOpen ]);
 
+    const closeDeleteModal = React.useCallback((deleted: boolean) => {
+        const query = integrationsQuery.query;
+        if (deleted) {
+            query();
+        }
+
+        dispatchDeleteModal(useDeleteModalReducer.makeNoneAction());
+    }, [ dispatchDeleteModal, integrationsQuery.query ]);
+
     const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
+        const query = integrationsQuery.query;
         const closeAndReload = () => {
-            closeModal();
-            integrationsQuery.query();
+            closeFormModal();
+            query();
         };
 
         if (integration.id) {
             // Todo: Update integration flow
-            closeModal();
+            closeFormModal();
         } else {
             saveIntegrationMutation.mutate(toServerIntegrationRequest(integration)).then(closeAndReload);
         }
 
-        closeModal();
-    }, [ closeModal, saveIntegrationMutation, integrationsQuery ]);
+        closeFormModal();
+    }, [ closeFormModal, saveIntegrationMutation, integrationsQuery.query ]);
 
     return (
         <>
@@ -86,9 +104,16 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         isModalOpen={ modalIsOpenState.isOpen }
                         isEdit={ modalIsOpenState.isEdit }
                         initialValue={ modalIsOpenState.template || {} }
-                        onClose={ closeModal }
+                        onClose={ closeFormModal }
                         onSave={ onSaveIntegration }
                     />
+                    { deleteModalState.integration && (
+                        <DeleteIntegrationModal
+                            isOpen={ deleteModalState.isOpen }
+                            onClose={ closeDeleteModal }
+                            integration={ deleteModalState.integration }
+                        />
+                    )}
                 </Section>
             </Main>
         </>
