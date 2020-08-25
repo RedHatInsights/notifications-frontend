@@ -64,6 +64,11 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
         const query = integrationsQuery.query;
+
+        if (!integration.id) {
+            integration.isEnabled = true;
+        }
+
         saveIntegrationMutation.mutate(toServerIntegrationRequest(integration)).then(query).then(closeFormModal);
     }, [ closeFormModal, saveIntegrationMutation, integrationsQuery.query ]);
 
