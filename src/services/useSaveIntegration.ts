@@ -1,6 +1,6 @@
 import { ServerIntegrationRequest, ServerIntegrationResponse } from '../types/Integration';
 import {
-    actionPostApiNotificationsV10Endpoints
+    actionPostApiNotificationsV10Endpoints, actionPutApiNotificationsV10EndpointsId
 } from '../generated/ActionCreators';
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
@@ -8,7 +8,10 @@ import { toIntegration } from '../types/adapters/IntegrationAdapter';
 
 export const saveIntegrationActionCreator = (integration: ServerIntegrationRequest) => {
     if (integration.id) {
-        console.error('Endpoint not ready');
+        return actionPutApiNotificationsV10EndpointsId({
+            body: integration,
+            id: integration.id
+        });
     }
 
     return actionPostApiNotificationsV10Endpoints({

@@ -64,19 +64,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
         const query = integrationsQuery.query;
-        const closeAndReload = () => {
-            closeFormModal();
-            query();
-        };
-
-        if (integration.id) {
-            // Todo: Update integration flow
-            closeFormModal();
-        } else {
-            saveIntegrationMutation.mutate(toServerIntegrationRequest(integration)).then(closeAndReload);
-        }
-
-        closeFormModal();
+        saveIntegrationMutation.mutate(toServerIntegrationRequest(integration)).then(query).then(closeFormModal);
     }, [ closeFormModal, saveIntegrationMutation, integrationsQuery.query ]);
 
     return (
