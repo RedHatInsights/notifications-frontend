@@ -97,9 +97,6 @@ rules: # Todo: Remove javascript rules that are duplicated on typescript
     - error
     - max: 1
   no-trailing-spaces: 2
-  no-use-before-define:
-    - error
-    - functions: false
   no-undef: 2
   no-var: 2
   no-with: 2
