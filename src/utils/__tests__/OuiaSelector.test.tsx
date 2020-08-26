@@ -77,7 +77,7 @@ describe('src/utils/OuiaSelector', () => {
                     </div>
                     <div data-ouia-component-type="my-component" data-ouia-component-id="c2">
                         <div data-ouia-component-type="foobar" data-ouia-component-id="beef"/>
-                        <div data-ouia-component-type="foobar-2" data-ouia-component-id="baz"/>
+                        <div data-ouia-component-type="foobar" data-ouia-component-id="baz"/>
                     </div>
                     <div data-ouia-component-type="foobar"/>
                 </div>
@@ -85,8 +85,12 @@ describe('src/utils/OuiaSelector', () => {
             const result = ouiaSelectors
             .getOuiaElement('my-component', 'c1')!
             .getOuiaElement('foobar');
+            const result2 = ouiaSelectors
+            .getOuiaElement('my-component', 'c2')!
+            .getOuiaElements('foobar');
 
             expect(result).toHaveAttribute('id', 'me');
+            expect(result2).toHaveLength(2);
         });
     });
 

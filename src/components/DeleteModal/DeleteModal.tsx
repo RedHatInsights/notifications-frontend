@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../utils/getOuiaProps';
 import { Alert, AlertVariant, Button, ButtonVariant, Modal, ModalVariant, Spinner } from '@patternfly/react-core';
 
 export interface DeleteModalError {
@@ -8,7 +6,7 @@ export interface DeleteModalError {
     description: React.ReactNode | string;
 }
 
-export interface DeleteModalProps extends OuiaComponentProps {
+export interface DeleteModalProps {
     isOpen: boolean;
     isDeleting: boolean;
     title: string;
@@ -36,47 +34,45 @@ export const DeleteModal: React.FunctionComponent<DeleteModalProps> = (props) =>
     }, [ props.onDelete, props.onClose ]);
 
     return (
-        <div { ...getOuiaProps('DeleteModal', props) }>
-            <Modal
-                title={ props.title }
-                isOpen={ props.isOpen }
-                onClose={ close }
-                variant={ ModalVariant.small }
-                actions={ [
-                    <Button
-                        ouiaId="submit"
-                        key="submit"
-                        variant={ ButtonVariant.danger }
-                        isDisabled={ props.isDeleting }
-                        onClick={ deleteCallback }
+        <Modal
+            title={ props.title }
+            isOpen={ props.isOpen }
+            onClose={ close }
+            variant={ ModalVariant.small }
+            actions={ [
+                <Button
+                    ouiaId="submit"
+                    key="submit"
+                    variant={ ButtonVariant.danger }
+                    isDisabled={ props.isDeleting }
+                    onClick={ deleteCallback }
+                >
+                    { props.isDeleting ? <Spinner size="md"/> : 'Delete' }
+                </Button>,
+                <Button
+                    ouiaId="cancel"
+                    key="cancel"
+                    variant={ ButtonVariant.plain }
+                    isDisabled={ props.isDeleting }
+                    onClick={ close }
+                >
+                    Cancel
+                </Button>
+            ] }
+        >
+            { props.error && (
+                <>
+                    <Alert
+                        isInline
+                        title={ props.error.title }
+                        variant={ AlertVariant.danger }
                     >
-                        { props.isDeleting ? <Spinner size="md"/> : 'Delete' }
-                    </Button>,
-                    <Button
-                        ouiaId="cancel"
-                        key="cancel"
-                        variant={ ButtonVariant.plain }
-                        isDisabled={ props.isDeleting }
-                        onClick={ close }
-                    >
-                        Cancel
-                    </Button>
-                ] }
-            >
-                { props.error && (
-                    <>
-                        <Alert
-                            isInline
-                            title={ props.error.title }
-                            variant={ AlertVariant.danger }
-                        >
-                            <p>{ props.error.description }</p>
-                        </Alert>
-                        <br/>
-                    </>
-                ) }
-                { props.content }
-            </Modal>
-        </div>
+                        <p>{ props.error.description }</p>
+                    </Alert>
+                    <br/>
+                </>
+            ) }
+            { props.content }
+        </Modal>
     );
 };
