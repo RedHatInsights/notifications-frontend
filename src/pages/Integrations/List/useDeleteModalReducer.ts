@@ -19,12 +19,10 @@ interface UseDeleteModalActionNone {
 type UseDeleteModalReducerAction = UseDeleteModalActionDelete | UseDeleteModalActionNone;
 
 interface UseDeleteModalReducerState {
-    isOpen: boolean;
     integration: Integration | undefined;
 }
 
 const noneState: UseDeleteModalReducerState = {
-    isOpen: false,
     integration: undefined
 };
 
@@ -32,7 +30,6 @@ const reducer = (state: UseDeleteModalReducerState, action: UseDeleteModalReduce
     switch (action.type) {
         case UseDeleteModalReducerActionType.DELETE:
             return {
-                isOpen: true,
                 integration: action.integration
             };
         case UseDeleteModalReducerActionType.NONE:

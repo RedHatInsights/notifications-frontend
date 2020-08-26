@@ -14,7 +14,7 @@ import { useListIntegrationsQuery } from '../../../services/useListIntegrations'
 import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
 import { toServerIntegrationRequest } from '../../../types/adapters/IntegrationAdapter';
-import { DeleteIntegrationModal } from '../Delete/DeleteModal';
+import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
 
 const onExport = (type: string) => console.log('export to ' + type);
@@ -101,8 +101,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         onSave={ onSaveIntegration }
                     />
                     { deleteModalState.integration && (
-                        <DeleteIntegrationModal
-                            isOpen={ deleteModalState.isOpen }
+                        <IntegrationDeleteModalPage
                             onClose={ closeDeleteModal }
                             integration={ deleteModalState.integration }
                         />
