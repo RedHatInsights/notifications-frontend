@@ -24,7 +24,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationsQuery = useListIntegrationsQuery();
 
-    const saveIntegrationMutation = useSaveIntegrationMutation();
+
     const integrationRows = useIntegrationRows(integrationsQuery.payload);
     const integrationFilter = useIntegrationFilter();
 
@@ -49,9 +49,13 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         onDelete
     });
 
-    const closeFormModal = React.useCallback(() => {
+    const closeFormModal = React.useCallback((saved: boolean) => {
+        const query = integrationsQuery.query;
         dispatchModalIsOpen(makeNoneAction());
-    }, [ dispatchModalIsOpen ]);
+        if (saved) {
+            query();
+        }
+    }, [ dispatchModalIsOpen, integrationsQuery.query ]);
 
     const closeDeleteModal = React.useCallback((deleted: boolean) => {
         const query = integrationsQuery.query;
@@ -61,16 +65,6 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
         dispatchDeleteModal(useDeleteModalReducer.makeNoneAction());
     }, [ dispatchDeleteModal, integrationsQuery.query ]);
-
-    const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
-        const query = integrationsQuery.query;
-
-        if (!integration.id) {
-            integration.isEnabled = true;
-        }
-
-        saveIntegrationMutation.mutate(toServerIntegrationRequest(integration)).then(query).then(closeFormModal);
-    }, [ closeFormModal, saveIntegrationMutation, integrationsQuery.query ]);
 
     return (
         <>

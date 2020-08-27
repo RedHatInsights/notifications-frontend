@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { DeleteModal, DeleteModalProps } from '../DeleteModal/DeleteModal';
+import { DeleteModal, DeleteModalProps } from '../Modals/DeleteModal';
 import { Integration } from '../../types/Integration';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';

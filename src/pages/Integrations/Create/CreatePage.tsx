@@ -1,90 +1,71 @@
 import * as React from 'react';
-import { Formik, FormikHelpers, useFormikContext } from 'formik';
-import {
-    Button, ButtonVariant,
-    Modal, ModalVariant
-} from '@patternfly/react-core';
-
-import { Integration, IntegrationType, NewIntegration } from '../../../types/Integration';
-import { IntegrationSchema } from '../../../schemas/Integrations/Integration';
-import { Messages } from '../../../properties/Messages';
-import { IntegrationsForm } from '../../../components/Integrations/Form';
-
-type PartialIntegration = Partial<Integration>;
+import { Integration, NewIntegration } from '../../../types/Integration';
+import { IntegrationSaveModal } from '../../../components/Integrations/SaveModal';
+import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
+import { addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
+import { ActionModalError } from '../../../components/Modals/ActionModal';
 
 interface CreatePageProps {
-    initialValue: PartialIntegration;
-    isModalOpen: boolean;
-    onSave: (integration: NewIntegration) => void;
-    onClose: () => void;
+    isOpen: boolean;
     isEdit: boolean;
+    initialIntegration: Partial<Integration>;
+    onClose: (saved: boolean) => void;
 }
-
-interface IntegrationFormProps {
-    isEdit: boolean;
-    onClose: () => void;
-}
-
-const CreateIntegrationModal: React.FunctionComponent<IntegrationFormProps> = (props) => {
-
-    const pageMessages = props.isEdit ? Messages.pages.integrations.edit : Messages.pages.integrations.add;
-    const pageTitle =  pageMessages.title;
-    const { setFieldValue, values, handleSubmit, isValid } = useFormikContext<NewIntegration>();
-
-    React.useEffect(() => {
-        const type = values.type;
-
-        if (!type) {
-            setFieldValue('type', IntegrationType.WEBHOOK);
-        }
-    }, [ setFieldValue, values.type ]);
-
-    const onSubmitClicked = React.useCallback(() => {
-        handleSubmit();
-    }, [ handleSubmit ]);
-
-    return (
-        <Modal
-            title={ pageTitle }
-            isOpen={ true }
-            onClose={ props.onClose }
-            variant={ ModalVariant.small }
-            actions={ [
-                <Button ouiaId="submit" key="submit" variant={ ButtonVariant.primary } isDisabled={ !isValid } onClick={ onSubmitClicked }>
-                    Submit
-                </Button>,
-                <Button ouiaId="cancel" key="cancel" variant={ ButtonVariant.plain } onClick={ props.onClose }>
-                    Cancel
-                </Button>
-            ] }
-        >
-            <IntegrationsForm/>
-        </Modal>
-    );
-};
 
 export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
 
-    const onSubmit = (integration: PartialIntegration, formikHelpers: FormikHelpers<PartialIntegration>) => {
-        formikHelpers.setSubmitting(false);
-        const transformedIntegration = IntegrationSchema.cast(integration) as NewIntegration;
-        props.onSave(transformedIntegration);
-    };
+    const saveIntegrationMutation = useSaveIntegrationMutation();
+    const [ hasError, setError ] = React.useState(false);
 
-    if (!props.isModalOpen) {
-        return <></>;
-    }
+    const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
+        if (!integration.id) {
+            integration.isEnabled = true;
+        }
+
+        setError(false);
+
+        return saveIntegrationMutation.mutate(integration).then(response => {
+            if (response.status === 200) {
+                if (props.isEdit) {
+                    addSuccessNotification('Integration saved', `Integration "${integration.name}" has been updated.`);
+                } else {
+                    addSuccessNotification('Integration created', `Integration "${integration.name}" has been created.`);
+                }
+
+                return true;
+            } else {
+                setError(true);
+                return false;
+            }
+        });
+    }, [ saveIntegrationMutation, props.isEdit ]);
+
+    const error = React.useMemo<ActionModalError | undefined>(() => {
+        if (hasError) {
+            if (props.isEdit) {
+                return {
+                    title: 'Integration failed to update',
+                    description: <p>There was an error trying to update the Integration. Please try again.</p>
+                };
+            } else {
+                return {
+                    title: 'Failed to create Integration',
+                    description: <p>There was an error trying to create the Integration. Please try again.</p>
+                };
+            }
+        }
+
+        return undefined;
+    }, [ hasError, props.isEdit ]);
 
     return (
-        <Formik<PartialIntegration>
-            initialValues={ props.initialValue }
-            validationSchema={ IntegrationSchema }
-            onSubmit={ onSubmit }
-        >
-            <CreateIntegrationModal
-                isEdit={ props.isEdit }
-                onClose={ props.onClose }
-            />
-        </Formik>
+        <IntegrationSaveModal
+            initialIntegration={ props.initialIntegration }
+            onSave={ onSaveIntegration }
+            isEdit={ props.isEdit }
+            isSaving={ saveIntegrationMutation.loading }
+            onClose={ props.onClose }
+            error={ error }
+        />
     );
 };

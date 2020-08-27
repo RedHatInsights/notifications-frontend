@@ -6,7 +6,7 @@ import {
 import { Integration } from '../../../types/Integration';
 import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
 import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteModal';
-import { DeleteModalError } from '../../../components/DeleteModal/DeleteModal';
+import { ActionModalError } from '../../../components/Modals/ActionModal';
 
 interface IntegrationDeleteModalPageProps extends OuiaComponentProps {
     onClose: (deleted: boolean) => void;
@@ -32,7 +32,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
         });
     }, [ deleteIntegrationMutation.mutate, setError ]);
 
-    const error = React.useMemo<DeleteModalError | undefined>(() => {
+    const error = React.useMemo<ActionModalError | undefined>(() => {
         if (hasError) {
             return {
                 title: 'Failed to remove Integration',

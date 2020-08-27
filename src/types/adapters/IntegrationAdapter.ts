@@ -1,12 +1,13 @@
 import {
     Integration,
+    IntegrationBase,
     IntegrationType,
     NewIntegration,
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
-import { EndpointType } from '../../generated/Types';
+import { EmailAttributes, EndpointType, WebhookAttributes } from '../../generated/Types';
 
 const getIntegrationType = (type: EndpointType): IntegrationType => {
     switch (type) {
@@ -29,6 +30,29 @@ const getEndpointType = (type: IntegrationType): EndpointType => {
 };
 
 export const toIntegration = (serverIntegration: ServerIntegrationResponse): Integration => {
+
+    const integrationBase: IntegrationBase = {
+        id: serverIntegration.id || '',
+        name: serverIntegration.name || '',
+        isEnabled: !!serverIntegration.enabled,
+        type: getIntegrationType(serverIntegration.type || EndpointType.webhook)
+    };
+
+    switch (serverIntegration.type) {
+        case EndpointType.webhook:
+            const properties = serverIntegration.properties as WebhookAttributes;
+            return {
+                ...integrationBase,
+                url: properties.url || ''
+            };
+        case EndpointType.email:
+            throw new Error(`Integration with type: ${serverIntegration.type} is not supported`);
+        case undefined:
+            throw new Error(`Found Integration with type undefined`);
+        default:
+            assertNever(serverIntegration.type);
+    }
+
     return {
         id: serverIntegration.id || '',
         name: serverIntegration.name || '',
