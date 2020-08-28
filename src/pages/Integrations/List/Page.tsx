@@ -3,7 +3,7 @@ import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-servic
 import { Messages } from '../../../properties/Messages';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
-import { Integration, NewIntegration } from '../../../types/Integration';
+import { Integration } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useActionResolver } from './useActionResolver';
 import { useContext } from 'react';
@@ -12,8 +12,6 @@ import { CreatePage } from '../Create/CreatePage';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
-import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
-import { toServerIntegrationRequest } from '../../../types/adapters/IntegrationAdapter';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
 
@@ -23,7 +21,6 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationsQuery = useListIntegrationsQuery();
-
 
     const integrationRows = useIntegrationRows(integrationsQuery.payload);
     const integrationFilter = useIntegrationFilter();
@@ -87,13 +84,13 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                             actionResolver={ actionResolver }
                         />
                     </IntegrationsToolbar>
-                    <CreatePage
-                        isModalOpen={ modalIsOpenState.isOpen }
-                        isEdit={ modalIsOpenState.isEdit }
-                        initialValue={ modalIsOpenState.template || {} }
-                        onClose={ closeFormModal }
-                        onSave={ onSaveIntegration }
-                    />
+                    { modalIsOpenState.isOpen && (
+                        <CreatePage
+                            isEdit={ modalIsOpenState.isEdit }
+                            initialIntegration={ modalIsOpenState.template || {} }
+                            onClose={ closeFormModal }
+                        />
+                    ) }
                     { deleteModalState.integration && (
                         <IntegrationDeleteModalPage
                             onClose={ closeDeleteModal }

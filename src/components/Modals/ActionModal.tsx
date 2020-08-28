@@ -80,7 +80,7 @@ export const ActionModal: React.FunctionComponent<ActionModalProps> = (props) =>
                         title={ props.error.title }
                         variant={ AlertVariant.danger }
                     >
-                        <p>{ props.error.description }</p>
+                        { props.error.description }
                     </Alert>
                     <br/>
                 </>

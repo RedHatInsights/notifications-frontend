@@ -9,25 +9,11 @@ import { IntegrationType } from '../../../../types/Integration';
 import { Messages } from '../../../../properties/Messages';
 
 describe('src/pages/Integrations/Create/CreatePage', () => {
-    it('Nothing is rendered when not open', async () => {
-        render(
-            <CreatePage
-                initialValue={ {} }
-                isModalOpen={ false }
-                onSave={ jestMock.fn() }
-                onClose={ jestMock.fn() }
-                isEdit={ false }
-            />);
-        await waitForAsyncEvents();
-        expect(screen.queryByRole('dialog')).toBeFalsy();
-    });
 
     it('Renders when is open', async () => {
         render(
             <CreatePage
-                initialValue={ {} }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
+                initialIntegration={ {} }
                 onClose={ jestMock.fn() }
                 isEdit={ false }
             />);
@@ -38,11 +24,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
     it('Picks initial value', async () => {
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ jestMock.fn() }
                 isEdit={ false }
             />);
@@ -53,11 +37,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
     it('If no IntegrationType is specified, it picks the first', async () => {
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ jestMock.fn() }
                 isEdit={ false }
             />);
@@ -70,11 +52,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         const onClose = jestMock.fn();
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ onClose }
                 isEdit={ false }
             />);
@@ -87,11 +67,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         const onClose = jestMock.fn();
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ onClose }
                 isEdit={ false }
             />);
@@ -103,60 +81,35 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
     it('Submit is disabled when there is any error', async () => {
         render(
             <CreatePage
-                initialValue={ {} }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
+                initialIntegration={ {} }
                 onClose={ jestMock.fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
-        expect(screen.getByText(/submit/i)).toBeDisabled();
+        expect(screen.getByText(/save/i)).toBeDisabled();
     });
 
     it('Submit is enabled when there are no errors', async () => {
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ jestMock.fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
-        expect(screen.getByText(/submit/i)).toBeEnabled();
-    });
-
-    it('onSave is called when clicking submit', async () => {
-        const onSave = jestMock.fn();
-        render(
-            <CreatePage
-                initialValue={ {
-                    name: 'foobar',
-                    url: 'http://google.com'
-                } }
-                isModalOpen={ true }
-                onSave={ onSave }
-                onClose={ jestMock.fn() }
-                isEdit={ false }
-            />);
-        await waitForAsyncEvents();
-        userEvent.click(screen.getByText(/submit/i));
-        await waitForAsyncEvents();
-        expect(onSave).toHaveBeenCalled();
+        expect(screen.getByText(/save/i)).toBeEnabled();
     });
 
     it('When is new, it shows as Add Integration', async () => {
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ jestMock.fn() }
                 isEdit={ false }
             />);
@@ -167,12 +120,10 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
     it('When is new, it shows as Edit Integration', async () => {
         render(
             <CreatePage
-                initialValue={ {
+                initialIntegration={ {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                isModalOpen={ true }
-                onSave={ jestMock.fn() }
                 onClose={ jestMock.fn() }
                 isEdit={ true }
             />);

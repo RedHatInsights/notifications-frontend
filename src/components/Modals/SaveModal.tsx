@@ -19,7 +19,7 @@ export const SaveModal: React.FunctionComponent<SaveModalProps> = (props) => {
         onClose={ props.onClose }
         onAction={ props.onSave }
         actionButtonTitle={ props.actionButtonTitle ?? 'Save' }
-        actionButtonVariant={ ButtonVariant.danger }
+        actionButtonVariant={ ButtonVariant.primary }
         error={ props.error }
         actionButtonDisabled={ props.actionButtonDisabled }
     />;

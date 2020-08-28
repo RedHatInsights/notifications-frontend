@@ -7,7 +7,7 @@ import {
     ServerIntegrationResponse
 } from '../Integration';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
-import { EmailAttributes, EndpointType, WebhookAttributes } from '../../generated/Types';
+import { EndpointType, WebhookAttributes } from '../../generated/Types';
 
 const getIntegrationType = (type: EndpointType): IntegrationType => {
     switch (type) {

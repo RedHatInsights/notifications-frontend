@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as React from 'react';
 import { getByText, render, screen } from '@testing-library/react';
 import { ActionModal } from '../ActionModal';
@@ -231,7 +232,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        const alert = ouiaSelectors.getOuiaElement('PF4/Alert')
+        const alert = ouiaSelectors.getOuiaElement('PF4/Alert');
 
         expect(alert).toBeTruthy();
         expect(getByText(alert!, /this is an error/i)).toBeTruthy();

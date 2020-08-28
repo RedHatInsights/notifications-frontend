@@ -42,7 +42,7 @@ const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationS
             content={ <IntegrationsForm/> }
             onClose={ props.onClose }
             error={ props.error }
-            actionButtonDisabled={ isValid }
+            actionButtonDisabled={ !isValid }
         />
     );
 };
@@ -72,6 +72,7 @@ export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalP
             initialValues={ initialIntegration }
             validationSchema={ IntegrationSchema }
             onSubmit={ onSubmit }
+            validateOnMount={ true }
         >
             <InternalIntegrationSaveModal
                 isEdit={ props.isEdit }

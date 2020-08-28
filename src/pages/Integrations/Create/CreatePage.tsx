@@ -6,7 +6,6 @@ import { addSuccessNotification } from '@redhat-cloud-services/insights-common-t
 import { ActionModalError } from '../../../components/Modals/ActionModal';
 
 interface CreatePageProps {
-    isOpen: boolean;
     isEdit: boolean;
     initialIntegration: Partial<Integration>;
     onClose: (saved: boolean) => void;

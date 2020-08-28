@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as React from 'react';
 import { ouiaSelectors, ouiaSelectorsFor } from '../OuiaSelectors';
 import { render } from '@testing-library/react';
@@ -174,13 +175,15 @@ describe('src/utils/OuiaSelector', () => {
                         <div data-ouia-component-type="foobar-2" data-ouia-component-id="baz"/>
                     </div>
                     <div data-ouia-component-type="my-component" data-ouia-component-id="c2" id="my-element">
-                        <div data-ouia-component-type="foobar" data-ouia-component-id="baz"/>
+                        <div data-ouia-component-type="foobar" data-ouia-component-id="baz" id="31415"/>
                         <div data-ouia-component-type="foobar-2" data-ouia-component-id="baz"/>
                     </div>
                     <div data-ouia-component-type="foobar"/>
                 </div>
             );
-            ouiaSelectorsFor(document.getElementById('my-element')!).getOuiaElement('foobar');
+            expect(
+                ouiaSelectorsFor(document.getElementById('my-element')!).getOuiaElement('foobar')
+            ).toHaveAttribute('id', '31415');
         });
     });
 });
