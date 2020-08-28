@@ -9,11 +9,12 @@ import {
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
 import { EndpointType, WebhookAttributes } from '../../generated/Types';
 
-const getIntegrationType = (type: EndpointType): IntegrationType => {
+const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {
         case EndpointType.webhook:
             return IntegrationType.WEBHOOK;
         case EndpointType.email:
+        case undefined:
             throw new Error(`Unexpected type: ${type}`);
         default:
             assertNever(type);
@@ -35,31 +36,19 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
         id: serverIntegration.id || '',
         name: serverIntegration.name || '',
         isEnabled: !!serverIntegration.enabled,
-        type: getIntegrationType(serverIntegration.type || EndpointType.webhook)
+        type: getIntegrationType(serverIntegration.type)
     };
 
-    switch (serverIntegration.type) {
-        case EndpointType.webhook:
+    switch (integrationBase.type) {
+        case IntegrationType.WEBHOOK:
             const properties = serverIntegration.properties as WebhookAttributes;
             return {
                 ...integrationBase,
                 url: properties.url || ''
             };
-        case EndpointType.email:
-            throw new Error(`Integration with type: ${serverIntegration.type} is not supported`);
-        case undefined:
-            throw new Error(`Found Integration with type undefined`);
         default:
-            assertNever(serverIntegration.type);
+            assertNever(integrationBase.type);
     }
-
-    return {
-        id: serverIntegration.id || '',
-        name: serverIntegration.name || '',
-        isEnabled: !!serverIntegration.enabled,
-        type: getIntegrationType(serverIntegration.type || EndpointType.webhook),
-        url: (serverIntegration.properties as any)?.url ?? 'dummy-url'
-    };
 };
 
 export const toIntegrations = (serverIntegrations?: Array<ServerIntegrationResponse>): Array<Integration> => {
@@ -85,7 +74,7 @@ export const toServerIntegrationRequest = (integration: Integration | NewIntegra
     return {
         id: integration.id,
         name: integration.name,
-        enabled: !!integration.isEnabled,
+        enabled: integration.isEnabled,
         type: getEndpointType(integration.type),
         description: '',
         properties: toIntegrationProperties(integration)
