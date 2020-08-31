@@ -2,7 +2,6 @@ import { ClearFilters, Filters, SetFilters } from '@redhat-cloud-services/insigh
 
 export enum IntegrationFilterColumn {
     NAME = 'name',
-    TYPE = 'type',
     ENABLED = 'enabled'
 }
 
