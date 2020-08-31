@@ -10,10 +10,10 @@ const MutableMessages = {
                 title: 'Integrations'
             },
             add: {
-                title: 'Add Integration'
+                title: 'Add integration'
             },
             edit: {
-                title: 'Edit Integration'
+                title: 'Edit integration'
             }
         },
         notifications: {
@@ -28,7 +28,7 @@ const MutableMessages = {
                 content: 'There was a problem trying to process your request.',
                 showDetails: 'Show details',
                 actions: {
-                    goToIndex: 'Go to Policy list'
+                    goToIndex: 'Go back'
                 }
             }
         }

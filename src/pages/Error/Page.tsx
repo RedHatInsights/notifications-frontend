@@ -8,7 +8,7 @@ type ErrorPageProps = RouteComponentProps<any>;
 
 export const ErrorPageInternal: React.FunctionComponent<ErrorPageProps> = (props) => {
     const goToListPage = React.useCallback(() => {
-        props.history.push(linkTo.notifications());
+        props.history.goBack();
     }, [ props.history ]);
 
     return (
