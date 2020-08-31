@@ -14,8 +14,13 @@ import { useListIntegrationsQuery } from '../../../services/useListIntegrations'
 import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
-
-const onExport = (type: string) => console.log('export to ' + type);
+import {
+    addDangerNotification,
+    exporterTypeFromString
+} from '@redhat-cloud-services/insights-common-typescript';
+import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
+import inBrowserDownload from 'in-browser-download';
+import { format } from 'date-fns';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
@@ -39,6 +44,20 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const onDelete = React.useCallback((integration: Integration) => {
         dispatchDeleteModal(useDeleteModalReducer.makeDeleteAction(integration));
     }, [ dispatchDeleteModal ]);
+
+    const onExport = React.useCallback((type: string) => {
+        // Todo: When we have pagination, we will need a way to query all pages.
+        const integrations = integrationsQuery.payload;
+        const exporter = integrationExporterFactory(exporterTypeFromString(type));
+        if (integrations) {
+            inBrowserDownload(
+                exporter.export(integrations),
+                `integrations-${format(new Date(Date.now()), 'y-dd-MM')}.${exporter.type}`
+            );
+        } else {
+            addDangerNotification('Unable to download integrations', 'We were unable to download the integrations for exporting. Please try again.');
+        }
+    }, [ integrationsQuery.payload ]);
 
     const actionResolver = useActionResolver({
         canWriteAll,
