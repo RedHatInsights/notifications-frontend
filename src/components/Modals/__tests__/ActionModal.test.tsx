@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as React from 'react';
 import { getByText, render, screen } from '@testing-library/react';
 import { ActionModal } from '../ActionModal';
@@ -58,7 +57,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'cancel')).toHaveTextContent(/cancel/i);
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'cancel')).toHaveTextContent(/cancel/i);
     });
 
     it('cancel button has the cancelButtonTitle text', () => {
@@ -76,7 +75,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'cancel')).toHaveTextContent(/nooooo/i);
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'cancel')).toHaveTextContent(/nooooo/i);
     });
 
     it('actionButton uses passed actionButtonVariant', () => {
@@ -94,7 +93,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'action')).toHaveClass('pf-m-danger');
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'action')).toHaveClass('pf-m-danger');
     });
 
     it('modal variant defaults to small', () => {
@@ -113,7 +112,7 @@ describe('src/components/Modals/ActionModal', () => {
         );
 
         expect(
-            ouiaSelectors.getOuiaElement('PF4/ModalContent')
+            ouiaSelectors.getByOuia('PF4/ModalContent')
         ).toHaveClass('pf-m-sm');
     });
 
@@ -134,7 +133,7 @@ describe('src/components/Modals/ActionModal', () => {
         );
 
         expect(
-            ouiaSelectors.getOuiaElement('PF4/ModalContent')
+            ouiaSelectors.getByOuia('PF4/ModalContent')
         ).toHaveClass('pf-m-lg');
     });
 
@@ -153,8 +152,8 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'action')).toBeEnabled();
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'cancel')).toBeEnabled();
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'action')).toBeEnabled();
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'cancel')).toBeEnabled();
     });
 
     it('Buttons are disabled when isPerformingAction is true', () => {
@@ -172,8 +171,8 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'action')).toBeDisabled();
-        expect(ouiaSelectors.getOuiaElement('PF4/Button', 'cancel')).toBeDisabled();
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'action')).toBeDisabled();
+        expect(ouiaSelectors.getByOuia('PF4/Button', 'cancel')).toBeDisabled();
     });
 
     it('Modal contains the title and content', () => {
@@ -210,7 +209,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        expect(ouiaSelectors.getOuiaElement('PF4/Alert')).toBeUndefined();
+        expect(ouiaSelectors.queryByOuia('PF4/Alert')).toBeNull();
     });
 
     it('Show error if error prop is passed', () => {
@@ -232,11 +231,11 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        const alert = ouiaSelectors.getOuiaElement('PF4/Alert');
+        const alert = ouiaSelectors.getByOuia('PF4/Alert');
 
         expect(alert).toBeTruthy();
-        expect(getByText(alert!, /this is an error/i)).toBeTruthy();
-        expect(getByText(alert!, /And its description/i)).toBeTruthy();
+        expect(getByText(alert, /this is an error/i)).toBeTruthy();
+        expect(getByText(alert, /And its description/i)).toBeTruthy();
     });
 
     it('onClose is called with false when clicking the cancel and the x button', async () => {
@@ -255,7 +254,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        userEvent.click(ouiaSelectors.getOuiaElement('PF4/Button', 'cancel')!);
+        userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'cancel'));
         expect(onClose).toHaveBeenLastCalledWith(false);
 
         userEvent.click(screen.getByLabelText(/close/i, {
@@ -283,7 +282,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        userEvent.click(ouiaSelectors.getOuiaElement('PF4/Button', 'action')!);
+        userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
         await waitForAsyncEvents();
         expect(onAction).toHaveBeenCalled();
         expect(onClose).toHaveBeenLastCalledWith(true);
@@ -306,7 +305,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        userEvent.click(ouiaSelectors.getOuiaElement('PF4/Button', 'action')!);
+        userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
         await waitForAsyncEvents();
         expect(onAction).toHaveBeenCalled();
         expect(onClose).toHaveBeenLastCalledWith(true);
@@ -329,7 +328,7 @@ describe('src/components/Modals/ActionModal', () => {
             />
         );
 
-        userEvent.click(ouiaSelectors.getOuiaElement('PF4/Button', 'action')!);
+        userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
         await waitForAsyncEvents();
         expect(onAction).toHaveBeenCalled();
         expect(onClose).not.toHaveBeenCalled();
