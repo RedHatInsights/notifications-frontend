@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import jestMock from 'jest-mock';
+import { ouiaSelectors } from '@redhat-cloud-services/insights-common-typescript';
 import { IntegrationDeleteModal } from '../DeleteModal';
 import { IntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';
-import { ouiaSelectors } from '../../../utils/OuiaSelectors';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 
 describe('src/components/Integrations/DeleteModal', () => {

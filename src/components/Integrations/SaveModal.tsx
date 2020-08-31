@@ -1,11 +1,11 @@
 import * as React from 'react';
+import { SaveModal, SaveModalProps, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
+
 import { Integration, IntegrationType, NewIntegration } from '../../types/Integration';
 import { Messages } from '../../properties/Messages';
 import { Formik, useFormikContext } from 'formik';
-import { SaveModal, SaveModalProps } from '../Modals/SaveModal';
 import { IntegrationsForm } from './Form';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
-import { ActionModalError } from '../Modals/ActionModal';
 
 type PartialIntegration = Partial<Integration>;
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';

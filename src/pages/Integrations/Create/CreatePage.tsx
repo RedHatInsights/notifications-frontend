@@ -2,8 +2,7 @@ import * as React from 'react';
 import { Integration, NewIntegration } from '../../../types/Integration';
 import { IntegrationSaveModal } from '../../../components/Integrations/SaveModal';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
-import { addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
-import { ActionModalError } from '../../../components/Modals/ActionModal';
+import { addSuccessNotification, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
 
 interface CreatePageProps {
     isEdit: boolean;
