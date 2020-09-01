@@ -2,7 +2,6 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ErrorPage } from '../Page';
-import { linkTo } from '../../../Routes';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../test/AppWrapper';
 
 jest.mock('@redhat-cloud-services/frontend-components', () => {
