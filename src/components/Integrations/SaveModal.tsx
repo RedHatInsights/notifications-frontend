@@ -50,10 +50,11 @@ const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationS
 export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalProps> = (props) => {
 
     const [ initialIntegration ] = React.useState<PartialIntegration>(() => {
-        const type = props.initialIntegration?.type ?? IntegrationType.WEBHOOK;
         return {
+            // The call is twice, because we use lazy evaluation for the integration base type.
+            // To ensure we get the defaults on the second level (webhook, slack, etc) we need to call it again
+            ...IntegrationSchema.cast(IntegrationSchema.cast()),
             ...props.initialIntegration,
-            type
         };
     });
 

@@ -33,7 +33,7 @@ export const ExpandedContent: React.FunctionComponent<ExpandedContentProps> = (p
                     SSL verification
                 </TextListItem>
                 <TextListItem component={ TextListItemVariants.dd }>
-                    { props.integration.isEnabled ? 'Enabled' : 'Disabled' }
+                    { props.integration.sslVerificationEnabled ? 'Enabled' : 'Disabled' }
                 </TextListItem>
                 <TextListItem className={ titleClass } component={ TextListItemVariants.dt }>
                     Authentication type
