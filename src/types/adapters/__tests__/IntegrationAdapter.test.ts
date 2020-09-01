@@ -15,7 +15,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     url: 'https://my-cool-webhook.com',
                     disable_ssl_verification: false,
                     method: HttpType.GET,
-                    secret_token: ''
+                    secret_token: undefined
                 }
             };
             const integration = toIntegration(serverIntegration);
@@ -24,7 +24,10 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 name: 'my name is',
                 type: IntegrationType.WEBHOOK,
                 isEnabled: false,
-                url: 'https://my-cool-webhook.com'
+                url: 'https://my-cool-webhook.com',
+                sslVerificationEnabled: true,
+                method: 'GET',
+                secretToken: undefined
             });
         });
 
@@ -48,7 +51,10 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 name: 'abc',
                 type: IntegrationType.WEBHOOK,
                 isEnabled: true,
-                url: 'https://foobarbaz.com'
+                url: 'https://foobarbaz.com',
+                sslVerificationEnabled: true,
+                method: 'GET',
+                secretToken: ''
             });
         });
 
@@ -140,14 +146,20 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     name: 'my name is',
                     type: IntegrationType.WEBHOOK,
                     isEnabled: false,
-                    url: 'https://my-cool-webhook.com'
+                    url: 'https://my-cool-webhook.com',
+                    sslVerificationEnabled: true,
+                    method: 'GET',
+                    secretToken: ''
                 },
                 {
                     id: 'meep',
                     name: 'abc',
                     type: IntegrationType.WEBHOOK,
                     isEnabled: true,
-                    url: 'https://foobarbaz.com'
+                    url: 'https://foobarbaz.com',
+                    sslVerificationEnabled: true,
+                    method: 'GET',
+                    secretToken: ''
                 }
             ]);
         });
@@ -196,7 +208,10 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 url: 'https://myurl.com',
                 isEnabled: false,
                 name: 'meep',
-                type: IntegrationType.WEBHOOK
+                type: IntegrationType.WEBHOOK,
+                method: HttpType.POST,
+                secretToken: undefined,
+                sslVerificationEnabled: true
             };
 
             expect(toServerIntegrationRequest(integration)).toEqual({
@@ -207,9 +222,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 description: '',
                 properties: {
                     url: 'https://myurl.com',
-                    method: 'GET',
+                    method: 'POST',
                     disable_ssl_verification: false,
-                    secret_token: ''
+                    secret_token: undefined
                 }
             });
         });
@@ -220,7 +235,10 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 url: 'https://myurl.com',
                 isEnabled: false,
                 name: 'meep',
-                type: IntegrationType.WEBHOOK
+                type: IntegrationType.WEBHOOK,
+                sslVerificationEnabled: true,
+                secretToken: 'foobar',
+                method: HttpType.GET
             };
 
             expect(toServerIntegrationRequest(integration)).toEqual({
@@ -233,7 +251,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     url: 'https://myurl.com',
                     method: 'GET',
                     disable_ssl_verification: false,
-                    secret_token: ''
+                    secret_token: 'foobar'
                 }
             });
         });

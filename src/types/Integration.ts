@@ -14,6 +14,9 @@ export interface IntegrationBase {
 export interface IntegrationHttp extends IntegrationBase {
     type: IntegrationType.WEBHOOK;
     url: string;
+    sslVerificationEnabled: boolean;
+    secretToken?: string;
+    method: Generated.HttpType;
 }
 
 export type Integration = IntegrationHttp;

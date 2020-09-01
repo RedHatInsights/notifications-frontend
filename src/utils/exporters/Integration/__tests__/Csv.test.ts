@@ -1,6 +1,7 @@
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import { IntegrationExporterCsv } from '../Csv';
 import { IntegrationType } from '../../../../types/Integration';
+import { HttpType } from '../../../../generated/Types';
 
 describe('src/utils/exporters/Policy/Csv', () => {
     it('has csv type', () => {
@@ -20,7 +21,10 @@ describe('src/utils/exporters/Policy/Csv', () => {
                 name: 'hello world',
                 isEnabled: false,
                 type: IntegrationType.WEBHOOK,
-                url: 'http://foo.bar'
+                url: 'http://foo.bar',
+                secretToken: 'foo',
+                method: HttpType.GET,
+                sslVerificationEnabled: false
             }
         ]);
 

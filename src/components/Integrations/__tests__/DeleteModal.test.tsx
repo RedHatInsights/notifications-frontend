@@ -6,6 +6,7 @@ import { IntegrationDeleteModal } from '../DeleteModal';
 import { IntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
+import { HttpType } from '../../../generated/Types';
 
 describe('src/components/Integrations/DeleteModal', () => {
     it('Has Remove integration title', () => {
@@ -19,7 +20,10 @@ describe('src/components/Integrations/DeleteModal', () => {
                     type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
-                    id: '123'
+                    id: '123',
+                    secretToken: 'foo',
+                    method: HttpType.GET,
+                    sslVerificationEnabled: false
                 } }
             />
         );
@@ -38,7 +42,10 @@ describe('src/components/Integrations/DeleteModal', () => {
                     type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
-                    id: '123'
+                    id: '123',
+                    secretToken: 'foo',
+                    method: HttpType.GET,
+                    sslVerificationEnabled: false
                 } }
             />
         );
@@ -71,7 +78,10 @@ describe('src/components/Integrations/DeleteModal', () => {
                     type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
-                    id: '123'
+                    id: '123',
+                    secretToken: 'foo',
+                    method: HttpType.GET,
+                    sslVerificationEnabled: false
                 } }
             />
         );
@@ -96,7 +106,10 @@ describe('src/components/Integrations/DeleteModal', () => {
                     type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
-                    id: '123'
+                    id: '123',
+                    secretToken: 'foo',
+                    method: HttpType.GET,
+                    sslVerificationEnabled: false
                 } }
             />
         );

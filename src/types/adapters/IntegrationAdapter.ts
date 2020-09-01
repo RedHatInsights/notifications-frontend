@@ -7,7 +7,7 @@ import {
     ServerIntegrationResponse
 } from '../Integration';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
-import { EndpointType, WebhookAttributes } from '../../generated/Types';
+import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Types';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {
@@ -44,7 +44,10 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
             const properties = serverIntegration.properties as WebhookAttributes;
             return {
                 ...integrationBase,
-                url: properties.url || ''
+                url: properties.url || '',
+                sslVerificationEnabled: !properties.disable_ssl_verification,
+                secretToken: properties.secret_token,
+                method: properties.method || HttpType.GET
             };
         default:
             assertNever(integrationBase.type);
@@ -61,9 +64,9 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
             return {
                 url: integration.url,
                 // Todo: Add these to IntegrationHttp
-                method: 'GET',
-                disable_ssl_verification: false,
-                secret_token: ''
+                method: integration.method,
+                disable_ssl_verification: !integration.sslVerificationEnabled,
+                secret_token: integration.secretToken
             };
         default:
             assertNever(integration.type);
