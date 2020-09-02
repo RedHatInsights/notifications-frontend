@@ -20,6 +20,8 @@ export const useIntegrationRows = (integrations?: Array<Integration>) => {
                     isOpen: false,
                     isSelected: false,
                     isEnabledLoading: false,
+                    lastConnectionAttempts: [],
+                    isConnectionAttemptLoading: true,
                     ...prev.find(i => i.id === integration.id),
                     ...integration
                 }));

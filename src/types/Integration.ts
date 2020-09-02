@@ -30,3 +30,8 @@ export type NewIntegration = NewIntegrationTemplate<Integration>;
 
 export type ServerIntegrationRequest = Generated.Endpoint;
 export type ServerIntegrationResponse = Generated.Endpoint;
+
+export interface IntegrationConnectionAttempt {
+    date: Date;
+    isSuccess: boolean;
+}

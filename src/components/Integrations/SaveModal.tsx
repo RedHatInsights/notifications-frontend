@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { SaveModal, SaveModalProps, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
 
-import { Integration, IntegrationType, NewIntegration } from '../../types/Integration';
+import { Integration, NewIntegration } from '../../types/Integration';
 import { Messages } from '../../properties/Messages';
 import { Formik, useFormikContext } from 'formik';
 import { IntegrationsForm } from './Form';
@@ -54,7 +54,7 @@ export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalP
             // The call is twice, because we use lazy evaluation for the integration base type.
             // To ensure we get the defaults on the second level (webhook, slack, etc) we need to call it again
             ...IntegrationSchema.cast(IntegrationSchema.cast()),
-            ...props.initialIntegration,
+            ...props.initialIntegration
         };
     });
 

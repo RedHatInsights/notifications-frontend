@@ -1,12 +1,6 @@
 import * as React from 'react';
 import { Integration } from '../../../types/Integration';
-import {
-    TextContent,
-    TextList,
-    TextListItem,
-    TextListItemVariants,
-    TextListVariants
-} from '@patternfly/react-core';
+import { TextContent, TextList, TextListItem, TextListItemVariants, TextListVariants } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { style } from 'typestyle';

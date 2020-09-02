@@ -13,13 +13,15 @@ import {
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import { Spinner, Switch } from '@patternfly/react-core';
 import { Messages } from '../../properties/Messages';
-import { Integration } from '../../types/Integration';
+import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { style } from 'typestyle';
 import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { ConnectionDegraded } from './Table/ConnectionDegraded';
+import { ConnectionFailed } from './Table/ConnectionFailed';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -34,16 +36,44 @@ export type IntegrationRow = Integration & {
     isOpen: boolean;
     isSelected: boolean;
     isEnabledLoading: boolean;
+    isConnectionAttemptLoading: boolean;
+    lastConnectionAttempts: Array<IntegrationConnectionAttempt>;
 }
 
+const connectionAlertClassName = style({
+    paddingBottom: Spacer.MD
+});
+
 const expandedContentClassName = style({
-    paddingLeft: Spacer.LG,
+    paddingLeft: Spacer.MD,
     paddingBottom: Spacer.LG
 });
 
 const isEnabledLoadingClassName = style({
     marginLeft: 10
 });
+
+const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
+    const failures = attempts.filter(a => !a.isSuccess).length;
+
+    if (attempts.length > 0) {
+        if (failures === attempts.length) {
+            return (
+                <div className={ connectionAlertClassName }>
+                    <ConnectionFailed attempts={ attempts }/>
+                </div>
+            );
+        } else if (failures > 0) {
+            return (
+                <div className={ connectionAlertClassName }>
+                    <ConnectionDegraded attempts={ attempts }/>
+                </div>
+            );
+        }
+    }
+
+    return null;
+};
 
 const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): Array<IRow> => {
     return integrations.reduce((rows, integration, idx) => {
@@ -76,11 +106,14 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             showSelect: false,
             noPadding: false,
             cells: [
-                <>
-                    <div className={ expandedContentClassName }>
-                        <ExpandedContent integration={ integration } ouiaId={ integration.id } />
-                    </div>
-                </>
+                {
+                    title: <>
+                        <div className={ expandedContentClassName }>
+                            { getConnectionAlert(integration.lastConnectionAttempts) }
+                            <ExpandedContent integration={ integration } ouiaId={ integration.id } />
+                        </div>
+                    </>
+                }
             ]
         });
         return rows;
