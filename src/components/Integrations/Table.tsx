@@ -112,13 +112,13 @@ const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> 
     const status = getLastConnectionAttemptStatus(attempts);
     switch (status) {
         case LastConnectionAttemptStatus.UNKNOWN:
-            return <><OffIcon/> Unknown</>;
+            return <><OffIcon data-test-id="off-icon" /> Unknown</>;
         case LastConnectionAttemptStatus.SUCCESS:
-            return <><CheckCircleIcon/> Success</>;
+            return <><CheckCircleIcon data-test-id="success-icon"/> Success</>;
         case LastConnectionAttemptStatus.ERROR:
-            return <><ExclamationCircleIcon/> Fail</>;
+            return <><ExclamationCircleIcon data-test-id="fail-icon"/> Fail</>;
         case LastConnectionAttemptStatus.WARNING:
-            return <><WarningTriangleIcon/> { attempts[0].isSuccess ? 'Success' : 'Fail' }</>;
+            return <><WarningTriangleIcon data-test-id="warning-icon" /> { attempts[0].isSuccess ? 'Success' : 'Fail' }</>;
         default:
             assertNever(status);
     }

@@ -1,5 +1,5 @@
 import { Integration } from '../../../types/Integration';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { usePrevious } from 'react-use';
 import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';

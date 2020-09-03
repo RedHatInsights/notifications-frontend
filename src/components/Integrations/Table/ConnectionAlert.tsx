@@ -2,10 +2,11 @@ import * as React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { ConnectionAttempt, ConnectionAttemptType } from './ConnectionAttempt';
 import { style } from 'typestyle';
-import { Spacer } from '@redhat-cloud-services/insights-common-typescript';
+import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { IntegrationConnectionAttempt } from '../../../types/Integration';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
 
-interface ConnectionAlertProps {
+interface ConnectionAlertProps extends OuiaComponentProps {
     attempts: Array<IntegrationConnectionAttempt>;
     alertVariant: AlertVariant;
     description: string;
@@ -22,21 +23,23 @@ const marginTopClassName = style({
 
 export const ConnectionAlert: React.FunctionComponent<ConnectionAlertProps> = (props) => {
     return (
-        <Alert title={ props.title } variant={ props.alertVariant } isInline>
-            <p className={ marginTopClassName }>
-                { props.description }
-            </p>
-            <p className={ marginTopClassName }>
-                Last attempts: { props.attempts.map(
-                    (attempt, index) =>
-                        <span key={ index } className={ connectionAttemptClassName }>
-                            <ConnectionAttempt
-                                type={ attempt.isSuccess ? ConnectionAttemptType.SUCCESS : ConnectionAttemptType.FAILED }
-                                date={ attempt.date }
-                            />
-                        </span>
-                ) }
-            </p>
-        </Alert>
+        <div { ...getOuiaProps('ConnectionAlert', props) }>
+            <Alert title={ props.title } variant={ props.alertVariant } isInline>
+                <p className={ marginTopClassName }>
+                    { props.description }
+                </p>
+                <p className={ marginTopClassName }>
+                    Last attempts: { props.attempts.map(
+                        (attempt, index) =>
+                            <span key={ index } className={ connectionAttemptClassName }>
+                                <ConnectionAttempt
+                                    type={ attempt.isSuccess ? ConnectionAttemptType.SUCCESS : ConnectionAttemptType.FAILED }
+                                    date={ attempt.date }
+                                />
+                            </span>
+                    ) }
+                </p>
+            </Alert>
+        </div>
     );
 };
