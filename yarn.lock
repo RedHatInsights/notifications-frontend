@@ -1251,10 +1251,10 @@
     "@redhat-cloud-services/frontend-components-utilities" "*"
     sanitize-html "^1.25.0"
 
-"@redhat-cloud-services/insights-common-typescript@1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-1.0.3.tgz#e8b664c5ba444b647ee87ea9e8b5d2e475e9788d"
-  integrity sha512-QaFMyfjlslYlainZdMjwETWd20XzJcm7Sm/b53RBaSOTQ4khv+BJk+2jAmmhkRnBHz7KExI6Y1/m9zwko88/pw==
+"@redhat-cloud-services/insights-common-typescript@1.0.4":
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-1.0.4.tgz#785743a5e274713fbd30968a86c798f9c301ac3a"
+  integrity sha512-d7EdvjPK9GU2nA1gYzDE8AdkTvj1NYwW7oLMrtNo+5dbxLqSvFWMCB6Jw8D3H6w+PuhE70aNgpnjBcHevny0cQ==
   dependencies:
     camelcase "5.3.1"
     classnames "^2.2.6"
@@ -8786,6 +8786,13 @@ p-limit@^2.0.0:
   version "2.3.0"
   resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-2.3.0.tgz#3dd33c647a214fdfffd835933eb086da0dc21db1"
   integrity sha512-//88mFWSJx8lxCzwdAABTJL2MyWB12+eIY7MDL2SqLmAkeKU9qxRvWuSyTjm3FUmpBEMuFfckAIqEaVGUDxb6w==
+  dependencies:
+    p-try "^2.0.0"
+
+p-limit@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/p-limit/-/p-limit-3.0.2.tgz#1664e010af3cadc681baafd3e2a437be7b0fb5fe"
+  integrity sha512-iwqZSOoWIW+Ew4kAGUlN16J4M7OB3ysMLSZtnhmqx7njIHFPlxWBX8xo3lVTyFVq6mI/lL9qt2IsN1sHwaxJkg==
   dependencies:
     p-try "^2.0.0"
 

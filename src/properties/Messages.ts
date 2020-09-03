@@ -46,6 +46,7 @@ const MutableMessages = {
                 columns: {
                     name: 'Name',
                     type: 'Type',
+                    lastConnectionAttempt: 'Last connection attempt',
                     enabled: 'Enabled'
                 }
             },
