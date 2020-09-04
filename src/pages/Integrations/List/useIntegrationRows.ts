@@ -12,7 +12,7 @@ import pLimit from 'p-limit';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
-export const useIntegrationRows = (integrations?: Array<Integration>) => {
+export const useIntegrationRows = (integrations: Array<Integration>) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
     const prevIntegrations = usePrevious(integrations);
 
@@ -44,7 +44,7 @@ export const useIntegrationRows = (integrations?: Array<Integration>) => {
     useEffect(() => {
         if (integrations !== prevIntegrations) {
             setIntegrationRows(prev => {
-                return (integrations || []).map(integration => ({
+                return integrations.map(integration => ({
                     isOpen: false,
                     isSelected: false,
                     isEnabledLoading: false,
@@ -64,7 +64,7 @@ export const useIntegrationRows = (integrations?: Array<Integration>) => {
                             // Todo: Add correct types
                             const last5 = (response.payload.slice(0, 5) as Array<any>).map(p => ({
                                 isSuccess: p.invocationResult,
-                                date: p.date
+                                date: new Date(p.created)
                             }));
                             setIntegrationRowById(integrationId, {
                                 isConnectionAttemptLoading: false,
@@ -96,6 +96,7 @@ export const useIntegrationRows = (integrations?: Array<Integration>) => {
         switchStatus.mutate(_integration).then((response) => {
             if (response.status === 200) {
                 setIntegrationRowByIndex(index, {
+                    isEnabled,
                     isEnabledLoading: false
                 });
             } else {

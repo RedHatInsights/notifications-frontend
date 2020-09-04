@@ -27,7 +27,15 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const { rbac: { canWriteAll }} = useContext(AppContext);
     const integrationsQuery = useListIntegrationsQuery();
 
-    const integrationRows = useIntegrationRows(integrationsQuery.payload);
+    const integrations = React.useMemo(() => {
+        if (integrationsQuery.status === 200) {
+            return integrationsQuery.payload || [];
+        }
+
+        return [];
+    }, [ integrationsQuery.payload, integrationsQuery.status ]);
+
+    const integrationRows = useIntegrationRows(integrations);
     const integrationFilter = useIntegrationFilter();
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
@@ -47,7 +55,6 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const onExport = React.useCallback((type: string) => {
         // Todo: When we have pagination, we will need a way to query all pages.
-        const integrations = integrationsQuery.payload;
         const exporter = integrationExporterFactory(exporterTypeFromString(type));
         if (integrations) {
             inBrowserDownload(
@@ -57,7 +64,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         } else {
             addDangerNotification('Unable to download integrations', 'We were unable to download the integrations for exporting. Please try again.');
         }
-    }, [ integrationsQuery.payload ]);
+    }, [ integrations ]);
 
     const actionResolver = useActionResolver({
         canWriteAll,

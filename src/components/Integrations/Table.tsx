@@ -16,13 +16,13 @@ import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { style } from 'typestyle';
-import { assertNever, OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, OuiaComponentProps, Spacer, PFColors } from '@redhat-cloud-services/insights-common-typescript';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
-import { OffIcon, ExclamationCircleIcon, CheckCircleIcon, WarningTriangleIcon } from '@patternfly/react-icons';
+import { OffIcon, ExclamationCircleIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -59,6 +59,10 @@ const expandedContentClassName = style({
 
 const isEnabledLoadingClassName = style({
     marginLeft: 10
+});
+
+const smallMarginLeft = style({
+    marginLeft: Spacer.SM
 });
 
 const getLastConnectionAttemptStatus = (attempts: Array<IntegrationConnectionAttempt>): LastConnectionAttemptStatus => {
@@ -112,13 +116,25 @@ const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> 
     const status = getLastConnectionAttemptStatus(attempts);
     switch (status) {
         case LastConnectionAttemptStatus.UNKNOWN:
-            return <><OffIcon data-test-id="off-icon" /> Unknown</>;
+            return <>
+                <OffIcon data-testid="off-icon" />
+                <span className={ smallMarginLeft }>Unknown</span>
+            </>;
         case LastConnectionAttemptStatus.SUCCESS:
-            return <><CheckCircleIcon data-test-id="success-icon"/> Success</>;
+            return <>
+                <CheckCircleIcon color={ PFColors.GlobalSuccessColor200 } data-testid="success-icon"/>
+                <span className={ smallMarginLeft }>Success</span>
+            </>;
         case LastConnectionAttemptStatus.ERROR:
-            return <><ExclamationCircleIcon data-test-id="fail-icon"/> Fail</>;
+            return <>
+                <ExclamationCircleIcon color={ PFColors.GlobalDangerColor100 } data-testid="fail-icon"/>
+                <span className={ smallMarginLeft }>Fail</span>
+            </>;
         case LastConnectionAttemptStatus.WARNING:
-            return <><WarningTriangleIcon data-test-id="warning-icon" /> { attempts[0].isSuccess ? 'Success' : 'Fail' }</>;
+            return <>
+                <ExclamationTriangleIcon color={ PFColors.GlobalWarningColor100 } data-testid="warning-icon" />
+                <span className={ smallMarginLeft }>{ attempts[0].isSuccess ? 'Success' : 'Fail' }</span>
+            </>;
         default:
             assertNever(status);
     }

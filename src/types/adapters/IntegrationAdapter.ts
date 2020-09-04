@@ -46,7 +46,7 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 ...integrationBase,
                 url: properties.url || '',
                 sslVerificationEnabled: !properties.disable_ssl_verification,
-                secretToken: properties.secret_token,
+                secretToken: properties.secret_token === null ? undefined : properties.secret_token,
                 method: properties.method || HttpType.GET
             };
         default:

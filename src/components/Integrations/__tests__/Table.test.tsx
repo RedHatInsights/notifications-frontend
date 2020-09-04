@@ -116,7 +116,7 @@ describe('components/Integrations/Table', () => {
         const lastConnectionAttemptText = screen.getByText('Success');
 
         expect(lastConnectionAttemptText).toBeVisible();
-        expect(lastConnectionAttemptText.querySelector('[data-test-id="success-icon"]')).toBeVisible();
+        expect(screen.getByTestId('success-icon')).toBeVisible();
     });
 
     it('Last connection attempt show last attempt status with warning icon if there is at least one success and at ' +
@@ -150,7 +150,7 @@ describe('components/Integrations/Table', () => {
         const lastConnectionAttemptText = screen.getByText('Success');
 
         expect(lastConnectionAttemptText).toBeVisible();
-        expect(lastConnectionAttemptText.querySelector('[data-test-id="warning-icon"]')).toBeVisible();
+        expect(screen.getByTestId('warning-icon')).toBeVisible();
     });
 
     it('Last connection attempt show last attempt status with warning icon if there is at least one success and at least one failure (last=fail)',
@@ -184,7 +184,7 @@ describe('components/Integrations/Table', () => {
             const lastConnectionAttemptText = screen.getByText('Fail');
 
             expect(lastConnectionAttemptText).toBeVisible();
-            expect(lastConnectionAttemptText.querySelector('[data-test-id="warning-icon"]')).toBeVisible();
+            expect(screen.getByTestId('warning-icon')).toBeVisible();
         });
 
     it('Last connection attempt show as failed with fail icon if all are failed', () => {
@@ -217,7 +217,7 @@ describe('components/Integrations/Table', () => {
         const lastConnectionAttemptText = screen.getByText('Fail');
 
         expect(lastConnectionAttemptText).toBeVisible();
-        expect(lastConnectionAttemptText.querySelector('[data-test-id="fail-icon"]')).toBeVisible();
+        expect(screen.getByTestId('fail-icon')).toBeVisible();
     });
 
     it('Last connection attempt show as unknown with off icon if there are no attempts', () => {
@@ -229,7 +229,7 @@ describe('components/Integrations/Table', () => {
         const lastConnectionAttemptText = screen.getByText('Unknown');
 
         expect(lastConnectionAttemptText).toBeVisible();
-        expect(lastConnectionAttemptText.querySelector('[data-test-id="off-icon"]')).toBeVisible();
+        expect(screen.getByTestId('off-icon')).toBeVisible();
     });
 
     it('Last connection attempt show an error if attempts is undefined', () => {
