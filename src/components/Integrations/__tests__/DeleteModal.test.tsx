@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import jestMock from 'jest-mock';
-import { ouiaSelectors } from '@redhat-cloud-services/insights-common-typescript';
+import { ouiaSelectors } from '@redhat-cloud-services/insights-common-typescript/dev';
 import { IntegrationDeleteModal } from '../DeleteModal';
 import { IntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';

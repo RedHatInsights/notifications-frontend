@@ -62,7 +62,7 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
                     limit(() => query(listIntegrationHistoryActionCreator(integrationId))).then(response => {
                         if (response.status === 200) {
                             // Todo: Add correct types
-                            const last5 = (response.payload.slice(0, 5) as Array<any>).map(p => ({
+                            const last5 = (response.payload.reverse().slice(0, 5) as Array<any>).map(p => ({
                                 isSuccess: p.invocationResult,
                                 date: new Date(p.created)
                             }));
