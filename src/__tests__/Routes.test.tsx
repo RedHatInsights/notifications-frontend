@@ -3,6 +3,8 @@ import { render, screen } from '@testing-library/react';
 import { Routes } from '../Routes';
 import { MemoryRouter } from 'react-router-dom';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
+import fetchMock from 'fetch-mock';
+import { waitForAsyncEvents } from '../../test/TestUtils';
 
 describe('src/Routes', () => {
     it('Should throw when no id=root element found', () => {
@@ -46,11 +48,12 @@ describe('src/Routes', () => {
             });
 
             expect(getLocation().pathname).toBe('/');
-            expect(document.body.firstChild).toBeEmpty();
+            expect(document.body.firstChild).toBeEmptyDOMElement();
         });
 
-        it('Should render the placeholder on /integrations', async () => {
+        it('Should render Integrations on /integrations', async () => {
             jest.useFakeTimers();
+            fetchMock.getOnce('/api/notifications/v1.0/endpoints', []);
             const getLocation = jest.fn();
             const Wrapper = getConfiguredAppWrapper({
                 router: {
@@ -61,6 +64,8 @@ describe('src/Routes', () => {
             render(<Routes/>, {
                 wrapper: Wrapper
             });
+
+            await waitForAsyncEvents();
 
             expect(getLocation().pathname).toBe('/integrations');
             expect(screen.getByText(/integrations/i)).toBeVisible();

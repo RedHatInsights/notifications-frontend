@@ -3,41 +3,43 @@ import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-servic
 import { Messages } from '../../../properties/Messages';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
-import { Integration, IntegrationType, NewIntegration } from '../../../types/Integration';
+import { Integration } from '../../../types/Integration';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useActionResolver } from './useActionResolver';
-import { useContext, useState } from 'react';
+import { useContext } from 'react';
 import { AppContext } from '../../../app/AppContext';
 import { CreatePage } from '../Create/CreatePage';
 import { useIntegrationFilter } from './useIntegrationFilter';
-import { makeCreateAction, makeEditAction, makeNoneAction, useOpenModalReducer } from './useOpenModalReducer';
-
-const onExport = (type: string) => console.log('export to ' + type);
+import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
+import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
+import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
+import { useDeleteModalReducer } from './useDeleteModalReducer';
+import {
+    addDangerNotification,
+    exporterTypeFromString
+} from '@redhat-cloud-services/insights-common-typescript';
+import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
+import inBrowserDownload from 'in-browser-download';
+import { format } from 'date-fns';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
+    const integrationsQuery = useListIntegrationsQuery();
 
-    const [ integrations, setIntegrations ] = useState<Array<Integration>>([
-        {
-            id: 'foo',
-            isEnabled: true,
-            name: 'Aha',
-            type: IntegrationType.HTTP,
-            url: 'https://aha.com'
-        },
-        {
-            id: 'foo-2',
-            isEnabled: true,
-            name: 'Pager duty',
-            type: IntegrationType.HTTP,
-            url: 'https://pagerduty.com/weebhook/thatthis'
+    const integrations = React.useMemo(() => {
+        if (integrationsQuery.status === 200) {
+            return integrationsQuery.payload || [];
         }
-    ]);
+
+        return [];
+    }, [ integrationsQuery.payload, integrationsQuery.status ]);
+
     const integrationRows = useIntegrationRows(integrations);
     const integrationFilter = useIntegrationFilter();
 
-    const [ modalIsOpenState, dispatchModalIsOpen ] = useOpenModalReducer();
+    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
+    const [ deleteModalState, dispatchDeleteModal ] = useDeleteModalReducer();
 
     const onAddIntegrationClicked = React.useCallback(() => {
         dispatchModalIsOpen(makeCreateAction());
@@ -47,41 +49,45 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         dispatchModalIsOpen(makeEditAction(integration));
     }, [ dispatchModalIsOpen ]);
 
+    const onDelete = React.useCallback((integration: Integration) => {
+        dispatchDeleteModal(useDeleteModalReducer.makeDeleteAction(integration));
+    }, [ dispatchDeleteModal ]);
+
+    const onExport = React.useCallback((type: string) => {
+        // Todo: When we have pagination, we will need a way to query all pages.
+        const exporter = integrationExporterFactory(exporterTypeFromString(type));
+        if (integrations) {
+            inBrowserDownload(
+                exporter.export(integrations),
+                `integrations-${format(new Date(Date.now()), 'y-dd-MM')}.${exporter.type}`
+            );
+        } else {
+            addDangerNotification('Unable to download integrations', 'We were unable to download the integrations for exporting. Please try again.');
+        }
+    }, [ integrations ]);
+
     const actionResolver = useActionResolver({
         canWriteAll,
-        onEdit
+        onEdit,
+        onDelete
     });
 
-    const closeModal = React.useCallback(() => {
+    const closeFormModal = React.useCallback((saved: boolean) => {
+        const query = integrationsQuery.query;
         dispatchModalIsOpen(makeNoneAction());
-    }, [ dispatchModalIsOpen ]);
+        if (saved) {
+            query();
+        }
+    }, [ dispatchModalIsOpen, integrationsQuery.query ]);
 
-    const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
-        if (integration.id) {
-            setIntegrations(prev => {
-                return prev.map(i => {
-                    if (i.id === integration.id) {
-                        return {
-                            ...i,
-                            ...integration
-                        };
-                    }
-
-                    return i;
-                });
-            });
-        } else {
-            setIntegrations(prev => {
-                return prev.concat([{
-                    ...integration,
-                    isEnabled: true,
-                    id: 'random' + Math.random() * 5000
-                }]);
-            });
+    const closeDeleteModal = React.useCallback((deleted: boolean) => {
+        const query = integrationsQuery.query;
+        if (deleted) {
+            query();
         }
 
-        closeModal();
-    }, [ closeModal, setIntegrations ]);
+        dispatchDeleteModal(useDeleteModalReducer.makeNoneAction());
+    }, [ dispatchDeleteModal, integrationsQuery.query ]);
 
     return (
         <>
@@ -104,13 +110,19 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                             actionResolver={ actionResolver }
                         />
                     </IntegrationsToolbar>
-                    <CreatePage
-                        isModalOpen={ modalIsOpenState.isOpen }
-                        isEdit={ modalIsOpenState.isEdit }
-                        initialValue={ modalIsOpenState.template || {} }
-                        onClose={ closeModal }
-                        onSave={ onSaveIntegration }
-                    />
+                    { modalIsOpenState.isOpen && (
+                        <CreatePage
+                            isEdit={ modalIsOpenState.isEdit }
+                            initialIntegration={ modalIsOpenState.template || {} }
+                            onClose={ closeFormModal }
+                        />
+                    ) }
+                    { deleteModalState.integration && (
+                        <IntegrationDeleteModalPage
+                            onClose={ closeDeleteModal }
+                            integration={ deleteModalState.integration }
+                        />
+                    )}
                 </Section>
             </Main>
         </>

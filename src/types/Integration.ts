@@ -1,6 +1,7 @@
+import * as Generated from '../generated/Types';
 
 export enum IntegrationType {
-    HTTP = 'http'
+    WEBHOOK = 'webhook'
 }
 
 export interface IntegrationBase {
@@ -11,8 +12,11 @@ export interface IntegrationBase {
 }
 
 export interface IntegrationHttp extends IntegrationBase {
-    type: IntegrationType.HTTP;
+    type: IntegrationType.WEBHOOK;
     url: string;
+    sslVerificationEnabled: boolean;
+    secretToken?: string;
+    method: Generated.HttpType;
 }
 
 export type Integration = IntegrationHttp;
@@ -23,3 +27,11 @@ export type NewIntegrationTemplate<T extends IntegrationBase> = Omit<T, NewInteg
 
 export type NewIntegrationBase = NewIntegrationTemplate<IntegrationBase>;
 export type NewIntegration = NewIntegrationTemplate<Integration>;
+
+export type ServerIntegrationRequest = Generated.Endpoint;
+export type ServerIntegrationResponse = Generated.Endpoint;
+
+export interface IntegrationConnectionAttempt {
+    date: Date;
+    isSuccess: boolean;
+}

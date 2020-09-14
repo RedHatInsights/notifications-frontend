@@ -28,10 +28,6 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
         label: 'Name',
         placeholder: 'Filter by name'
     },
-    [IntegrationFilterColumn.TYPE]: {
-        label: 'Type',
-        placeholder: 'Filter by type'
-    },
     [IntegrationFilterColumn.ENABLED]: {
         label: 'Enabled',
         placeholder: 'Filter by enabled',

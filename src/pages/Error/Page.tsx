@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { Messages } from '../../properties/Messages';
 import { withRouter, RouteComponentProps } from 'react-router-dom';
-import { linkTo } from '../../Routes';
 import { ErrorBoundaryPage } from '@redhat-cloud-services/insights-common-typescript';
 
 type ErrorPageProps = RouteComponentProps<any>;
 
 export const ErrorPageInternal: React.FunctionComponent<ErrorPageProps> = (props) => {
     const goToListPage = React.useCallback(() => {
-        props.history.push(linkTo.notifications());
+        props.history.goBack();
     }, [ props.history ]);
 
     return (

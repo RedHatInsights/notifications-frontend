@@ -1,4 +1,5 @@
 import { DeepReadonly } from 'ts-essentials';
+import { IntegrationType } from '../types/Integration';
 
 //Capture some strings we reuse. Possibly use in i18n later?
 const MutableMessages = {
@@ -9,14 +10,10 @@ const MutableMessages = {
                 title: 'Integrations'
             },
             add: {
-                title: 'Add Integration'
+                title: 'Add integration'
             },
             edit: {
-                title: 'Edit Integration'
-            },
-            types: {
-                hooks: 'Webhook',
-                hooksUrl: 'Webhook URL'
+                title: 'Edit integration'
             }
         },
         notifications: {
@@ -31,7 +28,7 @@ const MutableMessages = {
                 content: 'There was a problem trying to process your request.',
                 showDetails: 'Show details',
                 actions: {
-                    goToIndex: 'Go to Policy list'
+                    goToIndex: 'Go back'
                 }
             }
         }
@@ -49,11 +46,20 @@ const MutableMessages = {
                 columns: {
                     name: 'Name',
                     type: 'Type',
+                    lastConnectionAttempt: 'Last connection attempt',
                     enabled: 'Enabled'
                 }
             },
+            enableError: {
+                title: 'Unable to enable the Integration',
+                description: 'There was a problem trying to enable the integration: "{0}".\nPlease try again.'
+            },
+            disableError: {
+                title: 'Unable to disable the Integration',
+                description: 'There was a problem trying to disable the integration: "{0}".\nPlease try again.'
+            },
             integrationType: {
-                http: 'Webhook'
+                [IntegrationType.WEBHOOK]: 'Webhook'
             }
         }
     },

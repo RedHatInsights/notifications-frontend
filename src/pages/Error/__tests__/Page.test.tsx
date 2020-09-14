@@ -2,7 +2,6 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ErrorPage } from '../Page';
-import { linkTo } from '../../../Routes';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../test/AppWrapper';
 
 jest.mock('@redhat-cloud-services/frontend-components', () => {
@@ -37,12 +36,18 @@ describe('src/pages/Error/Page', () => {
         appWrapperCleanup();
     });
 
-    it('Goes to list page when clicking the button', () => {
+    it('Goes to back when clicking the button', () => {
         const getLocation = jest.fn();
         const AppWrapper = getConfiguredAppWrapper({
             getLocation,
             route: {
                 path: '/'
+            },
+            router: {
+                initialEntries: [
+                    '/foo',
+                    '/bar'
+                ]
             }
         });
 
@@ -55,8 +60,8 @@ describe('src/pages/Error/Page', () => {
         });
 
         userEvent.click(screen.getByRole('button', {
-            name: /policy/i
+            name: /back/i
         }));
-        expect(getLocation().pathname).toEqual(linkTo.notifications());
+        expect(getLocation().pathname).toEqual('/foo');
     });
 });

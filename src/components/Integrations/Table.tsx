@@ -13,13 +13,16 @@ import {
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import { Spinner, Switch } from '@patternfly/react-core';
 import { Messages } from '../../properties/Messages';
-import { Integration } from '../../types/Integration';
+import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { style } from 'typestyle';
-import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, OuiaComponentProps, Spacer, PFColors } from '@redhat-cloud-services/insights-common-typescript';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { ConnectionDegraded } from './Table/ConnectionDegraded';
+import { ConnectionFailed } from './Table/ConnectionFailed';
+import { OffIcon, ExclamationCircleIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -34,16 +37,108 @@ export type IntegrationRow = Integration & {
     isOpen: boolean;
     isSelected: boolean;
     isEnabledLoading: boolean;
+    isConnectionAttemptLoading: boolean;
+    lastConnectionAttempts?: Array<IntegrationConnectionAttempt>;
 }
 
+enum LastConnectionAttemptStatus {
+    UNKNOWN,
+    SUCCESS,
+    WARNING,
+    ERROR
+}
+
+const connectionAlertClassName = style({
+    paddingBottom: Spacer.MD
+});
+
 const expandedContentClassName = style({
-    paddingLeft: Spacer.LG,
+    paddingLeft: Spacer.MD,
     paddingBottom: Spacer.LG
 });
 
 const isEnabledLoadingClassName = style({
     marginLeft: 10
 });
+
+const smallMarginLeft = style({
+    marginLeft: Spacer.SM
+});
+
+const getLastConnectionAttemptStatus = (attempts: Array<IntegrationConnectionAttempt>): LastConnectionAttemptStatus => {
+    if (attempts.length === 0) {
+        return LastConnectionAttemptStatus.UNKNOWN;
+    }
+
+    const failures = attempts.filter(a => !a.isSuccess).length;
+
+    if (failures === attempts.length) {
+        return LastConnectionAttemptStatus.ERROR;
+    } else if (failures > 0) {
+        return LastConnectionAttemptStatus.WARNING;
+    }
+
+    return LastConnectionAttemptStatus.SUCCESS;
+};
+
+const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
+    const status = getLastConnectionAttemptStatus(attempts);
+    switch (status) {
+        case LastConnectionAttemptStatus.UNKNOWN:
+        case LastConnectionAttemptStatus.SUCCESS:
+            return null;
+        case LastConnectionAttemptStatus.ERROR:
+            return (
+                <div className={ connectionAlertClassName }>
+                    <ConnectionFailed attempts={ attempts }/>
+                </div>
+            );
+        case LastConnectionAttemptStatus.WARNING:
+            return (
+                <div className={ connectionAlertClassName }>
+                    <ConnectionDegraded attempts={ attempts }/>
+                </div>
+            );
+        default:
+            assertNever(status);
+    }
+};
+
+const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> | undefined, isLoading: boolean) => {
+    if (attempts === undefined) {
+        return 'Error fetching connection attempts';
+    }
+
+    if (isLoading) {
+        return <Spinner size="md" />;
+    }
+
+    const status = getLastConnectionAttemptStatus(attempts);
+    switch (status) {
+        case LastConnectionAttemptStatus.UNKNOWN:
+            return <>
+                <OffIcon data-testid="off-icon" />
+                <span className={ smallMarginLeft }>Unknown</span>
+            </>;
+        case LastConnectionAttemptStatus.SUCCESS:
+            return <>
+                <CheckCircleIcon color={ PFColors.GlobalSuccessColor200 } data-testid="success-icon"/>
+                <span className={ smallMarginLeft }>Success</span>
+            </>;
+        case LastConnectionAttemptStatus.ERROR:
+            return <>
+                <ExclamationCircleIcon color={ PFColors.GlobalDangerColor100 } data-testid="fail-icon"/>
+                <span className={ smallMarginLeft }>Fail</span>
+            </>;
+        case LastConnectionAttemptStatus.WARNING:
+            return <>
+                <ExclamationTriangleIcon color={ PFColors.GlobalWarningColor100 } data-testid="warning-icon" />
+                <span className={ smallMarginLeft }>{ attempts[0].isSuccess ? 'Success' : 'Fail' }</span>
+            </>;
+        default:
+            assertNever(status);
+    }
+};
 
 const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): Array<IRow> => {
     return integrations.reduce((rows, integration, idx) => {
@@ -53,21 +148,30 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             isOpen: integration.isOpen,
             selected: integration.isSelected,
             cells: [
-                integration.name,
-                Messages.components.integrations.integrationType[integration.type],
-                <>
-                    { integration.isEnabledLoading ? (
-                        <Spinner className={ isEnabledLoadingClassName } size="md"/>
-                    ) : (
-                        <Switch
-                            id={ `table-row-switch-id-${integration.id}` }
-                            aria-label="Enabled"
-                            isChecked={ integration.isEnabled }
-                            onChange={ isChecked => onEnable && onEnable(integration, idx, isChecked) }
-                            ouiaId={ `enabled-${integration.id}` }
-                        />
-                    ) }
-                </>
+                {
+                    title: integration.name
+                },
+                {
+                    title: Messages.components.integrations.integrationType[integration.type]
+                },
+                {
+                    title: getConnectionAttemptCell(integration.lastConnectionAttempts, integration.isConnectionAttemptLoading)
+                },
+                {
+                    title: <>
+                        { integration.isEnabledLoading ? (
+                            <Spinner className={ isEnabledLoadingClassName } size="md"/>
+                        ) : (
+                            <Switch
+                                id={ `table-row-switch-id-${integration.id}` }
+                                aria-label="Enabled"
+                                isChecked={ integration.isEnabled }
+                                onChange={ isChecked => onEnable && onEnable(integration, idx, isChecked) }
+                                ouiaId={ `enabled-${integration.id}` }
+                            />
+                        ) }
+                    </>
+                }
             ]
         });
         rows.push({
@@ -76,11 +180,14 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             showSelect: false,
             noPadding: false,
             cells: [
-                <>
-                    <div className={ expandedContentClassName }>
-                        <ExpandedContent integration={ integration } ouiaId={ integration.id } />
-                    </div>
-                </>
+                {
+                    title: <>
+                        <div className={ expandedContentClassName }>
+                            { integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts) }
+                            <ExpandedContent integration={ integration } ouiaId={ integration.id } />
+                        </div>
+                    </>
+                }
             ]
         });
         return rows;
@@ -95,6 +202,10 @@ const columns: Array<ICell> = [
     },
     {
         title: Messages.components.integrations.table.columns.type,
+        transforms: []
+    },
+    {
+        title: Messages.components.integrations.table.columns.lastConnectionAttempt,
         transforms: []
     },
     {
