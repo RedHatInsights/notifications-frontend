@@ -28,12 +28,13 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const integrationsQuery = useListIntegrationsQuery();
 
     const integrations = React.useMemo(() => {
-        if (integrationsQuery.status === 200) {
-            return integrationsQuery.payload || [];
+        const payload = integrationsQuery.payload;
+        if (payload?.type === 'integrationArray') {
+            return payload.value;
         }
 
         return [];
-    }, [ integrationsQuery.payload, integrationsQuery.status ]);
+    }, [ integrationsQuery.payload ]);
 
     const integrationRows = useIntegrationRows(integrations);
     const integrationFilter = useIntegrationFilter();

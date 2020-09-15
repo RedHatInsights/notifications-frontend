@@ -1,4 +1,4 @@
-import { actionDeleteApiNotificationsV10EndpointsId } from '../generated/ActionCreators';
+import { actionDeleteApiNotificationsV10EndpointsId } from '../generated/Openapi';
 import { useMutation } from 'react-fetching-library';
 
 const deleteIntegrationActionCreator = (integrationId: string) => {

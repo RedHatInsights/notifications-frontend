@@ -2,13 +2,21 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { Provider } from 'react-redux';
-import { initStore, createFetchingClient, getStore, getInsights } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    initStore,
+    createFetchingClient,
+    getStore,
+    getInsights,
+    validateSchemaResponseInterceptor
+} from '@redhat-cloud-services/insights-common-typescript';
 import App from './app/App';
 import logger from 'redux-logger';
 import { ClientContextProvider } from 'react-fetching-library';
 import { getBaseName } from './utils/Basename';
 
-const client = createFetchingClient(getInsights);
+const client = createFetchingClient(getInsights, {
+    responseInterceptors: [ validateSchemaResponseInterceptor ]
+});
 initStore(logger);
 
 ReactDOM.render(

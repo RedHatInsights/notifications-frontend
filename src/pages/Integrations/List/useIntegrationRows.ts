@@ -60,11 +60,11 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
 
                 integrations.map(integration => integration.id).forEach(integrationId => {
                     limit(() => query(listIntegrationHistoryActionCreator(integrationId))).then(response => {
-                        if (response.status === 200) {
-                            // Todo: Add correct types
-                            const last5 = (response.payload.reverse().slice(0, 5) as Array<any>).map(p => ({
-                                isSuccess: p.invocationResult,
-                                date: new Date(p.created)
+
+                        if (response.payload && response.payload.status === 200) {
+                            const last5 = (response.payload.value.reverse().slice(0, 5)).map(p => ({
+                                isSuccess: !!p.invocationResult,
+                                date: new Date(p.created as string)
                             }));
                             setIntegrationRowById(integrationId, {
                                 isConnectionAttemptLoading: false,

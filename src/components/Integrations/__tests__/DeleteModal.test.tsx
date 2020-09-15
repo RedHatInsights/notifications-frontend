@@ -6,7 +6,7 @@ import { IntegrationDeleteModal } from '../DeleteModal';
 import { IntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
-import { HttpType } from '../../../generated/Types';
+import { HttpType } from '../../../generated/Openapi';
 
 describe('src/components/Integrations/DeleteModal', () => {
     it('Has Remove integration title', () => {
@@ -22,7 +22,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     url: 'url',
                     id: '123',
                     secretToken: 'foo',
-                    method: HttpType.GET,
+                    method: HttpType.Enum.GET,
                     sslVerificationEnabled: false
                 } }
             />
@@ -44,7 +44,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     url: 'url',
                     id: '123',
                     secretToken: 'foo',
-                    method: HttpType.GET,
+                    method: HttpType.Enum.GET,
                     sslVerificationEnabled: false
                 } }
             />
@@ -80,7 +80,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     url: 'url',
                     id: '123',
                     secretToken: 'foo',
-                    method: HttpType.GET,
+                    method: HttpType.Enum.GET,
                     sslVerificationEnabled: false
                 } }
             />
@@ -108,7 +108,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     url: 'url',
                     id: '123',
                     secretToken: 'foo',
-                    method: HttpType.GET,
+                    method: HttpType.Enum.GET,
                     sslVerificationEnabled: false
                 } }
             />

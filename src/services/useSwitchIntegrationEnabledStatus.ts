@@ -2,7 +2,7 @@ import { Integration, ServerIntegrationResponse } from '../types/Integration';
 import {
     actionDeleteApiNotificationsV10EndpointsIdEnable,
     actionPutApiNotificationsV10EndpointsIdEnable
-} from '../generated/ActionCreators';
+} from '../generated/Openapi';
 import { useMutation } from 'react-fetching-library';
 
 export const switchIntegrationEnabledStatusActionCreator = (integration: Integration) => {

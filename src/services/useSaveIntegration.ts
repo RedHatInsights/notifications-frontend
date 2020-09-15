@@ -1,7 +1,10 @@
-import { Integration, NewIntegration, ServerIntegrationResponse } from '../types/Integration';
+import { Integration, NewIntegration } from '../types/Integration';
 import {
-    actionPostApiNotificationsV10Endpoints, actionPutApiNotificationsV10EndpointsId
-} from '../generated/ActionCreators';
+    actionPostApiNotificationsV10Endpoints,
+    actionPutApiNotificationsV10EndpointsId,
+    PostApiNotificationsV10EndpointsPayload,
+    PutApiNotificationsV10EndpointsIdPayload
+} from '../generated/Openapi';
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
 import { toIntegration, toServerIntegrationRequest } from '../types/adapters/IntegrationAdapter';
@@ -20,7 +23,19 @@ export const saveIntegrationActionCreator = (integration: Integration | NewInteg
     });
 };
 
+const decoder = (response: PostApiNotificationsV10EndpointsPayload | PutApiNotificationsV10EndpointsIdPayload) => {
+    if (response.type === 'Endpoint') {
+        return {
+            ...response,
+            type: 'Integration',
+            value: toIntegration(response.value)
+        };
+    }
+
+    return response;
+};
+
 export const useSaveIntegrationMutation = () => useTransformQueryResponse(
-    useMutation<ServerIntegrationResponse>(saveIntegrationActionCreator),
-    toIntegration
+    useMutation(saveIntegrationActionCreator),
+    decoder
 );
