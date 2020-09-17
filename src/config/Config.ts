@@ -6,12 +6,13 @@ const apiBaseUrl = `/api/notifications/${apiVersion}`;
 export const withBaseUrl = (path: string) => `${apiBaseUrl}${path}`;
 
 const Config = {
+    appId: 'notifications',
     integrations: {
-        appId: 'integrations',
+        subAppId: 'integrations',
         title: 'Integrations'
     },
     notifications: {
-        appId: 'notifications',
+        subAppId: 'notifications',
         title: 'Notifications'
     },
     pages: {

@@ -4,6 +4,7 @@ import { IntegrationType } from '../types/Integration';
 //Capture some strings we reuse. Possibly use in i18n later?
 const MutableMessages = {
     appName: 'Notifications',
+    appNameIntegrations: 'Integrations',
     pages: {
         integrations: {
             list: {

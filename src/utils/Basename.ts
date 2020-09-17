@@ -14,3 +14,13 @@ export const getBaseName = (pathname: string) => {
 
     return `${release}${pathName[0]}`;
 };
+
+export const getSubApp = (pathname: string) => {
+    const pathName = pathname.split('/');
+    pathName.shift();
+    if (pathName[0] === 'beta') {
+        return pathName[1];
+    }
+
+    return pathName[0];
+};
