@@ -14,10 +14,10 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
             insights.chrome.init();
             const appId = insights.chrome.getApp();
             switch (appId) {
-                case Config.notifications.appId:
+                case Config.notifications.subAppId:
                     document.title = Config.notifications.title;
                     break;
-                case Config.integrations.appId:
+                case Config.integrations.subAppId:
                     document.title = Config.integrations.title;
                     break;
             }
@@ -29,8 +29,7 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
     useEffect(() => {
         waitForInsights().then(insights => {
             insights.chrome.auth.getUser().then(() => {
-                // Todo: Change to insights.chrome.getApp()
-                fetchRBAC('policies').then(setRbac);
+                fetchRBAC(Config.appId).then(setRbac);
             });
         });
     }, []);
