@@ -117,9 +117,10 @@ describe('components/Integrations/Table', () => {
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('success-icon')).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
     });
 
-    it('Last connection attempt show last attempt status with warning icon if there is at least one success and at ' +
+    it('Last connection attempt show last attempt status with degraded connection if there is at least one success and at ' +
         'least one failure (last=success)', () => {
         render(<IntegrationsTable
             integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
@@ -150,42 +151,45 @@ describe('components/Integrations/Table', () => {
         const lastConnectionAttemptText = screen.getByText('Success');
 
         expect(lastConnectionAttemptText).toBeVisible();
-        expect(screen.getByTestId('warning-icon')).toBeVisible();
+        expect(screen.getByTestId('success-icon')).toBeVisible();
+        expect(screen.getByText(/degraded connection/i)).toBeVisible();
     });
 
-    it('Last connection attempt show last attempt status with warning icon if there is at least one success and at least one failure (last=fail)',
-        () => {
-            render(<IntegrationsTable
-                integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
-                    {
-                        isSuccess: false,
-                        date: new Date(Date.parse('2020-01-22'))
-                    },
-                    {
-                        isSuccess: false,
-                        date: new Date(Date.parse('2020-01-21'))
-                    },
-                    {
-                        isSuccess: false,
-                        date: new Date(Date.parse('2020-01-20'))
-                    },
-                    {
-                        isSuccess: false,
-                        date: new Date(Date.parse('2020-01-19'))
-                    },
-                    {
-                        isSuccess: true,
-                        date: new Date(Date.parse('2020-01-15'))
-                    }
-                ]}] }
-                actionResolver={ jest.fn(() => []) }
-            />);
+    it('Last connection attempt show last attempt status with degraded connection if there is at least one success ' +
+        'and at least one failure (last=fail)',
+    () => {
+        render(<IntegrationsTable
+            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-22'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-21'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-20'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-19'))
+                },
+                {
+                    isSuccess: true,
+                    date: new Date(Date.parse('2020-01-15'))
+                }
+            ]}] }
+            actionResolver={ jest.fn(() => []) }
+        />);
 
-            const lastConnectionAttemptText = screen.getByText('Fail');
+        const lastConnectionAttemptText = screen.getByText('Fail');
 
-            expect(lastConnectionAttemptText).toBeVisible();
-            expect(screen.getByTestId('warning-icon')).toBeVisible();
-        });
+        expect(lastConnectionAttemptText).toBeVisible();
+        expect(screen.getByTestId('fail-icon')).toBeVisible();
+        expect(screen.getByText(/degraded connection/i)).toBeVisible();
+    });
 
     it('Last connection attempt show as failed with fail icon if all are failed', () => {
         render(<IntegrationsTable
@@ -218,6 +222,7 @@ describe('components/Integrations/Table', () => {
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('fail-icon')).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
     });
 
     it('Last connection attempt show as unknown with off icon if there are no attempts', () => {
@@ -230,6 +235,7 @@ describe('components/Integrations/Table', () => {
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('off-icon')).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
     });
 
     it('Last connection attempt show an error if attempts is undefined', () => {
