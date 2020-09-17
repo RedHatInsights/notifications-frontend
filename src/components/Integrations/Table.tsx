@@ -11,7 +11,7 @@ import {
     IActions, IActionsResolver
 } from '@patternfly/react-table';
 import styles from '@patternfly/react-styles/css/components/Table/table';
-import { Spinner, Switch } from '@patternfly/react-core';
+import { Spinner, Switch, Text } from '@patternfly/react-core';
 import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
@@ -22,7 +22,7 @@ import { important } from 'csx';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
-import { OffIcon, ExclamationCircleIcon, CheckCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { OffIcon, ExclamationCircleIcon, CheckCircleIcon } from '@patternfly/react-icons';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -65,6 +65,12 @@ const smallMarginLeft = style({
     marginLeft: Spacer.SM
 });
 
+const degradedClassName = style({
+    fontWeight: 600,
+    color: PFColors.GlobalWarningColor200,
+    fontSize: 'var(--pf-global--FontSize--sm)'
+});
+
 const getLastConnectionAttemptStatus = (attempts: Array<IntegrationConnectionAttempt>): LastConnectionAttemptStatus => {
     if (attempts.length === 0) {
         return LastConnectionAttemptStatus.UNKNOWN;
@@ -104,6 +110,20 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
     }
 };
 
+const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
+    <>
+        <CheckCircleIcon color={ PFColors.GlobalSuccessColor200 } data-testid="success-icon"/>
+        <span className={ smallMarginLeft }>Success</span>
+    </>
+);
+
+const LastConnectionAttemptError: React.FunctionComponent = () => (
+    <>
+        <ExclamationCircleIcon color={ PFColors.GlobalDangerColor100 } data-testid="fail-icon"/>
+        <span className={ smallMarginLeft }>Fail</span>
+    </>
+);
+
 const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> | undefined, isLoading: boolean) => {
     if (attempts === undefined) {
         return 'Error fetching connection attempts';
@@ -121,19 +141,14 @@ const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> 
                 <span className={ smallMarginLeft }>Unknown</span>
             </>;
         case LastConnectionAttemptStatus.SUCCESS:
-            return <>
-                <CheckCircleIcon color={ PFColors.GlobalSuccessColor200 } data-testid="success-icon"/>
-                <span className={ smallMarginLeft }>Success</span>
-            </>;
+            return <><LastConnectionAttemptSuccess/></>;
         case LastConnectionAttemptStatus.ERROR:
-            return <>
-                <ExclamationCircleIcon color={ PFColors.GlobalDangerColor100 } data-testid="fail-icon"/>
-                <span className={ smallMarginLeft }>Fail</span>
-            </>;
+            return <><LastConnectionAttemptError/></>;
         case LastConnectionAttemptStatus.WARNING:
             return <>
-                <ExclamationTriangleIcon color={ PFColors.GlobalWarningColor100 } data-testid="warning-icon" />
-                <span className={ smallMarginLeft }>{ attempts[0].isSuccess ? 'Success' : 'Fail' }</span>
+                { attempts[0].isSuccess ? <LastConnectionAttemptSuccess/> : <LastConnectionAttemptError/> }
+                <br/>
+                <Text className={ degradedClassName }>Degraded connection</Text>
             </>;
         default:
             assertNever(status);
