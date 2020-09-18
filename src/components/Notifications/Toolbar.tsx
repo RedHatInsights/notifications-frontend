@@ -22,7 +22,7 @@ interface NotificationsToolbarProps extends OuiaComponentProps {
 const filterMetadata: ColumnsMetada<typeof NotificationFilterColumn> = {
     [NotificationFilterColumn.NAME]: {
         label: 'Name',
-        placeholder: 'Filter by name'
+        placeholder: 'Filter by event name'
     }
 };
 

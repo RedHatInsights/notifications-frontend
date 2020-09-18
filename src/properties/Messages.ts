@@ -19,7 +19,8 @@ const MutableMessages = {
         },
         notifications: {
             list: {
-                title: 'Notifications'
+                title: 'Notifications',
+                viewHistory: 'View notification history'
             }
         },
         error: {
@@ -61,6 +62,21 @@ const MutableMessages = {
             },
             integrationType: {
                 [IntegrationType.WEBHOOK]: 'Webhook'
+            }
+        },
+        notifications: {
+            toolbar: {
+                actions: {
+
+                }
+            },
+            table: {
+                title: 'Notifications',
+                columns: {
+                    event: 'Event',
+                    action: 'Action',
+                    recipient: 'Recipient'
+                }
             }
         }
     },
