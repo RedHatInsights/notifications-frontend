@@ -28,6 +28,18 @@ const filterMetadata: ColumnsMetada<typeof NotificationFilterColumn> = {
     [NotificationFilterColumn.NAME]: {
         label: 'Name',
         placeholder: 'Filter by event name'
+    },
+    [NotificationFilterColumn.APPLICATION]: {
+        label: 'Application',
+        placeholder: 'Filter by application'
+    },
+    [NotificationFilterColumn.ACTION]: {
+        label: 'Action',
+        placeholder: 'Filter by action'
+    },
+    [NotificationFilterColumn.RECIPIENT]: {
+        label: 'Recipient',
+        placeholder: 'Filter by recipient'
     }
 };
 

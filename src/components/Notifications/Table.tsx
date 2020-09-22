@@ -20,6 +20,8 @@ import { ActionComponent } from './ActionComponent';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { GroupByEnum } from './Types';
 
+import './Table.scss';
+
 const pfBorderBottomClassName = style({
     borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)'
 });
@@ -30,7 +32,11 @@ const noBorderBottom = style({
 
 const cellPaddingBottom = style({
     paddingBottom: '0 !important'
-} as any);
+});
+
+const firstNestedCellInExpandedPaddingLeft = style({
+    paddingLeft: '16px !important'
+});
 
 const cellPaddingBottomStyle = {
     '--pf-c-table__expandable-row-content--PaddingBottom': '0'
@@ -170,7 +176,11 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     />,
                     props: {
                         rowSpan,
-                        className: joinClasses(noExpandableBorderClassName, pfBorderBottomClassName)
+                        className: joinClasses(
+                            noExpandableBorderClassName,
+                            pfBorderBottomClassName
+                        ),
+                        colSpan: parent === undefined ? 1 : 2
                     }
                 },
                 {
@@ -202,6 +212,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 
         if (parent !== undefined) {
             rows[rows.length - 1].parent = parent;
+            rows[rows.length - 1].useAllCellInExpandedContent = true;
+            rows[rows.length - 1].fullWidth = true;
         }
 
         for (let i = 1; i < rowSpan; ++i) {
@@ -221,7 +233,11 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     {
                         title: <ActionComponent action={ notification.actions[i] } />,
                         props: {
-                            className: joinClasses(noExpandableBorderClassName, classNames),
+                            className: joinClasses(
+                                noExpandableBorderClassName,
+                                classNames,
+                                parent === undefined ? '' : firstNestedCellInExpandedPaddingLeft
+                            ),
                             style: cssStyle
                         }
                     },
@@ -246,6 +262,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 
             if (parent !== undefined) {
                 rows[rows.length - 1].parent = parent;
+                rows[rows.length - 1].useAllCellInExpandedContent = true;
+                rows[rows.length - 1].fullWidth = true;
             }
         }
 
@@ -262,8 +280,13 @@ const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRo
                 {
                     title: <span className={ applicationGroupClassName }> Application: { applicationGroup.application }</span>,
                     props: {
-                        colSpan: columns.length,
                         className: noExpandableBorderClassName
+                    }
+                },
+                {
+                    title: '',
+                    props: {
+                        colSpan: columns.length - 1
                     }
                 }
             ],
@@ -307,12 +330,12 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
     }, [ props.onCollapse, props.notifications ]);
 
     return (
-        <div { ...getOuiaProps('Notifications/Table', props) }>
+        <div { ...getOuiaProps('Notifications/Table', props) } className="notification-table">
             <Table
                 aria-label={ Messages.components.notifications.table.title }
                 rows={ rows }
                 cells={ columns }
-                /*onCollapse={ onCollapseHandler }*/
+                onCollapse={ onCollapseHandler }
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
             >
                 <TableHeader/>

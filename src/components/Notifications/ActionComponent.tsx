@@ -34,7 +34,7 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props)
 
 export const ActionComponent: React.FunctionComponent<ActionComponentText> = (props) => {
     return (
-        <div { ...getOuiaProps('ActionComponent', props) }>
+        <div { ...getOuiaProps('Notifications/ActionComponent', props) }>
             <ActionTypeToIcon actionType={ props.action.type }/>
             <span className={ marginLeftClassName }>{ Messages.components.notifications.types[props.action.type] }</span>
         </div>

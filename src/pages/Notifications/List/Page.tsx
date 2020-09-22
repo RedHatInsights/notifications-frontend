@@ -16,9 +16,10 @@ import {
     NotificationRows,
     NotificationsTable
 } from '../../../components/Notifications/Table';
-import { ActionType, Notification } from '../../../types/Notification';
+import { Action, ActionType, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
+import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -110,7 +111,9 @@ const notifications: Array<Notification> = [
                 type: ActionType.EMAIL,
                 recipient: [
                     'Security admin',
-                    'Stakeholders'
+                    'Stakeholders',
+                    'Another one',
+                    'Another one'
                 ]
             },
             {
@@ -143,6 +146,26 @@ const notifications: Array<Notification> = [
                 integrationName: 'Slack'
             }
         ]
+    }
+];
+
+const defaultActions: Array<Action> = [
+    {
+        type: ActionType.EMAIL,
+        recipient: [
+            'Admin',
+            'Security admin'
+        ]
+    },
+    {
+        type: ActionType.DRAWER,
+        recipient: [
+            'Admin'
+        ]
+    },
+    {
+        type: ActionType.INTEGRATION,
+        integrationName: 'PagerDuty'
     }
 ];
 
@@ -201,6 +224,9 @@ export const NotificationsListPage: React.FunctionComponent = () => {
             </PageHeader>
             <Main>
                 <Section>
+                    <DefaultBehavior
+                        actions={ defaultActions }
+                    />
                     <NotificationsToolbar
                         filters={ notificationsFilter.filters }
                         setFilters={ notificationsFilter.setFilters }
