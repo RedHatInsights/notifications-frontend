@@ -1,5 +1,14 @@
 import * as React from 'react';
-import { expandable, ICell, IRow, RowWrapperProps, Table, TableBody, TableHeader } from '@patternfly/react-table';
+import {
+    expandable,
+    ICell,
+    IRow,
+    IRowData,
+    RowWrapperProps,
+    Table,
+    TableBody,
+    TableHeader
+} from '@patternfly/react-table';
 import { Messages } from '../../properties/Messages';
 import { assertNever, joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
@@ -72,7 +81,8 @@ const columns: Array<ICell> = [
 ];
 
 export interface NotificationsTableProps extends OuiaComponentProps {
-    notifications: NotificationRow;
+    notifications: NotificationRows;
+    onCollapse: (index: number, isOpen: boolean) => void;
 }
 
 export type NotificationRowGroupedByNone = Notification;
@@ -83,7 +93,7 @@ export interface NotificationRowGroupedByApplication {
     isOpen: boolean;
 }
 
-export type NotificationRow = {
+export type NotificationRows = {
     grouped: GroupByEnum.Application;
     data: Array<NotificationRowGroupedByApplication>;
 } | {
@@ -281,7 +291,20 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
 
     }, [ props.notifications ]);
 
-    console.log(rows);
+    const onCollapseHandler = React.useCallback((_event, _index: number, isOpen: boolean, data: IRowData) => {
+        const notifications = props.notifications;
+        const onCollapse = props.onCollapse;
+
+        if (notifications.grouped === GroupByEnum.None) {
+            throw new Error('Invalid group None for CollapseHandler');
+        }
+
+        const index = notifications.data.findIndex(n => n.application === data.id);
+        if (onCollapse && index !== undefined && index !== -1) {
+            onCollapse(index, isOpen);
+        }
+
+    }, [ props.onCollapse, props.notifications ]);
 
     return (
         <div { ...getOuiaProps('Notifications/Table', props) }>
@@ -289,6 +312,7 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
                 aria-label={ Messages.components.notifications.table.title }
                 rows={ rows }
                 cells={ columns }
+                /*onCollapse={ onCollapseHandler }*/
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
             >
                 <TableHeader/>

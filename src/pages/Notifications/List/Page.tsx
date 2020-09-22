@@ -12,8 +12,8 @@ import { useNotificationFilter } from './useNotificationFilter';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { style } from 'typestyle';
 import {
-    NotificationRow,
     NotificationRowGroupedByApplication,
+    NotificationRows,
     NotificationsTable
 } from '../../../components/Notifications/Table';
 import { ActionType, Notification } from '../../../types/Notification';
@@ -24,6 +24,128 @@ const displayInlineClassName = style({
     display: 'inline'
 });
 
+const toNotificationRow = (notifications: Array<Notification>, groupBy: GroupByEnum): NotificationRows => {
+    switch (groupBy) {
+        case GroupByEnum.None:
+            return {
+                grouped: GroupByEnum.None,
+                data: notifications
+            };
+        case GroupByEnum.Application:
+            const grouped = notifications.reduce((groups, notification) => {
+                if (!groups[notification.application]) {
+                    groups[notification.application] = {
+                        application: notification.application,
+                        isOpen: true,
+                        notifications: []
+                    };
+                }
+
+                groups[notification.application].notifications.push(notification);
+                return groups;
+            }, {} as Record<string, NotificationRowGroupedByApplication>);
+
+            return {
+                grouped: GroupByEnum.Application,
+                data: Object.values(grouped)
+            };
+        default:
+            assertNever(groupBy);
+    }
+};
+
+const notifications: Array<Notification> = [
+    {
+        id: 'advisor-new-recommendation-critical',
+        event: 'New recommendation - Critical',
+        application: 'Advisor',
+        actions: [
+            {
+                type: ActionType.EMAIL,
+                recipient: [
+                    'Admin', 'Security'
+                ]
+            },
+            {
+                type: ActionType.DRAWER,
+                recipient: [
+                    'Admin'
+                ]
+            },
+            {
+                type: ActionType.INTEGRATION,
+                integrationName: 'PagerDuty'
+            }
+        ]
+    },
+    {
+        id: 'advisor-new-recommendation-high',
+        event: 'New recommendation - High',
+        application: 'Advisor',
+        actions: []
+    },
+    {
+        id: 'advisor-new-recommendation-medium',
+        event: 'New recommendation - Medium',
+        application: 'Advisor',
+        actions: []
+    },
+    {
+        id: 'advisor-new-recommendation-low',
+        event: 'New recommendation - Low',
+        application: 'Advisor',
+        actions: [
+            {
+                type: ActionType.PLATFORM_ALERT,
+                recipient: []
+            }
+        ]
+    },
+    {
+        id: 'vulnerability-new-cve-detected-critical',
+        event: 'New CVE detected - Critical',
+        application: 'Vulnerability',
+        actions: [
+            {
+                type: ActionType.EMAIL,
+                recipient: [
+                    'Security admin',
+                    'Stakeholders'
+                ]
+            },
+            {
+                type: ActionType.DRAWER,
+                recipient: []
+            },
+            {
+                type: ActionType.INTEGRATION,
+                integrationName: 'Slack'
+            }
+        ]
+    },
+    {
+        id: 'vulnerability-new-cve-detected-high',
+        event: 'New CVE detected - High',
+        application: 'Vulnerability',
+        actions: [
+            {
+                type: ActionType.EMAIL,
+                recipient: [
+                    'Security admin'
+                ]
+            },
+            {
+                type: ActionType.DRAWER,
+                recipient: [ 'Admin' ]
+            },
+            {
+                type: ActionType.INTEGRATION,
+                integrationName: 'Slack'
+            }
+        ]
+    }
+];
+
 export const NotificationsListPage: React.FunctionComponent = () => {
 
     const notificationsFilter = useNotificationFilter();
@@ -32,135 +154,44 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         setGroupBy(selected);
     }, [ setGroupBy ]);
 
-    const notifications: Array<Notification> = [
-        {
-            id: 'advisor-new-recommendation-critical',
-            event: 'New recommendation - Critical',
-            application: 'Advisor',
-            actions: [
-                {
-                    type: ActionType.EMAIL,
-                    recipient: [
-                        'Admin', 'Security'
-                    ]
-                },
-                {
-                    type: ActionType.DRAWER,
-                    recipient: [
-                        'Admin'
-                    ]
-                },
-                {
-                    type: ActionType.INTEGRATION,
-                    integrationName: 'PagerDuty'
-                }
-            ]
-        },
-        {
-            id: 'advisor-new-recommendation-high',
-            event: 'New recommendation - High',
-            application: 'Advisor',
-            actions: []
-        },
-        {
-            id: 'advisor-new-recommendation-medium',
-            event: 'New recommendation - Medium',
-            application: 'Advisor',
-            actions: []
-        },
-        {
-            id: 'advisor-new-recommendation-low',
-            event: 'New recommendation - Low',
-            application: 'Advisor',
-            actions: [
-                {
-                    type: ActionType.PLATFORM_ALERT,
-                    recipient: []
-                }
-            ]
-        },
-        {
-            id: 'vulnerability-new-cve-detected-critical',
-            event: 'New CVE detected - Critical',
-            application: 'Vulnerability',
-            actions: [
-                {
-                    type: ActionType.EMAIL,
-                    recipient: [
-                        'Security admin',
-                        'Stakeholders'
-                    ]
-                },
-                {
-                    type: ActionType.DRAWER,
-                    recipient: []
-                },
-                {
-                    type: ActionType.INTEGRATION,
-                    integrationName: 'Slack'
-                }
-            ]
-        },
-        {
-            id: 'vulnerability-new-cve-detected-high',
-            event: 'New CVE detected - High',
-            application: 'Vulnerability',
-            actions: [
-                {
-                    type: ActionType.EMAIL,
-                    recipient: [
-                        'Security admin'
-                    ]
-                },
-                {
-                    type: ActionType.DRAWER,
-                    recipient: [ 'Admin' ]
-                },
-                {
-                    type: ActionType.INTEGRATION,
-                    integrationName: 'Slack'
-                }
-            ]
-        }
-    ];
+    const [ notificationRows, setNotificationRows ] = React.useState<NotificationRows>({
+        data: [],
+        grouped: GroupByEnum.Application
+    });
 
-    const notificationRows = React.useMemo<NotificationRow>(() => {
+    React.useEffect(() => {
+        setNotificationRows(toNotificationRow(notifications, groupBy));
+    }, [ groupBy ]);
 
-        switch (groupBy) {
-            case GroupByEnum.None:
-                return {
-                    grouped: GroupByEnum.None,
-                    data: notifications
-                };
-            case GroupByEnum.Application:
-                const grouped = notifications.reduce((groups, notification) => {
-                    if (!groups[notification.application]) {
-                        groups[notification.application] = {
-                            application: notification.application,
-                            isOpen: true,
-                            notifications: []
-                        };
-                    }
+    const onCollapse = React.useCallback((index: number, isOpen: boolean) => {
+        setNotificationRows(prevRows => {
+            switch (prevRows.grouped) {
+                case GroupByEnum.None:
+                    throw new Error('On collapse is not valid for group: None');
+                case GroupByEnum.Application:
+                    const data = [
+                        ...prevRows.data
+                    ];
 
-                    groups[notification.application].notifications.push(notification);
-                    return groups;
-                }, {} as Record<string, NotificationRowGroupedByApplication>);
+                    data[index] = {
+                        ...data[index],
+                        isOpen
+                    };
 
-                return {
-                    grouped: GroupByEnum.Application,
-                    data: Object.values(grouped)
-                };
-            default:
-                assertNever(groupBy);
-        }
-    }, [ notifications, groupBy ]);
+                    return {
+                        ...prevRows,
+                        data
+                    };
+                default:
+                    assertNever(prevRows);
+            }
+        });
+    }, [ setNotificationRows ]);
 
     const pageHeaderTitleProps: PageHeaderTitleProps = {
         className: displayInlineClassName,
         title: Messages.pages.notifications.list.title
     };
-
-    console.log(notificationRows);
 
     return (
         <>
@@ -179,6 +210,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                     >
                         <NotificationsTable
                             notifications={ notificationRows }
+                            onCollapse={ onCollapse }
                         />
                     </NotificationsToolbar>
                 </Section>
