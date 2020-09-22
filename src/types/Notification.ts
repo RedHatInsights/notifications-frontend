@@ -15,7 +15,7 @@ export interface ActionIntegration extends ActionBase {
 }
 
 export interface ActionNotify extends ActionBase {
-    type: ActionType.EMAIL | ActionType.DRAWER;
+    type: ActionType.EMAIL | ActionType.DRAWER | ActionType.PLATFORM_ALERT;
     recipient: Array<string>;
 }
 
@@ -24,5 +24,6 @@ export type Action = ActionIntegration | ActionNotify;
 export enum ActionType {
     EMAIL = 'EMAIL',
     DRAWER = 'DRAWER',
-    INTEGRATION = 'INTEGRATION'
+    INTEGRATION = 'INTEGRATION',
+    PLATFORM_ALERT = 'PLATFORM_ALERT'
 }

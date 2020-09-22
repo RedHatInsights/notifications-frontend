@@ -1,12 +1,15 @@
 import * as React from 'react';
-import { ICell, Table, TableHeader, TableBody, IRow, RowWrapperProps } from '@patternfly/react-table';
+import { expandable, ICell, IRow, RowWrapperProps, Table, TableBody, TableHeader } from '@patternfly/react-table';
 import { Messages } from '../../properties/Messages';
-import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { Action, ActionType, Notification } from '../../types/Notification';
 import { style } from 'typestyle';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
+import { ActionComponent } from './ActionComponent';
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { GroupByEnum } from './Types';
 
 const pfBorderBottomClassName = style({
     borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)'
@@ -18,16 +21,42 @@ const noBorderBottom = style({
 
 const cellPaddingBottom = style({
     paddingBottom: '0 !important'
-});
+} as any);
+
+const cellPaddingBottomStyle = {
+    '--pf-c-table__expandable-row-content--PaddingBottom': '0'
+} as any;
 
 const cellPaddingTop = style({
     paddingTop: `8px !important`
+} as any);
+
+const cellPaddingTopStyle = {
+    '--pf-c-table__expandable-row-content--PaddingTop': '0'
+} as any;
+
+const applicationClassName = style({
+    color: '#888'
+});
+
+const noExpandableBorderClassName = style({
+    $nest: {
+        '&:after': {
+            borderLeft: 'none !important',
+            paddingBottom: '0 !important'
+        }
+    }
+});
+
+const applicationGroupClassName = style({
+    fontWeight: 600
 });
 
 const columns: Array<ICell> = [
     {
         title: Messages.components.notifications.table.columns.event,
-        transforms: []
+        transforms: [ ],
+        cellFormatters: [ expandable ]
     },
     {
         title: Messages.components.notifications.table.columns.action,
@@ -36,14 +65,31 @@ const columns: Array<ICell> = [
     {
         title: Messages.components.notifications.table.columns.recipient,
         transforms: []
+    },
+    {
+        title: ''
     }
 ];
 
 export interface NotificationsTableProps extends OuiaComponentProps {
-    notifications: Array<NotificationRow>;
+    notifications: NotificationRow;
 }
 
-export type NotificationRow = Notification;
+export type NotificationRowGroupedByNone = Notification;
+
+export interface NotificationRowGroupedByApplication {
+    application: string;
+    notifications: Array<NotificationRowGroupedByNone>;
+    isOpen: boolean;
+}
+
+export type NotificationRow = {
+    grouped: GroupByEnum.Application;
+    data: Array<NotificationRowGroupedByApplication>;
+} | {
+    grouped: GroupByEnum.None;
+    data: Array<NotificationRowGroupedByNone>;
+}
 
 interface EventCellProps {
     event: string;
@@ -53,7 +99,7 @@ interface EventCellProps {
 const EventCell: React.FunctionComponent<EventCellProps> = (props) => (
     <>
         <div> { props.event } </div>
-        <div> { props.application } </div>
+        <div className={ applicationClassName }> { props.application } </div>
     </>
 );
 
@@ -61,17 +107,13 @@ interface ActionCellProps {
     actions: Array<Action>;
 }
 
-const getId = (action: Action): string => {
-    if (action.type === ActionType.INTEGRATION) {
-        return `${action.type} - ${action.integrationName}`;
-    }
-
-    return `${action.type}`;
-};
-
 const getRecipients = (action: Action): string => {
     if (action.type === ActionType.INTEGRATION) {
         return 'N/A';
+    }
+
+    if (action.recipient.length === 0) {
+        return 'Default user access';
     }
 
     return action.recipient.join(', ');
@@ -102,11 +144,10 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
     );
 };
 
-const toTableRows = (notifications: Array<NotificationRow>): Array<IRow> => {
+const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, parent?: number) => {
     return notifications.reduce((rows, notification) => {
         const rowSpan = Math.max(1, notification.actions.length);
-
-        const firtAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
+        const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
 
         rows.push({
             id: notification.id,
@@ -119,26 +160,39 @@ const toTableRows = (notifications: Array<NotificationRow>): Array<IRow> => {
                     />,
                     props: {
                         rowSpan,
-                        className: pfBorderBottomClassName
+                        className: joinClasses(noExpandableBorderClassName, pfBorderBottomClassName)
                     }
                 },
                 {
-                    title: <><span>{ firtAction && getId(firtAction) }</span></>,
+                    title: <><span>{ firstAction ? <ActionComponent action={ firstAction } /> : 'Default behavior' }</span></>,
                     props: {
-                        className: cellPaddingBottom
+                        className: cellPaddingBottom,
+                        style: cellPaddingBottomStyle
                     }
                 },
                 {
-                    title: <><span>{ firtAction && getRecipients(firtAction) }</span></>,
+                    title: <><span>{ firstAction && getRecipients(firstAction) }</span></>,
                     props: {
-                        className: cellPaddingBottom
+                        className: cellPaddingBottom,
+                        style: cellPaddingBottomStyle
+                    }
+                },
+                {
+                    title: <><Button variant={ ButtonVariant.link }>Edit</Button></>,
+                    props: {
+                        className: cellPaddingBottom,
+                        style: cellPaddingBottomStyle
                     }
                 }
             ],
             props: {
-                className: noBorderBottom
+                className: notification.actions.length > 1 ? noBorderBottom : ''
             }
         });
+
+        if (parent !== undefined) {
+            rows[rows.length - 1].parent = parent;
+        }
 
         for (let i = 1; i < rowSpan; ++i) {
             const classNames = joinClasses(
@@ -146,20 +200,32 @@ const toTableRows = (notifications: Array<NotificationRow>): Array<IRow> => {
                 cellPaddingTop
             );
             const id = `${notification.id}-action-${i}`;
+            const cssStyle = {
+                ...cellPaddingTopStyle,
+                ...(i + 1 === rowSpan ? {} : cellPaddingBottomStyle)
+            };
             rows.push({
                 id,
                 key: id,
                 cells: [
                     {
-                        title: getId(notification.actions[i]),
+                        title: <ActionComponent action={ notification.actions[i] } />,
                         props: {
-                            className: classNames
+                            className: joinClasses(noExpandableBorderClassName, classNames),
+                            style: cssStyle
                         }
                     },
                     {
                         title: getRecipients(notification.actions[i]),
                         props: {
-                            className: classNames
+                            className: classNames,
+                            style: cssStyle
+                        }
+                    },
+                    {
+                        props: {
+                            className: classNames,
+                            style: cssStyle
                         }
                     }
                 ],
@@ -167,7 +233,34 @@ const toTableRows = (notifications: Array<NotificationRow>): Array<IRow> => {
                     className: (i + 1 === rowSpan ? '' : noBorderBottom)
                 }
             });
+
+            if (parent !== undefined) {
+                rows[rows.length - 1].parent = parent;
+            }
         }
+
+        return rows;
+    }, [] as Array<IRow>);
+};
+
+const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>): Array<IRow> => {
+    return applicationGroups.reduce((rows, applicationGroup) => {
+        rows.push({
+            id: applicationGroup.application,
+            key: applicationGroup.application,
+            cells: [
+                {
+                    title: <span className={ applicationGroupClassName }> Application: { applicationGroup.application }</span>,
+                    props: {
+                        colSpan: columns.length,
+                        className: noExpandableBorderClassName
+                    }
+                }
+            ],
+            isOpen: applicationGroup.isOpen
+        });
+
+        rows.push(...toTableRowsGroupedByNone(applicationGroup.notifications, rows.length - 1));
 
         return rows;
     }, [] as Array<IRow>);
@@ -176,7 +269,16 @@ const toTableRows = (notifications: Array<NotificationRow>): Array<IRow> => {
 export const NotificationsTable: React.FunctionComponent<NotificationsTableProps> = (props) => {
 
     const rows = React.useMemo(() => {
-        return toTableRows(props.notifications);
+        const notifications = props.notifications;
+        switch (notifications.grouped) {
+            case GroupByEnum.Application:
+                return toTableRowsGroupedByApplication(notifications.data);
+            case GroupByEnum.None:
+                return toTableRowsGroupedByNone(notifications.data);
+            default:
+                assertNever(notifications);
+        }
+
     }, [ props.notifications ]);
 
     console.log(rows);

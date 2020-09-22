@@ -12,11 +12,16 @@ import {
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { GroupBy } from './Table/GroupBy';
+import { GroupByEnum } from './Types';
 
 interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
     setFilters: SetNotificationFilters;
     clearFilter: ClearNotificationFilters;
+
+    groupBy: GroupByEnum;
+    onGroupBySelected: (selected: GroupByEnum) => void;
 }
 
 const filterMetadata: ColumnsMetada<typeof NotificationFilterColumn> = {
@@ -40,6 +45,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
             <PrimaryToolbar
                 filterConfig={ primaryToolbarFilterConfig.filterConfig }
                 activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                dedicatedAction={ <GroupBy selected={ props.groupBy } groupBy={ props.onGroupBySelected } /> }
             />
             { props.children }
             <PrimaryToolbar/>
