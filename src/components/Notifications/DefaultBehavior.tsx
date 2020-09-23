@@ -32,7 +32,7 @@ const tableClassName = style({
 });
 
 const titleClassName = style({
-    fontWeight: 400
+    fontWeight: 600
 });
 
 export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (props) => {

@@ -3,6 +3,7 @@ export interface Notification {
     application: string;
     event: string;
     actions: Array<Action>;
+    useDefault?: boolean;
 }
 
 export interface ActionBase {

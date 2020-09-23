@@ -90,13 +90,15 @@ const notifications: Array<Notification> = [
         id: 'advisor-new-recommendation-high',
         event: 'New recommendation - High',
         application: 'Advisor',
-        actions: []
+        actions: [],
+        useDefault: true
     },
     {
         id: 'advisor-new-recommendation-medium',
         event: 'New recommendation - Medium',
         application: 'Advisor',
-        actions: []
+        actions: [],
+        useDefault: true
     },
     {
         id: 'advisor-new-recommendation-low',
@@ -137,22 +139,7 @@ const notifications: Array<Notification> = [
         id: 'vulnerability-new-cve-detected-high',
         event: 'New CVE detected - High',
         application: 'Vulnerability',
-        actions: [
-            {
-                type: ActionType.EMAIL,
-                recipient: [
-                    'Security admin'
-                ]
-            },
-            {
-                type: ActionType.DRAWER,
-                recipient: [ 'Admin' ]
-            },
-            {
-                type: ActionType.INTEGRATION,
-                integrationName: 'Slack'
-            }
-        ]
+        actions: []
     }
 ];
 

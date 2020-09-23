@@ -50,7 +50,7 @@ const cellPaddingTopStyle = {
     '--pf-c-table__expandable-row-content--PaddingTop': '0'
 } as any;
 
-const applicationClassName = style({
+const grayFontClassName = style({
     color: '#888'
 });
 
@@ -115,7 +115,7 @@ interface EventCellProps {
 const EventCell: React.FunctionComponent<EventCellProps> = (props) => (
     <>
         <div> { props.event } </div>
-        <div className={ applicationClassName }> { props.application } </div>
+        <div className={ grayFontClassName }> { props.application } </div>
     </>
 );
 
@@ -123,16 +123,33 @@ interface ActionCellProps {
     actions: Array<Action>;
 }
 
-const getRecipients = (action: Action): string => {
+const getActionCell = (isDefault: boolean, action?: Action) => {
+    if (isDefault) {
+        return <span>Default behavior</span>;
+    }
+
+    if (action === undefined) {
+        return (
+            <span className={ grayFontClassName }>
+                <div>No actions.</div>
+                <div>Users will be notified.</div>
+            </span>
+        );
+    }
+
+    return <ActionComponent action={ action } />;
+};
+
+const getRecipients = (action: Action) => {
     if (action.type === ActionType.INTEGRATION) {
-        return 'N/A';
+        return <span className={ grayFontClassName }>N/A</span>;
     }
 
     if (action.recipient.length === 0) {
-        return 'Default user access';
+        return <span>Default user access</span>;
     }
 
-    return action.recipient.join(', ');
+    return <span>{ action.recipient.join(', ') }</span>;
 };
 
 const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
@@ -162,7 +179,7 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
 
 const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, parent?: number) => {
     return notifications.reduce((rows, notification) => {
-        const rowSpan = Math.max(1, notification.actions.length);
+        const rowSpan = Math.max(1, notification.useDefault ? 1 : notification.actions.length);
         const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
 
         rows.push({
@@ -184,7 +201,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span>{ firstAction ? <ActionComponent action={ firstAction } /> : 'Default behavior' }</span></>,
+                    title: <><span>{ getActionCell(!!notification.useDefault, firstAction) }</span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -231,7 +248,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                 key: id,
                 cells: [
                     {
-                        title: <ActionComponent action={ notification.actions[i] } />,
+                        title: getActionCell(!!notification.useDefault, notification.actions[i]),
                         props: {
                             className: joinClasses(
                                 noExpandableBorderClassName,
