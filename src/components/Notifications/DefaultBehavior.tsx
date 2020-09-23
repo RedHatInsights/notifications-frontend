@@ -4,14 +4,22 @@ import { Action, ActionType } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { style } from 'typestyle';
 import { ActionComponent } from './ActionComponent';
+import { Button, ButtonVariant, Flex, FlexItem } from '@patternfly/react-core';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {
     actions: Array<Action>;
 }
 
+const contentClassName = style({
+    backgroundColor: '#f0f0f0',
+    paddingTop: Spacer.MD,
+    paddingBottom: Spacer.MD,
+    paddingLeft: Spacer.MD,
+    paddingRight: Spacer.MD
+});
+
 const tableClassName = style({
     paddingTop: Spacer.LG,
-    paddingBottom: Spacer.LG,
     display: 'block',
     $nest: {
         '& td, & th': {
@@ -24,13 +32,18 @@ const tableClassName = style({
 });
 
 const titleClassName = style({
-    fontWeight: 600
+    fontWeight: 400
 });
 
 export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (props) => {
     return (
-        <div { ...getOuiaProps('Notifications/DefaultBehavior', props) } >
-            <div className={ titleClassName }>Default behavior</div>
+        <div { ...getOuiaProps('Notifications/DefaultBehavior', props) } className={ contentClassName } >
+            <Flex
+                justifyContent={ { default: 'justifyContentSpaceBetween' } }
+            >
+                <FlexItem><div className={ titleClassName }>Default behavior</div></FlexItem>
+                <FlexItem><Button variant={ ButtonVariant.link }>Edit</Button></FlexItem>
+            </Flex>
             <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
             <table className={ tableClassName }>
                 <thead>

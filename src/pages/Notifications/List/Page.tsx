@@ -18,11 +18,18 @@ import {
 } from '../../../components/Notifications/Table';
 import { Action, ActionType, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
-import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, ExporterType, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 
 const displayInlineClassName = style({
     display: 'inline'
+});
+
+const tableTitleClassName = style({
+    fontWeight: 600,
+    paddingTop: Spacer.MD,
+    paddingBottom: Spacer.MD,
+    fontSize: '17px'
 });
 
 const toNotificationRow = (notifications: Array<Notification>, groupBy: GroupByEnum): NotificationRows => {
@@ -216,6 +223,10 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         title: Messages.pages.notifications.list.title
     };
 
+    const onExport = React.useCallback((type: ExporterType) => {
+        console.log('Export to', type);
+    }, []);
+
     return (
         <>
             <PageHeader>
@@ -227,12 +238,14 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                     <DefaultBehavior
                         actions={ defaultActions }
                     />
+                    <div className={ tableTitleClassName }>Insights notifications types and behavior</div>
                     <NotificationsToolbar
                         filters={ notificationsFilter.filters }
                         setFilters={ notificationsFilter.setFilters }
                         clearFilter={ notificationsFilter.clearFilter }
                         groupBy={ groupBy }
                         onGroupBySelected={ groupBySelected }
+                        onExport={ onExport }
                     >
                         <NotificationsTable
                             notifications={ notificationRows }

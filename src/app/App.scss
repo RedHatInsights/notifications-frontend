@@ -6,3 +6,7 @@
 .pf-c-wizard__main-body {
   max-height: 100%;
 }
+
+.pf-c-page__main#root {
+  --pf-c-page__main-section--BackgroundColor: #FFF;
+}

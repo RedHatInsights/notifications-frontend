@@ -5,15 +5,16 @@ import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, S
 import { style } from 'typestyle';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import {
-    ColumnsMetada,
+    ColumnsMetada, ExporterType,
     OuiaComponentProps,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 
 interface IntegrationsToolbarProps extends OuiaComponentProps {
     onAddIntegration: () => void;
-    onExport: (type: string) => void;
+    onExport: (type: ExporterType) => void;
     filters: IntegrationFilters;
     setFilters: SetIntegrationFilters;
     clearFilters: ClearIntegrationFilters;
@@ -83,17 +84,7 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
         };
     }, [ props.onAddIntegration ]);
 
-    const exportConfig = React.useMemo(() => {
-        const onExport = props.onExport;
-        if (onExport) {
-            return {
-                extraItems: [],
-                onSelect: (_event, type: string) => onExport(type)
-            };
-        }
-
-        return undefined;
-    }, [ props.onExport ]);
+    const exportConfig = useTableExportConfig(props.onExport);
 
     return (
         <div { ...getOuiaProps('Integrations/DualToolbar', props) }>
