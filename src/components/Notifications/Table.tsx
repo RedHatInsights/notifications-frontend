@@ -89,6 +89,7 @@ const columns: Array<ICell> = [
 export interface NotificationsTableProps extends OuiaComponentProps {
     notifications: NotificationRows;
     onCollapse: (index: number, isOpen: boolean) => void;
+    onEdit: OnEditNotification;
 }
 
 export type NotificationRowGroupedByNone = Notification;
@@ -106,6 +107,8 @@ export type NotificationRows = {
     grouped: GroupByEnum.None;
     data: Array<NotificationRowGroupedByNone>;
 }
+
+export type OnEditNotification = (notification: Notification) => void;
 
 interface EventCellProps {
     event: string;
@@ -177,7 +180,7 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
     );
 };
 
-const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, parent?: number) => {
+const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, onEdit: OnEditNotification, parent?: number) => {
     return notifications.reduce((rows, notification) => {
         const rowSpan = Math.max(1, notification.useDefault ? 1 : notification.actions.length);
         const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
@@ -215,7 +218,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><Button variant={ ButtonVariant.link }>Edit</Button></>,
+                    title: <><Button onClick={ () => onEdit(notification) } variant={ ButtonVariant.link }>Edit</Button></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -288,7 +291,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
     }, [] as Array<IRow>);
 };
 
-const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>): Array<IRow> => {
+const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>, onEdit: OnEditNotification): Array<IRow> => {
     return applicationGroups.reduce((rows, applicationGroup) => {
         rows.push({
             id: applicationGroup.application,
@@ -310,7 +313,7 @@ const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRo
             isOpen: applicationGroup.isOpen
         });
 
-        rows.push(...toTableRowsGroupedByNone(applicationGroup.notifications, rows.length - 1));
+        rows.push(...toTableRowsGroupedByNone(applicationGroup.notifications, onEdit, rows.length - 1));
 
         return rows;
     }, [] as Array<IRow>);
@@ -322,14 +325,14 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
         const notifications = props.notifications;
         switch (notifications.grouped) {
             case GroupByEnum.Application:
-                return toTableRowsGroupedByApplication(notifications.data);
+                return toTableRowsGroupedByApplication(notifications.data, props.onEdit);
             case GroupByEnum.None:
-                return toTableRowsGroupedByNone(notifications.data);
+                return toTableRowsGroupedByNone(notifications.data, props.onEdit);
             default:
                 assertNever(notifications);
         }
 
-    }, [ props.notifications ]);
+    }, [ props.notifications, props.onEdit ]);
 
     const onCollapseHandler = React.useCallback((_event, _index: number, isOpen: boolean, data: IRowData) => {
         const notifications = props.notifications;

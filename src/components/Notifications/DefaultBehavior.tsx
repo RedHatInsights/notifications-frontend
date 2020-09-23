@@ -8,6 +8,7 @@ import { Button, ButtonVariant, Flex, FlexItem } from '@patternfly/react-core';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {
     actions: Array<Action>;
+    onEdit: () => void;
 }
 
 const contentClassName = style({
@@ -42,7 +43,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                 justifyContent={ { default: 'justifyContentSpaceBetween' } }
             >
                 <FlexItem><div className={ titleClassName }>Default behavior</div></FlexItem>
-                <FlexItem><Button variant={ ButtonVariant.link }>Edit</Button></FlexItem>
+                <FlexItem><Button onClick={ props.onEdit } variant={ ButtonVariant.link }>Edit</Button></FlexItem>
             </Flex>
             <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
             <table className={ tableClassName }>

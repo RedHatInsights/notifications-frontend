@@ -20,6 +20,8 @@ import { Action, ActionType, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { assertNever, ExporterType, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
+import { EditNotificationPage } from '../Form/EditNotificationPage';
+import { useFormModalReducer, makeNoneAction, makeEditDefaultAction, makeEditNotificationAction } from './useFormModalReducer';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -180,6 +182,12 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         setNotificationRows(toNotificationRow(notifications, groupBy));
     }, [ groupBy ]);
 
+    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
+
+    const closeFormModal = React.useCallback((_saved: boolean) => {
+        dispatchModalIsOpen(makeNoneAction());
+    }, [ dispatchModalIsOpen ]);
+
     const onCollapse = React.useCallback((index: number, isOpen: boolean) => {
         setNotificationRows(prevRows => {
             switch (prevRows.grouped) {
@@ -214,6 +222,14 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         console.log('Export to', type);
     }, []);
 
+    const onEditDefaultAction = React.useCallback(() => {
+        dispatchModalIsOpen(makeEditDefaultAction(defaultActions));
+    }, [ dispatchModalIsOpen ]);
+
+    const onEditNotification = React.useCallback((notification: Notification) => {
+        dispatchModalIsOpen(makeEditNotificationAction(notification));
+    }, [ dispatchModalIsOpen ]);
+
     return (
         <>
             <PageHeader>
@@ -224,6 +240,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                 <Section>
                     <DefaultBehavior
                         actions={ defaultActions }
+                        onEdit={ onEditDefaultAction }
                     />
                     <div className={ tableTitleClassName }>Insights notifications types and behavior</div>
                     <NotificationsToolbar
@@ -237,8 +254,15 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                         <NotificationsTable
                             notifications={ notificationRows }
                             onCollapse={ onCollapse }
+                            onEdit={ onEditNotification }
                         />
                     </NotificationsToolbar>
+                    { modalIsOpenState.isOpen && (
+                        <EditNotificationPage
+                            onClose={ closeFormModal }
+                            { ...modalIsOpenState }
+                        />
+                    ) }
                 </Section>
             </Main>
         </>
