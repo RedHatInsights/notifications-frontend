@@ -1,7 +1,5 @@
 import * as React from 'react';
-import { Action, ActionType, Notification } from '../../types/Notification';
-import { Messages } from '../../properties/Messages';
-import { FormSelectOption } from '@patternfly/react-core';
+import { Action, Notification } from '../../types/Notification';
 import {
     Checkbox,
     Form,
@@ -12,9 +10,9 @@ import {
 import { useFormikContext } from 'formik';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 
-const actionFormOptions = [ ActionType.INTEGRATION, ActionType.DRAWER, ActionType.EMAIL, ActionType.PLATFORM_ALERT ]
+/* const actionFormOptions = [ ActionType.INTEGRATION, ActionType.DRAWER, ActionType.EMAIL, ActionType.PLATFORM_ALERT ]
 .map(type => Messages.components.notifications.types[type])
-.map(label => (<FormSelectOption key={ label } label={ label }/>));
+.map(label => (<FormSelectOption key={ label } label={ label }/>)); */
 
 export interface NotificationFormProps extends OuiaComponentProps {
     type: 'default' | 'notification';

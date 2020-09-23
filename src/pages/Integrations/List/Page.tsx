@@ -15,8 +15,7 @@ import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer }
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
 import {
-    addDangerNotification, ExporterType,
-    exporterTypeFromString
+    addDangerNotification, ExporterType
 } from '@redhat-cloud-services/insights-common-typescript';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import inBrowserDownload from 'in-browser-download';
