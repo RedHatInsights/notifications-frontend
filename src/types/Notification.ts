@@ -6,6 +6,10 @@ export interface Notification {
     useDefault?: boolean;
 }
 
+export interface DefaultNotificationBehavior {
+    actions: Array<Action>;
+}
+
 export interface ActionBase {
     type: ActionType;
 }

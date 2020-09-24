@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
-import { Action, ActionType } from '../../types/Notification';
+import { ActionType, DefaultNotificationBehavior } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { style } from 'typestyle';
 import { ActionComponent } from './ActionComponent';
 import { Button, ButtonVariant, Flex, FlexItem } from '@patternfly/react-core';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {
-    actions: Array<Action>;
+    defaultBehavior: DefaultNotificationBehavior;
     onEdit: () => void;
 }
 
@@ -55,7 +55,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                 </thead>
                 <tbody>
                     {
-                        props.actions.map((a, index) => {
+                        props.defaultBehavior.actions.map((a, index) => {
                             return (
                                 <tr key={ index }>
                                     <td><ActionComponent action={ a }/></td>

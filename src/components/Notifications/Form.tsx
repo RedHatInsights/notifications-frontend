@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { Action, Notification } from '../../types/Notification';
+import { Action, ActionType, DefaultNotificationBehavior, Notification } from '../../types/Notification';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import {
     Checkbox,
     Form,
@@ -7,22 +8,54 @@ import {
     OuiaComponentProps,
     ouiaIdConcat
 } from '@redhat-cloud-services/insights-common-typescript';
-import { useFormikContext } from 'formik';
+import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from 'formik';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { PlusCircleIcon } from '@patternfly/react-icons';
+import { EditableActionTable } from './EditableActionTable';
 
-/* const actionFormOptions = [ ActionType.INTEGRATION, ActionType.DRAWER, ActionType.EMAIL, ActionType.PLATFORM_ALERT ]
-.map(type => Messages.components.notifications.types[type])
-.map(label => (<FormSelectOption key={ label } label={ label }/>)); */
+type Type = 'default' | 'notification';
 
 export interface NotificationFormProps extends OuiaComponentProps {
-    type: 'default' | 'notification';
+    type: Type;
 }
+
+interface ActionsArrayProps extends FieldArrayRenderProps {
+    form: FormikProps<Notification | DefaultNotificationBehavior>;
+    type: Type;
+}
+
+const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
+
+    const { values } = props.form;
+    const actions = values.actions;
+
+    const addAction = () => {
+        const newAction: Action = {
+            type: ActionType.PLATFORM_ALERT,
+            recipient: []
+        };
+
+        props.push(newAction);
+    };
+
+    return (
+        <>
+            { (actions === undefined || actions.length === 0) && (
+                <span>No actions. Users will not be notified.</span>
+            )}
+
+            { actions && actions.length > 0 && (
+                <EditableActionTable path={ props.name } actions={ actions }/>
+            ) }
+            <Button variant={ ButtonVariant.link } icon={ <PlusCircleIcon /> } onClick={ addAction }>Add action</Button>
+        </>
+    );
+};
 
 export const NotificationForm: React.FunctionComponent<NotificationFormProps> = (props) => {
 
-    const { values } = useFormikContext<Notification | Array<Action>>();
+    const { values } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const { type } = props;
-    const actions: Array<Action> = type === 'default' ? (values as Array<Action>) : ((values as Notification).actions);
 
     const showActions: boolean = type === 'default' ? true : !(values as Notification).useDefault;
 
@@ -59,15 +92,9 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
 
             { showActions && (
                 <>
-                    { (actions === undefined || actions.length === 0) && (
-                        <span>No actions. Users will not be notified.</span>
-                    )}
-
-                    { actions.length > 0 && (
-                        actions.map(a => {
-                            return a.type;
-                        }).join(', ')
-                    ) }
+                    <FieldArray name="actions">
+                        { helpers =>  <ActionArray type={ props.type } { ...helpers } /> }
+                    </FieldArray>
                 </>
             ) }
 

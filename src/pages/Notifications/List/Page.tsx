@@ -16,7 +16,7 @@ import {
     NotificationRows,
     NotificationsTable
 } from '../../../components/Notifications/Table';
-import { Action, ActionType, Notification } from '../../../types/Notification';
+import { ActionType, DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { assertNever, ExporterType, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
@@ -145,25 +145,27 @@ const notifications: Array<Notification> = [
     }
 ];
 
-const defaultActions: Array<Action> = [
-    {
-        type: ActionType.EMAIL,
-        recipient: [
-            'Admin',
-            'Security admin'
-        ]
-    },
-    {
-        type: ActionType.DRAWER,
-        recipient: [
-            'Admin'
-        ]
-    },
-    {
-        type: ActionType.INTEGRATION,
-        integrationName: 'PagerDuty'
-    }
-];
+const defaultNotificationBehavior: DefaultNotificationBehavior = {
+    actions: [
+        {
+            type: ActionType.EMAIL,
+            recipient: [
+                'Admin',
+                'Security admin'
+            ]
+        },
+        {
+            type: ActionType.DRAWER,
+            recipient: [
+                'Admin'
+            ]
+        },
+        {
+            type: ActionType.INTEGRATION,
+            integrationName: 'PagerDuty'
+        }
+    ]
+};
 
 export const NotificationsListPage: React.FunctionComponent = () => {
 
@@ -223,7 +225,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     }, []);
 
     const onEditDefaultAction = React.useCallback(() => {
-        dispatchModalIsOpen(makeEditDefaultAction(defaultActions));
+        dispatchModalIsOpen(makeEditDefaultAction(defaultNotificationBehavior));
     }, [ dispatchModalIsOpen ]);
 
     const onEditNotification = React.useCallback((notification: Notification) => {
@@ -239,7 +241,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
             <Main>
                 <Section>
                     <DefaultBehavior
-                        actions={ defaultActions }
+                        defaultBehavior={ defaultNotificationBehavior }
                         onEdit={ onEditDefaultAction }
                     />
                     <div className={ tableTitleClassName }>Insights notifications types and behavior</div>

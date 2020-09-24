@@ -3,29 +3,29 @@ import { SaveModal, SaveModalProps } from '@redhat-cloud-services/insights-commo
 
 import { Formik } from 'formik';
 import { NotificationForm } from './Form';
-import { Action, Notification } from '../../types/Notification';
+import { DefaultNotificationBehavior, Notification } from '../../types/Notification';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
 export type NotificationSaveModalProps = Omit<SaveModalProps, UsedProps> & ({
     type: 'default';
-    actions: Array<Action>;
+    data: DefaultNotificationBehavior;
 } | {
     type: 'notification';
-    notification: Notification;
+    data: Notification;
 })
 
 interface InternalProps {
     onClose: (saved: boolean) => void;
-    isDefault: boolean;
+    type: NotificationSaveModalProps['type'];
 }
 
 const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (props) => {
-    const title = props.isDefault ? 'Edit default notification actions' : 'Edit notification actions';
+    const title = props.type === 'default' ? 'Edit default notification actions' : 'Edit notification actions';
 
     return (
         <SaveModal
-            content={ <NotificationForm type={ props.isDefault ? 'default' : 'notification' } /> }
+            content={ <NotificationForm type={ props.type } /> }
             isSaving={ false }
             onSave={ () => true }
             isOpen={ true }
@@ -37,14 +37,14 @@ const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (p
 
 export const NotificationSaveModal: React.FunctionComponent<NotificationSaveModalProps> = (props) => {
     return (
-        <Formik<Notification | Array<Action>>
-            initialValues={ props.type === 'default' ? props.actions : props.notification }
+        <Formik<Notification | DefaultNotificationBehavior>
+            initialValues={ props.data }
             validationSchema={ IntegrationSchema }
             onSubmit={ () => props.onClose(true) }
             validateOnMount={ true }
         >
             <InternalNotificationSaveModal
-                isDefault={ props.type === 'default' }
+                type={ props.type }
                 onClose={ props.onClose }
             />
         </Formik>

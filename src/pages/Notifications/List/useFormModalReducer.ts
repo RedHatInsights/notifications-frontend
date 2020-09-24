@@ -1,4 +1,4 @@
-import { Action, Notification } from '../../../types/Notification';
+import { DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
 import { useReducer } from 'react';
 
@@ -15,7 +15,7 @@ interface UseFormModalReducerActionEditNotification {
 
 interface UseFormModalReducerActionEditDefault {
     type: UseFormModalReducerActionType.EDIT_DEFAULTS;
-    template: Array<Action>;
+    template: DefaultNotificationBehavior;
 }
 
 interface UseFormModalReducerActionNone {
@@ -30,10 +30,10 @@ type UseFormModalReducerState = {
     isOpen: true;
 } & ({
     type: 'default';
-    actions: Array<Action>;
+    data: DefaultNotificationBehavior;
 } | {
     type: 'notification';
-    notification: Notification;
+    data: Notification;
 }))
 
 const noneState = {
@@ -46,13 +46,13 @@ const reducer = (state: UseFormModalReducerState, action: UseFormModalReducerAct
             return {
                 isOpen: true,
                 type: 'default',
-                actions: action.template
+                data: action.template
             };
         case UseFormModalReducerActionType.EDIT_NOTIFICATION:
             return {
                 isOpen: true,
                 type: 'notification',
-                notification: action.template
+                data: action.template
             };
         case UseFormModalReducerActionType.NONE:
             return noneState;
@@ -66,7 +66,7 @@ export const makeEditNotificationAction = (template: Notification): UseFormModal
     template
 });
 
-export const makeEditDefaultAction = (template: Array<Action>): UseFormModalReducerActionEditDefault => ({
+export const makeEditDefaultAction = (template: DefaultNotificationBehavior): UseFormModalReducerActionEditDefault => ({
     type: UseFormModalReducerActionType.EDIT_DEFAULTS,
     template
 });

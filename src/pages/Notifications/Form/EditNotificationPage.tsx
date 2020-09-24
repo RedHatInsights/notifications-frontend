@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { Action, Notification } from '../../../types/Notification';
+import { DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
 
 interface EditNotificationPagePropsNotification {
     type: 'notification';
-    notification: Notification;
+    data: Notification;
 }
 
 interface EditNotificationPagePropsDefault {
     type: 'default';
-    actions: Array<Action>;
+    data: DefaultNotificationBehavior;
 }
 
 export type EditNotificationPageProps = {
