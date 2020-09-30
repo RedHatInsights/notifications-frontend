@@ -1,9 +1,9 @@
 import { Integration, NewIntegration } from '../types/Integration';
 import {
-    actionPostApiNotificationsV10Endpoints,
-    actionPutApiNotificationsV10EndpointsId,
-    PostApiNotificationsV10EndpointsPayload,
-    PutApiNotificationsV10EndpointsIdPayload
+    actionPostEndpoints,
+    actionPutEndpointsById,
+    PostEndpointsPayload,
+    PutEndpointsByIdPayload
 } from '../generated/Openapi';
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
@@ -12,18 +12,18 @@ import { toIntegration, toServerIntegrationRequest } from '../types/adapters/Int
 export const saveIntegrationActionCreator = (integration: Integration | NewIntegration) => {
     const serverIntegration = toServerIntegrationRequest(integration);
     if (integration.id) {
-        return actionPutApiNotificationsV10EndpointsId({
+        return actionPutEndpointsById({
             body: serverIntegration,
             id: integration.id
         });
     }
 
-    return actionPostApiNotificationsV10Endpoints({
+    return actionPostEndpoints({
         body: serverIntegration
     });
 };
 
-const decoder = (response: PostApiNotificationsV10EndpointsPayload | PutApiNotificationsV10EndpointsIdPayload) => {
+const decoder = (response: PostEndpointsPayload | PutEndpointsByIdPayload) => {
     if (response.type === 'Endpoint') {
         return {
             ...response,

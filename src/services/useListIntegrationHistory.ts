@@ -1,7 +1,7 @@
-import { actionGetApiNotificationsV10EndpointsIdHistory } from '../generated/Openapi';
+import { actionGetEndpointsByIdHistory } from '../generated/Openapi';
 
 export const listIntegrationHistoryActionCreator = (integrationId: string) => {
-    return actionGetApiNotificationsV10EndpointsIdHistory({
+    return actionGetEndpointsByIdHistory({
         id: integrationId
     });
 };
