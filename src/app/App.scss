@@ -8,5 +8,5 @@
 }
 
 .pf-c-page__main#root {
-  --pf-c-page__main-section--BackgroundColor: #FFF;
+  --pf-c-page__main-section--BackgroundColor: var(--pf-global--Color--light-100);
 }

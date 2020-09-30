@@ -20,7 +20,6 @@
     "csstips": "^1.2.0",
     "csx": "^10.0.1",
     "date-fns": "^2.9.0",
-    "emotion": "^10.0.27",
     "formik": "2.1.4",
     "http-status-codes": "^1.4.0",
     "in-browser-download": "2.0.0",

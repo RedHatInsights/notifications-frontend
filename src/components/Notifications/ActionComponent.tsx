@@ -1,5 +1,6 @@
 import * as React from 'react';
-import { BellIcon, EnvelopeIcon, SlackHashIcon } from '@patternfly/react-icons';
+import { EnvelopeIcon, SlackHashIcon } from '@patternfly/react-icons';
+import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
 import { assertNever, OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { Action, NotificationType } from '../../types/Notification';
 import { Messages } from '../../properties/Messages';

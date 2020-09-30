@@ -212,7 +212,6 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 
         if (parent !== undefined) {
             rows[rows.length - 1].parent = parent;
-            // rows[rows.length - 1].useAllCellInExpandedContent = true;
             rows[rows.length - 1].fullWidth = true;
         }
 
@@ -262,7 +261,6 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 
             if (parent !== undefined) {
                 rows[rows.length - 1].parent = parent;
-                // rows[rows.length - 1].useAllCellInExpandedContent = true;
                 rows[rows.length - 1].fullWidth = true;
             }
         }
@@ -271,8 +269,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
     }, [] as Array<IRow>);
 };
 
-const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>, onEdit: OnEditNotification): Array<IRow> => {
-    return applicationGroups.reduce((rows, applicationGroup) => {
+const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>, onEdit: OnEditNotification): Array<IRow> =>
+    applicationGroups.reduce((rows, applicationGroup) => {
         rows.push({
             id: applicationGroup.application,
             key: applicationGroup.application,
@@ -297,7 +295,6 @@ const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRo
 
         return rows;
     }, [] as Array<IRow>);
-};
 
 export const NotificationsTable: React.FunctionComponent<NotificationsTableProps> = (props) => {
 
