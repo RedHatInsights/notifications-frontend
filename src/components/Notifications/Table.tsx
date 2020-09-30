@@ -12,7 +12,7 @@ import {
 import { Messages } from '../../properties/Messages';
 import { assertNever, joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
-import { Action, ActionType, Notification } from '../../types/Notification';
+import { Action, NotificationType, Notification } from '../../types/Notification';
 import { style } from 'typestyle';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
@@ -144,7 +144,7 @@ const getActionCell = (isDefault: boolean, action?: Action) => {
 };
 
 const getRecipients = (action: Action) => {
-    if (action.type === ActionType.INTEGRATION) {
+    if (action.type === NotificationType.INTEGRATION) {
         return <span className={ grayFontClassName }>N/A</span>;
     }
 
@@ -200,7 +200,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                             noExpandableBorderClassName,
                             pfBorderBottomClassName
                         ),
-                        colSpan: parent === undefined ? 1 : 2
+                        colSpan: parent === undefined ? 1 : 1 // Todo: Change this to `? 1 : 2` once the PF bug is fixed
+                        // https://github.com/patternfly/patternfly-react/issues/4858
                     }
                 },
                 {
@@ -232,7 +233,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 
         if (parent !== undefined) {
             rows[rows.length - 1].parent = parent;
-            rows[rows.length - 1].useAllCellInExpandedContent = true;
+            // rows[rows.length - 1].useAllCellInExpandedContent = true;
             rows[rows.length - 1].fullWidth = true;
         }
 
@@ -282,7 +283,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 
             if (parent !== undefined) {
                 rows[rows.length - 1].parent = parent;
-                rows[rows.length - 1].useAllCellInExpandedContent = true;
+                // rows[rows.length - 1].useAllCellInExpandedContent = true;
                 rows[rows.length - 1].fullWidth = true;
             }
         }

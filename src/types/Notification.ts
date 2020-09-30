@@ -1,3 +1,5 @@
+import { Integration, IntegrationType } from './Integration';
+
 export interface Notification {
     id: string;
     application: string;
@@ -6,27 +8,29 @@ export interface Notification {
     useDefault?: boolean;
 }
 
+export type IntegrationRef = Pick<Integration, 'id' | 'name' | 'type'>
+
 export interface DefaultNotificationBehavior {
     actions: Array<Action>;
 }
 
 export interface ActionBase {
-    type: ActionType;
+    type: NotificationType;
 }
 
 export interface ActionIntegration extends ActionBase {
-    type: ActionType.INTEGRATION;
-    integrationName: string;
+    type: NotificationType.INTEGRATION;
+    integration: IntegrationRef;
 }
 
 export interface ActionNotify extends ActionBase {
-    type: ActionType.EMAIL | ActionType.DRAWER | ActionType.PLATFORM_ALERT;
+    type: NotificationType.EMAIL | NotificationType.DRAWER | NotificationType.PLATFORM_ALERT;
     recipient: Array<string>;
 }
 
 export type Action = ActionIntegration | ActionNotify;
 
-export enum ActionType {
+export enum NotificationType {
     EMAIL = 'EMAIL',
     DRAWER = 'DRAWER',
     INTEGRATION = 'INTEGRATION',

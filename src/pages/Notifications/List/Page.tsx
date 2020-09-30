@@ -16,12 +16,18 @@ import {
     NotificationRows,
     NotificationsTable
 } from '../../../components/Notifications/Table';
-import { ActionType, DefaultNotificationBehavior, Notification } from '../../../types/Notification';
+import { NotificationType, DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { assertNever, ExporterType, Spacer } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
-import { useFormModalReducer, makeNoneAction, makeEditDefaultAction, makeEditNotificationAction } from './useFormModalReducer';
+import {
+    makeEditDefaultAction,
+    makeEditNotificationAction,
+    makeNoneAction,
+    useFormModalReducer
+} from './useFormModalReducer';
+import { IntegrationType } from '../../../types/Integration';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -71,20 +77,24 @@ const notifications: Array<Notification> = [
         application: 'Advisor',
         actions: [
             {
-                type: ActionType.EMAIL,
+                type: NotificationType.EMAIL,
                 recipient: [
                     'Admin', 'Security'
                 ]
             },
             {
-                type: ActionType.DRAWER,
+                type: NotificationType.DRAWER,
                 recipient: [
                     'Admin'
                 ]
             },
             {
-                type: ActionType.INTEGRATION,
-                integrationName: 'PagerDuty'
+                type: NotificationType.INTEGRATION,
+                integration: {
+                    type: IntegrationType.WEBHOOK,
+                    id: 'integration-00001',
+                    name: 'Send stuff over there'
+                }
             }
         ]
     },
@@ -108,7 +118,7 @@ const notifications: Array<Notification> = [
         application: 'Advisor',
         actions: [
             {
-                type: ActionType.PLATFORM_ALERT,
+                type: NotificationType.PLATFORM_ALERT,
                 recipient: []
             }
         ]
@@ -119,7 +129,7 @@ const notifications: Array<Notification> = [
         application: 'Vulnerability',
         actions: [
             {
-                type: ActionType.EMAIL,
+                type: NotificationType.EMAIL,
                 recipient: [
                     'Security admin',
                     'Stakeholders',
@@ -128,12 +138,16 @@ const notifications: Array<Notification> = [
                 ]
             },
             {
-                type: ActionType.DRAWER,
+                type: NotificationType.DRAWER,
                 recipient: []
             },
             {
-                type: ActionType.INTEGRATION,
-                integrationName: 'Slack'
+                type: NotificationType.INTEGRATION,
+                integration: {
+                    type: IntegrationType.WEBHOOK,
+                    id: 'integration-00002',
+                    name: 'Message to #policies'
+                }
             }
         ]
     },
@@ -148,21 +162,25 @@ const notifications: Array<Notification> = [
 const defaultNotificationBehavior: DefaultNotificationBehavior = {
     actions: [
         {
-            type: ActionType.EMAIL,
+            type: NotificationType.EMAIL,
             recipient: [
                 'Admin',
                 'Security admin'
             ]
         },
         {
-            type: ActionType.DRAWER,
+            type: NotificationType.DRAWER,
             recipient: [
                 'Admin'
             ]
         },
         {
-            type: ActionType.INTEGRATION,
-            integrationName: 'PagerDuty'
+            type: NotificationType.INTEGRATION,
+            integration: {
+                type: IntegrationType.WEBHOOK,
+                id: 'integration-00003',
+                name: 'Pager duty'
+            }
         }
     ]
 };

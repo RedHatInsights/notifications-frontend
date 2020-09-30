@@ -1,5 +1,11 @@
 import * as React from 'react';
-import { Action, ActionType, DefaultNotificationBehavior, Notification } from '../../types/Notification';
+import {
+    Action,
+    NotificationType,
+    DefaultNotificationBehavior,
+    Notification,
+    IntegrationRef
+} from '../../types/Notification';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import {
     Checkbox,
@@ -12,31 +18,42 @@ import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import { EditableActionTable } from './EditableActionTable';
+import { IntegrationType } from '../../types/Integration';
+import { style } from 'typestyle';
 
 type Type = 'default' | 'notification';
 
 export interface NotificationFormProps extends OuiaComponentProps {
     type: Type;
+    getRecipients: (search: string) => Array<string>;
+    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
 }
 
 interface ActionsArrayProps extends FieldArrayRenderProps {
     form: FormikProps<Notification | DefaultNotificationBehavior>;
     type: Type;
+    getRecipients: (search: string) => Array<string>;
+    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
 }
+
+const alignLeftClassName = style({
+    textAlign: 'left'
+});
 
 const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
 
     const { values } = props.form;
     const actions = values.actions;
 
-    const addAction = () => {
+    const addAction = React.useCallback(() => {
+        const push = props.push;
         const newAction: Action = {
-            type: ActionType.PLATFORM_ALERT,
+            type: NotificationType.PLATFORM_ALERT,
             recipient: []
         };
 
-        props.push(newAction);
-    };
+        push(newAction);
+    }, [ props.push ]);
 
     return (
         <>
@@ -45,9 +62,22 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
             )}
 
             { actions && actions.length > 0 && (
-                <EditableActionTable path={ props.name } actions={ actions }/>
+                <EditableActionTable
+                    path={ props.name }
+                    actions={ actions }
+                    getRecipients={ props.getRecipients }
+                    getIntegrations={ props.getIntegrations }
+                    handleRemove={ props.handleRemove }
+                />
             ) }
-            <Button variant={ ButtonVariant.link } icon={ <PlusCircleIcon /> } onClick={ addAction }>Add action</Button>
+            <Button
+                className={ alignLeftClassName }
+                variant={ ButtonVariant.link }
+                icon={ <PlusCircleIcon /> }
+                onClick={ addAction }
+            >
+                Add action
+            </Button>
         </>
     );
 };
@@ -93,7 +123,12 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
             { showActions && (
                 <>
                     <FieldArray name="actions">
-                        { helpers =>  <ActionArray type={ props.type } { ...helpers } /> }
+                        { helpers =>  <ActionArray
+                            type={ props.type }
+                            { ...helpers }
+                            getRecipients={ props.getRecipients }
+                            getIntegrations={ props.getIntegrations }
+                        /> }
                     </FieldArray>
                 </>
             ) }

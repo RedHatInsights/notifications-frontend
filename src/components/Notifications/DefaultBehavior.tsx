@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
-import { ActionType, DefaultNotificationBehavior } from '../../types/Notification';
+import { NotificationType, DefaultNotificationBehavior } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { style } from 'typestyle';
 import { ActionComponent } from './ActionComponent';
@@ -59,7 +59,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                             return (
                                 <tr key={ index }>
                                     <td><ActionComponent action={ a }/></td>
-                                    <td>{ a.type === ActionType.INTEGRATION ? 'N/A' : a.recipient.join(', ') }</td>
+                                    <td>{ a.type === NotificationType.INTEGRATION ? 'N/A' : a.recipient.join(', ') }</td>
                                 </tr>
                             );
                         })

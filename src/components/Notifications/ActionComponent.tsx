@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BellIcon, EnvelopeIcon, SlackHashIcon } from '@patternfly/react-icons';
 import { assertNever, OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
-import { Action, ActionType } from '../../types/Notification';
+import { Action, NotificationType } from '../../types/Notification';
 import { Messages } from '../../properties/Messages';
 import { style } from 'typestyle';
 import { getOuiaProps } from '../../utils/getOuiaProps';
@@ -11,7 +11,7 @@ export interface ActionComponentText extends OuiaComponentProps{
 }
 
 interface ActionTypeToIconProps {
-    actionType: ActionType;
+    actionType: NotificationType;
 }
 
 const marginLeftClassName = style({
@@ -20,12 +20,12 @@ const marginLeftClassName = style({
 
 const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props) => {
     switch (props.actionType) {
-        case ActionType.DRAWER:
-        case ActionType.PLATFORM_ALERT:
+        case NotificationType.DRAWER:
+        case NotificationType.PLATFORM_ALERT:
             return <BellIcon/>;
-        case ActionType.EMAIL:
+        case NotificationType.EMAIL:
             return <EnvelopeIcon/>;
-        case ActionType.INTEGRATION:
+        case NotificationType.INTEGRATION:
             return <SlackHashIcon/>;
         default:
             assertNever(props.actionType);

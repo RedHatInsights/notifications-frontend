@@ -3,8 +3,15 @@ import { SaveModal, SaveModalProps } from '@redhat-cloud-services/insights-commo
 
 import { Formik } from 'formik';
 import { NotificationForm } from './Form';
-import { DefaultNotificationBehavior, Notification } from '../../types/Notification';
+import { DefaultNotificationBehavior, IntegrationRef, Notification } from '../../types/Notification';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
+import { ModalVariant } from '@patternfly/react-core';
+import { IntegrationType } from '../../types/Integration';
+
+type DataFetcher = {
+    getRecipients: (search: string) => Array<string>;
+    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+}
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
 export type NotificationSaveModalProps = Omit<SaveModalProps, UsedProps> & ({
@@ -13,9 +20,9 @@ export type NotificationSaveModalProps = Omit<SaveModalProps, UsedProps> & ({
 } | {
     type: 'notification';
     data: Notification;
-})
+}) & DataFetcher
 
-interface InternalProps {
+interface InternalProps extends DataFetcher {
     onClose: (saved: boolean) => void;
     type: NotificationSaveModalProps['type'];
 }
@@ -25,12 +32,17 @@ const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (p
 
     return (
         <SaveModal
-            content={ <NotificationForm type={ props.type } /> }
+            content={ <NotificationForm
+                type={ props.type }
+                getRecipients={ props.getRecipients }
+                getIntegrations={ props.getIntegrations }
+            /> }
             isSaving={ false }
             onSave={ () => true }
             isOpen={ true }
             title={ title }
             onClose={ props.onClose }
+            variant={ ModalVariant.large }
         />
     );
 };
@@ -46,6 +58,8 @@ export const NotificationSaveModal: React.FunctionComponent<NotificationSaveModa
             <InternalNotificationSaveModal
                 type={ props.type }
                 onClose={ props.onClose }
+                getRecipients={ props.getRecipients }
+                getIntegrations={ props.getIntegrations }
             />
         </Formik>
     );
