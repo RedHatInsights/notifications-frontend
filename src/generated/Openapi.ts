@@ -1,12 +1,14 @@
 /**
  * Generated code, DO NOT modify directly.
- */ import * as z from 'zod';
+ */
+import * as z from 'zod';
 import {
     actionBuilder,
     ValidatedResponse,
     ActionValidatable
 } from '@redhat-cloud-services/insights-common-typescript';
 import { Action } from 'react-fetching-library';
+/* eslint-disable @typescript-eslint/camelcase */
 /* eslint-disable @typescript-eslint/no-use-before-define */
 
 export const Attributes = zodSchemaAttributes();
@@ -76,7 +78,7 @@ export function zodSchemaHttpType() {
 }
 
 export function zodSchemaJsonObject() {
-    return z.array(z.any());
+    return z.array(z.unknown());
 }
 
 export function zodSchemaNotificationHistory() {
@@ -103,78 +105,96 @@ export function zodSchemaWebhookAttributes() {
     });
 }
 
-// get /api/notifications/v1.0/endpoints
-const GetApiNotificationsV10EndpointsParamResponse200 = z.array(
-    zodSchemaEndpoint()
-);
-type GetApiNotificationsV10EndpointsParamResponse200 = z.infer<
-  typeof GetApiNotificationsV10EndpointsParamResponse200
+// GET /endpoints
+const GetEndpointsParamPageNumber = z.number().int();
+type GetEndpointsParamPageNumber = z.infer<typeof GetEndpointsParamPageNumber>;
+const GetEndpointsParamPageSize = z.number().int();
+type GetEndpointsParamPageSize = z.infer<typeof GetEndpointsParamPageSize>;
+const GetEndpointsParamResponse200 = z.array(zodSchemaEndpoint());
+type GetEndpointsParamResponse200 = z.infer<
+  typeof GetEndpointsParamResponse200
 >;
-export type GetApiNotificationsV10EndpointsPayload =
+export interface GetEndpoints {
+  pageNumber?: GetEndpointsParamPageNumber;
+  pageSize?: GetEndpointsParamPageSize;
+}
+
+export type GetEndpointsPayload =
   | ValidatedResponse<
-      'GetApiNotificationsV10EndpointsParamResponse200',
+      'GetEndpointsParamResponse200',
       200,
-      GetApiNotificationsV10EndpointsParamResponse200
+      GetEndpointsParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionGetApiNotificationsV10Endpoints = Action<
-  GetApiNotificationsV10EndpointsPayload,
-  ActionValidatable
->;
-export const actionGetApiNotificationsV10Endpoints = (): ActionGetApiNotificationsV10Endpoints => {
+export type ActionGetEndpoints = Action<GetEndpointsPayload, ActionValidatable>;
+export const actionGetEndpoints = (
+    params: GetEndpoints
+): ActionGetEndpoints => {
     const path = '/api/notifications/v1.0/endpoints';
     const query = {} as Record<string, any>;
+    if (params.pageNumber !== undefined) {
+        query.pageNumber = params.pageNumber.toString();
+    }
+
+    if (params.pageSize !== undefined) {
+        query.pageSize = params.pageSize.toString();
+    }
+
     return actionBuilder('GET', path)
     .queryParams(query)
     .config({
         rules: [
-            { status: 200, zod: GetApiNotificationsV10EndpointsParamResponse200 }
+            {
+                status: 200,
+                zod: GetEndpointsParamResponse200,
+                type: 'GetEndpointsParamResponse200'
+            }
         ]
     })
     .build();
 };
 
-// post /api/notifications/v1.0/endpoints
-export interface PostApiNotificationsV10Endpoints {
-  body?: Endpoint;
+// POST /endpoints
+export interface PostEndpoints {
+  body: Endpoint;
 }
 
-export type PostApiNotificationsV10EndpointsPayload =
+export type PostEndpointsPayload =
   | ValidatedResponse<'Endpoint', 200, Endpoint>
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionPostApiNotificationsV10Endpoints = Action<
-  PostApiNotificationsV10EndpointsPayload,
+export type ActionPostEndpoints = Action<
+  PostEndpointsPayload,
   ActionValidatable
 >;
-export const actionPostApiNotificationsV10Endpoints = (
-    params: PostApiNotificationsV10Endpoints
-): ActionPostApiNotificationsV10Endpoints => {
+export const actionPostEndpoints = (
+    params: PostEndpoints
+): ActionPostEndpoints => {
     const path = '/api/notifications/v1.0/endpoints';
     const query = {} as Record<string, any>;
     return actionBuilder('POST', path)
     .queryParams(query)
     .data(params.body)
     .config({
-        rules: [{ status: 200, zod: Endpoint }]
+        rules: [{ status: 200, zod: Endpoint, type: 'Endpoint' }]
     })
     .build();
 };
 
-// get /api/notifications/v1.0/endpoints/{id}
-export interface GetApiNotificationsV10EndpointsId {
+// GET /endpoints/{id}
+export interface GetEndpointsById {
   id: UUID;
 }
 
-export type GetApiNotificationsV10EndpointsIdPayload =
+export type GetEndpointsByIdPayload =
   | ValidatedResponse<'Endpoint', 200, Endpoint>
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionGetApiNotificationsV10EndpointsId = Action<
-  GetApiNotificationsV10EndpointsIdPayload,
+export type ActionGetEndpointsById = Action<
+  GetEndpointsByIdPayload,
   ActionValidatable
 >;
-export const actionGetApiNotificationsV10EndpointsId = (
-    params: GetApiNotificationsV10EndpointsId
-): ActionGetApiNotificationsV10EndpointsId => {
+export const actionGetEndpointsById = (
+    params: GetEndpointsById
+): ActionGetEndpointsById => {
     const path = '/api/notifications/v1.0/endpoints/{id}'.replace(
         '{id}',
         params.id.toString()
@@ -183,35 +203,35 @@ export const actionGetApiNotificationsV10EndpointsId = (
     return actionBuilder('GET', path)
     .queryParams(query)
     .config({
-        rules: [{ status: 200, zod: Endpoint }]
+        rules: [{ status: 200, zod: Endpoint, type: 'Endpoint' }]
     })
     .build();
 };
 
-// put /api/notifications/v1.0/endpoints/{id}
-const PutApiNotificationsV10EndpointsIdParamResponse200 = z.string();
-type PutApiNotificationsV10EndpointsIdParamResponse200 = z.infer<
-  typeof PutApiNotificationsV10EndpointsIdParamResponse200
+// PUT /endpoints/{id}
+const PutEndpointsByIdParamResponse200 = z.string();
+type PutEndpointsByIdParamResponse200 = z.infer<
+  typeof PutEndpointsByIdParamResponse200
 >;
-export interface PutApiNotificationsV10EndpointsId {
+export interface PutEndpointsById {
   id: UUID;
-  body?: Endpoint;
+  body: Endpoint;
 }
 
-export type PutApiNotificationsV10EndpointsIdPayload =
+export type PutEndpointsByIdPayload =
   | ValidatedResponse<
-      'PutApiNotificationsV10EndpointsIdParamResponse200',
+      'PutEndpointsByIdParamResponse200',
       200,
-      PutApiNotificationsV10EndpointsIdParamResponse200
+      PutEndpointsByIdParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionPutApiNotificationsV10EndpointsId = Action<
-  PutApiNotificationsV10EndpointsIdPayload,
+export type ActionPutEndpointsById = Action<
+  PutEndpointsByIdPayload,
   ActionValidatable
 >;
-export const actionPutApiNotificationsV10EndpointsId = (
-    params: PutApiNotificationsV10EndpointsId
-): ActionPutApiNotificationsV10EndpointsId => {
+export const actionPutEndpointsById = (
+    params: PutEndpointsById
+): ActionPutEndpointsById => {
     const path = '/api/notifications/v1.0/endpoints/{id}'.replace(
         '{id}',
         params.id.toString()
@@ -222,35 +242,39 @@ export const actionPutApiNotificationsV10EndpointsId = (
     .data(params.body)
     .config({
         rules: [
-            { status: 200, zod: PutApiNotificationsV10EndpointsIdParamResponse200 }
+            {
+                status: 200,
+                zod: PutEndpointsByIdParamResponse200,
+                type: 'PutEndpointsByIdParamResponse200'
+            }
         ]
     })
     .build();
 };
 
-// delete /api/notifications/v1.0/endpoints/{id}
-const DeleteApiNotificationsV10EndpointsIdParamResponse200 = z.string();
-type DeleteApiNotificationsV10EndpointsIdParamResponse200 = z.infer<
-  typeof DeleteApiNotificationsV10EndpointsIdParamResponse200
+// DELETE /endpoints/{id}
+const DeleteEndpointsByIdParamResponse200 = z.string();
+type DeleteEndpointsByIdParamResponse200 = z.infer<
+  typeof DeleteEndpointsByIdParamResponse200
 >;
-export interface DeleteApiNotificationsV10EndpointsId {
+export interface DeleteEndpointsById {
   id: UUID;
 }
 
-export type DeleteApiNotificationsV10EndpointsIdPayload =
+export type DeleteEndpointsByIdPayload =
   | ValidatedResponse<
-      'DeleteApiNotificationsV10EndpointsIdParamResponse200',
+      'DeleteEndpointsByIdParamResponse200',
       200,
-      DeleteApiNotificationsV10EndpointsIdParamResponse200
+      DeleteEndpointsByIdParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionDeleteApiNotificationsV10EndpointsId = Action<
-  DeleteApiNotificationsV10EndpointsIdPayload,
+export type ActionDeleteEndpointsById = Action<
+  DeleteEndpointsByIdPayload,
   ActionValidatable
 >;
-export const actionDeleteApiNotificationsV10EndpointsId = (
-    params: DeleteApiNotificationsV10EndpointsId
-): ActionDeleteApiNotificationsV10EndpointsId => {
+export const actionDeleteEndpointsById = (
+    params: DeleteEndpointsById
+): ActionDeleteEndpointsById => {
     const path = '/api/notifications/v1.0/endpoints/{id}'.replace(
         '{id}',
         params.id.toString()
@@ -262,36 +286,37 @@ export const actionDeleteApiNotificationsV10EndpointsId = (
         rules: [
             {
                 status: 200,
-                zod: DeleteApiNotificationsV10EndpointsIdParamResponse200
+                zod: DeleteEndpointsByIdParamResponse200,
+                type: 'DeleteEndpointsByIdParamResponse200'
             }
         ]
     })
     .build();
 };
 
-// put /api/notifications/v1.0/endpoints/{id}/enable
-const PutApiNotificationsV10EndpointsIdEnableParamResponse200 = z.string();
-type PutApiNotificationsV10EndpointsIdEnableParamResponse200 = z.infer<
-  typeof PutApiNotificationsV10EndpointsIdEnableParamResponse200
+// PUT /endpoints/{id}/enable
+const PutEndpointsByIdEnableParamResponse200 = z.string();
+type PutEndpointsByIdEnableParamResponse200 = z.infer<
+  typeof PutEndpointsByIdEnableParamResponse200
 >;
-export interface PutApiNotificationsV10EndpointsIdEnable {
+export interface PutEndpointsByIdEnable {
   id: UUID;
 }
 
-export type PutApiNotificationsV10EndpointsIdEnablePayload =
+export type PutEndpointsByIdEnablePayload =
   | ValidatedResponse<
-      'PutApiNotificationsV10EndpointsIdEnableParamResponse200',
+      'PutEndpointsByIdEnableParamResponse200',
       200,
-      PutApiNotificationsV10EndpointsIdEnableParamResponse200
+      PutEndpointsByIdEnableParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionPutApiNotificationsV10EndpointsIdEnable = Action<
-  PutApiNotificationsV10EndpointsIdEnablePayload,
+export type ActionPutEndpointsByIdEnable = Action<
+  PutEndpointsByIdEnablePayload,
   ActionValidatable
 >;
-export const actionPutApiNotificationsV10EndpointsIdEnable = (
-    params: PutApiNotificationsV10EndpointsIdEnable
-): ActionPutApiNotificationsV10EndpointsIdEnable => {
+export const actionPutEndpointsByIdEnable = (
+    params: PutEndpointsByIdEnable
+): ActionPutEndpointsByIdEnable => {
     const path = '/api/notifications/v1.0/endpoints/{id}/enable'.replace(
         '{id}',
         params.id.toString()
@@ -303,36 +328,37 @@ export const actionPutApiNotificationsV10EndpointsIdEnable = (
         rules: [
             {
                 status: 200,
-                zod: PutApiNotificationsV10EndpointsIdEnableParamResponse200
+                zod: PutEndpointsByIdEnableParamResponse200,
+                type: 'PutEndpointsByIdEnableParamResponse200'
             }
         ]
     })
     .build();
 };
 
-// delete /api/notifications/v1.0/endpoints/{id}/enable
-const DeleteApiNotificationsV10EndpointsIdEnableParamResponse200 = z.string();
-type DeleteApiNotificationsV10EndpointsIdEnableParamResponse200 = z.infer<
-  typeof DeleteApiNotificationsV10EndpointsIdEnableParamResponse200
+// DELETE /endpoints/{id}/enable
+const DeleteEndpointsByIdEnableParamResponse200 = z.string();
+type DeleteEndpointsByIdEnableParamResponse200 = z.infer<
+  typeof DeleteEndpointsByIdEnableParamResponse200
 >;
-export interface DeleteApiNotificationsV10EndpointsIdEnable {
+export interface DeleteEndpointsByIdEnable {
   id: UUID;
 }
 
-export type DeleteApiNotificationsV10EndpointsIdEnablePayload =
+export type DeleteEndpointsByIdEnablePayload =
   | ValidatedResponse<
-      'DeleteApiNotificationsV10EndpointsIdEnableParamResponse200',
+      'DeleteEndpointsByIdEnableParamResponse200',
       200,
-      DeleteApiNotificationsV10EndpointsIdEnableParamResponse200
+      DeleteEndpointsByIdEnableParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionDeleteApiNotificationsV10EndpointsIdEnable = Action<
-  DeleteApiNotificationsV10EndpointsIdEnablePayload,
+export type ActionDeleteEndpointsByIdEnable = Action<
+  DeleteEndpointsByIdEnablePayload,
   ActionValidatable
 >;
-export const actionDeleteApiNotificationsV10EndpointsIdEnable = (
-    params: DeleteApiNotificationsV10EndpointsIdEnable
-): ActionDeleteApiNotificationsV10EndpointsIdEnable => {
+export const actionDeleteEndpointsByIdEnable = (
+    params: DeleteEndpointsByIdEnable
+): ActionDeleteEndpointsByIdEnable => {
     const path = '/api/notifications/v1.0/endpoints/{id}/enable'.replace(
         '{id}',
         params.id.toString()
@@ -344,38 +370,39 @@ export const actionDeleteApiNotificationsV10EndpointsIdEnable = (
         rules: [
             {
                 status: 200,
-                zod: DeleteApiNotificationsV10EndpointsIdEnableParamResponse200
+                zod: DeleteEndpointsByIdEnableParamResponse200,
+                type: 'DeleteEndpointsByIdEnableParamResponse200'
             }
         ]
     })
     .build();
 };
 
-// get /api/notifications/v1.0/endpoints/{id}/history
-const GetApiNotificationsV10EndpointsIdHistoryParamResponse200 = z.array(
+// GET /endpoints/{id}/history
+const GetEndpointsByIdHistoryParamResponse200 = z.array(
     zodSchemaNotificationHistory()
 );
-type GetApiNotificationsV10EndpointsIdHistoryParamResponse200 = z.infer<
-  typeof GetApiNotificationsV10EndpointsIdHistoryParamResponse200
+type GetEndpointsByIdHistoryParamResponse200 = z.infer<
+  typeof GetEndpointsByIdHistoryParamResponse200
 >;
-export interface GetApiNotificationsV10EndpointsIdHistory {
+export interface GetEndpointsByIdHistory {
   id: UUID;
 }
 
-export type GetApiNotificationsV10EndpointsIdHistoryPayload =
+export type GetEndpointsByIdHistoryPayload =
   | ValidatedResponse<
-      'GetApiNotificationsV10EndpointsIdHistoryParamResponse200',
+      'GetEndpointsByIdHistoryParamResponse200',
       200,
-      GetApiNotificationsV10EndpointsIdHistoryParamResponse200
+      GetEndpointsByIdHistoryParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionGetApiNotificationsV10EndpointsIdHistory = Action<
-  GetApiNotificationsV10EndpointsIdHistoryPayload,
+export type ActionGetEndpointsByIdHistory = Action<
+  GetEndpointsByIdHistoryPayload,
   ActionValidatable
 >;
-export const actionGetApiNotificationsV10EndpointsIdHistory = (
-    params: GetApiNotificationsV10EndpointsIdHistory
-): ActionGetApiNotificationsV10EndpointsIdHistory => {
+export const actionGetEndpointsByIdHistory = (
+    params: GetEndpointsByIdHistory
+): ActionGetEndpointsByIdHistory => {
     const path = '/api/notifications/v1.0/endpoints/{id}/history'.replace(
         '{id}',
         params.id.toString()
@@ -387,54 +414,76 @@ export const actionGetApiNotificationsV10EndpointsIdHistory = (
         rules: [
             {
                 status: 200,
-                zod: GetApiNotificationsV10EndpointsIdHistoryParamResponse200
+                zod: GetEndpointsByIdHistoryParamResponse200,
+                type: 'GetEndpointsByIdHistoryParamResponse200'
             }
         ]
     })
     .build();
 };
 
-// get /api/notifications/v1.0/endpoints/{id}/history/{history_id}/details
-const GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamHistoryId = z
+// GET /endpoints/{id}/history/{history_id}/details
+const GetEndpointsByIdHistoryByHistoryIdDetailsParamHistoryId = z
 .number()
 .int();
-type GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamHistoryId = z.infer<
-  typeof GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamHistoryId
+type GetEndpointsByIdHistoryByHistoryIdDetailsParamHistoryId = z.infer<
+  typeof GetEndpointsByIdHistoryByHistoryIdDetailsParamHistoryId
 >;
-const GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamResponse200 = z.string();
-type GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamResponse200 = z.infer<
-  typeof GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamResponse200
+const GetEndpointsByIdHistoryByHistoryIdDetailsParamPageNumber = z
+.number()
+.int();
+type GetEndpointsByIdHistoryByHistoryIdDetailsParamPageNumber = z.infer<
+  typeof GetEndpointsByIdHistoryByHistoryIdDetailsParamPageNumber
 >;
-export interface GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetails {
-  historyId: GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamHistoryId;
+const GetEndpointsByIdHistoryByHistoryIdDetailsParamPageSize = z.number().int();
+type GetEndpointsByIdHistoryByHistoryIdDetailsParamPageSize = z.infer<
+  typeof GetEndpointsByIdHistoryByHistoryIdDetailsParamPageSize
+>;
+const GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200 = z.string();
+type GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200 = z.infer<
+  typeof GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200
+>;
+export interface GetEndpointsByIdHistoryByHistoryIdDetails {
+  historyId: GetEndpointsByIdHistoryByHistoryIdDetailsParamHistoryId;
   id: UUID;
+  pageNumber?: GetEndpointsByIdHistoryByHistoryIdDetailsParamPageNumber;
+  pageSize?: GetEndpointsByIdHistoryByHistoryIdDetailsParamPageSize;
 }
 
-export type GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsPayload =
+export type GetEndpointsByIdHistoryByHistoryIdDetailsPayload =
   | ValidatedResponse<
-      'GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamResponse200',
+      'GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200',
       200,
-      GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamResponse200
+      GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200
     >
   | ValidatedResponse<'unknown', undefined, unknown>;
-export type ActionGetApiNotificationsV10EndpointsIdHistoryHistoryIdDetails = Action<
-  GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsPayload,
+export type ActionGetEndpointsByIdHistoryByHistoryIdDetails = Action<
+  GetEndpointsByIdHistoryByHistoryIdDetailsPayload,
   ActionValidatable
 >;
-export const actionGetApiNotificationsV10EndpointsIdHistoryHistoryIdDetails = (
-    params: GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetails
-): ActionGetApiNotificationsV10EndpointsIdHistoryHistoryIdDetails => {
+export const actionGetEndpointsByIdHistoryByHistoryIdDetails = (
+    params: GetEndpointsByIdHistoryByHistoryIdDetails
+): ActionGetEndpointsByIdHistoryByHistoryIdDetails => {
     const path = '/api/notifications/v1.0/endpoints/{id}/history/{history_id}/details'
     .replace('{history_id}', params.historyId.toString())
     .replace('{id}', params.id.toString());
     const query = {} as Record<string, any>;
+    if (params.pageNumber !== undefined) {
+        query.pageNumber = params.pageNumber.toString();
+    }
+
+    if (params.pageSize !== undefined) {
+        query.pageSize = params.pageSize.toString();
+    }
+
     return actionBuilder('GET', path)
     .queryParams(query)
     .config({
         rules: [
             {
                 status: 200,
-                zod: GetApiNotificationsV10EndpointsIdHistoryHistoryIdDetailsParamResponse200
+                zod: GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200,
+                type: 'GetEndpointsByIdHistoryByHistoryIdDetailsParamResponse200'
             }
         ]
     })

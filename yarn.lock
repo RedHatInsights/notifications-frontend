@@ -1251,8 +1251,10 @@
     "@redhat-cloud-services/frontend-components-utilities" "*"
     sanitize-html "^1.25.0"
 
-"@redhat-cloud-services/insights-common-typescript@file:.yalc/@redhat-cloud-services/insights-common-typescript":
-  version "0.0.0-dev-9f65977f"
+"@redhat-cloud-services/insights-common-typescript@3.0.1":
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-3.0.1.tgz#cb9c2388a6aa71fa149a040a93818b5c367272dd"
+  integrity sha512-FIA+8larIHAg2XX47mrj/ryJ6tmg4ZyZgVijYcBlpNw+sFn5hAPu6sJzzcUfePX1DKVnBmAZsNMkB7Si0i+9Qg==
   dependencies:
     camelcase "5.3.1"
     classnames "^2.2.6"
@@ -1261,7 +1263,6 @@
     node-fetch "^2.6.0"
     node-jq "^1.11.1"
     prettier "^2.1.1"
-    zod "^1.11.5"
 
 "@redhat-cloud-services/rbac-client@1.0.71":
   version "1.0.71"
@@ -12640,11 +12641,6 @@ yup@^0.27.0:
     property-expr "^1.5.0"
     synchronous-promise "^2.0.6"
     toposort "^2.0.2"
-
-zod@^1.11.5:
-  version "1.11.5"
-  resolved "https://registry.yarnpkg.com/zod/-/zod-1.11.5.tgz#7e415474ff691289e8d714a68b69ac9a285f2864"
-  integrity sha512-wtVHhYZi9OTvnokOy9dv1x6lI1mn+fntcr8vB5+9DOPkWbKA3nkcaVnDaMrRpMrulW1y47Nf0iJ1q63u6xPuyg==
 
 zod@^1.11.8:
   version "1.11.8"
