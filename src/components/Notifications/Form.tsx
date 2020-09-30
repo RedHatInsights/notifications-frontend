@@ -12,12 +12,12 @@ import {
     Form,
     FormText,
     OuiaComponentProps,
-    ouiaIdConcat
+    ouiaIdConcat, Spacer
 } from '@redhat-cloud-services/insights-common-typescript';
 import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from 'formik';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { PlusCircleIcon } from '@patternfly/react-icons';
-import { EditableActionTable } from './EditableActionTable';
+import { EditableActionTable } from './Form/EditableActionTable';
 import { IntegrationType } from '../../types/Integration';
 import { style } from 'typestyle';
 
@@ -40,6 +40,24 @@ const alignLeftClassName = style({
     textAlign: 'left'
 });
 
+const tableClassName = style({
+    display: 'block',
+    $nest: {
+        '& td, & th': {
+            paddingTop: Spacer.SM,
+            paddingBottom: Spacer.SM,
+            paddingLeft: Spacer.MD,
+            paddingRight: Spacer.MD
+        },
+        '& th': {
+            width: '500px'
+        },
+        '& th:last-child': {
+            width: '80px'
+        }
+    }
+});
+
 const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
 
     const { values } = props.form;
@@ -58,7 +76,11 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
     return (
         <>
             { (actions === undefined || actions.length === 0) && (
-                <span>No actions. Users will not be notified.</span>
+                <tbody>
+                    <tr>
+                        <td colSpan={ 3 }><span>No actions. Users will not be notified.</span></td>
+                    </tr>
+                </tbody>
             )}
 
             { actions && actions.length > 0 && (
@@ -91,48 +113,66 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
 
     return (
         <Form { ... getOuiaProps('Notifications/Form', props) }>
-            { props.type === 'notification' && (
-                <>
-                    <Checkbox
-                        ouiaId={ ouiaIdConcat(props.ouiaId, 'use-default') }
-                        name="useDefault"
-                        id="useDefault"
-                        label="Use default notification actions"
-                    />
-                    <FormText
-                        ouiaId={ ouiaIdConcat(props.ouiaId, 'event-name') }
-                        label="Event name"
-                        name="event"
-                        id="event"
-                    />
-                    <FormText
-                        ouiaId={ ouiaIdConcat(props.ouiaId, 'application') }
-                        label="Application"
-                        name="application"
-                        id="application"
-                    />
-                </>
-            ) }
-            { props.type === 'default' && (
-                <>
-                    <div>Change the default notification actions for <b>Red Hat Insights</b>.</div>
-                    <div>These actions apply to all events that use the default actions.</div>
-                </>
-            )}
+            <table className={ tableClassName }>
+                { props.type === 'notification' && (
+                    <>
+                        <thead/>
+                        <tbody>
+                            <tr>
+                                <td>
+                                    <FormText
+                                        ouiaId={ ouiaIdConcat(props.ouiaId, 'event-name') }
+                                        label="Event name"
+                                        name="event"
+                                        id="event"
+                                    />
+                                </td>
+                                <td>
+                                    <FormText
+                                        ouiaId={ ouiaIdConcat(props.ouiaId, 'application') }
+                                        label="Application"
+                                        name="application"
+                                        id="application"
+                                    />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={ 2 }>
+                                    <Checkbox
+                                        ouiaId={ ouiaIdConcat(props.ouiaId, 'use-default') }
+                                        name="useDefault"
+                                        id="useDefault"
+                                        label="Use default notification actions"
+                                    />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </>
+                ) }
+                { props.type === 'default' && (
+                    <tbody>
+                        <tr>
+                            <td colSpan={ 3 }>
+                                <div>Change the default notification actions for <b>Red Hat Insights</b>.</div>
+                                <div>These actions apply to all events that use the default actions.</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                )}
 
-            { showActions && (
-                <>
-                    <FieldArray name="actions">
-                        { helpers =>  <ActionArray
-                            type={ props.type }
-                            { ...helpers }
-                            getRecipients={ props.getRecipients }
-                            getIntegrations={ props.getIntegrations }
-                        /> }
-                    </FieldArray>
-                </>
-            ) }
-
+                { showActions && (
+                    <>
+                        <FieldArray name="actions">
+                            { helpers =>  <ActionArray
+                                type={ props.type }
+                                { ...helpers }
+                                getRecipients={ props.getRecipients }
+                                getIntegrations={ props.getIntegrations }
+                            /> }
+                        </FieldArray>
+                    </>
+                ) }
+            </table>
         </Form>
     );
 };
