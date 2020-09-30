@@ -53,7 +53,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
         );
     }
 
-    if (props.action === undefined) {
+    if (!props.action) {
         return (
             <ActionComponentWrapper { ...props }>
                 <span className={ grayFontClassName }>
