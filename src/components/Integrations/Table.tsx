@@ -133,16 +133,6 @@ const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> 
         return <Spinner size="md" />;
     }
 
-    /*
-    if (status === LastConnectionAttemptStatus.UNKNOWN) {
-        return <>
-            <OffIcon data-testid="off-icon" />
-            <span className={ smallMarginLeft }>Unknown</span>
-        </>;
-    } else {
-        const lastConnection =
-    }
-*/
     const status = getLastConnectionAttemptStatus(attempts);
     switch (status) {
         case LastConnectionAttemptStatus.UNKNOWN:
