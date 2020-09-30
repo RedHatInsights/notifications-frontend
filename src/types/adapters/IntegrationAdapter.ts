@@ -7,13 +7,13 @@ import {
     ServerIntegrationResponse
 } from '../Integration';
 import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
-import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Types';
+import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Openapi';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {
-        case EndpointType.webhook:
+        case EndpointType.Enum.webhook:
             return IntegrationType.WEBHOOK;
-        case EndpointType.email:
+        case EndpointType.Enum.email:
         case undefined:
             throw new Error(`Unexpected type: ${type}`);
         default:
@@ -24,7 +24,7 @@ const getIntegrationType = (type: EndpointType | undefined): IntegrationType => 
 const getEndpointType = (type: IntegrationType): EndpointType => {
     switch (type) {
         case IntegrationType.WEBHOOK:
-            return EndpointType.webhook;
+            return EndpointType.Enum.webhook;
         default:
             assertNever(type);
     }
@@ -47,15 +47,15 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 url: properties.url || '',
                 sslVerificationEnabled: !properties.disable_ssl_verification,
                 secretToken: properties.secret_token === null ? undefined : properties.secret_token,
-                method: properties.method || HttpType.GET
+                method: properties.method ?? HttpType.Enum.GET
             };
         default:
             assertNever(integrationBase.type);
     }
 };
 
-export const toIntegrations = (serverIntegrations?: Array<ServerIntegrationResponse>): Array<Integration> => {
-    return (serverIntegrations || []).map(toIntegration);
+export const toIntegrations = (serverIntegrations: Array<ServerIntegrationResponse>): Array<Integration> => {
+    return serverIntegrations.map(toIntegration);
 };
 
 export const toIntegrationProperties = (integration: Integration | NewIntegration) => {

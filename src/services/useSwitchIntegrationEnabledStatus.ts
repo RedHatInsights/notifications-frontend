@@ -1,17 +1,17 @@
 import { Integration, ServerIntegrationResponse } from '../types/Integration';
 import {
-    actionDeleteApiNotificationsV10EndpointsIdEnable,
-    actionPutApiNotificationsV10EndpointsIdEnable
-} from '../generated/ActionCreators';
+    actionDeleteEndpointsByIdEnable,
+    actionPutEndpointsByIdEnable
+} from '../generated/Openapi';
 import { useMutation } from 'react-fetching-library';
 
 export const switchIntegrationEnabledStatusActionCreator = (integration: Integration) => {
     if (integration.isEnabled) {
-        return actionDeleteApiNotificationsV10EndpointsIdEnable({
+        return actionDeleteEndpointsByIdEnable({
             id: integration.id
         });
     } else {
-        return actionPutApiNotificationsV10EndpointsIdEnable({
+        return actionPutEndpointsByIdEnable({
             id: integration.id
         });
     }

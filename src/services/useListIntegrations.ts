@@ -1,14 +1,31 @@
-import { actionGetApiNotificationsV10Endpoints } from '../generated/ActionCreators';
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    actionGetEndpoints,
+    GetEndpointsPayload
+} from '../generated/Openapi';
+import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useQuery } from 'react-fetching-library';
-import { ServerIntegrationResponse } from '../types/Integration';
 import { toIntegrations } from '../types/adapters/IntegrationAdapter';
 
-export const listIntegrationsActionCreator = () => {
-    return actionGetApiNotificationsV10Endpoints();
+export const listIntegrationsActionCreator = (pager?: Page) => {
+    return actionGetEndpoints({
+        pageNumber: pager?.index,
+        pageSize: pager?.size
+    });
 };
 
-export const useListIntegrationsQuery = () => useTransformQueryResponse(
-    useQuery<ServerIntegrationResponse[]>(listIntegrationsActionCreator()),
-    toIntegrations
+const decoder = (payload?: GetEndpointsPayload) => {
+    if (payload?.status === 200) {
+        return {
+            type: 'integrationArray',
+            value: toIntegrations(payload.value),
+            status: 200
+        };
+    }
+
+    return payload;
+};
+
+export const useListIntegrationsQuery = (pager?: Page) => useTransformQueryResponse(
+    useQuery(listIntegrationsActionCreator(pager)),
+    decoder
 );

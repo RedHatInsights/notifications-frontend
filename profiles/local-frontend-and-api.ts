@@ -4,7 +4,7 @@ const SECTION = 'settings';
 const APP_ID = 'notifications';
 const APP_MOUNTS = [ 'notifications', 'integrations' ];
 const FRONTEND_PORT = 8002;
-const API_PORT = 8080;
+const API_PORT = 8085;
 const routes = {};
 
 APP_MOUNTS.forEach(mount => {
@@ -22,7 +22,7 @@ module.exports = {
         // Increases the default (2s) timeout which can be a pain sometimes.
         // https://github.com/Schibsted-Tech-Polska/good-guy-http/blob/master/lib/index.js#L55
         httpClient: goodGuyLib({
-            timeout: 5000
+            timeout: 50000
         })
     }
 };
