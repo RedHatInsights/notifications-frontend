@@ -72,7 +72,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
             onToggle={ toggle }
             isOpen={ isOpen }
             onSelect={ onSelect }
-            direction="up"
+            menuAppendTo={ document.body }
         >
             { getSelectOptions().map(o => <SelectOption key={ o.toString() } value={ o } />) }
         </Select>

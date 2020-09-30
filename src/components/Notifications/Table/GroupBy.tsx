@@ -11,7 +11,7 @@ export interface GroupByProps {
 
 export const GroupBy: React.FunctionComponent<GroupByProps> = (props) => {
     const items = [
-        <DropdownItem data-group-by={ GroupByEnum.Application } key="application">Application</DropdownItem>,
+        <DropdownItem data-group-by={ GroupByEnum.Application } key="application">Application (broken)</DropdownItem>,
         <DropdownItem data-group-by={ GroupByEnum.None } key="none">None</DropdownItem>
     ];
 

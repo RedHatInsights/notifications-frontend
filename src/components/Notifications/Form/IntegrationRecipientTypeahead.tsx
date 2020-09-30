@@ -58,8 +58,8 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
             onSelect={ onSelect }
             onToggle={ toggle }
             isOpen={ isOpen }
-            direction="up"
             onFilter={ onFilter }
+            menuAppendTo={ document.body }
         >
             { defaultIntegration }
         </Select>

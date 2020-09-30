@@ -67,9 +67,9 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                         onSelect={ onSelect }
                         onToggle={ toggle }
                         isOpen={ isOpen }
-                        direction="up"
                         onFilter={ onFilter }
                         onClear={ onClear }
+                        menuAppendTo={ document.body }
                     >
                         { defaultRecipients }
                     </Select>

@@ -79,7 +79,7 @@ const notifications: Array<Notification> = [
             {
                 type: NotificationType.EMAIL,
                 recipient: [
-                    'Admin', 'Security'
+                    'Admin', 'Security admin'
                 ]
             },
             {
@@ -188,14 +188,14 @@ const defaultNotificationBehavior: DefaultNotificationBehavior = {
 export const NotificationsListPage: React.FunctionComponent = () => {
 
     const notificationsFilter = useNotificationFilter();
-    const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.Application);
+    const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.None);
     const groupBySelected = React.useCallback((selected: GroupByEnum) => {
         setGroupBy(selected);
     }, [ setGroupBy ]);
 
     const [ notificationRows, setNotificationRows ] = React.useState<NotificationRows>({
         data: [],
-        grouped: GroupByEnum.Application
+        grouped: groupBy
     });
 
     React.useEffect(() => {
