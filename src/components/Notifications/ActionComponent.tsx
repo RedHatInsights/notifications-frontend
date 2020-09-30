@@ -7,7 +7,8 @@ import { style } from 'typestyle';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 
 export interface ActionComponentText extends OuiaComponentProps{
-    action: Action;
+    isDefault: boolean;
+    action: Action | undefined;
 }
 
 interface ActionTypeToIconProps {
@@ -16,6 +17,10 @@ interface ActionTypeToIconProps {
 
 const marginLeftClassName = style({
     marginLeft: Spacer.SM
+});
+
+const grayFontClassName = style({
+    color: '#888'
 });
 
 const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props) => {
@@ -32,11 +37,40 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props)
     }
 };
 
+const ActionComponentWrapper: React.FunctionComponent<ActionComponentText> = (props) => (
+    <div { ...getOuiaProps('Notifications/ActionComponent', props) }>
+        { props.children }
+    </div>
+);
+
 export const ActionComponent: React.FunctionComponent<ActionComponentText> = (props) => {
+
+    if (props.isDefault) {
+        return (
+            <ActionComponentWrapper { ...props }>
+                <span>Default behavior</span>
+            </ActionComponentWrapper>
+        );
+    }
+
+    if (props.action === undefined) {
+        return (
+            <ActionComponentWrapper { ...props }>
+                <span className={ grayFontClassName }>
+                    <div>No actions.</div>
+                    <div>Users will be notified.</div>
+                </span>
+            </ActionComponentWrapper>
+        );
+    }
+
     return (
-        <div { ...getOuiaProps('Notifications/ActionComponent', props) }>
+        <ActionComponentWrapper { ...props }>
             <ActionTypeToIcon actionType={ props.action.type }/>
             <span className={ marginLeftClassName }>{ Messages.components.notifications.types[props.action.type] }</span>
-        </div>
+            { props.action.type === NotificationType.INTEGRATION && (
+                <span>: { Messages.components.integrations.integrationType[props.action.integration.type] }</span>
+            ) }
+        </ActionComponentWrapper>
     );
 };

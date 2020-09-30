@@ -58,8 +58,8 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                         props.defaultBehavior.actions.map((a, index) => {
                             return (
                                 <tr key={ index }>
-                                    <td><ActionComponent action={ a }/></td>
-                                    <td>{ a.type === NotificationType.INTEGRATION ? 'N/A' : a.recipient.join(', ') }</td>
+                                    <td><ActionComponent isDefault={ false } action={ a }/></td>
+                                    <td>{ a.type === NotificationType.INTEGRATION ? a.integration.name : a.recipient.join(', ') }</td>
                                 </tr>
                             );
                         })

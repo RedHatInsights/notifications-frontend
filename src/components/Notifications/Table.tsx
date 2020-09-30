@@ -122,30 +122,9 @@ const EventCell: React.FunctionComponent<EventCellProps> = (props) => (
     </>
 );
 
-interface ActionCellProps {
-    actions: Array<Action>;
-}
-
-const getActionCell = (isDefault: boolean, action?: Action) => {
-    if (isDefault) {
-        return <span>Default behavior</span>;
-    }
-
-    if (action === undefined) {
-        return (
-            <span className={ grayFontClassName }>
-                <div>No actions.</div>
-                <div>Users will be notified.</div>
-            </span>
-        );
-    }
-
-    return <ActionComponent action={ action } />;
-};
-
 const getRecipients = (action: Action) => {
     if (action.type === NotificationType.INTEGRATION) {
-        return <span className={ grayFontClassName }>N/A</span>;
+        return <span>{ action.integration.name }</span>;
     }
 
     if (action.recipient.length === 0) {
@@ -205,7 +184,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span>{ getActionCell(!!notification.useDefault, firstAction) }</span></>,
+                    title: <><span><ActionComponent isDefault={ !!notification.useDefault } action={ firstAction }/></span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -252,7 +231,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                 key: id,
                 cells: [
                     {
-                        title: getActionCell(!!notification.useDefault, notification.actions[i]),
+                        title: <ActionComponent isDefault={ !!notification.useDefault } action={ notification.actions[i] } />,
                         props: {
                             className: joinClasses(
                                 noExpandableBorderClassName,

@@ -1,4 +1,4 @@
-import { Integration, IntegrationType } from './Integration';
+import { Integration } from './Integration';
 
 export interface Notification {
     id: string;
