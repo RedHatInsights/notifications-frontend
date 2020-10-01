@@ -10,6 +10,8 @@ import {
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { Pager } from '../../hooks/usePager';
+import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 
 interface IntegrationsToolbarProps extends OuiaComponentProps {
     onAddIntegration: () => void;
@@ -17,6 +19,8 @@ interface IntegrationsToolbarProps extends OuiaComponentProps {
     filters: IntegrationFilters;
     setFilters: SetIntegrationFilters;
     clearFilters: ClearIntegrationFilters;
+
+    pager: Pager;
 }
 
 const enabledTextClassName = style({
@@ -95,6 +99,44 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
         return undefined;
     }, [ props.onExport ]);
 
+    const changePage = React.useCallback((_event: unknown, page: number) => {
+        props.pager.changePage(page);
+    }, [ props.pager ]);
+
+    const changePerPage = React.useCallback((_event: unknown, perPage: number) => {
+        props.pager.changeItemsPerPage(perPage);
+    }, [ props.pager ]);
+
+    const topPaginationProps = React.useMemo<PaginationProps>(() => ({
+        itemCount: 1,
+        page: props.pager.page.index,
+        perPage: props.pager.page.size,
+        onSetPage: changePage,
+        onFirstClick: changePage,
+        onPreviousClick: changePage,
+        onNextClick: changePage,
+        onLastClick: changePage,
+        onPageInput: changePage,
+        onPerPageSelect: changePerPage,
+        isCompact: true,
+        variant: PaginationVariant.top
+    }), [ props.pager, changePage, changePerPage ]);
+
+    const bottomPaginationProps = React.useMemo<PaginationProps>(() => ({
+        itemCount: 1,
+        page: props.pager.page.index,
+        perPage: props.pager.page.size,
+        onSetPage: changePage,
+        onFirstClick: changePage,
+        onPreviousClick: changePage,
+        onNextClick: changePage,
+        onLastClick: changePage,
+        onPageInput: changePage,
+        onPerPageSelect: changePerPage,
+        isCompact: true,
+        variant: PaginationVariant.top
+    }), [ props.pager, changePage, changePerPage ]);
+
     return (
         <div { ...getOuiaProps('Integrations/DualToolbar', props) }>
             <PrimaryToolbar
@@ -103,9 +145,12 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
                 filterConfig={ primaryToolbarFilterConfig.filterConfig }
                 activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
                 id="integrations-top-toolbar"
+                pagination={ topPaginationProps }
             />
             { props.children }
-            <PrimaryToolbar id="integrations-bottom-toolbar" />
+            <PrimaryToolbar id="integrations-bottom-toolbar"
+                pagination={ bottomPaginationProps }
+            />
         </div>
     );
 };

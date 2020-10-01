@@ -21,11 +21,16 @@ import {
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import inBrowserDownload from 'in-browser-download';
 import { format } from 'date-fns';
+import Config from '../../../config/Config';
+import { usePager } from '../../../hooks/usePager';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac: { canWriteAll }} = useContext(AppContext);
-    const integrationsQuery = useListIntegrationsQuery();
+
+    const integrationFilter = useIntegrationFilter();
+    const pager = usePager(Config.defaultElementsPerPage);
+    const integrationsQuery = useListIntegrationsQuery(pager.page);
 
     const integrations = React.useMemo(() => {
         const payload = integrationsQuery.payload;
@@ -37,7 +42,6 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ integrationsQuery.payload ]);
 
     const integrationRows = useIntegrationRows(integrations);
-    const integrationFilter = useIntegrationFilter();
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
     const [ deleteModalState, dispatchDeleteModal ] = useDeleteModalReducer();
@@ -103,6 +107,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                         filters={ integrationFilter.filters }
                         setFilters={ integrationFilter.setFilters }
                         clearFilters={ integrationFilter.clearFilter }
+                        pager={ pager }
                     >
                         <IntegrationsTable
                             integrations={ integrationRows.rows }

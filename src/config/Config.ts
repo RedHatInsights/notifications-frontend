@@ -7,6 +7,7 @@ export const withBaseUrl = (path: string) => `${apiBaseUrl}${path}`;
 
 const Config = {
     appId: 'notifications',
+    defaultElementsPerPage: 20,
     integrations: {
         subAppId: 'integrations',
         title: 'Integrations'
