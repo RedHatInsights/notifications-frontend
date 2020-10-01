@@ -59,7 +59,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
             <ActionComponentWrapper { ...props }>
                 <span className={ grayFontClassName }>
                     <div>No actions.</div>
-                    <div>Users will be notified.</div>
+                    <div>Users will not be notified.</div>
                 </span>
             </ActionComponentWrapper>
         );

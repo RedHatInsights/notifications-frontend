@@ -28,7 +28,7 @@ interface InternalProps extends DataFetcher {
 }
 
 const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (props) => {
-    const title =  `Edit${props.type === 'default' && ' default'} notification actions;
+    const title =  `Edit${props.type === 'default' && ' default'} notification actions`;
 
     return (
         <SaveModal
