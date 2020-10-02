@@ -85,7 +85,9 @@ describe('src/Routes', () => {
             });
 
             expect(getLocation().pathname).toBe('/notifications');
-            expect(screen.getByText(/notifications/i)).toBeVisible();
+            expect(screen.getByText(/notifications/i, {
+                selector: 'h1'
+            })).toBeVisible();
         });
     });
 });

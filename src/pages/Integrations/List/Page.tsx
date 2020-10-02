@@ -15,8 +15,7 @@ import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer }
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
 import {
-    addDangerNotification,
-    exporterTypeFromString
+    addDangerNotification, ExporterType
 } from '@redhat-cloud-services/insights-common-typescript';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import inBrowserDownload from 'in-browser-download';
@@ -54,9 +53,9 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         dispatchDeleteModal(useDeleteModalReducer.makeDeleteAction(integration));
     }, [ dispatchDeleteModal ]);
 
-    const onExport = React.useCallback((type: string) => {
+    const onExport = React.useCallback((type: ExporterType) => {
         // Todo: When we have pagination, we will need a way to query all pages.
-        const exporter = integrationExporterFactory(exporterTypeFromString(type));
+        const exporter = integrationExporterFactory(type);
         if (integrations) {
             inBrowserDownload(
                 exporter.export(integrations),
