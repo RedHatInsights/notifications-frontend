@@ -179,8 +179,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                             noExpandableBorderClassName,
                             pfBorderBottomClassName
                         ),
-                        colSpan: parent === undefined ? 1 : 1 // Todo: Change this to `? 1 : 2` once the PF bug is fixed
-                        // https://github.com/patternfly/patternfly-react/issues/4858
+                        colSpan: parent === undefined ? 1 : 2
                     }
                 },
                 {
