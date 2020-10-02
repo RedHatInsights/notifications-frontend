@@ -188,7 +188,7 @@ const defaultNotificationBehavior: DefaultNotificationBehavior = {
 export const NotificationsListPage: React.FunctionComponent = () => {
 
     const notificationsFilter = useNotificationFilter();
-    const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.None);
+    const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.Application);
     const groupBySelected = React.useCallback((selected: GroupByEnum) => {
         setGroupBy(selected);
     }, [ setGroupBy ]);
