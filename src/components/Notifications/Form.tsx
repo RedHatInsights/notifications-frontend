@@ -7,12 +7,14 @@ import {
     IntegrationRef
 } from '../../types/Notification';
 import { Button, ButtonVariant } from '@patternfly/react-core';
+// eslint-disable-next-line @typescript-eslint/camelcase
+import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import {
     Checkbox,
     Form,
     FormText,
     OuiaComponentProps,
-    ouiaIdConcat, Spacer
+    ouiaIdConcat
 } from '@redhat-cloud-services/insights-common-typescript';
 import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from 'formik';
 import { getOuiaProps } from '../../utils/getOuiaProps';
@@ -44,10 +46,10 @@ const tableClassName = style({
     display: 'block',
     $nest: {
         '& td, & th': {
-            paddingTop: Spacer.SM,
-            paddingBottom: Spacer.SM,
-            paddingLeft: Spacer.MD,
-            paddingRight: Spacer.MD
+            paddingTop: global_spacer_sm.var,
+            paddingBottom: global_spacer_sm.var,
+            paddingLeft: global_spacer_md.var,
+            paddingRight: global_spacer_md.var
         },
         '& th': {
             width: '500px'

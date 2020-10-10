@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
+// eslint-disable-next-line @typescript-eslint/camelcase
+import { global_spacer_md, global_spacer_sm, global_spacer_lg } from '@patternfly/react-tokens';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { NotificationType, DefaultNotificationBehavior } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { style } from 'typestyle';
@@ -13,21 +15,21 @@ export interface DefaultBehaviorProps extends OuiaComponentProps {
 
 const contentClassName = style({
     backgroundColor: '#f0f0f0',
-    paddingTop: Spacer.MD,
-    paddingBottom: Spacer.MD,
-    paddingLeft: Spacer.MD,
-    paddingRight: Spacer.MD
+    paddingTop: global_spacer_md.var,
+    paddingBottom: global_spacer_md.var,
+    paddingLeft: global_spacer_md.var,
+    paddingRight: global_spacer_md.var
 });
 
 const tableClassName = style({
-    paddingTop: Spacer.LG,
+    paddingTop: global_spacer_lg.var,
     display: 'block',
     $nest: {
         '& td, & th': {
-            paddingTop: Spacer.SM,
-            paddingBottom: Spacer.SM,
-            paddingLeft: Spacer.MD,
-            paddingRight: Spacer.MD
+            paddingTop: global_spacer_sm.var,
+            paddingBottom: global_spacer_sm.var,
+            paddingLeft: global_spacer_md.var,
+            paddingRight: global_spacer_md.var
         }
     }
 });
