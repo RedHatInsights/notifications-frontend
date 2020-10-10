@@ -3,13 +3,14 @@ import {
     Main,
     PageHeader,
     PageHeaderTitle,
-    PageHeaderTitleProps,
     Section
 } from '@redhat-cloud-services/frontend-components';
 import { Messages } from '../../../properties/Messages';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useNotificationFilter } from './useNotificationFilter';
 import { Button, ButtonVariant } from '@patternfly/react-core';
+// eslint-disable-next-line @typescript-eslint/camelcase
+import { global_spacer_md } from '@patternfly/react-tokens';
 import { style } from 'typestyle';
 import {
     NotificationRowGroupedByApplication,
@@ -18,7 +19,7 @@ import {
 } from '../../../components/Notifications/Table';
 import { NotificationType, DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
-import { assertNever, ExporterType, Spacer } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
 import {
@@ -35,8 +36,8 @@ const displayInlineClassName = style({
 
 const tableTitleClassName = style({
     fontWeight: 600,
-    paddingTop: Spacer.MD,
-    paddingBottom: Spacer.MD,
+    paddingTop: global_spacer_md.var,
+    paddingBottom: global_spacer_md.var,
     fontSize: '17px'
 });
 
@@ -233,7 +234,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         });
     }, [ setNotificationRows ]);
 
-    const pageHeaderTitleProps: PageHeaderTitleProps = {
+    const pageHeaderTitleProps = {
         className: displayInlineClassName,
         title: Messages.pages.notifications.list.title
     };

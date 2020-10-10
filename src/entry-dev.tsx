@@ -6,9 +6,9 @@ import {
     initStore,
     createFetchingClient,
     getStore,
-    getInsights,
-    validateSchemaResponseInterceptor
+    getInsights
 } from '@redhat-cloud-services/insights-common-typescript';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import App from './app/App';
 import logger from 'redux-logger';
 import { ClientContextProvider } from 'react-fetching-library';

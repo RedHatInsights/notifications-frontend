@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { EnvelopeIcon, SlackHashIcon } from '@patternfly/react-icons';
+// eslint-disable-next-line @typescript-eslint/camelcase
+import { global_spacer_sm } from '@patternfly/react-tokens';
 import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
-import { assertNever, OuiaComponentProps, Spacer } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { Action, NotificationType } from '../../types/Notification';
 import { Messages } from '../../properties/Messages';
 import { style } from 'typestyle';
@@ -17,7 +19,7 @@ interface ActionTypeToIconProps {
 }
 
 const marginLeftClassName = style({
-    marginLeft: Spacer.SM
+    marginLeft: global_spacer_sm.var
 });
 
 const grayFontClassName = style({
