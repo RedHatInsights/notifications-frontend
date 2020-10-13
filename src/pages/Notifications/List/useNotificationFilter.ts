@@ -1,5 +1,6 @@
-import { assertNever, useFilters, useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
+import { useFilters, useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
 import { NotificationFilterColumn } from '../../../components/Notifications/Filter';
+import { assertNever } from 'assert-never';
 
 const DEBOUNCE_MS = 250;
 

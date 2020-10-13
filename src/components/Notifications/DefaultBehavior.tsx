@@ -1,5 +1,4 @@
 import * as React from 'react';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_md, global_spacer_sm, global_spacer_lg } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { NotificationType, DefaultNotificationBehavior } from '../../types/Notification';

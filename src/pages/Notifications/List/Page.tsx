@@ -9,7 +9,6 @@ import { Messages } from '../../../properties/Messages';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useNotificationFilter } from './useNotificationFilter';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { style } from 'typestyle';
 import {
@@ -19,7 +18,7 @@ import {
 } from '../../../components/Notifications/Table';
 import { NotificationType, DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
-import { assertNever, ExporterType } from '@redhat-cloud-services/insights-common-typescript';
+import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
 import {
@@ -29,6 +28,7 @@ import {
     useFormModalReducer
 } from './useFormModalReducer';
 import { IntegrationType } from '../../../types/Integration';
+import { assertNever } from 'assert-never';
 
 const displayInlineClassName = style({
     display: 'inline'

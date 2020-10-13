@@ -6,8 +6,8 @@ import {
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
-import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
 import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Openapi';
+import { assertNever } from 'assert-never';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {

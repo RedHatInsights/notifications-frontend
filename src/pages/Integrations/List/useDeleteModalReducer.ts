@@ -1,6 +1,6 @@
 import { useReducer } from 'react';
 import { Integration } from '../../../types/Integration';
-import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever } from 'assert-never';
 
 enum UseDeleteModalReducerActionType {
     DELETE = 'delete',

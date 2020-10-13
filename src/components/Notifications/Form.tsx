@@ -7,7 +7,6 @@ import {
     IntegrationRef
 } from '../../types/Notification';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import {
     Checkbox,

@@ -10,7 +10,7 @@ import {
     TableHeader
 } from '@patternfly/react-table';
 import { Messages } from '../../properties/Messages';
-import { assertNever, joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { Action, NotificationType, Notification } from '../../types/Notification';
 import { style } from 'typestyle';
@@ -19,6 +19,7 @@ import styles from '@patternfly/react-styles/css/components/Table/table';
 import { ActionComponent } from './ActionComponent';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { GroupByEnum } from './Types';
+import { assertNever } from 'assert-never';
 
 import './Table.scss';
 

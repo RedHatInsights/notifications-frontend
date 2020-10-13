@@ -1,10 +1,10 @@
 import * as React from 'react';
-import { assertNever, toUtc } from '@redhat-cloud-services/insights-common-typescript';
+import { toUtc } from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import { ExclamationCircleIcon, CheckCircleIcon } from '@patternfly/react-icons';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_xs, global_success_color_200, global_danger_color_100 } from '@patternfly/react-tokens';
 import { style } from 'typestyle';
+import { assertNever } from 'assert-never';
 
 export interface ConnectionAttemptProps {
     type: ConnectionAttemptType;
