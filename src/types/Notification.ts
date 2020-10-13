@@ -1,3 +1,4 @@
+import * as Generated from '../generated/Openapi';
 import { Integration } from './Integration';
 
 export interface Notification {
@@ -36,3 +37,6 @@ export enum NotificationType {
     INTEGRATION = 'INTEGRATION',
     PLATFORM_ALERT = 'PLATFORM_ALERT'
 }
+
+export type ServerNotificationRequest = Generated.EventType;
+export type ServerNotificationResponse = Generated.EventType;

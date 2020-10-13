@@ -63,7 +63,6 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
         case IntegrationType.WEBHOOK:
             return {
                 url: integration.url,
-                // Todo: Add these to IntegrationHttp
                 method: integration.method,
                 disable_ssl_verification: !integration.sslVerificationEnabled,
                 secret_token: integration.secretToken
