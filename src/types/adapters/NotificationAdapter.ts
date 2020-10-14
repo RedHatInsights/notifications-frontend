@@ -27,8 +27,8 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
         id: serverNotification.id.toString(),
         application: serverNotification.application.name,
         event: serverNotification.name,
-        actions: [],
-        useDefault: false
+        actions: toActions(serverNotification.endpoints?.filter(e => e.type !== EndpointType.enum.default) ?? []),
+        useDefault: !!serverNotification.endpoints?.find(e => e.type === EndpointType.enum.default)
     };
 };
 
@@ -38,6 +38,8 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
             return _toAction(NotificationType.INTEGRATION, serverAction);
         case EndpointType.enum.email:
             return _toAction(NotificationType.EMAIL, serverAction);
+        case EndpointType.enum.default:
+            throw new Error('EndpointType.default should not reach this point');
         default:
             assertNever(serverAction.type);
     }

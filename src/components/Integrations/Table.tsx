@@ -12,7 +12,9 @@ import {
 } from '@patternfly/react-table';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import { Spinner, Switch, Text } from '@patternfly/react-core';
-import { global_spacer_md, global_spacer_lg, global_spacer_sm, global_warning_color_200, global_success_color_200, global_danger_color_100 } from '@patternfly/react-tokens';
+import {
+    global_spacer_md, global_spacer_lg, global_spacer_sm, global_warning_color_200, global_success_color_200, global_danger_color_100
+} from '@patternfly/react-tokens';
 import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
@@ -319,7 +321,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                 rows={ rows }
                 cells={ columns }
                 onCollapse={ onCollapseHandler }
-                rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
+                rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
                 actionResolver={ actionsResolverCallback }
             >
                 <TableHeader/>

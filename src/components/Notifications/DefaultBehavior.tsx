@@ -8,8 +8,9 @@ import { ActionComponent } from './ActionComponent';
 import { Button, ButtonVariant, Flex, FlexItem } from '@patternfly/react-core';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {
-    defaultBehavior: DefaultNotificationBehavior;
+    defaultBehavior?: DefaultNotificationBehavior;
     onEdit: () => void;
+    loading: boolean;
 }
 
 const contentClassName = style({
@@ -37,23 +38,32 @@ const titleClassName = style({
     fontWeight: 600
 });
 
-export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (props) => (
-    <div { ...getOuiaProps('Notifications/DefaultBehavior', props) } className={ contentClassName } >
-        <Flex
-            justifyContent={ { default: 'justifyContentSpaceBetween' } }
-        >
-            <FlexItem><div className={ titleClassName }>Default behavior</div></FlexItem>
-            <FlexItem><Button onClick={ props.onEdit } variant={ ButtonVariant.link }>Edit</Button></FlexItem>
-        </Flex>
-        <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
-        <table className={ tableClassName }>
-            <thead>
+export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (props) => {
+    if (props.loading) {
+        return <>LOADING</>;
+    }
+
+    if (!props.defaultBehavior) {
+        return <>Error fetching default behavior</>;
+    }
+
+    return (
+        <div { ...getOuiaProps('Notifications/DefaultBehavior', props) } className={ contentClassName } >
+            <Flex
+                justifyContent={ { default: 'justifyContentSpaceBetween' } }
+            >
+                <FlexItem><div className={ titleClassName }>Default behavior</div></FlexItem>
+                <FlexItem><Button onClick={ props.onEdit } variant={ ButtonVariant.link }>Edit</Button></FlexItem>
+            </Flex>
+            <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
+            <table className={ tableClassName }>
+                <thead>
                 <tr>
                     <th>Action</th>
                     <th>Recipient</th>
                 </tr>
-            </thead>
-            <tbody>
+                </thead>
+                <tbody>
                 {
                     props.defaultBehavior.actions.map((a, index) => {
                         return (
@@ -64,8 +74,9 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                         );
                     })
                 }
-            </tbody>
-        </table>
-    </div>
-);
+                </tbody>
+            </table>
+        </div>
+    );
+};
 

@@ -9,8 +9,8 @@ import { ModalVariant } from '@patternfly/react-core';
 import { IntegrationType } from '../../types/Integration';
 
 type DataFetcher = {
-    getRecipients: (search: string) => Array<string>;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';

@@ -26,15 +26,15 @@ type Type = 'default' | 'notification';
 
 export interface NotificationFormProps extends OuiaComponentProps {
     type: Type;
-    getRecipients: (search: string) => Array<string>;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 interface ActionsArrayProps extends FieldArrayRenderProps {
     form: FormikProps<Notification | DefaultNotificationBehavior>;
     type: Type;
-    getRecipients: (search: string) => Array<string>;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 const alignLeftClassName = style({

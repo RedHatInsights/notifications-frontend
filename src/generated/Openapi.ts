@@ -1191,13 +1191,16 @@ export function zodSchemaEndpoint() {
         .union([ zodSchemaWebhookAttributes(), zodSchemaEmailAttributes() ])
         .optional()
         .nullable(),
-        type: z.intersection(zodSchemaEndpointType(), z.enum([ 'webhook', 'email' ])),
+        type: z.intersection(
+            zodSchemaEndpointType(),
+            z.enum([ 'webhook', 'email', 'default' ])
+        ),
         updated: zodSchemaDate().optional().nullable()
     });
 }
 
 export function zodSchemaEndpointType() {
-    return z.enum([ 'webhook', 'email' ]);
+    return z.enum([ 'webhook', 'email', 'default' ]);
 }
 
 export function zodSchemaSetLink() {
@@ -1335,7 +1338,7 @@ export function zodSchemaApplication() {
     return z.object({
         created: zodSchemaDate().optional().nullable(),
         description: z.string(),
-        eventTypes: z.unknown(), // z.lazy(() => zodSchemaSetEventType().optional().nullable()),
+        eventTypes: z.unknown(), // zodSchemaSetEventType().optional().nullable(),
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
         updated: zodSchemaDate().optional().nullable()

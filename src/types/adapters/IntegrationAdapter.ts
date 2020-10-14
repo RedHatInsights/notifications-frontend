@@ -14,6 +14,7 @@ const getIntegrationType = (type: EndpointType | undefined): IntegrationType => 
         case EndpointType.Enum.webhook:
             return IntegrationType.WEBHOOK;
         case EndpointType.Enum.email:
+        case EndpointType.Enum.default:
         case undefined:
             throw new Error(`Unexpected type: ${type}`);
         default:
@@ -21,7 +22,7 @@ const getIntegrationType = (type: EndpointType | undefined): IntegrationType => 
     }
 };
 
-const getEndpointType = (type: IntegrationType): EndpointType => {
+export const getEndpointType = (type: IntegrationType): EndpointType => {
     switch (type) {
         case IntegrationType.WEBHOOK:
             return EndpointType.Enum.webhook;

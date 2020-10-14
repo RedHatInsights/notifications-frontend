@@ -1,7 +1,14 @@
 import * as React from 'react';
+import { useContext } from 'react';
 import { DefaultNotificationBehavior, IntegrationRef, Notification } from '../../../types/Notification';
 import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
 import { IntegrationType } from '../../../types/Integration';
+import {
+    listIntegrationIntegrationDecoder,
+    listIntegrationsActionCreator
+} from '../../../services/useListIntegrations';
+import { ClientContext } from 'react-fetching-library';
+import { Filter, Operator, Page } from '@redhat-cloud-services/insights-common-typescript';
 
 interface EditNotificationPagePropsNotification {
     type: 'notification';
@@ -25,55 +32,7 @@ const recipients = [
     'Stakeholders'
 ];
 
-const integrations: Array<IntegrationRef> = [
-    {
-        type: IntegrationType.WEBHOOK,
-        id: '0001',
-        name: 'Robot'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: '0002',
-        name: 'Stuff'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: '0003',
-        name: 'Read'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: '0004',
-        name: 'Ready'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: '0005',
-        name: 'Else'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: '0006',
-        name: 'Foo'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: 'integration-00003',
-        name: 'Pager duty'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: 'integration-00001',
-        name: 'Send stuff over there'
-    },
-    {
-        type: IntegrationType.WEBHOOK,
-        id: 'integration-00002',
-        name: 'Message to #policies'
-    }
-];
-
-const getRecipients = (search: string) => {
+const getRecipients = async (search: string) => {
     if (search !== '') {
         search = search.toLowerCase();
         return recipients.filter(r => r.toLowerCase().includes(search));
@@ -82,17 +41,30 @@ const getRecipients = (search: string) => {
     return recipients;
 };
 
-const getIntegrations = (type: IntegrationType, search: string) => {
-    const typedIntegrations = integrations.filter(i => i.type === type);
-    if (search !== '') {
-        search = search.toLowerCase();
-        return typedIntegrations.filter(i => i.name.toLowerCase().includes(search));
-    }
-
-    return typedIntegrations;
-};
-
 export const EditNotificationPage: React.FunctionComponent<EditNotificationPageProps> = (props) => {
+
+    const { query } = useContext(ClientContext);
+
+    const getIntegrations = React.useCallback(async (type: IntegrationType, search: string) => {
+        return query(listIntegrationsActionCreator(
+            Page.of(
+                1,
+                20,
+                new Filter()
+                .and('type', Operator.EQUAL, type)
+            )
+        )).then(response => {
+            let integrations: Array<IntegrationRef> = [];
+            const payload = response.payload ? listIntegrationIntegrationDecoder(response.payload) : undefined;
+
+            if (payload?.type === 'integrationArray') {
+                integrations = payload.value;
+            }
+
+            return integrations;
+        });
+    }, [ query ]);
+
     return (
         <NotificationSaveModal
             isSaving={ false }

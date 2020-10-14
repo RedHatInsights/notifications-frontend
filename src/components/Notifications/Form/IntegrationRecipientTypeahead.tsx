@@ -2,13 +2,15 @@ import { DefaultNotificationBehavior, IntegrationRef } from '../../../types/Noti
 import { IntegrationType } from '../../../types/Integration';
 import * as React from 'react';
 import { useFormikContext } from 'formik';
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
+import { useTypeaheadReducer } from './useTypeaheadReducer';
+import { useRecipientOptionMemo } from './UseRecipientOptionMemo';
 
 export interface IntegrationRecipientTypeaheadProps {
     selected: Partial<IntegrationRef> | undefined;
     path: string;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     integrationType: IntegrationType;
 }
 
@@ -16,24 +18,41 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const [ isOpen, setOpen ] = React.useState(false);
 
+    const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRef>();
+
     const toggle = React.useCallback((isOpen: boolean) => {
         setOpen(isOpen);
     }, [ setOpen ]);
 
+    React.useEffect(() => {
+        const getIntegrations = props.getIntegrations;
+        getIntegrations(props.integrationType, '').then(integrations => dispatchers.setDefaults(integrations));
+    }, [ props.getIntegrations, props.integrationType, dispatchers ]);
+
+    React.useEffect(() => {
+        const getIntegrations = props.getIntegrations;
+        if (state.loadingFilter) {
+            getIntegrations(props.integrationType, state.lastSearch).then(integrations => dispatchers.setFilterValue(
+                state.lastSearch,
+                integrations
+            ));
+        }
+    }, [ props.getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const search = e.target.value;
-        const getIntegrations = props.getIntegrations;
+        const search = e.target.value?.trim();
 
-        return getIntegrations(
-            props.integrationType,
-            search !== undefined ? search.trim() : '').map(r => <SelectOption key={ r.id } value={ new RecipientOption(r) }/>
-        );
-    }, [ props.getIntegrations, props.integrationType ]);
+        if (search === '') {
+            dispatchers.useDefaults();
+        } else {
+            dispatchers.loadFilterValue(search);
+        }
 
-    const defaultIntegration = React.useMemo(() => {
-        const getIntegrations = props.getIntegrations;
-        return getIntegrations(props.integrationType, '').map(r => <SelectOption key={ r.id } value={ new RecipientOption(r) }/>);
-    }, [ props.getIntegrations, props.integrationType ]);
+        return [];
+    }, [ dispatchers ]);
+
+    const options = useRecipientOptionMemo(state);
 
     const selection = React.useMemo(() => {
         const sel = props.selected;
@@ -58,10 +77,11 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
             onSelect={ onSelect }
             onToggle={ toggle }
             isOpen={ isOpen }
-            onFilter={ onFilter }
+            // Todo: Enable this once we have a way to query for integration's name
+            // onFilter={ onFilter }
             menuAppendTo={ document.body }
         >
-            { defaultIntegration }
+            { options }
         </Select>
     );
 };

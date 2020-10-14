@@ -3,36 +3,59 @@ import { FieldArray, useFormikContext } from 'formik';
 import { DefaultNotificationBehavior } from '../../../types/Notification';
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
+import { useTypeaheadReducer } from './useTypeaheadReducer';
+import assertNever from 'assert-never';
+import { useRecipientOptionMemo } from './UseRecipientOptionMemo';
 
 export interface RecipientTypeaheadProps {
     selected: Array<string> | undefined;
     path: string;
-    getRecipients: (search: string) => Array<string>;
+    getRecipients: (search: string) => Promise<Array<string>>;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
     const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const [ isOpen, setOpen ] = React.useState(false);
 
+    const [ state, dispatchers ] = useTypeaheadReducer<string>();
+
+    React.useEffect(() => {
+        const getRecipients = props.getRecipients;
+        getRecipients('').then(recipients => dispatchers.setDefaults(recipients));
+    }, [ props.getRecipients, dispatchers ]);
+
+    React.useEffect(() => {
+        const getRecipients = props.getRecipients;
+        if (state.loadingFilter) {
+            getRecipients(state.lastSearch).then(recipients => dispatchers.setFilterValue(
+                state.lastSearch,
+                recipients
+            ));
+        }
+    }, [ props.getRecipients, state.loadingFilter, state.lastSearch, dispatchers ]);
+
     const toggle = React.useCallback((isOpen: boolean) => {
         setOpen(isOpen);
     }, [ setOpen ]);
 
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const search = e.target.value;
-        const getRecipients = props.getRecipients;
+        const search = e.target.value?.trim();
 
-        return getRecipients(search !== undefined ? search.trim() : '').map(r => <SelectOption key={ r } value={ new RecipientOption(r) }/>);
-    }, [ props.getRecipients ]);
+        if (search === '') {
+            dispatchers.useDefaults();
+        } else {
+            dispatchers.loadFilterValue(search);
+        }
+
+        return [];
+        // return getRecipients(search !== undefined ? search.trim() : '').map(r => <SelectOption key={ r } value={ new RecipientOption(r) }/>);
+    }, [ dispatchers ]);
 
     const onClear = React.useCallback(() => {
         setFieldValue(`${props.path}.recipient`, []);
     }, [ props.path, setFieldValue ]);
 
-    const defaultRecipients = React.useMemo(() => {
-        const getRecipients = props.getRecipients;
-        return getRecipients('').map(r => <SelectOption key={ r } value={ new RecipientOption(r) }/>);
-    }, [ props.getRecipients ]);
+    const options = useRecipientOptionMemo(state);
 
     const selection = React.useMemo(() => {
         const sel = props.selected;
@@ -71,7 +94,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                         onClear={ onClear }
                         menuAppendTo={ document.body }
                     >
-                        { defaultRecipients }
+                        { options }
                     </Select>
                 );
             } }

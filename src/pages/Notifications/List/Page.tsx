@@ -16,7 +16,7 @@ import {
     NotificationRows,
     NotificationsTable
 } from '../../../components/Notifications/Table';
-import { NotificationType, DefaultNotificationBehavior, Notification } from '../../../types/Notification';
+import { Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
@@ -27,8 +27,9 @@ import {
     makeNoneAction,
     useFormModalReducer
 } from './useFormModalReducer';
-import { IntegrationType } from '../../../types/Integration';
 import { assertNever } from 'assert-never';
+import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
+import { useListNotifications } from '../../../services/useListNotifications';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -71,122 +72,9 @@ const toNotificationRow = (notifications: Array<Notification>, groupBy: GroupByE
     }
 };
 
-const notifications: Array<Notification> = [
-    {
-        id: 'advisor-new-recommendation-critical',
-        event: 'New recommendation - Critical',
-        application: 'Advisor',
-        actions: [
-            {
-                type: NotificationType.EMAIL,
-                recipient: [
-                    'Admin', 'Security admin'
-                ]
-            },
-            {
-                type: NotificationType.DRAWER,
-                recipient: [
-                    'Admin'
-                ]
-            },
-            {
-                type: NotificationType.INTEGRATION,
-                integration: {
-                    type: IntegrationType.WEBHOOK,
-                    id: 'integration-00001',
-                    name: 'Send stuff over there'
-                }
-            }
-        ]
-    },
-    {
-        id: 'advisor-new-recommendation-high',
-        event: 'New recommendation - High',
-        application: 'Advisor',
-        actions: [],
-        useDefault: true
-    },
-    {
-        id: 'advisor-new-recommendation-medium',
-        event: 'New recommendation - Medium',
-        application: 'Advisor',
-        actions: [],
-        useDefault: true
-    },
-    {
-        id: 'advisor-new-recommendation-low',
-        event: 'New recommendation - Low',
-        application: 'Advisor',
-        actions: [
-            {
-                type: NotificationType.PLATFORM_ALERT,
-                recipient: []
-            }
-        ]
-    },
-    {
-        id: 'vulnerability-new-cve-detected-critical',
-        event: 'New CVE detected - Critical',
-        application: 'Vulnerability',
-        actions: [
-            {
-                type: NotificationType.EMAIL,
-                recipient: [
-                    'Security admin',
-                    'Stakeholders',
-                    'Another one',
-                    'Another one'
-                ]
-            },
-            {
-                type: NotificationType.DRAWER,
-                recipient: []
-            },
-            {
-                type: NotificationType.INTEGRATION,
-                integration: {
-                    type: IntegrationType.WEBHOOK,
-                    id: 'integration-00002',
-                    name: 'Message to #policies'
-                }
-            }
-        ]
-    },
-    {
-        id: 'vulnerability-new-cve-detected-high',
-        event: 'New CVE detected - High',
-        application: 'Vulnerability',
-        actions: []
-    }
-];
-
-const defaultNotificationBehavior: DefaultNotificationBehavior = {
-    actions: [
-        {
-            type: NotificationType.EMAIL,
-            recipient: [
-                'Admin',
-                'Security admin'
-            ]
-        },
-        {
-            type: NotificationType.DRAWER,
-            recipient: [
-                'Admin'
-            ]
-        },
-        {
-            type: NotificationType.INTEGRATION,
-            integration: {
-                type: IntegrationType.WEBHOOK,
-                id: 'integration-00003',
-                name: 'Pager duty'
-            }
-        }
-    ]
-};
-
 export const NotificationsListPage: React.FunctionComponent = () => {
+
+    const defaultNotificationBehavior = useDefaultNotificationBehavior();
 
     const notificationsFilter = useNotificationFilter();
     const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.Application);
@@ -199,9 +87,17 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         grouped: groupBy
     });
 
+    const useNotifications = useListNotifications();
+
     React.useEffect(() => {
-        setNotificationRows(toNotificationRow(notifications, groupBy));
-    }, [ groupBy ]);
+        const payload = useNotifications.payload;
+        if (payload?.type === 'eventTypesArray') {
+            setNotificationRows(toNotificationRow(payload.value, groupBy));
+        } else {
+            setNotificationRows(prev => ({ ...prev, data: []}));
+        }
+
+    }, [ groupBy, useNotifications.payload ]);
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
 
@@ -244,8 +140,11 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     }, []);
 
     const onEditDefaultAction = React.useCallback(() => {
-        dispatchModalIsOpen(makeEditDefaultAction(defaultNotificationBehavior));
-    }, [ dispatchModalIsOpen ]);
+        const payload = defaultNotificationBehavior.payload;
+        if (payload?.type === 'DefaultNotificationBehavior') {
+            dispatchModalIsOpen(makeEditDefaultAction(payload.value));
+        }
+    }, [ dispatchModalIsOpen, defaultNotificationBehavior.payload ]);
 
     const onEditNotification = React.useCallback((notification: Notification) => {
         dispatchModalIsOpen(makeEditNotificationAction(notification));
@@ -260,7 +159,10 @@ export const NotificationsListPage: React.FunctionComponent = () => {
             <Main>
                 <Section>
                     <DefaultBehavior
-                        defaultBehavior={ defaultNotificationBehavior }
+                        loading={ defaultNotificationBehavior.loading }
+                        defaultBehavior={ defaultNotificationBehavior.payload?.type === 'DefaultNotificationBehavior' ?
+                            defaultNotificationBehavior.payload.value :
+                            undefined }
                         onEdit={ onEditDefaultAction }
                     />
                     <div className={ tableTitleClassName }>Insights notifications types and behavior</div>

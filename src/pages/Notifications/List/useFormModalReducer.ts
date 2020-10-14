@@ -37,7 +37,7 @@ type UseFormModalReducerState = {
 }))
 
 const noneState = {
-    isOpen: false as false
+    isOpen: false as const
 };
 
 const reducer = (state: UseFormModalReducerState, action: UseFormModalReducerAction): UseFormModalReducerState => {

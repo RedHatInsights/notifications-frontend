@@ -14,8 +14,8 @@ import { ActionTypeahead } from './ActionTypeahead';
 export interface EditableActionTableProps {
     actions: Array<Action>;
     path: string;
-    getRecipients: (search: string) => Array<string>;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     handleRemove?: (index: number) => () => void;
 }
 

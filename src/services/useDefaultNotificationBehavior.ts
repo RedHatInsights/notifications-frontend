@@ -14,7 +14,9 @@ const decoder = validationResponseTransformer((payload: GetNotificationsDefaults
         return validatedResponse(
             'DefaultNotificationBehavior',
             200,
-            toActions(payload.value),
+            {
+                actions: toActions(payload.value)
+            },
             payload.errors
         );
     }
