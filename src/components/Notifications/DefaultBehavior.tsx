@@ -58,22 +58,22 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
             <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
             <table className={ tableClassName }>
                 <thead>
-                <tr>
-                    <th>Action</th>
-                    <th>Recipient</th>
-                </tr>
+                    <tr>
+                        <th>Action</th>
+                        <th>Recipient</th>
+                    </tr>
                 </thead>
                 <tbody>
-                {
-                    props.defaultBehavior.actions.map((a, index) => {
-                        return (
-                            <tr key={ index }>
-                                <td><ActionComponent isDefault={ false } action={ a }/></td>
-                                <td>{ a.type === NotificationType.INTEGRATION ? a.integration.name : a.recipient.join(', ') }</td>
-                            </tr>
-                        );
-                    })
-                }
+                    {
+                        props.defaultBehavior.actions.map((a, index) => {
+                            return (
+                                <tr key={ index }>
+                                    <td><ActionComponent isDefault={ false } action={ a }/></td>
+                                    <td>{ a.type === NotificationType.INTEGRATION ? a.integration.name : a.recipient.join(', ') }</td>
+                                </tr>
+                            );
+                        })
+                    }
                 </tbody>
             </table>
         </div>

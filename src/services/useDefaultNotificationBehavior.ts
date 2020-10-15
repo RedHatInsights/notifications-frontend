@@ -9,7 +9,7 @@ import { toActions } from '../types/adapters/NotificationAdapter';
 
 export const defaultNotificationBehaviorCreator = () => actionGetNotificationsDefaults();
 
-const decoder = validationResponseTransformer((payload: GetNotificationsDefaultsPayload) => {
+export const defaultNotificationsDecoder = validationResponseTransformer((payload: GetNotificationsDefaultsPayload) => {
     if (payload.type === 'GetNotificationsDefaultsParamResponse200') {
         return validatedResponse(
             'DefaultNotificationBehavior',
@@ -26,5 +26,5 @@ const decoder = validationResponseTransformer((payload: GetNotificationsDefaults
 
 export const useDefaultNotificationBehavior = () => useTransformQueryResponse(
     useQuery(defaultNotificationBehaviorCreator()),
-    decoder
+    defaultNotificationsDecoder
 );

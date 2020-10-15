@@ -93,14 +93,20 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
                     handleRemove={ props.handleRemove }
                 />
             ) }
-            <Button
-                className={ alignLeftClassName }
-                variant={ ButtonVariant.link }
-                icon={ <PlusCircleIcon /> }
-                onClick={ addAction }
-            >
-                Add action
-            </Button>
+            <tbody>
+                <tr>
+                    <td>
+                        <Button
+                            className={ alignLeftClassName }
+                            variant={ ButtonVariant.link }
+                            icon={ <PlusCircleIcon /> }
+                            onClick={ addAction }
+                        >
+                            Add action
+                        </Button>
+                    </td>
+                </tr>
+            </tbody>
         </>
     );
 };

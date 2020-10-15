@@ -9,7 +9,7 @@ export interface Notification {
     useDefault?: boolean;
 }
 
-export type IntegrationRef = Pick<Integration, 'id' | 'name' | 'type'>
+export type IntegrationRef = Pick<Integration, 'id' | 'name' | 'type' | 'isEnabled'>
 
 export interface DefaultNotificationBehavior {
     actions: Array<Action>;
