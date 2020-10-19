@@ -66,6 +66,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
         if (value instanceof RecipientOption) {
             setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+            setOpen(false);
         }
     }, [ setFieldValue, props.path ]);
 

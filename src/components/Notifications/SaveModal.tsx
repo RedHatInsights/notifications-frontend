@@ -4,9 +4,9 @@ import { SaveModal, SaveModalProps } from '@redhat-cloud-services/insights-commo
 import { Formik, useFormikContext } from 'formik';
 import { NotificationForm } from './Form';
 import { DefaultNotificationBehavior, IntegrationRef, Notification } from '../../types/Notification';
-import { IntegrationSchema } from '../../schemas/Integrations/Integration';
 import { ModalVariant } from '@patternfly/react-core';
-import { IntegrationType, NewIntegration } from '../../types/Integration';
+import { IntegrationType } from '../../types/Integration';
+import { WithActions } from '../../schemas/Integrations/Notifications';
 
 type DataFetcher = {
     getRecipients: (search: string) => Promise<Array<string>>;
@@ -32,7 +32,7 @@ interface InternalProps extends DataFetcher {
 const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (props) => {
     const title =  `Edit${props.type === 'default' && ' default'} notification actions`;
 
-    const { handleSubmit, isValid, isSubmitting } = useFormikContext<NewIntegration>();
+    const { handleSubmit, isValid, isSubmitting } = useFormikContext<Notification | DefaultNotificationBehavior>();
 
     const onSaveClicked = React.useCallback(() => {
         handleSubmit();
@@ -52,7 +52,7 @@ const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (p
             title={ title }
             onClose={ props.onClose }
             variant={ ModalVariant.large }
-            // actionButtonDisabled={ !isValid }
+            actionButtonDisabled={ !isValid }
         />
     );
 };
@@ -60,19 +60,25 @@ const InternalNotificationSaveModal: React.FunctionComponent<InternalProps> = (p
 export const NotificationSaveModal: React.FunctionComponent<NotificationSaveModalProps> = (props) => {
 
     const onSubmit = React.useCallback(async (data: Notification | DefaultNotificationBehavior) => {
-        const onSave = props.onSave;
         const onClose = props.onClose;
-        // const transformedIntegration = IntegrationSchema.cast(integration) as NewIntegration;
-        const saved = await onSave(data as any); // Todo remove this cast
+        let saved = false;
+        if (props.type === 'notification') {
+            const onSave = props.onSave;
+            saved = await onSave(data as Notification);
+        } else if (props.type === 'default') {
+            const onSave = props.onSave;
+            saved = await onSave(data as DefaultNotificationBehavior);
+        }
+
         if (saved) {
             onClose(true);
         }
-    }, [ props.onSave, props.onClose ]);
+    }, [ props.onSave, props.onClose, props.type ]);
 
     return (
         <Formik<Notification | DefaultNotificationBehavior>
             initialValues={ props.data }
-            // validationSchema={ IntegrationSchema }
+            validationSchema={ WithActions }
             onSubmit={ onSubmit }
             validateOnMount={ true }
         >

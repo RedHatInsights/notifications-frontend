@@ -101,9 +101,16 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
 
-    const closeFormModal = React.useCallback((_saved: boolean) => {
+    const closeFormModal = React.useCallback((saved: boolean) => {
+        const updateDefaultNotifications = defaultNotificationBehavior.query;
+        if (saved && modalIsOpenState.isOpen) {
+            if (modalIsOpenState.type === 'default') {
+                updateDefaultNotifications();
+            }
+        }
+
         dispatchModalIsOpen(makeNoneAction());
-    }, [ dispatchModalIsOpen ]);
+    }, [ dispatchModalIsOpen, defaultNotificationBehavior.query, modalIsOpenState ]);
 
     const onCollapse = React.useCallback((index: number, isOpen: boolean) => {
         setNotificationRows(prevRows => {

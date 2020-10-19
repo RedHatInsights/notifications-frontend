@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { FieldArray, useFormikContext } from 'formik';
 import { DefaultNotificationBehavior } from '../../../types/Notification';
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
-import assertNever from 'assert-never';
 import { useRecipientOptionMemo } from './UseRecipientOptionMemo';
 
 export interface RecipientTypeaheadProps {

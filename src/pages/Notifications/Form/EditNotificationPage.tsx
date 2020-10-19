@@ -129,7 +129,7 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
         const limit = pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS);
 
         if (toAdd.length === 0 && toDelete.length === 0) {
-            // Nothing to update
+            // Nothing to update, dispĺay to the user that all was updated?
             addSuccessNotification('Actions updated', 'All the actions were updated.');
             return true;
         }
@@ -147,7 +147,7 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
         }
 
         return saved;
-    }, [ props.type, query, props.data ]);
+    }, [ props.type, query ]);
 
     return (
         <NotificationSaveModal
