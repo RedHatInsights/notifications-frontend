@@ -1,17 +1,23 @@
 import * as React from 'react';
-import { global_spacer_md, global_spacer_sm, global_spacer_lg } from '@patternfly/react-tokens';
+import { global_spacer_md, global_spacer_sm, global_spacer_lg, global_palette_black_300, c_skeleton_BackgroundColor } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { NotificationType, DefaultNotificationBehavior } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
-import { style } from 'typestyle';
+import { cssRaw, style } from 'typestyle';
 import { ActionComponent } from './ActionComponent';
-import { Button, ButtonVariant, Flex, FlexItem } from '@patternfly/react-core';
+import { Button, ButtonVariant, Flex, FlexItem, Skeleton } from '@patternfly/react-core';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {
     defaultBehavior?: DefaultNotificationBehavior;
     onEdit: () => void;
     loading: boolean;
 }
+
+cssRaw(`
+    table.withDark300Skeleton .pf-c-skeleton {
+        ${c_skeleton_BackgroundColor.name}: ${global_palette_black_300.var} 
+    }
+`);
 
 const contentClassName = style({
     backgroundColor: '#f0f0f0',
@@ -39,14 +45,6 @@ const titleClassName = style({
 });
 
 export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (props) => {
-    if (props.loading) {
-        return <>LOADING</>;
-    }
-
-    if (!props.defaultBehavior) {
-        return <>Error fetching default behavior</>;
-    }
-
     return (
         <div { ...getOuiaProps('Notifications/DefaultBehavior', props) } className={ contentClassName } >
             <Flex
@@ -56,7 +54,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                 <FlexItem><Button onClick={ props.onEdit } variant={ ButtonVariant.link }>Edit</Button></FlexItem>
             </Flex>
             <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
-            <table className={ tableClassName }>
+            <table className={ `${tableClassName} withDark300Skeleton` }>
                 <thead>
                     <tr>
                         <th>Action</th>
@@ -64,8 +62,25 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                     </tr>
                 </thead>
                 <tbody>
-                    {
-                        props.defaultBehavior.actions.map((a, index) => {
+                    { props.loading ? (
+                        <>
+                            <tr>
+                                <td><Skeleton width="200px"/></td>
+                                <td><Skeleton width="200px"/></td>
+                            </tr>
+                            <tr>
+                                <td><Skeleton width="200px"/></td>
+                                <td><Skeleton width="200px"/></td>
+                            </tr>
+                            <tr>
+                                <td><Skeleton width="200px"/></td>
+                                <td><Skeleton width="200px"/></td>
+                            </tr>
+                        </>
+                    ) : props.defaultBehavior === undefined ? (
+                        <span>Error while loading the default behavior. </span>
+                    ) : (
+                        props.defaultBehavior?.actions.map((a, index) => {
                             return (
                                 <tr key={ index }>
                                     <td><ActionComponent isDefault={ false } action={ a }/></td>
@@ -73,7 +88,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                                 </tr>
                             );
                         })
-                    }
+                    )}
                 </tbody>
             </table>
         </div>

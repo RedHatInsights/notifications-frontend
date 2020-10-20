@@ -20,6 +20,7 @@ const getSelectOptions = () => [
 export interface ActionTypeaheadProps {
     action: Action;
     path: string;
+    isDisabled?: boolean;
 }
 
 export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (props) => {
@@ -73,6 +74,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
             isOpen={ isOpen }
             onSelect={ onSelect }
             menuAppendTo={ document.body }
+            isDisabled={ props.isDisabled }
         >
             { getSelectOptions().map(o => <SelectOption key={ o.toString() } value={ o } />) }
         </Select>

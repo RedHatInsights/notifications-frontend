@@ -17,6 +17,7 @@ export interface EditableActionTableProps {
     getRecipients: (search: string) => Promise<Array<string>>;
     getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     handleRemove?: (index: number) => () => void;
+    isDisabled?: boolean;
 }
 
 export const EditableActionTable: React.FunctionComponent<EditableActionTableProps> = (props) => {
@@ -39,6 +40,7 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                                     <ActionTypeahead
                                         path={ `${props.path}.${index}` }
                                         action={ a }
+                                        isDisabled={ props.isDisabled }
                                     />
                                 </td>
                                 <td>
@@ -48,12 +50,14 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                                             integrationType={ a.integration?.type ?? IntegrationType.WEBHOOK }
                                             selected={ a.integration }
                                             getIntegrations={ props.getIntegrations }
+                                            isDisabled={ props.isDisabled }
                                         />
                                     ) : (
                                         <RecipientTypeahead
                                             path={ `${props.path}.${index}` }
                                             selected={ a.recipient }
                                             getRecipients={ props.getRecipients }
+                                            isDisabled={ props.isDisabled }
                                         />
                                     ) }
                                 </td>

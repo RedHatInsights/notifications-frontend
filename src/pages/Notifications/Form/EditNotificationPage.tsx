@@ -137,9 +137,7 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
                     name: 'Default endpoint type',
                     description: '',
                     enabled: true,
-                    properties: {
-
-                    }
+                    properties: null
                 }
             }))
             .then(p => p.payload?.type === 'Endpoint' ? p.payload.value.id as string : undefined);

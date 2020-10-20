@@ -12,6 +12,7 @@ export interface IntegrationRecipientTypeaheadProps {
     path: string;
     getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     integrationType: IntegrationType;
+    isDisabled?: boolean;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
@@ -81,6 +82,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
             // Todo: Enable this once we have a way to query for integration's name
             // onFilter={ onFilter }
             menuAppendTo={ document.body }
+            isDisabled={ props.isDisabled }
         >
             { options }
         </Select>

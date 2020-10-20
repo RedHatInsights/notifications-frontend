@@ -190,7 +190,12 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span><ActionComponent isDefault={ !!notification.useDefault } action={ firstAction }/></span></>,
+                    title: <><span><ActionComponent
+                        isDefault={ !!notification.useDefault }
+                        action={ firstAction }
+                        loading={ notification.loadingActionStatus === 'loading' }
+                        hasError={ notification.loadingActionStatus === 'error' }
+                    /></span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -236,7 +241,12 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                 key: `${parent !== undefined ? (parent.toString() + '-') : ''}${id}`,
                 cells: [
                     {
-                        title: <ActionComponent isDefault={ !!notification.useDefault } action={ notification.actions[i] } />,
+                        title: <ActionComponent
+                            isDefault={ !!notification.useDefault }
+                            action={ notification.actions[i] }
+                            loading={ notification.loadingActionStatus === 'loading' }
+                            hasError={ notification.loadingActionStatus === 'error' }
+                        />,
                         props: {
                             className: joinClasses(
                                 noExpandableBorderClassName,

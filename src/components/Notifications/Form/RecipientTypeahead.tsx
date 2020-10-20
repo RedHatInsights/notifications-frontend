@@ -10,6 +10,7 @@ export interface RecipientTypeaheadProps {
     selected: Array<string> | undefined;
     path: string;
     getRecipients: (search: string) => Promise<Array<string>>;
+    isDisabled?: boolean;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
@@ -92,6 +93,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                         onFilter={ onFilter }
                         onClear={ onClear }
                         menuAppendTo={ document.body }
+                        isDisabled={ props.isDisabled }
                     >
                         { options }
                     </Select>

@@ -61,7 +61,7 @@ const tableClassName = style({
 
 const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
 
-    const { values } = props.form;
+    const { values, isSubmitting } = props.form;
     const actions = values.actions;
 
     const addAction = React.useCallback(() => {
@@ -91,6 +91,7 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
                     getRecipients={ props.getRecipients }
                     getIntegrations={ props.getIntegrations }
                     handleRemove={ props.handleRemove }
+                    isDisabled={ isSubmitting }
                 />
             ) }
             <tbody>
@@ -101,6 +102,7 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
                             variant={ ButtonVariant.link }
                             icon={ <PlusCircleIcon /> }
                             onClick={ addAction }
+                            isDisabled={ isSubmitting }
                         >
                             Add action
                         </Button>
@@ -113,7 +115,7 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
 
 export const NotificationForm: React.FunctionComponent<NotificationFormProps> = (props) => {
 
-    const { values } = useFormikContext<Notification | DefaultNotificationBehavior>();
+    const { values, isSubmitting } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const { type } = props;
 
     const showActions: boolean = type === 'default' ? true : !(values as Notification).useDefault;
@@ -150,6 +152,7 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
                                         name="useDefault"
                                         id="useDefault"
                                         label="Use default notification actions"
+                                        isDisabled={ isSubmitting }
                                     />
                                 </td>
                             </tr>
