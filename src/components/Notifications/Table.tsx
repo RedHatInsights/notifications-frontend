@@ -95,7 +95,11 @@ export interface NotificationsTableProps extends OuiaComponentProps {
     onEdit: OnEditNotification;
 }
 
-export type NotificationRowGroupedByNone = Notification;
+type NotificationRowBase = {
+    loadingActionStatus: 'loading' | 'done' | 'error';
+}
+
+export type NotificationRowGroupedByNone = Notification & NotificationRowBase;
 
 export interface NotificationRowGroupedByApplication {
     application: string;
@@ -168,8 +172,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
         const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
 
         rows.push({
-            id: notification.id,
-            key: notification.id,
+            id: `${parent !== undefined ? (parent.toString() + '-') : ''}${notification.id}`,
+            key: `${parent !== undefined ? (parent.toString() + '-') : ''}${notification.id}`,
             cells: [
                 {
                     title: <EventCell
@@ -228,8 +232,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                 ...(i + 1 === rowSpan ? {} : cellPaddingBottomStyle)
             };
             rows.push({
-                id,
-                key: id,
+                id: `${parent !== undefined ? (parent.toString() + '-') : ''}${id}`,
+                key: `${parent !== undefined ? (parent.toString() + '-') : ''}${id}`,
                 cells: [
                     {
                         title: <ActionComponent isDefault={ !!notification.useDefault } action={ notification.actions[i] } />,

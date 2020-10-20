@@ -14,7 +14,7 @@ const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
 export const useIntegrationRows = (integrations: Array<Integration>) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
-    const prevIntegrations = usePrevious(integrations);
+    const prevIntegrationsInput = usePrevious(integrations);
 
     const switchStatus = useSwitchIntegrationEnabledStatus();
     const { query } = useContext(ClientContext);
@@ -42,7 +42,7 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
     }, [ setIntegrationRows ]);
 
     useEffect(() => {
-        if (integrations !== prevIntegrations) {
+        if (integrations !== prevIntegrationsInput) {
             setIntegrationRows(prev => {
                 return integrations.map(integration => ({
                     isOpen: false,
@@ -80,7 +80,7 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
                 });
             }
         }
-    }, [ prevIntegrations, integrations, setIntegrationRowById, limit, query ]);
+    }, [ prevIntegrationsInput, integrations, setIntegrationRowById, limit, query ]);
 
     const onCollapse = useCallback((_integration: IntegrationRow, index: number, isOpen: boolean) => {
         setIntegrationRowByIndex(index, {

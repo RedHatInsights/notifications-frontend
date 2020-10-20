@@ -24,11 +24,11 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
     }
 
     return {
-        id: serverNotification.id.toString(),
+        id: serverNotification.id,
         application: serverNotification.application.name,
         event: serverNotification.name,
-        actions: toActions(serverNotification.endpoints?.filter(e => e.type !== EndpointType.enum.default) ?? []),
-        useDefault: !!serverNotification.endpoints?.find(e => e.type === EndpointType.enum.default)
+        actions: toActions(filterOutDefaultAction(serverNotification.endpoints ?? [])),
+        useDefault: (serverNotification.endpoints ?? []).findIndex(e => e.type === EndpointType.enum.default) !== -1
     };
 };
 
@@ -46,5 +46,5 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
 };
 
 export const toNotifications = (serverNotifications: Array<ServerNotificationResponse>) => serverNotifications.map(toNotification);
-
-export const toActions = (serverActions: Array<ServerIntegrationResponse>): Array<Action> => serverActions.map(toAction);
+export const filterOutDefaultAction = (serverNotifications: Array<ServerIntegrationResponse>) => serverNotifications.filter(e => e.type !== EndpointType.enum.default);
+export const toActions = (serverActions: Array<ServerIntegrationResponse>): Array<Action> => filterOutDefaultAction(serverActions).map(toAction);

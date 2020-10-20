@@ -2,7 +2,7 @@ import * as Generated from '../generated/Openapi';
 import { Integration } from './Integration';
 
 export interface Notification {
-    id: string;
+    id: number;
     application: string;
     event: string;
     actions: Array<Action>;

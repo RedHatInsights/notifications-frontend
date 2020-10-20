@@ -12,8 +12,6 @@ import { Button, ButtonVariant } from '@patternfly/react-core';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { style } from 'typestyle';
 import {
-    NotificationRowGroupedByApplication,
-    NotificationRows,
     NotificationsTable
 } from '../../../components/Notifications/Table';
 import { Notification } from '../../../types/Notification';
@@ -27,9 +25,9 @@ import {
     makeNoneAction,
     useFormModalReducer
 } from './useFormModalReducer';
-import { assertNever } from 'assert-never';
 import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
 import { useListNotifications } from '../../../services/useListNotifications';
+import { useNotificationRows } from './useNotificationRows';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -42,35 +40,7 @@ const tableTitleClassName = style({
     fontSize: '17px'
 });
 
-const toNotificationRow = (notifications: Array<Notification>, groupBy: GroupByEnum): NotificationRows => {
-    switch (groupBy) {
-        case GroupByEnum.None:
-            return {
-                grouped: GroupByEnum.None,
-                data: notifications
-            };
-        case GroupByEnum.Application:
-            const grouped = notifications.reduce((groups, notification) => {
-                if (!groups[notification.application]) {
-                    groups[notification.application] = {
-                        application: notification.application,
-                        isOpen: true,
-                        notifications: []
-                    };
-                }
-
-                groups[notification.application].notifications.push(notification);
-                return groups;
-            }, {} as Record<string, NotificationRowGroupedByApplication>);
-
-            return {
-                grouped: GroupByEnum.Application,
-                data: Object.values(grouped)
-            };
-        default:
-            assertNever(groupBy);
-    }
-};
+const emptyArray = [];
 
 export const NotificationsListPage: React.FunctionComponent = () => {
 
@@ -82,60 +52,30 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         setGroupBy(selected);
     }, [ setGroupBy ]);
 
-    const [ notificationRows, setNotificationRows ] = React.useState<NotificationRows>({
-        data: [],
-        grouped: groupBy
-    });
-
     const useNotifications = useListNotifications();
-
-    React.useEffect(() => {
-        const payload = useNotifications.payload;
-        if (payload?.type === 'eventTypesArray') {
-            setNotificationRows(toNotificationRow(payload.value, groupBy));
-        } else {
-            setNotificationRows(prev => ({ ...prev, data: []}));
-        }
-
-    }, [ groupBy, useNotifications.payload ]);
+    const {
+        rows: notificationRows,
+        onCollapse
+    } = useNotificationRows(
+        useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value : emptyArray,
+        groupBy
+    );
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
 
     const closeFormModal = React.useCallback((saved: boolean) => {
         const updateDefaultNotifications = defaultNotificationBehavior.query;
+        const updateNotifications = useNotifications.query;
         if (saved && modalIsOpenState.isOpen) {
             if (modalIsOpenState.type === 'default') {
                 updateDefaultNotifications();
+            } else if (modalIsOpenState.type === 'notification') {
+                updateNotifications();
             }
         }
 
         dispatchModalIsOpen(makeNoneAction());
-    }, [ dispatchModalIsOpen, defaultNotificationBehavior.query, modalIsOpenState ]);
-
-    const onCollapse = React.useCallback((index: number, isOpen: boolean) => {
-        setNotificationRows(prevRows => {
-            switch (prevRows.grouped) {
-                case GroupByEnum.None:
-                    throw new Error('On collapse is not valid for group: None');
-                case GroupByEnum.Application:
-                    const data = [
-                        ...prevRows.data
-                    ];
-
-                    data[index] = {
-                        ...data[index],
-                        isOpen
-                    };
-
-                    return {
-                        ...prevRows,
-                        data
-                    };
-                default:
-                    assertNever(prevRows);
-            }
-        });
-    }, [ setNotificationRows ]);
+    }, [ dispatchModalIsOpen, defaultNotificationBehavior.query, modalIsOpenState, useNotifications.query ]);
 
     const pageHeaderTitleProps = {
         className: displayInlineClassName,

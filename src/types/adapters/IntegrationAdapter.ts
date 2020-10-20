@@ -8,6 +8,7 @@ import {
 } from '../Integration';
 import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Openapi';
 import { assertNever } from 'assert-never';
+import { filterOutDefaultAction } from './NotificationAdapter';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {
@@ -56,7 +57,7 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 };
 
 export const toIntegrations = (serverIntegrations: Array<ServerIntegrationResponse>): Array<Integration> => {
-    return serverIntegrations.map(toIntegration);
+    return filterOutDefaultAction(serverIntegrations).map(toIntegration);
 };
 
 export const toIntegrationProperties = (integration: Integration | NewIntegration) => {
