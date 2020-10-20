@@ -8,7 +8,6 @@ import {
 } from '../Integration';
 import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Openapi';
 import { assertNever } from 'assert-never';
-import { filterOutDefaultAction } from './NotificationAdapter';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {
@@ -84,3 +83,6 @@ export const toServerIntegrationRequest = (integration: Integration | NewIntegra
         properties: toIntegrationProperties(integration)
     };
 };
+
+export const filterOutDefaultAction = (serverNotifications: Array<ServerIntegrationResponse>) =>
+    serverNotifications.filter(e => e.type !== EndpointType.enum.default);

@@ -1,7 +1,7 @@
 import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
 import { ServerIntegrationResponse } from '../Integration';
 import { EndpointType } from '../../generated/Openapi';
-import { toIntegration } from './IntegrationAdapter';
+import { filterOutDefaultAction, toIntegration } from './IntegrationAdapter';
 import { assertNever } from 'assert-never';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
@@ -46,5 +46,4 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
 };
 
 export const toNotifications = (serverNotifications: Array<ServerNotificationResponse>) => serverNotifications.map(toNotification);
-export const filterOutDefaultAction = (serverNotifications: Array<ServerIntegrationResponse>) => serverNotifications.filter(e => e.type !== EndpointType.enum.default);
 export const toActions = (serverActions: Array<ServerIntegrationResponse>): Array<Action> => filterOutDefaultAction(serverActions).map(toAction);
