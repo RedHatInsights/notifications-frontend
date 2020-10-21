@@ -29,10 +29,14 @@ import {
     defaultNotificationsDecoder
 } from '../../../services/useDefaultNotificationBehavior';
 import assertNever from 'assert-never';
-import { getNotificationActionsByIdAction, getNotificationByIdActionDecoder } from '../../../services/useGetNotificationActions';
+import {
+    getNotificationActionsByIdAction,
+    getNotificationByIdActionDecoder,
+    hasDefaultNotificationDecoder
+} from '../../../services/useGetNotificationActions';
 import { actionRemoveActionFromNotification } from '../../../services/useRemoveActionFromNotification';
 import { actionAddActionToNotification } from '../../../services/useAddActionToNotification';
-import { actionPostEndpoints, EndpointType } from '../../../generated/Openapi';
+import { getDefaultActionIdAction, getDefaultActionIdDecoder } from '../../../services/Notifications/GetDefaultActionId';
 
 interface EditNotificationPagePropsNotification {
     type: 'notification';
@@ -122,25 +126,17 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
             .then(p => p?.type === 'actionsArray' ? p.value : undefined);
 
             oldUseDefault = await actionsPromise
-            .then(p => p.payload?.type === 'GetNotificationsEventTypesByEventTypeIdParamResponse200' ? p.payload.value : undefined)
-            .then(v => v?.findIndex(a => a.type === EndpointType.enum.default))
-            .then(v => v === undefined ? undefined : v !== -1);
+            .then(r => r.payload ? hasDefaultNotificationDecoder(r.payload) : r.payload)
+            .then(p => p?.type === 'defaultNotification' ? p.value : undefined);
         }
 
         const newUseDefault = props.type === 'notification' ? (data as Notification).useDefault : false;
         let defaultActionId: string | undefined;
 
         if (newUseDefault !== oldUseDefault) {
-            defaultActionId = await query(actionPostEndpoints({
-                body: {
-                    type: EndpointType.enum.default,
-                    name: 'Default endpoint type',
-                    description: '',
-                    enabled: true,
-                    properties: null
-                }
-            }))
-            .then(p => p.payload?.type === 'Endpoint' ? p.payload.value.id as string : undefined);
+            defaultActionId = await query(getDefaultActionIdAction())
+            .then(r => r.payload ? getDefaultActionIdDecoder(r.payload) : undefined)
+            .then(p => p?.type === 'DefaultNotificationId' ? p.value : undefined);
         } else {
             defaultActionId = 'nothing';
         }

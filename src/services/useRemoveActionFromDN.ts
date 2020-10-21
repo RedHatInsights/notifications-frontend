@@ -1,6 +1,6 @@
-import { actionDeleteNotificationsDefaultsByEndpointId } from '../generated/Openapi';
+import { actionNotificationServiceDeleteEndpointFromDefaults } from '../generated/OpenapiNotifications';
 
 export const actionRemoveActionFromDefault = (actionId: string) =>
-    actionDeleteNotificationsDefaultsByEndpointId({
+    actionNotificationServiceDeleteEndpointFromDefaults({
         endpointId: actionId
     });

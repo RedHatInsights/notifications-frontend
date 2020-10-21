@@ -6,7 +6,7 @@ import {
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
-import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Openapi';
+import { EndpointType, HttpType, WebhookAttributes } from '../../generated/OpenapiIntegrations';
 import { assertNever } from 'assert-never';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {

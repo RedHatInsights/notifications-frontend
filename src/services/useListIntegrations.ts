@@ -1,7 +1,7 @@
 import {
-    actionGetEndpoints,
-    GetEndpointsPayload
-} from '../generated/Openapi';
+    actionEndpointServiceGetEndpoints,
+    EndpointServiceGetEndpointsPayload
+} from '../generated/OpenapiIntegrations';
 import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useQuery } from 'react-fetching-library';
 import { getEndpointType, toIntegrations } from '../types/adapters/IntegrationAdapter';
@@ -10,14 +10,14 @@ import { IntegrationType } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
     const query = (pager ?? Page.defaultPage()).toQuery();
-    return actionGetEndpoints({
+    return actionEndpointServiceGetEndpoints({
         limit: +query.limit,
         offset: +query.offset,
         type: query.filterType ? getEndpointType(query.filterType as IntegrationType) : undefined
     });
 };
 
-export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: GetEndpointsPayload) => {
+export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: EndpointServiceGetEndpointsPayload) => {
     if (payload?.status === 200) {
         return validatedResponse(
             'integrationArray',

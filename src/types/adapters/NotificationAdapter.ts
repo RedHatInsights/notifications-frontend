@@ -1,6 +1,6 @@
 import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
 import { ServerIntegrationResponse } from '../Integration';
-import { EndpointType } from '../../generated/Openapi';
+import { Endpoint, EndpointType } from '../../generated/OpenapiNotifications';
 import { filterOutDefaultAction, toIntegration } from './IntegrationAdapter';
 import { assertNever } from 'assert-never';
 
@@ -18,6 +18,9 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
     };
 };
 
+export const usesDefault = (endpoints: Array<Endpoint>): boolean =>
+    endpoints.findIndex(e => e.type === EndpointType.enum.default) !== -1;
+
 export const toNotification = (serverNotification: ServerNotificationResponse): Notification => {
     if (!serverNotification.id || !serverNotification.application) {
         throw new Error(`Unexpected notification from server ${JSON.stringify(serverNotification)}`);
@@ -28,7 +31,7 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
         application: serverNotification.application.name,
         event: serverNotification.name,
         actions: toActions(filterOutDefaultAction(serverNotification.endpoints ?? [])),
-        useDefault: (serverNotification.endpoints ?? []).findIndex(e => e.type === EndpointType.enum.default) !== -1
+        useDefault: usesDefault(serverNotification.endpoints ?? [])
     };
 };
 

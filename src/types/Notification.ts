@@ -1,4 +1,4 @@
-import * as Generated from '../generated/Openapi';
+import * as Generated from '../generated/OpenapiNotifications';
 import { Integration } from './Integration';
 
 export interface Notification {

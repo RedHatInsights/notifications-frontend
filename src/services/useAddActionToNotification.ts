@@ -1,7 +1,7 @@
-import { actionPutNotificationsEventTypesByEventTypeIdByEndpointId } from '../generated/Openapi';
+import { actionNotificationServiceLinkEndpointToEventType } from '../generated/OpenapiNotifications';
 
 export const actionAddActionToNotification = (notificationId: number, actionId: string) => {
-    return actionPutNotificationsEventTypesByEventTypeIdByEndpointId({
+    return actionNotificationServiceLinkEndpointToEventType({
         endpointId: actionId,
         eventTypeId: notificationId
     });

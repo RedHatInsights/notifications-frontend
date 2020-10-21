@@ -1,7 +1,7 @@
-import {  actionDeleteNotificationsEventTypesByEventTypeIdByEndpointId } from '../generated/Openapi';
+import { actionNotificationServiceUnlinkEndpointFromEventType  } from '../generated/OpenapiNotifications';
 
 export const actionRemoveActionFromNotification = (notificationId: number, actionId: string) => {
-    return actionDeleteNotificationsEventTypesByEventTypeIdByEndpointId({
+    return actionNotificationServiceUnlinkEndpointFromEventType({
         endpointId: actionId,
         eventTypeId: notificationId
     });

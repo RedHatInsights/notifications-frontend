@@ -11,8 +11,7 @@ import pLimit from 'p-limit';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { assertNever } from 'assert-never';
 import { getNotificationActionsByIdAction } from '../../../services/useGetNotificationActions';
-import { toActions } from '../../../types/adapters/NotificationAdapter';
-import { EndpointType } from '../../../generated/Openapi';
+import { toActions, usesDefault } from '../../../types/adapters/NotificationAdapter';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
@@ -127,7 +126,7 @@ export const useNotificationRows = (notifications: Array<Notification>, groupBy:
                             setNotificationRowById(notificationId, {
                                 loadingActionStatus: 'done',
                                 actions: toActions(response.payload.value),
-                                useDefault: response.payload.value.findIndex(a => a.type === EndpointType.enum.default) !== -1
+                                useDefault: usesDefault(response.payload.value)
                             });
                         } else {
                             setNotificationRowById(notificationId, {

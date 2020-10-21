@@ -2,7 +2,8 @@
 
 if [ "${TRAVIS_BRANCH}" = "prod" ] || [ "${TRAVIS_BRANCH}" = "prod-stable" ]
 then
-    yarn schema:generate -i https://cloud.redhat.com/api/notifications/v1.0/openapi.json
+    yarn schema:integrations:generate -i https://cloud.redhat.com/api/integrations/v1.0/openapi.json
+    yarn schema:notifications:generate -i https://cloud.redhat.com/api/notifications/v1.0/openapi.json
     [[ -z $(git status --porcelain) ]] ||
     (
       git status &&

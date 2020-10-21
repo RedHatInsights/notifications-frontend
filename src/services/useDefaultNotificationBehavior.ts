@@ -1,16 +1,16 @@
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import {
-    actionGetNotificationsDefaults,
-    GetNotificationsDefaultsPayload
-} from '../generated/Openapi';
+    actionNotificationServiceGetEndpointsForDefaults,
+    NotificationServiceGetEndpointsForDefaultsPayload
+} from '../generated/OpenapiNotifications';
 import { useQuery } from 'react-fetching-library';
 import { validationResponseTransformer, validatedResponse } from 'openapi2typescript';
 import { toActions } from '../types/adapters/NotificationAdapter';
 
-export const defaultNotificationBehaviorCreator = () => actionGetNotificationsDefaults();
+export const defaultNotificationBehaviorCreator = () => actionNotificationServiceGetEndpointsForDefaults();
 
-export const defaultNotificationsDecoder = validationResponseTransformer((payload: GetNotificationsDefaultsPayload) => {
-    if (payload.type === 'GetNotificationsDefaultsParamResponse200') {
+export const defaultNotificationsDecoder = validationResponseTransformer((payload: NotificationServiceGetEndpointsForDefaultsPayload) => {
+    if (payload.type === 'NotificationServiceGetEndpointsForDefaultsParamResponse200') {
         return validatedResponse(
             'DefaultNotificationBehavior',
             200,

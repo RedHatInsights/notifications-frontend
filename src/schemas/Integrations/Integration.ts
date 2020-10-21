@@ -4,7 +4,7 @@ import {
     IntegrationType, NewIntegration,
     NewIntegrationBase, NewIntegrationTemplate
 } from '../../types/Integration';
-import { HttpType } from '../../generated/Openapi';
+import { HttpType } from '../../generated/OpenapiIntegrations';
 
 export const maxIntegrationNameLength = 150;
 

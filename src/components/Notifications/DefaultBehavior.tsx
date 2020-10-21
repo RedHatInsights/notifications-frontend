@@ -78,7 +78,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                             </tr>
                         </>
                     ) : props.defaultBehavior === undefined ? (
-                        <span>Error while loading the default behavior. </span>
+                        <tr><td>Error while loading the default behavior. </td></tr>
                     ) : (
                         props.defaultBehavior?.actions.map((a, index) => {
                             return (

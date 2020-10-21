@@ -1,6 +1,6 @@
-import { actionPutNotificationsDefaultsByEndpointId } from '../generated/Openapi';
+import { actionNotificationServiceAddEndpointToDefaults } from '../generated/OpenapiNotifications';
 
 export const actionAddActionToDefault = (actionId: string) =>
-    actionPutNotificationsDefaultsByEndpointId({
+    actionNotificationServiceAddEndpointToDefaults({
         endpointId: actionId
     });
