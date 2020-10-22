@@ -38,7 +38,6 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         }
     }, [ props.getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         const search = e.target.value?.trim();
 
@@ -78,8 +77,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
             onSelect={ onSelect }
             onToggle={ toggle }
             isOpen={ isOpen }
-            // Todo: Enable this once we have a way to query for integration's name
-            // onFilter={ onFilter }
+            onFilter={ onFilter }
             menuAppendTo={ document.body }
             isDisabled={ props.isDisabled }
         >

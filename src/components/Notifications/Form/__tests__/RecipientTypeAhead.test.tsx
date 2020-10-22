@@ -1,8 +1,6 @@
 import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import { Formik, Form } from 'formik';
+import { render, screen, act } from '@testing-library/react';
 import { RecipientTypeahead } from '../RecipientTypeahead';
-import { Action, NotificationType } from '../../../../types/Notification';
 import jestMock from 'jest-mock';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
@@ -18,6 +16,18 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         />);
         await waitForAsyncEvents();
         expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
+    });
+
+    it('Renders disabled if isDisabled', async () => {
+        render(<RecipientTypeahead
+            selected={ undefined }
+            onSelected={ jestMock.fn() }
+            getRecipients={ jestMock.fn(async () => []) }
+            onClear={ jestMock.fn() }
+            isDisabled={ true }
+        />);
+        await waitForAsyncEvents();
+        expect(screen.getByRole('textbox')).toBeDisabled();
     });
 
     it('Renders the selected even if getRecipients does not yield it', async () => {
@@ -56,7 +66,6 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             name: /Clear all/i
         }));
         await waitForAsyncEvents();
-
         expect(onClear).toHaveBeenCalled();
     });
 
@@ -72,7 +81,6 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             name: /Options menu/i
         }));
         await waitForAsyncEvents();
-
         expect(screen.getByText('tales')).toBeVisible();
     });
 
@@ -87,5 +95,39 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
         await waitForAsyncEvents();
         expect(getRecipient).toHaveBeenCalledWith('');
+    });
+
+    it('When writing, getRecipients is called with the input', async () => {
+        const getRecipient = jestMock.fn(async () => [ 'tales' ]);
+        render(<RecipientTypeahead
+            selected={ [ 'comi', 'murray' ] }
+            onSelected={ jestMock.fn() }
+            getRecipients={ getRecipient }
+            onClear={ jestMock.fn() }
+        />);
+
+        await waitForAsyncEvents();
+        await act(async () => {
+            await userEvent.type(screen.getByRole('textbox'), 'guy');
+        });
+        expect(getRecipient).toHaveBeenCalledWith('guy');
+    });
+
+    it('onSelected GetsCalled when selecting an element', async () => {
+        const onSelected = jest.fn();
+        render(<RecipientTypeahead
+            selected={ [ 'comi', 'murray' ] }
+            onSelected={ onSelected }
+            getRecipients={ jestMock.fn(async () => [ 'tales' ]) }
+            onClear={ jestMock.fn() }
+        />);
+
+        userEvent.click(screen.getByRole('button', {
+            name: /Options menu/i
+        }));
+        await waitForAsyncEvents();
+        userEvent.click(screen.getAllByRole('option')[0]);
+        await waitForAsyncEvents();
+        expect(onSelected).toHaveBeenCalled();
     });
 });

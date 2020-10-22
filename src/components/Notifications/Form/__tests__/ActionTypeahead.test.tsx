@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { render, screen } from '@testing-library/react';
-import { Formik, Form } from 'formik';
 import { ActionTypeahead } from '../ActionTypeahead';
 import { Action, NotificationType } from '../../../../types/Notification';
 import jestMock from 'jest-mock';
