@@ -5,7 +5,7 @@ import { useFormikContext } from 'formik';
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
-import { useRecipientOptionMemo } from './UseRecipientOptionMemo';
+import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 
 export interface IntegrationRecipientTypeaheadProps {
     selected: Partial<IntegrationRef> | undefined;

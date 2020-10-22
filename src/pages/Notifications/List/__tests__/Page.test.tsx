@@ -1,10 +1,8 @@
 import * as React from 'react';
-import { render, screen } from '@testing-library/react';
+import { render, screen, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import jestMock from 'jest-mock';
 import { NotificationsListPage } from '../Page';
 import {
-    AppWrapper,
     appWrapperCleanup,
     appWrapperSetup,
     getConfiguredAppWrapper
@@ -13,7 +11,6 @@ import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import fetchMock from 'fetch-mock';
 import { Endpoint, EventType } from '../../../../generated/OpenapiIntegrations';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
-import { getByText } from '@testing-library/dom';
 
 describe('src/pages/Notifications/List/Page', () => {
 

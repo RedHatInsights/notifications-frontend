@@ -32,6 +32,5 @@ export const useRecipientOptionMemo = <T extends IntegrationRef>(state: ReducerS
         }
 
         assertNever(state.show);
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ state ]);
 };

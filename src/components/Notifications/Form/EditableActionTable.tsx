@@ -1,5 +1,5 @@
 import {
-    Action,
+    Action, DefaultNotificationBehavior,
     IntegrationRef,
     NotificationType
 } from '../../../types/Notification';
@@ -10,6 +10,8 @@ import { IntegrationType } from '../../../types/Integration';
 import { RecipientTypeahead } from './RecipientTypeahead';
 import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
 import { ActionTypeahead } from './ActionTypeahead';
+import { ActionOption } from './ActionOption';
+import { useFormikContext } from 'formik';
 
 export interface EditableActionTableProps {
     actions: Array<Action>;
@@ -19,6 +21,36 @@ export interface EditableActionTableProps {
     handleRemove?: (index: number) => () => void;
     isDisabled?: boolean;
 }
+
+interface EditableActionElementProps {
+    path: string;
+    action: Action;
+    isDisabled?: boolean;
+}
+
+const EditableActionElement: React.FunctionComponent<EditableActionElementProps> = (props) => {
+
+    const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
+
+    const actionSelected = React.useCallback((value: ActionOption) => {
+        setFieldValue(`${props.path}.type`, value.notificationType);
+        if (value.integrationType) {
+            setFieldValue(`${props.path}.integration`, {
+                type: value.integrationType
+            });
+            setFieldValue(`${props.path}.recipient`, []);
+        } else {
+            setFieldValue(`${props.path}.recipient`, []);
+            setFieldValue(`${props.path}.integration`, undefined);
+        }
+    }, [ setFieldValue, props.path ]);
+
+    return <ActionTypeahead
+        action={ props.action }
+        actionSelected={ actionSelected }
+        isDisabled={ props.isDisabled }
+    />;
+};
 
 export const EditableActionTable: React.FunctionComponent<EditableActionTableProps> = (props) => {
 
@@ -37,10 +69,10 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                         return (
                             <tr key={ index }>
                                 <td>
-                                    <ActionTypeahead
-                                        path={ `${props.path}.${index}` }
+                                    <EditableActionElement
                                         action={ a }
                                         isDisabled={ props.isDisabled }
+                                        path={ `${props.path}.${index}` }
                                     />
                                 </td>
                                 <td>

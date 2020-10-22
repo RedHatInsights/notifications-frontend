@@ -4,7 +4,7 @@ import { DefaultNotificationBehavior } from '../../../types/Notification';
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
-import { useRecipientOptionMemo } from './UseRecipientOptionMemo';
+import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 
 export interface RecipientTypeaheadProps {
     selected: Array<string> | undefined;
