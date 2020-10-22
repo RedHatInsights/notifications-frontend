@@ -11,7 +11,7 @@ export interface IntegrationRecipientTypeaheadProps {
     getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     integrationType: IntegrationType;
     isDisabled?: boolean;
-    integrationSelected: (recipientOption: RecipientOption) => void;
+    onSelected: (recipientOption: RecipientOption) => void;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
@@ -63,12 +63,12 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ props.selected ]);
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
-        const integrationSelected = props.integrationSelected;
+        const integrationSelected = props.onSelected;
         if (value instanceof RecipientOption) {
             integrationSelected(value);
             setOpen(false);
         }
-    }, [ props.integrationSelected ]);
+    }, [ props.onSelected ]);
 
     return (
         <Select

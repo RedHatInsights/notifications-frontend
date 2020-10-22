@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { FieldArray, useFormikContext } from 'formik';
-import { DefaultNotificationBehavior } from '../../../types/Notification';
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
@@ -8,15 +6,15 @@ import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 
 export interface RecipientTypeaheadProps {
     selected: Array<string> | undefined;
+    onSelected: (value: RecipientOption) => void;
     path: string;
     getRecipients: (search: string) => Promise<Array<string>>;
     isDisabled?: boolean;
+    onClear: () => void;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
-    const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const [ isOpen, setOpen ] = React.useState(false);
-
     const [ state, dispatchers ] = useTypeaheadReducer<string>();
 
     React.useEffect(() => {
@@ -51,10 +49,6 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         // return getRecipients(search !== undefined ? search.trim() : '').map(r => <SelectOption key={ r } value={ new RecipientOption(r) }/>);
     }, [ dispatchers ]);
 
-    const onClear = React.useCallback(() => {
-        setFieldValue(`${props.path}.recipient`, []);
-    }, [ props.path, setFieldValue ]);
-
     const options = useRecipientOptionMemo(state);
 
     const selection = React.useMemo(() => {
@@ -67,38 +61,27 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
 
     }, [ props.selected ]);
 
+    const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
+        const onSelected = props.onSelected;
+        if (value instanceof RecipientOption) {
+            onSelected(value);
+        }
+    }, [ props.onSelected ]);
+
     return (
-        <FieldArray name={ `${props.path}.recipient` }>
-            { helpers => {
-
-                const onSelect = (_event, value: string | SelectOptionObject) => {
-                    if (props.selected) {
-                        const index = props.selected.indexOf(value.toString());
-                        if (index === -1) {
-                            helpers.push(value.toString());
-                        } else {
-                            helpers.remove(index);
-                        }
-                    }
-                };
-
-                return (
-                    <Select
-                        variant={ SelectVariant.typeaheadMulti }
-                        typeAheadAriaLabel="Select the recipients"
-                        selections={ selection }
-                        onSelect={ onSelect }
-                        onToggle={ toggle }
-                        isOpen={ isOpen }
-                        onFilter={ onFilter }
-                        onClear={ onClear }
-                        menuAppendTo={ document.body }
-                        isDisabled={ props.isDisabled }
-                    >
-                        { options }
-                    </Select>
-                );
-            } }
-        </FieldArray>
+        <Select
+            variant={ SelectVariant.typeaheadMulti }
+            typeAheadAriaLabel="Select the recipients"
+            selections={ selection }
+            onSelect={ onSelect }
+            onToggle={ toggle }
+            isOpen={ isOpen }
+            onFilter={ onFilter }
+            onClear={ props.onClear }
+            menuAppendTo={ document.body }
+            isDisabled={ props.isDisabled }
+        >
+            { options }
+        </Select>
     );
 };

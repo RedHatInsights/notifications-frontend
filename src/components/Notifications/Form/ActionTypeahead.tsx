@@ -19,7 +19,7 @@ const getSelectOptions = () => [
 export interface ActionTypeaheadProps {
     action: Action;
     isDisabled?: boolean;
-    actionSelected: (actionOption: ActionOption) => void;
+    onSelected: (actionOption: ActionOption) => void;
 }
 
 export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (props) => {
@@ -30,13 +30,13 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     }, [ setOpen ]);
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
-        const actionSelected = props.actionSelected;
+        const actionSelected = props.onSelected;
         if (value instanceof ActionOption) {
             actionSelected(value);
             setOpen(false);
         }
 
-    }, [ props.actionSelected, setOpen ]);
+    }, [ props.onSelected, setOpen ]);
 
     const selectedOption = React.useMemo(() => {
         if (props.action.type === NotificationType.INTEGRATION) {

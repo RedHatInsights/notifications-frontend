@@ -29,7 +29,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         };
         const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } actionSelected={ jestMock.fn() }/>,
+            <ActionTypeahead action={ action } onSelected={ jestMock.fn() }/>,
             {
                 wrapper: Wrapper
             }
@@ -47,7 +47,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         };
         const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } isDisabled={ true } actionSelected={ jestMock.fn() }/>,
+            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ jestMock.fn() }/>,
             {
                 wrapper: Wrapper
             }
@@ -66,7 +66,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         const actionSelected = jestMock.fn();
         const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } actionSelected={ actionSelected }/>,
+            <ActionTypeahead action={ action } onSelected={ actionSelected }/>,
             {
                 wrapper: Wrapper
             }
@@ -88,7 +88,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         const actionSelected = jestMock.fn();
         const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } actionSelected={ actionSelected }/>,
+            <ActionTypeahead action={ action } onSelected={ actionSelected }/>,
             {
                 wrapper: Wrapper
             }

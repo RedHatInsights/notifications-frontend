@@ -11,7 +11,7 @@ import { RecipientTypeahead } from './RecipientTypeahead';
 import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
 import { ActionTypeahead } from './ActionTypeahead';
 import { ActionOption } from './ActionOption';
-import { useFormikContext } from 'formik';
+import { useField, useFormikContext } from 'formik';
 import { RecipientOption } from './RecipientOption';
 
 export interface EditableActionTableProps {
@@ -35,6 +35,7 @@ interface EditableActionElementProps {
 const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (props) => {
 
     const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
+    const [ recipientFieldProps, _, recipientFieldHelpers ] = useField<Array<string> | undefined>(`${props.path}.recipient`);
 
     const actionSelected = React.useCallback((value: ActionOption) => {
         setFieldValue(`${props.path}.type`, value.notificationType);
@@ -53,19 +54,35 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
         setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
     }, [ setFieldValue, props.path ]);
 
+    const recipientSelected = React.useCallback((value: RecipientOption) => {
+        if (recipientFieldProps.value) {
+            const selected = recipientFieldProps.value;
+            const index = selected.indexOf(value.toString());
+            if (index === -1) {
+                recipientFieldHelpers.setValue([ ...selected, value.toString() ]);
+            } else {
+                recipientFieldHelpers.setValue([ ...selected ].filter((_, i) => i !== index));
+            }
+        }
+    }, [ recipientFieldProps, recipientFieldHelpers ]);
+
+    const recipientOnClear = React.useCallback(() => {
+        recipientFieldHelpers.setValue([]);
+    }, [ recipientFieldHelpers ]);
+
     return (
         <tr>
             <td>
                 <ActionTypeahead
                     action={ props.action }
-                    actionSelected={ actionSelected }
+                    onSelected={ actionSelected }
                     isDisabled={ props.isDisabled }
                 />
             </td>
             <td>
                 { props.action.type === NotificationType.INTEGRATION ? (
                     <IntegrationRecipientTypeahead
-                        integrationSelected={ integrationSelected }
+                        onSelected={ integrationSelected }
                         integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
                         selected={ props.action.integration }
                         getIntegrations={ props.getIntegrations }
@@ -73,10 +90,12 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                     />
                 ) : (
                     <RecipientTypeahead
+                        onSelected={ recipientSelected }
                         path={ props.path }
                         selected={ props.action.recipient }
                         getRecipients={ props.getRecipients }
                         isDisabled={ props.isDisabled }
+                        onClear={ recipientOnClear }
                     />
                 ) }
             </td>
