@@ -35,7 +35,12 @@ interface EditableActionElementProps {
 const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (props) => {
 
     const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
-    const [ recipientFieldProps, _, recipientFieldHelpers ] = useField<Array<string> | undefined>(`${props.path}.recipient`);
+    const [
+        recipientFieldProps,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        _,
+        recipientFieldHelpers
+    ] = useField<Array<string> | undefined>(`${props.path}.recipient`);
 
     const actionSelected = React.useCallback((value: ActionOption) => {
         setFieldValue(`${props.path}.type`, value.notificationType);
@@ -133,7 +138,7 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                                 path={ `${props.path}.${index}` }
                                 getRecipients={ props.getRecipients }
                                 getIntegrations={ props.getIntegrations }
-                                onRemove={ props.handleRemove ? props.handleRemove(index): undefined }
+                                onRemove={ props.handleRemove ? props.handleRemove(index) : undefined }
                             />
                         );
                     })

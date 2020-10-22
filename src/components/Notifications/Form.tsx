@@ -61,7 +61,7 @@ const tableClassName = style({
 
 const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
 
-    const { values, isSubmitting, setFieldValue } = props.form;
+    const { values, isSubmitting } = props.form;
     const actions = values.actions;
 
     const addAction = React.useCallback(() => {
