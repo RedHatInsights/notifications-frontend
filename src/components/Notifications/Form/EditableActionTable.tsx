@@ -96,7 +96,6 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                 ) : (
                     <RecipientTypeahead
                         onSelected={ recipientSelected }
-                        path={ props.path }
                         selected={ props.action.recipient }
                         getRecipients={ props.getRecipients }
                         isDisabled={ props.isDisabled }

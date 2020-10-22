@@ -7,18 +7,6 @@ import jestMock from 'jest-mock';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 
-const getWrapper = () => {
-    const Wrapper: React.FunctionComponent = (props) => (
-        <Formik initialValues={ {} } onSubmit={ jestMock.fn<any, any>() }>
-            <Form>{ props.children }</Form>
-        </Formik>
-    );
-
-    return {
-        Wrapper
-    };
-};
-
 describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders the passed action type', () => {
         const action: Action = {
@@ -27,12 +15,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
                 'Foo', 'Bar'
             ]
         };
-        const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } onSelected={ jestMock.fn() }/>,
-            {
-                wrapper: Wrapper
-            }
+            <ActionTypeahead action={ action } onSelected={ jestMock.fn() }/>
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeVisible();
@@ -45,12 +29,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
                 'Foo', 'Bar'
             ]
         };
-        const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ jestMock.fn() }/>,
-            {
-                wrapper: Wrapper
-            }
+            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ jestMock.fn() }/>
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeDisabled();
@@ -64,12 +44,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         const actionSelected = jestMock.fn();
-        const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } onSelected={ actionSelected }/>,
-            {
-                wrapper: Wrapper
-            }
+            <ActionTypeahead action={ action } onSelected={ actionSelected }/>
         );
 
         userEvent.click(screen.getByRole('button'));
@@ -86,12 +62,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         const actionSelected = jestMock.fn();
-        const { Wrapper } = getWrapper();
         render(
-            <ActionTypeahead action={ action } onSelected={ actionSelected }/>,
-            {
-                wrapper: Wrapper
-            }
+            <ActionTypeahead action={ action } onSelected={ actionSelected }/>
         );
 
         userEvent.click(screen.getByRole('button'));

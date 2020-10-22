@@ -7,7 +7,6 @@ import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 export interface RecipientTypeaheadProps {
     selected: Array<string> | undefined;
     onSelected: (value: RecipientOption) => void;
-    path: string;
     getRecipients: (search: string) => Promise<Array<string>>;
     isDisabled?: boolean;
     onClear: () => void;
@@ -46,7 +45,6 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         }
 
         return [];
-        // return getRecipients(search !== undefined ? search.trim() : '').map(r => <SelectOption key={ r } value={ new RecipientOption(r) }/>);
     }, [ dispatchers ]);
 
     const options = useRecipientOptionMemo(state);
