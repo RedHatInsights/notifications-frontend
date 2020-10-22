@@ -1,7 +1,6 @@
-import { DefaultNotificationBehavior, IntegrationRef } from '../../../types/Notification';
-import { IntegrationType } from '../../../types/Integration';
 import * as React from 'react';
-import { useFormikContext } from 'formik';
+import { IntegrationRef } from '../../../types/Notification';
+import { IntegrationType } from '../../../types/Integration';
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
@@ -9,14 +8,13 @@ import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 
 export interface IntegrationRecipientTypeaheadProps {
     selected: Partial<IntegrationRef> | undefined;
-    path: string;
     getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     integrationType: IntegrationType;
     isDisabled?: boolean;
+    integrationSelected: (recipientOption: RecipientOption) => void;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
-    const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const [ isOpen, setOpen ] = React.useState(false);
 
     const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRef>();
@@ -65,11 +63,12 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ props.selected ]);
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
+        const integrationSelected = props.integrationSelected;
         if (value instanceof RecipientOption) {
-            setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+            integrationSelected(value);
             setOpen(false);
         }
-    }, [ setFieldValue, props.path ]);
+    }, [ props.integrationSelected ]);
 
     return (
         <Select

@@ -12,6 +12,7 @@ import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
 import { ActionTypeahead } from './ActionTypeahead';
 import { ActionOption } from './ActionOption';
 import { useFormikContext } from 'formik';
+import { RecipientOption } from './RecipientOption';
 
 export interface EditableActionTableProps {
     actions: Array<Action>;
@@ -26,9 +27,12 @@ interface EditableActionElementProps {
     path: string;
     action: Action;
     isDisabled?: boolean;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    onRemove?: () => void;
 }
 
-const EditableActionElement: React.FunctionComponent<EditableActionElementProps> = (props) => {
+const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (props) => {
 
     const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
 
@@ -45,11 +49,47 @@ const EditableActionElement: React.FunctionComponent<EditableActionElementProps>
         }
     }, [ setFieldValue, props.path ]);
 
-    return <ActionTypeahead
-        action={ props.action }
-        actionSelected={ actionSelected }
-        isDisabled={ props.isDisabled }
-    />;
+    const integrationSelected = React.useCallback((value: RecipientOption) => {
+        setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+    }, [ setFieldValue, props.path ]);
+
+    return (
+        <tr>
+            <td>
+                <ActionTypeahead
+                    action={ props.action }
+                    actionSelected={ actionSelected }
+                    isDisabled={ props.isDisabled }
+                />
+            </td>
+            <td>
+                { props.action.type === NotificationType.INTEGRATION ? (
+                    <IntegrationRecipientTypeahead
+                        integrationSelected={ integrationSelected }
+                        integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
+                        selected={ props.action.integration }
+                        getIntegrations={ props.getIntegrations }
+                        isDisabled={ props.isDisabled }
+                    />
+                ) : (
+                    <RecipientTypeahead
+                        path={ props.path }
+                        selected={ props.action.recipient }
+                        getRecipients={ props.getRecipients }
+                        isDisabled={ props.isDisabled }
+                    />
+                ) }
+            </td>
+            <td>
+                <Button
+                    onClick={ props.onRemove }
+                    variant={ ButtonVariant.plain }
+                >
+                    <TimesIcon/>
+                </Button>
+            </td>
+        </tr>
+    );
 };
 
 export const EditableActionTable: React.FunctionComponent<EditableActionTableProps> = (props) => {
@@ -67,41 +107,15 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                 {
                     props.actions.map((a, index) => {
                         return (
-                            <tr key={ index }>
-                                <td>
-                                    <EditableActionElement
-                                        action={ a }
-                                        isDisabled={ props.isDisabled }
-                                        path={ `${props.path}.${index}` }
-                                    />
-                                </td>
-                                <td>
-                                    { a.type === NotificationType.INTEGRATION ? (
-                                        <IntegrationRecipientTypeahead
-                                            path={ `${props.path}.${index}` }
-                                            integrationType={ a.integration?.type ?? IntegrationType.WEBHOOK }
-                                            selected={ a.integration }
-                                            getIntegrations={ props.getIntegrations }
-                                            isDisabled={ props.isDisabled }
-                                        />
-                                    ) : (
-                                        <RecipientTypeahead
-                                            path={ `${props.path}.${index}` }
-                                            selected={ a.recipient }
-                                            getRecipients={ props.getRecipients }
-                                            isDisabled={ props.isDisabled }
-                                        />
-                                    ) }
-                                </td>
-                                <td>
-                                    <Button
-                                        onClick={ props.handleRemove && props.handleRemove(index) }
-                                        variant={ ButtonVariant.plain }
-                                    >
-                                        <TimesIcon/>
-                                    </Button>
-                                </td>
-                            </tr>
+                            <EditableActionRow
+                                key={ index }
+                                action={ a }
+                                isDisabled={ props.isDisabled }
+                                path={ `${props.path}.${index}` }
+                                getRecipients={ props.getRecipients }
+                                getIntegrations={ props.getIntegrations }
+                                onRemove={ props.handleRemove ? props.handleRemove(index): undefined }
+                            />
                         );
                     })
                 }
