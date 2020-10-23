@@ -36,15 +36,43 @@ globals:
 rules: # Todo: Remove javascript rules that are duplicated on typescript
   '@typescript-eslint/explicit-function-return-type':
     - off
+  '@typescript-eslint/explicit-module-boundary-types':
+    - off
   '@typescript-eslint/no-explicit-any':
     - off
   '@typescript-eslint/no-unused-vars':
     - error
     - argsIgnorePattern: "^_"
       ignoreRestSiblings: true
-  '@typescript-eslint/camelcase':
+  '@typescript-eslint/naming-convention':
     - error
-    - properties: never
+    - selector: default
+      format:
+        - camelCase
+        - PascalCase
+        - snake_case
+        - UPPER_CASE
+      leadingUnderscore: allow
+      trailingUnderscore: allow
+    - selector: variable
+      format:
+        - PascalCase
+        - camelCase
+        - UPPER_CASE
+      leadingUnderscore: allow
+      trailingUnderscore: allow
+    - selector: typeLike
+      format:
+        - PascalCase
+        - UPPER_CASE
+    - selector: property
+      modifiers:
+        - readonly
+      format:
+        - UPPER_CASE
+        - camelCase
+      leadingUnderscore: allow
+      trailingUnderscore: allow
   array-bracket-spacing:
     - error
     - always

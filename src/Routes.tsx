@@ -52,9 +52,7 @@ const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: Insig
     );
 };
 
-type RoutesProps = {};
-
-export const Routes: React.FunctionComponent<RoutesProps> = () => {
+export const Routes: React.FunctionComponent = () => {
     return (
         <Switch>
             { pathRoutes.map(pathRoute => (

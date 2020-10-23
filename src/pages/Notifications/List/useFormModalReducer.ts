@@ -1,5 +1,5 @@
 import { DefaultNotificationBehavior, Notification } from '../../../types/Notification';
-import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever } from 'assert-never';
 import { useReducer } from 'react';
 
 enum UseFormModalReducerActionType {
@@ -37,7 +37,7 @@ type UseFormModalReducerState = {
 }))
 
 const noneState = {
-    isOpen: false as false
+    isOpen: false as const
 };
 
 const reducer = (state: UseFormModalReducerState, action: UseFormModalReducerAction): UseFormModalReducerState => {

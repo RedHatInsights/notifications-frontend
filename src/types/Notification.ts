@@ -1,14 +1,15 @@
+import * as Generated from '../generated/OpenapiNotifications';
 import { Integration } from './Integration';
 
 export interface Notification {
-    id: string;
+    id: number;
     application: string;
     event: string;
     actions: Array<Action>;
     useDefault?: boolean;
 }
 
-export type IntegrationRef = Pick<Integration, 'id' | 'name' | 'type'>
+export type IntegrationRef = Pick<Integration, 'id' | 'name' | 'type' | 'isEnabled'>
 
 export interface DefaultNotificationBehavior {
     actions: Array<Action>;
@@ -36,3 +37,6 @@ export enum NotificationType {
     INTEGRATION = 'INTEGRATION',
     PLATFORM_ALERT = 'PLATFORM_ALERT'
 }
+
+export type ServerNotificationRequest = Generated.EventType;
+export type ServerNotificationResponse = Generated.EventType;

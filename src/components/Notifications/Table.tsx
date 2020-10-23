@@ -10,7 +10,7 @@ import {
     TableHeader
 } from '@patternfly/react-table';
 import { Messages } from '../../properties/Messages';
-import { assertNever, joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { Action, NotificationType, Notification } from '../../types/Notification';
 import { style } from 'typestyle';
@@ -19,6 +19,7 @@ import styles from '@patternfly/react-styles/css/components/Table/table';
 import { ActionComponent } from './ActionComponent';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { GroupByEnum } from './Types';
+import { assertNever } from 'assert-never';
 
 import './Table.scss';
 
@@ -39,6 +40,7 @@ const firstNestedCellInExpandedPaddingLeft = style({
 });
 
 const cellPaddingBottomStyle = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     '--pf-c-table__expandable-row-content--PaddingBottom': '0'
 } as any;
 
@@ -47,6 +49,7 @@ const cellPaddingTop = style({
 } as any);
 
 const cellPaddingTopStyle = {
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     '--pf-c-table__expandable-row-content--PaddingTop': '0'
 } as any;
 
@@ -92,7 +95,11 @@ export interface NotificationsTableProps extends OuiaComponentProps {
     onEdit: OnEditNotification;
 }
 
-export type NotificationRowGroupedByNone = Notification;
+type NotificationRowBase = {
+    loadingActionStatus: 'loading' | 'done' | 'error';
+}
+
+export type NotificationRowGroupedByNone = Notification & NotificationRowBase;
 
 export interface NotificationRowGroupedByApplication {
     application: string;
@@ -165,8 +172,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
         const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
 
         rows.push({
-            id: notification.id,
-            key: notification.id,
+            id: `${parent !== undefined ? (parent.toString() + '-') : ''}${notification.id}`,
+            key: `${parent !== undefined ? (parent.toString() + '-') : ''}${notification.id}`,
             cells: [
                 {
                     title: <EventCell
@@ -183,7 +190,12 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span><ActionComponent isDefault={ !!notification.useDefault } action={ firstAction }/></span></>,
+                    title: <><span><ActionComponent
+                        isDefault={ !!notification.useDefault }
+                        action={ firstAction }
+                        loading={ notification.loadingActionStatus === 'loading' }
+                        hasError={ notification.loadingActionStatus === 'error' }
+                    /></span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -225,11 +237,16 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                 ...(i + 1 === rowSpan ? {} : cellPaddingBottomStyle)
             };
             rows.push({
-                id,
-                key: id,
+                id: `${parent !== undefined ? (parent.toString() + '-') : ''}${id}`,
+                key: `${parent !== undefined ? (parent.toString() + '-') : ''}${id}`,
                 cells: [
                     {
-                        title: <ActionComponent isDefault={ !!notification.useDefault } action={ notification.actions[i] } />,
+                        title: <ActionComponent
+                            isDefault={ !!notification.useDefault }
+                            action={ notification.actions[i] }
+                            loading={ notification.loadingActionStatus === 'loading' }
+                            hasError={ notification.loadingActionStatus === 'error' }
+                        />,
                         props: {
                             className: joinClasses(
                                 noExpandableBorderClassName,
@@ -332,7 +349,7 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
                 rows={ rows }
                 cells={ columns }
                 onCollapse={ onCollapseHandler }
-                rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
+                rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
             >
                 <TableHeader/>
                 <TableBody/>

@@ -5,7 +5,7 @@ import jestMock from 'jest-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { IntegrationRow, IntegrationsTable } from '../Table';
 import { IntegrationType } from '../../../types/Integration';
-import { HttpType } from '../../../generated/Openapi';
+import { HttpType } from '../../../generated/OpenapiIntegrations';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 

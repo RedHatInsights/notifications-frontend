@@ -7,7 +7,6 @@ import {
     IntegrationRef
 } from '../../types/Notification';
 import { Button, ButtonVariant } from '@patternfly/react-core';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import {
     Checkbox,
@@ -27,15 +26,15 @@ type Type = 'default' | 'notification';
 
 export interface NotificationFormProps extends OuiaComponentProps {
     type: Type;
-    getRecipients: (search: string) => Array<string>;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 interface ActionsArrayProps extends FieldArrayRenderProps {
     form: FormikProps<Notification | DefaultNotificationBehavior>;
     type: Type;
-    getRecipients: (search: string) => Array<string>;
-    getIntegrations: (type: IntegrationType, search: string) => Array<IntegrationRef>;
+    getRecipients: (search: string) => Promise<Array<string>>;
+    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 const alignLeftClassName = style({
@@ -62,7 +61,7 @@ const tableClassName = style({
 
 const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
 
-    const { values } = props.form;
+    const { values, isSubmitting } = props.form;
     const actions = values.actions;
 
     const addAction = React.useCallback(() => {
@@ -92,23 +91,31 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
                     getRecipients={ props.getRecipients }
                     getIntegrations={ props.getIntegrations }
                     handleRemove={ props.handleRemove }
+                    isDisabled={ isSubmitting }
                 />
             ) }
-            <Button
-                className={ alignLeftClassName }
-                variant={ ButtonVariant.link }
-                icon={ <PlusCircleIcon /> }
-                onClick={ addAction }
-            >
-                Add action
-            </Button>
+            <tbody>
+                <tr>
+                    <td>
+                        <Button
+                            className={ alignLeftClassName }
+                            variant={ ButtonVariant.link }
+                            icon={ <PlusCircleIcon /> }
+                            onClick={ addAction }
+                            isDisabled={ isSubmitting }
+                        >
+                            Add action
+                        </Button>
+                    </td>
+                </tr>
+            </tbody>
         </>
     );
 };
 
 export const NotificationForm: React.FunctionComponent<NotificationFormProps> = (props) => {
 
-    const { values } = useFormikContext<Notification | DefaultNotificationBehavior>();
+    const { values, isSubmitting } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const { type } = props;
 
     const showActions: boolean = type === 'default' ? true : !(values as Notification).useDefault;
@@ -145,6 +152,7 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
                                         name="useDefault"
                                         id="useDefault"
                                         label="Use default notification actions"
+                                        isDisabled={ isSubmitting }
                                     />
                                 </td>
                             </tr>

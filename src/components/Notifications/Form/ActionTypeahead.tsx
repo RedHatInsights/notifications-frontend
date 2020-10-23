@@ -1,6 +1,5 @@
 import * as React from 'react';
-import { Action, ActionNotify, DefaultNotificationBehavior, NotificationType } from '../../../types/Notification';
-import { useFormikContext } from 'formik';
+import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { ActionOption } from './ActionOption';
 import { IntegrationType } from '../../../types/Integration';
@@ -19,11 +18,11 @@ const getSelectOptions = () => [
 
 export interface ActionTypeaheadProps {
     action: Action;
-    path: string;
+    isDisabled?: boolean;
+    onSelected: (actionOption: ActionOption) => void;
 }
 
 export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (props) => {
-    const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
     const [ isOpen, setOpen ] = React.useState(false);
 
     const toggle = React.useCallback(() => {
@@ -31,24 +30,13 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     }, [ setOpen ]);
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
-        const path = props.path;
-
+        const actionSelected = props.onSelected;
         if (value instanceof ActionOption) {
-            setFieldValue(`${path}.type`, value.notificationType);
-            if (value.integrationType) {
-                setFieldValue(`${path}.integration`, {
-                    type: value.integrationType
-                });
-                setFieldValue(`${path}.recipient`, []);
-            } else {
-                setFieldValue(`${path}.recipient`, []);
-                setFieldValue(`${path}.integration`, undefined);
-            }
-
+            actionSelected(value);
             setOpen(false);
         }
 
-    }, [ setFieldValue, props.path, setOpen ]);
+    }, [ props.onSelected, setOpen ]);
 
     const selectedOption = React.useMemo(() => {
         if (props.action.type === NotificationType.INTEGRATION) {
@@ -73,6 +61,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
             isOpen={ isOpen }
             onSelect={ onSelect }
             menuAppendTo={ document.body }
+            isDisabled={ props.isDisabled }
         >
             { getSelectOptions().map(o => <SelectOption key={ o.toString() } value={ o } />) }
         </Select>

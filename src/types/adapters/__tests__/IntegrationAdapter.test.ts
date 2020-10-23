@@ -1,6 +1,6 @@
 import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
 import { Integration, IntegrationType, NewIntegration, ServerIntegrationResponse } from '../../Integration';
-import { EndpointType, HttpType } from '../../../generated/Openapi';
+import { EndpointType, HttpType } from '../../../generated/OpenapiIntegrations';
 
 describe('src/types/adapters/IntegrationAdapter', () => {
     describe('toIntegration', () => {

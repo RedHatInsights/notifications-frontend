@@ -12,19 +12,21 @@ import {
 } from '@patternfly/react-table';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import { Spinner, Switch, Text } from '@patternfly/react-core';
-// eslint-disable-next-line @typescript-eslint/camelcase,max-len
-import { global_spacer_md, global_spacer_lg, global_spacer_sm, global_warning_color_200, global_success_color_200, global_danger_color_100 } from '@patternfly/react-tokens';
+import {
+    global_spacer_md, global_spacer_lg, global_spacer_sm, global_warning_color_200, global_success_color_200, global_danger_color_100
+} from '@patternfly/react-tokens';
 import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { style } from 'typestyle';
-import { assertNever, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { css } from '@patternfly/react-styles';
 import { important } from 'csx';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { OffIcon, ExclamationCircleIcon, CheckCircleIcon } from '@patternfly/react-icons';
+import { assertNever } from 'assert-never';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -319,7 +321,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                 rows={ rows }
                 cells={ columns }
                 onCollapse={ onCollapseHandler }
-                rowWrapper={ RowWrapper as (props: RowWrapperProps) => JSX.Element }
+                rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
                 actionResolver={ actionsResolverCallback }
             >
                 <TableHeader/>

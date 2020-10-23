@@ -1,10 +1,10 @@
 import { Integration, NewIntegration } from '../types/Integration';
 import {
-    actionPostEndpoints,
-    actionPutEndpointsById,
-    PostEndpointsPayload,
-    PutEndpointsByIdPayload
-} from '../generated/Openapi';
+    actionEndpointServiceCreateEndpoint,
+    actionEndpointServiceUpdateEndpoint,
+    EndpointServiceCreateEndpointPayload,
+    EndpointServiceUpdateEndpointPayload
+} from '../generated/OpenapiIntegrations';
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
 import { toIntegration, toServerIntegrationRequest } from '../types/adapters/IntegrationAdapter';
@@ -12,18 +12,18 @@ import { toIntegration, toServerIntegrationRequest } from '../types/adapters/Int
 export const saveIntegrationActionCreator = (integration: Integration | NewIntegration) => {
     const serverIntegration = toServerIntegrationRequest(integration);
     if (integration.id) {
-        return actionPutEndpointsById({
+        return actionEndpointServiceUpdateEndpoint({
             body: serverIntegration,
             id: integration.id
         });
     }
 
-    return actionPostEndpoints({
+    return actionEndpointServiceCreateEndpoint({
         body: serverIntegration
     });
 };
 
-const decoder = (response: PostEndpointsPayload | PutEndpointsByIdPayload) => {
+const decoder = (response: EndpointServiceCreateEndpointPayload | EndpointServiceUpdateEndpointPayload) => {
     if (response.type === 'Endpoint') {
         return {
             ...response,

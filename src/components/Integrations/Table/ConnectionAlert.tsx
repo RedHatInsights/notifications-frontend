@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Alert, AlertVariant } from '@patternfly/react-core';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import { ConnectionAttempt, ConnectionAttemptType } from './ConnectionAttempt';
 import { style } from 'typestyle';

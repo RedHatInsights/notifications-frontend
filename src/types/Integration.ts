@@ -1,4 +1,4 @@
-import * as Generated from '../generated/Openapi';
+import * as Generated from '../generated/OpenapiIntegrations';
 
 export enum IntegrationType {
     WEBHOOK = 'webhook'

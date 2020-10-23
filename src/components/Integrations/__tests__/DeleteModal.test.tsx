@@ -6,7 +6,7 @@ import { IntegrationDeleteModal } from '../DeleteModal';
 import { IntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
-import { HttpType } from '../../../generated/Openapi';
+import { HttpType } from '../../../generated/OpenapiIntegrations';
 
 describe('src/components/Integrations/DeleteModal', () => {
     it('Has Remove integration title', () => {

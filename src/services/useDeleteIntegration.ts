@@ -1,8 +1,8 @@
-import { actionDeleteEndpointsById } from '../generated/Openapi';
+import { actionEndpointServiceDeleteEndpoint } from '../generated/OpenapiIntegrations';
 import { useMutation } from 'react-fetching-library';
 
 const deleteIntegrationActionCreator = (integrationId: string) => {
-    return actionDeleteEndpointsById({
+    return actionEndpointServiceDeleteEndpoint({
         id: integrationId
     });
 };

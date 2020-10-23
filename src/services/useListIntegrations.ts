@@ -1,31 +1,36 @@
 import {
-    actionGetEndpoints,
-    GetEndpointsPayload
-} from '../generated/Openapi';
+    actionEndpointServiceGetEndpoints,
+    EndpointServiceGetEndpointsPayload
+} from '../generated/OpenapiIntegrations';
 import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useQuery } from 'react-fetching-library';
-import { toIntegrations } from '../types/adapters/IntegrationAdapter';
+import { getEndpointType, toIntegrations } from '../types/adapters/IntegrationAdapter';
+import { validationResponseTransformer, validatedResponse } from 'openapi2typescript';
+import { IntegrationType } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
-    return actionGetEndpoints({
-        pageNumber: pager?.index,
-        pageSize: pager?.size
+    const query = (pager ?? Page.defaultPage()).toQuery();
+    return actionEndpointServiceGetEndpoints({
+        limit: +query.limit,
+        offset: +query.offset,
+        type: query.filterType ? getEndpointType(query.filterType as IntegrationType) : undefined
     });
 };
 
-const decoder = (payload?: GetEndpointsPayload) => {
+export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: EndpointServiceGetEndpointsPayload) => {
     if (payload?.status === 200) {
-        return {
-            type: 'integrationArray',
-            value: toIntegrations(payload.value),
-            status: 200
-        };
+        return validatedResponse(
+            'integrationArray',
+            200,
+            toIntegrations(payload.value),
+            payload.errors
+        );
     }
 
     return payload;
-};
+});
 
-export const useListIntegrationsQuery = (pager?: Page) => useTransformQueryResponse(
-    useQuery(listIntegrationsActionCreator(pager)),
-    decoder
+export const useListIntegrationsQuery = (pager?: Page, initFetch?: boolean) => useTransformQueryResponse(
+    useQuery(listIntegrationsActionCreator(pager), initFetch),
+    listIntegrationIntegrationDecoder
 );

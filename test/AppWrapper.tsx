@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { initStore, getInsights } from '@redhat-cloud-services/insights-common-typescript';
+import { initStore, getInsights, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
+import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
 import { RouteProps, Route } from 'react-router';
 import { MemoryRouter as Router } from 'react-router-dom';
 import { ClientContextProvider, createClient } from 'react-fetching-library';
@@ -10,7 +12,7 @@ import { AppContext } from '../src/app/AppContext';
 
 let setup = false;
 let client;
-const store = initStore().getStore();
+let store;
 
 export const appWrapperSetup = () => {
     if (setup) {
@@ -23,7 +25,13 @@ export const appWrapperSetup = () => {
 
     setup = true;
     fetchMock.mock();
-    client = createClient();
+    client = createClient({
+        responseInterceptors: [
+            validateSchemaResponseInterceptor
+        ]
+    });
+
+    store = initStore().getStore();
 };
 
 export const appWrapperCleanup = () => {
@@ -38,6 +46,7 @@ export const appWrapperCleanup = () => {
         document.getElementById('root')!.remove();
 
         fetchMock.restore();
+        restoreStore();
     }
 };
 
@@ -79,6 +88,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
             <Router { ...props.router } >
                 <ClientContextProvider client={ client }>
                     <AppContext.Provider value={ props.appContext || defaultAppContextSettings }>
+                        <NotificationsPortal/>
                         <InternalWrapper { ...props }>
                             <Route { ...props.route } >
                                 { props.children }

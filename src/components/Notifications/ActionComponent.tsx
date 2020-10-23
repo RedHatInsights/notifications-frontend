@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { EnvelopeIcon, SlackHashIcon } from '@patternfly/react-icons';
-// eslint-disable-next-line @typescript-eslint/camelcase
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
-import { assertNever, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { Action, NotificationType } from '../../types/Notification';
 import { Messages } from '../../properties/Messages';
 import { style } from 'typestyle';
+import { assertNever } from 'assert-never';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { Spinner } from '@patternfly/react-core';
 
 export interface ActionComponentText extends OuiaComponentProps{
     isDefault: boolean;
     action: Action | undefined;
+    loading?: boolean;
+    hasError?: boolean;
 }
 
 interface ActionTypeToIconProps {
@@ -47,6 +50,22 @@ const ActionComponentWrapper: React.FunctionComponent<ActionComponentText> = (pr
 );
 
 export const ActionComponent: React.FunctionComponent<ActionComponentText> = (props) => {
+
+    if (props.loading) {
+        return (
+            <ActionComponentWrapper { ...props }>
+                <Spinner size="md"/>
+            </ActionComponentWrapper>
+        );
+    }
+
+    if (props.hasError) {
+        return (
+            <ActionComponentWrapper { ...props }>
+                <span>Error loading actions</span>
+            </ActionComponentWrapper>
+        );
+    }
 
     if (props.isDefault) {
         return (

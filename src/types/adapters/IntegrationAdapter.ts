@@ -6,14 +6,15 @@ import {
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
-import { assertNever } from '@redhat-cloud-services/insights-common-typescript';
-import { EndpointType, HttpType, WebhookAttributes } from '../../generated/Openapi';
+import { EndpointType, HttpType, WebhookAttributes } from '../../generated/OpenapiIntegrations';
+import { assertNever } from 'assert-never';
 
 const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
     switch (type) {
         case EndpointType.Enum.webhook:
             return IntegrationType.WEBHOOK;
         case EndpointType.Enum.email:
+        case EndpointType.Enum.default:
         case undefined:
             throw new Error(`Unexpected type: ${type}`);
         default:
@@ -21,7 +22,7 @@ const getIntegrationType = (type: EndpointType | undefined): IntegrationType => 
     }
 };
 
-const getEndpointType = (type: IntegrationType): EndpointType => {
+export const getEndpointType = (type: IntegrationType): EndpointType => {
     switch (type) {
         case IntegrationType.WEBHOOK:
             return EndpointType.Enum.webhook;
@@ -55,7 +56,7 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 };
 
 export const toIntegrations = (serverIntegrations: Array<ServerIntegrationResponse>): Array<Integration> => {
-    return serverIntegrations.map(toIntegration);
+    return filterOutDefaultAction(serverIntegrations).map(toIntegration);
 };
 
 export const toIntegrationProperties = (integration: Integration | NewIntegration) => {
@@ -63,7 +64,6 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
         case IntegrationType.WEBHOOK:
             return {
                 url: integration.url,
-                // Todo: Add these to IntegrationHttp
                 method: integration.method,
                 disable_ssl_verification: !integration.sslVerificationEnabled,
                 secret_token: integration.secretToken
@@ -83,3 +83,6 @@ export const toServerIntegrationRequest = (integration: Integration | NewIntegra
         properties: toIntegrationProperties(integration)
     };
 };
+
+export const filterOutDefaultAction = (serverNotifications: Array<ServerIntegrationResponse>) =>
+    serverNotifications.filter(e => e.type !== EndpointType.enum.default);
