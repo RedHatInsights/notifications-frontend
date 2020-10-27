@@ -5,148 +5,251 @@
 import * as z from 'zod';
 import { ValidatedResponse } from 'openapi2typescript';
 import { Action } from 'react-fetching-library';
+import { ValidateRule } from 'openapi2typescript';
 import {
     actionBuilder,
     ActionValidatableConfig
 } from 'openapi2typescript/react-fetching-library';
 
 export const UUID = zodSchemaUUID();
-export type UUID = z.infer<typeof UUID>;
+export type UUID = string;
 
 export const SetString = zodSchemaSetString();
-export type SetString = z.infer<typeof SetString>;
+export type SetString = Array<string>;
 
 export const NewCookie = zodSchemaNewCookie();
-export type NewCookie = z.infer<typeof NewCookie>;
+export type NewCookie = {
+  domain?: string | undefined | null;
+  name?: string | undefined | null;
+  path?: string | undefined | null;
+  value?: string | undefined | null;
+  version?: number | undefined | null;
+  comment?: string | undefined | null;
+  expiry?: Date | undefined | null;
+  httpOnly?: boolean | undefined | null;
+  maxAge?: number | undefined | null;
+  secure?: boolean | undefined | null;
+};
 
 export const MapStringNewCookie = zodSchemaMapStringNewCookie();
-export type MapStringNewCookie = z.infer<typeof MapStringNewCookie>;
+export type MapStringNewCookie = {
+  [x: string]: NewCookie;
+};
 
 export const Date = zodSchemaDate();
-export type Date = z.infer<typeof Date>;
+export type Date = string;
 
 export const EntityTag = zodSchemaEntityTag();
-export type EntityTag = z.infer<typeof EntityTag>;
+export type EntityTag = {
+  value?: string | undefined | null;
+  weak?: boolean | undefined | null;
+};
 
 export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
-export type MultivaluedMapStringObject = z.infer<
-  typeof MultivaluedMapStringObject
->;
+export type MultivaluedMapStringObject = {
+  [x: string]: unknown;
+};
 
 export const Locale = zodSchemaLocale();
-export type Locale = z.infer<typeof Locale>;
+export type Locale = {
+  country?: string | undefined | null;
+  displayCountry?: string | undefined | null;
+  displayLanguage?: string | undefined | null;
+  displayName?: string | undefined | null;
+  displayScript?: string | undefined | null;
+  displayVariant?: string | undefined | null;
+  extensionKeys?: SetCharacter | undefined | null;
+  iSO3Country?: string | undefined | null;
+  iSO3Language?: string | undefined | null;
+  language?: string | undefined | null;
+  script?: string | undefined | null;
+  unicodeLocaleAttributes?: SetString | undefined | null;
+  unicodeLocaleKeys?: SetString | undefined | null;
+  variant?: string | undefined | null;
+};
 
 export const Link = zodSchemaLink();
-export type Link = z.infer<typeof Link>;
+export type Link = {
+  params?: MapStringString | undefined | null;
+  rel?: string | undefined | null;
+  rels?: ListString | undefined | null;
+  title?: string | undefined | null;
+  type?: string | undefined | null;
+  uri?: URI | undefined | null;
+  uriBuilder?: UriBuilder | undefined | null;
+};
 
 export const SetLink = zodSchemaSetLink();
-export type SetLink = z.infer<typeof SetLink>;
+export type SetLink = Array<Link>;
 
 export const URI = zodSchemaURI();
-export type URI = z.infer<typeof URI>;
+export type URI = string;
 
 export const MediaType = zodSchemaMediaType();
-export type MediaType = z.infer<typeof MediaType>;
+export type MediaType = {
+  parameters?: MapStringString | undefined | null;
+  subtype?: string | undefined | null;
+  type?: string | undefined | null;
+  wildcardSubtype?: boolean | undefined | null;
+  wildcardType?: boolean | undefined | null;
+};
 
 export const StatusType = zodSchemaStatusType();
-export type StatusType = z.infer<typeof StatusType>;
+export type StatusType = {
+  family?: Family | undefined | null;
+  reasonPhrase?: string | undefined | null;
+  statusCode?: number | undefined | null;
+};
 
 export const MultivaluedMapStringString = zodSchemaMultivaluedMapStringString();
-export type MultivaluedMapStringString = z.infer<
-  typeof MultivaluedMapStringString
->;
+export type MultivaluedMapStringString = {
+  [x: string]: string;
+};
 
 export const Family = zodSchemaFamily();
-export type Family = z.infer<typeof Family>;
+export type Family =
+  | 'CLIENT_ERROR'
+  | 'INFORMATIONAL'
+  | 'OTHER'
+  | 'REDIRECTION'
+  | 'SERVER_ERROR'
+  | 'SUCCESSFUL';
 
 export const MapStringString = zodSchemaMapStringString();
-export type MapStringString = z.infer<typeof MapStringString>;
+export type MapStringString = {
+  [x: string]: string;
+};
 
 export const ListString = zodSchemaListString();
-export type ListString = z.infer<typeof ListString>;
+export type ListString = Array<string>;
 
 export const UriBuilder = zodSchemaUriBuilder();
-export type UriBuilder = z.infer<typeof UriBuilder>;
+export type UriBuilder = unknown;
 
 export const SetCharacter = zodSchemaSetCharacter();
-export type SetCharacter = z.infer<typeof SetCharacter>;
+export type SetCharacter = Array<string>;
 
 export const Response = zodSchemaResponse();
-export type Response = z.infer<typeof Response>;
+export type Response = {
+  allowedMethods?: SetString | undefined | null;
+  cookies?: MapStringNewCookie | undefined | null;
+  date?: Date | undefined | null;
+  entity?: unknown | undefined | null;
+  entityTag?: EntityTag | undefined | null;
+  headers?: MultivaluedMapStringObject | undefined | null;
+  language?: Locale | undefined | null;
+  lastModified?: Date | undefined | null;
+  length?: number | undefined | null;
+  links?: SetLink | undefined | null;
+  location?: URI | undefined | null;
+  mediaType?: MediaType | undefined | null;
+  metadata?: MultivaluedMapStringObject | undefined | null;
+  status?: number | undefined | null;
+  statusInfo?: StatusType | undefined | null;
+  stringHeaders?: MultivaluedMapStringString | undefined | null;
+};
 
 export const Attributes = zodSchemaAttributes();
-export type Attributes = z.infer<typeof Attributes>;
+export type Attributes = unknown;
 
 export const BasicAuthentication = zodSchemaBasicAuthentication();
-export type BasicAuthentication = z.infer<typeof BasicAuthentication>;
+export type BasicAuthentication = {
+  password?: string | undefined | null;
+  username?: string | undefined | null;
+};
 
 export const HttpType = zodSchemaHttpType();
-export type HttpType = z.infer<typeof HttpType>;
+export type HttpType = 'GET' | 'POST' | 'PUT';
 
 export const WebhookAttributes = zodSchemaWebhookAttributes();
-export type WebhookAttributes = z.infer<typeof WebhookAttributes>;
+export type WebhookAttributes = {
+  basic_authentication?: BasicAuthentication | undefined | null;
+  disable_ssl_verification?: boolean | undefined | null;
+  method: HttpType & ('GET' | 'POST' | 'PUT');
+  secret_token?: string | undefined | null;
+  url: string;
+};
 
 export const EmailAttributes = zodSchemaEmailAttributes();
-export type EmailAttributes = z.infer<typeof EmailAttributes>;
+export type EmailAttributes = unknown;
 
 export const EndpointType = zodSchemaEndpointType();
-export type EndpointType = z.infer<typeof EndpointType>;
+export type EndpointType = 'webhook' | 'email' | 'default';
 
 export const Endpoint = zodSchemaEndpoint();
-export type Endpoint = z.infer<typeof Endpoint>;
+export type Endpoint = {
+  created?: Date | undefined | null;
+  description: string;
+  enabled?: boolean | undefined | null;
+  id?: UUID | undefined | null;
+  name: string;
+  properties?: (WebhookAttributes | EmailAttributes) | undefined | null;
+  type: EndpointType & ('webhook' | 'email' | 'default');
+  updated?: Date | undefined | null;
+};
 
 export const Application = zodSchemaApplication();
-export type Application = z.infer<typeof Application>;
+export type Application = {
+  created?: Date | undefined | null;
+  description: string;
+  eventTypes?: SetEventType | undefined | null;
+  id?: UUID | undefined | null;
+  name: string;
+  updated?: Date | undefined | null;
+};
 
 export const SetEndpoint = zodSchemaSetEndpoint();
-export type SetEndpoint = z.infer<typeof SetEndpoint>;
+export type SetEndpoint = Array<Endpoint>;
 
 export const EventType = zodSchemaEventType();
-export type EventType = z.infer<typeof EventType>;
+export type EventType = {
+  application?: Application | undefined | null;
+  description: string;
+  endpoints?: SetEndpoint | undefined | null;
+  id?: number | undefined | null;
+  name: string;
+};
 
 export const SetEventType = zodSchemaSetEventType();
-export type SetEventType = z.infer<typeof SetEventType>;
+export type SetEventType = Array<EventType>;
 
 export const Notification = zodSchemaNotification();
-export type Notification = z.infer<typeof Notification>;
+export type Notification = {
+  endpoint?: Endpoint | undefined | null;
+  payload?: unknown | undefined | null;
+  tenant?: string | undefined | null;
+};
 
 export const JsonObject = zodSchemaJsonObject();
-export type JsonObject = z.infer<typeof JsonObject>;
+export type JsonObject = Array<unknown>;
 
 export const NotificationHistory = zodSchemaNotificationHistory();
-export type NotificationHistory = z.infer<typeof NotificationHistory>;
+export type NotificationHistory = {
+  created?: Date | undefined | null;
+  details?: JsonObject | undefined | null;
+  endpointId?: UUID | undefined | null;
+  id?: number | undefined | null;
+  invocationResult?: boolean | undefined | null;
+  invocationTime?: number | undefined | null;
+};
 
 // GET /endpoints
 const EndpointServiceGetEndpointsParamActive = z.boolean();
-type EndpointServiceGetEndpointsParamActive = z.infer<
-  typeof EndpointServiceGetEndpointsParamActive
->;
+type EndpointServiceGetEndpointsParamActive = boolean;
 const EndpointServiceGetEndpointsParamLimit = z.number().int();
-type EndpointServiceGetEndpointsParamLimit = z.infer<
-  typeof EndpointServiceGetEndpointsParamLimit
->;
+type EndpointServiceGetEndpointsParamLimit = number;
 const EndpointServiceGetEndpointsParamOffset = z.number().int();
-type EndpointServiceGetEndpointsParamOffset = z.infer<
-  typeof EndpointServiceGetEndpointsParamOffset
->;
+type EndpointServiceGetEndpointsParamOffset = number;
 const EndpointServiceGetEndpointsParamPageNumber = z.number().int();
-type EndpointServiceGetEndpointsParamPageNumber = z.infer<
-  typeof EndpointServiceGetEndpointsParamPageNumber
->;
+type EndpointServiceGetEndpointsParamPageNumber = number;
 const EndpointServiceGetEndpointsParamSortBy = z.string();
-type EndpointServiceGetEndpointsParamSortBy = z.infer<
-  typeof EndpointServiceGetEndpointsParamSortBy
->;
+type EndpointServiceGetEndpointsParamSortBy = string;
 const EndpointServiceGetEndpointsParamType = z.string();
-type EndpointServiceGetEndpointsParamType = z.infer<
-  typeof EndpointServiceGetEndpointsParamType
->;
+type EndpointServiceGetEndpointsParamType = string;
 const EndpointServiceGetEndpointsParamResponse200 = z.array(
     zodSchemaEndpoint()
 );
-type EndpointServiceGetEndpointsParamResponse200 = z.infer<
-  typeof EndpointServiceGetEndpointsParamResponse200
->;
+type EndpointServiceGetEndpointsParamResponse200 = Array<Endpoint>;
 export interface EndpointServiceGetEndpoints {
   active?: EndpointServiceGetEndpointsParamActive;
   limit?: EndpointServiceGetEndpointsParamLimit;
@@ -200,11 +303,11 @@ export const actionEndpointServiceGetEndpoints = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceGetEndpointsParamResponse200,
-                type: 'EndpointServiceGetEndpointsParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceGetEndpointsParamResponse200,
+                'EndpointServiceGetEndpointsParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -231,7 +334,7 @@ export const actionEndpointServiceCreateEndpoint = (
     .queryParams(query)
     .data(params.body)
     .config({
-        rules: [{ status: 200, zod: Endpoint, type: 'Endpoint' }]
+        rules: [ new ValidateRule(Endpoint, 'Endpoint', 200) ]
     })
     .build();
 };
@@ -259,16 +362,14 @@ export const actionEndpointServiceGetEndpoint = (
     return actionBuilder('GET', path)
     .queryParams(query)
     .config({
-        rules: [{ status: 200, zod: Endpoint, type: 'Endpoint' }]
+        rules: [ new ValidateRule(Endpoint, 'Endpoint', 200) ]
     })
     .build();
 };
 
 // PUT /endpoints/{id}
 const EndpointServiceUpdateEndpointParamResponse200 = z.string();
-type EndpointServiceUpdateEndpointParamResponse200 = z.infer<
-  typeof EndpointServiceUpdateEndpointParamResponse200
->;
+type EndpointServiceUpdateEndpointParamResponse200 = string;
 export interface EndpointServiceUpdateEndpoint {
   id: UUID;
   body: Endpoint;
@@ -298,11 +399,11 @@ export const actionEndpointServiceUpdateEndpoint = (
     .data(params.body)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceUpdateEndpointParamResponse200,
-                type: 'EndpointServiceUpdateEndpointParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceUpdateEndpointParamResponse200,
+                'EndpointServiceUpdateEndpointParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -310,9 +411,7 @@ export const actionEndpointServiceUpdateEndpoint = (
 
 // DELETE /endpoints/{id}
 const EndpointServiceDeleteEndpointParamResponse200 = z.string();
-type EndpointServiceDeleteEndpointParamResponse200 = z.infer<
-  typeof EndpointServiceDeleteEndpointParamResponse200
->;
+type EndpointServiceDeleteEndpointParamResponse200 = string;
 export interface EndpointServiceDeleteEndpoint {
   id: UUID;
 }
@@ -340,11 +439,11 @@ export const actionEndpointServiceDeleteEndpoint = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceDeleteEndpointParamResponse200,
-                type: 'EndpointServiceDeleteEndpointParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceDeleteEndpointParamResponse200,
+                'EndpointServiceDeleteEndpointParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -352,9 +451,7 @@ export const actionEndpointServiceDeleteEndpoint = (
 
 // PUT /endpoints/{id}/enable
 const EndpointServiceEnableEndpointParamResponse200 = z.string();
-type EndpointServiceEnableEndpointParamResponse200 = z.infer<
-  typeof EndpointServiceEnableEndpointParamResponse200
->;
+type EndpointServiceEnableEndpointParamResponse200 = string;
 export interface EndpointServiceEnableEndpoint {
   id: UUID;
 }
@@ -382,11 +479,11 @@ export const actionEndpointServiceEnableEndpoint = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceEnableEndpointParamResponse200,
-                type: 'EndpointServiceEnableEndpointParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceEnableEndpointParamResponse200,
+                'EndpointServiceEnableEndpointParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -394,9 +491,7 @@ export const actionEndpointServiceEnableEndpoint = (
 
 // DELETE /endpoints/{id}/enable
 const EndpointServiceDisableEndpointParamResponse200 = z.string();
-type EndpointServiceDisableEndpointParamResponse200 = z.infer<
-  typeof EndpointServiceDisableEndpointParamResponse200
->;
+type EndpointServiceDisableEndpointParamResponse200 = string;
 export interface EndpointServiceDisableEndpoint {
   id: UUID;
 }
@@ -424,11 +519,11 @@ export const actionEndpointServiceDisableEndpoint = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceDisableEndpointParamResponse200,
-                type: 'EndpointServiceDisableEndpointParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceDisableEndpointParamResponse200,
+                'EndpointServiceDisableEndpointParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -438,8 +533,8 @@ export const actionEndpointServiceDisableEndpoint = (
 const EndpointServiceGetEndpointHistoryParamResponse200 = z.array(
     zodSchemaNotificationHistory()
 );
-type EndpointServiceGetEndpointHistoryParamResponse200 = z.infer<
-  typeof EndpointServiceGetEndpointHistoryParamResponse200
+type EndpointServiceGetEndpointHistoryParamResponse200 = Array<
+  NotificationHistory
 >;
 export interface EndpointServiceGetEndpointHistory {
   id: UUID;
@@ -468,11 +563,11 @@ export const actionEndpointServiceGetEndpointHistory = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceGetEndpointHistoryParamResponse200,
-                type: 'EndpointServiceGetEndpointHistoryParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceGetEndpointHistoryParamResponse200,
+                'EndpointServiceGetEndpointHistoryParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -482,35 +577,21 @@ export const actionEndpointServiceGetEndpointHistory = (
 const EndpointServiceGetDetailedEndpointHistoryParamHistoryId = z
 .number()
 .int();
-type EndpointServiceGetDetailedEndpointHistoryParamHistoryId = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamHistoryId
->;
+type EndpointServiceGetDetailedEndpointHistoryParamHistoryId = number;
 const EndpointServiceGetDetailedEndpointHistoryParamLimit = z.number().int();
-type EndpointServiceGetDetailedEndpointHistoryParamLimit = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamLimit
->;
+type EndpointServiceGetDetailedEndpointHistoryParamLimit = number;
 const EndpointServiceGetDetailedEndpointHistoryParamOffset = z.number().int();
-type EndpointServiceGetDetailedEndpointHistoryParamOffset = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamOffset
->;
+type EndpointServiceGetDetailedEndpointHistoryParamOffset = number;
 const EndpointServiceGetDetailedEndpointHistoryParamPageNumber = z
 .number()
 .int();
-type EndpointServiceGetDetailedEndpointHistoryParamPageNumber = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamPageNumber
->;
+type EndpointServiceGetDetailedEndpointHistoryParamPageNumber = number;
 const EndpointServiceGetDetailedEndpointHistoryParamPageSize = z.number().int();
-type EndpointServiceGetDetailedEndpointHistoryParamPageSize = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamPageSize
->;
+type EndpointServiceGetDetailedEndpointHistoryParamPageSize = number;
 const EndpointServiceGetDetailedEndpointHistoryParamSortBy = z.string();
-type EndpointServiceGetDetailedEndpointHistoryParamSortBy = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamSortBy
->;
+type EndpointServiceGetDetailedEndpointHistoryParamSortBy = string;
 const EndpointServiceGetDetailedEndpointHistoryParamResponse200 = z.string();
-type EndpointServiceGetDetailedEndpointHistoryParamResponse200 = z.infer<
-  typeof EndpointServiceGetDetailedEndpointHistoryParamResponse200
->;
+type EndpointServiceGetDetailedEndpointHistoryParamResponse200 = string;
 export interface EndpointServiceGetDetailedEndpointHistory {
   historyId: EndpointServiceGetDetailedEndpointHistoryParamHistoryId;
   id: UUID;
@@ -563,11 +644,11 @@ export const actionEndpointServiceGetDetailedEndpointHistory = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: EndpointServiceGetDetailedEndpointHistoryParamResponse200,
-                type: 'EndpointServiceGetDetailedEndpointHistoryParamResponse200'
-            }
+            new ValidateRule(
+                EndpointServiceGetDetailedEndpointHistoryParamResponse200,
+                'EndpointServiceGetDetailedEndpointHistoryParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -780,7 +861,7 @@ export function zodSchemaApplication() {
     return z.object({
         created: zodSchemaDate().optional().nullable(),
         description: z.string(),
-        eventTypes: z.unknown(), // zodSchemaSetEventType().optional().nullable(),
+        eventTypes: zodSchemaSetEventType().optional().nullable(),
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
         updated: zodSchemaDate().optional().nullable()
@@ -793,7 +874,10 @@ export function zodSchemaSetEndpoint() {
 
 export function zodSchemaEventType() {
     return z.object({
-        application: zodSchemaApplication().optional().nullable(),
+        application: z
+        .lazy(() => zodSchemaApplication())
+        .optional()
+        .nullable(),
         description: z.string(),
         endpoints: zodSchemaSetEndpoint().optional().nullable(),
         id: z.number().int().optional().nullable(),
