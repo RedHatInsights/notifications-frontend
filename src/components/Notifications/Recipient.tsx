@@ -33,5 +33,5 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
         return <span>Default user access</span>;
     }
 
-    return <span>{ props.action.recipient.join(', ') }</span>;
+    return 'All registered users';
 };
