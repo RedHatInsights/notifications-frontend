@@ -49,6 +49,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
 
     const options = useRecipientOptionMemo(state);
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const selection = React.useMemo(() => {
         const sel = props.selected;
         if (sel === undefined) {
@@ -75,7 +76,6 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
             onToggle={ toggle }
             isOpen={ isOpen }
             onFilter={ onFilter }
-            onClear={ props.onClear }
             menuAppendTo={ document.body }
             isDisabled={ true }
         >
