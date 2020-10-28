@@ -18,7 +18,33 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
     });
 
-    it('Renders disabled if isDisabled', async () => {
+    // Remove this once we support selecting the recipients
+    it('Appears as disabled', async () => {
+        render(<RecipientTypeahead
+            selected={ undefined }
+            onSelected={ jestMock.fn() }
+            getRecipients={ jestMock.fn(async () => []) }
+            onClear={ jestMock.fn() }
+        />);
+        await waitForAsyncEvents();
+        expect(screen.getByRole('button')).toBeDisabled();
+    });
+
+    // Remove this once we support selecting the recipients
+    it('Has text "All registered users"', async () => {
+        render(<RecipientTypeahead
+            selected={ undefined }
+            onSelected={ jestMock.fn() }
+            getRecipients={ jestMock.fn(async () => []) }
+            onClear={ jestMock.fn() }
+        />);
+        await waitForAsyncEvents();
+        expect(screen.getByText('All registered users')).toBeVisible();
+    });
+
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('Renders disabled if isDisabled', async () => {
         render(<RecipientTypeahead
             selected={ undefined }
             onSelected={ jestMock.fn() }
@@ -30,7 +56,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(screen.getByRole('textbox')).toBeDisabled();
     });
 
-    it('Renders the selected even if getRecipients does not yield it', async () => {
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('Renders the selected even if getRecipients does not yield it', async () => {
         render(<RecipientTypeahead
             selected={ [ 'comi' ] }
             onSelected={ jestMock.fn() }
@@ -41,7 +69,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(screen.getByText('comi')).toBeVisible();
     });
 
-    it('Renders multiple selected ', async () => {
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('Renders multiple selected ', async () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'tales' ] }
             onSelected={ jestMock.fn() }
@@ -53,7 +83,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(screen.getByText('tales')).toBeVisible();
     });
 
-    it('Clicking clear button will call onClear ', async () => {
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('Clicking clear button will call onClear ', async () => {
         const onClear = jestMock.fn();
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
@@ -69,7 +101,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(onClear).toHaveBeenCalled();
     });
 
-    it('Clicking will show the options ', async () => {
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('Clicking will show the options ', async () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ jestMock.fn() }
@@ -97,7 +131,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(getRecipient).toHaveBeenCalledWith('');
     });
 
-    it('When writing, getRecipients is called with the input', async () => {
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('When writing, getRecipients is called with the input', async () => {
         const getRecipient = jestMock.fn(async () => [ 'tales' ]);
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
@@ -113,7 +149,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(getRecipient).toHaveBeenCalledWith('guy');
     });
 
-    it('onSelected GetsCalled when selecting an element', async () => {
+    // Removing until we support selecting the recipients
+    // eslint-disable-next-line jest/no-disabled-tests
+    it.skip('onSelected GetsCalled when selecting an element', async () => {
         const onSelected = jest.fn();
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
