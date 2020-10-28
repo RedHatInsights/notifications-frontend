@@ -3,8 +3,7 @@ import { ClearFilters, Filters, SetFilters } from '@redhat-cloud-services/insigh
 export enum NotificationFilterColumn {
     NAME = 'name',
     APPLICATION = 'application',
-    ACTION = 'action',
-    RECIPIENT = 'recipient'
+    ACTION = 'action'
 }
 
 export type NotificationFilters = Filters<typeof NotificationFilterColumn>;
