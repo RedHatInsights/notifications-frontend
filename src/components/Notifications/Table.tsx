@@ -12,7 +12,7 @@ import {
 import { Messages } from '../../properties/Messages';
 import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
-import { Action, NotificationType, Notification } from '../../types/Notification';
+import { Notification } from '../../types/Notification';
 import { style } from 'typestyle';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
@@ -22,6 +22,7 @@ import { GroupByEnum } from './Types';
 import { assertNever } from 'assert-never';
 
 import './Table.scss';
+import { Recipient } from './Recipient';
 
 const pfBorderBottomClassName = style({
     borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)'
@@ -129,18 +130,6 @@ const EventCell: React.FunctionComponent<EventCellProps> = (props) => (
     </>
 );
 
-const getRecipients = (action: Action) => {
-    if (action.type === NotificationType.INTEGRATION) {
-        return <span>{ action.integration.name }</span>;
-    }
-
-    if (action.recipient.length === 0) {
-        return <span>Default user access</span>;
-    }
-
-    return <span>{ action.recipient.join(', ') }</span>;
-};
-
 const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
     const { trRef, className, rowProps, row, ...rest } = props;
     if (!row) {
@@ -202,7 +191,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span>{ firstAction && getRecipients(firstAction) }</span></>,
+                    title: <><span>{ firstAction && <Recipient action={ firstAction }/> }</span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -257,7 +246,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                         }
                     },
                     {
-                        title: getRecipients(notification.actions[i]),
+                        title: <Recipient action={ notification.actions[i] }/>,
                         props: {
                             className: classNames,
                             style: cssStyle

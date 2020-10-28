@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { global_spacer_md, global_spacer_sm, global_spacer_lg, global_palette_black_300, c_skeleton_BackgroundColor } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { NotificationType, DefaultNotificationBehavior } from '../../types/Notification';
+import { DefaultNotificationBehavior } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { cssRaw, style } from 'typestyle';
 import { ActionComponent } from './ActionComponent';
 import { Button, ButtonVariant, Flex, FlexItem, Skeleton } from '@patternfly/react-core';
+import { Recipient } from './Recipient';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {
     defaultBehavior?: DefaultNotificationBehavior;
@@ -84,7 +85,7 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                             return (
                                 <tr key={ index }>
                                     <td><ActionComponent isDefault={ false } action={ a }/></td>
-                                    <td>{ a.type === NotificationType.INTEGRATION ? a.integration.name : a.recipient.join(', ') }</td>
+                                    <td> <Recipient action={ a } hasOutline/></td>
                                 </tr>
                             );
                         })
@@ -94,4 +95,3 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
         </div>
     );
 };
-
