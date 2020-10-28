@@ -5,123 +5,240 @@
 import * as z from 'zod';
 import { ValidatedResponse } from 'openapi2typescript';
 import { Action } from 'react-fetching-library';
+import { ValidateRule } from 'openapi2typescript';
 import {
     actionBuilder,
     ActionValidatableConfig
 } from 'openapi2typescript/react-fetching-library';
 
 export const UUID = zodSchemaUUID();
-export type UUID = z.infer<typeof UUID>;
+export type UUID = string;
 
 export const SetString = zodSchemaSetString();
-export type SetString = z.infer<typeof SetString>;
+export type SetString = Array<string>;
 
 export const NewCookie = zodSchemaNewCookie();
-export type NewCookie = z.infer<typeof NewCookie>;
+export type NewCookie = {
+  domain?: string | undefined | null;
+  name?: string | undefined | null;
+  path?: string | undefined | null;
+  value?: string | undefined | null;
+  version?: number | undefined | null;
+  comment?: string | undefined | null;
+  expiry?: Date | undefined | null;
+  httpOnly?: boolean | undefined | null;
+  maxAge?: number | undefined | null;
+  secure?: boolean | undefined | null;
+};
 
 export const MapStringNewCookie = zodSchemaMapStringNewCookie();
-export type MapStringNewCookie = z.infer<typeof MapStringNewCookie>;
+export type MapStringNewCookie = {
+  [x: string]: NewCookie;
+};
 
 export const Date = zodSchemaDate();
-export type Date = z.infer<typeof Date>;
+export type Date = string;
 
 export const EntityTag = zodSchemaEntityTag();
-export type EntityTag = z.infer<typeof EntityTag>;
+export type EntityTag = {
+  value?: string | undefined | null;
+  weak?: boolean | undefined | null;
+};
 
 export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
-export type MultivaluedMapStringObject = z.infer<
-  typeof MultivaluedMapStringObject
->;
+export type MultivaluedMapStringObject = {
+  [x: string]: unknown;
+};
 
 export const Locale = zodSchemaLocale();
-export type Locale = z.infer<typeof Locale>;
+export type Locale = {
+  country?: string | undefined | null;
+  displayCountry?: string | undefined | null;
+  displayLanguage?: string | undefined | null;
+  displayName?: string | undefined | null;
+  displayScript?: string | undefined | null;
+  displayVariant?: string | undefined | null;
+  extensionKeys?: SetCharacter | undefined | null;
+  iSO3Country?: string | undefined | null;
+  iSO3Language?: string | undefined | null;
+  language?: string | undefined | null;
+  script?: string | undefined | null;
+  unicodeLocaleAttributes?: SetString | undefined | null;
+  unicodeLocaleKeys?: SetString | undefined | null;
+  variant?: string | undefined | null;
+};
 
 export const Link = zodSchemaLink();
-export type Link = z.infer<typeof Link>;
+export type Link = {
+  params?: MapStringString | undefined | null;
+  rel?: string | undefined | null;
+  rels?: ListString | undefined | null;
+  title?: string | undefined | null;
+  type?: string | undefined | null;
+  uri?: URI | undefined | null;
+  uriBuilder?: UriBuilder | undefined | null;
+};
 
 export const SetLink = zodSchemaSetLink();
-export type SetLink = z.infer<typeof SetLink>;
+export type SetLink = Array<Link>;
 
 export const URI = zodSchemaURI();
-export type URI = z.infer<typeof URI>;
+export type URI = string;
 
 export const MediaType = zodSchemaMediaType();
-export type MediaType = z.infer<typeof MediaType>;
+export type MediaType = {
+  parameters?: MapStringString | undefined | null;
+  subtype?: string | undefined | null;
+  type?: string | undefined | null;
+  wildcardSubtype?: boolean | undefined | null;
+  wildcardType?: boolean | undefined | null;
+};
 
 export const StatusType = zodSchemaStatusType();
-export type StatusType = z.infer<typeof StatusType>;
+export type StatusType = {
+  family?: Family | undefined | null;
+  reasonPhrase?: string | undefined | null;
+  statusCode?: number | undefined | null;
+};
 
 export const MultivaluedMapStringString = zodSchemaMultivaluedMapStringString();
-export type MultivaluedMapStringString = z.infer<
-  typeof MultivaluedMapStringString
->;
+export type MultivaluedMapStringString = {
+  [x: string]: string;
+};
 
 export const Family = zodSchemaFamily();
-export type Family = z.infer<typeof Family>;
+export type Family =
+  | 'CLIENT_ERROR'
+  | 'INFORMATIONAL'
+  | 'OTHER'
+  | 'REDIRECTION'
+  | 'SERVER_ERROR'
+  | 'SUCCESSFUL';
 
 export const MapStringString = zodSchemaMapStringString();
-export type MapStringString = z.infer<typeof MapStringString>;
+export type MapStringString = {
+  [x: string]: string;
+};
 
 export const ListString = zodSchemaListString();
-export type ListString = z.infer<typeof ListString>;
+export type ListString = Array<string>;
 
 export const UriBuilder = zodSchemaUriBuilder();
-export type UriBuilder = z.infer<typeof UriBuilder>;
+export type UriBuilder = unknown;
 
 export const SetCharacter = zodSchemaSetCharacter();
-export type SetCharacter = z.infer<typeof SetCharacter>;
+export type SetCharacter = Array<string>;
 
 export const Response = zodSchemaResponse();
-export type Response = z.infer<typeof Response>;
+export type Response = {
+  allowedMethods?: SetString | undefined | null;
+  cookies?: MapStringNewCookie | undefined | null;
+  date?: Date | undefined | null;
+  entity?: unknown | undefined | null;
+  entityTag?: EntityTag | undefined | null;
+  headers?: MultivaluedMapStringObject | undefined | null;
+  language?: Locale | undefined | null;
+  lastModified?: Date | undefined | null;
+  length?: number | undefined | null;
+  links?: SetLink | undefined | null;
+  location?: URI | undefined | null;
+  mediaType?: MediaType | undefined | null;
+  metadata?: MultivaluedMapStringObject | undefined | null;
+  status?: number | undefined | null;
+  statusInfo?: StatusType | undefined | null;
+  stringHeaders?: MultivaluedMapStringString | undefined | null;
+};
 
 export const Attributes = zodSchemaAttributes();
-export type Attributes = z.infer<typeof Attributes>;
+export type Attributes = unknown;
 
 export const BasicAuthentication = zodSchemaBasicAuthentication();
-export type BasicAuthentication = z.infer<typeof BasicAuthentication>;
+export type BasicAuthentication = {
+  password?: string | undefined | null;
+  username?: string | undefined | null;
+};
 
 export const HttpType = zodSchemaHttpType();
-export type HttpType = z.infer<typeof HttpType>;
+export type HttpType = 'GET' | 'POST' | 'PUT';
 
 export const WebhookAttributes = zodSchemaWebhookAttributes();
-export type WebhookAttributes = z.infer<typeof WebhookAttributes>;
+export type WebhookAttributes = {
+  basic_authentication?: BasicAuthentication | undefined | null;
+  disable_ssl_verification?: boolean | undefined | null;
+  method: HttpType & ('GET' | 'POST' | 'PUT');
+  secret_token?: string | undefined | null;
+  url: string;
+};
 
 export const EmailAttributes = zodSchemaEmailAttributes();
-export type EmailAttributes = z.infer<typeof EmailAttributes>;
+export type EmailAttributes = unknown;
 
 export const EndpointType = zodSchemaEndpointType();
-export type EndpointType = z.infer<typeof EndpointType>;
+export type EndpointType = 'webhook' | 'email' | 'default';
 
 export const Endpoint = zodSchemaEndpoint();
-export type Endpoint = z.infer<typeof Endpoint>;
+export type Endpoint = {
+  created?: Date | undefined | null;
+  description: string;
+  enabled?: boolean | undefined | null;
+  id?: UUID | undefined | null;
+  name: string;
+  properties?: (WebhookAttributes | EmailAttributes) | undefined | null;
+  type: EndpointType & ('webhook' | 'email' | 'default');
+  updated?: Date | undefined | null;
+};
 
 export const Application = zodSchemaApplication();
-export type Application = z.infer<typeof Application>;
+export type Application = {
+  created?: Date | undefined | null;
+  description: string;
+  eventTypes?: SetEventType | undefined | null;
+  id?: UUID | undefined | null;
+  name: string;
+  updated?: Date | undefined | null;
+};
 
 export const SetEndpoint = zodSchemaSetEndpoint();
-export type SetEndpoint = z.infer<typeof SetEndpoint>;
+export type SetEndpoint = Array<Endpoint>;
 
 export const EventType = zodSchemaEventType();
-export type EventType = z.infer<typeof EventType>;
+export type EventType = {
+  application?: Application | undefined | null;
+  description: string;
+  endpoints?: SetEndpoint | undefined | null;
+  id?: number | undefined | null;
+  name: string;
+};
 
 export const SetEventType = zodSchemaSetEventType();
-export type SetEventType = z.infer<typeof SetEventType>;
+export type SetEventType = Array<EventType>;
 
 export const Notification = zodSchemaNotification();
-export type Notification = z.infer<typeof Notification>;
+export type Notification = {
+  endpoint?: Endpoint | undefined | null;
+  payload?: unknown | undefined | null;
+  tenant?: string | undefined | null;
+};
 
 export const JsonObject = zodSchemaJsonObject();
-export type JsonObject = z.infer<typeof JsonObject>;
+export type JsonObject = Array<unknown>;
 
 export const NotificationHistory = zodSchemaNotificationHistory();
-export type NotificationHistory = z.infer<typeof NotificationHistory>;
+export type NotificationHistory = {
+  created?: Date | undefined | null;
+  details?: JsonObject | undefined | null;
+  endpointId?: UUID | undefined | null;
+  id?: number | undefined | null;
+  invocationResult?: boolean | undefined | null;
+  invocationTime?: number | undefined | null;
+};
 
 // GET /notifications/defaults
 const NotificationServiceGetEndpointsForDefaultsParamResponse200 = z.array(
     zodSchemaEndpoint()
 );
-type NotificationServiceGetEndpointsForDefaultsParamResponse200 = z.infer<
-  typeof NotificationServiceGetEndpointsForDefaultsParamResponse200
+type NotificationServiceGetEndpointsForDefaultsParamResponse200 = Array<
+  Endpoint
 >;
 export type NotificationServiceGetEndpointsForDefaultsPayload =
   | ValidatedResponse<
@@ -141,11 +258,11 @@ export const actionNotificationServiceGetEndpointsForDefaults = (): ActionNotifi
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: NotificationServiceGetEndpointsForDefaultsParamResponse200,
-                type: 'NotificationServiceGetEndpointsForDefaultsParamResponse200'
-            }
+            new ValidateRule(
+                NotificationServiceGetEndpointsForDefaultsParamResponse200,
+                'NotificationServiceGetEndpointsForDefaultsParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -174,7 +291,7 @@ export const actionNotificationServiceAddEndpointToDefaults = (
     return actionBuilder('PUT', path)
     .queryParams(query)
     .config({
-        rules: [{ status: 200, zod: Response, type: 'Response' }]
+        rules: [ new ValidateRule(Response, 'Response', 200) ]
     })
     .build();
 };
@@ -202,34 +319,24 @@ export const actionNotificationServiceDeleteEndpointFromDefaults = (
     return actionBuilder('DELETE', path)
     .queryParams(query)
     .config({
-        rules: [{ status: 200, zod: Response, type: 'Response' }]
+        rules: [ new ValidateRule(Response, 'Response', 200) ]
     })
     .build();
 };
 
 // GET /notifications/eventTypes
 const NotificationServiceGetEventTypesParamLimit = z.number().int();
-type NotificationServiceGetEventTypesParamLimit = z.infer<
-  typeof NotificationServiceGetEventTypesParamLimit
->;
+type NotificationServiceGetEventTypesParamLimit = number;
 const NotificationServiceGetEventTypesParamOffset = z.number().int();
-type NotificationServiceGetEventTypesParamOffset = z.infer<
-  typeof NotificationServiceGetEventTypesParamOffset
->;
+type NotificationServiceGetEventTypesParamOffset = number;
 const NotificationServiceGetEventTypesParamPageNumber = z.number().int();
-type NotificationServiceGetEventTypesParamPageNumber = z.infer<
-  typeof NotificationServiceGetEventTypesParamPageNumber
->;
+type NotificationServiceGetEventTypesParamPageNumber = number;
 const NotificationServiceGetEventTypesParamSortBy = z.string();
-type NotificationServiceGetEventTypesParamSortBy = z.infer<
-  typeof NotificationServiceGetEventTypesParamSortBy
->;
+type NotificationServiceGetEventTypesParamSortBy = string;
 const NotificationServiceGetEventTypesParamResponse200 = z.array(
     zodSchemaEventType()
 );
-type NotificationServiceGetEventTypesParamResponse200 = z.infer<
-  typeof NotificationServiceGetEventTypesParamResponse200
->;
+type NotificationServiceGetEventTypesParamResponse200 = Array<EventType>;
 export interface NotificationServiceGetEventTypes {
   limit?: NotificationServiceGetEventTypesParamLimit;
   offset?: NotificationServiceGetEventTypesParamOffset;
@@ -273,11 +380,11 @@ export const actionNotificationServiceGetEventTypes = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: NotificationServiceGetEventTypesParamResponse200,
-                type: 'NotificationServiceGetEventTypesParamResponse200'
-            }
+            new ValidateRule(
+                NotificationServiceGetEventTypesParamResponse200,
+                'NotificationServiceGetEventTypesParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -285,31 +392,19 @@ export const actionNotificationServiceGetEventTypes = (
 
 // GET /notifications/eventTypes/{eventTypeId}
 const NotificationServiceGetLinkedEndpointsParamEventTypeId = z.number().int();
-type NotificationServiceGetLinkedEndpointsParamEventTypeId = z.infer<
-  typeof NotificationServiceGetLinkedEndpointsParamEventTypeId
->;
+type NotificationServiceGetLinkedEndpointsParamEventTypeId = number;
 const NotificationServiceGetLinkedEndpointsParamLimit = z.number().int();
-type NotificationServiceGetLinkedEndpointsParamLimit = z.infer<
-  typeof NotificationServiceGetLinkedEndpointsParamLimit
->;
+type NotificationServiceGetLinkedEndpointsParamLimit = number;
 const NotificationServiceGetLinkedEndpointsParamOffset = z.number().int();
-type NotificationServiceGetLinkedEndpointsParamOffset = z.infer<
-  typeof NotificationServiceGetLinkedEndpointsParamOffset
->;
+type NotificationServiceGetLinkedEndpointsParamOffset = number;
 const NotificationServiceGetLinkedEndpointsParamPageNumber = z.number().int();
-type NotificationServiceGetLinkedEndpointsParamPageNumber = z.infer<
-  typeof NotificationServiceGetLinkedEndpointsParamPageNumber
->;
+type NotificationServiceGetLinkedEndpointsParamPageNumber = number;
 const NotificationServiceGetLinkedEndpointsParamSortBy = z.string();
-type NotificationServiceGetLinkedEndpointsParamSortBy = z.infer<
-  typeof NotificationServiceGetLinkedEndpointsParamSortBy
->;
+type NotificationServiceGetLinkedEndpointsParamSortBy = string;
 const NotificationServiceGetLinkedEndpointsParamResponse200 = z.array(
     zodSchemaEndpoint()
 );
-type NotificationServiceGetLinkedEndpointsParamResponse200 = z.infer<
-  typeof NotificationServiceGetLinkedEndpointsParamResponse200
->;
+type NotificationServiceGetLinkedEndpointsParamResponse200 = Array<Endpoint>;
 export interface NotificationServiceGetLinkedEndpoints {
   eventTypeId: NotificationServiceGetLinkedEndpointsParamEventTypeId;
   limit?: NotificationServiceGetLinkedEndpointsParamLimit;
@@ -357,11 +452,11 @@ export const actionNotificationServiceGetLinkedEndpoints = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: NotificationServiceGetLinkedEndpointsParamResponse200,
-                type: 'NotificationServiceGetLinkedEndpointsParamResponse200'
-            }
+            new ValidateRule(
+                NotificationServiceGetLinkedEndpointsParamResponse200,
+                'NotificationServiceGetLinkedEndpointsParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -371,13 +466,9 @@ export const actionNotificationServiceGetLinkedEndpoints = (
 const NotificationServiceLinkEndpointToEventTypeParamEventTypeId = z
 .number()
 .int();
-type NotificationServiceLinkEndpointToEventTypeParamEventTypeId = z.infer<
-  typeof NotificationServiceLinkEndpointToEventTypeParamEventTypeId
->;
+type NotificationServiceLinkEndpointToEventTypeParamEventTypeId = number;
 const NotificationServiceLinkEndpointToEventTypeParamResponse200 = z.string();
-type NotificationServiceLinkEndpointToEventTypeParamResponse200 = z.infer<
-  typeof NotificationServiceLinkEndpointToEventTypeParamResponse200
->;
+type NotificationServiceLinkEndpointToEventTypeParamResponse200 = string;
 export interface NotificationServiceLinkEndpointToEventType {
   endpointId: UUID;
   eventTypeId: NotificationServiceLinkEndpointToEventTypeParamEventTypeId;
@@ -405,11 +496,11 @@ export const actionNotificationServiceLinkEndpointToEventType = (
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: NotificationServiceLinkEndpointToEventTypeParamResponse200,
-                type: 'NotificationServiceLinkEndpointToEventTypeParamResponse200'
-            }
+            new ValidateRule(
+                NotificationServiceLinkEndpointToEventTypeParamResponse200,
+                'NotificationServiceLinkEndpointToEventTypeParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -419,9 +510,7 @@ export const actionNotificationServiceLinkEndpointToEventType = (
 const NotificationServiceUnlinkEndpointFromEventTypeParamEventTypeId = z
 .number()
 .int();
-type NotificationServiceUnlinkEndpointFromEventTypeParamEventTypeId = z.infer<
-  typeof NotificationServiceUnlinkEndpointFromEventTypeParamEventTypeId
->;
+type NotificationServiceUnlinkEndpointFromEventTypeParamEventTypeId = number;
 export interface NotificationServiceUnlinkEndpointFromEventType {
   endpointId: UUID;
   eventTypeId: NotificationServiceUnlinkEndpointFromEventTypeParamEventTypeId;
@@ -444,7 +533,7 @@ export const actionNotificationServiceUnlinkEndpointFromEventType = (
     return actionBuilder('DELETE', path)
     .queryParams(query)
     .config({
-        rules: [{ status: 200, zod: Response, type: 'Response' }]
+        rules: [ new ValidateRule(Response, 'Response', 200) ]
     })
     .build();
 };
@@ -453,8 +542,8 @@ export const actionNotificationServiceUnlinkEndpointFromEventType = (
 const NotificationServiceGetNotificationUpdatesParamResponse200 = z.array(
     zodSchemaNotification()
 );
-type NotificationServiceGetNotificationUpdatesParamResponse200 = z.infer<
-  typeof NotificationServiceGetNotificationUpdatesParamResponse200
+type NotificationServiceGetNotificationUpdatesParamResponse200 = Array<
+  Notification
 >;
 export type NotificationServiceGetNotificationUpdatesPayload =
   | ValidatedResponse<
@@ -474,11 +563,11 @@ export const actionNotificationServiceGetNotificationUpdates = (): ActionNotific
     .queryParams(query)
     .config({
         rules: [
-            {
-                status: 200,
-                zod: NotificationServiceGetNotificationUpdatesParamResponse200,
-                type: 'NotificationServiceGetNotificationUpdatesParamResponse200'
-            }
+            new ValidateRule(
+                NotificationServiceGetNotificationUpdatesParamResponse200,
+                'NotificationServiceGetNotificationUpdatesParamResponse200',
+                200
+            )
         ]
     })
     .build();
@@ -486,9 +575,7 @@ export const actionNotificationServiceGetNotificationUpdates = (): ActionNotific
 
 // DELETE /notifications/{id}
 const NotificationServiceMarkReadParamBody = z.number().int();
-type NotificationServiceMarkReadParamBody = z.infer<
-  typeof NotificationServiceMarkReadParamBody
->;
+type NotificationServiceMarkReadParamBody = number;
 export interface NotificationServiceMarkRead {
   body: NotificationServiceMarkReadParamBody;
 }
@@ -509,7 +596,7 @@ export const actionNotificationServiceMarkRead = (
     .queryParams(query)
     .data(params.body)
     .config({
-        rules: [{ status: 200, zod: Response, type: 'Response' }]
+        rules: [ new ValidateRule(Response, 'Response', 200) ]
     })
     .build();
 };
@@ -721,7 +808,7 @@ export function zodSchemaApplication() {
     return z.object({
         created: zodSchemaDate().optional().nullable(),
         description: z.string(),
-        eventTypes: z.unknown(), // zodSchemaSetEventType().optional().nullable(),
+        eventTypes: zodSchemaSetEventType().optional().nullable(),
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
         updated: zodSchemaDate().optional().nullable()
@@ -734,7 +821,10 @@ export function zodSchemaSetEndpoint() {
 
 export function zodSchemaEventType() {
     return z.object({
-        application: zodSchemaApplication().optional().nullable(),
+        application: z
+        .lazy(() => zodSchemaApplication())
+        .optional()
+        .nullable(),
         description: z.string(),
         endpoints: zodSchemaSetEndpoint().optional().nullable(),
         id: z.number().int().optional().nullable(),

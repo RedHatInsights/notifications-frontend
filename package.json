@@ -24,7 +24,7 @@
     "http-status-codes": "1.4.0",
     "in-browser-download": "2.0.0",
     "lodash": "4.17.19",
-    "openapi2typescript": "0.0.4",
+    "openapi2typescript": "0.0.7",
     "p-limit": "3.0.2",
     "react": "16.13.1",
     "react-content-loader": "3.4.2",
@@ -92,7 +92,7 @@
     "jest": "24.9.0",
     "node-sass": "4.14.1",
     "npm-run-all": "4.1.5",
-    "openapi2typescript-cli": "0.0.4",
+    "openapi2typescript-cli": "0.2.3",
     "postcss": "7.0.35",
     "prop-types": "15.7.2",
     "react-test-renderer": "16.13.1",
@@ -127,9 +127,9 @@
     "proxy-ui": "SPANDX_CONFIG=\"profiles/local-frontend.ts\" bash $PROXY_PATH/scripts/run.sh",
     "schema": "npm-run-all schema:notifications schema:integrations",
     "schema:notifications": "npm-run-all 'schema:notifications:generate -i http://localhost:8085/api/notifications/v1.0/openapi.json'",
-    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library",
+    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types",
     "schema:integrations": "npm-run-all 'schema:integrations:generate -i http://localhost:8085/api/integrations/v1.0/openapi.json'",
-    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library"
+    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types"
   },
   "insights": {
     "appname": "notifications"

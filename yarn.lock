@@ -8932,18 +8932,18 @@ only@~0.0.2:
   resolved "https://registry.yarnpkg.com/only/-/only-0.0.2.tgz#2afde84d03e50b9a8edc444e30610a70295edfb4"
   integrity sha1-Kv3oTQPlC5qO3EROMGEKcCle37Q=
 
-openapi2typescript-cli@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.0.4.tgz#33bb3925461bc6437a775ef27b10064e881dbc80"
-  integrity sha512-7btJR2xu0jBfuTc9ymLcVf7jyq2rR4IWmubbmQe6fi3BWcjB8BUGZFfbnBGcjqeEWVm1B7rOyBXB7PPhwP5ddA==
+openapi2typescript-cli@0.2.3:
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.2.3.tgz#4e609983a104f074ccf475001fe500ea38ad1901"
+  integrity sha512-mi2O9xJo6s294GhIksHtUxVNaiEBSmHAYDEWwg/h3P8h1oChILVAc5w8wycLjiKIgoGhJRdnXc+/mJVhI//Gcw==
   dependencies:
     eslint "6.0.0"
     prettier "2.1.1"
 
-openapi2typescript@0.0.4:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/openapi2typescript/-/openapi2typescript-0.0.4.tgz#1fd090c8738f23c59e5ce305e89cf858140374ce"
-  integrity sha512-DiXt4VXbleZ/rsraT6V1/D8h9LT40486xS4t+NPpiWPBVenn1MMTIewNok5W6cV5O3Ygm3Fpu4stKARwnfWMpw==
+openapi2typescript@0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/openapi2typescript/-/openapi2typescript-0.0.7.tgz#45742f347d2cc3167f61377fc07156d8235b4961"
+  integrity sha512-IsuXSBwG2uzRbhonwDgec9UkpV6xbbTzUylZui4dP1c2IBYyu3Ysirx6itAuuA5T+Q5H6ufxnHyKRSkglmVVnQ==
   optionalDependencies:
     react-fetching-library "^1.7.4"
 
