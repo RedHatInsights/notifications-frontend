@@ -11,14 +11,14 @@ import userEvent from '@testing-library/user-event';
 const ref1: IntegrationRef = {
     id: '1234',
     type: IntegrationType.WEBHOOK,
-    isEnabled: false,
+    isEnabled: true,
     name: 'Integration 1234'
 };
 
 const ref2: IntegrationRef = {
     id: 'abcd',
     type: IntegrationType.WEBHOOK,
-    isEnabled: false,
+    isEnabled: true,
     name: 'ABCD'
 };
 
