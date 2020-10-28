@@ -39,10 +39,6 @@ const filterMetadata: ColumnsMetada<typeof NotificationFilterColumn> = {
     [NotificationFilterColumn.ACTION]: {
         label: 'Action',
         placeholder: 'Filter by action'
-    },
-    [NotificationFilterColumn.RECIPIENT]: {
-        label: 'Recipient',
-        placeholder: 'Filter by recipient'
     }
 };
 

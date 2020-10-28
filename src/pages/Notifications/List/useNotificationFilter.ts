@@ -7,7 +7,6 @@ const DEBOUNCE_MS = 250;
 const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
 const useUrlStateApplication = (defaultValue?: string) => useUrlStateString('app', defaultValue);
 const useUrlStateAction = (defaultValue?: string) => useUrlStateString('action', defaultValue);
-const useUrlStateRecipient = (defaultValue?: string) => useUrlStateString('recipient', defaultValue);
 
 const useStateFactory = (column: NotificationFilterColumn) => {
     switch (column) {
@@ -17,8 +16,6 @@ const useStateFactory = (column: NotificationFilterColumn) => {
             return useUrlStateAction;
         case NotificationFilterColumn.APPLICATION:
             return useUrlStateApplication;
-        case NotificationFilterColumn.RECIPIENT:
-            return useUrlStateRecipient;
         default:
             assertNever(column);
     }
