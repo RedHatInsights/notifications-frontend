@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useCallback, useMemo } from 'react';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
     ClearNotificationFilters,
@@ -7,8 +8,11 @@ import {
     SetNotificationFilters
 } from './Filter';
 import {
-    ColumnsMetada, ExporterType, getInsights,
-    OuiaComponentProps, useInsightsEnvironmentFlag,
+    ColumnsMetada,
+    ExporterType,
+    getInsights,
+    OuiaComponentProps,
+    useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
@@ -16,12 +20,15 @@ import { GroupBy } from './Table/GroupBy';
 import { GroupByEnum } from './Types';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
-import { useCallback } from 'react';
+import { Schemas } from '../../generated/OpenapiNotifications';
+import ApplicationFacet = Schemas.ApplicationFacet;
 
 interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
     setFilters: SetNotificationFilters;
     clearFilter: ClearNotificationFilters;
+
+    appFilterOptions: Array<ApplicationFacet>;
 
     groupBy: GroupByEnum;
     onGroupBySelected: (selected: GroupByEnum) => void;
@@ -29,22 +36,36 @@ interface NotificationsToolbarProps extends OuiaComponentProps {
     onExport: (type: ExporterType) => void;
 }
 
-const filterMetadata: ColumnsMetada<typeof NotificationFilterColumn> = {
-    [NotificationFilterColumn.NAME]: {
-        label: 'Event',
-        placeholder: 'Filter by event name'
-    },
-    [NotificationFilterColumn.APPLICATION]: {
-        label: 'Application',
-        placeholder: 'Filter by application'
-    },
-    [NotificationFilterColumn.ACTION]: {
-        label: 'Action',
-        placeholder: 'Filter by action'
-    }
-};
-
 export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> = (props) => {
+
+    const filterMetadata = useMemo<ColumnsMetada<typeof NotificationFilterColumn>>(() => {
+
+        const appFilterItems = props.appFilterOptions.map(a => ({
+            value: a.label,
+            label: <> {a.label}</>
+        }));
+
+        return {
+            [NotificationFilterColumn.NAME]: {
+                label: 'Event',
+                placeholder: 'Filter by event name'
+            },
+            [NotificationFilterColumn.APPLICATION]: {
+                label: 'Application',
+                placeholder: 'Filter by application',
+                options: {
+                    exclusive: false,
+                    default: [] as any,
+                    items: appFilterItems
+                }
+            },
+            [NotificationFilterColumn.ACTION]: {
+                label: 'Action',
+                placeholder: 'Filter by action'
+            }
+        };
+    }, [ props.appFilterOptions ]);
+
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
         NotificationFilterColumn,
         props.filters,

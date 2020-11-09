@@ -901,7 +901,14 @@
     core-js-pure "^3.0.0"
     regenerator-runtime "^0.13.4"
 
-"@babel/runtime@7.12.5", "@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.5", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.4", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2", "@babel/runtime@^7.9.6":
+"@babel/runtime@7.11.2":
+  version "7.11.2"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.11.2.tgz#f549c13c754cc40b87644b9fa9f09a6a95fe0736"
+  integrity sha512-TeWkU52so0mPtDcaCTxNBI/IHiz0pZgr8VEFqXFtZWpYD08ZB6FaSwVAS8MKRQAP3bYKiVjwysOJgMFY28o6Tw==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
+"@babel/runtime@^7.1.2", "@babel/runtime@^7.10.2", "@babel/runtime@^7.10.5", "@babel/runtime@^7.12.1", "@babel/runtime@^7.12.5", "@babel/runtime@^7.5.4", "@babel/runtime@^7.8.4", "@babel/runtime@^7.9.2", "@babel/runtime@^7.9.6":
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
   integrity sha512-plcc+hbExy3McchJCEQG3knOsuh3HH+Prx1P6cLIkET/0dLuQDEnrT+s27Axgc9bqfsmNUNHfscgMUdBpC9xfg==
@@ -1270,51 +1277,74 @@
     "@nodelib/fs.scandir" "2.1.3"
     fastq "^1.6.0"
 
-"@patternfly/patternfly@4.59.1":
-  version "4.59.1"
-  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.59.1.tgz#87c03b860f2eec494dfc3ae67f04bf178f06491b"
-  integrity sha512-zk3aqg62JXMTzzJMJsyVgt5fXlcxUUkRKkaxUv/hwpjhGiyLexZ1l3Gupb9ziYl74p38KzbbfcfdnlFCwJZfgg==
+"@patternfly/patternfly@4.50.4":
+  version "4.50.4"
+  resolved "https://registry.yarnpkg.com/@patternfly/patternfly/-/patternfly-4.50.4.tgz#8d5975be48f5cf7919cef9be1d4ab622b50d6d99"
+  integrity sha512-eoJ/U11m+1uJMt8HTFCJeUNazoHC58Ot6gzfNnJvbX5kibpDdvrMvLk2iuGhEfwzQmiH7BSrxjZqMyevbSZ2Cw==
 
-"@patternfly/react-core@4.75.2", "@patternfly/react-core@^4.75.2":
-  version "4.75.2"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.75.2.tgz#b6a26e6ac05d9a903882045ea6ef3fba8df710e4"
-  integrity sha512-hoCeTahVgl5I0jA74/so2bZL1eabSD2Uwt8uYgz+W+ShYAC4rJreLOVn43I15J5VPpwIvxrbubccpBqCGL2+wA==
+"@patternfly/react-core@4.63.3":
+  version "4.63.3"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.63.3.tgz#d4925e368de4ccdd4034b4664d56406a28c57a9d"
+  integrity sha512-GAxSCz9X8OxzWiXtZPipDa1PCy+RpSvesNBS6usCDO86SvgOilBr9r5QPcoN06bxm/PLPGLQ3q0Htl35meHJzg==
   dependencies:
-    "@patternfly/react-icons" "^4.7.16"
-    "@patternfly/react-styles" "^4.7.12"
-    "@patternfly/react-tokens" "^4.9.16"
+    "@patternfly/react-icons" "^4.7.11"
+    "@patternfly/react-styles" "^4.7.8"
+    "@patternfly/react-tokens" "^4.9.12"
+    focus-trap "4.0.2"
+    react-dropzone "9.0.0"
+    tippy.js "5.1.2"
+    tslib "^1.11.1"
+
+"@patternfly/react-core@^4.63.3":
+  version "4.79.2"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-core/-/react-core-4.79.2.tgz#058ebea5a2749294dd69ad9fe8d3e43088100ada"
+  integrity sha512-TCWi5Hu8+gpqFVAL4ZMXCRLbRfayM7wJ8+/Ob4rfhC61qm36CZNAcqWOmuV8bghOzB29INUMNShggtuiUa5mkg==
+  dependencies:
+    "@patternfly/react-icons" "^4.7.18"
+    "@patternfly/react-styles" "^4.7.16"
+    "@patternfly/react-tokens" "^4.9.18"
     focus-trap "4.0.2"
     react-dropzone "9.0.0"
     tippy.js "5.1.2"
     tslib "1.13.0"
 
-"@patternfly/react-icons@4.7.16", "@patternfly/react-icons@^4.7.16":
+"@patternfly/react-icons@4.7.11":
+  version "4.7.11"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.7.11.tgz#630174e1a6e1ec4c5256198c4c897e1508a6cb74"
+  integrity sha512-kvOTwzv31krjXeMYUrmr9lABPCwtnuEWKWQCcGdrngdYzxB6mg1D0oIux8JzKqX6oitXzsI/OhvnWkIyCdirNw==
+
+"@patternfly/react-icons@^4.7.11", "@patternfly/react-icons@^4.7.18":
+  version "4.7.18"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.7.18.tgz#c188f1f460f62bd9ee262f1da580caaefbf8fdf9"
+  integrity sha512-Kd0JjeVCESpMJGb5ZkLXvAdCuklV9dYGUkcTO18WMyXQ57s9+xXjVA77wojmp6Ru1ZCWOP5bLXZOKmwVnOfUpQ==
+
+"@patternfly/react-styles@4.7.8":
+  version "4.7.8"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.7.8.tgz#b15e8f9c1077f828d0ab0d95856c1114027a8217"
+  integrity sha512-d/OEE8vBz0+/7Bxa2WiRTvtQqf/GcFtfpNdORPYSvoifAggL9wt+/62g0GCAPOu1qOyZHuThB2Bjg77V87EkQg==
+
+"@patternfly/react-styles@^4.7.16", "@patternfly/react-styles@^4.7.8":
   version "4.7.16"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.7.16.tgz#5a99a31e6da6b06d68f55749a8e20f727102f491"
-  integrity sha512-g1RsaGy/FRsHINdHpHR9RNhC72qs5W/0wIUQVB0HPtCrXdr1UfJCh03RRIhixfGPQDYgw9Ou3j3rARljhwUPUw==
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.7.16.tgz#a6c5c1cd7efbe54423210ba9cd70a4c41660e09e"
+  integrity sha512-bJmRrYKXgHGPPwLHg/gy1tDb/qEV6JpFLgkelLuz38czXeBnPpAUn9yKry3wNr95VQGERT6FcLsWjXKPY1x42Q==
 
-"@patternfly/react-styles@4.7.12", "@patternfly/react-styles@^4.7.12":
-  version "4.7.12"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.7.12.tgz#3dcbc5753eab28edfe5f8fe98ea4c707fb6b2ecb"
-  integrity sha512-+IfOc0E440Q61IYQZbux7pwcLf7JWQd1rOs2DDWnoVaw82zr/BZMtGh9T2kcklcH7TUHavSyF6tlCgU40IQ/4g==
-
-"@patternfly/react-table@4.19.5":
-  version "4.19.5"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.19.5.tgz#28bee2b51266746a66b556f8f19fa80b0aa88e66"
-  integrity sha512-Fccvn6RicC1fxvZQ/kbZfysdnbGf37B+1AOAeSVSaKcYTnLI7lVTfsWqUqAz2vg0c7+q+IBD8wLsl/djWBs8IA==
+"@patternfly/react-table@4.18.14":
+  version "4.18.14"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-table/-/react-table-4.18.14.tgz#317074a32f1ed13edfea82d665ec4392e40ed171"
+  integrity sha512-UTmmypKVueYZRN8/ydxfdGjPabqtEGfBpSSsdn5FFXM0mNStDavyqWwBGJMW1vX4zGTAxREOTyul6ab85nrxWw==
   dependencies:
-    "@patternfly/patternfly" "4.59.1"
-    "@patternfly/react-core" "^4.75.2"
-    "@patternfly/react-icons" "^4.7.16"
-    "@patternfly/react-styles" "^4.7.12"
-    "@patternfly/react-tokens" "^4.9.16"
+    "@patternfly/patternfly" "4.50.4"
+    "@patternfly/react-core" "^4.63.3"
+    "@patternfly/react-icons" "^4.7.11"
+    "@patternfly/react-styles" "^4.7.8"
+    "@patternfly/react-tokens" "^4.9.12"
     lodash "^4.17.19"
-    tslib "1.13.0"
+    tslib "^1.11.1"
 
-"@patternfly/react-tokens@^4.9.16":
-  version "4.9.16"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.9.16.tgz#15819a505ecc3f66796cf3270bb5777d26223a8a"
-  integrity sha512-gqwhMDYHB2R01PlmT+CwaIQiXvc8s7ZywpLpO63rWjy+37cgtgBMApIxZx2tALTuJDYTmu9F/SUce5CUQIgwkQ==
+"@patternfly/react-tokens@^4.9.12", "@patternfly/react-tokens@^4.9.18":
+  version "4.9.18"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.9.18.tgz#b34afc5fd2567a50b7658aff004f31b536fd9096"
+  integrity sha512-zQfqwKtoz1hDngyiGnF6oHeESDtgNY6C79Db97JxMMuRBV7i+5f6uC/DrYhcqNtqHA7mxrVJg0SM1xnPSAW9lA==
 
 "@redhat-cloud-services/frontend-components-config@2.1.8":
   version "2.1.8"
@@ -1344,12 +1374,12 @@
     webpack-serve "1.0.2"
     write-file-webpack-plugin "^4.5.0"
 
-"@redhat-cloud-services/frontend-components-notifications@2.2.3":
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-notifications/-/frontend-components-notifications-2.2.3.tgz#02431593009cd011b1420f9f93eb67e2397595d8"
-  integrity sha512-ERqumLKIYsZ96WINj8mK1gnaXJsgHCOItX8xp6/MS5C8BQ+h8U/R3KO54HR0XqBZzI8/zFXTBUDmRPlb6gE4TA==
+"@redhat-cloud-services/frontend-components-notifications@2.2.2":
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-notifications/-/frontend-components-notifications-2.2.2.tgz#8b3377bf6c613ea389813fb2aadd0b32ca788779"
+  integrity sha512-CTOJNgZLU18HUACc1GqD+yR4Ml4lcHEBSOLfFbVU9LVzymaXEpv62gW4CKUFUWpCO4LpBowZMtL4Vh8bda5dTg==
   dependencies:
-    "@redhat-cloud-services/frontend-components-utilities" "*"
+    "@redhat-cloud-services/frontend-components-utilities" "2.1.0-beta"
 
 "@redhat-cloud-services/frontend-components-translations@2.2.1":
   version "2.2.1"
@@ -1358,7 +1388,7 @@
   dependencies:
     "@redhat-cloud-services/frontend-components-utilities" ">=0.0.7"
 
-"@redhat-cloud-services/frontend-components-utilities@*", "@redhat-cloud-services/frontend-components-utilities@2.2.7", "@redhat-cloud-services/frontend-components-utilities@>=0.0.7":
+"@redhat-cloud-services/frontend-components-utilities@*", "@redhat-cloud-services/frontend-components-utilities@>=0.0.7":
   version "2.2.7"
   resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-utilities/-/frontend-components-utilities-2.2.7.tgz#5b70f359699bb20cb7708b9733cfa00f8489e611"
   integrity sha512-Hfa+FUVerU+X1ndvGq+BUXkFXQMjDwcxUX2+FnED1eZqrbgVrcHJJSNWZ6PIU9lkxPmx1cIiBzan7ycKtJvnTg==
@@ -1369,10 +1399,32 @@
     commander ">=2.20.0"
     react-content-loader ">=3.4.1"
 
-"@redhat-cloud-services/frontend-components@2.4.20":
-  version "2.4.20"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components/-/frontend-components-2.4.20.tgz#93ab209713af42d0548551e7ad2e09e202d5116e"
-  integrity sha512-7txaW+5g0ZrCC5ubixqdlkl3R8P6NzTGJl2u3bzxzE/rdB+QnwhLExJvFpYmQOtqnXIbKWPUKkpnCn0hBkanqw==
+"@redhat-cloud-services/frontend-components-utilities@2.1.0-beta":
+  version "2.1.0-beta"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-utilities/-/frontend-components-utilities-2.1.0-beta.tgz#ab8c7b0f34dfd24668c36acb2f3196676595d2f7"
+  integrity sha512-4qF+ElZaBRXnWtdpIY/VF2TA4sGTkHbHUQVy3gV6Uu1h2YHpuxhKuiJhB/Gq/BgPmkU7yVV2Dpm//iCe6ObOUg==
+  dependencies:
+    "@sentry/browser" "^5.4.0"
+    awesome-debounce-promise "^2.1.0"
+    axios "^0.19.0"
+    commander ">=2.20.0"
+    react-content-loader ">=3.4.1"
+
+"@redhat-cloud-services/frontend-components-utilities@2.2.4":
+  version "2.2.4"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-utilities/-/frontend-components-utilities-2.2.4.tgz#9f39a4393ab89edc390ecdfec66e3cb90f360aaf"
+  integrity sha512-Fhc4G8cIQVgwfA7AJCv6ri3tGvmTpjcQbRGelWiCdlkcxn/c4oC4hMnvKdAPr8HFPzug1D9vEP9Ojw/kvhZ7UA==
+  dependencies:
+    "@sentry/browser" "^5.4.0"
+    awesome-debounce-promise "^2.1.0"
+    axios "^0.19.0"
+    commander ">=2.20.0"
+    react-content-loader ">=3.4.1"
+
+"@redhat-cloud-services/frontend-components@2.4.13":
+  version "2.4.13"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components/-/frontend-components-2.4.13.tgz#5fd6e33aceb18d2e458e19f830382d8817934dda"
+  integrity sha512-EHLD/aKa3n9wnUAP6O2vuRUD/CH40tt4AGP+2DXPnUJlYzEu+6RASXAonxoiTQ6AUJsbNFZ0xv35vDEkYD5mng==
   dependencies:
     "@redhat-cloud-services/frontend-components-utilities" "*"
     sanitize-html "^1.25.0"
@@ -1390,10 +1442,10 @@
     node-jq "1.11.1"
     prettier "2.1.1"
 
-"@redhat-cloud-services/rbac-client@1.0.85":
-  version "1.0.85"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/rbac-client/-/rbac-client-1.0.85.tgz#5103203d851c72ae9f60883ba7206274fb75a175"
-  integrity sha512-gNwGyQgKpM0Xx8zDDTZAUj56/LDNl3qeJrUbx31RubQ99eNjdk6CJHjk5UhNfwt3k/w9YVousjM3xTdF7Ykmbg==
+"@redhat-cloud-services/rbac-client@1.0.77":
+  version "1.0.77"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/rbac-client/-/rbac-client-1.0.77.tgz#1a75a0a4fd542c0f85f74d9915e2641ce577152a"
+  integrity sha512-DR3h3iDc/ZKLc/kLPs+yE8uonqa5t7dswp9oNpGcktC8k8EeqhMcNnYU8gSe9NX5jOiUcKvff699K0J1q1Q8NA==
   dependencies:
     axios "^0.19.2"
 
@@ -2739,14 +2791,7 @@ axios-mock-adapter@1.19.0:
     fast-deep-equal "^3.1.3"
     is-buffer "^2.0.3"
 
-axios@0.21.0:
-  version "0.21.0"
-  resolved "https://registry.yarnpkg.com/axios/-/axios-0.21.0.tgz#26df088803a2350dff2c27f96fef99fe49442aca"
-  integrity sha512-fmkJBknJKoZwem3/IKSSLpkdNXZeBu5Q7GA/aRsr2btgrptmSCxi2oFjZHqGdK9DoTil9PIHlPIZw2EcRJXRvw==
-  dependencies:
-    follow-redirects "^1.10.0"
-
-axios@^0.19.0, axios@^0.19.2:
+axios@0.19.2, axios@^0.19.0, axios@^0.19.2:
   version "0.19.2"
   resolved "https://registry.yarnpkg.com/axios/-/axios-0.19.2.tgz#3ea36c5d8818d0d5f8a8a97a6d36b86cdc00cb27"
   integrity sha512-fjgm5MvRHLhx+osE2xoekY70AhARk3a6hkN+3Io1jc00jtquGvxYlKlsFUhmUET0V5te6CcZI7lcv2Ym61mjHA==
@@ -5731,7 +5776,7 @@ follow-redirects@1.5.10:
   dependencies:
     debug "=3.1.0"
 
-follow-redirects@^1.0.0, follow-redirects@^1.10.0:
+follow-redirects@^1.0.0:
   version "1.13.0"
   resolved "https://registry.yarnpkg.com/follow-redirects/-/follow-redirects-1.13.0.tgz#b42e8d93a2a7eea5ed88633676d6597bc8e384db"
   integrity sha512-aq6gF1BEKje4a9i9+5jimNFIpq4Q1WiwBToeRK5NvZBd/TRsmW8BsJfOEGkr76TbOyPVD3OVDN910EcUNtRYEA==
@@ -9174,10 +9219,10 @@ only@~0.0.2:
   resolved "https://registry.yarnpkg.com/only/-/only-0.0.2.tgz#2afde84d03e50b9a8edc444e30610a70295edfb4"
   integrity sha1-Kv3oTQPlC5qO3EROMGEKcCle37Q=
 
-openapi2typescript-cli@0.3.0:
-  version "0.3.0"
-  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.3.0.tgz#cfddd9ff7a573d577b3572ff82fce3f895433d76"
-  integrity sha512-xXFsPPRWOlUuqQ0iCK7gWmdtPECPqp4U5kiBT/2iF1y4yKj31CCLwC1u68DqjCPnrWIKu6a4sZfJM8iX6cf6Iw==
+openapi2typescript-cli@0.3.1:
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.3.1.tgz#f6a0a2c9d2b220e639f698c414ffa8073c3492b4"
+  integrity sha512-/IH4wmJTAXIqOHE65NUKtzh1k8fiqLFB1ZaxJ7m+Eu1gYOqOaOHDjTbiToKBNL/iCFdLHawAuWXbRTuPQ4IPoQ==
   dependencies:
     eslint "6.0.0"
     prettier "2.1.1"
@@ -12245,7 +12290,7 @@ tslib@1.13.0:
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.13.0.tgz#c881e13cc7015894ed914862d276436fa9a47043"
   integrity sha512-i/6DQjL8Xf3be4K/E6Wgpekn5Qasl1usyw++dAA35Ue5orEn65VIxOA+YvNNl9HV3qv70T7CNwjODHZrLwvd1Q==
 
-tslib@^1.10.0, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
+tslib@^1.10.0, tslib@^1.11.1, tslib@^1.8.1, tslib@^1.9.0, tslib@^1.9.3:
   version "1.14.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
   integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==

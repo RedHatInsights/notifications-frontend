@@ -17,7 +17,7 @@ import { useIntl } from 'react-intl';
 
 const App: React.FunctionComponent<RouteComponentProps> = () => {
     const intl = useIntl();
-    const { rbac } = useApp();
+    const { rbac, applications } = useApp();
     const location = useLocation();
 
     const serviceName = React.useMemo(() => {
@@ -31,7 +31,7 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
         }
     }, [ intl, location.pathname ]);
 
-    if (!rbac) {
+    if (!rbac || !applications) {
         return (
             <AppSkeleton/>
         );
@@ -39,7 +39,8 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
 
     return (
         <AppContext.Provider value={ {
-            rbac
+            rbac,
+            applications
         } }>
             { rbac.canReadAll ? (
                 <>

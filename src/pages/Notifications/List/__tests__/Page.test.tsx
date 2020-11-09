@@ -1,19 +1,12 @@
 import * as React from 'react';
-import { render, screen, getByText } from '@testing-library/react';
+import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { NotificationsListPage } from '../Page';
-import {
-    appWrapperCleanup,
-    appWrapperSetup,
-    getConfiguredAppWrapper
-} from '../../../../../test/AppWrapper';
+import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import fetchMock from 'fetch-mock';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
-
-type Endpoint = Schemas.Endpoint;
-type EventType = Schemas.EventType;
 
 describe('src/pages/Notifications/List/Page', () => {
 
@@ -29,12 +22,12 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
             body: [
 
-            ] as Array<Endpoint>
+            ] as Array<Schemas.Endpoint>
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
             body: [
 
-            ] as Array<EventType>
+            ] as Array<Schemas.EventType>
         });
         render(
             <NotificationsListPage/>
@@ -52,12 +45,12 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [
 
-                ] as Array<Endpoint>
+                ] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
 
-                ] as Array<EventType>
+                ] as Array<Schemas.EventType>
             });
             render(
                 <NotificationsListPage/>
@@ -81,12 +74,12 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [
 
-                ] as Array<Endpoint>
+                ] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
 
-                ] as Array<EventType>
+                ] as Array<Schemas.EventType>
             });
             render(
                 <NotificationsListPage/>
@@ -116,12 +109,12 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [
 
-                ] as Array<Endpoint>
+                ] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
 
-                ] as Array<EventType>
+                ] as Array<Schemas.EventType>
             });
             render(
                 <NotificationsListPage/>
@@ -154,12 +147,12 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
             body: [
 
-            ] as Array<Endpoint>
+            ] as Array<Schemas.Endpoint>
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
             body: [
 
-            ] as Array<EventType>
+            ] as Array<Schemas.EventType>
         });
         render(
             <NotificationsListPage/>
@@ -175,9 +168,9 @@ describe('src/pages/Notifications/List/Page', () => {
     describe('Clicking edit button of notification row', () => {
         it('brings up the edit form', async () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
-                body: [] as Array<Endpoint>
+                body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
                     {
                         id: 3,
@@ -190,7 +183,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         name: 'Cool notification',
                         endpoints: []
                     }
-                ] as Array<EventType>
+                ] as Array<Schemas.EventType>
             });
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
                 body: []
@@ -213,9 +206,9 @@ describe('src/pages/Notifications/List/Page', () => {
 
         it('and then cancel, closes the modal', async () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
-                body: [] as Array<Endpoint>
+                body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
                     {
                         id: 3,
@@ -228,7 +221,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         name: 'Cool notification',
                         endpoints: []
                     }
-                ] as Array<EventType>
+                ] as Array<Schemas.EventType>
             });
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
                 body: []
@@ -257,9 +250,9 @@ describe('src/pages/Notifications/List/Page', () => {
 
         it('and then save closes the modal and shows a notification if no changes are made', async () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
-                body: [] as Array<Endpoint>
+                body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=50&offset=0', {
+            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
                     {
                         id: 3,
@@ -272,7 +265,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         name: 'Cool notification',
                         endpoints: []
                     }
-                ] as Array<EventType>
+                ] as Array<Schemas.EventType>
             });
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
                 body: []

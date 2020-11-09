@@ -65,7 +65,13 @@ const defaultAppContextSettings = {
     rbac: {
         canReadAll: true,
         canWriteAll: true
-    }
+    },
+    applications: [
+        {
+            label: 'Policies',
+            value: '123456'
+        }
+    ]
 };
 
 const InternalWrapper: React.FunctionComponent<Config> = (props) => {
