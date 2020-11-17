@@ -5,7 +5,7 @@ import jestMock from 'jest-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { IntegrationRow, IntegrationsTable } from '../Table';
 import { IntegrationType } from '../../../types/Integration';
-import { HttpType } from '../../../generated/OpenapiIntegrations';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 
@@ -16,7 +16,7 @@ describe('components/Integrations/Table', () => {
         name: 'integration-name',
         type: IntegrationType.WEBHOOK,
         isEnabled: true,
-        method: HttpType.Enum.GET,
+        method: Schemas.HttpType.Enum.GET,
         url: 'http://foobar.com',
         isOpen: false,
         secretToken: 'my secret',

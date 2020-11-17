@@ -13,7 +13,6 @@ interface Path {
 
 export const linkTo = {
     integrations: () => '/integrations',
-    addIntegration: () => '/integrations/add',
     notifications: () => '/notifications'
 };
 

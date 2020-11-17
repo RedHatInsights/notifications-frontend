@@ -1,4 +1,4 @@
-import * as Generated from '../generated/OpenapiIntegrations';
+import { Schemas } from '../generated/OpenapiIntegrations';
 
 export enum IntegrationType {
     WEBHOOK = 'webhook'
@@ -16,7 +16,7 @@ export interface IntegrationHttp extends IntegrationBase {
     url: string;
     sslVerificationEnabled: boolean;
     secretToken?: string;
-    method: Generated.HttpType;
+    method: Schemas.HttpType;
 }
 
 export type Integration = IntegrationHttp;
@@ -28,8 +28,8 @@ export type NewIntegrationTemplate<T extends IntegrationBase> = Omit<T, NewInteg
 export type NewIntegrationBase = NewIntegrationTemplate<IntegrationBase>;
 export type NewIntegration = NewIntegrationTemplate<Integration>;
 
-export type ServerIntegrationRequest = Generated.Endpoint;
-export type ServerIntegrationResponse = Generated.Endpoint;
+export type ServerIntegrationRequest = Schemas.Endpoint;
+export type ServerIntegrationResponse = Schemas.Endpoint;
 
 export interface IntegrationConnectionAttempt {
     date: Date;

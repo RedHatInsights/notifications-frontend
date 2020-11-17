@@ -12,7 +12,7 @@
     "@redhat-cloud-services/frontend-components": "2.4.20",
     "@redhat-cloud-services/frontend-components-notifications": "2.2.3",
     "@redhat-cloud-services/frontend-components-utilities": "2.2.7",
-    "@redhat-cloud-services/insights-common-typescript": "3.0.6",
+    "@redhat-cloud-services/insights-common-typescript": "4.1.0",
     "@redhat-cloud-services/rbac-client": "1.0.85",
     "axios": "0.21.0",
     "camelcase": "6.2.0",
@@ -126,9 +126,9 @@
     "proxy-ui": "SPANDX_CONFIG=\"profiles/local-frontend.ts\" bash $PROXY_PATH/scripts/run.sh",
     "schema": "npm-run-all schema:notifications schema:integrations",
     "schema:notifications": "npm-run-all 'schema:notifications:generate -i http://localhost:8085/api/notifications/v1.0/openapi.json'",
-    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types",
+    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types --no-strict",
     "schema:integrations": "npm-run-all 'schema:integrations:generate -i http://localhost:8085/api/integrations/v1.0/openapi.json'",
-    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types"
+    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types --no-strict"
   },
   "insights": {
     "appname": "notifications"

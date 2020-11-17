@@ -1,6 +1,6 @@
 import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
 import { ServerIntegrationResponse } from '../Integration';
-import { Endpoint, EndpointType } from '../../generated/OpenapiNotifications';
+import { Schemas } from '../../generated/OpenapiNotifications';
 import { filterOutDefaultAction, toIntegration } from './IntegrationAdapter';
 import { assertNever } from 'assert-never';
 
@@ -18,8 +18,8 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
     };
 };
 
-export const usesDefault = (endpoints: Array<Endpoint>): boolean =>
-    endpoints.findIndex(e => e.type === EndpointType.enum.default) !== -1;
+export const usesDefault = (endpoints: Array<Schemas.Endpoint>): boolean =>
+    endpoints.findIndex(e => e.type === Schemas.EndpointType.enum.default) !== -1;
 
 export const toNotification = (serverNotification: ServerNotificationResponse): Notification => {
     if (!serverNotification.id || !serverNotification.application) {
@@ -37,11 +37,11 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
 
 export const toAction = (serverAction: ServerIntegrationResponse): Action => {
     switch (serverAction.type) {
-        case EndpointType.enum.webhook:
+        case Schemas.EndpointType.enum.webhook:
             return _toAction(NotificationType.INTEGRATION, serverAction);
-        case EndpointType.enum.email:
+        case Schemas.EndpointType.enum.email:
             return _toAction(NotificationType.EMAIL, serverAction);
-        case EndpointType.enum.default:
+        case Schemas.EndpointType.enum.default:
             throw new Error('EndpointType.default should not reach this point');
         default:
             assertNever(serverAction.type);

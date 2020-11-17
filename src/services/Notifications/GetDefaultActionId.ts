@@ -1,13 +1,11 @@
 import {
-    actionEndpointServiceCreateEndpoint,
-    EndpointServiceCreateEndpointPayload
+    Operations, Schemas
 } from '../../generated/OpenapiIntegrations';
-import { EndpointType } from '../../generated/OpenapiIntegrations';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 
-export const getDefaultActionIdAction = () => actionEndpointServiceCreateEndpoint({
+export const getDefaultActionIdAction = () => Operations.EndpointServiceCreateEndpoint.actionCreator({
     body: {
-        type: EndpointType.enum.default,
+        type: Schemas.EndpointType.enum.default,
         name: 'Default endpoint type',
         description: '',
         enabled: true,
@@ -15,7 +13,7 @@ export const getDefaultActionIdAction = () => actionEndpointServiceCreateEndpoin
     }
 });
 
-export const getDefaultActionIdDecoder = validationResponseTransformer((payload: EndpointServiceCreateEndpointPayload) => {
+export const getDefaultActionIdDecoder = validationResponseTransformer((payload: Operations.EndpointServiceCreateEndpoint.Payload) => {
     if (payload.type === 'Endpoint') {
         return validatedResponse(
             'DefaultNotificationId',

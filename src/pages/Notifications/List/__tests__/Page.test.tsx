@@ -9,8 +9,11 @@ import {
 } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import fetchMock from 'fetch-mock';
-import { Endpoint, EventType } from '../../../../generated/OpenapiIntegrations';
+import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
+
+type Endpoint = Schemas.Endpoint;
+type EventType = Schemas.EventType;
 
 describe('src/pages/Notifications/List/Page', () => {
 

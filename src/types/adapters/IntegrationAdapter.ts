@@ -6,15 +6,15 @@ import {
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
-import { EndpointType, HttpType, WebhookAttributes } from '../../generated/OpenapiIntegrations';
+import { Schemas } from '../../generated/OpenapiIntegrations';
 import { assertNever } from 'assert-never';
 
-const getIntegrationType = (type: EndpointType | undefined): IntegrationType => {
+const getIntegrationType = (type: Schemas.EndpointType | undefined): IntegrationType => {
     switch (type) {
-        case EndpointType.Enum.webhook:
+        case Schemas.EndpointType.Enum.webhook:
             return IntegrationType.WEBHOOK;
-        case EndpointType.Enum.email:
-        case EndpointType.Enum.default:
+        case Schemas.EndpointType.Enum.email:
+        case Schemas.EndpointType.Enum.default:
         case undefined:
             throw new Error(`Unexpected type: ${type}`);
         default:
@@ -22,10 +22,10 @@ const getIntegrationType = (type: EndpointType | undefined): IntegrationType => 
     }
 };
 
-export const getEndpointType = (type: IntegrationType): EndpointType => {
+export const getEndpointType = (type: IntegrationType): Schemas.EndpointType => {
     switch (type) {
         case IntegrationType.WEBHOOK:
-            return EndpointType.Enum.webhook;
+            return Schemas.EndpointType.Enum.webhook;
         default:
             assertNever(type);
     }
@@ -42,13 +42,13 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 
     switch (integrationBase.type) {
         case IntegrationType.WEBHOOK:
-            const properties = serverIntegration.properties as WebhookAttributes;
+            const properties = serverIntegration.properties as Schemas.WebhookAttributes;
             return {
                 ...integrationBase,
                 url: properties.url || '',
                 sslVerificationEnabled: !properties.disable_ssl_verification,
                 secretToken: properties.secret_token === null ? undefined : properties.secret_token,
-                method: properties.method ?? HttpType.Enum.GET
+                method: properties.method ?? Schemas.HttpType.Enum.GET
             };
         default:
             assertNever(integrationBase.type);
@@ -85,4 +85,4 @@ export const toServerIntegrationRequest = (integration: Integration | NewIntegra
 };
 
 export const filterOutDefaultAction = (serverNotifications: Array<ServerIntegrationResponse>) =>
-    serverNotifications.filter(e => e.type !== EndpointType.enum.default);
+    serverNotifications.filter(e => e.type !== Schemas.EndpointType.enum.default);

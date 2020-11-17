@@ -1,23 +1,21 @@
 import {
-    actionNotificationServiceGetLinkedEndpoints,
-    NotificationServiceGetLinkedEndpointsPayload
+    Operations, Schemas
 } from '../generated/OpenapiNotifications';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { toActions } from '../types/adapters/NotificationAdapter';
-import { EndpointType } from '../generated/OpenapiIntegrations';
 
 export const getNotificationActionsByIdAction = (eventTypeId: number) => {
-    return actionNotificationServiceGetLinkedEndpoints({
+    return Operations.NotificationServiceGetLinkedEndpoints.actionCreator({
         eventTypeId
     });
 };
 
-export const hasDefaultNotificationDecoder = validationResponseTransformer((payload: NotificationServiceGetLinkedEndpointsPayload) => {
-    if (payload.type === 'NotificationServiceGetLinkedEndpointsParamResponse200') {
+export const hasDefaultNotificationDecoder = validationResponseTransformer((payload: Operations.NotificationServiceGetLinkedEndpoints.Payload) => {
+    if (payload.status === 200) {
         return validatedResponse(
             'defaultNotification',
             200,
-            payload.value.findIndex(a => a.type === EndpointType.enum.default) !== -1,
+            payload.value.findIndex(a => a.type === Schemas.EndpointType.enum.default) !== -1,
             payload.errors
         );
     }
@@ -25,8 +23,8 @@ export const hasDefaultNotificationDecoder = validationResponseTransformer((payl
     return payload;
 });
 
-export const getNotificationByIdActionDecoder = validationResponseTransformer((payload: NotificationServiceGetLinkedEndpointsPayload) => {
-    if (payload.type === 'NotificationServiceGetLinkedEndpointsParamResponse200') {
+export const getNotificationByIdActionDecoder = validationResponseTransformer((payload: Operations.NotificationServiceGetLinkedEndpoints.Payload) => {
+    if (payload.status === 200) {
         return validatedResponse(
             'actionsArray',
             200,
