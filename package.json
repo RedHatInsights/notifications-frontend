@@ -12,7 +12,7 @@
     "@redhat-cloud-services/frontend-components": "2.4.20",
     "@redhat-cloud-services/frontend-components-notifications": "2.2.3",
     "@redhat-cloud-services/frontend-components-utilities": "2.2.7",
-    "@redhat-cloud-services/insights-common-typescript": "3.0.6",
+    "@redhat-cloud-services/insights-common-typescript": "4.1.0",
     "@redhat-cloud-services/rbac-client": "1.0.85",
     "axios": "0.21.0",
     "camelcase": "6.2.0",

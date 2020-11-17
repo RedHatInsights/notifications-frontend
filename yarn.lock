@@ -1316,10 +1316,10 @@
     "@redhat-cloud-services/frontend-components-utilities" "*"
     sanitize-html "^1.25.0"
 
-"@redhat-cloud-services/insights-common-typescript@3.0.6":
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-3.0.6.tgz#1c8be32969add0b697576b8a8b46e4e274ae98e5"
-  integrity sha512-Kg32c2qf+KGznarL1mfASK7WoEJPUH0jT3pyBiGI32T7Bo2rp/ZrkrP+ipAFlqP96A8FUafkPJWFudBhA64TMg==
+"@redhat-cloud-services/insights-common-typescript@4.1.0":
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-4.1.0.tgz#2771f5fa47e9423ca41fa9ad431afc770131b076"
+  integrity sha512-jrEPIL7ZgIvOvk60IJ/PO+p2OlSYWxPh+3waNqhaS/4BbyA54ScnzPn5h0sVozk968HoSa3LjiEWWOJKQ1DunA==
   dependencies:
     camelcase "5.3.1"
     classnames "2.2.6"
