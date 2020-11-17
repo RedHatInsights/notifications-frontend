@@ -5,6 +5,8 @@ import { ActionOption } from './ActionOption';
 import { IntegrationType } from '../../../types/Integration';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { isStagingBetaOrProdBeta } from '../../../types/Environments';
+import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
 
 const getSelectOptions = () => [
     ...([ NotificationType.DRAWER, NotificationType.EMAIL, NotificationType.PLATFORM_ALERT ] as Array<ActionNotify['type']>)
@@ -54,6 +56,8 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
         });
     }, [ props.action ]);
 
+    const hideNonWebhooks = isStagingBetaOrProdBeta(getInsights());
+
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >
             <Select
@@ -66,7 +70,9 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
             >
-                { getSelectOptions().map(o => <SelectOption key={ o.toString() } value={ o } />) }
+                { getSelectOptions()
+                .filter((o) => !hideNonWebhooks || o.notificationType === NotificationType.INTEGRATION)
+                .map(o => <SelectOption key={ o.toString() } value={ o } />) }
             </Select>
         </div>
     );

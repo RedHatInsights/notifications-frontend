@@ -5,12 +5,14 @@ import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, S
 import { style } from 'typestyle';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import {
-    ColumnsMetada, ExporterType,
-    OuiaComponentProps,
+    ColumnsMetada, ExporterType, getInsights,
+    OuiaComponentProps, useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
+import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import { useCallback } from 'react';
 
 interface IntegrationsToolbarProps extends OuiaComponentProps {
     onAddIntegration: () => void;
@@ -86,13 +88,27 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
 
     const exportConfig = useTableExportConfig(props.onExport);
 
+    const filterConfig = useInsightsEnvironmentFlag(
+        getInsights(),
+        stagingBetaAndProdBetaEnvironment,
+        undefined,
+        useCallback(() => primaryToolbarFilterConfig.filterConfig, [ primaryToolbarFilterConfig ])
+    );
+
+    const activeFiltersConfig = useInsightsEnvironmentFlag(
+        getInsights(),
+        stagingBetaAndProdBetaEnvironment,
+        undefined,
+        useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
+    );
+
     return (
         <div { ...getOuiaProps('Integrations/DualToolbar', props) }>
             <PrimaryToolbar
                 actionsConfig={ actionsConfig }
                 exportConfig={ exportConfig }
-                filterConfig={ primaryToolbarFilterConfig.filterConfig }
-                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                filterConfig={ filterConfig }
+                activeFiltersConfig={ activeFiltersConfig }
                 id="integrations-top-toolbar"
             />
             { props.children }
