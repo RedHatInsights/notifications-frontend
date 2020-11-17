@@ -1,12 +1,14 @@
 import * as React from 'react';
-import { render, screen, act } from '@testing-library/react';
-import jestMock from 'jest-mock';
-import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+
+import { act, render, screen } from '@testing-library/react';
+
 import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
-import { IntegrationType } from '../../../../types/Integration';
 import { IntegrationRef } from '../../../../types/Notification';
+import { IntegrationType } from '../../../../types/Integration';
+import jestMock from 'jest-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import userEvent from '@testing-library/user-event';
+import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 
 const ref1: IntegrationRef = {
     id: '1234',
@@ -58,7 +60,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         expect(screen.getByDisplayValue('Integration 1234')).toBeVisible();
     });
 
-    it('Clicking will show the options ', async () => {
+    it('Clicking will show the options', async () => {
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ jestMock.fn<any, any>(async () => [ ref1, ref2 ]) }
@@ -73,7 +75,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         expect(screen.getByText('Integration 1234')).toBeVisible();
     });
 
-    it('getIntegrations is called on init ', async () => {
+    it('getIntegrations is called on init', async () => {
         const getIntegrations = jestMock.fn<any, any>(async () => [ ref1, ref2 ]);
         render(<IntegrationRecipientTypeahead
             selected={ undefined }

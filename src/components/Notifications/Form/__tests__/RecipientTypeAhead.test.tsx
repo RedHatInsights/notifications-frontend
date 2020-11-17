@@ -1,10 +1,12 @@
 import * as React from 'react';
-import { render, screen, act } from '@testing-library/react';
+
+import { act, render, screen } from '@testing-library/react';
+
 import { RecipientTypeahead } from '../RecipientTypeahead';
 import jestMock from 'jest-mock';
+import { ouiaSelectors } from 'insights-common-typescript-dev';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
     it('Renders if selected is undefined', async () => {
@@ -71,7 +73,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     // Removing until we support selecting the recipients
     // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Renders multiple selected ', async () => {
+    it.skip('Renders multiple selected', async () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'tales' ] }
             onSelected={ jestMock.fn() }
@@ -85,7 +87,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     // Removing until we support selecting the recipients
     // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Clicking clear button will call onClear ', async () => {
+    it.skip('Clicking clear button will call onClear', async () => {
         const onClear = jestMock.fn();
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
@@ -103,7 +105,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     // Removing until we support selecting the recipients
     // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Clicking will show the options ', async () => {
+    it.skip('Clicking will show the options', async () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ jestMock.fn() }
@@ -118,7 +120,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(screen.getByText('tales')).toBeVisible();
     });
 
-    it('getRecipients is called on init ', async () => {
+    it('getRecipients is called on init', async () => {
         const getRecipient = jestMock.fn(async () => [ 'tales' ]);
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
