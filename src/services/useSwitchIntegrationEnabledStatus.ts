@@ -1,17 +1,16 @@
 import { Integration, ServerIntegrationResponse } from '../types/Integration';
 import {
-    actionEndpointServiceEnableEndpoint,
-    actionEndpointServiceDisableEndpoint
+    Operations
 } from '../generated/OpenapiIntegrations';
 import { useMutation } from 'react-fetching-library';
 
 export const switchIntegrationEnabledStatusActionCreator = (integration: Integration) => {
     if (integration.isEnabled) {
-        return actionEndpointServiceDisableEndpoint({
+        return Operations.EndpointServiceDisableEndpoint.actionCreator({
             id: integration.id
         });
     } else {
-        return actionEndpointServiceEnableEndpoint({
+        return Operations.EndpointServiceEnableEndpoint.actionCreator({
             id: integration.id
         });
     }

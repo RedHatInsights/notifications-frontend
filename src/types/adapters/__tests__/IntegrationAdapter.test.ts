@@ -1,6 +1,6 @@
 import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
 import { Integration, IntegrationType, NewIntegration, ServerIntegrationResponse } from '../../Integration';
-import { EndpointType, HttpType } from '../../../generated/OpenapiIntegrations';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
 
 describe('src/types/adapters/IntegrationAdapter', () => {
     describe('toIntegration', () => {
@@ -10,11 +10,11 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 enabled: false,
                 name: 'my name is',
                 description: 'dragons be here',
-                type: EndpointType.Enum.webhook,
+                type: Schemas.EndpointType.Enum.webhook,
                 properties: {
                     url: 'https://my-cool-webhook.com',
                     disable_ssl_verification: false,
-                    method: HttpType.Enum.GET,
+                    method: Schemas.HttpType.Enum.GET,
                     secret_token: undefined
                 }
             };
@@ -37,11 +37,11 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 enabled: true,
                 name: 'abc',
                 description: 'dragons be here',
-                type: EndpointType.Enum.webhook,
+                type: Schemas.EndpointType.Enum.webhook,
                 properties: {
                     url: 'https://foobarbaz.com',
                     disable_ssl_verification: false,
-                    method: HttpType.Enum.GET,
+                    method: Schemas.HttpType.Enum.GET,
                     secret_token: ''
                 }
             };
@@ -64,11 +64,11 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 enabled: true,
                 name: 'abc',
                 description: 'dragons be here',
-                type: EndpointType.Enum.email,
+                type: Schemas.EndpointType.Enum.email,
                 properties: {
                     url: 'https://foobarbaz.com',
                     disable_ssl_verification: false,
-                    method: HttpType.Enum.GET,
+                    method: Schemas.HttpType.Enum.GET,
                     secret_token: ''
                 }
             };
@@ -85,7 +85,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 properties: {
                     url: 'https://foobarbaz.com',
                     disable_ssl_verification: false,
-                    method: HttpType.Enum.GET,
+                    method: Schemas.HttpType.Enum.GET,
                     secret_token: ''
                 }
             };
@@ -102,7 +102,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 properties: {
                     url: 'https://foobarbaz.com',
                     disable_ssl_verification: false,
-                    method: HttpType.Enum.GET,
+                    method: Schemas.HttpType.Enum.GET,
                     secret_token: ''
                 }
             } as unknown as ServerIntegrationResponse;
@@ -118,11 +118,11 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     enabled: false,
                     name: 'my name is',
                     description: 'dragons be here',
-                    type: EndpointType.Enum.webhook,
+                    type: Schemas.EndpointType.Enum.webhook,
                     properties: {
                         url: 'https://my-cool-webhook.com',
                         disable_ssl_verification: false,
-                        method: HttpType.Enum.GET,
+                        method: Schemas.HttpType.Enum.GET,
                         secret_token: ''
                     }
                 },
@@ -131,11 +131,11 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     enabled: true,
                     name: 'abc',
                     description: 'dragons be here',
-                    type: EndpointType.Enum.webhook,
+                    type: Schemas.EndpointType.Enum.webhook,
                     properties: {
                         url: 'https://foobarbaz.com',
                         disable_ssl_verification: false,
-                        method: HttpType.Enum.GET,
+                        method: Schemas.HttpType.Enum.GET,
                         secret_token: ''
                     }
                 }
@@ -171,11 +171,11 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     enabled: false,
                     name: 'my name is',
                     description: 'dragons be here',
-                    type: EndpointType.Enum.webhook,
+                    type: Schemas.EndpointType.Enum.webhook,
                     properties: {
                         url: 'https://my-cool-webhook.com',
                         disable_ssl_verification: false,
-                        method: HttpType.Enum.GET,
+                        method: 'GET' as const,
                         secret_token: ''
                     }
                 },
@@ -188,7 +188,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     properties: {
                         url: 'https://foobarbaz.com',
                         disable_ssl_verification: false,
-                        method: HttpType.Enum.GET,
+                        method: 'GET' as const,
                         secret_token: ''
                     }
                 }
@@ -209,7 +209,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 isEnabled: false,
                 name: 'meep',
                 type: IntegrationType.WEBHOOK,
-                method: HttpType.Enum.POST,
+                method: Schemas.HttpType.Enum.POST,
                 secretToken: undefined,
                 sslVerificationEnabled: true
             };
@@ -218,7 +218,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 id: 'foo',
                 name: 'meep',
                 enabled: false,
-                type: EndpointType.Enum.webhook,
+                type: Schemas.EndpointType.Enum.webhook,
                 description: '',
                 properties: {
                     url: 'https://myurl.com',
@@ -238,14 +238,14 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 type: IntegrationType.WEBHOOK,
                 sslVerificationEnabled: true,
                 secretToken: 'foobar',
-                method: HttpType.Enum.GET
+                method: Schemas.HttpType.Enum.GET
             };
 
             expect(toServerIntegrationRequest(integration)).toEqual({
                 id: undefined,
                 name: 'meep',
                 enabled: false,
-                type: EndpointType.Enum.webhook,
+                type: Schemas.EndpointType.Enum.webhook,
                 description: '',
                 properties: {
                     url: 'https://myurl.com',

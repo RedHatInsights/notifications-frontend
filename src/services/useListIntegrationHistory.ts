@@ -1,7 +1,7 @@
-import { actionEndpointServiceGetEndpointHistory } from '../generated/OpenapiIntegrations';
+import { Operations } from '../generated/OpenapiIntegrations';
 
 export const listIntegrationHistoryActionCreator = (integrationId: string) => {
-    return actionEndpointServiceGetEndpointHistory({
+    return Operations.EndpointServiceGetEndpointHistory.actionCreator({
         id: integrationId
     });
 };

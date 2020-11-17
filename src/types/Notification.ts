@@ -1,4 +1,4 @@
-import * as Generated from '../generated/OpenapiNotifications';
+import { Schemas } from '../generated/OpenapiNotifications';
 import { Integration } from './Integration';
 
 export interface Notification {
@@ -38,5 +38,5 @@ export enum NotificationType {
     PLATFORM_ALERT = 'PLATFORM_ALERT'
 }
 
-export type ServerNotificationRequest = Generated.EventType;
-export type ServerNotificationResponse = Generated.EventType;
+export type ServerNotificationRequest = Schemas.EventType;
+export type ServerNotificationResponse = Schemas.EventType;

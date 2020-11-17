@@ -1,7 +1,7 @@
-import { actionNotificationServiceUnlinkEndpointFromEventType  } from '../generated/OpenapiNotifications';
+import { Operations  } from '../generated/OpenapiNotifications';
 
 export const actionRemoveActionFromNotification = (notificationId: number, actionId: string) => {
-    return actionNotificationServiceUnlinkEndpointFromEventType({
+    return Operations.NotificationServiceUnlinkEndpointFromEventType.actionCreator({
         endpointId: actionId,
         eventTypeId: notificationId
     });

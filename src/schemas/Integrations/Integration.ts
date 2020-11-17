@@ -4,7 +4,7 @@ import {
     IntegrationType, NewIntegration,
     NewIntegrationBase, NewIntegrationTemplate
 } from '../../types/Integration';
-import { HttpType } from '../../generated/OpenapiIntegrations';
+import { Schemas } from '../../generated/OpenapiIntegrations';
 
 export const maxIntegrationNameLength = 150;
 
@@ -19,7 +19,7 @@ export const IntegrationHttpSchema = IntegrationSchemaBase.concat(Yup.object<New
     url: Yup.string().url().required('Write a valid url for this Integration.'),
     sslVerificationEnabled: Yup.boolean().default(true),
     secretToken: Yup.string().notRequired(),
-    method: Yup.mixed<HttpType>().oneOf(Object.values(HttpType.Enum)).default(HttpType.Enum.POST)
+    method: Yup.mixed<Schemas.HttpType>().oneOf(Object.values(Schemas.HttpType.Enum)).default(Schemas.HttpType.Enum.POST)
 }));
 
 export const IntegrationSchema = Yup.lazy<NewIntegration | NewIntegrationBase | undefined>(value => {
