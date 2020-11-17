@@ -126,9 +126,9 @@
     "proxy-ui": "SPANDX_CONFIG=\"profiles/local-frontend.ts\" bash $PROXY_PATH/scripts/run.sh",
     "schema": "npm-run-all schema:notifications schema:integrations",
     "schema:notifications": "npm-run-all 'schema:notifications:generate -i http://localhost:8085/api/notifications/v1.0/openapi.json'",
-    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types",
+    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types --no-strict",
     "schema:integrations": "npm-run-all 'schema:integrations:generate -i http://localhost:8085/api/integrations/v1.0/openapi.json'",
-    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types"
+    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types --no-strict"
   },
   "insights": {
     "appname": "notifications"

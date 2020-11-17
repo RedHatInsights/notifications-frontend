@@ -376,7 +376,8 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpoint() {
-      return z.object({
+      return z
+      .object({
           created: zodSchemaDate().optional().nullable(),
           description: z.string(),
           enabled: z.boolean().optional().nullable(),
@@ -391,7 +392,8 @@ export namespace Schemas {
               z.enum([ 'webhook', 'email', 'default' ])
           ),
           updated: zodSchemaDate().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaListEndpoint() {
@@ -407,10 +409,12 @@ export namespace Schemas {
   }
 
   function zodSchemaBasicAuthentication() {
-      return z.object({
+      return z
+      .object({
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaHttpType() {
@@ -418,7 +422,8 @@ export namespace Schemas {
   }
 
   function zodSchemaWebhookAttributes() {
-      return z.object({
+      return z
+      .object({
           basic_authentication: zodSchemaBasicAuthentication()
           .optional()
           .nullable(),
@@ -429,7 +434,8 @@ export namespace Schemas {
           ),
           secret_token: z.string().optional().nullable(),
           url: z.string()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaSetString() {
@@ -437,9 +443,11 @@ export namespace Schemas {
   }
 
   function zodSchemaEmailAttributes() {
-      return z.object({
+      return z
+      .object({
           recipients: zodSchemaSetString().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaEndpointType() {
@@ -447,13 +455,15 @@ export namespace Schemas {
   }
 
   function zodSchemaEventType() {
-      return z.object({
+      return z
+      .object({
           application: zodSchemaApplication().optional().nullable(),
           description: z.string(),
           endpoints: zodSchemaSetEndpoint().optional().nullable(),
           id: z.number().int().optional().nullable(),
           name: z.string()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaListEventType() {
@@ -461,14 +471,16 @@ export namespace Schemas {
   }
 
   function zodSchemaApplication() {
-      return z.object({
+      return z
+      .object({
           created: zodSchemaDate().optional().nullable(),
           description: z.string(),
           eventTypes: zodSchemaSetEventType().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           updated: zodSchemaDate().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaSetEndpoint() {
@@ -480,7 +492,8 @@ export namespace Schemas {
   }
 
   function zodSchemaAction() {
-      return z.object({
+      return z
+      .object({
           application: z.string().optional().nullable(),
           endpoint_id: z.string().optional().nullable(),
           event: zodSchemaContext().optional().nullable(),
@@ -493,26 +506,31 @@ export namespace Schemas {
           eventType: z.string().optional().nullable(),
           schema: zodSchemaSchema().optional().nullable(),
           specificData: zodSchemaSpecificData().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaContext() {
-      return z.object({
+      return z
+      .object({
           account_id: z.string().optional().nullable(),
           message: zodSchemaMapStringString().optional().nullable(),
           accountId: z.string().optional().nullable(),
           schema: zodSchemaSchema().optional().nullable(),
           specificData: zodSchemaSpecificData().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaTag() {
-      return z.object({
+      return z
+      .object({
           name: z.string().optional().nullable(),
           value: z.string().optional().nullable(),
           schema: zodSchemaSchema().optional().nullable(),
           specificData: zodSchemaSpecificData().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaListTag() {
@@ -524,7 +542,8 @@ export namespace Schemas {
   }
 
   function zodSchemaSchema() {
-      return z.object({
+      return z
+      .object({
           props: zodSchemaConcurrentMapStringJsonNode().optional().nullable(),
           reserved: zodSchemaSetString().optional().nullable(),
           objectProps: zodSchemaMapStringObject().optional().nullable(),
@@ -552,11 +571,13 @@ export namespace Schemas {
           error: z.boolean().optional().nullable(),
           nullable: z.boolean().optional().nullable(),
           union: z.boolean().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaSpecificData() {
-      return z.object({
+      return z
+      .object({
           classLoader: z.unknown().optional().nullable(),
           conversions: zodSchemaMapStringConversionObject().optional().nullable(),
           conversionsByClass: zodSchemaMapClassObjectMapStringConversionObject()
@@ -571,15 +592,18 @@ export namespace Schemas {
           stringableClasses: zodSchemaSetClass().optional().nullable(),
           useCustomCoderFlag: z.boolean().optional().nullable(),
           customCoders: z.boolean().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaConversionObject() {
-      return z.object({
+      return z
+      .object({
           convertedType: z.unknown().optional().nullable(),
           logicalTypeName: z.string().optional().nullable(),
           recommendedSchema: zodSchemaSchema().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaMapStringConversionObject() {
@@ -595,14 +619,16 @@ export namespace Schemas {
   }
 
   function zodSchemaFastReaderBuilder() {
-      return z.object({
+      return z
+      .object({
           classPropEnabled: z.boolean().optional().nullable(),
           data: zodSchemaGenericData().optional().nullable(),
           keyClassEnabled: z.boolean().optional().nullable(),
           readerCache: zodSchemaMapSchemaMapSchemaRecordReader()
           .optional()
           .nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaMapStringClass() {
@@ -618,7 +644,8 @@ export namespace Schemas {
   }
 
   function zodSchemaJsonNode() {
-      return z.object({
+      return z
+      .object({
           nodeType: zodSchemaJsonNodeType().optional().nullable(),
           array: z.boolean().optional().nullable(),
           bigDecimal: z.boolean().optional().nullable(),
@@ -641,7 +668,8 @@ export namespace Schemas {
           short: z.boolean().optional().nullable(),
           textual: z.boolean().optional().nullable(),
           valueNode: z.boolean().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaConcurrentMapStringJsonNode() {
@@ -653,9 +681,11 @@ export namespace Schemas {
   }
 
   function zodSchemaLogicalType() {
-      return z.object({
+      return z
+      .object({
           name: z.string().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaType() {
@@ -682,7 +712,8 @@ export namespace Schemas {
   }
 
   function zodSchemaField() {
-      return z.object({
+      return z
+      .object({
           props: zodSchemaConcurrentMapStringJsonNode().optional().nullable(),
           reserved: zodSchemaSetString().optional().nullable(),
           objectProps: zodSchemaMapStringObject().optional().nullable(),
@@ -696,7 +727,8 @@ export namespace Schemas {
           .lazy(() => zodSchemaSchema())
           .optional()
           .nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaListField() {
@@ -726,7 +758,8 @@ export namespace Schemas {
   }
 
   function zodSchemaGenericData() {
-      return z.object({
+      return z
+      .object({
           classLoader: z.unknown().optional().nullable(),
           conversions: zodSchemaMapStringConversionObject().optional().nullable(),
           conversionsByClass: zodSchemaMapClassObjectMapStringConversionObject()
@@ -738,13 +771,16 @@ export namespace Schemas {
           .optional()
           .nullable(),
           fastReaderEnabled: z.boolean().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaMapSchemaRecordReader() {
-      return z.object({
+      return z
+      .object({
           empty: z.boolean().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaMapSchemaMapSchemaRecordReader() {
@@ -756,12 +792,14 @@ export namespace Schemas {
   }
 
   function zodSchemaNotification() {
-      return z.object({
+      return z
+      .object({
           action: zodSchemaAction().optional().nullable(),
           endpoint: zodSchemaEndpoint().optional().nullable(),
           eventId: z.string().optional().nullable(),
           tenant: z.string().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaJsonObject() {
@@ -769,7 +807,8 @@ export namespace Schemas {
   }
 
   function zodSchemaNotificationHistory() {
-      return z.object({
+      return z
+      .object({
           created: zodSchemaDate().optional().nullable(),
           details: zodSchemaJsonObject().optional().nullable(),
           endpointId: zodSchemaUUID().optional().nullable(),
@@ -777,7 +816,8 @@ export namespace Schemas {
           id: z.number().int().optional().nullable(),
           invocationResult: z.boolean().optional().nullable(),
           invocationTime: z.number().int().optional().nullable()
-      });
+      })
+      .nonstrict();
   }
 
   function zodSchemaListNotificationHistory() {
