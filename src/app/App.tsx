@@ -1,33 +1,35 @@
-import * as React from 'react';
-import { RouteComponentProps, withRouter, useLocation } from 'react-router';
-import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
-import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-
 import './App.scss';
 
-import { Routes } from '../Routes';
-import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+
+import { RouteComponentProps, useLocation, withRouter } from 'react-router';
+
 import { AppContext } from './AppContext';
-import { useApp } from './useApp';
-import { Messages } from '../properties/Messages';
-import { getSubApp } from '../utils/Basename';
+import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
 import Config from '../config/Config';
+import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
+import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
+import { Routes } from '../Routes';
+import { getSubApp } from '../utils/Basename';
+import messages from '../properties/DefinedMessages';
+import { useApp } from './useApp';
+import { useIntl } from 'react-intl';
 
 const App: React.FunctionComponent<RouteComponentProps> = () => {
-
+    const intl = useIntl();
     const { rbac } = useApp();
     const location = useLocation();
 
     const serviceName = React.useMemo(() => {
         switch (getSubApp(location.pathname)) {
             case Config.integrations.subAppId:
-                return Messages.appNameIntegrations;
+                return intl.formatMessage(messages.integrations);
             case Config.notifications.subAppId:
-                return Messages.appName;
+                return intl.formatMessage(messages.notifications);
             default:
                 return '';
         }
-    }, [ location ]);
+    }, [ intl, location.pathname ]);
 
     if (!rbac) {
         return (

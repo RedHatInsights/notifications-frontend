@@ -1,10 +1,22 @@
+import { createIntl, createIntlCache } from 'react-intl';
+
 import { DeepReadonly } from 'ts-essentials';
 import { IntegrationType } from '../types/Integration';
+import { intlHelper } from '@redhat-cloud-services/frontend-components-translations';
+import messages from './DefinedMessages';
 
-//Capture some strings we reuse. Possibly use in i18n later?
+const cache = createIntlCache();
+const locale = navigator.language.slice(0, 2);
+const intl = createIntl({
+    // eslint-disable-next-line no-console
+    onError: console.log,
+    locale
+}, cache);
+const intlSettings = { locale };
+
 const MutableMessages = {
-    appName: 'Notifications',
-    appNameIntegrations: 'Integrations',
+    appName: intlHelper(intl.formatMessage(messages.notifications), intlSettings),
+    appNameIntegrations: intlHelper(intl.formatMessage(messages.integrations), intlSettings),
     pages: {
         integrations: {
             list: {

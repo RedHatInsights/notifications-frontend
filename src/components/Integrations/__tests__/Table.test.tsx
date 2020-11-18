@@ -1,11 +1,14 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 import * as React from 'react';
+
+import { IntegrationRow, IntegrationsTable } from '../Table';
 import { getByText, render, screen } from '@testing-library/react';
+
+import { IntegrationType } from '../../../types/Integration';
+import { IntlProvider } from 'react-intl';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
 import jestMock from 'jest-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
-import { IntegrationRow, IntegrationsTable } from '../Table';
-import { IntegrationType } from '../../../types/Integration';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 
@@ -49,69 +52,71 @@ describe('components/Integrations/Table', () => {
     };
 
     it('Renders the name', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, name: 'foobar123456' }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider >);
 
         expect(screen.getByText(/foobar123456/)).toBeVisible();
     });
 
     it('Renders webhook type as Webhook', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, type: IntegrationType.WEBHOOK }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByText(/Webhook/)).toBeVisible();
     });
 
     it('If integration is enabled, the switch is on', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isEnabled: true }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const input = ouiaSelectors.getByOuia('PF4/Switch', 'enabled-integration-id').querySelector('input');
         expect(input).toBeChecked();
     });
 
     it('If integration is disabled, the switch is off', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isEnabled: false }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const input = ouiaSelectors.getByOuia('PF4/Switch', 'enabled-integration-id').querySelector('input');
         expect(input).not.toBeChecked();
     });
 
     it('Last connection attempt show as success and success icon if all are success', () => {
-        render(<IntegrationsTable
-            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-22'))
-                },
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-21'))
-                },
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-20'))
-                },
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-19'))
-                },
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-15'))
-                }
-            ]}] }
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            integrations={ [{
+                ...integrationTemplate, lastConnectionAttempts: [
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-22'))
+                    },
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-21'))
+                    },
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-20'))
+                    },
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-19'))
+                    },
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-15'))
+                    }
+                ]
+            }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const lastConnectionAttemptText = screen.getByText('Success');
 
@@ -122,31 +127,33 @@ describe('components/Integrations/Table', () => {
 
     it('Last connection attempt show last attempt status with degraded connection if there is at least one success and at ' +
         'least one failure (last=success)', () => {
-        render(<IntegrationsTable
-            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-22'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-21'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-20'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-19'))
-                },
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-15'))
-                }
-            ]}] }
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            integrations={ [{
+                ...integrationTemplate, lastConnectionAttempts: [
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-22'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-21'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-20'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-19'))
+                    },
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-15'))
+                    }
+                ]
+            }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const lastConnectionAttemptText = screen.getByText('Success');
 
@@ -158,31 +165,33 @@ describe('components/Integrations/Table', () => {
     it('Last connection attempt show last attempt status with degraded connection if there is at least one success ' +
         'and at least one failure (last=fail)',
     () => {
-        render(<IntegrationsTable
-            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-22'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-21'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-20'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-19'))
-                },
-                {
-                    isSuccess: true,
-                    date: new Date(Date.parse('2020-01-15'))
-                }
-            ]}] }
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            integrations={ [{
+                ...integrationTemplate, lastConnectionAttempts: [
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-22'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-21'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-20'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-19'))
+                    },
+                    {
+                        isSuccess: true,
+                        date: new Date(Date.parse('2020-01-15'))
+                    }
+                ]
+            }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const lastConnectionAttemptText = screen.getByText('Fail');
 
@@ -192,31 +201,33 @@ describe('components/Integrations/Table', () => {
     });
 
     it('Last connection attempt show as failed with fail icon if all are failed', () => {
-        render(<IntegrationsTable
-            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-22'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-21'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-20'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-19'))
-                },
-                {
-                    isSuccess: false,
-                    date: new Date(Date.parse('2020-01-15'))
-                }
-            ]}] }
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            integrations={ [{
+                ...integrationTemplate, lastConnectionAttempts: [
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-22'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-21'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-20'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-19'))
+                    },
+                    {
+                        isSuccess: false,
+                        date: new Date(Date.parse('2020-01-15'))
+                    }
+                ]
+            }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const lastConnectionAttemptText = screen.getByText('Fail');
 
@@ -226,10 +237,10 @@ describe('components/Integrations/Table', () => {
     });
 
     it('Last connection attempt show as unknown with off icon if there are no attempts', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, lastConnectionAttempts: []}] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const lastConnectionAttemptText = screen.getByText('Unknown');
 
@@ -239,55 +250,55 @@ describe('components/Integrations/Table', () => {
     });
 
     it('Last connection attempt show an error if attempts is undefined', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, lastConnectionAttempts: undefined }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByText('Error fetching connection attempts')).toBeVisible();
     });
 
     it('Last connection attempt show as loading if isConnectionAttemptLoading is true', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isConnectionAttemptLoading: true }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByRole('progressbar')).toBeVisible();
     });
 
     it('If isEnabledLoading is true, shows a loading spinner', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isEnabledLoading: true }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByRole('progressbar')).toBeVisible();
     });
 
     it('Expanded content is hidden if isOpen is false', () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isOpen: false }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByText('Endpoint URL')).not.toBeVisible();
     });
 
     it('Expanded content is showing if isOpen is true', async () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isOpen: true }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByText('Endpoint URL')).toBeVisible();
     });
 
     it('Show webhook details in expanded content', async () => {
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [{ ...integrationTemplate, isOpen: true, url: 'my-url', secretToken: 'fooo', sslVerificationEnabled: true }] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         expect(screen.getByText('Endpoint URL')).toBeVisible();
         expect(screen.getByText('Endpoint URL').nextElementSibling!).toHaveTextContent('my-url');
@@ -301,11 +312,11 @@ describe('components/Integrations/Table', () => {
     it('Clicking Details arrow calls onCollapse with the integration, index and opposite of isOpen', async () => {
         const integration = { ...integrationTemplate, isOpen: true };
         const onCollapse = jestMock.fn();
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
             onCollapse={ onCollapse }
-        />);
+        /></IntlProvider>);
 
         userEvent.click(screen.getByLabelText('Details'));
 
@@ -317,11 +328,11 @@ describe('components/Integrations/Table', () => {
     it('Clicking Enable Switch calls onEnable with the integration, index and opposite of isEnabled', async () => {
         const integration = { ...integrationTemplate, isEnabled: true };
         const onEnable = jestMock.fn();
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
             onEnable={ onEnable }
-        />);
+        /></IntlProvider>);
 
         userEvent.click(ouiaSelectors.getByOuia('PF4/Switch', 'enabled-integration-id'));
 
@@ -331,33 +342,35 @@ describe('components/Integrations/Table', () => {
     });
 
     it('Show connection alert degraded if there is any failure on expanded content', async () => {
-        const integration = { ...integrationTemplate, isOpen: true, lastConnectionAttempts: [
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-22'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-21'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-20'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-19'))
-            },
-            {
-                isSuccess: true,
-                date: new Date(Date.parse('2020-01-15'))
-            }
-        ]};
+        const integration = {
+            ...integrationTemplate, isOpen: true, lastConnectionAttempts: [
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-22'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-21'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-20'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-19'))
+                },
+                {
+                    isSuccess: true,
+                    date: new Date(Date.parse('2020-01-15'))
+                }
+            ]
+        };
 
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const alert = ouiaSelectors.getByOuia('Notifications/ConnectionAlert');
 
@@ -366,33 +379,35 @@ describe('components/Integrations/Table', () => {
     });
 
     it('Show connection alert failed if all are failure on expanded content', async () => {
-        const integration = { ...integrationTemplate, isOpen: true, lastConnectionAttempts: [
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-22'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-21'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-20'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-19'))
-            },
-            {
-                isSuccess: false,
-                date: new Date(Date.parse('2020-01-15'))
-            }
-        ]};
+        const integration = {
+            ...integrationTemplate, isOpen: true, lastConnectionAttempts: [
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-22'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-21'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-20'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-19'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-15'))
+                }
+            ]
+        };
 
-        render(<IntegrationsTable
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
-        />);
+        /></IntlProvider>);
 
         const alert = ouiaSelectors.getByOuia('Notifications/ConnectionAlert');
 

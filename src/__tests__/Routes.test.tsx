@@ -1,9 +1,13 @@
 import * as React from 'react';
-import { render, screen } from '@testing-library/react';
-import { Routes } from '../Routes';
-import { MemoryRouter } from 'react-router-dom';
+
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
+import { render, screen } from '@testing-library/react';
+
+import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
+import { MemoryRouter } from 'react-router-dom';
+import { Routes } from '../Routes';
 import fetchMock from 'fetch-mock';
+import messages from '../../locales/data.json';
 import { waitForAsyncEvents } from '../../test/TestUtils';
 
 describe('src/Routes', () => {
@@ -61,14 +65,14 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<Routes/>, {
+            render(<IntlProvider locale={ navigator.language } messages={ messages }><Routes/></IntlProvider>, {
                 wrapper: Wrapper
             });
 
             await waitForAsyncEvents();
 
             expect(getLocation().pathname).toBe('/integrations');
-            expect(screen.getByText(/integrations/i)).toBeVisible();
+            expect(screen.getByText('Integrations')).toBeVisible();
         });
 
         it('Should render the placeholder on /notifications', async () => {

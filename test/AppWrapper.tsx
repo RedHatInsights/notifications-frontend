@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { initStore, getInsights, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
-import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
-import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-import { RouteProps, Route } from 'react-router';
-import { MemoryRouter as Router } from 'react-router-dom';
-import { ClientContextProvider, createClient } from 'react-fetching-library';
-import { Provider } from 'react-redux';
-import fetchMock = require('fetch-mock');
-import { MemoryRouterProps, useLocation } from 'react-router';
-import { AppContext } from '../src/app/AppContext';
 
+import { ClientContextProvider, createClient } from 'react-fetching-library';
+import { MemoryRouterProps, useLocation } from 'react-router';
+import { Route, RouteProps } from 'react-router';
+import { getInsights, initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+
+import { AppContext } from '../src/app/AppContext';
+import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
+import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
+import { Provider } from 'react-redux';
+import { MemoryRouter as Router } from 'react-router-dom';
+import messages from '../locales/data.json';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
+
+import fetchMock = require('fetch-mock');
 let setup = false;
 let client;
 let store;
@@ -84,20 +88,22 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
     }
 
     return (
-        <Provider store={ store }>
-            <Router { ...props.router } >
-                <ClientContextProvider client={ client }>
-                    <AppContext.Provider value={ props.appContext || defaultAppContextSettings }>
-                        <NotificationsPortal/>
-                        <InternalWrapper { ...props }>
-                            <Route { ...props.route } >
-                                { props.children }
-                            </Route>
-                        </InternalWrapper>
-                    </AppContext.Provider>
-                </ClientContextProvider>
-            </Router>
-        </Provider>
+        <IntlProvider locale={ navigator.language } messages={ messages }>
+            <Provider store={ store }>
+                <Router { ...props.router } >
+                    <ClientContextProvider client={ client }>
+                        <AppContext.Provider value={ props.appContext || defaultAppContextSettings }>
+                            <NotificationsPortal/>
+                            <InternalWrapper { ...props }>
+                                <Route { ...props.route } >
+                                    { props.children }
+                                </Route>
+                            </InternalWrapper>
+                        </AppContext.Provider>
+                    </ClientContextProvider>
+                </Router>
+            </Provider>
+        </IntlProvider>
     );
 };
 

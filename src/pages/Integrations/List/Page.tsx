@@ -1,25 +1,28 @@
 import * as React from 'react';
+
+import {
+    ExporterType,
+    addDangerNotification
+} from '@redhat-cloud-services/insights-common-typescript';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import { Messages } from '../../../properties/Messages';
-import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
-import { IntegrationsTable } from '../../../components/Integrations/Table';
-import { Integration } from '../../../types/Integration';
-import { useIntegrationRows } from './useIntegrationRows';
-import { useActionResolver } from './useActionResolver';
-import { useContext } from 'react';
+import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
+
 import { AppContext } from '../../../app/AppContext';
 import { CreatePage } from '../Create/CreatePage';
-import { useIntegrationFilter } from './useIntegrationFilter';
-import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
-import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
+import { Integration } from '../../../types/Integration';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
-import { useDeleteModalReducer } from './useDeleteModalReducer';
-import {
-    addDangerNotification, ExporterType
-} from '@redhat-cloud-services/insights-common-typescript';
-import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
-import inBrowserDownload from 'in-browser-download';
+import { IntegrationsTable } from '../../../components/Integrations/Table';
+import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
+import { Messages } from '../../../properties/Messages';
 import { format } from 'date-fns';
+import inBrowserDownload from 'in-browser-download';
+import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
+import { useActionResolver } from './useActionResolver';
+import { useContext } from 'react';
+import { useDeleteModalReducer } from './useDeleteModalReducer';
+import { useIntegrationFilter } from './useIntegrationFilter';
+import { useIntegrationRows } from './useIntegrationRows';
+import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
@@ -95,7 +98,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                 <PageHeaderTitle title={ Messages.pages.integrations.list.title }/>
             </PageHeader>
             <Main>
-                <Section>
+                <Section className='pf-c-page__main-section pf-m-light'>
                     <IntegrationsToolbar
                         onAddIntegration={ onAddIntegrationClicked }
                         onExport={ onExport }

@@ -1,12 +1,16 @@
 import * as React from 'react';
-import { render, screen, act } from '@testing-library/react';
-import App from '../App';
-import { AppWrapper, appWrapperSetup, appWrapperCleanup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
+
+import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
 import { Rbac, fetchRBAC } from '@redhat-cloud-services/insights-common-typescript';
+import { act, render, screen } from '@testing-library/react';
+
+import App from '../App';
+import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
+import messages from '../../../locales/data.json';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
     const real = jest.requireActual('@redhat-cloud-services/insights-common-typescript');
-    const MockedAppSkeleton: React.FunctionComponent = () => <div data-testid="loading"><real.AppSkeleton/></div>;
+    const MockedAppSkeleton: React.FunctionComponent = () => <div data-testid="loading"><real.AppSkeleton /></div>;
     return {
         ...real,
         AppSkeleton: MockedAppSkeleton,
@@ -14,7 +18,7 @@ jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
     };
 });
 jest.mock('../../Routes', () => {
-    const MockedRoutes: React.FunctionComponent = () => <div data-testid="content"/>;
+    const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
     return {
         Routes: MockedRoutes
     };
@@ -37,7 +41,7 @@ describe('src/app/App', () => {
         });
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
         render(
-            <App/>,
+            <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
                 wrapper: AppWrapper
             }
@@ -58,7 +62,7 @@ describe('src/app/App', () => {
             canWriteAll: true
         }));
         render(
-            <App/>,
+            <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
                 wrapper: AppWrapper
             }
@@ -90,7 +94,7 @@ describe('src/app/App', () => {
         });
 
         render(
-            <App/>,
+            <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
                 wrapper: Wrapper
             }
@@ -122,7 +126,7 @@ describe('src/app/App', () => {
         });
 
         render(
-            <App/>,
+            <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
                 wrapper: Wrapper
             }
