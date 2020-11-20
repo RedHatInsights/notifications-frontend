@@ -1,0 +1,18 @@
+{
+  "integrations": {
+    "defaultMessage": "Integrations",
+    "description": "Application name"
+  },
+  "integrationsEmptyStateTitle": {
+    "defaultMessage": "No integrations",
+    "description": "Integrations Empty State title"
+  },
+  "integrationsTableEmptyStateBody": {
+    "defaultMessage": "Connect to webhooks and external applications.",
+    "description": "Integrations Empty State body"
+  },
+  "notifications": {
+    "defaultMessage": "Notifications",
+    "description": "Application name"
+  }
+}

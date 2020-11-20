@@ -1,0 +1,6 @@
+{
+  "integrations": "Integrations",
+  "integrationsEmptyStateTitle": "No integrations",
+  "integrationsTableEmptyStateBody": "Connect to webhooks and external applications.",
+  "notifications": "Notifications"
+}

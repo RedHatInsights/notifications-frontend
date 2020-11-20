@@ -1,32 +1,42 @@
 import * as React from 'react';
+
+import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
+import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Spinner, Switch, Text, Title } from '@patternfly/react-core';
 import {
-    Table,
-    TableHeader,
-    TableBody,
+    IActions,
+    IActionsResolver,
+    ICell,
     IRow,
     IRowData,
-    expandable,
-    ICell,
     RowWrapperProps,
-    IActions, IActionsResolver
+    Table,
+    TableBody,
+    TableHeader,
+    expandable
 } from '@patternfly/react-table';
-import styles from '@patternfly/react-styles/css/components/Table/table';
-import { Spinner, Switch, Text } from '@patternfly/react-core';
+import { Integration, IntegrationConnectionAttempt } from '../../types/Integration';
 import {
-    global_spacer_md, global_spacer_lg, global_spacer_sm, global_warning_color_200, global_success_color_200, global_danger_color_100
+    global_danger_color_100,
+    global_spacer_lg,
+    global_spacer_md,
+    global_spacer_sm,
+    global_success_color_200,
+    global_warning_color_200
 } from '@patternfly/react-tokens';
-import { Messages } from '../../properties/Messages';
-import { IntegrationConnectionAttempt, Integration } from '../../types/Integration';
-import { ExpandedContent } from './Table/ExpandedContent';
-import { style } from 'typestyle';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { css } from '@patternfly/react-styles';
-import { important } from 'csx';
-import { getOuiaProps } from '../../utils/getOuiaProps';
+
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
-import { OffIcon, ExclamationCircleIcon, CheckCircleIcon } from '@patternfly/react-icons';
+import { ExpandedContent } from './Table/ExpandedContent';
+import { Messages } from '../../properties/Messages';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
+import { css } from '@patternfly/react-styles';
+import { getOuiaProps } from '../../utils/getOuiaProps';
+import { important } from 'csx';
+import messages from '../../properties/DefinedMessages';
+import { style } from 'typestyle';
+import styles from '@patternfly/react-styles/css/components/Table/table';
+import { useIntl } from 'react-intl';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -100,13 +110,13 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
         case LastConnectionAttemptStatus.ERROR:
             return (
                 <div className={ connectionAlertClassName }>
-                    <ConnectionFailed attempts={ attempts }/>
+                    <ConnectionFailed attempts={ attempts } />
                 </div>
             );
         case LastConnectionAttemptStatus.WARNING:
             return (
                 <div className={ connectionAlertClassName }>
-                    <ConnectionDegraded attempts={ attempts }/>
+                    <ConnectionDegraded attempts={ attempts } />
                 </div>
             );
         default:
@@ -116,14 +126,14 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
 
 const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
     <>
-        <CheckCircleIcon color={ global_success_color_200.value } data-testid="success-icon"/>
+        <CheckCircleIcon color={ global_success_color_200.value } data-testid="success-icon" />
         <span className={ smallMarginLeft }>Success</span>
     </>
 );
 
 const LastConnectionAttemptError: React.FunctionComponent = () => (
     <>
-        <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon"/>
+        <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon" />
         <span className={ smallMarginLeft }>Fail</span>
     </>
 );
@@ -145,13 +155,13 @@ const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> 
                 <span className={ smallMarginLeft }>Unknown</span>
             </>;
         case LastConnectionAttemptStatus.SUCCESS:
-            return <><LastConnectionAttemptSuccess/></>;
+            return <><LastConnectionAttemptSuccess /></>;
         case LastConnectionAttemptStatus.ERROR:
-            return <><LastConnectionAttemptError/></>;
+            return <><LastConnectionAttemptError /></>;
         case LastConnectionAttemptStatus.WARNING:
             return <>
-                { attempts[0].isSuccess ? <LastConnectionAttemptSuccess/> : <LastConnectionAttemptError/> }
-                <br/>
+                { attempts[0].isSuccess ? <LastConnectionAttemptSuccess /> : <LastConnectionAttemptError />}
+                <br />
                 <Text className={ degradedClassName }>Degraded connection</Text>
             </>;
         default:
@@ -179,7 +189,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                 {
                     title: <>
                         { integration.isEnabledLoading ? (
-                            <Spinner className={ isEnabledLoadingClassName } size="md"/>
+                            <Spinner className={ isEnabledLoadingClassName } size="md" />
                         ) : (
                             <Switch
                                 id={ `table-row-switch-id-${integration.id}` }
@@ -188,7 +198,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                                 onChange={ isChecked => onEnable && onEnable(integration, idx, isChecked) }
                                 ouiaId={ `enabled-${integration.id}` }
                             />
-                        ) }
+                        )}
                     </>
                 }
             ]
@@ -202,7 +212,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                 {
                     title: <>
                         <div className={ expandedContentClassName }>
-                            { integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts) }
+                            {integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts)}
                             <ExpandedContent integration={ integration } ouiaId={ integration.id } />
                         </div>
                     </>
@@ -280,13 +290,13 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
             ) }
             hidden={ row?.isExpanded !== undefined && !row.isExpanded }
         >
-            { props.children }
+            { props.children}
         </tr>
     );
 };
 
 export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> = (props) => {
-
+    const intl = useIntl();
     const onCollapseHandler = React.useCallback((_event, _index: number, isOpen: boolean, data: IRowData) => {
         const integrations = props.integrations;
         const onCollapse = props.onCollapse;
@@ -324,9 +334,19 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
                 actionResolver={ actionsResolverCallback }
             >
-                <TableHeader/>
-                <TableBody/>
+                <TableHeader />
+                <TableBody />
             </Table>
+            {rows.length === 0 && <EmptyState variant={ EmptyStateVariant.full }>
+                <EmptyStateIcon icon={ CubesIcon } />
+                <Title headingLevel="h2" size="lg">
+                    {intl.formatMessage(messages.integrationsEmptyStateTitle)}
+                </Title>
+                <EmptyStateBody>
+                    {intl.formatMessage(messages.integrationsTableEmptyStateBody)}
+                </EmptyStateBody>
+            </EmptyState>
+            }
         </div>
     );
 };
