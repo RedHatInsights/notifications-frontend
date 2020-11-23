@@ -8,7 +8,7 @@ export const createIntegrationActionCreator = (integration: NewIntegration | New
     return Operations.EndpointServiceCreateEndpoint.actionCreator({
         body: toServerIntegrationRequest(integration)
     });
-}
+};
 
 export const saveIntegrationActionCreator = (integration: Integration | NewIntegration | UserIntegration | NewUserIntegration) => {
     if (integration.id) {
