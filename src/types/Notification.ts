@@ -17,6 +17,7 @@ export interface DefaultNotificationBehavior {
 
 export interface ActionBase {
     type: NotificationType;
+    integrationId: string;
 }
 
 export interface ActionIntegration extends ActionBase {
@@ -26,7 +27,6 @@ export interface ActionIntegration extends ActionBase {
 
 export interface ActionNotify extends ActionBase {
     type: NotificationType.EMAIL_SUBSCRIPTION | NotificationType.DRAWER | NotificationType.PLATFORM_ALERT;
-    integrationId: string;
     recipient: Array<string>;
 }
 

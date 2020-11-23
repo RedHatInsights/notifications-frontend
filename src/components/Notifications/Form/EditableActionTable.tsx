@@ -50,14 +50,19 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                 type: value.integrationType
             });
             setFieldValue(`${props.path}.recipient`, []);
+            setFieldValue(`${props.path}.integrationId`, '');
         } else {
             setFieldValue(`${props.path}.recipient`, []);
             setFieldValue(`${props.path}.integration`, undefined);
+            setFieldValue(`${props.path}.integrationId`, '');
         }
     }, [ setFieldValue, props.path ]);
 
     const integrationSelected = React.useCallback((value: RecipientOption) => {
-        setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+        if (typeof value.recipientOrIntegration !== 'string') {
+            setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+            setFieldValue(`${props.path}.integrationId`, value.recipientOrIntegration.id);
+        }
     }, [ setFieldValue, props.path ]);
 
     const recipientSelected = React.useCallback((value: RecipientOption) => {

@@ -6,9 +6,11 @@ import { assertNever } from 'assert-never';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
     if (type === NotificationType.INTEGRATION) {
+        const userIntegration = toUserIntegration(serverAction);
         return {
             type,
-            integration: toUserIntegration(serverAction)
+            integrationId: userIntegration.id,
+            integration: userIntegration
         };
     }
 

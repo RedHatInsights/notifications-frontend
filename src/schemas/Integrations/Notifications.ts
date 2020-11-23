@@ -5,12 +5,14 @@ const ActionIntegration = Yup.object({
     type: Yup.mixed().oneOf([ NotificationType.INTEGRATION ]).required(),
     integration: Yup.object({
         id: Yup.string().required()
-    }).required()
+    }).required(),
+    integrationId: Yup.string().min(1)
 });
 
 const ActionNotify = Yup.object({
-    type: Yup.mixed().oneOf([ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER, NotificationType.PLATFORM_ALERT ]).required(),
-    recipient: Yup.array(Yup.string()).min(1)
+    type: Yup.mixed().oneOf([ NotificationType.EMAIL_SUBSCRIPTION /*, NotificationType.DRAWER, NotificationType.PLATFORM_ALERT */ ]).required(),
+    recipient: Yup.array(Yup.string()).min(0),
+    integrationId: Yup.string().min(0)
 });
 
 export const WithActions = Yup.object({

@@ -4,18 +4,21 @@ import { useTransformQueryResponse } from '@redhat-cloud-services/insights-commo
 import { useMutation } from 'react-fetching-library';
 import { toIntegration, toServerIntegrationRequest } from '../types/adapters/IntegrationAdapter';
 
+export const createIntegrationActionCreator = (integration: NewIntegration | NewUserIntegration) => {
+    return Operations.EndpointServiceCreateEndpoint.actionCreator({
+        body: toServerIntegrationRequest(integration)
+    });
+}
+
 export const saveIntegrationActionCreator = (integration: Integration | NewIntegration | UserIntegration | NewUserIntegration) => {
-    const serverIntegration = toServerIntegrationRequest(integration);
     if (integration.id) {
         return Operations.EndpointServiceUpdateEndpoint.actionCreator({
-            body: serverIntegration,
+            body: toServerIntegrationRequest(integration),
             id: integration.id
         });
     }
 
-    return Operations.EndpointServiceCreateEndpoint.actionCreator({
-        body: serverIntegration
-    });
+    return createIntegrationActionCreator(integration);
 };
 
 const decoder = (response: Operations.EndpointServiceCreateEndpoint.Payload | Operations.EndpointServiceUpdateEndpoint.Payload) => {
