@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react';
 import jestMock from 'jest-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { IntegrationDeleteModal } from '../DeleteModal';
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
@@ -17,7 +17,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ jestMock.fn() }
                 integration={ {
                     name: 'foobar',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -39,7 +39,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ jestMock.fn() }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -75,7 +75,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ onClose }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -103,7 +103,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ onClose }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',

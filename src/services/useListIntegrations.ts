@@ -3,7 +3,7 @@ import {
 } from '../generated/OpenapiIntegrations';
 import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useQuery } from 'react-fetching-library';
-import { getEndpointType, toIntegrations } from '../types/adapters/IntegrationAdapter';
+import { getEndpointType, toUserIntegrations } from '../types/adapters/IntegrationAdapter';
 import { validationResponseTransformer, validatedResponse } from 'openapi2typescript';
 import { IntegrationType } from '../types/Integration';
 
@@ -21,7 +21,7 @@ export const listIntegrationIntegrationDecoder = validationResponseTransformer((
         return validatedResponse(
             'integrationArray',
             200,
-            toIntegrations(payload.value),
+            toUserIntegrations(payload.value),
             payload.errors
         );
     }

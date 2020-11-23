@@ -1,5 +1,11 @@
 import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
-import { Integration, IntegrationType, NewIntegration, ServerIntegrationResponse } from '../../Integration';
+import {
+    Integration, IntegrationHttp,
+    IntegrationType,
+    NewIntegration,
+    NewIntegrationTemplate,
+    ServerIntegrationResponse
+} from '../../Integration';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 
 describe('src/types/adapters/IntegrationAdapter', () => {
@@ -56,23 +62,6 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 method: 'GET',
                 secretToken: ''
             });
-        });
-
-        it('Not supporting EndpointType.email', () => {
-            const serverIntegration: ServerIntegrationResponse = {
-                id: 'meep',
-                enabled: true,
-                name: 'abc',
-                description: 'dragons be here',
-                type: Schemas.EndpointType.Enum.email,
-                properties: {
-                    url: 'https://foobarbaz.com',
-                    disable_ssl_verification: false,
-                    method: Schemas.HttpType.Enum.GET,
-                    secret_token: ''
-                }
-            };
-            expect(() => toIntegration(serverIntegration)).toThrowError();
         });
 
         it('Not supporting undefined type', () => {
@@ -230,7 +219,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         });
 
         it('undefined id is preserved', () => {
-            const integration: NewIntegration = {
+            const integration: NewIntegrationTemplate<IntegrationHttp> = {
                 id: undefined,
                 url: 'https://myurl.com',
                 isEnabled: false,

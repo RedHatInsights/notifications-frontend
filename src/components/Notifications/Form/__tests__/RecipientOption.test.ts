@@ -1,5 +1,5 @@
 import { RecipientOption } from '../RecipientOption';
-import { IntegrationType } from '../../../../types/Integration';
+import { UserIntegrationType } from '../../../../types/Integration';
 
 describe('src/components/Notifications/Form/RecipientOption', () => {
     it('CompareTo returns equal for the same object', () => {
@@ -7,7 +7,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const b = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -26,13 +26,13 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const c = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
         const d = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -49,13 +49,13 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const c = new RecipientOption({
             name: 'baz',
             isEnabled: true,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: 'abc'
         });
         const d = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -67,7 +67,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const d = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -84,7 +84,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const a = new RecipientOption({
             name: 'baz',
             isEnabled: true,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -95,7 +95,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const a = new RecipientOption({
             name: 'baz',
             isEnabled: false,
-            type: IntegrationType.WEBHOOK,
+            type: UserIntegrationType.WEBHOOK,
             id: '123456789'
         });
 

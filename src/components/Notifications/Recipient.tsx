@@ -29,9 +29,5 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
         );
     }
 
-    if (props.action.recipient.length === 0) {
-        return <span>Default user access</span>;
-    }
-
     return <span>All registered users</span>;
 };

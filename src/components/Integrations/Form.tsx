@@ -10,7 +10,7 @@ import { FormSelectOption } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 
 import { maxIntegrationNameLength } from '../../schemas/Integrations/Integration';
-import { IntegrationType, NewIntegration } from '../../types/Integration';
+import { IntegrationType, NewUserIntegration } from '../../types/Integration';
 import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 import { Messages } from '../../properties/Messages';
 import { getOuiaProps } from '../../utils/getOuiaProps';
@@ -21,7 +21,7 @@ const options = [ IntegrationType.WEBHOOK ]
 
 export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (props) => {
 
-    const { values } = useFormikContext<NewIntegration>();
+    const { values } = useFormikContext<NewUserIntegration>();
 
     return (
         <Form { ...getOuiaProps('Integrations/Form', props) }>

@@ -1,10 +1,10 @@
-import { Integration, NewIntegration } from '../types/Integration';
+import { Integration, NewIntegration, NewUserIntegration, UserIntegration } from '../types/Integration';
 import { Operations } from '../generated/OpenapiIntegrations';
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
 import { toIntegration, toServerIntegrationRequest } from '../types/adapters/IntegrationAdapter';
 
-export const saveIntegrationActionCreator = (integration: Integration | NewIntegration) => {
+export const saveIntegrationActionCreator = (integration: Integration | NewIntegration | UserIntegration | NewUserIntegration) => {
     const serverIntegration = toServerIntegrationRequest(integration);
     if (integration.id) {
         return Operations.EndpointServiceUpdateEndpoint.actionCreator({

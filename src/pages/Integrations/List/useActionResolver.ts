@@ -1,10 +1,10 @@
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 import { useCallback } from 'react';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 
 interface ActionResolverParams {
-    onEdit: (integration: Integration) => void;
-    onDelete: (integration: Integration) => void;
+    onEdit: (integration: UserIntegration) => void;
+    onDelete: (integration: UserIntegration) => void;
     canWriteAll: boolean;
 }
 

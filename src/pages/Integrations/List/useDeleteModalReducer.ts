@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 import { assertNever } from 'assert-never';
 
 enum UseDeleteModalReducerActionType {
@@ -9,7 +9,7 @@ enum UseDeleteModalReducerActionType {
 
 interface UseDeleteModalActionDelete {
     type: UseDeleteModalReducerActionType.DELETE;
-    integration: Integration;
+    integration: UserIntegration;
 }
 
 interface UseDeleteModalActionNone {
@@ -19,7 +19,7 @@ interface UseDeleteModalActionNone {
 type UseDeleteModalReducerAction = UseDeleteModalActionDelete | UseDeleteModalActionNone;
 
 interface UseDeleteModalReducerState {
-    integration: Integration | undefined;
+    integration: UserIntegration | undefined;
 }
 
 const noneState: UseDeleteModalReducerState = {
@@ -48,7 +48,7 @@ useDeleteModalReducer.makeNoneAction = (): UseDeleteModalActionNone => ({
     type: UseDeleteModalReducerActionType.NONE
 });
 
-useDeleteModalReducer.makeDeleteAction = (integration: Integration): UseDeleteModalActionDelete => ({
+useDeleteModalReducer.makeDeleteAction = (integration: UserIntegration): UseDeleteModalActionDelete => ({
     type: UseDeleteModalReducerActionType.DELETE,
     integration
 });

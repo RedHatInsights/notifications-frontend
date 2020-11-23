@@ -1,20 +1,23 @@
 import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
 import { ServerIntegrationResponse } from '../Integration';
 import { Schemas } from '../../generated/OpenapiNotifications';
-import { filterOutDefaultAction, toIntegration } from './IntegrationAdapter';
+import { filterOutDefaultAction, toIntegration, toUserIntegration } from './IntegrationAdapter';
 import { assertNever } from 'assert-never';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
     if (type === NotificationType.INTEGRATION) {
         return {
             type,
-            integration: toIntegration(serverAction)
+            integration: toUserIntegration(serverAction)
         };
     }
 
+    const integration = toIntegration(serverAction);
+
     return {
         type,
-        recipient: [] // Todo: How are we going to receive the recipient data?
+        integrationId: integration.id,
+        recipient: []
     };
 };
 
@@ -39,8 +42,8 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
     switch (serverAction.type) {
         case Schemas.EndpointType.enum.webhook:
             return _toAction(NotificationType.INTEGRATION, serverAction);
-        case Schemas.EndpointType.enum.email:
-            return _toAction(NotificationType.EMAIL, serverAction);
+        case Schemas.EndpointType.enum.email_subscription:
+            return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);
         case Schemas.EndpointType.enum.default:
             throw new Error('EndpointType.default should not reach this point');
         default:

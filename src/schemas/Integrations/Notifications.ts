@@ -9,7 +9,7 @@ const ActionIntegration = Yup.object({
 });
 
 const ActionNotify = Yup.object({
-    type: Yup.mixed().oneOf([ NotificationType.EMAIL, NotificationType.DRAWER, NotificationType.PLATFORM_ALERT ]).required(),
+    type: Yup.mixed().oneOf([ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER, NotificationType.PLATFORM_ALERT ]).required(),
     recipient: Yup.array(Yup.string()).min(1)
 });
 

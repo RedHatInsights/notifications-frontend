@@ -9,7 +9,7 @@ import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer }
 
 import { AppContext } from '../../../app/AppContext';
 import { CreatePage } from '../Create/CreatePage';
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
@@ -48,11 +48,11 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         dispatchModalIsOpen(makeCreateAction());
     }, [ dispatchModalIsOpen ]);
 
-    const onEdit = React.useCallback((integration: Integration) => {
+    const onEdit = React.useCallback((integration: UserIntegration) => {
         dispatchModalIsOpen(makeEditAction(integration));
     }, [ dispatchModalIsOpen ]);
 
-    const onDelete = React.useCallback((integration: Integration) => {
+    const onDelete = React.useCallback((integration: UserIntegration) => {
         dispatchDeleteModal(useDeleteModalReducer.makeDeleteAction(integration));
     }, [ dispatchDeleteModal ]);
 

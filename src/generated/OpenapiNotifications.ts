@@ -22,8 +22,11 @@ export namespace Schemas {
     enabled?: boolean | undefined | null;
     id?: UUID | undefined | null;
     name: string;
-    properties?: (WebhookAttributes | EmailAttributes) | undefined | null;
-    type: EndpointType & ('webhook' | 'email' | 'default');
+    properties?:
+      | (WebhookAttributes | EmailSubscriptionAttributes)
+      | undefined
+      | null;
+    type: EndpointType & ('webhook' | 'email_subscription' | 'default');
     updated?: Date | undefined | null;
   };
 
@@ -54,16 +57,11 @@ export namespace Schemas {
     url: string;
   };
 
-  export const SetString = zodSchemaSetString();
-  export type SetString = Array<string>;
-
-  export const EmailAttributes = zodSchemaEmailAttributes();
-  export type EmailAttributes = {
-    recipients?: SetString | undefined | null;
-  };
+  export const EmailSubscriptionAttributes = zodSchemaEmailSubscriptionAttributes();
+  export type EmailSubscriptionAttributes = unknown;
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType = 'webhook' | 'email' | 'default';
+  export type EndpointType = 'webhook' | 'email_subscription' | 'default';
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
@@ -96,13 +94,14 @@ export namespace Schemas {
   export const Action = zodSchemaAction();
   export type Action = {
     application?: string | undefined | null;
-    endpoint_id?: string | undefined | null;
+    endpoint_id?: UUID | undefined | null;
     event?: Context | undefined | null;
     event_id?: string | undefined | null;
     event_type?: string | undefined | null;
+    params?: Map | undefined | null;
     tags?: ListTag | undefined | null;
     timestamp?: LocalDateTime | undefined | null;
-    endpointId?: string | undefined | null;
+    endpointId?: UUID | undefined | null;
     eventId?: string | undefined | null;
     eventType?: string | undefined | null;
     schema?: Schema | undefined | null;
@@ -117,6 +116,9 @@ export namespace Schemas {
     schema?: Schema | undefined | null;
     specificData?: SpecificData | undefined | null;
   };
+
+  export const Map = zodSchemaMap();
+  export type Map = unknown;
 
   export const Tag = zodSchemaTag();
   export type Tag = {
@@ -249,6 +251,9 @@ export namespace Schemas {
   export type ConcurrentMapStringJsonNode = {
     [x: string]: JsonNode;
   };
+
+  export const SetString = zodSchemaSetString();
+  export type SetString = Array<string>;
 
   export const MapStringObject = zodSchemaMapStringObject();
   export type MapStringObject = {
@@ -384,12 +389,15 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           properties: z
-          .union([ zodSchemaWebhookAttributes(), zodSchemaEmailAttributes() ])
+          .union([
+              zodSchemaWebhookAttributes(),
+              zodSchemaEmailSubscriptionAttributes()
+          ])
           .optional()
           .nullable(),
           type: z.intersection(
               zodSchemaEndpointType(),
-              z.enum([ 'webhook', 'email', 'default' ])
+              z.enum([ 'webhook', 'email_subscription', 'default' ])
           ),
           updated: zodSchemaDate().optional().nullable()
       })
@@ -438,20 +446,12 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaSetString() {
-      return z.array(z.string());
-  }
-
-  function zodSchemaEmailAttributes() {
-      return z
-      .object({
-          recipients: zodSchemaSetString().optional().nullable()
-      })
-      .nonstrict();
+  function zodSchemaEmailSubscriptionAttributes() {
+      return z.unknown();
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email', 'default' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'default' ]);
   }
 
   function zodSchemaEventType() {
@@ -495,13 +495,14 @@ export namespace Schemas {
       return z
       .object({
           application: z.string().optional().nullable(),
-          endpoint_id: z.string().optional().nullable(),
+          endpoint_id: zodSchemaUUID().optional().nullable(),
           event: zodSchemaContext().optional().nullable(),
           event_id: z.string().optional().nullable(),
           event_type: z.string().optional().nullable(),
+          params: zodSchemaMap().optional().nullable(),
           tags: zodSchemaListTag().optional().nullable(),
           timestamp: zodSchemaLocalDateTime().optional().nullable(),
-          endpointId: z.string().optional().nullable(),
+          endpointId: zodSchemaUUID().optional().nullable(),
           eventId: z.string().optional().nullable(),
           eventType: z.string().optional().nullable(),
           schema: zodSchemaSchema().optional().nullable(),
@@ -520,6 +521,10 @@ export namespace Schemas {
           specificData: zodSchemaSpecificData().optional().nullable()
       })
       .nonstrict();
+  }
+
+  function zodSchemaMap() {
+      return z.unknown();
   }
 
   function zodSchemaTag() {
@@ -674,6 +679,10 @@ export namespace Schemas {
 
   function zodSchemaConcurrentMapStringJsonNode() {
       return z.record(zodSchemaJsonNode());
+  }
+
+  function zodSchemaSetString() {
+      return z.array(z.string());
   }
 
   function zodSchemaMapStringObject() {

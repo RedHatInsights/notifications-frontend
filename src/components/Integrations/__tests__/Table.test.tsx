@@ -4,7 +4,7 @@ import * as React from 'react';
 import { IntegrationRow, IntegrationsTable } from '../Table';
 import { getByText, render, screen } from '@testing-library/react';
 
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import { IntlProvider } from 'react-intl';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import jestMock from 'jest-mock';
@@ -17,7 +17,7 @@ describe('components/Integrations/Table', () => {
     const integrationTemplate: Readonly<IntegrationRow> = {
         id: 'integration-id',
         name: 'integration-name',
-        type: IntegrationType.WEBHOOK,
+        type: UserIntegrationType.WEBHOOK,
         isEnabled: true,
         method: Schemas.HttpType.Enum.GET,
         url: 'http://foobar.com',
@@ -62,7 +62,7 @@ describe('components/Integrations/Table', () => {
 
     it('Renders webhook type as Webhook', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
-            integrations={ [{ ...integrationTemplate, type: IntegrationType.WEBHOOK }] }
+            integrations={ [{ ...integrationTemplate, type: UserIntegrationType.WEBHOOK }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 

@@ -8,7 +8,7 @@ import {
     NotificationType
 } from '../../../types/Notification';
 import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
-import { IntegrationType } from '../../../types/Integration';
+import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
 import {
     listIntegrationIntegrationDecoder,
     listIntegrationsActionCreator
@@ -75,7 +75,7 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
 
     const { query } = useContext(ClientContext);
 
-    const getIntegrations = React.useCallback(async (type: IntegrationType, _search: string) => {
+    const getIntegrations = React.useCallback(async (type: UserIntegrationType, _search: string) => {
         return query(listIntegrationsActionCreator(
             Page.of(
                 1,

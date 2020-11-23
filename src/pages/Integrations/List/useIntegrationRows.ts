@@ -1,4 +1,4 @@
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { usePrevious } from 'react-use';
@@ -12,7 +12,7 @@ import pLimit from 'p-limit';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
-export const useIntegrationRows = (integrations: Array<Integration>) => {
+export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
     const prevIntegrationsInput = usePrevious(integrations);
 
@@ -88,7 +88,7 @@ export const useIntegrationRows = (integrations: Array<Integration>) => {
         });
     }, [ setIntegrationRowByIndex ]);
 
-    const onEnable = useCallback((_integration: Integration, index: number, isEnabled: boolean) => {
+    const onEnable = useCallback((_integration: UserIntegration, index: number, isEnabled: boolean) => {
         setIntegrationRowByIndex(index, {
             isEnabledLoading: true
         });

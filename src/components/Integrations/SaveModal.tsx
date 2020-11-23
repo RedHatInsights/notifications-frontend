@@ -1,18 +1,18 @@
 import * as React from 'react';
 import { SaveModal, SaveModalProps, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
 
-import { Integration, NewIntegration } from '../../types/Integration';
+import { UserIntegration, NewUserIntegration } from '../../types/Integration';
 import { Messages } from '../../properties/Messages';
 import { Formik, useFormikContext } from 'formik';
 import { IntegrationsForm } from './Form';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
 
-type PartialIntegration = Partial<Integration>;
+type PartialIntegration = Partial<UserIntegration>;
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
 
 export interface IntegrationSaveModalProps extends Omit<SaveModalProps, UsedProps>{
     initialIntegration?: PartialIntegration;
-    onSave: (integration: Integration | NewIntegration) => boolean | Promise<boolean>;
+    onSave: (integration: UserIntegration | NewUserIntegration) => boolean | Promise<boolean>;
     isEdit: boolean;
 }
 
@@ -26,7 +26,7 @@ const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationS
 
     const pageMessages = props.isEdit ? Messages.pages.integrations.edit : Messages.pages.integrations.add;
     const pageTitle =  pageMessages.title;
-    const { handleSubmit, isValid, isSubmitting } = useFormikContext<NewIntegration>();
+    const { handleSubmit, isValid, isSubmitting } = useFormikContext<NewUserIntegration>();
 
     const onSaveClicked = React.useCallback(() => {
         handleSubmit();
@@ -61,7 +61,7 @@ export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalP
     const onSubmit = React.useCallback(async (integration: PartialIntegration) => {
         const onSave = props.onSave;
         const onClose = props.onClose;
-        const transformedIntegration = IntegrationSchema.cast(integration) as NewIntegration;
+        const transformedIntegration = IntegrationSchema.cast(integration) as NewUserIntegration;
         const saved = await onSave(transformedIntegration);
         if (saved) {
             onClose(true);

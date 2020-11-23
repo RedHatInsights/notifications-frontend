@@ -2,19 +2,18 @@ import * as React from 'react';
 import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { ActionOption } from './ActionOption';
-import { IntegrationType } from '../../../types/Integration';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { isStagingBetaOrProdBeta } from '../../../types/Environments';
-import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
+import { UserIntegrationType } from '../../../types/Integration';
 
 const getSelectOptions = () => [
-    ...([ NotificationType.DRAWER, NotificationType.EMAIL, NotificationType.PLATFORM_ALERT ] as Array<ActionNotify['type']>)
+    ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION, NotificationType.PLATFORM_ALERT ] as Array<ActionNotify['type']>)
     .map(type => new ActionOption({
         kind: 'notification',
         type
     })),
-    ...[ IntegrationType.WEBHOOK ].map(type => new ActionOption({
+    ...[ UserIntegrationType.WEBHOOK ].map(type => new ActionOption({
         kind: 'integration',
         type
     }))
@@ -71,7 +70,9 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
                 isDisabled={ props.isDisabled }
             >
                 { getSelectOptions()
-                .filter((o) => !hideNonWebhooks || o.notificationType === NotificationType.INTEGRATION)
+                .filter((o) => !hideNonWebhooks
+                    || o.notificationType === NotificationType.INTEGRATION
+                    || o.notificationType === NotificationType.EMAIL_SUBSCRIPTION)
                 .map(o => <SelectOption key={ o.toString() } value={ o } />) }
             </Select>
         </div>

@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { Integration, NewIntegration } from '../../../types/Integration';
+import { UserIntegration, NewUserIntegration } from '../../../types/Integration';
 import { IntegrationSaveModal } from '../../../components/Integrations/SaveModal';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
 import { addSuccessNotification, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
 
 interface CreatePageProps {
     isEdit: boolean;
-    initialIntegration: Partial<Integration>;
+    initialIntegration: Partial<UserIntegration>;
     onClose: (saved: boolean) => void;
 }
 
@@ -15,7 +15,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
     const saveIntegrationMutation = useSaveIntegrationMutation();
     const [ hasError, setError ] = React.useState(false);
 
-    const onSaveIntegration = React.useCallback((integration: NewIntegration) => {
+    const onSaveIntegration = React.useCallback((integration: NewUserIntegration) => {
         if (!integration.id) {
             integration.isEnabled = true;
         }

@@ -1,18 +1,18 @@
 import { SelectOptionObject } from '@patternfly/react-core';
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import { NotificationType } from '../../../types/Notification';
 import { Messages } from '../../../properties/Messages';
 
 type ActionTypeOrIntegration = {
     kind: 'integration';
-    type: IntegrationType;
+    type: UserIntegrationType;
 } | {
     kind: 'notification';
     type: NotificationType;
 }
 
 export class ActionOption implements SelectOptionObject {
-    readonly integrationType: IntegrationType | undefined;
+    readonly integrationType: UserIntegrationType | undefined;
     readonly notificationType: NotificationType;
 
     constructor(type: ActionTypeOrIntegration) {
