@@ -3,6 +3,8 @@ import { Action, ActionNotify, NotificationType } from '../../../types/Notificat
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { ActionOption } from './ActionOption';
 import { IntegrationType } from '../../../types/Integration';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
 
 const getSelectOptions = () => [
     ...([ NotificationType.DRAWER, NotificationType.EMAIL, NotificationType.PLATFORM_ALERT ] as Array<ActionNotify['type']>)
@@ -16,7 +18,7 @@ const getSelectOptions = () => [
     }))
 ];
 
-export interface ActionTypeaheadProps {
+export interface ActionTypeaheadProps extends OuiaComponentProps {
     action: Action;
     isDisabled?: boolean;
     onSelected: (actionOption: ActionOption) => void;
@@ -53,17 +55,19 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     }, [ props.action ]);
 
     return (
-        <Select
-            variant={ SelectVariant.typeahead }
-            typeAheadAriaLabel="Select an action type"
-            selections={ selectedOption }
-            onToggle={ toggle }
-            isOpen={ isOpen }
-            onSelect={ onSelect }
-            menuAppendTo={ document.body }
-            isDisabled={ props.isDisabled }
-        >
-            { getSelectOptions().map(o => <SelectOption key={ o.toString() } value={ o } />) }
-        </Select>
+        <div { ...getOuiaProps('ActionTypeahead', props) } >
+            <Select
+                variant={ SelectVariant.typeahead }
+                typeAheadAriaLabel="Select an action type"
+                selections={ selectedOption }
+                onToggle={ toggle }
+                isOpen={ isOpen }
+                onSelect={ onSelect }
+                menuAppendTo={ document.body }
+                isDisabled={ props.isDisabled }
+            >
+                { getSelectOptions().map(o => <SelectOption key={ o.toString() } value={ o } />) }
+            </Select>
+        </div>
     );
 };

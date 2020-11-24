@@ -5,8 +5,10 @@ import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-cor
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
 
-export interface IntegrationRecipientTypeaheadProps {
+export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     selected: Partial<IntegrationRef> | undefined;
     getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     integrationType: IntegrationType;
@@ -70,18 +72,20 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ props.onSelected ]);
 
     return (
-        <Select
-            variant={ SelectVariant.typeahead }
-            typeAheadAriaLabel="Select the recipients"
-            selections={ selection }
-            onSelect={ onSelect }
-            onToggle={ toggle }
-            isOpen={ isOpen }
-            onFilter={ onFilter }
-            menuAppendTo={ document.body }
-            isDisabled={ props.isDisabled }
-        >
-            { options }
-        </Select>
+        <div { ...getOuiaProps('IntegrationRecipientTypeahead', props) }>
+            <Select
+                variant={ SelectVariant.typeahead }
+                typeAheadAriaLabel="Select the recipients"
+                selections={ selection }
+                onSelect={ onSelect }
+                onToggle={ toggle }
+                isOpen={ isOpen }
+                onFilter={ onFilter }
+                menuAppendTo={ document.body }
+                isDisabled={ props.isDisabled }
+            >
+                { options }
+            </Select>
+        </div>
     );
 };
