@@ -13,6 +13,7 @@ import { ActionTypeahead } from './ActionTypeahead';
 import { ActionOption } from './ActionOption';
 import { useField, useFormikContext } from 'formik';
 import { RecipientOption } from './RecipientOption';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 
 export interface EditableActionTableProps {
     actions: Array<Action>;
@@ -23,7 +24,7 @@ export interface EditableActionTableProps {
     isDisabled?: boolean;
 }
 
-interface EditableActionElementProps {
+interface EditableActionElementProps extends OuiaComponentProps {
     path: string;
     action: Action;
     isDisabled?: boolean;
@@ -82,6 +83,7 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                     action={ props.action }
                     onSelected={ actionSelected }
                     isDisabled={ props.isDisabled }
+                    ouiaId={ `${props.ouiaId ? 'action-' + props.ouiaId : undefined}` }
                 />
             </td>
             <td>
@@ -92,6 +94,7 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                         selected={ props.action.integration }
                         getIntegrations={ props.getIntegrations }
                         isDisabled={ props.isDisabled }
+                        ouiaId={ `${props.ouiaId ? 'recipient-' + props.ouiaId : undefined}` }
                     />
                 ) : (
                     <RecipientTypeahead
@@ -100,6 +103,7 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                         getRecipients={ props.getRecipients }
                         isDisabled={ props.isDisabled }
                         onClear={ recipientOnClear }
+                        ouiaId={ `${props.ouiaId ? 'recipient-' + props.ouiaId : undefined}` }
                     />
                 ) }
             </td>
@@ -132,6 +136,7 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                         return (
                             <EditableActionRow
                                 key={ index }
+                                ouiaId={ `${index}` }
                                 action={ a }
                                 isDisabled={ props.isDisabled }
                                 path={ `${props.path}.${index}` }
