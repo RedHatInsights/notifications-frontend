@@ -16,7 +16,12 @@ import {
 } from '../../../components/Notifications/Table';
 import { Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
-import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    ExporterType,
+    getInsights,
+    InsightsEnvDetector,
+    RenderIfFalse
+} from '@redhat-cloud-services/insights-common-typescript';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
 import {
@@ -28,6 +33,7 @@ import {
 import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
 import { useListNotifications } from '../../../services/useListNotifications';
 import { useNotificationRows } from './useNotificationRows';
+import { stagingBetaAndProdBetaEnvironment } from '../../../types/Environments';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -101,7 +107,11 @@ export const NotificationsListPage: React.FunctionComponent = () => {
         <>
             <PageHeader>
                 <PageHeaderTitle { ...pageHeaderTitleProps } />
-                <Button variant={ ButtonVariant.link }>{ Messages.pages.notifications.list.viewHistory }</Button>
+                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingBetaAndProdBetaEnvironment }>
+                    <RenderIfFalse>
+                        <Button variant={ ButtonVariant.link }>{ Messages.pages.notifications.list.viewHistory }</Button>
+                    </RenderIfFalse>
+                </InsightsEnvDetector>
             </PageHeader>
             <Main>
                 <Section>

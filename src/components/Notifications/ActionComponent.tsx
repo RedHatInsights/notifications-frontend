@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { EnvelopeIcon, SlackHashIcon } from '@patternfly/react-icons';
+import { EnvelopeIcon } from '@patternfly/react-icons';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
@@ -9,6 +9,7 @@ import { style } from 'typestyle';
 import { assertNever } from 'assert-never';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { Spinner } from '@patternfly/react-core';
+import { WebhookIcon } from '../Icons/WebhookIcon';
 
 export interface ActionComponentText extends OuiaComponentProps{
     isDefault: boolean;
@@ -37,7 +38,7 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props)
         case NotificationType.EMAIL:
             return <EnvelopeIcon/>;
         case NotificationType.INTEGRATION:
-            return <SlackHashIcon/>;
+            return <WebhookIcon/>;
         default:
             assertNever(props.actionType);
     }

@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {
     Action,
-    NotificationType,
     DefaultNotificationBehavior,
+    IntegrationRef,
     Notification,
-    IntegrationRef
+    NotificationType
 } from '../../types/Notification';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
@@ -67,8 +67,10 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
     const addAction = React.useCallback(() => {
         const push = props.push;
         const newAction: Action = {
-            type: NotificationType.PLATFORM_ALERT,
-            recipient: []
+            type: NotificationType.INTEGRATION,
+            integration: {
+                type: IntegrationType.WEBHOOK
+            } as IntegrationRef
         };
 
         push(newAction);

@@ -7,14 +7,16 @@ import {
     SetNotificationFilters
 } from './Filter';
 import {
-    ColumnsMetada, ExporterType,
-    OuiaComponentProps,
+    ColumnsMetada, ExporterType, getInsights,
+    OuiaComponentProps, useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { GroupBy } from './Table/GroupBy';
 import { GroupByEnum } from './Types';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
+import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import { useCallback } from 'react';
 
 interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
@@ -51,13 +53,34 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         filterMetadata
     );
 
-    const exportConfig = useTableExportConfig(props.onExport);
+    const exportConfigInternal = useTableExportConfig(props.onExport);
+
+    const filterConfig = useInsightsEnvironmentFlag(
+        getInsights(),
+        stagingBetaAndProdBetaEnvironment,
+        undefined,
+        useCallback(() => primaryToolbarFilterConfig.filterConfig, [ primaryToolbarFilterConfig ])
+    );
+
+    const activeFiltersConfig = useInsightsEnvironmentFlag(
+        getInsights(),
+        stagingBetaAndProdBetaEnvironment,
+        undefined,
+        useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
+    );
+
+    const exportConfig = useInsightsEnvironmentFlag(
+        getInsights(),
+        stagingBetaAndProdBetaEnvironment,
+        undefined,
+        useCallback(() => exportConfigInternal, [ exportConfigInternal ])
+    );
 
     return (
         <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
             <PrimaryToolbar
-                filterConfig={ primaryToolbarFilterConfig.filterConfig }
-                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                filterConfig={ filterConfig }
+                activeFiltersConfig={ activeFiltersConfig }
                 dedicatedAction={ <GroupBy selected={ props.groupBy } groupBy={ props.onGroupBySelected } /> }
                 exportConfig={ exportConfig }
             />
