@@ -1,5 +1,5 @@
 import { useReducer } from 'react';
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 import { assertNever } from 'assert-never';
 
 enum UseFormModalReducerActionType {
@@ -10,12 +10,12 @@ enum UseFormModalReducerActionType {
 
 interface UseFormModalReducerActionCreate {
     type: UseFormModalReducerActionType.CREATE;
-    template?: Partial<Integration>;
+    template?: Partial<UserIntegration>;
 }
 
 interface UseFormModalReducerActionEdit {
     type: UseFormModalReducerActionType.EDIT;
-    template: Integration;
+    template: UserIntegration;
 }
 
 interface UseFormModalReducerActionNone {
@@ -27,7 +27,7 @@ type UseFormModalReducerAction = UseFormModalReducerActionCreate | UseFormModalR
 interface UseFormModalReducerState {
     isOpen: boolean;
     isEdit: boolean;
-    template: Integration | Partial<Integration> | undefined;
+    template: UserIntegration | Partial<UserIntegration> | undefined;
     isCopy: boolean;
 }
 
@@ -64,12 +64,12 @@ const reducer = (state: UseFormModalReducerState, action: UseFormModalReducerAct
     }
 };
 
-export const makeCreateAction = (template?: Partial<Integration>): UseFormModalReducerActionCreate => ({
+export const makeCreateAction = (template?: Partial<UserIntegration>): UseFormModalReducerActionCreate => ({
     type: UseFormModalReducerActionType.CREATE,
     template
 });
 
-export const makeEditAction = (template: Integration): UseFormModalReducerActionEdit => ({
+export const makeEditAction = (template: UserIntegration): UseFormModalReducerActionEdit => ({
     type: UseFormModalReducerActionType.EDIT,
     template
 });

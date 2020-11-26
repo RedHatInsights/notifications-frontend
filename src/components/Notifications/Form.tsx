@@ -19,7 +19,7 @@ import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { PlusCircleIcon } from '@patternfly/react-icons';
 import { EditableActionTable } from './Form/EditableActionTable';
-import { IntegrationType } from '../../types/Integration';
+import { UserIntegrationType } from '../../types/Integration';
 import { style } from 'typestyle';
 
 type Type = 'default' | 'notification';
@@ -27,14 +27,14 @@ type Type = 'default' | 'notification';
 export interface NotificationFormProps extends OuiaComponentProps {
     type: Type;
     getRecipients: (search: string) => Promise<Array<string>>;
-    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 interface ActionsArrayProps extends FieldArrayRenderProps {
     form: FormikProps<Notification | DefaultNotificationBehavior>;
     type: Type;
     getRecipients: (search: string) => Promise<Array<string>>;
-    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 const alignLeftClassName = style({
@@ -67,10 +67,9 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
     const addAction = React.useCallback(() => {
         const push = props.push;
         const newAction: Action = {
-            type: NotificationType.INTEGRATION,
-            integration: {
-                type: IntegrationType.WEBHOOK
-            } as IntegrationRef
+            type: NotificationType.EMAIL_SUBSCRIPTION,
+            integrationId: '',
+            recipient: []
         };
 
         push(newAction);

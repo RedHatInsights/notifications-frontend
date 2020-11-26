@@ -35,7 +35,7 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props)
         case NotificationType.DRAWER:
         case NotificationType.PLATFORM_ALERT:
             return <BellIcon/>;
-        case NotificationType.EMAIL:
+        case NotificationType.EMAIL_SUBSCRIPTION:
             return <EnvelopeIcon/>;
         case NotificationType.INTEGRATION:
             return <WebhookIcon/>;

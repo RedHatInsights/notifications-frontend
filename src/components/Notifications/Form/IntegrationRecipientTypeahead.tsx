@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { IntegrationRef } from '../../../types/Notification';
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { RecipientOption } from './RecipientOption';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
@@ -10,8 +10,8 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 
 export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     selected: Partial<IntegrationRef> | undefined;
-    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
-    integrationType: IntegrationType;
+    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    integrationType: UserIntegrationType;
     isDisabled?: boolean;
     onSelected: (recipientOption: RecipientOption) => void;
 }

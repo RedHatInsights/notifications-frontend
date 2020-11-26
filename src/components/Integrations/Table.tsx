@@ -14,7 +14,7 @@ import {
     TableHeader,
     expandable
 } from '@patternfly/react-table';
-import { Integration, IntegrationConnectionAttempt } from '../../types/Integration';
+import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
 import {
     global_danger_color_100,
     global_spacer_lg,
@@ -47,7 +47,7 @@ interface IntegrationsTableProps extends OuiaComponentProps {
     actionResolver: (row: IntegrationRow) => IActions;
 }
 
-export type IntegrationRow = Integration & {
+export type IntegrationRow = UserIntegration & {
     isOpen: boolean;
     isSelected: boolean;
     isEnabledLoading: boolean;

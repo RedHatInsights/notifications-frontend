@@ -1,6 +1,6 @@
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import { IntegrationExporterCsv } from '../Csv';
-import { IntegrationType } from '../../../../types/Integration';
+import { UserIntegrationType } from '../../../../types/Integration';
 import { Schemas } from '../../../../generated/OpenapiNotifications';
 
 describe('src/utils/exporters/Policy/Csv', () => {
@@ -20,7 +20,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
                 id: '12345',
                 name: 'hello world',
                 isEnabled: false,
-                type: IntegrationType.WEBHOOK,
+                type: UserIntegrationType.WEBHOOK,
                 url: 'http://foo.bar',
                 secretToken: 'foo',
                 method: Schemas.HttpType.Enum.GET,

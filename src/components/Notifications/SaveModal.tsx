@@ -5,12 +5,12 @@ import { Formik, useFormikContext } from 'formik';
 import { NotificationForm } from './Form';
 import { DefaultNotificationBehavior, IntegrationRef, Notification } from '../../types/Notification';
 import { ModalVariant } from '@patternfly/react-core';
-import { IntegrationType } from '../../types/Integration';
+import { UserIntegrationType } from '../../types/Integration';
 import { WithActions } from '../../schemas/Integrations/Notifications';
 
 type DataFetcher = {
     getRecipients: (search: string) => Promise<Array<string>>;
-    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
 }
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';

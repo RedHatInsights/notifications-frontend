@@ -6,7 +6,7 @@ import {
 import * as React from 'react';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import { RecipientTypeahead } from './RecipientTypeahead';
 import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
 import { ActionTypeahead } from './ActionTypeahead';
@@ -19,7 +19,7 @@ export interface EditableActionTableProps {
     actions: Array<Action>;
     path: string;
     getRecipients: (search: string) => Promise<Array<string>>;
-    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     handleRemove?: (index: number) => () => void;
     isDisabled?: boolean;
 }
@@ -29,7 +29,7 @@ interface EditableActionElementProps extends OuiaComponentProps {
     action: Action;
     isDisabled?: boolean;
     getRecipients: (search: string) => Promise<Array<string>>;
-    getIntegrations: (type: IntegrationType, search: string) => Promise<Array<IntegrationRef>>;
+    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     onRemove?: () => void;
 }
 
@@ -50,14 +50,19 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                 type: value.integrationType
             });
             setFieldValue(`${props.path}.recipient`, []);
+            setFieldValue(`${props.path}.integrationId`, '');
         } else {
             setFieldValue(`${props.path}.recipient`, []);
             setFieldValue(`${props.path}.integration`, undefined);
+            setFieldValue(`${props.path}.integrationId`, '');
         }
     }, [ setFieldValue, props.path ]);
 
     const integrationSelected = React.useCallback((value: RecipientOption) => {
-        setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+        if (typeof value.recipientOrIntegration !== 'string') {
+            setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
+            setFieldValue(`${props.path}.integrationId`, value.recipientOrIntegration.id);
+        }
     }, [ setFieldValue, props.path ]);
 
     const recipientSelected = React.useCallback((value: RecipientOption) => {
@@ -90,7 +95,7 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                 { props.action.type === NotificationType.INTEGRATION ? (
                     <IntegrationRecipientTypeahead
                         onSelected={ integrationSelected }
-                        integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
+                        integrationType={ props.action.integration?.type ?? UserIntegrationType.WEBHOOK }
                         selected={ props.action.integration }
                         getIntegrations={ props.getIntegrations }
                         isDisabled={ props.isDisabled }

@@ -1,12 +1,12 @@
 import { ActionOption } from '../ActionOption';
-import { IntegrationType } from '../../../../types/Integration';
+import { UserIntegrationType } from '../../../../types/Integration';
 import { NotificationType } from '../../../../types/Notification';
 
 describe('src/components/Notifications/Form/ActionOption', () => {
     it('CompareTo returns equal for the same object', () => {
         const a = new ActionOption({
             kind: 'integration',
-            type: IntegrationType.WEBHOOK
+            type: UserIntegrationType.WEBHOOK
         });
         expect(a.compareTo(a)).toBe(true);
     });
@@ -14,11 +14,11 @@ describe('src/components/Notifications/Form/ActionOption', () => {
     it('CompareTo returns true for objects with same integration types', () => {
         const a = new ActionOption({
             kind: 'integration',
-            type: IntegrationType.WEBHOOK
+            type: UserIntegrationType.WEBHOOK
         });
         const b = new ActionOption({
             kind: 'integration',
-            type: IntegrationType.WEBHOOK
+            type: UserIntegrationType.WEBHOOK
         });
         expect(a.compareTo(b)).toBe(true);
     });
@@ -50,7 +50,7 @@ describe('src/components/Notifications/Form/ActionOption', () => {
     it('CompareTo returns false for objects with integration and notification types', () => {
         const a = new ActionOption({
             kind: 'integration',
-            type: IntegrationType.WEBHOOK
+            type: UserIntegrationType.WEBHOOK
         });
         const b = new ActionOption({
             kind: 'notification',
@@ -62,7 +62,7 @@ describe('src/components/Notifications/Form/ActionOption', () => {
     it('CompareTo returns false for other objects', () => {
         const a = new ActionOption({
             kind: 'integration',
-            type: IntegrationType.WEBHOOK
+            type: UserIntegrationType.WEBHOOK
         });
         expect(a.compareTo('foo')).toBe(false);
         expect(a.compareTo(true)).toBe(false);
@@ -80,7 +80,7 @@ describe('src/components/Notifications/Form/ActionOption', () => {
     it('toString of integration returns the notification type name plus the integration', () => {
         const a = new ActionOption({
             kind: 'integration',
-            type: IntegrationType.WEBHOOK
+            type: UserIntegrationType.WEBHOOK
         });
         expect(a.toString()).toEqual('Integration: Webhook');
     });

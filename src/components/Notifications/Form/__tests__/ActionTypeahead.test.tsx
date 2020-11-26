@@ -10,6 +10,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders the passed action type', () => {
         const action: Action = {
             type: NotificationType.DRAWER,
+            integrationId: '123-4567-8901',
             recipient: [
                 'Foo', 'Bar'
             ]
@@ -24,6 +25,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders disabled if isDisabled', () => {
         const action: Action = {
             type: NotificationType.DRAWER,
+            integrationId: '123-4567-8901',
             recipient: [
                 'Foo', 'Bar'
             ]
@@ -38,6 +40,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Calls actionSelected when selecting any action', async () => {
         const action: Action = {
             type: NotificationType.DRAWER,
+            integrationId: '123-4567-8901',
             recipient: [
                 'Foo', 'Bar'
             ]
@@ -56,6 +59,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Closes selection list when clicking on an action', async () => {
         const action: Action = {
             type: NotificationType.DRAWER,
+            integrationId: '123-4567-8901',
             recipient: [
                 'Foo', 'Bar'
             ]

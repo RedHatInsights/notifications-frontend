@@ -8,7 +8,7 @@ import {
     NotificationType
 } from '../../../types/Notification';
 import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
-import { IntegrationType } from '../../../types/Integration';
+import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
 import {
     listIntegrationIntegrationDecoder,
     listIntegrationsActionCreator
@@ -36,7 +36,11 @@ import {
 } from '../../../services/useGetNotificationActions';
 import { actionRemoveActionFromNotification } from '../../../services/useRemoveActionFromNotification';
 import { actionAddActionToNotification } from '../../../services/useAddActionToNotification';
-import { getDefaultActionIdAction, getDefaultActionIdDecoder } from '../../../services/Notifications/GetDefaultActionId';
+import {
+    getDefaultActionIdAction,
+    getDefaultActionIdDecoder
+} from '../../../services/Notifications/GetDefaultActionId';
+import { createIntegrationActionCreator } from '../../../services/useSaveIntegration';
 
 interface EditNotificationPagePropsNotification {
     type: 'notification';
@@ -75,7 +79,7 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
 
     const { query } = useContext(ClientContext);
 
-    const getIntegrations = React.useCallback(async (type: IntegrationType, _search: string) => {
+    const getIntegrations = React.useCallback(async (type: UserIntegrationType, _search: string) => {
         return query(listIntegrationsActionCreator(
             Page.of(
                 1,
@@ -97,11 +101,11 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
 
     const onSave = React.useCallback(async (data: Notification | DefaultNotificationBehavior) => {
         const idMapper = (a: Action) => {
-            if (a.type !== NotificationType.INTEGRATION) {
-                throw new Error('Only integrations are supported');
+            if (a.type !== NotificationType.INTEGRATION && a.type !== NotificationType.EMAIL_SUBSCRIPTION) {
+                throw new Error('Only integrations and EmailSubscription are supported are supported');
             }
 
-            return a.integration.id;
+            return a.integrationId;
         };
 
         const type = props.type;
@@ -146,8 +150,47 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
             return false;
         }
 
+        const limit = pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS);
+
         const originalIds = oldActions.map(idMapper);
-        const newIds = data.actions.map(idMapper);
+        const newIds = data.actions.map((a, i) => a.integrationId === '' ? { ...a, integrationId: `new${i}` } : a).map(idMapper);
+
+        const nonUserIntegrationsPromises: Array<Promise<boolean>> = [];
+
+        data.actions.map((a, index) => {
+            if (a.integrationId === '' && a.type === NotificationType.EMAIL_SUBSCRIPTION) {
+                nonUserIntegrationsPromises.push(limit(() => {
+                    return query(createIntegrationActionCreator({
+                        type: IntegrationType.EMAIL_SUBSCRIPTION,
+                        name: 'Email subscription',
+                        isEnabled: true
+                    }))
+                    .then(r => r.payload?.type === 'Endpoint' ? r.payload.value.id : undefined)
+                    .then(id => {
+                        if (id) {
+                            // Sanity check
+                            if (newIds[index] !== `new${index}`) {
+                                throw new Error(`Sync error, expected new${index} but found ${newIds[index]}`);
+                            }
+
+                            newIds[index] = id;
+                            return true;
+                        }
+
+                        return false;
+                    });
+                }));
+                // New, we need add this integration
+            }
+        });
+
+        if (nonUserIntegrationsPromises.length) {
+            const created = await Promise.all(nonUserIntegrationsPromises.map(p => p.catch(() => false))).then(all => all.every(e => e));
+            if (!created) {
+                addDangerNotification('Actions not added/removed', 'Some actions were not correctly added or removed. Please try again.');
+                return false;
+            }
+        }
 
         let toDelete: Array<string>;
         let toAdd: Array<string>;
@@ -188,8 +231,6 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
                 return arr;
             }, []);
         }
-
-        const limit = pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS);
 
         if (toAdd.length === 0 && toDelete.length === 0) {
             // Nothing to update, display to the user that all was updated?

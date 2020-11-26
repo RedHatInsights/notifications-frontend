@@ -1,6 +1,6 @@
 import { ExporterJson } from '@redhat-cloud-services/insights-common-typescript';
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 
-export class IntegrationExporterJson extends ExporterJson<Integration> {
+export class IntegrationExporterJson extends ExporterJson<UserIntegration> {
 
 }

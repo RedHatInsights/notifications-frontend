@@ -1,15 +1,15 @@
 import { ExporterCsv, ExporterHeaders } from '@redhat-cloud-services/insights-common-typescript';
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 
-export class IntegrationExporterCsv extends ExporterCsv<Integration> {
+export class IntegrationExporterCsv extends ExporterCsv<UserIntegration> {
 
-    public serialize(integration: Integration) {
+    public serialize(integration: UserIntegration) {
         return {
             ...integration
         };
     }
 
-    public headers(): ExporterHeaders<IntegrationExporterCsv, Integration> {
+    public headers(): ExporterHeaders<IntegrationExporterCsv, UserIntegration> {
         return [
             [ 'id', 'id' ],
             [ 'name', 'name' ],

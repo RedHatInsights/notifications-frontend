@@ -4,13 +4,13 @@ import {
     OuiaComponentProps,
     ActionModalError
 } from '@redhat-cloud-services/insights-common-typescript';
-import { Integration } from '../../../types/Integration';
+import { UserIntegration } from '../../../types/Integration';
 import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
 import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteModal';
 
 interface IntegrationDeleteModalPageProps extends OuiaComponentProps {
     onClose: (deleted: boolean) => void;
-    integration: Integration;
+    integration: UserIntegration;
 }
 
 export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDeleteModalPageProps> = (props) => {
@@ -18,7 +18,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
     const deleteIntegrationMutation = useDeleteIntegration();
     const [ hasError, setError ] = React.useState(false);
 
-    const onDelete = React.useCallback((integration: Integration) => {
+    const onDelete = React.useCallback((integration: UserIntegration) => {
         const deleteIntegration = deleteIntegrationMutation.mutate;
         setError(false);
         return deleteIntegration(integration.id).then((response) => {

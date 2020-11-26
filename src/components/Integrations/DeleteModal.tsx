@@ -1,12 +1,12 @@
 import * as React from 'react';
 import { DeleteModal, DeleteModalProps } from '@redhat-cloud-services/insights-common-typescript';
-import { Integration } from '../../types/Integration';
+import { UserIntegration } from '../../types/Integration';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 
 interface IntegrationDeleteModalProps extends Omit<DeleteModalProps, UsedProps> {
-    integration?: Integration;
-    onDelete: (integration: Integration) => boolean | Promise<boolean>;
+    integration?: UserIntegration;
+    onDelete: (integration: UserIntegration) => boolean | Promise<boolean>;
 }
 
 export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteModalProps> = (props) => {

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import jestMock from 'jest-mock';
 import { IntegrationSaveModal } from '../SaveModal';
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 import userEvent from '@testing-library/user-event';
 
@@ -15,7 +15,7 @@ describe('src/components/Integrations/SaveModal', () => {
                 onClose={ jestMock.fn() }
                 initialIntegration={ {
                     name: 'foobar',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123'
@@ -35,7 +35,7 @@ describe('src/components/Integrations/SaveModal', () => {
                 onClose={ jestMock.fn() }
                 initialIntegration={ {
                     name: 'foobar',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123'
@@ -56,7 +56,7 @@ describe('src/components/Integrations/SaveModal', () => {
                 onClose={ jestMock.fn() }
                 initialIntegration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123'
@@ -99,7 +99,7 @@ describe('src/components/Integrations/SaveModal', () => {
                 onClose={ onClose }
                 initialIntegration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'https://google.com',
                     id: '123'
@@ -126,7 +126,7 @@ describe('src/components/Integrations/SaveModal', () => {
                 onClose={ onClose }
                 initialIntegration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
+                    type: UserIntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'https://google.com',
                     id: '123'
