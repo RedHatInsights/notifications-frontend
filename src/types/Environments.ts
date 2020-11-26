@@ -1,7 +1,7 @@
 import { Environment, getInsightsEnvironment, InsightsType } from '@redhat-cloud-services/insights-common-typescript';
 
 export const stagingBetaAndProdBetaEnvironment: Array<Environment> = [
-    'staging-beta',
+    'stage-beta',
     'prod-beta'
 ];
 
