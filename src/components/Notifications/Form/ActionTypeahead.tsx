@@ -71,8 +71,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
             >
                 { getSelectOptions()
                 .filter((o) => !hideNonWebhooks
-                    || o.notificationType === NotificationType.INTEGRATION
-                    || o.notificationType === NotificationType.EMAIL_SUBSCRIPTION)
+                    || o.notificationType === NotificationType.INTEGRATION)
                 .map(o => <SelectOption key={ o.toString() } value={ o } />) }
             </Select>
         </div>
