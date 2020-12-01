@@ -1,18 +1,19 @@
-import * as React from 'react';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
-import { Messages } from '../../properties/Messages';
-import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
-import { style } from 'typestyle';
-import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import {
     ColumnsMetada, ExporterType, getInsights,
     OuiaComponentProps, useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../utils/getOuiaProps';
-import { useTableExportConfig } from '../../hooks/useTableExportConfig';
-import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import * as React from 'react';
 import { useCallback } from 'react';
+import { style } from 'typestyle';
+
+import { useTableExportConfig } from '../../hooks/useTableExportConfig';
+import { Messages } from '../../properties/Messages';
+import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import { getOuiaProps } from '../../utils/getOuiaProps';
+import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
+import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
 
 interface IntegrationsToolbarProps extends OuiaComponentProps {
     onAddIntegration: () => void;

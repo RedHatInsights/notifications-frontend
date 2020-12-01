@@ -1,7 +1,8 @@
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
+
 import {
     Operations, Schemas
 } from '../generated/OpenapiNotifications';
-import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { toActions } from '../types/adapters/NotificationAdapter';
 
 export const getNotificationActionsByIdAction = (eventTypeId: number) => {

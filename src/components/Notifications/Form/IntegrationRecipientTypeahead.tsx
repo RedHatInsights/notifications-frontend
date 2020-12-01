@@ -1,12 +1,13 @@
-import * as React from 'react';
-import { IntegrationRef } from '../../../types/Notification';
-import { UserIntegrationType } from '../../../types/Integration';
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { RecipientOption } from './RecipientOption';
-import { useTypeaheadReducer } from './useTypeaheadReducer';
-import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+
+import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationRef } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { RecipientOption } from './RecipientOption';
+import { useRecipientOptionMemo } from './useRecipientOptionMemo';
+import { useTypeaheadReducer } from './useTypeaheadReducer';
 
 export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     selected: Partial<IntegrationRef> | undefined;

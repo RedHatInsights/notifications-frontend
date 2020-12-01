@@ -1,6 +1,6 @@
-import * as React from 'react';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
+import * as React from 'react';
 
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';

@@ -1,7 +1,8 @@
-import { useFilters, useUrlStateString, useUrlStateMultipleOptions } from '@redhat-cloud-services/insights-common-typescript';
-import { NotificationFilterColumn } from '../../../components/Notifications/Filter';
+import { useFilters, useUrlStateMultipleOptions, useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import { useMemo } from 'react';
+
+import { NotificationFilterColumn } from '../../../components/Notifications/Filter';
 
 const DEBOUNCE_MS = 250;
 

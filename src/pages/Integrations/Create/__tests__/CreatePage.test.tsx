@@ -1,12 +1,12 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import jestMock from 'jest-mock';
+import * as React from 'react';
 
-import { CreatePage } from '../CreatePage';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { IntegrationType } from '../../../../types/Integration';
 import { Messages } from '../../../../properties/Messages';
+import { IntegrationType } from '../../../../types/Integration';
+import { CreatePage } from '../CreatePage';
 
 describe('src/pages/Integrations/Create/CreatePage', () => {
 

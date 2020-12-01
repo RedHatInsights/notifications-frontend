@@ -1,12 +1,5 @@
-import * as React from 'react';
-import {
-    Action,
-    DefaultNotificationBehavior,
-    IntegrationRef,
-    Notification,
-    NotificationType
-} from '../../types/Notification';
 import { Button, ButtonVariant } from '@patternfly/react-core';
+import { PlusCircleIcon } from '@patternfly/react-icons';
 import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import {
     Checkbox,
@@ -16,11 +9,19 @@ import {
     ouiaIdConcat
 } from '@redhat-cloud-services/insights-common-typescript';
 import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from 'formik';
-import { getOuiaProps } from '../../utils/getOuiaProps';
-import { PlusCircleIcon } from '@patternfly/react-icons';
-import { EditableActionTable } from './Form/EditableActionTable';
-import { UserIntegrationType } from '../../types/Integration';
+import * as React from 'react';
 import { style } from 'typestyle';
+
+import { UserIntegrationType } from '../../types/Integration';
+import {
+    Action,
+    DefaultNotificationBehavior,
+    IntegrationRef,
+    Notification,
+    NotificationType
+} from '../../types/Notification';
+import { getOuiaProps } from '../../utils/getOuiaProps';
+import { EditableActionTable } from './Form/EditableActionTable';
 
 type Type = 'default' | 'notification';
 

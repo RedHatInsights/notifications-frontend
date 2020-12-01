@@ -1,5 +1,5 @@
-import * as React from 'react';
 import { ExporterType, exporterTypeFromString } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
 
 type OnExport = (type: ExporterType) => void;
 

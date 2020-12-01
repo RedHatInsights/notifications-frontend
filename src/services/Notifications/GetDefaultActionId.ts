@@ -1,7 +1,8 @@
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
+
 import {
     Operations, Schemas
 } from '../../generated/OpenapiIntegrations';
-import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 
 export const getDefaultActionIdAction = () => Operations.EndpointServiceCreateEndpoint.actionCreator({
     body: {

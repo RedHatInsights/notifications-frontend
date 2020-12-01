@@ -1,10 +1,11 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
-import jestMock from 'jest-mock';
-import { IntegrationSaveModal } from '../SaveModal';
-import { UserIntegrationType } from '../../../types/Integration';
-import { waitForAsyncEvents } from '../../../../test/TestUtils';
 import userEvent from '@testing-library/user-event';
+import jestMock from 'jest-mock';
+import * as React from 'react';
+
+import { waitForAsyncEvents } from '../../../../test/TestUtils';
+import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationSaveModal } from '../SaveModal';
 
 describe('src/components/Integrations/SaveModal', () => {
     it('Has Add integration title if isEdit is false', async () => {

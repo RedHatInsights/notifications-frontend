@@ -1,19 +1,20 @@
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { TimesIcon } from '@patternfly/react-icons';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { useField, useFormikContext } from 'formik';
+import * as React from 'react';
+
+import { UserIntegrationType } from '../../../types/Integration';
 import {
     Action, DefaultNotificationBehavior,
     IntegrationRef,
     NotificationType
 } from '../../../types/Notification';
-import * as React from 'react';
-import { Button, ButtonVariant } from '@patternfly/react-core';
-import { TimesIcon } from '@patternfly/react-icons';
-import { UserIntegrationType } from '../../../types/Integration';
-import { RecipientTypeahead } from './RecipientTypeahead';
-import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
-import { ActionTypeahead } from './ActionTypeahead';
 import { ActionOption } from './ActionOption';
-import { useField, useFormikContext } from 'formik';
+import { ActionTypeahead } from './ActionTypeahead';
+import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
 import { RecipientOption } from './RecipientOption';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { RecipientTypeahead } from './RecipientTypeahead';
 
 export interface EditableActionTableProps {
     actions: Array<Action>;

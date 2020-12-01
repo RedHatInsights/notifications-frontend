@@ -1,12 +1,11 @@
+import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ouiaSelectors } from 'insights-common-typescript-dev';
+import jestMock from 'jest-mock';
 import * as React from 'react';
 
-import { act, render, screen } from '@testing-library/react';
-
-import { RecipientTypeahead } from '../RecipientTypeahead';
-import jestMock from 'jest-mock';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
-import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+import { RecipientTypeahead } from '../RecipientTypeahead';
 
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
     it('Renders if selected is undefined', async () => {

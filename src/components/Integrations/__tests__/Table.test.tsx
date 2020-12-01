@@ -1,16 +1,15 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
-import * as React from 'react';
-
-import { IntegrationRow, IntegrationsTable } from '../Table';
 import { getByText, render, screen } from '@testing-library/react';
-
-import { UserIntegrationType } from '../../../types/Integration';
-import { IntlProvider } from 'react-intl';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
-import jestMock from 'jest-mock';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 import userEvent from '@testing-library/user-event';
+import { ouiaSelectors } from 'insights-common-typescript-dev';
+import jestMock from 'jest-mock';
+import * as React from 'react';
+import { IntlProvider } from 'react-intl';
+
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
+import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationRow, IntegrationsTable } from '../Table';
 
 describe('components/Integrations/Table', () => {
 

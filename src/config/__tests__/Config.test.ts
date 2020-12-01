@@ -1,4 +1,5 @@
 import { localUrl } from '@redhat-cloud-services/insights-common-typescript';
+
 import { withBaseUrl } from '../Config';
 
 describe('src/config/Config', () => {

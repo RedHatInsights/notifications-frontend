@@ -1,19 +1,3 @@
-import * as React from 'react';
-import { useContext } from 'react';
-import {
-    Action,
-    DefaultNotificationBehavior,
-    IntegrationRef,
-    Notification,
-    NotificationType
-} from '../../../types/Notification';
-import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
-import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
-import {
-    listIntegrationIntegrationDecoder,
-    listIntegrationsActionCreator
-} from '../../../services/useListIntegrations';
-import { ClientContext } from 'react-fetching-library';
 import {
     addDangerNotification,
     addSuccessNotification,
@@ -21,26 +5,43 @@ import {
     Operator,
     Page
 } from '@redhat-cloud-services/insights-common-typescript';
+import assertNever from 'assert-never';
 import pLimit from 'p-limit';
-import { actionRemoveActionFromDefault } from '../../../services/useRemoveActionFromDN';
+import * as React from 'react';
+import { useContext } from 'react';
+import { ClientContext } from 'react-fetching-library';
+
+import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
+import {
+    getDefaultActionIdAction,
+    getDefaultActionIdDecoder
+} from '../../../services/Notifications/GetDefaultActionId';
 import { actionAddActionToDefault } from '../../../services/useAddActionToDN';
+import { actionAddActionToNotification } from '../../../services/useAddActionToNotification';
 import {
     defaultNotificationBehaviorCreator,
     defaultNotificationsDecoder
 } from '../../../services/useDefaultNotificationBehavior';
-import assertNever from 'assert-never';
 import {
     getNotificationActionsByIdAction,
     getNotificationByIdActionDecoder,
     hasDefaultNotificationDecoder
 } from '../../../services/useGetNotificationActions';
-import { actionRemoveActionFromNotification } from '../../../services/useRemoveActionFromNotification';
-import { actionAddActionToNotification } from '../../../services/useAddActionToNotification';
 import {
-    getDefaultActionIdAction,
-    getDefaultActionIdDecoder
-} from '../../../services/Notifications/GetDefaultActionId';
+    listIntegrationIntegrationDecoder,
+    listIntegrationsActionCreator
+} from '../../../services/useListIntegrations';
+import { actionRemoveActionFromDefault } from '../../../services/useRemoveActionFromDN';
+import { actionRemoveActionFromNotification } from '../../../services/useRemoveActionFromNotification';
 import { createIntegrationActionCreator } from '../../../services/useSaveIntegration';
+import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
+import {
+    Action,
+    DefaultNotificationBehavior,
+    IntegrationRef,
+    Notification,
+    NotificationType
+} from '../../../types/Notification';
 
 interface EditNotificationPagePropsNotification {
     type: 'notification';

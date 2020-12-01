@@ -1,6 +1,7 @@
-import { useReducer } from 'react';
-import { UserIntegration } from '../../../types/Integration';
 import { assertNever } from 'assert-never';
+import { useReducer } from 'react';
+
+import { UserIntegration } from '../../../types/Integration';
 
 enum UseFormModalReducerActionType {
     EDIT = 'edit',

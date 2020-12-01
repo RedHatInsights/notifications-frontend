@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { Rbac } from '@redhat-cloud-services/insights-common-typescript';
-import { Schemas } from '../generated/OpenapiIntegrations';
+import * as React from 'react';
 import { useContext } from 'react';
+
+import { Schemas } from '../generated/OpenapiIntegrations';
 
 export interface AppContext {
     rbac: Rbac;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { RouteProps, Route, Switch } from 'react-router';
+import { Route, RouteProps, Switch } from 'react-router';
 
 import { ErrorPage } from './pages/Error/Page';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';

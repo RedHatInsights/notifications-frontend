@@ -1,8 +1,9 @@
-import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
-import { ServerIntegrationResponse } from '../Integration';
-import { Schemas } from '../../generated/OpenapiNotifications';
-import { filterOutDefaultAction, toIntegration, toUserIntegration } from './IntegrationAdapter';
 import { assertNever } from 'assert-never';
+
+import { Schemas } from '../../generated/OpenapiNotifications';
+import { ServerIntegrationResponse } from '../Integration';
+import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
+import { filterOutDefaultAction, toIntegration, toUserIntegration } from './IntegrationAdapter';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
     if (type === NotificationType.INTEGRATION) {

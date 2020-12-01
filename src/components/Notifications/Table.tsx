@@ -1,4 +1,8 @@
-import * as React from 'react';
+import './Table.scss';
+
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { css } from '@patternfly/react-styles';
+import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
     expandable,
     ICell,
@@ -9,20 +13,17 @@ import {
     TableBody,
     TableHeader
 } from '@patternfly/react-table';
-import { Messages } from '../../properties/Messages';
 import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../utils/getOuiaProps';
-import { Notification } from '../../types/Notification';
-import { style } from 'typestyle';
-import { css } from '@patternfly/react-styles';
-import styles from '@patternfly/react-styles/css/components/Table/table';
-import { ActionComponent } from './ActionComponent';
-import { Button, ButtonVariant } from '@patternfly/react-core';
-import { GroupByEnum } from './Types';
 import { assertNever } from 'assert-never';
+import * as React from 'react';
+import { style } from 'typestyle';
 
-import './Table.scss';
+import { Messages } from '../../properties/Messages';
+import { Notification } from '../../types/Notification';
+import { getOuiaProps } from '../../utils/getOuiaProps';
+import { ActionComponent } from './ActionComponent';
 import { Recipient } from './Recipient';
+import { GroupByEnum } from './Types';
 
 const pfBorderBottomClassName = style({
     borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)'

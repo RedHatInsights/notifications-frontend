@@ -1,10 +1,11 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
-import { ActionTypeahead } from '../ActionTypeahead';
-import { Action, NotificationType } from '../../../../types/Notification';
-import jestMock from 'jest-mock';
 import userEvent from '@testing-library/user-event';
+import jestMock from 'jest-mock';
+import * as React from 'react';
+
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+import { Action, NotificationType } from '../../../../types/Notification';
+import { ActionTypeahead } from '../ActionTypeahead';
 
 describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders the passed action type', () => {

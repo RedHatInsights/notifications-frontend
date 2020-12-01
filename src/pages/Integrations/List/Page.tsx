@@ -1,28 +1,26 @@
-import * as React from 'react';
-
-import {
-    ExporterType,
-    addDangerNotification
-} from '@redhat-cloud-services/insights-common-typescript';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
+import {
+    addDangerNotification,
+    ExporterType } from '@redhat-cloud-services/insights-common-typescript';
+import { format } from 'date-fns';
+import inBrowserDownload from 'in-browser-download';
+import * as React from 'react';
+import { useContext } from 'react';
 
 import { AppContext } from '../../../app/AppContext';
-import { CreatePage } from '../Create/CreatePage';
-import { UserIntegration } from '../../../types/Integration';
-import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { Messages } from '../../../properties/Messages';
-import { format } from 'date-fns';
-import inBrowserDownload from 'in-browser-download';
+import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
+import { UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
+import { CreatePage } from '../Create/CreatePage';
+import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
-import { useContext } from 'react';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
+import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
-import { useListIntegrationsQuery } from '../../../services/useListIntegrations';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 

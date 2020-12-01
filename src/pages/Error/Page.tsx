@@ -1,7 +1,8 @@
-import * as React from 'react';
-import { Messages } from '../../properties/Messages';
-import { withRouter, RouteComponentProps } from 'react-router-dom';
 import { ErrorBoundaryPage } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+import { RouteComponentProps, withRouter } from 'react-router-dom';
+
+import { Messages } from '../../properties/Messages';
 
 type ErrorPageProps = RouteComponentProps<any>;
 

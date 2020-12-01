@@ -1,12 +1,4 @@
-import * as React from 'react';
-import { useCallback, useMemo } from 'react';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
-import {
-    ClearNotificationFilters,
-    NotificationFilterColumn,
-    NotificationFilters,
-    SetNotificationFilters
-} from './Filter';
 import {
     ColumnsMetada,
     ExporterType,
@@ -15,12 +7,21 @@ import {
     useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../utils/getOuiaProps';
-import { GroupBy } from './Table/GroupBy';
-import { GroupByEnum } from './Types';
+import * as React from 'react';
+import { useCallback, useMemo } from 'react';
+
+import { Schemas } from '../../generated/OpenapiNotifications';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
-import { Schemas } from '../../generated/OpenapiNotifications';
+import { getOuiaProps } from '../../utils/getOuiaProps';
+import {
+    ClearNotificationFilters,
+    NotificationFilterColumn,
+    NotificationFilters,
+    SetNotificationFilters
+} from './Filter';
+import { GroupBy } from './Table/GroupBy';
+import { GroupByEnum } from './Types';
 import ApplicationFacet = Schemas.ApplicationFacet;
 
 interface NotificationsToolbarProps extends OuiaComponentProps {

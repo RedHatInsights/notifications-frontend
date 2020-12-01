@@ -1,21 +1,25 @@
-import * as React from 'react';
-import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import { Messages } from '../../../properties/Messages';
-import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
-import { useNotificationFilter } from './useNotificationFilter';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { global_spacer_md } from '@patternfly/react-tokens';
-import { style } from 'typestyle';
-import { NotificationsTable } from '../../../components/Notifications/Table';
-import { Notification } from '../../../types/Notification';
-import { GroupByEnum } from '../../../components/Notifications/Types';
+import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import {
     ExporterType,
     getInsights,
     InsightsEnvDetector,
     RenderIfFalse
 } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+import { style } from 'typestyle';
+
+import { useAppContext } from '../../../app/AppContext';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
+import { NotificationsTable } from '../../../components/Notifications/Table';
+import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
+import { GroupByEnum } from '../../../components/Notifications/Types';
+import { Messages } from '../../../properties/Messages';
+import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
+import { useListNotifications } from '../../../services/useListNotifications';
+import { stagingBetaAndProdBetaEnvironment } from '../../../types/Environments';
+import { Notification } from '../../../types/Notification';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
 import {
     makeEditDefaultAction,
@@ -23,12 +27,9 @@ import {
     makeNoneAction,
     useFormModalReducer
 } from './useFormModalReducer';
-import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
-import { useListNotifications } from '../../../services/useListNotifications';
-import { useNotificationRows } from './useNotificationRows';
-import { stagingBetaAndProdBetaEnvironment } from '../../../types/Environments';
-import { useAppContext } from '../../../app/AppContext';
+import { useNotificationFilter } from './useNotificationFilter';
 import { useNotificationPage } from './useNotificationPage';
+import { useNotificationRows } from './useNotificationRows';
 
 const displayInlineClassName = style({
     display: 'inline'

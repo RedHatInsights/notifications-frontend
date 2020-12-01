@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { global_spacer_md, global_spacer_sm, global_spacer_lg, global_palette_black_300, c_skeleton_BackgroundColor } from '@patternfly/react-tokens';
+import { Button, ButtonVariant, Flex, FlexItem, Skeleton } from '@patternfly/react-core';
+import { c_skeleton_BackgroundColor, global_palette_black_300, global_spacer_lg, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+import { cssRaw, style } from 'typestyle';
+
 import { DefaultNotificationBehavior } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
-import { cssRaw, style } from 'typestyle';
 import { ActionComponent } from './ActionComponent';
-import { Button, ButtonVariant, Flex, FlexItem, Skeleton } from '@patternfly/react-core';
 import { Recipient } from './Recipient';
 
 export interface DefaultBehaviorProps extends OuiaComponentProps {

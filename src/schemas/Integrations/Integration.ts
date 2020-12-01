@@ -1,10 +1,11 @@
 import * as Yup from 'yup';
+
+import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
     IntegrationHttp,
     IntegrationType, NewIntegration,
     NewIntegrationBase, NewIntegrationTemplate
 } from '../../types/Integration';
-import { Schemas } from '../../generated/OpenapiIntegrations';
 
 export const maxIntegrationNameLength = 150;
 

@@ -1,19 +1,18 @@
 import './App.scss';
 
-import * as React from 'react';
-
-import { RouteComponentProps, useLocation, withRouter } from 'react-router';
-
-import { AppContext } from './AppContext';
-import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
-import Config from '../config/Config';
 import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
+import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+import { useIntl } from 'react-intl';
+import { RouteComponentProps, useLocation, withRouter } from 'react-router';
+
+import Config from '../config/Config';
+import messages from '../properties/DefinedMessages';
 import { Routes } from '../Routes';
 import { getSubApp } from '../utils/Basename';
-import messages from '../properties/DefinedMessages';
+import { AppContext } from './AppContext';
 import { useApp } from './useApp';
-import { useIntl } from 'react-intl';
 
 const App: React.FunctionComponent<RouteComponentProps> = () => {
     const intl = useIntl();

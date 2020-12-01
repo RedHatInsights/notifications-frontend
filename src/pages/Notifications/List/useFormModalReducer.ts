@@ -1,6 +1,7 @@
-import { DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 import { assertNever } from 'assert-never';
 import { useReducer } from 'react';
+
+import { DefaultNotificationBehavior, Notification } from '../../../types/Notification';
 
 enum UseFormModalReducerActionType {
     EDIT_NOTIFICATION = 'edit-notification',

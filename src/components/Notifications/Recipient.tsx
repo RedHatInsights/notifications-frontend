@@ -1,8 +1,9 @@
-import * as React from 'react';
-import { Action, NotificationType } from '../../types/Notification';
 import { Label, Tooltip } from '@patternfly/react-core';
-import { style } from 'typestyle';
 import { global_spacer_sm } from '@patternfly/react-tokens';
+import * as React from 'react';
+import { style } from 'typestyle';
+
+import { Action, NotificationType } from '../../types/Notification';
 
 interface RecipientProps {
     action: Action;

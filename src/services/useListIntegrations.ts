@@ -1,10 +1,11 @@
+import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
+import { useQuery } from 'react-fetching-library';
+
 import {
     Operations
 } from '../generated/OpenapiIntegrations';
-import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
-import { useQuery } from 'react-fetching-library';
 import { getEndpointType, toUserIntegrations } from '../types/adapters/IntegrationAdapter';
-import { validationResponseTransformer, validatedResponse } from 'openapi2typescript';
 import { IntegrationType } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {

@@ -1,3 +1,6 @@
+import { assertNever } from 'assert-never';
+
+import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
     Integration,
     IntegrationBase,
@@ -10,8 +13,6 @@ import {
     UserIntegration,
     UserIntegrationType
 } from '../Integration';
-import { Schemas } from '../../generated/OpenapiIntegrations';
-import { assertNever } from 'assert-never';
 
 const getIntegrationType = (type: Schemas.EndpointType | undefined): IntegrationType => {
     switch (type) {

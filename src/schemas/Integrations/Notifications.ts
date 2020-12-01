@@ -1,4 +1,5 @@
 import * as Yup from 'yup';
+
 import { NotificationType } from '../../types/Notification';
 
 const ActionIntegration = Yup.object({

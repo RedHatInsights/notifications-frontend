@@ -1,6 +1,7 @@
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
-import { integrationExporterFactory } from '../Factory';
+
 import { IntegrationExporterCsv } from '../Csv';
+import { integrationExporterFactory } from '../Factory';
 import { IntegrationExporterJson } from '../Json';
 
 describe('src/utils/exporters/Policy/Factory', () => {

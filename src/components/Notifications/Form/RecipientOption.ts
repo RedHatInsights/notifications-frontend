@@ -1,4 +1,5 @@
 import { SelectOptionObject } from '@patternfly/react-core';
+
 import { IntegrationRef } from '../../../types/Notification';
 
 export class RecipientOption implements SelectOptionObject {
