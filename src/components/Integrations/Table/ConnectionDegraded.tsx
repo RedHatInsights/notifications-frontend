@@ -1,7 +1,8 @@
-import * as React from 'react';
-import { ConnectionAlert } from './ConnectionAlert';
 import { AlertVariant } from '@patternfly/react-core';
+import * as React from 'react';
+
 import { IntegrationConnectionAttempt } from '../../../types/Integration';
+import { ConnectionAlert } from './ConnectionAlert';
 
 interface ConnectionDegradedProps {
     attempts: Array<IntegrationConnectionAttempt>;

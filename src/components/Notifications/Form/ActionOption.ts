@@ -1,7 +1,8 @@
 import { SelectOptionObject } from '@patternfly/react-core';
+
+import { Messages } from '../../../properties/Messages';
 import { UserIntegrationType } from '../../../types/Integration';
 import { NotificationType } from '../../../types/Notification';
-import { Messages } from '../../../properties/Messages';
 
 type ActionTypeOrIntegration = {
     kind: 'integration';

@@ -1,8 +1,9 @@
+import { ActionModalError, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { UserIntegration, NewUserIntegration } from '../../../types/Integration';
+
 import { IntegrationSaveModal } from '../../../components/Integrations/SaveModal';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
-import { addSuccessNotification, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
+import { NewUserIntegration, UserIntegration } from '../../../types/Integration';
 
 interface CreatePageProps {
     isEdit: boolean;

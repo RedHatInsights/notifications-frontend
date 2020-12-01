@@ -1,11 +1,12 @@
-import * as React from 'react';
-import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { ActionOption } from './ActionOption';
 import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import * as React from 'react';
+
 import { isStagingBetaOrProdBeta } from '../../../types/Environments';
 import { UserIntegrationType } from '../../../types/Integration';
+import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { ActionOption } from './ActionOption';
 
 const getSelectOptions = () => [
     ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION, NotificationType.PLATFORM_ALERT ] as Array<ActionNotify['type']>)

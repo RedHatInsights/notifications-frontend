@@ -1,14 +1,13 @@
+import { act, render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ouiaSelectors } from 'insights-common-typescript-dev';
+import jestMock from 'jest-mock';
 import * as React from 'react';
 
-import { act, render, screen } from '@testing-library/react';
-
-import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
-import { IntegrationRef } from '../../../../types/Notification';
-import { UserIntegrationType } from '../../../../types/Integration';
-import jestMock from 'jest-mock';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
-import userEvent from '@testing-library/user-event';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+import { UserIntegrationType } from '../../../../types/Integration';
+import { IntegrationRef } from '../../../../types/Notification';
+import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
 
 const ref1: IntegrationRef = {
     id: '1234',

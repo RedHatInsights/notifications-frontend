@@ -1,5 +1,6 @@
-import * as React from 'react';
 import { Checkbox, FormTextInput, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 

@@ -1,12 +1,12 @@
-import * as React from 'react';
-import { SaveModal, SaveModalProps } from '@redhat-cloud-services/insights-common-typescript';
-
-import { Formik, useFormikContext } from 'formik';
-import { NotificationForm } from './Form';
-import { DefaultNotificationBehavior, IntegrationRef, Notification } from '../../types/Notification';
 import { ModalVariant } from '@patternfly/react-core';
-import { UserIntegrationType } from '../../types/Integration';
+import { SaveModal, SaveModalProps } from '@redhat-cloud-services/insights-common-typescript';
+import { Formik, useFormikContext } from 'formik';
+import * as React from 'react';
+
 import { WithActions } from '../../schemas/Integrations/Notifications';
+import { UserIntegrationType } from '../../types/Integration';
+import { DefaultNotificationBehavior, IntegrationRef, Notification } from '../../types/Notification';
+import { NotificationForm } from './Form';
 
 type DataFetcher = {
     getRecipients: (search: string) => Promise<Array<string>>;

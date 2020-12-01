@@ -1,10 +1,10 @@
-import * as React from 'react';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { global_danger_color_100, global_spacer_xs, global_success_color_200 } from '@patternfly/react-tokens';
 import { toUtc } from '@redhat-cloud-services/insights-common-typescript';
-import format from 'date-fns/format';
-import { ExclamationCircleIcon, CheckCircleIcon } from '@patternfly/react-icons';
-import { global_spacer_xs, global_success_color_200, global_danger_color_100 } from '@patternfly/react-tokens';
-import { style } from 'typestyle';
 import { assertNever } from 'assert-never';
+import format from 'date-fns/format';
+import * as React from 'react';
+import { style } from 'typestyle';
 
 export interface ConnectionAttemptProps {
     type: ConnectionAttemptType;

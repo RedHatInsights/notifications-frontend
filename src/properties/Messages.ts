@@ -1,8 +1,8 @@
-import { createIntl, createIntlCache } from 'react-intl';
-
-import { DeepReadonly } from 'ts-essentials';
-import { IntegrationType } from '../types/Integration';
 import { intlHelper } from '@redhat-cloud-services/frontend-components-translations';
+import { createIntl, createIntlCache } from 'react-intl';
+import { DeepReadonly } from 'ts-essentials';
+
+import { IntegrationType } from '../types/Integration';
 import messages from './DefinedMessages';
 
 const cache = createIntlCache();

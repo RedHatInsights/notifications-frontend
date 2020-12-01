@@ -1,4 +1,3 @@
-import { NotificationFilterColumn, NotificationFilters } from '../../../components/Notifications/Filter';
 import {
     arrayValue,
     Filter,
@@ -7,6 +6,8 @@ import {
     Sort
 } from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+
+import { NotificationFilterColumn, NotificationFilters } from '../../../components/Notifications/Filter';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import ApplicationFacet = Schemas.ApplicationFacet;
 

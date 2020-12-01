@@ -1,6 +1,7 @@
-import { UserIntegration } from '../../../types/Integration';
 import { useCallback } from 'react';
+
 import { IntegrationRow } from '../../../components/Integrations/Table';
+import { UserIntegration } from '../../../types/Integration';
 
 interface ActionResolverParams {
     onEdit: (integration: UserIntegration) => void;

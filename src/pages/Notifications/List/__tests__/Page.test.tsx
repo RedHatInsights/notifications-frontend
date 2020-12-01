@@ -1,12 +1,13 @@
-import * as React from 'react';
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { NotificationsListPage } from '../Page';
+import fetchMock from 'fetch-mock';
+import { ouiaSelectors } from 'insights-common-typescript-dev';
+import * as React from 'react';
+
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import fetchMock from 'fetch-mock';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
+import { NotificationsListPage } from '../Page';
 
 describe('src/pages/Notifications/List/Page', () => {
 
@@ -30,7 +31,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.EventType>
         });
         render(
-            <NotificationsListPage/>
+            <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper()
             }
@@ -53,7 +54,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -82,7 +83,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -117,7 +118,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -155,7 +156,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.EventType>
         });
         render(
-            <NotificationsListPage/>
+            <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper()
             }
@@ -189,7 +190,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -227,7 +228,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -271,7 +272,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }

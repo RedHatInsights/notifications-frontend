@@ -1,14 +1,13 @@
-import * as React from 'react';
-
-import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
+import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { fetchRBAC, Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { act, render, screen } from '@testing-library/react';
-
-import App from '../App';
-import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import messages from '../../../locales/data.json';
 import fetchMock from 'fetch-mock';
+import * as React from 'react';
+
+import messages from '../../../locales/data.json';
+import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../test/TestUtils';
+import App from '../App';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
     const real = jest.requireActual('@redhat-cloud-services/insights-common-typescript');
@@ -67,7 +66,7 @@ describe('src/app/App', () => {
         let resolver;
         fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', new Promise(resolv => resolver = resolv));
         render(
-            <App/>,
+            <App />,
             {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {

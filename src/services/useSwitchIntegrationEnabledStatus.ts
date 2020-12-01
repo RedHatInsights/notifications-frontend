@@ -1,8 +1,9 @@
-import { Integration, ServerIntegrationResponse } from '../types/Integration';
+import { useMutation } from 'react-fetching-library';
+
 import {
     Operations
 } from '../generated/OpenapiIntegrations';
-import { useMutation } from 'react-fetching-library';
+import { Integration, ServerIntegrationResponse } from '../types/Integration';
 
 export const switchIntegrationEnabledStatusActionCreator = (integration: Integration) => {
     if (integration.isEnabled) {

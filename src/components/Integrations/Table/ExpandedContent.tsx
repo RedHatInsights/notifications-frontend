@@ -1,9 +1,10 @@
-import * as React from 'react';
-import { UserIntegration } from '../../../types/Integration';
 import { TextContent, TextList, TextListItem, TextListItemVariants, TextListVariants } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import * as React from 'react';
 import { style } from 'typestyle';
+
+import { UserIntegration } from '../../../types/Integration';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
 
 const titleClass = style({
     fontWeight: 400

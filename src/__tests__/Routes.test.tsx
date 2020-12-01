@@ -1,14 +1,13 @@
-import * as React from 'react';
-
-import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
-import { render, screen } from '@testing-library/react';
-
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import { MemoryRouter } from 'react-router-dom';
-import { Routes } from '../Routes';
+import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import * as React from 'react';
+import { MemoryRouter } from 'react-router-dom';
+
 import messages from '../../locales/data.json';
+import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../test/TestUtils';
+import { Routes } from '../Routes';
 
 describe('src/Routes', () => {
     it('Should throw when no id=root element found', () => {
@@ -21,7 +20,7 @@ describe('src/Routes', () => {
         const mockConsole = jest.spyOn(console, 'error');
         mockConsole.mockImplementation(() => '');
 
-        expect(() => render(<Routes/>, {
+        expect(() => render(<Routes />, {
             wrapper: LocalWrapper
         })).toThrowError();
 
@@ -47,7 +46,7 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<Routes/>, {
+            render(<Routes />, {
                 wrapper: Wrapper
             });
 
@@ -65,7 +64,7 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<IntlProvider locale={ navigator.language } messages={ messages }><Routes/></IntlProvider>, {
+            render(<IntlProvider locale={ navigator.language } messages={ messages }><Routes /></IntlProvider>, {
                 wrapper: Wrapper
             });
 
@@ -84,7 +83,7 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<Routes/>, {
+            render(<Routes />, {
                 wrapper: Wrapper
             });
 

@@ -1,17 +1,18 @@
-import { Notification } from '../../../types/Notification';
+import { assertNever } from 'assert-never';
+import pLimit from 'p-limit';
 import { default as React, useCallback, useContext, useEffect, useState } from 'react';
+import { ClientContext } from 'react-fetching-library';
+import { usePrevious } from 'react-use';
+
 import {
     NotificationRowGroupedByApplication,
     NotificationRowGroupedByNone,
     NotificationRows
 } from '../../../components/Notifications/Table';
-import { usePrevious } from 'react-use';
-import { ClientContext } from 'react-fetching-library';
-import pLimit from 'p-limit';
 import { GroupByEnum } from '../../../components/Notifications/Types';
-import { assertNever } from 'assert-never';
 import { getNotificationActionsByIdAction } from '../../../services/useGetNotificationActions';
 import { toActions, usesDefault } from '../../../types/adapters/NotificationAdapter';
+import { Notification } from '../../../types/Notification';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 

@@ -1,8 +1,9 @@
-import * as React from 'react';
-
-import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
 import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Spinner, Switch, Text, Title } from '@patternfly/react-core';
+import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
+import { css } from '@patternfly/react-styles';
+import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
+    expandable,
     IActions,
     IActionsResolver,
     ICell,
@@ -11,10 +12,7 @@ import {
     RowWrapperProps,
     Table,
     TableBody,
-    TableHeader,
-    expandable
-} from '@patternfly/react-table';
-import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
+    TableHeader } from '@patternfly/react-table';
 import {
     global_danger_color_100,
     global_spacer_lg,
@@ -23,20 +21,20 @@ import {
     global_success_color_200,
     global_warning_color_200
 } from '@patternfly/react-tokens';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { assertNever } from 'assert-never';
+import { important } from 'csx';
+import * as React from 'react';
+import { useIntl } from 'react-intl';
+import { style } from 'typestyle';
 
+import messages from '../../properties/DefinedMessages';
+import { Messages } from '../../properties/Messages';
+import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
+import { getOuiaProps } from '../../utils/getOuiaProps';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
-import { Messages } from '../../properties/Messages';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { assertNever } from 'assert-never';
-import { css } from '@patternfly/react-styles';
-import { getOuiaProps } from '../../utils/getOuiaProps';
-import { important } from 'csx';
-import messages from '../../properties/DefinedMessages';
-import { style } from 'typestyle';
-import styles from '@patternfly/react-styles/css/components/Table/table';
-import { useIntl } from 'react-intl';
 
 type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 

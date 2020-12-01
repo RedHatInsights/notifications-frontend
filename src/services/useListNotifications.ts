@@ -1,9 +1,10 @@
 import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
-import { Operations } from '../generated/OpenapiNotifications';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useQuery } from 'react-fetching-library';
-import { validationResponseTransformer, validatedResponse } from 'openapi2typescript';
-import { toNotifications } from '../types/adapters/NotificationAdapter';
+
 import { Schemas } from '../generated/OpenapiIntegrations';
+import { Operations } from '../generated/OpenapiNotifications';
+import { toNotifications } from '../types/adapters/NotificationAdapter';
 import SetUUID = Schemas.SetUUID;
 
 export const listNotificationsActionCreator = (pager?: Page) => {

@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { Dropdown, DropdownItem, DropdownToggle } from '@patternfly/react-core';
 import { CaretDownIcon } from '@patternfly/react-icons';
 import camelcase from 'camelcase';
+import * as React from 'react';
+
 import { GroupByEnum } from '../Types';
 
 export interface GroupByProps {

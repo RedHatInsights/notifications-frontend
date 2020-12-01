@@ -1,5 +1,6 @@
-import * as React from 'react';
 import { DeleteModal, DeleteModalProps } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+
 import { UserIntegration } from '../../types/Integration';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';

@@ -1,14 +1,15 @@
-import { UserIntegration } from '../../../types/Integration';
-import { useCallback, useContext, useEffect, useState } from 'react';
-import { IntegrationRow } from '../../../components/Integrations/Table';
-import { usePrevious } from 'react-use';
-import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
 import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
-import { Messages } from '../../../properties/Messages';
-import { format } from 'react-string-format';
-import { listIntegrationHistoryActionCreator } from '../../../services/useListIntegrationHistory';
-import { ClientContext } from 'react-fetching-library';
 import pLimit from 'p-limit';
+import { useCallback, useContext, useEffect, useState } from 'react';
+import { ClientContext } from 'react-fetching-library';
+import { format } from 'react-string-format';
+import { usePrevious } from 'react-use';
+
+import { IntegrationRow } from '../../../components/Integrations/Table';
+import { Messages } from '../../../properties/Messages';
+import { listIntegrationHistoryActionCreator } from '../../../services/useListIntegrationHistory';
+import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
+import { UserIntegration } from '../../../types/Integration';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 

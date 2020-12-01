@@ -1,9 +1,10 @@
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
+import { useQuery } from 'react-fetching-library';
+
 import {
     Operations
 } from '../generated/OpenapiNotifications';
-import { useQuery } from 'react-fetching-library';
-import { validationResponseTransformer, validatedResponse } from 'openapi2typescript';
 import { toActions } from '../types/adapters/NotificationAdapter';
 
 export const defaultNotificationBehaviorCreator = () => Operations.NotificationServiceGetEndpointsForDefaults.actionCreator();

@@ -1,6 +1,6 @@
-import { ActionOption } from '../ActionOption';
 import { UserIntegrationType } from '../../../../types/Integration';
 import { NotificationType } from '../../../../types/Notification';
+import { ActionOption } from '../ActionOption';
 
 describe('src/components/Notifications/Form/ActionOption', () => {
     it('CompareTo returns equal for the same object', () => {

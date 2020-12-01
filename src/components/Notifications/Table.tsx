@@ -1,4 +1,8 @@
-import * as React from 'react';
+import './Table.scss';
+
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { css } from '@patternfly/react-styles';
+import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
     expandable,
     ICell,
@@ -9,20 +13,17 @@ import {
     TableBody,
     TableHeader
 } from '@patternfly/react-table';
-import { Messages } from '../../properties/Messages';
 import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { getOuiaProps } from '../../utils/getOuiaProps';
-import { Notification } from '../../types/Notification';
-import { style } from 'typestyle';
-import { css } from '@patternfly/react-styles';
-import styles from '@patternfly/react-styles/css/components/Table/table';
-import { ActionComponent } from './ActionComponent';
-import { Button, ButtonVariant } from '@patternfly/react-core';
-import { GroupByEnum } from './Types';
 import { assertNever } from 'assert-never';
+import * as React from 'react';
+import { style } from 'typestyle';
 
-import './Table.scss';
+import { Messages } from '../../properties/Messages';
+import { Notification } from '../../types/Notification';
+import { getOuiaProps } from '../../utils/getOuiaProps';
+import { ActionComponent } from './ActionComponent';
 import { Recipient } from './Recipient';
+import { GroupByEnum } from './Types';
 
 const pfBorderBottomClassName = style({
     borderBottom: 'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)'
@@ -191,7 +192,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span>{ firstAction && <Recipient action={ firstAction }/> }</span></>,
+                    title: <><span>{ firstAction && <Recipient action={ firstAction } /> }</span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -246,7 +247,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                         }
                     },
                     {
-                        title: <Recipient action={ notification.actions[i] }/>,
+                        title: <Recipient action={ notification.actions[i] } />,
                         props: {
                             className: classNames,
                             style: cssStyle
@@ -340,8 +341,8 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
                 onCollapse={ onCollapseHandler }
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
             >
-                <TableHeader/>
-                <TableBody/>
+                <TableHeader />
+                <TableBody />
             </Table>
         </div>
     );

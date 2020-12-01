@@ -1,12 +1,13 @@
-import * as React from 'react';
 import { render, screen } from '@testing-library/react';
-import jestMock from 'jest-mock';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
-import { IntegrationDeleteModal } from '../DeleteModal';
-import { UserIntegrationType } from '../../../types/Integration';
 import userEvent from '@testing-library/user-event';
+import { ouiaSelectors } from 'insights-common-typescript-dev';
+import jestMock from 'jest-mock';
+import * as React from 'react';
+
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
+import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationDeleteModal } from '../DeleteModal';
 
 describe('src/components/Integrations/DeleteModal', () => {
     it('Has Remove integration title', () => {

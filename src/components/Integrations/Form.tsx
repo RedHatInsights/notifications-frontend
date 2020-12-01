@@ -1,4 +1,4 @@
-import * as React from 'react';
+import { FormSelectOption } from '@patternfly/react-core';
 import {
     Form,
     FormSelect,
@@ -6,18 +6,18 @@ import {
     OuiaComponentProps,
     ouiaIdConcat
 } from '@redhat-cloud-services/insights-common-typescript';
-import { FormSelectOption } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
+import * as React from 'react';
 
+import { Messages } from '../../properties/Messages';
 import { maxIntegrationNameLength } from '../../schemas/Integrations/Integration';
 import { IntegrationType, NewUserIntegration } from '../../types/Integration';
-import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
-import { Messages } from '../../properties/Messages';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 
 const options = [ IntegrationType.WEBHOOK ]
 .map(type => Messages.components.integrations.integrationType[type])
-.map(label => (<FormSelectOption key={ label } label={ label }/>));
+.map(label => (<FormSelectOption key={ label } label={ label } />));
 
 export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (props) => {
 

@@ -1,5 +1,5 @@
-import { RecipientOption } from '../RecipientOption';
 import { UserIntegrationType } from '../../../../types/Integration';
+import { RecipientOption } from '../RecipientOption';
 
 describe('src/components/Notifications/Form/RecipientOption', () => {
     it('CompareTo returns equal for the same object', () => {

@@ -1,12 +1,12 @@
-import * as React from 'react';
 import {
+    ActionModalError,
     addSuccessNotification,
-    OuiaComponentProps,
-    ActionModalError
-} from '@redhat-cloud-services/insights-common-typescript';
-import { UserIntegration } from '../../../types/Integration';
-import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
+    OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import * as React from 'react';
+
 import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteModal';
+import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
+import { UserIntegration } from '../../../types/Integration';
 
 interface IntegrationDeleteModalPageProps extends OuiaComponentProps {
     onClose: (deleted: boolean) => void;

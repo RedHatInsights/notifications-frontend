@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { SaveModal, SaveModalProps, ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
-
-import { UserIntegration, NewUserIntegration } from '../../types/Integration';
-import { Messages } from '../../properties/Messages';
+import { ActionModalError, SaveModal, SaveModalProps } from '@redhat-cloud-services/insights-common-typescript';
 import { Formik, useFormikContext } from 'formik';
-import { IntegrationsForm } from './Form';
+import * as React from 'react';
+
+import { Messages } from '../../properties/Messages';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
+import { NewUserIntegration, UserIntegration } from '../../types/Integration';
+import { IntegrationsForm } from './Form';
 
 type PartialIntegration = Partial<UserIntegration>;
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
@@ -39,7 +39,7 @@ const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationS
             isSaving={ isSubmitting }
             onSave={ onSaveClicked }
             title={ pageTitle }
-            content={ <IntegrationsForm/> }
+            content={ <IntegrationsForm /> }
             onClose={ props.onClose }
             error={ props.error }
             actionButtonDisabled={ !isValid }

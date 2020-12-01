@@ -1,4 +1,4 @@
-import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
 import {
     Integration,
     IntegrationHttp,
@@ -7,7 +7,7 @@ import {
     NewIntegrationTemplate,
     ServerIntegrationResponse
 } from '../../Integration';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
+import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
 
 describe('src/types/adapters/IntegrationAdapter', () => {
     describe('toIntegration', () => {
