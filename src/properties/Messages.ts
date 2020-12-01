@@ -78,7 +78,7 @@ const MutableMessages = {
         },
         notifications: {
             types: {
-                EMAIL_SUBSCRIPTION: 'Send to email',
+                EMAIL_SUBSCRIPTION: 'Send email',
                 DRAWER: 'Send to notification drawer',
                 INTEGRATION: 'Integration',
                 PLATFORM_ALERT: 'Platform alert'
