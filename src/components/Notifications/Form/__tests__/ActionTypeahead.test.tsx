@@ -17,7 +17,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         render(
-            <ActionTypeahead action={ action } onSelected={ jestMock.fn() }/>
+            <ActionTypeahead action={ action } onSelected={ jestMock.fn() } />
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeVisible();
@@ -32,7 +32,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         render(
-            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ jestMock.fn() }/>
+            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ jestMock.fn() } />
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeDisabled();
@@ -48,7 +48,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         };
         const actionSelected = jestMock.fn();
         render(
-            <ActionTypeahead action={ action } onSelected={ actionSelected }/>
+            <ActionTypeahead action={ action } onSelected={ actionSelected } />
         );
 
         userEvent.click(screen.getByRole('button'));
@@ -67,7 +67,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         };
         const actionSelected = jestMock.fn();
         render(
-            <ActionTypeahead action={ action } onSelected={ actionSelected }/>
+            <ActionTypeahead action={ action } onSelected={ actionSelected } />
         );
 
         userEvent.click(screen.getByRole('button'));

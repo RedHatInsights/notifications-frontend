@@ -35,11 +35,11 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props)
     switch (props.actionType) {
         case NotificationType.DRAWER:
         case NotificationType.PLATFORM_ALERT:
-            return <BellIcon/>;
+            return <BellIcon />;
         case NotificationType.EMAIL_SUBSCRIPTION:
-            return <EnvelopeIcon/>;
+            return <EnvelopeIcon />;
         case NotificationType.INTEGRATION:
-            return <WebhookIcon/>;
+            return <WebhookIcon />;
         default:
             assertNever(props.actionType);
     }
@@ -56,7 +56,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
     if (props.loading) {
         return (
             <ActionComponentWrapper { ...props }>
-                <Spinner size="md"/>
+                <Spinner size="md" />
             </ActionComponentWrapper>
         );
     }
@@ -90,7 +90,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
 
     return (
         <ActionComponentWrapper { ...props }>
-            <ActionTypeToIcon actionType={ props.action.type }/>
+            <ActionTypeToIcon actionType={ props.action.type } />
             <span className={ marginLeftClassName }>{ Messages.components.notifications.types[props.action.type] }</span>
             { props.action.type === NotificationType.INTEGRATION && (
                 <span>: { Messages.components.integrations.integrationType[props.action.integration.type] }</span>

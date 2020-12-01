@@ -192,7 +192,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><span>{ firstAction && <Recipient action={ firstAction }/> }</span></>,
+                    title: <><span>{ firstAction && <Recipient action={ firstAction } /> }</span></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -247,7 +247,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                         }
                     },
                     {
-                        title: <Recipient action={ notification.actions[i] }/>,
+                        title: <Recipient action={ notification.actions[i] } />,
                         props: {
                             className: classNames,
                             style: cssStyle
@@ -341,8 +341,8 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
                 onCollapse={ onCollapseHandler }
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
             >
-                <TableHeader/>
-                <TableBody/>
+                <TableHeader />
+                <TableBody />
             </Table>
         </div>
     );

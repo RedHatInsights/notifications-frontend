@@ -44,11 +44,11 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
                 },
                 {
                     value: 'Enabled',
-                    label: <><EnabledIntegrationIcon/> <span className={ enabledTextClassName }>Enabled</span></>
+                    label: <><EnabledIntegrationIcon /> <span className={ enabledTextClassName }>Enabled</span></>
                 },
                 {
                     value: 'Disabled',
-                    label: <><DisabledIntegrationIcon/> <span className={ enabledTextClassName }>Disabled</span></>
+                    label: <><DisabledIntegrationIcon /> <span className={ enabledTextClassName }>Disabled</span></>
                 }
             ],
             default: 'all',

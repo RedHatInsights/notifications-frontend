@@ -20,7 +20,7 @@ describe('src/Routes', () => {
         const mockConsole = jest.spyOn(console, 'error');
         mockConsole.mockImplementation(() => '');
 
-        expect(() => render(<Routes/>, {
+        expect(() => render(<Routes />, {
             wrapper: LocalWrapper
         })).toThrowError();
 
@@ -46,7 +46,7 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<Routes/>, {
+            render(<Routes />, {
                 wrapper: Wrapper
             });
 
@@ -64,7 +64,7 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<IntlProvider locale={ navigator.language } messages={ messages }><Routes/></IntlProvider>, {
+            render(<IntlProvider locale={ navigator.language } messages={ messages }><Routes /></IntlProvider>, {
                 wrapper: Wrapper
             });
 
@@ -83,7 +83,7 @@ describe('src/Routes', () => {
                 },
                 getLocation
             });
-            render(<Routes/>, {
+            render(<Routes />, {
                 wrapper: Wrapper
             });
 

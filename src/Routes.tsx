@@ -46,7 +46,7 @@ const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: Insig
 
     return (
         <ErrorPage>
-            <Route { ...rest }/>
+            <Route { ...rest } />
         </ErrorPage>
     );
 };

@@ -56,7 +56,7 @@ describe('src/pages/Error/Page', () => {
             throw new Error('surprise');
         };
 
-        render(<ErrorPage><Surprise/></ErrorPage>, {
+        render(<ErrorPage><Surprise /></ErrorPage>, {
             wrapper: AppWrapper
         });
 

@@ -127,7 +127,7 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
             <table className={ tableClassName }>
                 { props.type === 'notification' && (
                     <>
-                        <thead/>
+                        <thead />
                         <tbody>
                             <tr>
                                 <td>

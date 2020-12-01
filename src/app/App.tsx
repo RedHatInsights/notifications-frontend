@@ -32,7 +32,7 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
 
     if (!rbac || !applications) {
         return (
-            <AppSkeleton/>
+            <AppSkeleton />
         );
     }
 
@@ -43,8 +43,8 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
         } }>
             { rbac.canReadAll ? (
                 <>
-                    <NotificationsPortal/>
-                    <Routes/>
+                    <NotificationsPortal />
+                    <Routes />
                 </>
             ) : (
                 <NotAuthorized serviceName={ serviceName } />

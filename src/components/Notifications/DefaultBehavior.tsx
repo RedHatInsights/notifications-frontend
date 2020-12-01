@@ -67,16 +67,16 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                     { props.loading ? (
                         <>
                             <tr>
-                                <td><Skeleton width="200px"/></td>
-                                <td><Skeleton width="200px"/></td>
+                                <td><Skeleton width="200px" /></td>
+                                <td><Skeleton width="200px" /></td>
                             </tr>
                             <tr>
-                                <td><Skeleton width="200px"/></td>
-                                <td><Skeleton width="200px"/></td>
+                                <td><Skeleton width="200px" /></td>
+                                <td><Skeleton width="200px" /></td>
                             </tr>
                             <tr>
-                                <td><Skeleton width="200px"/></td>
-                                <td><Skeleton width="200px"/></td>
+                                <td><Skeleton width="200px" /></td>
+                                <td><Skeleton width="200px" /></td>
                             </tr>
                         </>
                     ) : props.defaultBehavior === undefined ? (
@@ -85,8 +85,8 @@ export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (p
                         props.defaultBehavior?.actions.map((a, index) => {
                             return (
                                 <tr key={ index }>
-                                    <td><ActionComponent isDefault={ false } action={ a }/></td>
-                                    <td> <Recipient action={ a } hasOutline/></td>
+                                    <td><ActionComponent isDefault={ false } action={ a } /></td>
+                                    <td> <Recipient action={ a } hasOutline /></td>
                                 </tr>
                             );
                         })

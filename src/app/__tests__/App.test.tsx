@@ -66,7 +66,7 @@ describe('src/app/App', () => {
         let resolver;
         fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', new Promise(resolv => resolver = resolv));
         render(
-            <App/>,
+            <App />,
             {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {

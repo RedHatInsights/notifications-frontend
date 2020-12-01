@@ -12,7 +12,7 @@ export interface IntegrationTypeForm extends OuiaComponentProps {
 export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
     switch (props.type) {
         case UserIntegrationType.WEBHOOK:
-            return <IntegrationTypeHttpForm { ...props }/>;
+            return <IntegrationTypeHttpForm { ...props } />;
         default:
             assertNever(props.type);
     }

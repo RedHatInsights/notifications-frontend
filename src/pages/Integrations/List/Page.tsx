@@ -93,7 +93,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     return (
         <>
             <PageHeader>
-                <PageHeaderTitle title={ Messages.pages.integrations.list.title }/>
+                <PageHeaderTitle title={ Messages.pages.integrations.list.title } />
             </PageHeader>
             <Main>
                 <Section className='pf-c-page__main-section pf-m-light'>

@@ -118,7 +118,7 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                     onClick={ props.onRemove }
                     variant={ ButtonVariant.plain }
                 >
-                    <TimesIcon/>
+                    <TimesIcon />
                 </Button>
             </td>
         </tr>
@@ -133,7 +133,7 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
                 <tr>
                     <th>Action</th>
                     <th>Recipient</th>
-                    <th/>
+                    <th />
                 </tr>
             </thead>
             <tbody>

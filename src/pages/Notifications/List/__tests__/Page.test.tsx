@@ -31,7 +31,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.EventType>
         });
         render(
-            <NotificationsListPage/>
+            <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper()
             }
@@ -54,7 +54,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -83,7 +83,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -118,7 +118,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -156,7 +156,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.EventType>
         });
         render(
-            <NotificationsListPage/>
+            <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper()
             }
@@ -190,7 +190,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -228,7 +228,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -272,7 +272,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             });
             render(
-                <NotificationsListPage/>
+                <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }

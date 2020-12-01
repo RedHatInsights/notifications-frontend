@@ -39,7 +39,7 @@ const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationS
             isSaving={ isSubmitting }
             onSave={ onSaveClicked }
             title={ pageTitle }
-            content={ <IntegrationsForm/> }
+            content={ <IntegrationsForm /> }
             onClose={ props.onClose }
             error={ props.error }
             actionButtonDisabled={ !isValid }

@@ -107,7 +107,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                 exportConfig={ exportConfig }
             />
             { props.children }
-            <PrimaryToolbar/>
+            <PrimaryToolbar />
         </div>
     );
 };
