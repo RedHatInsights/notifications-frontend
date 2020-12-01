@@ -1,19 +1,12 @@
 import * as React from 'react';
-import {
-    Main,
-    PageHeader,
-    PageHeaderTitle,
-    Section
-} from '@redhat-cloud-services/frontend-components';
+import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import { Messages } from '../../../properties/Messages';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useNotificationFilter } from './useNotificationFilter';
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { style } from 'typestyle';
-import {
-    NotificationsTable
-} from '../../../components/Notifications/Table';
+import { NotificationsTable } from '../../../components/Notifications/Table';
 import { Notification } from '../../../types/Notification';
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import {
@@ -34,6 +27,8 @@ import { useDefaultNotificationBehavior } from '../../../services/useDefaultNoti
 import { useListNotifications } from '../../../services/useListNotifications';
 import { useNotificationRows } from './useNotificationRows';
 import { stagingBetaAndProdBetaEnvironment } from '../../../types/Environments';
+import { useAppContext } from '../../../app/AppContext';
+import { useNotificationPage } from './useNotificationPage';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -51,14 +46,17 @@ const emptyArray = [];
 export const NotificationsListPage: React.FunctionComponent = () => {
 
     const defaultNotificationBehavior = useDefaultNotificationBehavior();
+    const { applications } = useAppContext();
 
-    const notificationsFilter = useNotificationFilter();
+    const notificationsFilter = useNotificationFilter(applications.map(a => a.label.toString()));
     const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.Application);
     const groupBySelected = React.useCallback((selected: GroupByEnum) => {
         setGroupBy(selected);
     }, [ setGroupBy ]);
 
-    const useNotifications = useListNotifications();
+    const notificationPage = useNotificationPage(notificationsFilter.debouncedFilters, applications, 10);
+
+    const useNotifications = useListNotifications(notificationPage.page);
     const {
         rows: notificationRows,
         onCollapse
@@ -127,6 +125,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                         filters={ notificationsFilter.filters }
                         setFilters={ notificationsFilter.setFilters }
                         clearFilter={ notificationsFilter.clearFilter }
+                        appFilterOptions={ applications }
                         groupBy={ groupBy }
                         onGroupBySelected={ groupBySelected }
                         onExport={ onExport }

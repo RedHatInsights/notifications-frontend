@@ -1,13 +1,20 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useHistory } from 'react-router-dom';
 import { waitForInsights, Rbac, fetchRBAC } from '@redhat-cloud-services/insights-common-typescript';
 import Config from '../config/Config';
 import { AppContext } from './AppContext';
+import { useGetApplications } from '../services/Notifications/GetApplications';
 
-export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'rbac'>> => {
+export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pick<AppContext, 'rbac' | 'applications'>> => {
 
     const history = useHistory();
     const [ rbac, setRbac ] = useState<Rbac | undefined>(undefined);
+    const getApplications = useGetApplications();
+
+    const applications = useMemo(
+        () => getApplications.payload?.type === 'Response200' ? getApplications.payload.value : undefined,
+        [ getApplications.payload ]
+    );
 
     useEffect(() => {
         waitForInsights().then((insights) => {
@@ -35,6 +42,7 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
     }, []);
 
     return {
-        rbac
+        rbac,
+        applications
     };
 };

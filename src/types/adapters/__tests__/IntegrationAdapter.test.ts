@@ -1,6 +1,7 @@
 import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
 import {
-    Integration, IntegrationHttp,
+    Integration,
+    IntegrationHttp,
     IntegrationType,
     NewIntegration,
     NewIntegrationTemplate,
@@ -164,7 +165,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     properties: {
                         url: 'https://my-cool-webhook.com',
                         disable_ssl_verification: false,
-                        method: 'GET' as const,
+                        method: Schemas.HttpType.Enum.GET,
                         secret_token: ''
                     }
                 },
@@ -177,7 +178,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     properties: {
                         url: 'https://foobarbaz.com',
                         disable_ssl_verification: false,
-                        method: 'GET' as const,
+                        method: Schemas.HttpType.Enum.GET,
                         secret_token: ''
                     }
                 }

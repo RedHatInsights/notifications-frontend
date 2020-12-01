@@ -1,26 +1,37 @@
-import { useFilters, useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
+import { useFilters, useUrlStateString, useUrlStateMultipleOptions } from '@redhat-cloud-services/insights-common-typescript';
 import { NotificationFilterColumn } from '../../../components/Notifications/Filter';
 import { assertNever } from 'assert-never';
+import { useMemo } from 'react';
 
 const DEBOUNCE_MS = 250;
 
-const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
-const useUrlStateApplication = (defaultValue?: string) => useUrlStateString('app', defaultValue);
-const useUrlStateAction = (defaultValue?: string) => useUrlStateString('action', defaultValue);
+export const useNotificationFilter = (initialAppOptions: Array<string>, debounce = DEBOUNCE_MS) => {
+    const useStateFactory = useMemo(() => {
+        const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
+        const useUrlStateApplication = (defaultValue?: Array<string>) => useUrlStateMultipleOptions(
+            'app',
+            initialAppOptions,
+            defaultValue
+        );
+        const useUrlStateAction = (defaultValue?: string) => useUrlStateString('action', defaultValue);
 
-const useStateFactory = (column: NotificationFilterColumn) => {
-    switch (column) {
-        case NotificationFilterColumn.NAME:
-            return useUrlStateName;
-        case NotificationFilterColumn.ACTION:
-            return useUrlStateAction;
-        case NotificationFilterColumn.APPLICATION:
-            return useUrlStateApplication;
-        default:
-            assertNever(column);
-    }
-};
+        const useStateFactoryInternal = (column: NotificationFilterColumn) => {
+            switch (column) {
+                case NotificationFilterColumn.NAME:
+                    return useUrlStateName;
+                case NotificationFilterColumn.ACTION:
+                    return useUrlStateAction;
+                case NotificationFilterColumn.APPLICATION:
+                    return useUrlStateApplication;
+                default:
+                    assertNever(column);
+            }
+        };
 
-export const useNotificationFilter = (debounce = DEBOUNCE_MS) => {
+        return useStateFactoryInternal;
+        // This is an init param, so it doesn't need to recompute on change.
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
     return useFilters(NotificationFilterColumn, debounce, useStateFactory);
 };
