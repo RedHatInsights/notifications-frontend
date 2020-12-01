@@ -42,7 +42,7 @@ describe('src/app/App', () => {
             return 'foo';
         });
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
-        fetchMock.get('/api/notifications/v1.0/notifications/filterOptions/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });
         render(
@@ -65,7 +65,7 @@ describe('src/app/App', () => {
         const promise = Promise.resolve({});
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
         let resolver;
-        fetchMock.get('/api/notifications/v1.0/notifications/filterOptions/applications', new Promise(resolv => resolver = resolv));
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', new Promise(resolv => resolver = resolv));
         render(
             <App/>,
             {
@@ -94,7 +94,7 @@ describe('src/app/App', () => {
             canReadAll: true,
             canWriteAll: true
         }));
-        fetchMock.get('/api/notifications/v1.0/notifications/filterOptions/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });
         render(
@@ -117,7 +117,7 @@ describe('src/app/App', () => {
             canReadAll: false,
             canWriteAll: true
         }));
-        fetchMock.get('/api/notifications/v1.0/notifications/filterOptions/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });
 
@@ -152,7 +152,7 @@ describe('src/app/App', () => {
             canReadAll: false,
             canWriteAll: true
         }));
-        fetchMock.get('/api/notifications/v1.0/notifications/filterOptions/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });
 
