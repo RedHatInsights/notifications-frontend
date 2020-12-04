@@ -5,11 +5,8 @@ import { useField, useFormikContext } from 'formik';
 import * as React from 'react';
 
 import { UserIntegrationType } from '../../../types/Integration';
-import {
-    Action, DefaultNotificationBehavior,
-    IntegrationRef,
-    NotificationType
-} from '../../../types/Notification';
+import { Action, DefaultNotificationBehavior, IntegrationRef, NotificationType } from '../../../types/Notification';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { ActionOption } from './ActionOption';
 import { ActionTypeahead } from './ActionTypeahead';
 import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
@@ -129,14 +126,14 @@ export const EditableActionTable: React.FunctionComponent<EditableActionTablePro
 
     return (
         <>
-            <thead>
+            <thead { ...getOuiaProps('Notifications/Form/EditableActionHeader', {}) }>
                 <tr>
                     <th>Action</th>
                     <th>Recipient</th>
                     <th />
                 </tr>
             </thead>
-            <tbody>
+            <tbody { ...getOuiaProps('Notifications/Form/EditableActionBody', {}) }>
                 {
                     props.actions.map((a, index) => {
                         return (
