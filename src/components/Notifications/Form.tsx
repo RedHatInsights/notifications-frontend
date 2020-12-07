@@ -79,7 +79,7 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
     return (
         <>
             { (actions === undefined || actions.length === 0) && (
-                <tbody>
+                <tbody { ...getOuiaProps('Notifications/Form/NoActions', {}) }>
                     <tr>
                         <td colSpan={ 3 }><span>No actions. Users will not be notified.</span></td>
                     </tr>
@@ -96,7 +96,7 @@ const ActionArray: React.FunctionComponent<ActionsArrayProps> = (props) => {
                     isDisabled={ isSubmitting }
                 />
             ) }
-            <tbody>
+            <tbody { ...getOuiaProps('Notifications/Form/Button', {}) }>
                 <tr>
                     <td>
                         <Button
@@ -123,68 +123,70 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
     const showActions: boolean = type === 'default' ? true : !(values as Notification).useDefault;
 
     return (
-        <Form { ... getOuiaProps('Notifications/Form', props) }>
-            <table className={ tableClassName }>
-                { props.type === 'notification' && (
-                    <>
-                        <thead />
-                        <tbody>
+        <div { ... getOuiaProps('Notifications/Form', props) }>
+            <Form>
+                <table className={ tableClassName }>
+                    { props.type === 'notification' && (
+                        <>
+                            <thead />
+                            <tbody { ...getOuiaProps('Notifications/Form/ApplicationHeader', {}) }>
+                                <tr>
+                                    <td>
+                                        <FormText
+                                            ouiaId={ ouiaIdConcat(props.ouiaId, 'event-name') }
+                                            label="Event name"
+                                            name="event"
+                                            id="event"
+                                        />
+                                    </td>
+                                    <td>
+                                        <FormText
+                                            ouiaId={ ouiaIdConcat(props.ouiaId, 'application') }
+                                            label="Application"
+                                            name="application"
+                                            id="application"
+                                        />
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colSpan={ 2 }>
+                                        <Checkbox
+                                            ouiaId={ ouiaIdConcat(props.ouiaId, 'use-default') }
+                                            name="useDefault"
+                                            id="useDefault"
+                                            label="Use default notification actions"
+                                            isDisabled={ isSubmitting }
+                                        />
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </>
+                    ) }
+                    { props.type === 'default' && (
+                        <tbody { ...getOuiaProps('Notifications/Form/DefaultHeader', {}) }>
                             <tr>
-                                <td>
-                                    <FormText
-                                        ouiaId={ ouiaIdConcat(props.ouiaId, 'event-name') }
-                                        label="Event name"
-                                        name="event"
-                                        id="event"
-                                    />
-                                </td>
-                                <td>
-                                    <FormText
-                                        ouiaId={ ouiaIdConcat(props.ouiaId, 'application') }
-                                        label="Application"
-                                        name="application"
-                                        id="application"
-                                    />
-                                </td>
-                            </tr>
-                            <tr>
-                                <td colSpan={ 2 }>
-                                    <Checkbox
-                                        ouiaId={ ouiaIdConcat(props.ouiaId, 'use-default') }
-                                        name="useDefault"
-                                        id="useDefault"
-                                        label="Use default notification actions"
-                                        isDisabled={ isSubmitting }
-                                    />
+                                <td colSpan={ 3 }>
+                                    <div>Change the default notification actions for <b>Red Hat Insights</b>.</div>
+                                    <div>These actions apply to all events that use the default actions.</div>
                                 </td>
                             </tr>
                         </tbody>
-                    </>
-                ) }
-                { props.type === 'default' && (
-                    <tbody>
-                        <tr>
-                            <td colSpan={ 3 }>
-                                <div>Change the default notification actions for <b>Red Hat Insights</b>.</div>
-                                <div>These actions apply to all events that use the default actions.</div>
-                            </td>
-                        </tr>
-                    </tbody>
-                )}
+                    )}
 
-                { showActions && (
-                    <>
-                        <FieldArray name="actions">
-                            { helpers =>  <ActionArray
-                                type={ props.type }
-                                { ...helpers }
-                                getRecipients={ props.getRecipients }
-                                getIntegrations={ props.getIntegrations }
-                            /> }
-                        </FieldArray>
-                    </>
-                ) }
-            </table>
-        </Form>
+                    { showActions && (
+                        <>
+                            <FieldArray name="actions">
+                                { helpers =>  <ActionArray
+                                    type={ props.type }
+                                    { ...helpers }
+                                    getRecipients={ props.getRecipients }
+                                    getIntegrations={ props.getIntegrations }
+                                /> }
+                            </FieldArray>
+                        </>
+                    ) }
+                </table>
+            </Form>
+        </div>
     );
 };
