@@ -9,11 +9,11 @@ const Config = {
     appId: 'notifications',
     integrations: {
         subAppId: 'integrations',
-        title: 'Integrations'
+        title: 'Integrations | Settings'
     },
     notifications: {
         subAppId: 'notifications',
-        title: 'Notifications'
+        title: 'Notifications | Settings'
     },
     pages: {
     }
