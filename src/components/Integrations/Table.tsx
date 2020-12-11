@@ -1,4 +1,13 @@
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Spinner, Switch, Text, Title } from '@patternfly/react-core';
+import {
+    EmptyState,
+    EmptyStateBody,
+    EmptyStateIcon,
+    EmptyStateVariant,
+    Spinner,
+    Switch,
+    Text,
+    Title
+} from '@patternfly/react-core';
 import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
@@ -323,19 +332,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
 
     return (
         <div { ...getOuiaProps('Integrations/Table', props) }>
-            <Table
-                className={ tableClassName }
-                aria-label={ Messages.components.integrations.table.title }
-                rows={ rows }
-                cells={ columns }
-                onCollapse={ onCollapseHandler }
-                rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
-                actionResolver={ actionsResolverCallback }
-            >
-                <TableHeader />
-                <TableBody />
-            </Table>
-            {rows.length === 0 && <EmptyState variant={ EmptyStateVariant.full }>
+            {rows.length === 0 ?  (<EmptyState variant={ EmptyStateVariant.full }>
                 <EmptyStateIcon icon={ CubesIcon } />
                 <Title headingLevel="h2" size="lg">
                     {intl.formatMessage(messages.integrationsEmptyStateTitle)}
@@ -343,8 +340,19 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                 <EmptyStateBody>
                     {intl.formatMessage(messages.integrationsTableEmptyStateBody)}
                 </EmptyStateBody>
-            </EmptyState>
-            }
+            </EmptyState>) :
+                (<Table
+                    className={ tableClassName }
+                    aria-label={ Messages.components.integrations.table.title }
+                    rows={ rows }
+                    cells={ columns }
+                    onCollapse={ onCollapseHandler }
+                    rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
+                    actionResolver={ actionsResolverCallback }
+                >
+                    <TableHeader />
+                    <TableBody />
+                </Table>)}
         </div>
     );
 };
