@@ -48,8 +48,8 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
 
         return {
             [NotificationFilterColumn.NAME]: {
-                label: 'Event',
-                placeholder: 'Filter by event name'
+                label: 'Event type',
+                placeholder: 'Filter by event type'
             },
             [NotificationFilterColumn.APPLICATION]: {
                 label: 'Application',

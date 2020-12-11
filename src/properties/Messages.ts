@@ -91,7 +91,7 @@ const MutableMessages = {
             table: {
                 title: 'Notifications',
                 columns: {
-                    event: 'Event',
+                    event: 'Event type',
                     action: 'Action',
                     recipient: 'Recipient'
                 }
