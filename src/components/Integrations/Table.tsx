@@ -21,13 +21,14 @@ import {
     RowWrapperProps,
     Table,
     TableBody,
-    TableHeader } from '@patternfly/react-table';
+    TableHeader
+} from '@patternfly/react-table';
 import {
     global_danger_color_100,
     global_spacer_lg,
     global_spacer_md,
     global_spacer_sm,
-    global_success_color_200,
+    global_success_color_100,
     global_warning_color_200
 } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
@@ -133,7 +134,7 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
 
 const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
     <>
-        <CheckCircleIcon color={ global_success_color_200.value } data-testid="success-icon" />
+        <CheckCircleIcon color={ global_success_color_100.value } data-testid="success-icon" />
         <span className={ smallMarginLeft }>Success</span>
     </>
 );
