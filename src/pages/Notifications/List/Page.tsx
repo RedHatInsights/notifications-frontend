@@ -125,7 +125,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                             undefined }
                         onEdit={ onEditDefaultAction }
                     />
-                    <div className={ tableTitleClassName }>Insights notifications types and behavior</div>
+                    <div className={ tableTitleClassName }>Insights notifications event types and behavior</div>
                     <NotificationsToolbar
                         filters={ notificationsFilter.filters }
                         setFilters={ notificationsFilter.setFilters }
