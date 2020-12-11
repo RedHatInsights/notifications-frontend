@@ -141,7 +141,7 @@ const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
 const LastConnectionAttemptError: React.FunctionComponent = () => (
     <>
         <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon" />
-        <span className={ smallMarginLeft }>Fail</span>
+        <span className={ smallMarginLeft }>Failure</span>
     </>
 );
 
