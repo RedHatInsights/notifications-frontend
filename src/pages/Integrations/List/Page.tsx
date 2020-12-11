@@ -70,7 +70,8 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     const actionResolver = useActionResolver({
         canWriteAll,
         onEdit,
-        onDelete
+        onDelete,
+        onEnable: integrationRows.onEnable
     });
 
     const closeFormModal = React.useCallback((saved: boolean) => {

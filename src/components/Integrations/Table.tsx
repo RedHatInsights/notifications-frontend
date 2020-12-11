@@ -46,13 +46,13 @@ import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
 
-type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
+export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
 interface IntegrationsTableProps extends OuiaComponentProps {
     integrations: Array<IntegrationRow>;
     onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
     onEnable?: OnEnable;
-    actionResolver: (row: IntegrationRow) => IActions;
+    actionResolver: (row: IntegrationRow, index: number) => IActions;
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -322,9 +322,10 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     const actionsResolverCallback: IActionsResolver = React.useCallback(rowData => {
         const actionResolver = props.actionResolver;
         if (rowData.parent === undefined && rowData && props.integrations) {
-            const integrationRow = props.integrations.find(i => i.id === rowData.id);
+            const integrationIndex = props.integrations.findIndex(i => i.id === rowData.id);
+            const integrationRow = props.integrations[integrationIndex];
             if (integrationRow) {
-                return actionResolver(integrationRow);
+                return actionResolver(integrationRow, integrationIndex);
             }
         }
 
