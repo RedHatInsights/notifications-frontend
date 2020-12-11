@@ -42,6 +42,10 @@ const tableTitleClassName = style({
     fontSize: '17px'
 });
 
+const noPaddingTopClassName = style({
+    paddingTop: 0
+});
+
 const emptyArray = [];
 
 export const NotificationsListPage: React.FunctionComponent = () => {
@@ -112,7 +116,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                     </RenderIfFalse>
                 </InsightsEnvDetector>
             </PageHeader>
-            <Main>
+            <Main className={ noPaddingTopClassName }>
                 <Section>
                     <DefaultBehavior
                         loading={ defaultNotificationBehavior.loading }
