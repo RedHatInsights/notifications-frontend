@@ -34,7 +34,6 @@ const grayFontClassName = style({
 const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props) => {
     switch (props.actionType) {
         case NotificationType.DRAWER:
-        case NotificationType.PLATFORM_ALERT:
             return <BellIcon />;
         case NotificationType.EMAIL_SUBSCRIPTION:
             return <EnvelopeIcon />;
