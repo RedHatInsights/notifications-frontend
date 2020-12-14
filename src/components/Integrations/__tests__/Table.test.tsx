@@ -192,7 +192,7 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        const lastConnectionAttemptText = screen.getByText('Fail');
+        const lastConnectionAttemptText = screen.getByText('Failure');
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('fail-icon')).toBeVisible();
@@ -228,7 +228,7 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        const lastConnectionAttemptText = screen.getByText('Fail');
+        const lastConnectionAttemptText = screen.getByText('Failure');
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('fail-icon')).toBeVisible();
