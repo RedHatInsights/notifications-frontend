@@ -26,7 +26,7 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
         return null;
     }
 
-    const content = `Do you want to delete the integration: "${ props.integration.name }"?`;
+    const content = `Do you want to remove the integration: "${ props.integration.name }"?`;
     return (
         <DeleteModal
             isOpen={ true }
