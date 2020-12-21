@@ -135,7 +135,7 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
                                         <FormText
                                             ouiaId={ ouiaIdConcat(props.ouiaId, 'event-name') }
                                             label="Event name"
-                                            name="event"
+                                            name="eventTypeDisplayName"
                                             id="event"
                                         />
                                     </td>
@@ -143,7 +143,7 @@ export const NotificationForm: React.FunctionComponent<NotificationFormProps> = 
                                         <FormText
                                             ouiaId={ ouiaIdConcat(props.ouiaId, 'application') }
                                             label="Application"
-                                            name="application"
+                                            name="applicationDisplayName"
                                             id="application"
                                         />
                                     </td>

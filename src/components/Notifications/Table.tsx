@@ -104,7 +104,7 @@ type NotificationRowBase = {
 export type NotificationRowGroupedByNone = Notification & NotificationRowBase;
 
 export interface NotificationRowGroupedByApplication {
-    application: string;
+    applicationDisplayName: string;
     notifications: Array<NotificationRowGroupedByNone>;
     isOpen: boolean;
 }
@@ -120,14 +120,14 @@ export type NotificationRows = {
 export type OnEditNotification = (notification: Notification) => void;
 
 interface EventCellProps {
-    event: string;
-    application: string;
+    eventTypeDisplayName: string;
+    applicationDisplayName: string;
 }
 
 const EventCell: React.FunctionComponent<EventCellProps> = (props) => (
     <>
-        <div> { props.event } </div>
-        <div className={ grayFontClassName }> { props.application } </div>
+        <div> { props.eventTypeDisplayName } </div>
+        <div className={ grayFontClassName }> { props.applicationDisplayName } </div>
     </>
 );
 
@@ -167,8 +167,8 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
             cells: [
                 {
                     title: <EventCell
-                        application={ notification.application }
-                        event={ notification.event }
+                        applicationDisplayName={ notification.applicationDisplayName }
+                        eventTypeDisplayName={ notification.eventTypeDisplayName }
                     />,
                     props: {
                         rowSpan,
@@ -278,11 +278,11 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
 const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>, onEdit: OnEditNotification): Array<IRow> =>
     applicationGroups.reduce((rows, applicationGroup) => {
         rows.push({
-            id: applicationGroup.application,
-            key: applicationGroup.application,
+            id: applicationGroup.applicationDisplayName,
+            key: applicationGroup.applicationDisplayName,
             cells: [
                 {
-                    title: <span className={ applicationGroupClassName }> Application: { applicationGroup.application }</span>,
+                    title: <span className={ applicationGroupClassName }> Application: { applicationGroup.applicationDisplayName }</span>,
                     props: {
                         className: noExpandableBorderClassName
                     }
@@ -325,7 +325,7 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
             throw new Error('Invalid group None for CollapseHandler');
         }
 
-        const index = notifications.data.findIndex(n => n.application === data.id);
+        const index = notifications.data.findIndex(n => n.applicationDisplayName === data.id);
         if (onCollapse && index !== undefined && index !== -1) {
             onCollapse(index, isOpen);
         }

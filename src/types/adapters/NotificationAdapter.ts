@@ -34,8 +34,8 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
 
     return {
         id: serverNotification.id,
-        application: serverNotification.application.name,
-        event: serverNotification.name,
+        applicationDisplayName: serverNotification.application.display_name,
+        eventTypeDisplayName: serverNotification.display_name,
         actions: toActions(filterOutDefaultAction(serverNotification.endpoints ?? [])),
         useDefault: usesDefault(serverNotification.endpoints ?? [])
     };
