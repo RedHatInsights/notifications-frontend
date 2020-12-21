@@ -178,9 +178,9 @@ describe('src/pages/Notifications/List/Page', () => {
                         application: {
                             id: 'my-app',
                             name: 'My app',
-                            description: 'My app desc'
+                            display_name: 'My app desc'
                         },
-                        description: 'my notification',
+                        display_name: 'my notification',
                         name: 'Cool notification',
                         endpoints: []
                     }
@@ -216,9 +216,9 @@ describe('src/pages/Notifications/List/Page', () => {
                         application: {
                             id: 'my-app',
                             name: 'My app',
-                            description: 'My app desc'
+                            display_name: 'My app desc'
                         },
-                        description: 'my notification',
+                        display_name: 'my notification',
                         name: 'Cool notification',
                         endpoints: []
                     }
@@ -260,9 +260,9 @@ describe('src/pages/Notifications/List/Page', () => {
                         application: {
                             id: 'my-app',
                             name: 'My app',
-                            description: 'My app desc'
+                            display_name: 'My app desc'
                         },
-                        description: 'my notification',
+                        display_name: 'my notification',
                         name: 'Cool notification',
                         endpoints: []
                     }

@@ -29,11 +29,13 @@ To run locally, we need the following:
 
 ### Running insights proxy
 
-In order to run it locally, you need to have
-[insights-proxy](https://github.com/RedHatInsights/insights-proxy) repository placed under PROXY_PATH.
+In order to run it locally, you need to git clone
+[insights-proxy](https://github.com/RedHatInsights/insights-proxy) repository and set PROXY_PATH to your local clone.
 
 There are two modes to run the proxy, one is used when you want to provide your own backend and engine for development or
 testing of the components. You do that by starting the proxy by running:
+
+NOTE: You need to do this once in `insights-proxy repository`: `sudo bash scripts/patch-etc-hosts.sh` to modify `/etc/hosts` on your machine
 
 ```shell
 yarn proxy
