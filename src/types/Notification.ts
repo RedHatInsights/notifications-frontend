@@ -3,8 +3,8 @@ import { UserIntegration } from './Integration';
 
 export interface Notification {
     id: number;
-    application: string;
-    event: string;
+    applicationDisplayName: string;
+    eventTypeDisplayName: string;
     actions: Array<Action>;
     useDefault?: boolean;
 }

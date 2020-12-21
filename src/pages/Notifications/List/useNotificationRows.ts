@@ -35,15 +35,15 @@ const findNotificationPath = (rows: Array<NotificationRowGroupedByApplication>, 
 
 const toRowGroupByApplication = (notifications: Array<Notification>): Array<NotificationRowGroupedByApplication> => {
     const grouped = notifications.reduce((groups, notification) => {
-        if (!groups[notification.application]) {
-            groups[notification.application] = {
-                application: notification.application,
+        if (!groups[notification.applicationDisplayName]) {
+            groups[notification.applicationDisplayName] = {
+                applicationDisplayName: notification.applicationDisplayName,
                 isOpen: true,
                 notifications: []
             };
         }
 
-        groups[notification.application].notifications.push(toRowsGroupByNone(notification));
+        groups[notification.applicationDisplayName].notifications.push(toRowsGroupByNone(notification));
         return groups;
     }, {} as Record<string, NotificationRowGroupedByApplication>);
 
