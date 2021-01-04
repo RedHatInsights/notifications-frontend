@@ -1025,7 +1025,7 @@ export namespace Operations {
     const Response200 = z.array(Schemas.Endpoint);
     type Response200 = Array<Schemas.Endpoint>;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1034,7 +1034,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1048,7 +1048,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1060,7 +1060,7 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1074,7 +1074,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1086,7 +1086,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1112,7 +1112,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1141,7 +1141,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1169,7 +1169,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1197,7 +1197,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1214,7 +1214,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1225,7 +1225,7 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1242,7 +1242,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1253,7 +1253,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1263,7 +1263,7 @@ export namespace Operations {
     const Response200 = z.array(Schemas.ApplicationFacet);
     type Response200 = Array<Schemas.ApplicationFacet>;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1272,7 +1272,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1282,7 +1282,7 @@ export namespace Operations {
     const Response200 = z.array(Schemas.Notification);
     type Response200 = Array<Schemas.Notification>;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1291,7 +1291,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1307,7 +1307,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1317,7 +1317,7 @@ export namespace Operations {
         .queryParams(query)
         .data(params.body)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };

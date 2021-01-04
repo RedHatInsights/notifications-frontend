@@ -95,7 +95,7 @@
     "jest": "26.6.3",
     "lock-dependencies": "0.0.2",
     "npm-run-all": "4.1.5",
-    "openapi2typescript-cli": "0.3.1",
+    "openapi2typescript-cli": "0.4.1",
     "postcss": "8.1.7",
     "prop-types": "15.7.2",
     "react-test-renderer": "17.0.1",
