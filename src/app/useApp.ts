@@ -13,7 +13,7 @@ export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pi
     const getApplications = useGetApplications();
 
     const applications = useMemo(
-        () => getApplications.payload?.type === 'Response200' ? getApplications.payload.value : undefined,
+        () => getApplications.payload?.status === 200 ? getApplications.payload.value : undefined,
         [ getApplications.payload ]
     );
 

@@ -9638,10 +9638,10 @@ only@~0.0.2:
   resolved "https://registry.yarnpkg.com/only/-/only-0.0.2.tgz#2afde84d03e50b9a8edc444e30610a70295edfb4"
   integrity sha1-Kv3oTQPlC5qO3EROMGEKcCle37Q=
 
-openapi2typescript-cli@0.3.1:
-  version "0.3.1"
-  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.3.1.tgz#f6a0a2c9d2b220e639f698c414ffa8073c3492b4"
-  integrity sha512-/IH4wmJTAXIqOHE65NUKtzh1k8fiqLFB1ZaxJ7m+Eu1gYOqOaOHDjTbiToKBNL/iCFdLHawAuWXbRTuPQ4IPoQ==
+openapi2typescript-cli@0.4.1:
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.4.1.tgz#1215cbbc24b8facab92046ec3d7e5d78da14203a"
+  integrity sha512-Zvzdt3ywqZOnMrRWCpoSuJ9zhx9dd98O8BQEJlYQCQjnpMiYv9r6KpcmZWyC6TaH4fBryiSv2q2oQbFJE2zJ8A==
   dependencies:
     eslint "6.0.0"
     prettier "2.1.1"

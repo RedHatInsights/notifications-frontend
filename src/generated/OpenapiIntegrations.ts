@@ -1046,7 +1046,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1079,7 +1079,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1111,7 +1111,7 @@ export namespace Operations {
     const Response200 = z.boolean();
     type Response200 = boolean;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1120,7 +1120,7 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1130,7 +1130,7 @@ export namespace Operations {
     const Response200 = z.boolean();
     type Response200 = boolean;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1139,7 +1139,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1149,7 +1149,7 @@ export namespace Operations {
     const Response200 = z.boolean();
     type Response200 = boolean;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1159,7 +1159,7 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1169,7 +1169,7 @@ export namespace Operations {
     const Response200 = z.boolean();
     type Response200 = boolean;
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
@@ -1179,7 +1179,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1218,7 +1218,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1231,7 +1231,7 @@ export namespace Operations {
         .queryParams(query)
         .data(params.body)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1245,7 +1245,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1257,7 +1257,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1271,7 +1271,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1283,7 +1283,7 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1297,7 +1297,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1309,7 +1309,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1323,7 +1323,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1335,7 +1335,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
@@ -1367,7 +1367,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Response200', 200, Response200>
+      | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1398,7 +1398,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'Response200', 200) ]
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
         })
         .build();
     };
