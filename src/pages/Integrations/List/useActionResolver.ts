@@ -25,7 +25,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
                 isDisabled,
                 onClick: () => onEdit(integration)
             }, {
-                title: 'Delete',
+                title: 'Remove',
                 isDisabled,
                 onClick: () => onDelete(integration)
             }, {
