@@ -26,7 +26,7 @@ export interface ActionIntegration extends ActionBase {
 }
 
 export interface ActionNotify extends ActionBase {
-    type: NotificationType.EMAIL_SUBSCRIPTION | NotificationType.DRAWER | NotificationType.PLATFORM_ALERT;
+    type: NotificationType.EMAIL_SUBSCRIPTION | NotificationType.DRAWER;
     recipient: Array<string>;
 }
 
@@ -35,8 +35,7 @@ export type Action = ActionIntegration | ActionNotify;
 export enum NotificationType {
     EMAIL_SUBSCRIPTION = 'EMAIL_SUBSCRIPTION',
     DRAWER = 'DRAWER',
-    INTEGRATION = 'INTEGRATION',
-    PLATFORM_ALERT = 'PLATFORM_ALERT'
+    INTEGRATION = 'INTEGRATION'
 }
 
 export type ServerNotificationRequest = Schemas.EventType;

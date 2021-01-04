@@ -9,7 +9,7 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { ActionOption } from './ActionOption';
 
 const getSelectOptions = () => [
-    ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION, NotificationType.PLATFORM_ALERT ] as Array<ActionNotify['type']>)
+    ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION ] as Array<ActionNotify['type']>)
     .map(type => new ActionOption({
         kind: 'notification',
         type

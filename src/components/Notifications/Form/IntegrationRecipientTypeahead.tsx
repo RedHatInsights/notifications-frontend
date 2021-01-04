@@ -76,7 +76,8 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         <div { ...getOuiaProps('IntegrationRecipientTypeahead', props) }>
             <Select
                 variant={ SelectVariant.typeahead }
-                typeAheadAriaLabel="Select the recipients"
+                typeAheadAriaLabel="Choose webhook"
+                placeholderText="Choose webhook"
                 selections={ selection }
                 onSelect={ onSelect }
                 onToggle={ toggle }

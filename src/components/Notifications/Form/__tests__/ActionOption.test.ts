@@ -26,11 +26,11 @@ describe('src/components/Notifications/Form/ActionOption', () => {
     it('CompareTo returns true for objects with same notification types', () => {
         const a = new ActionOption({
             kind: 'notification',
-            type: NotificationType.PLATFORM_ALERT
+            type: NotificationType.DRAWER
         });
         const b = new ActionOption({
             kind: 'notification',
-            type: NotificationType.PLATFORM_ALERT
+            type: NotificationType.DRAWER
         });
         expect(a.compareTo(b)).toBe(true);
     });
@@ -42,7 +42,7 @@ describe('src/components/Notifications/Form/ActionOption', () => {
         });
         const b = new ActionOption({
             kind: 'notification',
-            type: NotificationType.PLATFORM_ALERT
+            type: NotificationType.EMAIL_SUBSCRIPTION
         });
         expect(a.compareTo(b)).toBe(false);
     });
@@ -54,7 +54,7 @@ describe('src/components/Notifications/Form/ActionOption', () => {
         });
         const b = new ActionOption({
             kind: 'notification',
-            type: NotificationType.PLATFORM_ALERT
+            type: NotificationType.DRAWER
         });
         expect(a.compareTo(b)).toBe(false);
     });
@@ -72,9 +72,9 @@ describe('src/components/Notifications/Form/ActionOption', () => {
     it('toString returns the notification type name', () => {
         const a = new ActionOption({
             kind: 'notification',
-            type: NotificationType.PLATFORM_ALERT
+            type: NotificationType.DRAWER
         });
-        expect(a.toString()).toEqual('Platform alert');
+        expect(a.toString()).toEqual('Send to notification drawer');
     });
 
     it('toString of integration returns the notification type name plus the integration', () => {

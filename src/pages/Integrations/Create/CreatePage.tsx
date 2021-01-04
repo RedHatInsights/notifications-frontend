@@ -26,9 +26,12 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
         return saveIntegrationMutation.mutate(integration).then(response => {
             if (response.status === 200) {
                 if (props.isEdit) {
-                    addSuccessNotification('Integration saved', `Integration "${integration.name}" has been updated.`);
+                    addSuccessNotification(
+                        `${integration.name} saved successfully`,
+                        integration.isEnabled ? 'This integration is enabled and ready to use.' : 'This integration is disabled.'
+                    );
                 } else {
-                    addSuccessNotification('Integration created', `Integration "${integration.name}" has been created.`);
+                    addSuccessNotification(`${integration.name} added successfully`, 'This integration is enabled and ready to use.');
                 }
 
                 return true;

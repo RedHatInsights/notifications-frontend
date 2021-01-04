@@ -1,4 +1,13 @@
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Spinner, Switch, Text, Title } from '@patternfly/react-core';
+import {
+    EmptyState,
+    EmptyStateBody,
+    EmptyStateIcon,
+    EmptyStateVariant,
+    Spinner,
+    Switch,
+    Text,
+    Title
+} from '@patternfly/react-core';
 import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
@@ -12,13 +21,13 @@ import {
     RowWrapperProps,
     Table,
     TableBody,
-    TableHeader } from '@patternfly/react-table';
+    TableHeader
+} from '@patternfly/react-table';
 import {
     global_danger_color_100,
-    global_spacer_lg,
     global_spacer_md,
     global_spacer_sm,
-    global_success_color_200,
+    global_success_color_100,
     global_warning_color_200
 } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
@@ -36,13 +45,13 @@ import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
 
-type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
+export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
 interface IntegrationsTableProps extends OuiaComponentProps {
     integrations: Array<IntegrationRow>;
     onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
     onEnable?: OnEnable;
-    actionResolver: (row: IntegrationRow) => IActions;
+    actionResolver: (row: IntegrationRow, index: number) => IActions;
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -66,7 +75,7 @@ const connectionAlertClassName = style({
 
 const expandedContentClassName = style({
     paddingLeft: global_spacer_md.var,
-    paddingBottom: global_spacer_lg.var
+    paddingBottom: 0
 });
 
 const isEnabledLoadingClassName = style({
@@ -124,7 +133,7 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
 
 const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
     <>
-        <CheckCircleIcon color={ global_success_color_200.value } data-testid="success-icon" />
+        <CheckCircleIcon color={ global_success_color_100.value } data-testid="success-icon" />
         <span className={ smallMarginLeft }>Success</span>
     </>
 );
@@ -132,7 +141,7 @@ const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
 const LastConnectionAttemptError: React.FunctionComponent = () => (
     <>
         <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon" />
-        <span className={ smallMarginLeft }>Fail</span>
+        <span className={ smallMarginLeft }>Failure</span>
     </>
 );
 
@@ -312,9 +321,10 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     const actionsResolverCallback: IActionsResolver = React.useCallback(rowData => {
         const actionResolver = props.actionResolver;
         if (rowData.parent === undefined && rowData && props.integrations) {
-            const integrationRow = props.integrations.find(i => i.id === rowData.id);
+            const integrationIndex = props.integrations.findIndex(i => i.id === rowData.id);
+            const integrationRow = props.integrations[integrationIndex];
             if (integrationRow) {
-                return actionResolver(integrationRow);
+                return actionResolver(integrationRow, integrationIndex);
             }
         }
 
@@ -323,19 +333,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
 
     return (
         <div { ...getOuiaProps('Integrations/Table', props) }>
-            <Table
-                className={ tableClassName }
-                aria-label={ Messages.components.integrations.table.title }
-                rows={ rows }
-                cells={ columns }
-                onCollapse={ onCollapseHandler }
-                rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
-                actionResolver={ actionsResolverCallback }
-            >
-                <TableHeader />
-                <TableBody />
-            </Table>
-            {rows.length === 0 && <EmptyState variant={ EmptyStateVariant.full }>
+            {rows.length === 0 ?  (<EmptyState variant={ EmptyStateVariant.full }>
                 <EmptyStateIcon icon={ CubesIcon } />
                 <Title headingLevel="h2" size="lg">
                     {intl.formatMessage(messages.integrationsEmptyStateTitle)}
@@ -343,8 +341,19 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                 <EmptyStateBody>
                     {intl.formatMessage(messages.integrationsTableEmptyStateBody)}
                 </EmptyStateBody>
-            </EmptyState>
-            }
+            </EmptyState>) :
+                (<Table
+                    className={ tableClassName }
+                    aria-label={ Messages.components.integrations.table.title }
+                    rows={ rows }
+                    cells={ columns }
+                    onCollapse={ onCollapseHandler }
+                    rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
+                    actionResolver={ actionsResolverCallback }
+                >
+                    <TableHeader />
+                    <TableBody />
+                </Table>)}
         </div>
     );
 };

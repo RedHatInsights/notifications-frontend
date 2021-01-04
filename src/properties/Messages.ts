@@ -78,10 +78,9 @@ const MutableMessages = {
         },
         notifications: {
             types: {
-                EMAIL_SUBSCRIPTION: 'Send email',
+                EMAIL_SUBSCRIPTION: 'Send an email',
                 DRAWER: 'Send to notification drawer',
-                INTEGRATION: 'Integration',
-                PLATFORM_ALERT: 'Platform alert'
+                INTEGRATION: 'Integration'
             },
             toolbar: {
                 actions: {
@@ -91,7 +90,7 @@ const MutableMessages = {
             table: {
                 title: 'Notifications',
                 columns: {
-                    event: 'Event',
+                    event: 'Event type',
                     action: 'Action',
                     recipient: 'Recipient'
                 }
