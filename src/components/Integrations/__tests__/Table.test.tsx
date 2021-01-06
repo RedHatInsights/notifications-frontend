@@ -52,6 +52,7 @@ describe('components/Integrations/Table', () => {
 
     it('Renders the name', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, name: 'foobar123456' }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider >);
@@ -61,6 +62,7 @@ describe('components/Integrations/Table', () => {
 
     it('Renders webhook type as Webhook', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, type: UserIntegrationType.WEBHOOK }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -70,6 +72,7 @@ describe('components/Integrations/Table', () => {
 
     it('If integration is enabled, the switch is on', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isEnabled: true }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -80,6 +83,7 @@ describe('components/Integrations/Table', () => {
 
     it('If integration is disabled, the switch is off', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isEnabled: false }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -90,6 +94,7 @@ describe('components/Integrations/Table', () => {
 
     it('Last connection attempt show as success and success icon if all are success', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{
                 ...integrationTemplate, lastConnectionAttempts: [
                     {
@@ -127,6 +132,7 @@ describe('components/Integrations/Table', () => {
     it('Last connection attempt show last attempt status with degraded connection if there is at least one success and at ' +
         'least one failure (last=success)', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{
                 ...integrationTemplate, lastConnectionAttempts: [
                     {
@@ -165,6 +171,7 @@ describe('components/Integrations/Table', () => {
         'and at least one failure (last=fail)',
     () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{
                 ...integrationTemplate, lastConnectionAttempts: [
                     {
@@ -201,6 +208,7 @@ describe('components/Integrations/Table', () => {
 
     it('Last connection attempt show as failed with fail icon if all are failed', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{
                 ...integrationTemplate, lastConnectionAttempts: [
                     {
@@ -237,6 +245,7 @@ describe('components/Integrations/Table', () => {
 
     it('Last connection attempt show as unknown with off icon if there are no attempts', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, lastConnectionAttempts: []}] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -250,6 +259,7 @@ describe('components/Integrations/Table', () => {
 
     it('Last connection attempt show an error if attempts is undefined', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, lastConnectionAttempts: undefined }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -259,6 +269,7 @@ describe('components/Integrations/Table', () => {
 
     it('Last connection attempt show as loading if isConnectionAttemptLoading is true', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isConnectionAttemptLoading: true }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -268,6 +279,7 @@ describe('components/Integrations/Table', () => {
 
     it('If isEnabledLoading is true, shows a loading spinner', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isEnabledLoading: true }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -277,6 +289,7 @@ describe('components/Integrations/Table', () => {
 
     it('Expanded content is hidden if isOpen is false', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isOpen: false }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -286,6 +299,7 @@ describe('components/Integrations/Table', () => {
 
     it('Expanded content is showing if isOpen is true', async () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isOpen: true }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -295,6 +309,7 @@ describe('components/Integrations/Table', () => {
 
     it('Show webhook details in expanded content', async () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [{ ...integrationTemplate, isOpen: true, url: 'my-url', secretToken: 'fooo', sslVerificationEnabled: true }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -312,6 +327,7 @@ describe('components/Integrations/Table', () => {
         const integration = { ...integrationTemplate, isOpen: true };
         const onCollapse = jestMock.fn();
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
             onCollapse={ onCollapse }
@@ -328,6 +344,7 @@ describe('components/Integrations/Table', () => {
         const integration = { ...integrationTemplate, isEnabled: true };
         const onEnable = jestMock.fn();
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
             onEnable={ onEnable }
@@ -367,6 +384,7 @@ describe('components/Integrations/Table', () => {
         };
 
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
@@ -404,6 +422,7 @@ describe('components/Integrations/Table', () => {
         };
 
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
             integrations={ [ integration ] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);

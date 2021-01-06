@@ -92,8 +92,8 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
             let integrations: Array<IntegrationRef> = [];
             const payload = response.payload ? listIntegrationIntegrationDecoder(response.payload) : undefined;
 
-            if (payload?.type === 'integrationArray') {
-                integrations = payload.value;
+            if (payload?.type === 'IntegrationPage') {
+                integrations = payload.value.data;
             }
 
             return integrations;
