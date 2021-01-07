@@ -1,6 +1,6 @@
 import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
-import { useQuery } from 'react-fetching-library';
+import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 
 import {
     Operations
@@ -20,9 +20,12 @@ export const listIntegrationsActionCreator = (pager?: Page) => {
 export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: Operations.EndpointServiceGetEndpoints.Payload) => {
     if (payload?.status === 200) {
         return validatedResponse(
-            'integrationArray',
+            'IntegrationPage',
             200,
-            toUserIntegrations(payload.value),
+            {
+                data: toUserIntegrations(payload.value.data),
+                count: payload.value.meta.count
+            },
             payload.errors
         );
     }
@@ -32,5 +35,10 @@ export const listIntegrationIntegrationDecoder = validationResponseTransformer((
 
 export const useListIntegrationsQuery = (pager?: Page, initFetch?: boolean) => useTransformQueryResponse(
     useQuery(listIntegrationsActionCreator(pager), initFetch),
+    listIntegrationIntegrationDecoder
+);
+
+export const useListIntegrationPQuery = () => useTransformQueryResponse(
+    useParameterizedQuery(listIntegrationsActionCreator),
     listIntegrationIntegrationDecoder
 );

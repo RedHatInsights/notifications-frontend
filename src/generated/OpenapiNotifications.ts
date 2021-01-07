@@ -80,6 +80,13 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const EndpointPage = zodSchemaEndpointPage();
+  export type EndpointPage = {
+    data: ListEndpoint;
+    links: MapStringString;
+    meta: Meta;
+  };
+
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType = 'webhook' | 'email_subscription' | 'default';
 
@@ -197,6 +204,9 @@ export namespace Schemas {
     uriBuilder?: UriBuilder | undefined | null;
   };
 
+  export const ListEndpoint = zodSchemaListEndpoint();
+  export type ListEndpoint = Array<Endpoint>;
+
   export const ListField = zodSchemaListField();
   export type ListField = Array<Field>;
 
@@ -289,6 +299,11 @@ export namespace Schemas {
     type?: string | undefined | null;
     wildcardSubtype?: boolean | undefined | null;
     wildcardType?: boolean | undefined | null;
+  };
+
+  export const Meta = zodSchemaMeta();
+  export type Meta = {
+    count: number;
   };
 
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
@@ -550,6 +565,16 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaEndpointPage() {
+      return z
+      .object({
+          data: zodSchemaListEndpoint(),
+          links: zodSchemaMapStringString(),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEndpointType() {
       return z.enum([ 'webhook', 'email_subscription', 'default' ]);
   }
@@ -705,6 +730,10 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaListEndpoint() {
+      return z.array(zodSchemaEndpoint());
+  }
+
   function zodSchemaListField() {
       return z.array(zodSchemaField());
   }
@@ -802,6 +831,14 @@ export namespace Schemas {
           type: z.string().optional().nullable(),
           wildcardSubtype: z.boolean().optional().nullable(),
           wildcardType: z.boolean().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaMeta() {
+      return z
+      .object({
+          count: z.number().int()
       })
       .nonstrict();
   }

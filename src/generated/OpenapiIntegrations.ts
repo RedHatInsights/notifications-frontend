@@ -80,6 +80,13 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const EndpointPage = zodSchemaEndpointPage();
+  export type EndpointPage = {
+    data: ListEndpoint;
+    links: MapStringString;
+    meta: Meta;
+  };
+
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType = 'webhook' | 'email_subscription' | 'default';
 
@@ -197,6 +204,9 @@ export namespace Schemas {
     uriBuilder?: UriBuilder | undefined | null;
   };
 
+  export const ListEndpoint = zodSchemaListEndpoint();
+  export type ListEndpoint = Array<Endpoint>;
+
   export const ListField = zodSchemaListField();
   export type ListField = Array<Field>;
 
@@ -289,6 +299,11 @@ export namespace Schemas {
     type?: string | undefined | null;
     wildcardSubtype?: boolean | undefined | null;
     wildcardType?: boolean | undefined | null;
+  };
+
+  export const Meta = zodSchemaMeta();
+  export type Meta = {
+    count: number;
   };
 
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
@@ -550,6 +565,16 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaEndpointPage() {
+      return z
+      .object({
+          data: zodSchemaListEndpoint(),
+          links: zodSchemaMapStringString(),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEndpointType() {
       return z.enum([ 'webhook', 'email_subscription', 'default' ]);
   }
@@ -705,6 +730,10 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaListEndpoint() {
+      return z.array(zodSchemaEndpoint());
+  }
+
   function zodSchemaListField() {
       return z.array(zodSchemaField());
   }
@@ -802,6 +831,14 @@ export namespace Schemas {
           type: z.string().optional().nullable(),
           wildcardSubtype: z.boolean().optional().nullable(),
           wildcardType: z.boolean().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaMeta() {
+      return z
+      .object({
+          count: z.number().int()
       })
       .nonstrict();
   }
@@ -1034,8 +1071,6 @@ export namespace Operations {
     type SortBy = string;
     const Type = z.string();
     type Type = string;
-    const Response200 = z.array(Schemas.Endpoint);
-    type Response200 = Array<Schemas.Endpoint>;
     export interface Params {
       active?: Active;
       limit?: Limit;
@@ -1046,7 +1081,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'EndpointPage', 200, Schemas.EndpointPage>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1079,7 +1114,7 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [ new ValidateRule(Schemas.EndpointPage, 'EndpointPage', 200) ]
         })
         .build();
     };

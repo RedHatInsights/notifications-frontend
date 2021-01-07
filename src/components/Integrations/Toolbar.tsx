@@ -1,7 +1,11 @@
+import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
-    ColumnsMetada, ExporterType, getInsights,
-    OuiaComponentProps, useInsightsEnvironmentFlag,
+    ColumnsMetada,
+    ExporterType,
+    getInsights,
+    OuiaComponentProps,
+    useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
@@ -21,6 +25,12 @@ interface IntegrationsToolbarProps extends OuiaComponentProps {
     filters: IntegrationFilters;
     setFilters: SetIntegrationFilters;
     clearFilters: ClearIntegrationFilters;
+    pageCount: number;
+    count: number;
+    page: number;
+    perPage: number;
+    pageChanged: (page: number) => void;
+    perPageChanged: (page: number) => void;
 }
 
 const enabledTextClassName = style({
@@ -103,6 +113,37 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
         useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
     );
 
+    const pageChanged = React.useCallback((_event: unknown, page: number) => {
+        const inner = props.pageChanged;
+        inner(page);
+    }, [ props.pageChanged ]);
+
+    const perPageChanged = React.useCallback((_event: unknown, perPage: number) => {
+        const inner = props.perPageChanged;
+        inner(perPage);
+    }, [ props.perPageChanged ]);
+
+    const topPaginationProps = React.useMemo<PaginationProps>(() => ({
+        itemCount: props.count,
+        page: props.page,
+        perPage: props.perPage,
+        isCompact: true,
+        variant: PaginationVariant.top,
+        onSetPage: pageChanged,
+        onFirstClick: pageChanged,
+        onPreviousClick: pageChanged,
+        onNextClick: pageChanged,
+        onLastClick: pageChanged,
+        onPageInput: pageChanged,
+        onPerPageSelect: perPageChanged
+    }), [ props.count, props.page, props.perPage, pageChanged, perPageChanged ]);
+
+    const bottomPaginationProps = React.useMemo<PaginationProps>(() => ({
+        ...topPaginationProps,
+        isCompact: false,
+        variant: PaginationVariant.bottom
+    }), [ topPaginationProps ]);
+
     return (
         <div { ...getOuiaProps('Integrations/DualToolbar', props) }>
             <PrimaryToolbar
@@ -110,10 +151,11 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
                 exportConfig={ exportConfig }
                 filterConfig={ filterConfig }
                 activeFiltersConfig={ activeFiltersConfig }
+                pagination={ topPaginationProps }
                 id="integrations-top-toolbar"
             />
             { props.children }
-            <PrimaryToolbar id="integrations-bottom-toolbar" />
+            <PrimaryToolbar id="integrations-bottom-toolbar" pagination={ bottomPaginationProps } />
         </div>
     );
 };

@@ -30,6 +30,7 @@ import {
     global_success_color_100,
     global_warning_color_200
 } from '@patternfly/react-tokens';
+import { SkeletonTable } from '@redhat-cloud-services/frontend-components';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import { important } from 'csx';
@@ -48,6 +49,8 @@ import { ExpandedContent } from './Table/ExpandedContent';
 export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
 interface IntegrationsTableProps extends OuiaComponentProps {
+    isLoading: boolean;
+    loadingCount?: number;
     integrations: Array<IntegrationRow>;
     onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
     onEnable?: OnEnable;
@@ -330,6 +333,19 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
 
         return [];
     }, [ props.actionResolver, props.integrations ]);
+
+    if (props.isLoading) {
+        return (
+            <div { ...getOuiaProps('Integrations/Table',  { ...props, ouiaSafe: false }) }>
+                <SkeletonTable
+                    rowSize={ (props.loadingCount && props.loadingCount > 0) ? props.loadingCount : 10 }
+                    columns={ columns }
+                    paddingColumnSize={ 0 }
+                    sortBy={ undefined }
+                />
+            </div>
+        );
+    }
 
     return (
         <div { ...getOuiaProps('Integrations/Table', props) }>
