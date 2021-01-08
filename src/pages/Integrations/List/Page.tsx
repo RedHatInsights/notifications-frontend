@@ -12,6 +12,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 
 import { AppContext } from '../../../app/AppContext';
+import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import Config from '../../../config/Config';
@@ -28,15 +29,22 @@ import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer }
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 
-const integrationFilterBuilder = (_filters: unknown) => {
-    return new Filter().and('type', Operator.EQUAL, IntegrationType.WEBHOOK);
+const integrationFilterBuilder = (filters?: IntegrationFilters) => {
+    const filter = new Filter();
+    if (filters?.enabled?.length === 1) {
+        const isEnabled = filters.enabled[0].toLocaleLowerCase() === 'enabled';
+        filter.and('active', Operator.EQUAL, isEnabled.toString());
+    }
+
+    return filter.and('type', Operator.EQUAL, IntegrationType.WEBHOOK);
 };
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const { rbac } = useContext(AppContext);
     const canWriteIntegrations = rbac.hasPermission(Config.integrations.subAppId, 'endpoints', 'write');
-    const pageData = usePage(10, integrationFilterBuilder);
+    const integrationFilter = useIntegrationFilter();
+    const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
     const exportIntegrationsQuery = useListIntegrationPQuery();
 
@@ -53,7 +61,6 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ integrationsQuery.payload ]);
 
     const integrationRows = useIntegrationRows(integrations.data);
-    const integrationFilter = useIntegrationFilter();
 
     const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
     const [ deleteModalState, dispatchDeleteModal ] = useDeleteModalReducer();

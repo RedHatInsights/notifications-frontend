@@ -7,9 +7,9 @@ export interface UsePageReturn {
     changeItemsPerPage: (perPage: number) => void;
 }
 
-export type FilterBuilder = (filters: unknown) => Filter | undefined;
+export type FilterBuilder<T> = (filters: T | undefined) => Filter | undefined;
 
-export const usePage = (defaultPerPage: number, filterBuilder: FilterBuilder, filters?: unknown, sort?: Sort): UsePageReturn => {
+export const usePage = <T>(defaultPerPage: number, filterBuilder: FilterBuilder<T>, filters?: T, sort?: Sort): UsePageReturn => {
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ itemsPerPage, setItemsPerPage ] = useState(defaultPerPage);
 
