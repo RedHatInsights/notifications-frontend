@@ -1,5 +1,8 @@
-import { useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
-import { useFilters, useUrlStateExclusiveOptions } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    useFilters,
+    useUrlStateMultipleOptions,
+    useUrlStateString
+} from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 
 import { IntegrationFilterColumn } from '../../../components/Integrations/Filters';
@@ -7,7 +10,7 @@ import { IntegrationFilterColumn } from '../../../components/Integrations/Filter
 const DEBOUNCE_MS = 250;
 
 const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
-const useUrlStateEnabled = (_defaultValue?: string) => useUrlStateExclusiveOptions('enabled', [ 'enabled', 'disabled' ],  undefined);
+const useUrlStateEnabled = (_defaultValue?: string) => useUrlStateMultipleOptions('enabled', [ 'Enabled', 'Disabled' ]);
 
 const useStateFactory = (column: IntegrationFilterColumn) => {
     switch (column) {
