@@ -46,12 +46,8 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
         label: 'Enabled',
         placeholder: 'Filter by enabled',
         options: {
-            exclusive: true,
+            exclusive: false,
             items: [
-                {
-                    value: 'all',
-                    label: <>All</>
-                },
                 {
                     value: 'Enabled',
                     label: <><EnabledIntegrationIcon /> <span className={ enabledTextClassName }>Enabled</span></>
@@ -60,9 +56,7 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
                     value: 'Disabled',
                     label: <><DisabledIntegrationIcon /> <span className={ enabledTextClassName }>Disabled</span></>
                 }
-            ],
-            default: 'all',
-            exclude: [ 'all' ]
+            ]
         }
     }
 };
