@@ -8,6 +8,7 @@ import {
     RenderIfFalse
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { useContext } from 'react';
 import { style } from 'typestyle';
 
 import { AppContext, useAppContext } from '../../../app/AppContext';
@@ -30,7 +31,6 @@ import {
 import { useNotificationFilter } from './useNotificationFilter';
 import { useNotificationPage } from './useNotificationPage';
 import { useNotificationRows } from './useNotificationRows';
-import { useContext } from 'react';
 
 const displayInlineClassName = style({
     display: 'inline'
