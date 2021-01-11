@@ -143,7 +143,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             <Main>
                 <Section className='pf-c-page__main-section pf-m-light'>
                     <IntegrationsToolbar
-                        onAddIntegration={ onAddIntegrationClicked }
+                        onAddIntegration={ canWriteAll ? onAddIntegrationClicked : undefined }
                         onExport={ onExport }
                         filters={ integrationFilter.filters }
                         setFilters={ integrationFilter.setFilters }
@@ -160,7 +160,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                             loadingCount={ loadingCount }
                             integrations={ integrationRows.rows }
                             onCollapse={ integrationRows.onCollapse }
-                            onEnable={ integrationRows.onEnable }
+                            onEnable={ canWriteAll ? integrationRows.onEnable : undefined }
                             actionResolver={ actionResolver }
                         />
                     </IntegrationsToolbar>

@@ -10,7 +10,7 @@ import {
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { useAppContext } from '../../../app/AppContext';
+import { AppContext, useAppContext } from '../../../app/AppContext';
 import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
 import { NotificationsTable } from '../../../components/Notifications/Table';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
@@ -30,6 +30,7 @@ import {
 import { useNotificationFilter } from './useNotificationFilter';
 import { useNotificationPage } from './useNotificationPage';
 import { useNotificationRows } from './useNotificationRows';
+import { useContext } from 'react';
 
 const displayInlineClassName = style({
     display: 'inline'
@@ -50,6 +51,7 @@ const emptyArray = [];
 
 export const NotificationsListPage: React.FunctionComponent = () => {
 
+    const { rbac: { canWriteAll }} = useContext(AppContext);
     const defaultNotificationBehavior = useDefaultNotificationBehavior();
     const { applications } = useAppContext();
 
@@ -123,7 +125,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                         defaultBehavior={ defaultNotificationBehavior.payload?.type === 'DefaultNotificationBehavior' ?
                             defaultNotificationBehavior.payload.value :
                             undefined }
-                        onEdit={ onEditDefaultAction }
+                        onEdit={ canWriteAll ? onEditDefaultAction : undefined }
                     />
                     <div className={ tableTitleClassName }>Insights notifications event types and behavior</div>
                     <NotificationsToolbar
@@ -138,7 +140,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                         <NotificationsTable
                             notifications={ notificationRows }
                             onCollapse={ onCollapse }
-                            onEdit={ onEditNotification }
+                            onEdit={ canWriteAll ? onEditNotification : undefined }
                         />
                     </NotificationsToolbar>
                     { modalIsOpenState.isOpen && (

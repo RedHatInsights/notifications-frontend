@@ -206,6 +206,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                                 aria-label="Enabled"
                                 isChecked={ integration.isEnabled }
                                 onChange={ isChecked => onEnable && onEnable(integration, idx, isChecked) }
+                                isDisabled={ !onEnable }
                                 ouiaId={ `enabled-${integration.id}` }
                             />
                         )}
