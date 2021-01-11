@@ -1,17 +1,16 @@
+import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
+import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
+import { getInsights, initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
-
 import { ClientContextProvider, createClient } from 'react-fetching-library';
+import { Provider } from 'react-redux';
 import { MemoryRouterProps, useLocation } from 'react-router';
 import { Route, RouteProps } from 'react-router';
-import { getInsights, initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
-
-import { AppContext } from '../src/app/AppContext';
-import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-import { Provider } from 'react-redux';
 import { MemoryRouter as Router } from 'react-router-dom';
+
 import messages from '../locales/data.json';
-import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
+import { AppContext } from '../src/app/AppContext';
 
 import fetchMock = require('fetch-mock');
 let setup = false;
@@ -99,7 +98,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
                 <Router { ...props.router } >
                     <ClientContextProvider client={ client }>
                         <AppContext.Provider value={ props.appContext || defaultAppContextSettings }>
-                            <NotificationsPortal/>
+                            <NotificationsPortal />
                             <InternalWrapper { ...props }>
                                 <Route { ...props.route } >
                                     { props.children }
