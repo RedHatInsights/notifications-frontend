@@ -20,7 +20,7 @@ import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
 
 interface IntegrationsToolbarProps extends OuiaComponentProps {
-    onAddIntegration: () => void;
+    onAddIntegration?: () => void;
     onExport: (type: ExporterType) => void;
     filters: IntegrationFilters;
     setFilters: SetIntegrationFilters;

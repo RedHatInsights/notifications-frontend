@@ -1,6 +1,5 @@
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { render, screen } from '@testing-library/react';
-import fetchMock from 'fetch-mock';
 import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
 
@@ -8,6 +7,14 @@ import messages from '../../locales/data.json';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../test/TestUtils';
 import { Routes } from '../Routes';
+
+jest.mock('../pages/Notifications/List/Page', () => ({
+    NotificationsListPage: () => 'Notifications'
+}));
+
+jest.mock('../pages/Integrations/List/Page', () => ({
+    IntegrationsListPage: () => 'Integrations'
+}));
 
 describe('src/Routes', () => {
     it('Should throw when no id=root element found', () => {
@@ -56,7 +63,6 @@ describe('src/Routes', () => {
 
         it('Should render Integrations on /integrations', async () => {
             jest.useFakeTimers();
-            fetchMock.getOnce('/api/notifications/v1.0/endpoints', []);
             const getLocation = jest.fn();
             const Wrapper = getConfiguredAppWrapper({
                 router: {
@@ -88,9 +94,7 @@ describe('src/Routes', () => {
             });
 
             expect(getLocation().pathname).toBe('/notifications');
-            expect(screen.getByText(/notifications/i, {
-                selector: 'h1'
-            })).toBeVisible();
+            expect(screen.getByText(/notifications/i)).toBeVisible();
         });
     });
 });

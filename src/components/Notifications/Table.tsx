@@ -94,7 +94,7 @@ const columns: Array<ICell> = [
 export interface NotificationsTableProps extends OuiaComponentProps {
     notifications: NotificationRows;
     onCollapse: (index: number, isOpen: boolean) => void;
-    onEdit: OnEditNotification;
+    onEdit?: OnEditNotification;
 }
 
 type NotificationRowBase = {
@@ -156,7 +156,7 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
     );
 };
 
-const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, onEdit: OnEditNotification, parent?: number) => {
+const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, onEdit?: OnEditNotification, parent?: number) => {
     return notifications.reduce((rows, notification) => {
         const rowSpan = Math.max(1, notification.useDefault ? 1 : notification.actions.length);
         const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
@@ -199,7 +199,9 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                     }
                 },
                 {
-                    title: <><Button onClick={ () => onEdit(notification) } variant={ ButtonVariant.link }>Edit</Button></>,
+                    title: <><Button
+                        onClick={ () => onEdit && onEdit(notification) } isDisabled={ !onEdit }
+                        variant={ ButtonVariant.link }>Edit</Button></>,
                     props: {
                         className: cellPaddingBottom,
                         style: cellPaddingBottomStyle
@@ -275,7 +277,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
     }, [] as Array<IRow>);
 };
 
-const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>, onEdit: OnEditNotification): Array<IRow> =>
+const toTableRowsGroupedByApplication = (applicationGroups: Array<NotificationRowGroupedByApplication>, onEdit?: OnEditNotification): Array<IRow> =>
     applicationGroups.reduce((rows, applicationGroup) => {
         rows.push({
             id: applicationGroup.applicationDisplayName,

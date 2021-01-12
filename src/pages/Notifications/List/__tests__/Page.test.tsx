@@ -295,4 +295,208 @@ describe('src/pages/Notifications/List/Page', () => {
             expect(screen.queryByText(/Edit default notification actions/i)).toBeFalsy();
         });
     });
+
+    it('Without write permissions edit default notification is disabled', async () => {
+        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+            body: [
+
+            ] as Array<Schemas.Endpoint>
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/15454656416', {
+            body: [
+
+            ]
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            body: [
+                {
+                    application: {
+                        display_name: 'the app',
+                        created: Date.now().toString(),
+                        eventTypes: undefined,
+                        id: 'app',
+                        name: 'app',
+                        updated: Date.now().toString()
+
+                    },
+                    display_name: 'display_name',
+                    endpoints: [],
+                    id: 15454656416,
+                    name: 'mmmokay'
+                }
+            ] as Array<Schemas.EventType>
+        });
+        render(
+            <NotificationsListPage />
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    appContext: {
+                        applications: [],
+                        rbac: {
+                            canReadAll: true,
+                            canWriteAll: false
+                        }
+                    }
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(
+            getByText(ouiaSelectors.getByOuia('Notifications/Notifications/DefaultBehavior'), /Edit/i)
+        ).toBeDisabled();
+    });
+
+    it('With write and read permissions edit default notification is enabled', async () => {
+        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+            body: [
+
+            ] as Array<Schemas.Endpoint>
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/15454656416', {
+            body: [
+
+            ]
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            body: [
+                {
+                    application: {
+                        display_name: 'the app',
+                        created: Date.now().toString(),
+                        eventTypes: undefined,
+                        id: 'app',
+                        name: 'app',
+                        updated: Date.now().toString()
+
+                    },
+                    display_name: 'display_name',
+                    endpoints: [],
+                    id: 15454656416,
+                    name: 'mmmokay'
+                }
+            ] as Array<Schemas.EventType>
+        });
+        render(
+            <NotificationsListPage />
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    appContext: {
+                        applications: [],
+                        rbac: {
+                            canReadAll: true,
+                            canWriteAll: true
+                        }
+                    }
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(
+            getByText(ouiaSelectors.getByOuia('Notifications/Notifications/DefaultBehavior'), /Edit/i)
+        ).toBeEnabled();
+    });
+
+    it('Without write permissions edit notification is disabled', async () => {
+        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+            body: [
+
+            ] as Array<Schemas.Endpoint>
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/15454656416', {
+            body: [
+
+            ]
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            body: [
+                {
+                    application: {
+                        display_name: 'the app',
+                        created: Date.now().toString(),
+                        eventTypes: undefined,
+                        id: 'app',
+                        name: 'app',
+                        updated: Date.now().toString()
+
+                    },
+                    display_name: 'display_name',
+                    endpoints: [],
+                    id: 15454656416,
+                    name: 'mmmokay'
+                }
+            ] as Array<Schemas.EventType>
+        });
+        render(
+            <NotificationsListPage />
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    appContext: {
+                        applications: [],
+                        rbac: {
+                            canReadAll: true,
+                            canWriteAll: false
+                        }
+                    }
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(
+            getByText(ouiaSelectors.getByOuia('Notifications/Notifications/Table'), /Edit/i)
+        ).toBeDisabled();
+    });
+
+    it('With write and read permissions edit notification is enabled', async () => {
+        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+            body: [
+
+            ] as Array<Schemas.Endpoint>
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/15454656416', {
+            body: [
+
+            ]
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            body: [
+                {
+                    application: {
+                        display_name: 'the app',
+                        created: Date.now().toString(),
+                        eventTypes: undefined,
+                        id: 'app',
+                        name: 'app',
+                        updated: Date.now().toString()
+
+                    },
+                    display_name: 'display_name',
+                    endpoints: [],
+                    id: 15454656416,
+                    name: 'mmmokay'
+                }
+            ] as Array<Schemas.EventType>
+        });
+        render(
+            <NotificationsListPage />
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    appContext: {
+                        applications: [],
+                        rbac: {
+                            canReadAll: true,
+                            canWriteAll: true
+                        }
+                    }
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(
+            getByText(ouiaSelectors.getByOuia('Notifications/Notifications/Table'), /Edit/i)
+        ).toBeEnabled();
+    });
 });
