@@ -11,13 +11,14 @@ interface RecipientProps {
 }
 
 const disabledLabelClassName = style({
-    marginRight: global_spacer_sm.var
+    marginLeft: global_spacer_sm.var
 });
 
 export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
     if (props.action.type === NotificationType.INTEGRATION) {
         return (
             <>
+                <span>{ props.action.integration.name }</span>
                 { !props.action.integration.isEnabled && (
                     <>
                         <Tooltip content="This integration has been disabled. This action wil not fire until it is enabled." position="bottom">
@@ -25,7 +26,6 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
                         </Tooltip>
                     </>
                 )}
-                <span>{ props.action.integration.name }</span>
             </>
         );
     }

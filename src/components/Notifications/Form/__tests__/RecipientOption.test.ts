@@ -91,7 +91,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         expect(a.toString()).toEqual('baz');
     });
 
-    it('toString prepends "Disabled - " the name of the integrationRef', () => {
+    it('toString appends "- Disabled" the name of the integrationRef', () => {
         const a = new RecipientOption({
             name: 'baz',
             isEnabled: false,
@@ -99,6 +99,6 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
             id: '123456789'
         });
 
-        expect(a.toString()).toEqual('Disabled - baz');
+        expect(a.toString()).toEqual('baz - Disabled');
     });
 });
