@@ -36,6 +36,7 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
             onClose={ props.onClose }
             onDelete={ onDeleteInternal }
             error={ props.error }
+            titleIconVariant="warning"
         />
     );
 };
