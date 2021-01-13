@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, Flex, FlexItem, Skeleton } from '@patternfly/react-core';
+import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
 import { c_skeleton_BackgroundColor, global_palette_black_300, global_spacer_lg, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
@@ -49,12 +49,9 @@ const titleClassName = style({
 export const DefaultBehavior: React.FunctionComponent<DefaultBehaviorProps> = (props) => {
     return (
         <div { ...getOuiaProps('Notifications/DefaultBehavior', props) } className={ contentClassName } >
-            <Flex
-                justifyContent={ { default: 'justifyContentSpaceBetween' } }
-            >
-                <FlexItem><div className={ titleClassName }>Default behavior</div></FlexItem>
-                <FlexItem><Button onClick={ props.onEdit } isDisabled={ !props.onEdit } variant={ ButtonVariant.link }>Edit</Button></FlexItem>
-            </Flex>
+            <div className={ titleClassName }>
+                Default behavior <Button onClick={ props.onEdit } isDisabled={ !props.onEdit } variant={ ButtonVariant.link }>Edit defaults</Button>
+            </div>
             <div>Default behavior applies to all notifications in a bundle. You can override this default for any specific event type.</div>
             <table className={ `${tableClassName} withDark300Skeleton` }>
                 <thead>
