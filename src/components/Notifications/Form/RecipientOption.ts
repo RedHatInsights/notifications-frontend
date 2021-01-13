@@ -25,8 +25,8 @@ export class RecipientOption implements SelectOptionObject {
         if (typeof this.recipientOrIntegration === 'string') {
             return this.recipientOrIntegration;
         } else {
-            const prefix = this.recipientOrIntegration.isEnabled ? '' : 'Disabled - ';
-            return `${prefix}${this.recipientOrIntegration.name}`;
+            const postfix = this.recipientOrIntegration.isEnabled ? '' : ' - Disabled';
+            return `${this.recipientOrIntegration.name}${postfix}`;
         }
     }
 }
