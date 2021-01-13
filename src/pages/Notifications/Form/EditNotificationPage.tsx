@@ -103,7 +103,7 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
     const onSave = React.useCallback(async (data: Notification | DefaultNotificationBehavior) => {
         const idMapper = (a: Action) => {
             if (a.type !== NotificationType.INTEGRATION && a.type !== NotificationType.EMAIL_SUBSCRIPTION) {
-                throw new Error('Only integrations and EmailSubscription are supported are supported');
+                throw new Error('Only integrations and EmailSubscription are supported');
             }
 
             return a.integrationId;

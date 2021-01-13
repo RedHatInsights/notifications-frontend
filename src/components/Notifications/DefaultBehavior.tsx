@@ -1,5 +1,7 @@
 import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
-import { c_skeleton_BackgroundColor, global_palette_black_300, global_spacer_lg, global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
+import {
+    c_skeleton_BackgroundColor, global_FontSize_sm, global_palette_black_300, global_spacer_md, global_spacer_xs
+} from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { cssRaw, style } from 'typestyle';
@@ -30,14 +32,21 @@ const contentClassName = style({
 });
 
 const tableClassName = style({
-    paddingTop: global_spacer_lg.var,
+    paddingTop: global_spacer_md.var,
     display: 'block',
     $nest: {
         '& td, & th': {
-            paddingTop: global_spacer_sm.var,
-            paddingBottom: global_spacer_sm.var,
+            paddingTop: global_spacer_xs.var,
+            paddingBottom: global_spacer_xs.var,
             paddingLeft: global_spacer_md.var,
-            paddingRight: global_spacer_md.var
+            paddingRight: global_spacer_md.var,
+            fontSize: global_FontSize_sm.var
+        },
+        '& td:first-child, & th:first-child': {
+            paddingLeft: 0
+        },
+        '& thead:first-child th': {
+            paddingTop: 0
         }
     }
 });

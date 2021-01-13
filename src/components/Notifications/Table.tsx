@@ -13,10 +13,11 @@ import {
     TableBody,
     TableHeader
 } from '@patternfly/react-table';
+import { global_spacer_md, global_spacer_sm } from '@patternfly/react-tokens';
 import { joinClasses, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
-import { style } from 'typestyle';
+import { cssRaw, style } from 'typestyle';
 
 import { Messages } from '../../properties/Messages';
 import { Notification } from '../../types/Notification';
@@ -38,7 +39,7 @@ const cellPaddingBottom = style({
 });
 
 const firstNestedCellInExpandedPaddingLeft = style({
-    paddingLeft: '16px !important'
+    paddingLeft: `${global_spacer_md.var} !important`
 });
 
 const cellPaddingBottomStyle = {
@@ -47,7 +48,7 @@ const cellPaddingBottomStyle = {
 } as any;
 
 const cellPaddingTop = style({
-    paddingTop: `8px !important`
+    paddingTop: `${global_spacer_sm.var} !important`
 } as any);
 
 const cellPaddingTopStyle = {
@@ -67,6 +68,15 @@ const noExpandableBorderClassName = style({
         }
     }
 });
+
+const componentClassName = 'notification-table';
+
+cssRaw(`
+.${componentClassName} table {
+    --pf-c-table--m-compact__expandable-row-content--PaddingTop: ${global_spacer_sm.var};
+    --pf-c-table--m-compact__expandable-row-content--PaddingBottom: ${global_spacer_sm.var};
+}
+`);
 
 const applicationGroupClassName = style({
     fontWeight: 600
@@ -335,13 +345,14 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
     }, [ props.onCollapse, props.notifications ]);
 
     return (
-        <div { ...getOuiaProps('Notifications/Table', props) } className="notification-table">
+        <div { ...getOuiaProps('Notifications/Table', props) } className={ componentClassName }>
             <Table
                 aria-label={ Messages.components.notifications.table.title }
                 rows={ rows }
                 cells={ columns }
                 onCollapse={ onCollapseHandler }
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
+                variant="compact"
             >
                 <TableHeader />
                 <TableBody />

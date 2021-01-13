@@ -39,7 +39,8 @@ interface ActionsArrayProps extends FieldArrayRenderProps {
 }
 
 const alignLeftClassName = style({
-    textAlign: 'left'
+    textAlign: 'left',
+    paddingLeft: 0
 });
 
 const tableClassName = style({
@@ -56,6 +57,9 @@ const tableClassName = style({
         },
         '& th:last-child': {
             width: '80px'
+        },
+        '& td:first-child, & th:first-child': {
+            paddingLeft: 0
         }
     }
 });
