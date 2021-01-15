@@ -14,6 +14,7 @@ import { useContext } from 'react';
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
+import Config from '../../../config/Config';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
@@ -33,7 +34,8 @@ const integrationFilterBuilder = (_filters: unknown) => {
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
-    const { rbac: { canWriteAll }} = useContext(AppContext);
+    const { rbac } = useContext(AppContext);
+    const canWriteIntegrations = rbac.hasPermission(Config.integrations.subAppId, 'endpoints', 'write');
     const pageData = usePage(10, integrationFilterBuilder);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
     const exportIntegrationsQuery = useListIntegrationPQuery();
@@ -108,7 +110,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ exportIntegrationsQuery ]);
 
     const actionResolver = useActionResolver({
-        canWriteAll,
+        canWrite: canWriteIntegrations,
         onEdit,
         onDelete,
         onEnable: integrationRows.onEnable
@@ -143,7 +145,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             <Main>
                 <Section className='pf-c-page__main-section pf-m-light'>
                     <IntegrationsToolbar
-                        onAddIntegration={ canWriteAll ? onAddIntegrationClicked : undefined }
+                        onAddIntegration={ canWriteIntegrations ? onAddIntegrationClicked : undefined }
                         onExport={ onExport }
                         filters={ integrationFilter.filters }
                         setFilters={ integrationFilter.setFilters }
@@ -160,7 +162,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                             loadingCount={ loadingCount }
                             integrations={ integrationRows.rows }
                             onCollapse={ integrationRows.onCollapse }
-                            onEnable={ canWriteAll ? integrationRows.onEnable : undefined }
+                            onEnable={ canWriteIntegrations ? integrationRows.onEnable : undefined }
                             actionResolver={ actionResolver }
                         />
                     </IntegrationsToolbar>

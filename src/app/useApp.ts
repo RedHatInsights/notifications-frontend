@@ -37,7 +37,7 @@ export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pi
     useEffect(() => {
         waitForInsights().then(insights => {
             insights.chrome.auth.getUser().then(() => {
-                fetchRBAC(Config.appId).then(setRbac);
+                fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
             });
         });
     }, []);
