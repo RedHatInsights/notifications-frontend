@@ -1,6 +1,6 @@
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import { getInsights, initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import { getInsights, initStore, Rbac, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
 import { ClientContextProvider, createClient } from 'react-fetching-library';
@@ -61,10 +61,14 @@ type Config = {
 }
 
 const defaultAppContextSettings = {
-    rbac: {
-        canReadAll: true,
-        canWriteAll: true
-    },
+    rbac: new Rbac({
+        integrations: {
+            endpoints: [ 'read', 'write' ]
+        },
+        notifications: {
+            notifications: [ 'read', 'write' ]
+        }
+    }),
     applications: [
         {
             label: 'Policies',

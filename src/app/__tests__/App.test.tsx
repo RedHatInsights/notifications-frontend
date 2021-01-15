@@ -70,7 +70,7 @@ describe('src/app/App', () => {
             {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {
-                        rbac: {},
+                        rbac: new Rbac({}),
                         applications: undefined
                     } as any
                 })
@@ -87,19 +87,35 @@ describe('src/app/App', () => {
         await waitForAsyncEvents();
     });
 
-    it('Shows the content when RBAC.canReadAll is set', async () => {
+    it('Shows the content when read is set', async () => {
         jest.useFakeTimers();
-        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve({
-            canReadAll: true,
-            canWriteAll: true
-        }));
+
+        const Wrapper = getConfiguredAppWrapper({
+            route: {
+                location: {
+                    pathname: '/notifications',
+                    search: '',
+                    hash: '',
+                    state: {}
+                }
+            }
+        });
+
+        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(new Rbac({
+            integrations: {
+                endpoints: [ 'read', 'write' ]
+            },
+            notifications: {
+                notifications: [ 'read', 'write' ]
+            }
+        })));
         fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
-                wrapper: AppWrapper
+                wrapper: Wrapper
             }
         );
 
@@ -112,10 +128,14 @@ describe('src/app/App', () => {
 
     it('Shows error when RBAC does not have read access when /notifications', async () => {
         jest.useFakeTimers();
-        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve({
-            canReadAll: false,
-            canWriteAll: true
-        }));
+        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(new Rbac({
+            integrations: {
+                endpoints: [ 'read', 'write' ]
+            },
+            notifications: {
+                notifications: [ 'write' ]
+            }
+        })));
         fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });
@@ -147,10 +167,14 @@ describe('src/app/App', () => {
 
     it('Shows error when RBAC does not have read access when /integrations', async () => {
         jest.useFakeTimers();
-        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve({
-            canReadAll: false,
-            canWriteAll: true
-        }));
+        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(new Rbac({
+            integrations: {
+                endpoints: [ 'write' ]
+            },
+            notifications: {
+                notifications: [ 'read', 'write' ]
+            }
+        })));
         fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
             body: []
         });

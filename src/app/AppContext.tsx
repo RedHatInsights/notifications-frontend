@@ -10,10 +10,7 @@ export interface AppContext {
 }
 
 export const AppContext = React.createContext<AppContext>({
-    rbac: {
-        canReadAll: false,
-        canWriteAll: false
-    },
+    rbac: new Rbac({}),
     applications: []
 });
 

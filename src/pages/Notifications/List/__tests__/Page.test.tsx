@@ -1,3 +1,4 @@
+import { Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -332,10 +333,14 @@ describe('src/pages/Notifications/List/Page', () => {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {
                         applications: [],
-                        rbac: {
-                            canReadAll: true,
-                            canWriteAll: false
-                        }
+                        rbac: new Rbac({
+                            integrations: {
+                                endpoints: [ 'read', 'write' ]
+                            },
+                            notifications: {
+                                notifications: [ 'read' ]
+                            }
+                        })
                     }
                 })
             }
@@ -383,10 +388,14 @@ describe('src/pages/Notifications/List/Page', () => {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {
                         applications: [],
-                        rbac: {
-                            canReadAll: true,
-                            canWriteAll: true
-                        }
+                        rbac: new Rbac({
+                            integrations: {
+                                endpoints: [ 'read', 'write' ]
+                            },
+                            notifications: {
+                                notifications: [ 'read', 'write' ]
+                            }
+                        })
                     }
                 })
             }
@@ -434,10 +443,14 @@ describe('src/pages/Notifications/List/Page', () => {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {
                         applications: [],
-                        rbac: {
-                            canReadAll: true,
-                            canWriteAll: false
-                        }
+                        rbac: new Rbac({
+                            integrations: {
+                                endpoints: [ 'read', 'write' ]
+                            },
+                            notifications: {
+                                notifications: [ 'read' ]
+                            }
+                        })
                     }
                 })
             }
@@ -485,10 +498,14 @@ describe('src/pages/Notifications/List/Page', () => {
                 wrapper: getConfiguredAppWrapper({
                     appContext: {
                         applications: [],
-                        rbac: {
-                            canReadAll: true,
-                            canWriteAll: true
-                        }
+                        rbac: new Rbac({
+                            integrations: {
+                                endpoints: [ 'read', 'write' ]
+                            },
+                            notifications: {
+                                notifications: [ 'read', 'write' ]
+                            }
+                        })
                     }
                 })
             }

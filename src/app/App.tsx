@@ -30,6 +30,18 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
         }
     }, [ intl, location.pathname ]);
 
+    const hasReadPermissions = React.useMemo(() => {
+        const appId = getSubApp(location.pathname);
+        switch (appId) {
+            case Config.integrations.subAppId:
+                return rbac?.hasPermission(appId, 'endpoints', 'read');
+            case Config.notifications.subAppId:
+                return rbac?.hasPermission(appId, 'notifications', 'read');
+        }
+
+        return false;
+    }, [ rbac, location.pathname ]);
+
     if (!rbac || !applications) {
         return (
             <AppSkeleton />
@@ -41,7 +53,7 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
             rbac,
             applications
         } }>
-            { rbac.canReadAll ? (
+            { hasReadPermissions ? (
                 <>
                     <NotificationsPortal />
                     <Routes />

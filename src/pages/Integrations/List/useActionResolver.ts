@@ -6,7 +6,7 @@ import { UserIntegration } from '../../../types/Integration';
 interface ActionResolverParams {
     onEdit: (integration: UserIntegration) => void;
     onDelete: (integration: UserIntegration) => void;
-    canWriteAll: boolean;
+    canWrite: boolean;
     onEnable: OnEnable;
 }
 
@@ -17,7 +17,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
         const onDelete = params.onDelete;
         const onEnable = params.onEnable;
 
-        const isDisabled = !params.canWriteAll;
+        const isDisabled = !params.canWrite;
 
         return [
             {
@@ -35,5 +35,5 @@ export const useActionResolver = (params: ActionResolverParams) => {
             }
         ];
 
-    }, [ params.onEdit, params.onDelete, params.canWriteAll, params.onEnable ]);
+    }, [ params.onEdit, params.onDelete, params.canWrite, params.onEnable ]);
 };
