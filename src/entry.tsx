@@ -2,8 +2,7 @@ import { IntlProvider } from '@redhat-cloud-services/frontend-components-transla
 import {
     createFetchingClient,
     getInsights,
-    getStore,
-    initStore
+    getStore
 } from '@redhat-cloud-services/insights-common-typescript';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import React from 'react';
@@ -15,11 +14,12 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import messages from '../locales/data.json';
 import App from './app/App';
 import { getBaseName } from './utils/Basename';
+import { createStore } from './store/Store';
 
 const client = createFetchingClient(getInsights, {
     responseInterceptors: [ validateSchemaResponseInterceptor ]
 });
-initStore();
+createStore();
 
 ReactDOM.render(
     <IntlProvider locale={ navigator.language.slice(0, 2) } messages={ messages } onError={ console.log }>
