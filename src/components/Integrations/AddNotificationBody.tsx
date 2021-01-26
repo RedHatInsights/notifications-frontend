@@ -1,7 +1,8 @@
-import * as React from 'react';
 import { Button, ButtonVariant, Spinner } from '@patternfly/react-core';
-import { IntegrationRef } from '../../types/Notification';
+import * as React from 'react';
 import { style } from 'typestyle';
+
+import { IntegrationRef } from '../../types/Notification';
 
 interface AddNotificationBodyProps {
     integration: IntegrationRef;

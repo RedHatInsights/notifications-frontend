@@ -1,4 +1,5 @@
 import { ActionType, createAction } from 'typesafe-actions';
+
 import { IntegrationRef } from '../../types/Notification';
 
 export enum SavedNotificationScopeKeys {

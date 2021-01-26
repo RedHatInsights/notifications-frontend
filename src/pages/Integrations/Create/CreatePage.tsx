@@ -1,19 +1,19 @@
 import { ActionModalError, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { AddNotificationBody } from '../../../components/Integrations/AddNotificationBody';
 import { IntegrationSaveModal } from '../../../components/Integrations/SaveModal';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
-import { NewUserIntegration, UserIntegration } from '../../../types/Integration';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
+import { SavedNotificationScopeActions } from '../../../store/actions/SavedNotificationScopeAction';
 import {
     savedNotificationScopeEqualFn,
     savedNotificationScopeSelector
 } from '../../../store/selectors/SavedNotificationScopeSelector';
 import { Status } from '../../../store/types/SavedNotificationScopeTypes';
+import { NewUserIntegration, UserIntegration } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
-import { SavedNotificationScopeActions } from '../../../store/actions/SavedNotificationScopeAction';
-import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
 
 interface CreatePageProps {
     isEdit: boolean;

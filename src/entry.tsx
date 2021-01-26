@@ -13,8 +13,8 @@ import { BrowserRouter as Router } from 'react-router-dom';
 
 import messages from '../locales/data.json';
 import App from './app/App';
-import { getBaseName } from './utils/Basename';
 import { createStore } from './store/Store';
+import { getBaseName } from './utils/Basename';
 
 const client = createFetchingClient(getInsights, {
     responseInterceptors: [ validateSchemaResponseInterceptor ]
