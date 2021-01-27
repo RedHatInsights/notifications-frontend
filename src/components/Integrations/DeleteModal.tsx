@@ -33,10 +33,11 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
                 </>
             );
         } else {
+            const eventText = props.notifications.length !== 1 ? 'events' : 'event';
             return (
                 <>
-                    Removing this integration affects { props.notifications.length } notification event{ props.notifications.length > 1 ? 's' : '' }.
-                    { props.notifications.length > 0 && <ExpandableSection toggleText={ `View ${props.notifications.length} events.` }>
+                    Removing this integration affects {props.notifications.length} notification {eventText}.
+                    { props.notifications.length > 0 && <ExpandableSection toggleText={ `View ${props.notifications.length} ${eventText}.` }>
                         <List>
                             { props.notifications.map(notification => (
                                 <ListItem
