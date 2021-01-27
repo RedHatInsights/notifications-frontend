@@ -1058,6 +1058,7 @@ export namespace Schemas {
 
 export namespace Operations {
   // GET /notifications/defaults
+  // Retrieve all integrations of the configured default actions.
   export namespace NotificationServiceGetEndpointsForDefaults {
     const Response200 = z.array(Schemas.Endpoint);
     type Response200 = Array<Schemas.Endpoint>;
@@ -1077,6 +1078,7 @@ export namespace Operations {
     };
   }
   // PUT /notifications/defaults/{endpointId}
+  // Add an integration to the list of configured default actions.
   export namespace NotificationServiceAddEndpointToDefaults {
     const Response200 = z.string();
     type Response200 = string;
@@ -1103,6 +1105,7 @@ export namespace Operations {
     };
   }
   // DELETE /notifications/defaults/{endpointId}
+  // Remove an integration from the list of configured default actions.
   export namespace NotificationServiceDeleteEndpointFromDefaults {
     const Response200 = z.string();
     type Response200 = string;
@@ -1175,6 +1178,32 @@ export namespace Operations {
             query.sort_by = params.sortBy;
         }
 
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /notifications/eventTypes/affectedByRemovalOfEndpoint/{endpointId}
+  export namespace NotificationServiceGetEventTypesAffectedByEndpointId {
+    const Response200 = z.array(Schemas.EventType);
+    type Response200 = Array<Schemas.EventType>;
+    export interface Params {
+      endpointId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfEndpoint/{endpointId}'.replace(
+            '{endpointId}',
+            params.endpointId.toString()
+        );
+        const query = {} as Record<string, any>;
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
@@ -1296,6 +1325,7 @@ export namespace Operations {
     };
   }
   // GET /notifications/facets/applications
+  // Return a thin list of configured applications. This can be used to configure a filter in the UI
   export namespace NotificationServiceGetApplicationsFacets {
     const Response200 = z.array(Schemas.ApplicationFacet);
     type Response200 = Array<Schemas.ApplicationFacet>;

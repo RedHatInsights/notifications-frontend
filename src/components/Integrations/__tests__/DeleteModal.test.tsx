@@ -32,12 +32,42 @@ describe('src/components/Integrations/DeleteModal', () => {
         expect(screen.getByText('Remove integration')).toBeTruthy();
     });
 
-    it('Has the integration name in the content', () => {
+    it('Passing notifications renders the expanded content with the number of elements', () => {
         render(
             <IntegrationDeleteModal
                 onDelete={ jestMock.fn() }
                 isDeleting={ false }
                 onClose={ jestMock.fn() }
+                notifications={ [
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 1,
+                        applicationDisplayName: 'Foo application',
+                        eventTypeDisplayName: 'Foo event type'
+                    },
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 2,
+                        applicationDisplayName: 'Bar application',
+                        eventTypeDisplayName: 'Bar event type'
+                    },
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 3,
+                        applicationDisplayName: 'Baz application',
+                        eventTypeDisplayName: 'Baz event type'
+                    },
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 4,
+                        applicationDisplayName: '24446666688888888000000000',
+                        eventTypeDisplayName: 'Password'
+                    }
+                ] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
                     type: UserIntegrationType.WEBHOOK,
@@ -51,7 +81,63 @@ describe('src/components/Integrations/DeleteModal', () => {
             />
         );
 
-        expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeTruthy();
+        expect(screen.getByText(/Removing this integration affects 4 notification events./)).toBeTruthy();
+    });
+
+    it('Opening the expandable reveals the notifications', () => {
+        render(
+            <IntegrationDeleteModal
+                onDelete={ jestMock.fn() }
+                isDeleting={ false }
+                onClose={ jestMock.fn() }
+                notifications={ [
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 1,
+                        applicationDisplayName: 'Foo application',
+                        eventTypeDisplayName: 'Foo event type'
+                    },
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 2,
+                        applicationDisplayName: 'Bar application',
+                        eventTypeDisplayName: 'Bar event type'
+                    },
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 3,
+                        applicationDisplayName: 'Baz application',
+                        eventTypeDisplayName: 'Baz event type'
+                    },
+                    {
+                        useDefault: false,
+                        actions: [],
+                        id: 4,
+                        applicationDisplayName: '24446666688888888000000000',
+                        eventTypeDisplayName: 'Password'
+                    }
+                ] }
+                integration={ {
+                    name: 'sdiofgjiofdsjgoifjso',
+                    type: UserIntegrationType.WEBHOOK,
+                    isEnabled: true,
+                    url: 'url',
+                    id: '123',
+                    secretToken: 'foo',
+                    method: Schemas.HttpType.Enum.GET,
+                    sslVerificationEnabled: false
+                } }
+            />
+        );
+
+        userEvent.click(screen.getByText(/Removing this integration affects 4 notification events./));
+        expect(screen.getByText('Foo application: Foo event type')).toBeTruthy();
+        expect(screen.getByText('Bar application: Bar event type')).toBeTruthy();
+        expect(screen.getByText('Baz application: Baz event type')).toBeTruthy();
+        expect(screen.getByText('24446666688888888000000000: Password')).toBeTruthy();
     });
 
     it('Does not render if integration is undefined', () => {
