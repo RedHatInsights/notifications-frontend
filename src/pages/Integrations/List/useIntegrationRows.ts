@@ -1,6 +1,6 @@
 import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import pLimit from 'p-limit';
-import { default as React, useCallback, useContext, useEffect, useState } from 'react';
+import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from 'react-fetching-library';
 import { useDispatch, useSelector } from 'react-redux';
 import { format } from 'react-string-format';
@@ -148,7 +148,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
 
     }, [ setIntegrationRowByIndex, switchStatus, reduxDispatch, savedNotificationScope ]);
 
-    React.useEffect(() => {
+    useEffect(() => {
         if (savedNotificationScope) {
             if (savedNotificationScope.status === Status.LOADING) {
                 setIntegrationRowById(
