@@ -38,7 +38,7 @@ const cellPaddingBottom = style({
     paddingBottom: '0 !important'
 });
 
-const firstNestedCellInExpandedPaddingLeft = style({
+const actionCellStyle = style({
     paddingLeft: `${global_spacer_md.var} !important`
 });
 
@@ -197,7 +197,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                         hasError={ notification.loadingActionStatus === 'error' }
                     /></span></>,
                     props: {
-                        className: cellPaddingBottom,
+                        className: joinClasses(actionCellStyle, cellPaddingBottom),
                         style: cellPaddingBottomStyle
                     }
                 },
@@ -253,7 +253,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                             className: joinClasses(
                                 noExpandableBorderClassName,
                                 classNames,
-                                parent === undefined ? '' : firstNestedCellInExpandedPaddingLeft
+                                actionCellStyle
                             ),
                             style: cssStyle
                         }
