@@ -1273,14 +1273,14 @@ export namespace Operations {
   }
   // DELETE /endpoints/{id}
   export namespace EndpointServiceDeleteEndpoint {
-    const Response200 = z.string();
-    type Response200 = string;
+    const Response204 = z.string();
+    type Response204 = string;
     export interface Params {
       id: Schemas.UUID;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', 204, Response204>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1292,7 +1292,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
         })
         .build();
     };
@@ -1325,14 +1325,14 @@ export namespace Operations {
   }
   // DELETE /endpoints/{id}/enable
   export namespace EndpointServiceDisableEndpoint {
-    const Response200 = z.string();
-    type Response200 = string;
+    const Response204 = z.string();
+    type Response204 = string;
     export interface Params {
       id: Schemas.UUID;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', 204, Response204>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1344,7 +1344,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
         })
         .build();
     };
