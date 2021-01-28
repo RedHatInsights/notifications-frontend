@@ -71,7 +71,6 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 
 export const toUserIntegration = (serverIntegration: ServerIntegrationResponse): UserIntegration => {
     const integration = toIntegration(serverIntegration);
-    console.log(Object.values(UserIntegrationType));
     if (!Object.values(UserIntegrationType).includes(integration.type as unknown as UserIntegrationType)) {
         throw new Error(`Unknown UserIntegrationType ${integration.type}`);
     }

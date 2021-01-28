@@ -1058,6 +1058,7 @@ export namespace Schemas {
 
 export namespace Operations {
   // GET /notifications/defaults
+  // Retrieve all integrations of the configured default actions.
   export namespace NotificationServiceGetEndpointsForDefaults {
     const Response200 = z.array(Schemas.Endpoint);
     type Response200 = Array<Schemas.Endpoint>;
@@ -1077,6 +1078,7 @@ export namespace Operations {
     };
   }
   // PUT /notifications/defaults/{endpointId}
+  // Add an integration to the list of configured default actions.
   export namespace NotificationServiceAddEndpointToDefaults {
     const Response200 = z.string();
     type Response200 = string;
@@ -1103,15 +1105,16 @@ export namespace Operations {
     };
   }
   // DELETE /notifications/defaults/{endpointId}
+  // Remove an integration from the list of configured default actions.
   export namespace NotificationServiceDeleteEndpointFromDefaults {
-    const Response200 = z.string();
-    type Response200 = string;
+    const Response204 = z.string();
+    type Response204 = string;
     export interface Params {
       endpointId: Schemas.UUID;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', 204, Response204>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1123,7 +1126,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
         })
         .build();
     };
@@ -1271,15 +1274,15 @@ export namespace Operations {
   export namespace NotificationServiceUnlinkEndpointFromEventType {
     const EventTypeId = z.number().int();
     type EventTypeId = number;
-    const Response200 = z.string();
-    type Response200 = string;
+    const Response204 = z.string();
+    type Response204 = string;
     export interface Params {
       endpointId: Schemas.UUID;
       eventTypeId: EventTypeId;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', 204, Response204>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1290,12 +1293,13 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
         })
         .build();
     };
   }
   // GET /notifications/facets/applications
+  // Return a thin list of configured applications. This can be used to configure a filter in the UI
   export namespace NotificationServiceGetApplicationsFacets {
     const Response200 = z.array(Schemas.ApplicationFacet);
     type Response200 = Array<Schemas.ApplicationFacet>;
@@ -1337,14 +1341,14 @@ export namespace Operations {
   export namespace NotificationServiceMarkRead {
     const Body = z.number().int();
     type Body = number;
-    const Response200 = z.string();
-    type Response200 = string;
+    const Response204 = z.string();
+    type Response204 = string;
     export interface Params {
       body: Body;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', 204, Response204>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1354,7 +1358,7 @@ export namespace Operations {
         .queryParams(query)
         .data(params.body)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
         })
         .build();
     };

@@ -244,11 +244,11 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
         if (props.type === 'notification') {
             const notificationId = props.data.id;
             promises.push(...toDelete.map(id => limit(() =>
-                query(actionRemoveActionFromNotification(notificationId, id)).then(r => r.status === 200))));
-            promises.push(...toAdd.map(id => limit(() => query(actionAddActionToNotification(notificationId, id)).then(r => r.status === 200))));
+                query(actionRemoveActionFromNotification(notificationId, id)).then(r => !r.error))));
+            promises.push(...toAdd.map(id => limit(() => query(actionAddActionToNotification(notificationId, id)).then(r => !r.error))));
         } else if (props.type === 'default') {
-            promises.push(...toDelete.map(id => limit(() => query(actionRemoveActionFromDefault(id)).then(r => r.status === 200))));
-            promises.push(...toAdd.map(id => limit(() => query(actionAddActionToDefault(id)).then(r => r.status === 200))));
+            promises.push(...toDelete.map(id => limit(() => query(actionRemoveActionFromDefault(id)).then(r => !r.error))));
+            promises.push(...toAdd.map(id => limit(() => query(actionAddActionToDefault(id)).then(r => !r.error))));
         }
 
         const saved = await Promise.all(promises.map(p => p.catch(() => false))).then(all => all.every(e => e));

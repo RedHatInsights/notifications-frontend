@@ -22,7 +22,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
         const deleteIntegration = deleteIntegrationMutation.mutate;
         setError(false);
         return deleteIntegration(integration.id).then((response) => {
-            if (response.status === 200) {
+            if (!response.error) {
                 addSuccessNotification('Integration removed', 'The integration was removed.');
                 return true;
             } else {
