@@ -28,15 +28,21 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
     const content = React.useMemo(() => {
         if (props.notifications === undefined) {
             return (
-                <>
+                <span data-testid="loading">
                     <Skeleton />
-                </>
+                </span>
             );
+        } else if (props.notifications.length === 0) {
+            return <span
+                data-testid="removing-integration-without-notifications"
+            >
+                Removing integration <strong>{ props.integration?.name }</strong> does not affect any notification events.
+            </span>;
         } else {
             const eventText = props.notifications.length !== 1 ? 'events' : 'event';
             return (
-                <>
-                    Removing this integration affects {props.notifications.length} notification {eventText}.
+                <span data-testid={ `removing-integration-with-notifications-${props.notifications.length}` }>
+                    Removing integration <strong>{ props.integration?.name }</strong> affects {props.notifications.length} notification {eventText}.
                     { props.notifications.length > 0 && <ExpandableSection toggleText={ `View ${props.notifications.length} ${eventText}.` }>
                         <List>
                             { props.notifications.map(notification => (
@@ -48,10 +54,10 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
                             )) }
                         </List>
                     </ExpandableSection> }
-                </>
+                </span>
             );
         }
-    }, [ props.notifications ]);
+    }, [ props.notifications, props.integration ]);
 
     if (!props.integration) {
         return null;

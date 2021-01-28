@@ -81,7 +81,32 @@ describe('src/components/Integrations/DeleteModal', () => {
             />
         );
 
-        expect(screen.getByText(/Removing this integration affects 4 notification events./)).toBeTruthy();
+        expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeTruthy();
+        expect(screen.getByTestId(/removing-integration-with-notifications-4/)).toBeTruthy();
+    });
+
+    it('Passing empty notifications renders a different message', () => {
+        render(
+            <IntegrationDeleteModal
+                onDelete={ jestMock.fn() }
+                isDeleting={ false }
+                onClose={ jestMock.fn() }
+                notifications={ [] }
+                integration={ {
+                    name: 'sdiofgjiofdsjgoifjso',
+                    type: UserIntegrationType.WEBHOOK,
+                    isEnabled: true,
+                    url: 'url',
+                    id: '123',
+                    secretToken: 'foo',
+                    method: Schemas.HttpType.Enum.GET,
+                    sslVerificationEnabled: false
+                } }
+            />
+        );
+
+        expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeTruthy();
+        expect(screen.getByTestId(/removing-integration-without-notifications/)).toBeTruthy();
     });
 
     it('Opening the expandable reveals the notifications', () => {
@@ -133,11 +158,11 @@ describe('src/components/Integrations/DeleteModal', () => {
             />
         );
 
-        userEvent.click(screen.getByText(/Removing this integration affects 4 notification events./));
-        expect(screen.getByText('Foo application: Foo event type')).toBeTruthy();
-        expect(screen.getByText('Bar application: Bar event type')).toBeTruthy();
-        expect(screen.getByText('Baz application: Baz event type')).toBeTruthy();
-        expect(screen.getByText('24446666688888888000000000: Password')).toBeTruthy();
+        userEvent.click(screen.getByText(/View 4 events./i));
+        expect(screen.getByText('Foo application: Foo event type')).toBeVisible();
+        expect(screen.getByText('Bar application: Bar event type')).toBeVisible();
+        expect(screen.getByText('Baz application: Baz event type')).toBeVisible();
+        expect(screen.getByText('24446666688888888000000000: Password')).toBeVisible();
     });
 
     it('Does not render if integration is undefined', () => {
