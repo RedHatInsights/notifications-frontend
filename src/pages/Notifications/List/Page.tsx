@@ -16,7 +16,6 @@ import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavi
 import { NotificationsTable } from '../../../components/Notifications/Table';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { GroupByEnum } from '../../../components/Notifications/Types';
-import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
 import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
 import { useListNotifications } from '../../../services/useListNotifications';
@@ -52,8 +51,7 @@ const emptyArray = [];
 
 export const NotificationsListPage: React.FunctionComponent = () => {
 
-    const { rbac } = useContext(AppContext);
-    const canWriteNotifications = rbac.hasPermission(Config.notifications.subAppId, 'notifications', 'write');
+    const { rbac: { canWriteNotifications }} = useContext(AppContext);
     const defaultNotificationBehavior = useDefaultNotificationBehavior();
     const { applications } = useAppContext();
 

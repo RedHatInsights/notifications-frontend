@@ -7,7 +7,6 @@ import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { IntegrationsListPage } from '../Page';
 import Endpoint = Schemas.Endpoint;
-import { Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
@@ -48,14 +47,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: false,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -91,14 +88,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read', 'write' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: true,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -134,14 +129,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: false,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -180,14 +173,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read', 'write' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: true,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -225,14 +216,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: false,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -286,14 +275,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read', 'write' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: true,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }

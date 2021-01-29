@@ -34,9 +34,9 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
         const appId = getSubApp(location.pathname);
         switch (appId) {
             case Config.integrations.subAppId:
-                return rbac?.hasPermission(appId, 'endpoints', 'read');
+                return rbac?.canReadIntegrationsEndpoints;
             case Config.notifications.subAppId:
-                return rbac?.hasPermission(appId, 'notifications', 'read');
+                return rbac?.canReadNotifications;
         }
 
         return false;

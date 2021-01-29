@@ -61,7 +61,7 @@ describe('src/app/App', () => {
 
     it('Shows loading when applications is not set', async () => {
         jest.useFakeTimers();
-        const promise = Promise.resolve({});
+        const promise = Promise.resolve(new Rbac({}));
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
         let resolver;
         fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', new Promise(resolv => resolver = resolv));
