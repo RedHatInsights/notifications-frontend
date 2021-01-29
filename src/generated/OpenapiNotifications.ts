@@ -1186,6 +1186,32 @@ export namespace Operations {
         .build();
     };
   }
+  // GET /notifications/eventTypes/affectedByRemovalOfEndpoint/{endpointId}
+  export namespace NotificationServiceGetEventTypesAffectedByEndpointId {
+    const Response200 = z.array(Schemas.EventType);
+    type Response200 = Array<Schemas.EventType>;
+    export interface Params {
+      endpointId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfEndpoint/{endpointId}'.replace(
+            '{endpointId}',
+            params.endpointId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
   // GET /notifications/eventTypes/{eventTypeId}
   export namespace NotificationServiceGetLinkedEndpoints {
     const EventTypeId = z.number().int();

@@ -5,6 +5,7 @@ import {
 import * as React from 'react';
 
 import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteModal';
+import { useGetAffectedNotificationsByEndpoint } from '../../../services/Notifications/GetAffectedNotificationsByEndpoint';
 import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
 import { UserIntegration } from '../../../types/Integration';
 
@@ -16,6 +17,7 @@ interface IntegrationDeleteModalPageProps extends OuiaComponentProps {
 export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDeleteModalPageProps> = (props) => {
 
     const deleteIntegrationMutation = useDeleteIntegration();
+    const getNotificationsQuery = useGetAffectedNotificationsByEndpoint();
     const [ hasError, setError ] = React.useState(false);
 
     const onDelete = React.useCallback((integration: UserIntegration) => {
@@ -43,9 +45,24 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
         return undefined;
     }, [ hasError ]);
 
+    React.useEffect(() => {
+        const query = getNotificationsQuery.query;
+        query(props.integration.id);
+    }, [ props.integration, getNotificationsQuery.query ]);
+
+    const notifications = React.useMemo(() => {
+        const payload = getNotificationsQuery.payload;
+        if (payload && payload.status === 200) {
+            return payload.value;
+        }
+
+        return undefined;
+    }, [ getNotificationsQuery.payload ]);
+
     return (
         <IntegrationDeleteModal
             integration={ props.integration }
+            notifications={ notifications }
             isDeleting={ deleteIntegrationMutation.loading }
             onClose={ props.onClose }
             onDelete={ onDelete }
