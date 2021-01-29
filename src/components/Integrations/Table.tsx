@@ -215,18 +215,19 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             ]
         });
         rows.push({
-            parent: idx * 2,
             fullWidth: true,
-            showSelect: false,
-            noPadding: false,
+            parent: idx * 2,
             cells: [
                 {
                     title: <>
+                        {integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts)}
                         <div className={ expandedContentClassName }>
-                            {integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts)}
                             <ExpandedContent integration={ integration } ouiaId={ integration.id } />
                         </div>
-                    </>
+                    </>,
+                    props: {
+                        colSpan: 6
+                    }
                 }
             ]
         });
@@ -262,7 +263,14 @@ const buildClassNames = () => {
         borderBottom: noneStyle
     };
 
-    const rowExpandedContentClassName = style(noBorderBottom);
+    const rowExpandedContentClassName = style(noBorderBottom, {
+        $nest: {
+            '& td': {
+                paddingLeft: important(0),
+                paddingRight: important(0)
+            }
+        }
+    });
     const rowWrapperClassName = style(noBorderBottom, {
         borderTop: borderStyle
     });
