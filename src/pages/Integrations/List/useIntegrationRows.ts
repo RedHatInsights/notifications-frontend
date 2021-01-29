@@ -2,6 +2,7 @@ import { addDangerNotification } from '@redhat-cloud-services/insights-common-ty
 import pLimit from 'p-limit';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from 'react-fetching-library';
+import { useDispatch, useSelector } from 'react-redux';
 import { format } from 'react-string-format';
 import { usePrevious } from 'react-use';
 
@@ -9,13 +10,27 @@ import { IntegrationRow } from '../../../components/Integrations/Table';
 import { Messages } from '../../../properties/Messages';
 import { listIntegrationHistoryActionCreator } from '../../../services/useListIntegrationHistory';
 import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
+import { SavedNotificationScopeActions } from '../../../store/actions/SavedNotificationScopeAction';
+import { NotificationAppState } from '../../../store/types/NotificationAppState';
+import { SavedNotificationScopeState, Status } from '../../../store/types/SavedNotificationScopeTypes';
 import { UserIntegration } from '../../../types/Integration';
+
+const notificationAppStateSelector = (state: NotificationAppState): SavedNotificationScopeState => state.savedNotificationScope;
+
+const notificationAppStateEqualFn = (left: SavedNotificationScopeState, right: SavedNotificationScopeState): boolean => {
+    return left?.integration === right?.integration && left?.status === right?.status;
+};
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
 export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
     const prevIntegrationsInput = usePrevious(integrations);
+
+    const reduxDispatch = useDispatch();
+    const savedNotificationScope = useSelector<NotificationAppState, SavedNotificationScopeState>(
+        notificationAppStateSelector, notificationAppStateEqualFn
+    );
 
     const switchStatus = useSwitchIntegrationEnabledStatus();
     const { query } = useContext(ClientContext);
@@ -94,14 +109,32 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
             isEnabledLoading: true
         });
 
+        if (savedNotificationScope) {
+            if (_integration.id === savedNotificationScope.integration.id) {
+                reduxDispatch(SavedNotificationScopeActions.start());
+            }
+        }
+
         switchStatus.mutate(_integration).then((response) => {
             if (!response.error) {
                 setIntegrationRowByIndex(index, {
                     isEnabled,
                     isEnabledLoading: false
                 });
+                if (savedNotificationScope) {
+                    if (_integration.id === savedNotificationScope.integration.id) {
+                        reduxDispatch(SavedNotificationScopeActions.finish(isEnabled));
+                    }
+                }
             } else {
                 const message = isEnabled ? Messages.components.integrations.enableError : Messages.components.integrations.disableError;
+
+                if (savedNotificationScope) {
+                    if (_integration.id === savedNotificationScope.integration.id) {
+                        reduxDispatch(SavedNotificationScopeActions.finish(_integration.isEnabled));
+                    }
+                }
+
                 addDangerNotification(
                     message.title,
                     format(message.description, _integration.name),
@@ -113,7 +146,23 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
             }
         });
 
-    }, [ setIntegrationRowByIndex, switchStatus ]);
+    }, [ setIntegrationRowByIndex, switchStatus, reduxDispatch, savedNotificationScope ]);
+
+    useEffect(() => {
+        if (savedNotificationScope) {
+            if (savedNotificationScope.status === Status.LOADING) {
+                setIntegrationRowById(
+                    savedNotificationScope.integration.id,
+                    { isEnabledLoading: true }
+                );
+            } else {
+                setIntegrationRowById(
+                    savedNotificationScope.integration.id,
+                    { isEnabledLoading: false, isEnabled: savedNotificationScope.integration.isEnabled }
+                );
+            }
+        }
+    }, [ savedNotificationScope, setIntegrationRowById ]);
 
     return {
         rows: integrationRows,
