@@ -43,7 +43,12 @@ export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pi
     }, []);
 
     return {
-        rbac,
+        rbac: rbac ? {
+            canWriteNotifications: rbac.hasPermission('notifications', 'notifications', 'write'),
+            canReadNotifications: rbac.hasPermission('notifications', 'notifications', 'read'),
+            canWriteIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'write'),
+            canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read')
+        } : undefined,
         applications
     };
 };

@@ -48,14 +48,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: false,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -91,14 +89,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read', 'write' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: true,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -134,14 +130,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: false,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -180,14 +174,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read', 'write' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: true,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -225,14 +217,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: false,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
@@ -286,14 +276,12 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             applications: [],
-                            rbac: new Rbac({
-                                integrations: {
-                                    endpoints: [ 'read', 'write' ]
-                                },
-                                notifications: {
-                                    notifications: [ 'read', 'write' ]
-                                }
-                            })
+                            rbac: {
+                                canWriteNotifications: true,
+                                canWriteIntegrationsEndpoints: true,
+                                canReadIntegrationsEndpoints: true,
+                                canReadNotifications: true
+                            }
                         }
                     })
                 }
