@@ -33,13 +33,11 @@ const AddNotificationBodyContainer: React.FunctionComponent<AddNotificationBodyC
 
     const onClick = React.useCallback((): void => {
         const mutate = switchIntegrationEnabledStatus.mutate;
-        console.log('mutating', savedNotificationScope);
         if (savedNotificationScope) {
             dispatch(SavedNotificationScopeActions.start());
             const integration = savedNotificationScope.integration;
             mutate(integration).then(response => {
-                console.log('response from server is:', response);
-                if (response.status === 200) {
+                if (!response.error) {
                     dispatch(SavedNotificationScopeActions.finish(!integration.isEnabled));
                 } else {
                     dispatch(SavedNotificationScopeActions.finish(integration.isEnabled));
