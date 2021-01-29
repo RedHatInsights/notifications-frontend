@@ -1,4 +1,3 @@
-import { Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
