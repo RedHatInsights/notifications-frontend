@@ -25,6 +25,7 @@ import {
 } from '@patternfly/react-table';
 import {
     global_danger_color_100,
+    global_spacer_lg,
     global_spacer_md,
     global_spacer_sm,
     global_success_color_100,
@@ -33,7 +34,7 @@ import {
 import { SkeletonTable } from '@redhat-cloud-services/frontend-components';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
-import { important } from 'csx';
+import { calc, important } from 'csx';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { style } from 'typestyle';
@@ -77,7 +78,7 @@ const connectionAlertClassName = style({
 });
 
 const expandedContentClassName = style({
-    paddingLeft: global_spacer_md.var,
+    paddingLeft: calc(`${global_spacer_md.var} + ${global_spacer_lg.var}`),
     paddingBottom: 0
 });
 
