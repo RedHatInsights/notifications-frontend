@@ -24,7 +24,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
         setError(false);
 
         return saveIntegrationMutation.mutate(integration).then(response => {
-            if (response.status === 200) {
+            if (!response.error) {
                 if (props.isEdit) {
                     addSuccessNotification(
                         `${integration.name} saved successfully`,
