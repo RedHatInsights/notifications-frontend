@@ -52,7 +52,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
 
     const notifications = React.useMemo(() => {
         const payload = getNotificationsQuery.payload;
-        if (payload && payload.status === 200) {
+        if (payload && payload.type === 'Notifications') {
             return payload.value;
         }
 

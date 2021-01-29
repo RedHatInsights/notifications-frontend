@@ -95,7 +95,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
         });
 
         switchStatus.mutate(_integration).then((response) => {
-            if (response.status === 200) {
+            if (!response.error) {
                 setIntegrationRowByIndex(index, {
                     isEnabled,
                     isEnabledLoading: false
