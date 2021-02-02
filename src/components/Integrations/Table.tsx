@@ -77,7 +77,7 @@ const connectionAlertClassName = style({
 });
 
 const expandedContentClassName = style({
-    paddingLeft: global_spacer_md.var,
+    paddingLeft: 0,
     paddingBottom: 0
 });
 
@@ -215,18 +215,19 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
             ]
         });
         rows.push({
-            parent: idx * 2,
             fullWidth: true,
-            showSelect: false,
-            noPadding: false,
+            parent: idx * 2,
             cells: [
                 {
                     title: <>
+                        {integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts)}
                         <div className={ expandedContentClassName }>
-                            {integration.lastConnectionAttempts !== undefined && getConnectionAlert(integration.lastConnectionAttempts)}
                             <ExpandedContent integration={ integration } ouiaId={ integration.id } />
                         </div>
-                    </>
+                    </>,
+                    props: {
+                        colSpan: 6
+                    }
                 }
             ]
         });
