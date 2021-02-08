@@ -27,6 +27,7 @@ export namespace Schemas {
 
   export const Application = zodSchemaApplication();
   export type Application = {
+    bundle_id: UUID;
     created?: string | undefined | null;
     display_name: string;
     eventTypes?: SetEventType | undefined | null;
@@ -48,6 +49,16 @@ export namespace Schemas {
   export type BasicAuthentication = {
     password?: string | undefined | null;
     username?: string | undefined | null;
+  };
+
+  export const Bundle = zodSchemaBundle();
+  export type Bundle = {
+    applications?: SetApplication | undefined | null;
+    created?: string | undefined | null;
+    display_name: string;
+    id?: UUID | undefined | null;
+    name: string;
+    updated?: string | undefined | null;
   };
 
   export const ConcurrentMapStringJsonNode = zodSchemaConcurrentMapStringJsonNode();
@@ -396,6 +407,9 @@ export namespace Schemas {
     valueType?: Schema | undefined | null;
   };
 
+  export const SetApplication = zodSchemaSetApplication();
+  export type SetApplication = Array<Application>;
+
   export const SetCharacter = zodSchemaSetCharacter();
   export type SetCharacter = Array<string>;
 
@@ -494,6 +508,7 @@ export namespace Schemas {
   function zodSchemaApplication() {
       return z
       .object({
+          bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
           display_name: z.string(),
           eventTypes: zodSchemaSetEventType().optional().nullable(),
@@ -522,6 +537,19 @@ export namespace Schemas {
       .object({
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBundle() {
+      return z
+      .object({
+          applications: zodSchemaSetApplication().optional().nullable(),
+          created: z.string().optional().nullable(),
+          display_name: z.string(),
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: z.string().optional().nullable()
       })
       .nonstrict();
   }
@@ -955,6 +983,10 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaSetApplication() {
+      return z.array(zodSchemaApplication());
+  }
+
   function zodSchemaSetCharacter() {
       return z.array(z.string());
   }
@@ -1327,15 +1359,25 @@ export namespace Operations {
   // GET /notifications/facets/applications
   // Return a thin list of configured applications. This can be used to configure a filter in the UI
   export namespace NotificationServiceGetApplicationsFacets {
+    const BundleName = z.string();
+    type BundleName = string;
     const Response200 = z.array(Schemas.ApplicationFacet);
     type Response200 = Array<Schemas.ApplicationFacet>;
+    export interface Params {
+      bundleName?: BundleName;
+    }
+
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (): ActionCreator => {
+    export const actionCreator = (params: Params): ActionCreator => {
         const path = '/api/notifications/v1.0/notifications/facets/applications';
         const query = {} as Record<string, any>;
+        if (params.bundleName !== undefined) {
+            query.bundleName = params.bundleName;
+        }
+
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({

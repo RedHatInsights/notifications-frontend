@@ -177,6 +177,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         id: 3,
                         application: {
                             id: 'my-app',
+                            bundle_id: 'my-bundle-id',
                             name: 'My app',
                             display_name: 'My app desc'
                         },
@@ -215,6 +216,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         id: 3,
                         application: {
                             id: 'my-app',
+                            bundle_id: 'my-bundle-id',
                             name: 'My app',
                             display_name: 'My app desc'
                         },
@@ -259,6 +261,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         id: 3,
                         application: {
                             id: 'my-app',
+                            bundle_id: 'my-bundle-id',
                             name: 'My app',
                             display_name: 'My app desc'
                         },
@@ -315,6 +318,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         created: Date.now().toString(),
                         eventTypes: undefined,
                         id: 'app',
+                        bundle_id: 'my-bundle-id',
                         name: 'app',
                         updated: Date.now().toString()
 
@@ -368,6 +372,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         created: Date.now().toString(),
                         eventTypes: undefined,
                         id: 'app',
+                        bundle_id: 'my-bundle-id',
                         name: 'app',
                         updated: Date.now().toString()
 
@@ -421,6 +426,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         created: Date.now().toString(),
                         eventTypes: undefined,
                         id: 'app',
+                        bundle_id: 'my-bundle-id',
                         name: 'app',
                         updated: Date.now().toString()
 
@@ -474,6 +480,7 @@ describe('src/pages/Notifications/List/Page', () => {
                         created: Date.now().toString(),
                         eventTypes: undefined,
                         id: 'app',
+                        bundle_id: 'my-bundle-id',
                         name: 'app',
                         updated: Date.now().toString()
 

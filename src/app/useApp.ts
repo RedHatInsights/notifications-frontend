@@ -10,7 +10,7 @@ export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pi
 
     const history = useHistory();
     const [ rbac, setRbac ] = useState<Rbac | undefined>(undefined);
-    const getApplications = useGetApplications();
+    const getApplications = useGetApplications('insights');
 
     const applications = useMemo(
         () => getApplications.payload?.status === 200 ? getApplications.payload.value : undefined,

@@ -41,7 +41,7 @@ describe('src/app/App', () => {
             return 'foo';
         });
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
             body: []
         });
         render(
@@ -64,7 +64,7 @@ describe('src/app/App', () => {
         const promise = Promise.resolve(new Rbac({}));
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
         let resolver;
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', new Promise(resolv => resolver = resolv));
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', new Promise(resolv => resolver = resolv));
         render(
             <App />,
             {
@@ -109,7 +109,7 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
             body: []
         });
         render(
@@ -136,7 +136,7 @@ describe('src/app/App', () => {
                 notifications: [ 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
             body: []
         });
 
@@ -175,7 +175,7 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
             body: []
         });
 
