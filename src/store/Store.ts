@@ -1,4 +1,4 @@
-import { initStore } from '@redhat-cloud-services/insights-common-typescript';
+import { initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
 import { Middleware } from 'redux';
 
 import { INITIAL_STATE as SNS_INITIAL_STATE, SavedNotificationScopeReducer } from './reducers/SavedNotificationScopeReducer';
@@ -14,3 +14,5 @@ export const createStore = (...middleware: Middleware[]) => {
         },
         ...middleware);
 };
+
+export const resetStore = () => restoreStore();

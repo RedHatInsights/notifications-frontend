@@ -5,12 +5,16 @@ import { resolve } from 'path';
 const { config: webpackConfig, plugins } = config({
     rootFolder: resolve(__dirname, '../'),
     debug: true,
-    https: true
+    https: true,
+    useFileHash: false
 });
+
+console.log(webpackConfig.mode);
 
 plugins.push(
     federated({
-        root: resolve(__dirname, '../')
+        root: resolve(__dirname, '../'),
+        useFileHash: false
     })
 );
 
