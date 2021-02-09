@@ -11335,7 +11335,7 @@ ts-essentials@7.0.1:
   resolved "https://registry.yarnpkg.com/ts-essentials/-/ts-essentials-7.0.1.tgz#d205508cae0cdadfb73c89503140cf2228389e2d"
   integrity sha512-8lwh3QJtIc1UWhkQtr9XuksXu3O0YQdEE5g79guDfhCaU1FWTDIEDZ1ZSx4HTHUmlJZ8L812j3BZQ4a0aOUkSA==
 
-ts-import-plugin@^1.6.7:
+ts-import-plugin@1.6.7:
   version "1.6.7"
   resolved "https://registry.yarnpkg.com/ts-import-plugin/-/ts-import-plugin-1.6.7.tgz#219cabef4a8b50d8321ac750758837378492914c"
   integrity sha512-6qbRME6Cj9RzhlqXGc1275lAK3IEJjmwYPmX0/jVPBwtdoDqHVbdRURYcvR195uFi8ZpBqT2WjL4E56buPQ4sg==
@@ -11838,7 +11838,7 @@ webidl-conversions@^6.1.0:
   resolved "https://registry.yarnpkg.com/webidl-conversions/-/webidl-conversions-6.1.0.tgz#9111b4d7ea80acd40f5270d666621afa78b69514"
   integrity sha512-qBIvFLGiBpLjfwmYAaHPXsn+ho5xZnGvyGvsarywGNc8VyQJUMHJ8OBKGGrPER0okBeMDaan4mNBlgBROxuI8w==
 
-webpack-bundle-analyzer@^4.4.0:
+webpack-bundle-analyzer@4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/webpack-bundle-analyzer/-/webpack-bundle-analyzer-4.4.0.tgz#74013106e7e2b07cbd64f3a5ae847f7e814802c7"
   integrity sha512-9DhNa+aXpqdHk8LkLPTBU/dMfl84Y+WE2+KnfI6rSpNRNVKa0VGLjPd2pjFubDeqnWmulFggxmWBxhfJXZnR0g==
