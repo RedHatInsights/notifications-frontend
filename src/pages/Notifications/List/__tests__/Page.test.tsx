@@ -174,7 +174,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
                     {
-                        id: 3,
+                        id: '3',
                         application: {
                             id: 'my-app',
                             bundle_id: 'my-bundle-id',
@@ -213,7 +213,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
                     {
-                        id: 3,
+                        id: '3',
                         application: {
                             id: 'my-app',
                             bundle_id: 'my-bundle-id',
@@ -258,7 +258,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
                 body: [
                     {
-                        id: 3,
+                        id: '3',
                         application: {
                             id: 'my-app',
                             bundle_id: 'my-bundle-id',
@@ -325,7 +325,7 @@ describe('src/pages/Notifications/List/Page', () => {
                     },
                     display_name: 'display_name',
                     endpoints: [],
-                    id: 15454656416,
+                    id: '15454656416',
                     name: 'mmmokay'
                 }
             ] as Array<Schemas.EventType>
@@ -379,7 +379,7 @@ describe('src/pages/Notifications/List/Page', () => {
                     },
                     display_name: 'display_name',
                     endpoints: [],
-                    id: 15454656416,
+                    id: '15454656416',
                     name: 'mmmokay'
                 }
             ] as Array<Schemas.EventType>
@@ -433,7 +433,7 @@ describe('src/pages/Notifications/List/Page', () => {
                     },
                     display_name: 'display_name',
                     endpoints: [],
-                    id: 15454656416,
+                    id: '15454656416',
                     name: 'mmmokay'
                 }
             ] as Array<Schemas.EventType>
@@ -487,7 +487,7 @@ describe('src/pages/Notifications/List/Page', () => {
                     },
                     display_name: 'display_name',
                     endpoints: [],
-                    id: 15454656416,
+                    id: '15454656416',
                     name: 'mmmokay'
                 }
             ] as Array<Schemas.EventType>

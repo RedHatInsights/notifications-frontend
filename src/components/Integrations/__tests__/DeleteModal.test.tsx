@@ -42,28 +42,28 @@ describe('src/components/Integrations/DeleteModal', () => {
                     {
                         useDefault: false,
                         actions: [],
-                        id: 1,
+                        id: '1',
                         applicationDisplayName: 'Foo application',
                         eventTypeDisplayName: 'Foo event type'
                     },
                     {
                         useDefault: false,
                         actions: [],
-                        id: 2,
+                        id: '2',
                         applicationDisplayName: 'Bar application',
                         eventTypeDisplayName: 'Bar event type'
                     },
                     {
                         useDefault: false,
                         actions: [],
-                        id: 3,
+                        id: '3',
                         applicationDisplayName: 'Baz application',
                         eventTypeDisplayName: 'Baz event type'
                     },
                     {
                         useDefault: false,
                         actions: [],
-                        id: 4,
+                        id: '4',
                         applicationDisplayName: '24446666688888888000000000',
                         eventTypeDisplayName: 'Password'
                     }
@@ -119,28 +119,28 @@ describe('src/components/Integrations/DeleteModal', () => {
                     {
                         useDefault: false,
                         actions: [],
-                        id: 1,
+                        id: '1',
                         applicationDisplayName: 'Foo application',
                         eventTypeDisplayName: 'Foo event type'
                     },
                     {
                         useDefault: false,
                         actions: [],
-                        id: 2,
+                        id: '2',
                         applicationDisplayName: 'Bar application',
                         eventTypeDisplayName: 'Bar event type'
                     },
                     {
                         useDefault: false,
                         actions: [],
-                        id: 3,
+                        id: '3',
                         applicationDisplayName: 'Baz application',
                         eventTypeDisplayName: 'Baz event type'
                     },
                     {
                         useDefault: false,
                         actions: [],
-                        id: 4,
+                        id: '4',
                         applicationDisplayName: '24446666688888888000000000',
                         eventTypeDisplayName: 'Password'
                     }
