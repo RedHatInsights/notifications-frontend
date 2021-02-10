@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/RedHatInsights/notifications-frontend.svg?branch=master)](https://travis-ci.org/RedHatInsights/notifications-frontend)
+[![Build Status](https://travis-ci.com/RedHatInsights/notifications-frontend.svg?branch=master)](https://travis-ci.com/RedHatInsights/notifications-frontend)
 
 # notifications-frontend
 
