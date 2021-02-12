@@ -110,9 +110,10 @@ export namespace Schemas {
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application | undefined | null;
+    description?: string | undefined | null;
     display_name: string;
     endpoints?: SetEndpoint | undefined | null;
-    id?: number | undefined | null;
+    id?: UUID | undefined | null;
     name: string;
   };
 
@@ -623,9 +624,10 @@ export namespace Schemas {
           .lazy(() => zodSchemaApplication())
           .optional()
           .nullable(),
+          description: z.string().optional().nullable(),
           display_name: z.string(),
           endpoints: zodSchemaSetEndpoint().optional().nullable(),
-          id: z.number().int().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable(),
           name: z.string()
       })
       .nonstrict();

@@ -12,7 +12,7 @@ import {
 import { GroupByEnum } from '../../../components/Notifications/Types';
 import { getNotificationActionsByIdAction } from '../../../services/useGetNotificationActions';
 import { toActions, usesDefault } from '../../../types/adapters/NotificationAdapter';
-import { Notification } from '../../../types/Notification';
+import { Notification, UUID } from '../../../types/Notification';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
@@ -21,7 +21,7 @@ const toRowsGroupByNone = (notification: Notification): NotificationRowGroupedBy
     ...notification
 });
 
-const findNotificationPath = (rows: Array<NotificationRowGroupedByApplication>, id: number): [number, number] => {
+const findNotificationPath = (rows: Array<NotificationRowGroupedByApplication>, id: UUID): [number, number] => {
     for (let i = 0; i < rows.length; ++i) {
         for (let j = 0; j < rows[i].notifications.length; ++j) {
             if (rows[i].notifications[j].id === id) {
@@ -61,7 +61,7 @@ export const useNotificationRows = (notifications: Array<Notification>, groupBy:
     const { query } = useContext(ClientContext);
     const [ limit ] = useState<pLimit.Limit>(() => pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS));
 
-    const setNotificationRowById = useCallback((id: number, partialNotificationRow: Partial<NotificationRowGroupedByNone>) => {
+    const setNotificationRowById = useCallback((id: UUID, partialNotificationRow: Partial<NotificationRowGroupedByNone>) => {
         setNotificationRows(prev => {
             if (prev.grouped === GroupByEnum.Application) {
                 const [ appIndex, notificationIndex ] = findNotificationPath(prev.data, id);

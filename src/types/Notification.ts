@@ -1,8 +1,10 @@
 import { Schemas } from '../generated/OpenapiNotifications';
 import { UserIntegration } from './Integration';
 
+export type UUID = Schemas.UUID;
+
 export interface Notification {
-    id: number;
+    id: UUID;
     applicationDisplayName: string;
     eventTypeDisplayName: string;
     actions: Array<Action>;
@@ -17,7 +19,7 @@ export interface DefaultNotificationBehavior {
 
 export interface ActionBase {
     type: NotificationType;
-    integrationId: string;
+    integrationId: UUID;
 }
 
 export interface ActionIntegration extends ActionBase {

@@ -4,8 +4,9 @@ import {
     Operations, Schemas
 } from '../generated/OpenapiNotifications';
 import { toActions } from '../types/adapters/NotificationAdapter';
+import { UUID } from '../types/Notification';
 
-export const getNotificationActionsByIdAction = (eventTypeId: number) => {
+export const getNotificationActionsByIdAction = (eventTypeId: UUID) => {
     return Operations.NotificationServiceGetLinkedEndpoints.actionCreator({
         eventTypeId
     });

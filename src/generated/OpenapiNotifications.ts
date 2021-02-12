@@ -110,9 +110,10 @@ export namespace Schemas {
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application | undefined | null;
+    description?: string | undefined | null;
     display_name: string;
     endpoints?: SetEndpoint | undefined | null;
-    id?: number | undefined | null;
+    id?: UUID | undefined | null;
     name: string;
   };
 
@@ -623,9 +624,10 @@ export namespace Schemas {
           .lazy(() => zodSchemaApplication())
           .optional()
           .nullable(),
+          description: z.string().optional().nullable(),
           display_name: z.string(),
           endpoints: zodSchemaSetEndpoint().optional().nullable(),
-          id: z.number().int().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable(),
           name: z.string()
       })
       .nonstrict();
@@ -1246,8 +1248,6 @@ export namespace Operations {
   }
   // GET /notifications/eventTypes/{eventTypeId}
   export namespace NotificationServiceGetLinkedEndpoints {
-    const EventTypeId = z.number().int();
-    type EventTypeId = number;
     const Limit = z.number().int();
     type Limit = number;
     const Offset = z.number().int();
@@ -1259,7 +1259,7 @@ export namespace Operations {
     const Response200 = z.array(Schemas.Endpoint);
     type Response200 = Array<Schemas.Endpoint>;
     export interface Params {
-      eventTypeId: EventTypeId;
+      eventTypeId: Schemas.UUID;
       limit?: Limit;
       offset?: Offset;
       pageNumber?: PageNumber;
@@ -1302,13 +1302,11 @@ export namespace Operations {
   }
   // PUT /notifications/eventTypes/{eventTypeId}/{endpointId}
   export namespace NotificationServiceLinkEndpointToEventType {
-    const EventTypeId = z.number().int();
-    type EventTypeId = number;
     const Response200 = z.string();
     type Response200 = string;
     export interface Params {
       endpointId: Schemas.UUID;
-      eventTypeId: EventTypeId;
+      eventTypeId: Schemas.UUID;
     }
 
     export type Payload =
@@ -1330,13 +1328,11 @@ export namespace Operations {
   }
   // DELETE /notifications/eventTypes/{eventTypeId}/{endpointId}
   export namespace NotificationServiceUnlinkEndpointFromEventType {
-    const EventTypeId = z.number().int();
-    type EventTypeId = number;
     const Response204 = z.string();
     type Response204 = string;
     export interface Params {
       endpointId: Schemas.UUID;
-      eventTypeId: EventTypeId;
+      eventTypeId: Schemas.UUID;
     }
 
     export type Payload =
