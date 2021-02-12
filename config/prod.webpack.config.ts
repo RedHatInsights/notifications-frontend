@@ -1,5 +1,6 @@
 import config from '@redhat-cloud-services/frontend-components-config';
 import { resolve } from 'path';
+
 import { updateTsLoaderRule } from './common.webpack.config';
 
 const { config: webpackConfig, plugins } = config({
