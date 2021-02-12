@@ -4,7 +4,8 @@ import { resolve } from 'path';
 const { config: webpackConfig, plugins } = config({
     rootFolder: resolve(__dirname, '../'),
     debug: true,
-    https: true
+    https: true,
+    useFileHash: false
 });
 
 module.exports = {
