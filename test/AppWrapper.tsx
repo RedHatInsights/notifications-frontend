@@ -1,6 +1,7 @@
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import { getInsights, initStore, Rbac, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import { getInsights, initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import fetchMock from 'fetch-mock';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
 import { ClientContextProvider, createClient } from 'react-fetching-library';
@@ -12,7 +13,6 @@ import { MemoryRouter as Router } from 'react-router-dom';
 import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
 
-import fetchMock = require('fetch-mock');
 let setup = false;
 let client;
 let store;
