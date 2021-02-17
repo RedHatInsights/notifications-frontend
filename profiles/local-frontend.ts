@@ -1,3 +1,5 @@
+// eslint-disable-next-line @typescript-eslint/no-var-requires,@typescript-eslint/ban-ts-comment
+// @ts-ignore
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const goodGuyLib = require('good-guy-http');
 
