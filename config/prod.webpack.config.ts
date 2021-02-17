@@ -12,7 +12,8 @@ plugins.push(
     federatedModules(
         {
             root: resolve(__dirname, '../'),
-            useFileHash: false
+            useFileHash: true,
+            exclude: [ 'react-router-dom' ]
         }
     )
 );

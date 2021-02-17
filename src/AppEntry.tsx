@@ -19,7 +19,7 @@ interface AppEntryProps {
     logger?: Redux.Middleware;
 }
 
-export const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
+const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
 
     const client = React.useMemo(() => createFetchingClient(getInsights, {
         responseInterceptors: [ validateSchemaResponseInterceptor ]
@@ -47,3 +47,5 @@ export const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
         </IntlProvider>
     );
 };
+
+export default AppEntry;
