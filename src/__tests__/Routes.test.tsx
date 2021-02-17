@@ -17,22 +17,6 @@ jest.mock('../pages/Integrations/List/Page', () => ({
 }));
 
 describe('src/Routes', () => {
-    it('Should throw when no id=root element found', () => {
-        const LocalWrapper: React.FunctionComponent = (props) => {
-            return <MemoryRouter initialEntries={ [ '/integrations' ] } >{ props.children }</MemoryRouter>;
-        };
-
-        // Silence the exception, this is being logged because react will recommend to use
-        // error boundaries, the exception is still throw.
-        const mockConsole = jest.spyOn(console, 'error');
-        mockConsole.mockImplementation(() => '');
-
-        expect(() => render(<Routes />, {
-            wrapper: LocalWrapper
-        })).toThrowError();
-
-        mockConsole.mockRestore();
-    });
 
     describe('App Wrapped', () => {
 

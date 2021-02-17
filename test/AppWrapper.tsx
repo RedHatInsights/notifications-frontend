@@ -22,10 +22,6 @@ export const appWrapperSetup = () => {
         throw new Error('Looks like appWrapperCleanup has not been called, you need to call it on the afterEach');
     }
 
-    const rootDiv = document.createElement('div');
-    rootDiv.id = 'root';
-    document.body.appendChild(rootDiv);
-
     setup = true;
     fetchMock.mock();
     client = createClient({
@@ -45,8 +41,6 @@ export const appWrapperCleanup = () => {
         }
     } finally {
         setup = false;
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        document.getElementById('root')!.remove();
 
         fetchMock.restore();
         restoreStore();
