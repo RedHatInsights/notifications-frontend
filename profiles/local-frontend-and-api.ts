@@ -7,10 +7,10 @@ const API_PORT = 8085;
 const routes = {};
 
 APP_MOUNTS.forEach(mount => {
-    routes[`/beta/${SECTION}/${mount}`] = { host: `https://localhost:${FRONTEND_PORT}` };
-    routes[`/${SECTION}/${mount}`]      = { host: `https://localhost:${FRONTEND_PORT}` };
-    routes[`/beta/apps/${mount}`]       = { host: `https://localhost:${FRONTEND_PORT}` };
-    routes[`/apps/${mount}`]            = { host: `https://localhost:${FRONTEND_PORT}` };
+    routes[`/beta/${SECTION}/${mount}`] = { host: `http://localhost:${FRONTEND_PORT}` };
+    routes[`/${SECTION}/${mount}`]      = { host: `http://localhost:${FRONTEND_PORT}` };
+    routes[`/beta/apps/${mount}`]       = { host: `http://localhost:${FRONTEND_PORT}` };
+    routes[`/apps/${mount}`]            = { host: `http://localhost:${FRONTEND_PORT}` };
     routes[`/api/${mount}/`] = { host: `http://localhost:${API_PORT}` };
 });
 

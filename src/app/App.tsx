@@ -5,7 +5,7 @@ import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-
 import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
-import { RouteComponentProps, useLocation, withRouter } from 'react-router';
+import { useLocation } from 'react-router';
 
 import Config from '../config/Config';
 import messages from '../properties/DefinedMessages';
@@ -14,7 +14,7 @@ import { getSubApp } from '../utils/Basename';
 import { AppContext } from './AppContext';
 import { useApp } from './useApp';
 
-const App: React.FunctionComponent<RouteComponentProps> = () => {
+const App: React.ComponentType = () => {
     const intl = useIntl();
     const { rbac, applications } = useApp();
     const location = useLocation();
@@ -65,4 +65,4 @@ const App: React.FunctionComponent<RouteComponentProps> = () => {
     );
 };
 
-export default withRouter(App);
+export default App;
