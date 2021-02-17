@@ -1,7 +1,6 @@
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { render, screen } from '@testing-library/react';
 import * as React from 'react';
-import { MemoryRouter } from 'react-router-dom';
 
 import messages from '../../locales/data.json';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
