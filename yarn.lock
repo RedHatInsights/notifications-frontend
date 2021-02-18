@@ -1403,10 +1403,10 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.9.22.tgz#d23488cddf19ad065ef55bd43b47336ee63bf4cc"
   integrity sha512-hN/8u7mFR62naFB2hdO7nl1p/0lCXtNq+VY+BAbp4UFC2/QyjNP0IOPBR+mR9Pbj5JwxrURI7G5blLp+k9RLvQ==
 
-"@redhat-cloud-services/frontend-components-config@4.0.5":
-  version "4.0.5"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config/-/frontend-components-config-4.0.5.tgz#5490a72e25c53054fc768a12da44837e6cbf64a4"
-  integrity sha512-NDBOemjw/zgH9VCdcYTKaYdbhgwtB3s5jjI0Z4TjdlfoXigAphejmHIBrU3BJtqV6odx5Ieq0GxvdFkNkAwVUw==
+"@redhat-cloud-services/frontend-components-config@4.0.9-beta.1":
+  version "4.0.9-beta.1"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config/-/frontend-components-config-4.0.9-beta.1.tgz#e26e1459f01a66262912a49cb4366b3c07dd9ba8"
+  integrity sha512-nwRJyLGSP/NnsY2qYCaFd0dR7C7rLO3W4ND0xIfyxl97j52xKJ1EaYYDmgJJLYum1nEkPmz3grg322ODMaZ0eQ==
   dependencies:
     assert "^2.0.0"
     babel-loader "^8.2.1"
@@ -1414,7 +1414,6 @@
     buffer "^6.0.2"
     clean-webpack-plugin "^3.0.0"
     css-loader "^5.0.1"
-    eslint-webpack-plugin "^2.3.0"
     file-loader "^6.2.0"
     git-revision-webpack-plugin "^3.0.6"
     html-replace-webpack-plugin "^2.6.0"
@@ -1731,7 +1730,7 @@
     "@types/eslint" "*"
     "@types/estree" "*"
 
-"@types/eslint@*", "@types/eslint@^7.2.6":
+"@types/eslint@*":
   version "7.2.6"
   resolved "https://registry.yarnpkg.com/@types/eslint/-/eslint-7.2.6.tgz#5e9aff555a975596c03a98b59ecd103decc70c3c"
   integrity sha512-I+1sYH+NPQ3/tVqCeUSBwTE/0heyvtXqpIopUUArlBm0Kpocb8FbMa3AZ/ASKIFpN3rnEx932TTXDbt9OXsNDw==
@@ -2619,11 +2618,6 @@ arrify@^1.0.1:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/arrify/-/arrify-1.0.1.tgz#898508da2226f380df904728456849c1501a4b0d"
   integrity sha1-iYUI2iIm84DfkEcoRWhJwVAaSw0=
-
-arrify@^2.0.1:
-  version "2.0.1"
-  resolved "https://registry.yarnpkg.com/arrify/-/arrify-2.0.1.tgz#c9655e9331e0abcd588d2a7cad7e9956f66701fa"
-  integrity sha512-3duEwti880xqi4eAMN8AyR4a0ByT90zoYdLlevfrvU43vb0YZwZVfxOgxWrLXXXpyugL0hNZc9G6BiB5B3nUug==
 
 asap@^2.0.0:
   version "2.0.6"
@@ -4683,17 +4677,6 @@ eslint-visitor-keys@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/eslint-visitor-keys/-/eslint-visitor-keys-2.0.0.tgz#21fdc8fbcd9c795cc0321f0563702095751511a8"
   integrity sha512-QudtT6av5WXels9WjIM7qz1XD1cWGvX4gGXvp/zBn9nXG02D0utdU3Em2m/QjTnrsk6bBjmCygl3rmj118msQQ==
-
-eslint-webpack-plugin@^2.3.0:
-  version "2.5.0"
-  resolved "https://registry.yarnpkg.com/eslint-webpack-plugin/-/eslint-webpack-plugin-2.5.0.tgz#a8f96f30dee245c92384f8109f41f473f603faba"
-  integrity sha512-CCIWiQzkthgPq4P9arnPtj/FtswyO0j6obmSWurZrXW/haOOdDDucezeOxziTXjhUQeEDP4htjS81ARbesjd/A==
-  dependencies:
-    "@types/eslint" "^7.2.6"
-    arrify "^2.0.1"
-    jest-worker "^26.6.2"
-    micromatch "^4.0.2"
-    schema-utils "^3.0.0"
 
 eslint@6.0.0:
   version "6.0.0"
