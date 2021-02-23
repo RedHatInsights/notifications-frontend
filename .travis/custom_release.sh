@@ -39,3 +39,19 @@ then
     rm -rf ./dist/.git
     .travis/release.sh "prod-stable"
 fi
+
+if [ "${TRAVIS_BRANCH}" = "prod-beta" ]
+then
+    ensure_beta
+    echo "PUSHING prod-beta"
+    rm -rf ./dist/.git
+    .travis/release.sh "prod-beta"
+fi
+
+if [ "${TRAVIS_BRANCH}" = "prod-stable" ]
+then
+    ensure_stable
+    echo "PUSHING prod-stable"
+    rm -rf ./dist/.git
+    .travis/release.sh "prod-stable"
+fi
