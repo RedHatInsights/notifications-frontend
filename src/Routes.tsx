@@ -11,13 +11,13 @@ interface Path {
 }
 
 export const linkTo = {
-    integrations: () => '/integrations',
+    integrations: (bundle: string) => `/integrations/${bundle}`,
     notifications: () => '/notifications'
 };
 
 const pathRoutes: Path[] = [
     {
-        path: linkTo.integrations(),
+        path: linkTo.integrations(':bundleId?'),
         component: IntegrationsListPage
     },
     {
