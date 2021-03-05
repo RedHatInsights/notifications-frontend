@@ -86,8 +86,22 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         expect(getIntegrations).toHaveBeenCalledWith(UserIntegrationType.WEBHOOK, '');
     });
 
-    it('When writing, getRecipients is called with the input', async () => {
-        const getIntegrations = jestMock.fn<any, any>(async () => [ ref1, ref2 ]);
+    it('When writing, getIntegrations is called with the input', async () => {
+        const guyRef: IntegrationRef = {
+            id: '1234',
+            type: UserIntegrationType.WEBHOOK,
+            isEnabled: true,
+            name: 'guy integration'
+        };
+
+        const getIntegrations = jestMock.fn<any, any>(async (type, search) => {
+            if (search === 'guy') {
+                return [ guyRef ];
+            }
+
+            return [ ref1, ref2 ];
+        });
+
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ getIntegrations }
@@ -99,6 +113,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
             await userEvent.type(screen.getByRole('textbox'), 'guy');
         });
         expect(getIntegrations).toHaveBeenCalledWith(UserIntegrationType.WEBHOOK, 'guy');
+        expect(screen.getByText('guy integration')).toBeTruthy();
     });
 
     it('onSelected GetsCalled when selecting an element', async () => {

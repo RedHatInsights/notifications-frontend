@@ -38,19 +38,23 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         setOpen(isOpen);
     }, [ setOpen ]);
 
-    const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-        const search = e.target.value?.trim();
+    const options = useRecipientOptionMemo(state);
 
+    const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
+        // Ignore filter calls with null event
+        if (e === null) {
+            return options;
+        }
+
+        const search = e.target.value?.trim();
         if (search === '') {
             dispatchers.useDefaults();
         } else {
             dispatchers.loadFilterValue(search);
         }
 
-        return [];
-    }, [ dispatchers ]);
-
-    const options = useRecipientOptionMemo(state);
+        return options;
+    }, [ dispatchers, options ]);
 
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const selection = React.useMemo(() => {
