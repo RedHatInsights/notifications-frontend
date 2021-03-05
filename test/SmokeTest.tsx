@@ -191,7 +191,7 @@ describe('Smoketest', () => {
             wrapper: getConfiguredAppWrapper({
                 route: {
                     location: {
-                        pathname: '/notifications',
+                        pathname: '/notifications/insights',
                         search: '',
                         hash: '',
                         state: {}
