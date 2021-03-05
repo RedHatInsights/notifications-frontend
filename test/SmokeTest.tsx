@@ -94,9 +94,7 @@ describe('Smoketest', () => {
         });
 
         await waitForAsyncEvents();
-        await waitForAsyncEvents();
-        expect(screen.queryByText('Integrations')).toBeTruthy();
-        appWrapperCleanup();
+        return screen.findByText('Integrations').then(value => expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
     });
 
     it('Opens the main notifications page in multiple browsers', async () => {
@@ -203,8 +201,7 @@ describe('Smoketest', () => {
         });
 
         await waitForAsyncEvents();
-        await waitForAsyncEvents();
-        expect(screen.queryByText('Notifications')).toBeTruthy();
-        appWrapperCleanup();
+
+        return screen.findByText('Notifications').then(value => expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
     });
 });
