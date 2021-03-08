@@ -1,156 +1,87 @@
-import { Button, ButtonVariant } from '@patternfly/react-core';
-import { global_spacer_md } from '@patternfly/react-tokens';
-import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import {
-    ExporterType,
-    getInsights,
-    InsightsEnvDetector,
-    RenderIfFalse
-} from '@redhat-cloud-services/insights-common-typescript';
+import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { useContext } from 'react';
-import { style } from 'typestyle';
+import { useMemo } from 'react';
+import { useParams } from 'react-router-dom';
 
-import { AppContext, useAppContext } from '../../../app/AppContext';
-import { DefaultBehavior } from '../../../components/Notifications/DefaultBehavior';
-import { NotificationsTable } from '../../../components/Notifications/Table';
-import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
-import { GroupByEnum } from '../../../components/Notifications/Types';
-import { Messages } from '../../../properties/Messages';
-import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
-import { useListNotifications } from '../../../services/useListNotifications';
-import { stagingBetaAndProdBetaEnvironment } from '../../../types/Environments';
-import { Notification } from '../../../types/Notification';
-import { EditNotificationPage } from '../Form/EditNotificationPage';
-import {
-    makeEditDefaultAction,
-    makeEditNotificationAction,
-    makeNoneAction,
-    useFormModalReducer
-} from './useFormModalReducer';
-import { useNotificationFilter } from './useNotificationFilter';
-import { useNotificationPage } from './useNotificationPage';
-import { useNotificationRows } from './useNotificationRows';
+import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
+import { useGetApplications } from '../../../services/Notifications/GetApplications';
+import { NotificationListBundlePage } from './BundlePage';
+import { useGetBundles } from '../../../services/Notifications/GetBundles';
+import { Facet } from '../../../types/Notification';
 
-const displayInlineClassName = style({
-    display: 'inline'
-});
+interface NotificationListPageParams {
+    bundleName: string;
+}
 
-const tableTitleClassName = style({
-    fontWeight: 600,
-    paddingTop: global_spacer_md.var,
-    paddingBottom: global_spacer_md.var,
-    fontSize: '17px'
-});
+enum BundleStatus {
+    LOADING,
+    NOT_FOUND,
+    FAILED_TO_LOAD
+}
 
-const noPaddingTopClassName = style({
-    paddingTop: 0
-});
-
-const emptyArray = [];
+const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus => typeof bundle === 'number';
 
 export const NotificationsListPage: React.FunctionComponent = () => {
 
-    const { rbac: { canWriteNotifications }} = useContext(AppContext);
-    const defaultNotificationBehavior = useDefaultNotificationBehavior();
-    const { applications } = useAppContext();
+    const params = useParams<NotificationListPageParams>();
 
-    const notificationsFilter = useNotificationFilter(applications.map(a => a.label.toString()));
-    const [ groupBy, setGroupBy ] = React.useState<GroupByEnum>(GroupByEnum.Application);
-    const groupBySelected = React.useCallback((selected: GroupByEnum) => {
-        setGroupBy(selected);
-    }, [ setGroupBy ]);
+    const getBundles = useGetBundles();
+    const getApplications = useGetApplications();
 
-    const notificationPage = useNotificationPage(notificationsFilter.debouncedFilters, applications, 10);
+    const bundle: Facet | BundleStatus = useMemo(() => {
+        if (getBundles.payload?.status === 200) {
+            return getBundles.payload.value.find(b => b.internalName === params.bundleName) ?? BundleStatus.NOT_FOUND;
+        } else if (getBundles.payload) {
+            return BundleStatus.FAILED_TO_LOAD;
+        }
 
-    const useNotifications = useListNotifications(notificationPage.page);
-    const {
-        rows: notificationRows,
-        onCollapse
-    } = useNotificationRows(
-        useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value : emptyArray,
-        groupBy
+        return BundleStatus.LOADING;
+    }, [ getBundles.payload, params.bundleName ]);
+
+    React.useEffect(() => {
+        const query = getApplications.query;
+        if (!isBundleStatus(bundle)) {
+            query(bundle.internalName);
+        }
+    }, [ bundle, getApplications.query ]);
+
+    const applications: Array<Facet> | null | undefined = useMemo(
+        () => {
+            if (getApplications.payload) {
+                return getApplications.payload.status === 200 ? getApplications.payload.value : null;
+            }
+
+            return undefined;
+        },
+        [ getApplications.payload ]
     );
 
-    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
-
-    const closeFormModal = React.useCallback((saved: boolean) => {
-        const updateDefaultNotifications = defaultNotificationBehavior.query;
-        const updateNotifications = useNotifications.query;
-        if (saved && modalIsOpenState.isOpen) {
-            if (modalIsOpenState.type === 'default') {
-                updateDefaultNotifications();
-            } else if (modalIsOpenState.type === 'notification') {
-                updateNotifications();
-            }
+    if (bundle === BundleStatus.NOT_FOUND) {
+        if (params.bundleName === defaultBundleName) {
+            throw new Error('Default bundle information not found');
         }
 
-        dispatchModalIsOpen(makeNoneAction());
-    }, [ dispatchModalIsOpen, defaultNotificationBehavior.query, modalIsOpenState, useNotifications.query ]);
+        return <RedirectToDefaultBundle />;
+    }
 
-    const pageHeaderTitleProps = {
-        className: displayInlineClassName,
-        title: Messages.pages.notifications.list.title
-    };
+    if (bundle === BundleStatus.FAILED_TO_LOAD) {
+        throw new Error('Unable to load bundle information');
+    }
 
-    const onExport = React.useCallback((type: ExporterType) => {
-        console.log('Export to', type);
-    }, []);
+    if (applications === null) {
+        throw new Error('Unable to load application facets');
+    }
 
-    const onEditDefaultAction = React.useCallback(() => {
-        const payload = defaultNotificationBehavior.payload;
-        if (payload?.type === 'DefaultNotificationBehavior') {
-            dispatchModalIsOpen(makeEditDefaultAction(payload.value));
-        }
-    }, [ dispatchModalIsOpen, defaultNotificationBehavior.payload ]);
-
-    const onEditNotification = React.useCallback((notification: Notification) => {
-        dispatchModalIsOpen(makeEditNotificationAction(notification));
-    }, [ dispatchModalIsOpen ]);
+    if (bundle === BundleStatus.LOADING || !applications) {
+        return (
+            <AppSkeleton />
+        );
+    }
 
     return (
-        <>
-            <PageHeader>
-                <PageHeaderTitle { ...pageHeaderTitleProps } />
-                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingBetaAndProdBetaEnvironment }>
-                    <RenderIfFalse>
-                        <Button variant={ ButtonVariant.link }>{ Messages.pages.notifications.list.viewHistory }</Button>
-                    </RenderIfFalse>
-                </InsightsEnvDetector>
-            </PageHeader>
-            <Main className={ noPaddingTopClassName }>
-                <Section>
-                    <DefaultBehavior
-                        loading={ defaultNotificationBehavior.loading }
-                        defaultBehavior={ defaultNotificationBehavior.payload?.type === 'DefaultNotificationBehavior' ?
-                            defaultNotificationBehavior.payload.value :
-                            undefined }
-                        onEdit={ canWriteNotifications ? onEditDefaultAction : undefined }
-                    />
-                    <div className={ tableTitleClassName }>Insights notifications event types and behavior</div>
-                    <NotificationsToolbar
-                        filters={ notificationsFilter.filters }
-                        setFilters={ notificationsFilter.setFilters }
-                        clearFilter={ notificationsFilter.clearFilter }
-                        appFilterOptions={ applications }
-                        groupBy={ groupBy }
-                        onGroupBySelected={ groupBySelected }
-                        onExport={ onExport }
-                    >
-                        <NotificationsTable
-                            notifications={ notificationRows }
-                            onCollapse={ onCollapse }
-                            onEdit={ canWriteNotifications ? onEditNotification : undefined }
-                        />
-                    </NotificationsToolbar>
-                    { modalIsOpenState.isOpen && (
-                        <EditNotificationPage
-                            onClose={ closeFormModal }
-                            { ...modalIsOpenState }
-                        />
-                    ) }
-                </Section>
-            </Main>
-        </>
+        <NotificationListBundlePage
+            bundle={ bundle }
+            applications={ applications }
+        />
     );
 };

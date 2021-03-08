@@ -1,21 +1,14 @@
 import { fetchRBAC, Rbac, waitForInsights } from '@redhat-cloud-services/insights-common-typescript';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Config from '../config/Config';
-import { useGetApplications } from '../services/Notifications/GetApplications';
 import { AppContext } from './AppContext';
 
-export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pick<AppContext, 'rbac' | 'applications'>> => {
+export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'rbac'>> => {
 
     const history = useHistory();
     const [ rbac, setRbac ] = useState<Rbac | undefined>(undefined);
-    const getApplications = useGetApplications('insights');
-
-    const applications = useMemo(
-        () => getApplications.payload?.status === 200 ? getApplications.payload.value : undefined,
-        [ getApplications.payload ]
-    );
 
     useEffect(() => {
         waitForInsights().then((insights) => {
@@ -48,7 +41,6 @@ export const useApp = (): Omit<AppContext, 'rbac' | 'applications'> & Partial<Pi
             canReadNotifications: rbac.hasPermission('notifications', 'notifications', 'read'),
             canWriteIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'write'),
             canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read')
-        } : undefined,
-        applications
+        } : undefined
     };
 };

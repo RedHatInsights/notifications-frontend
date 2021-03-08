@@ -16,7 +16,7 @@ import { useApp } from './useApp';
 
 const App: React.ComponentType = () => {
     const intl = useIntl();
-    const { rbac, applications } = useApp();
+    const { rbac } = useApp();
     const location = useLocation();
 
     const serviceName = React.useMemo(() => {
@@ -42,7 +42,7 @@ const App: React.ComponentType = () => {
         return false;
     }, [ rbac, location.pathname ]);
 
-    if (!rbac || !applications) {
+    if (!rbac) {
         return (
             <AppSkeleton />
         );
@@ -50,8 +50,7 @@ const App: React.ComponentType = () => {
 
     return (
         <AppContext.Provider value={ {
-            rbac,
-            applications
+            rbac
         } }>
             { hasReadPermissions ? (
                 <>

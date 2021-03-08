@@ -40,5 +40,7 @@ export enum NotificationType {
     INTEGRATION = 'INTEGRATION'
 }
 
+export type Facet = Schemas.Facet;
+
 export type ServerNotificationRequest = Schemas.EventType;
 export type ServerNotificationResponse = Schemas.EventType;
