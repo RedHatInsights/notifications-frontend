@@ -119,7 +119,7 @@ export namespace Schemas {
   export type Facet = {
     displayName: string;
     id: string;
-    internalName: string;
+    name: string;
   };
 
   export const Family = zodSchemaFamily();
@@ -642,7 +642,7 @@ export namespace Schemas {
       .object({
           displayName: z.string(),
           id: z.string(),
-          internalName: z.string()
+          name: z.string()
       })
       .nonstrict();
   }

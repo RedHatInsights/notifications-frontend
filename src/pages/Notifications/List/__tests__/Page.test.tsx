@@ -1,16 +1,16 @@
-import { act, getByText, render, screen } from '@testing-library/react';
+import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import * as React from 'react';
+import { MemoryRouterProps, RouteProps } from 'react-router';
 
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { Schemas } from '../../../../generated/OpenapiIntegrations';
-import { NotificationsListPage } from '../Page';
-import { MemoryRouterProps, RouteProps } from 'react-router';
-import { linkTo } from '../../../../Routes';
 import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
+import { Schemas } from '../../../../generated/OpenapiIntegrations';
+import { linkTo } from '../../../../Routes';
+import { NotificationsListPage } from '../Page';
 
 type RouterAndRoute = {
     router: MemoryRouterProps,
@@ -31,7 +31,7 @@ const mockFacets = () => {
         body: [
             {
                 displayName: 'Insights',
-                internalName: 'insights',
+                name: 'insights',
                 id: 'foobar'
             }
         ] as Array<Schemas.Facet>
@@ -41,7 +41,7 @@ const mockFacets = () => {
         body: [
             {
                 displayName: 'Policies',
-                internalName: 'policies',
+                name: 'policies',
                 id: 'foobar-policy'
             }
         ] as Array<Schemas.Facet>
@@ -75,7 +75,7 @@ describe('src/pages/Notifications/List/Page', () => {
             body: [
                 {
                     displayName: 'Insights',
-                    internalName: 'insights',
+                    name: 'insights',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
@@ -85,7 +85,7 @@ describe('src/pages/Notifications/List/Page', () => {
             body: [
                 {
                     displayName: 'Policies',
-                    internalName: 'policies',
+                    name: 'policies',
                     id: 'foobar-policy'
                 }
             ] as Array<Schemas.Facet>
@@ -159,7 +159,7 @@ describe('src/pages/Notifications/List/Page', () => {
             body: [
                 {
                     displayName: 'Insights',
-                    internalName: 'insights',
+                    name: 'insights',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
@@ -191,7 +191,7 @@ describe('src/pages/Notifications/List/Page', () => {
             body: [
                 {
                     displayName: 'Insights',
-                    internalName: 'insights',
+                    name: 'insights',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>

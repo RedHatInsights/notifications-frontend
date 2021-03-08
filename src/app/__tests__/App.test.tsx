@@ -6,7 +6,6 @@ import * as React from 'react';
 
 import messages from '../../../locales/data.json';
 import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
-import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {

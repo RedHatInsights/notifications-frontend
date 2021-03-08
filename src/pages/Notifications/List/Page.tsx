@@ -5,9 +5,9 @@ import { useParams } from 'react-router-dom';
 
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
 import { useGetApplications } from '../../../services/Notifications/GetApplications';
-import { NotificationListBundlePage } from './BundlePage';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
+import { NotificationListBundlePage } from './BundlePage';
 
 interface NotificationListPageParams {
     bundleName: string;
@@ -30,7 +30,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
     const bundle: Facet | BundleStatus = useMemo(() => {
         if (getBundles.payload?.status === 200) {
-            return getBundles.payload.value.find(b => b.internalName === params.bundleName) ?? BundleStatus.NOT_FOUND;
+            return getBundles.payload.value.find(b => b.name === params.bundleName) ?? BundleStatus.NOT_FOUND;
         } else if (getBundles.payload) {
             return BundleStatus.FAILED_TO_LOAD;
         }
@@ -41,7 +41,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     React.useEffect(() => {
         const query = getApplications.query;
         if (!isBundleStatus(bundle)) {
-            query(bundle.internalName);
+            query(bundle.name);
         }
     }, [ bundle, getApplications.query ]);
 
