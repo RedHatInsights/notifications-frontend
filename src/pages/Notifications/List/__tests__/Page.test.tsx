@@ -3,11 +3,52 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import * as React from 'react';
+import { MemoryRouterProps, RouteProps } from 'react-router';
 
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
+import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
+
+type RouterAndRoute = {
+    router: MemoryRouterProps,
+    route: RouteProps
+};
+
+const routePropsPageForBundle = (bundle: string): RouterAndRoute => ({
+    router: {
+        initialEntries: [ `/notifications/${bundle}` ]
+    },
+    route: {
+        path: linkTo.notifications(':bundleName')
+    }
+});
+
+const mockFacets = () => {
+    fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+        body: [
+            {
+                displayName: 'Insights',
+                name: 'insights',
+                id: 'foobar'
+            }
+        ] as Array<Schemas.Facet>
+    });
+
+    fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        body: [
+            {
+                displayName: 'Policies',
+                name: 'policies',
+                id: 'foobar-policy'
+            }
+        ] as Array<Schemas.Facet>
+    });
+};
+
+const defaultGetEventTypesUrl = '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=10&offset=0';
 
 describe('src/pages/Notifications/List/Page', () => {
 
@@ -19,21 +60,201 @@ describe('src/pages/Notifications/List/Page', () => {
         appWrapperCleanup();
     });
 
+    it('If the bundle is not found, redirects to insights', async () => {
+        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+            body: [
+
+            ] as Array<Schemas.Endpoint>
+        });
+        fetchMock.get(defaultGetEventTypesUrl, {
+            body: [
+
+            ] as Array<Schemas.EventType>
+        });
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+            body: [
+                {
+                    displayName: 'Insights',
+                    name: 'insights',
+                    id: 'foobar'
+                }
+            ] as Array<Schemas.Facet>
+        });
+
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+            body: [
+                {
+                    displayName: 'Policies',
+                    name: 'policies',
+                    id: 'foobar-policy'
+                }
+            ] as Array<Schemas.Facet>
+        });
+        const getLocation = jest.fn();
+        render(
+            <NotificationsListPage />
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('i-dont-exist'),
+                    getLocation
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(ouiaSelectors.getByOuia('Notifications/Notifications/DefaultBehavior')).toBeTruthy();
+        expect(getLocation().pathname).toBe('/notifications/insights');
+    });
+
+    it('Throws error if bundles fails o load', async () => {
+        const err = jest.spyOn(console, 'error');
+        err.mockImplementation(() => ({}));
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+            body: null
+        });
+
+        render(
+            <VerboseErrorBoundary>
+                <NotificationsListPage />
+            </VerboseErrorBoundary>
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('i-dont-exist')
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(screen.getByText(/Error: Unable to load bundle information/i)).toBeTruthy();
+        err.mockRestore();
+    });
+
+    it('Throws error if default bundle is not found', async () => {
+        const err = jest.spyOn(console, 'error');
+        err.mockImplementation(() => ({}));
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+            body: []
+        });
+
+        render(
+            <VerboseErrorBoundary>
+                <NotificationsListPage />
+            </VerboseErrorBoundary>
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights')
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(screen.getByText(/Error: Default bundle information not found/i)).toBeTruthy();
+        err.mockRestore();
+    });
+
+    it('Throws error if applications fails o load', async () => {
+        const err = jest.spyOn(console, 'error');
+        err.mockImplementation(() => ({}));
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+            body: [
+                {
+                    displayName: 'Insights',
+                    name: 'insights',
+                    id: 'foobar'
+                }
+            ] as Array<Schemas.Facet>
+        });
+
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+            body: null
+        });
+
+        render(
+            <VerboseErrorBoundary>
+                <NotificationsListPage />
+            </VerboseErrorBoundary>
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('i-dont-exist')
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(screen.getByText(/Error: Unable to load application facets/i)).toBeTruthy();
+        err.mockRestore();
+    });
+
+    it('Shows loading when loading bundles', async () => {
+        let resolve: any;
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+            body: [
+                {
+                    displayName: 'Insights',
+                    name: 'insights',
+                    id: 'foobar'
+                }
+            ] as Array<Schemas.Facet>
+        });
+
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', new Promise(_resolve => resolve = _resolve));
+
+        render(
+            <VerboseErrorBoundary>
+                <NotificationsListPage />
+            </VerboseErrorBoundary>
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights')
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(screen.getByText(/loading/i)).toBeTruthy();
+        resolve();
+        await  waitForAsyncEvents();
+    });
+
+    it('Shows loading when loading applications', async () => {
+        let resolve: any;
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', new Promise(_resolve => resolve = _resolve));
+
+        render(
+            <VerboseErrorBoundary>
+                <NotificationsListPage />
+            </VerboseErrorBoundary>
+            , {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights')
+                })
+            }
+        );
+
+        await waitForAsyncEvents();
+        expect(screen.getByText(/loading/i)).toBeTruthy();
+        resolve();
+        await  waitForAsyncEvents();
+    });
+
     it('Renders default behavior', async () => {
         fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
             body: [
 
             ] as Array<Schemas.Endpoint>
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+        fetchMock.get(defaultGetEventTypesUrl, {
             body: [
 
             ] as Array<Schemas.EventType>
         });
+        mockFacets();
         render(
             <NotificationsListPage />
             , {
-                wrapper: getConfiguredAppWrapper()
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights')
+                })
             }
         );
 
@@ -48,15 +269,18 @@ describe('src/pages/Notifications/List/Page', () => {
 
                 ] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
 
                 ] as Array<Schemas.EventType>
             });
+            mockFacets();
             render(
                 <NotificationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper()
+                    wrapper: getConfiguredAppWrapper({
+                        ...routePropsPageForBundle('insights')
+                    })
                 }
             );
 
@@ -77,15 +301,18 @@ describe('src/pages/Notifications/List/Page', () => {
 
                 ] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
 
                 ] as Array<Schemas.EventType>
             });
+            mockFacets();
             render(
                 <NotificationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper()
+                    wrapper: getConfiguredAppWrapper({
+                        ...routePropsPageForBundle('insights')
+                    })
                 }
             );
 
@@ -112,15 +339,18 @@ describe('src/pages/Notifications/List/Page', () => {
 
                 ] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
 
                 ] as Array<Schemas.EventType>
             });
+            mockFacets();
             render(
                 <NotificationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper()
+                    wrapper: getConfiguredAppWrapper({
+                        ...routePropsPageForBundle('insights')
+                    })
                 }
             );
 
@@ -150,15 +380,18 @@ describe('src/pages/Notifications/List/Page', () => {
 
             ] as Array<Schemas.Endpoint>
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+        fetchMock.get(defaultGetEventTypesUrl, {
             body: [
 
             ] as Array<Schemas.EventType>
         });
+        mockFacets();
         render(
             <NotificationsListPage />
             , {
-                wrapper: getConfiguredAppWrapper()
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights')
+                })
             }
         );
 
@@ -171,7 +404,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
                         id: '3',
@@ -190,10 +423,13 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
                 body: []
             });
+            mockFacets();
             render(
                 <NotificationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper()
+                    wrapper: getConfiguredAppWrapper({
+                        ...routePropsPageForBundle('insights')
+                    })
                 }
             );
 
@@ -210,7 +446,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
                         id: '3',
@@ -229,10 +465,13 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
                 body: []
             });
+            mockFacets();
             render(
                 <NotificationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper()
+                    wrapper: getConfiguredAppWrapper({
+                        ...routePropsPageForBundle('insights')
+                    })
                 }
             );
 
@@ -255,7 +494,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+            fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
                         id: '3',
@@ -274,10 +513,13 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
                 body: []
             });
+            mockFacets();
             render(
                 <NotificationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper()
+                    wrapper: getConfiguredAppWrapper({
+                        ...routePropsPageForBundle('insights')
+                    })
                 }
             );
 
@@ -310,7 +552,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             ]
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+        fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
                     application: {
@@ -330,12 +572,13 @@ describe('src/pages/Notifications/List/Page', () => {
                 }
             ] as Array<Schemas.EventType>
         });
+        mockFacets();
         render(
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights'),
                     appContext: {
-                        applications: [],
                         rbac: {
                             canWriteNotifications: false,
                             canWriteIntegrationsEndpoints: true,
@@ -364,7 +607,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             ]
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+        fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
                     application: {
@@ -384,12 +627,13 @@ describe('src/pages/Notifications/List/Page', () => {
                 }
             ] as Array<Schemas.EventType>
         });
+        mockFacets();
         render(
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights'),
                     appContext: {
-                        applications: [],
                         rbac: {
                             canWriteNotifications: true,
                             canWriteIntegrationsEndpoints: true,
@@ -418,7 +662,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             ]
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+        fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
                     application: {
@@ -438,12 +682,13 @@ describe('src/pages/Notifications/List/Page', () => {
                 }
             ] as Array<Schemas.EventType>
         });
+        mockFacets();
         render(
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights'),
                     appContext: {
-                        applications: [],
                         rbac: {
                             canWriteNotifications: false,
                             canWriteIntegrationsEndpoints: true,
@@ -472,7 +717,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             ]
         });
-        fetchMock.get('/api/notifications/v1.0/notifications/eventTypes?limit=10&offset=0', {
+        fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
                     application: {
@@ -492,12 +737,13 @@ describe('src/pages/Notifications/List/Page', () => {
                 }
             ] as Array<Schemas.EventType>
         });
+        mockFacets();
         render(
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('insights'),
                     appContext: {
-                        applications: [],
                         rbac: {
                             canWriteNotifications: true,
                             canWriteIntegrationsEndpoints: true,

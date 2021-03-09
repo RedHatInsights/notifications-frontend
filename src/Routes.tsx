@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Route, RouteProps, Switch } from 'react-router';
 
+import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
@@ -15,13 +16,19 @@ export const linkTo = {
     notifications: (bundle: string) => `/notifications/${bundle}`
 };
 
+const EmptyPage: React.FunctionComponent = () => null;
+
 const pathRoutes: Path[] = [
+    {
+        path: '/',
+        component: EmptyPage
+    },
     {
         path: linkTo.integrations(),
         component: IntegrationsListPage
     },
     {
-        path: linkTo.notifications(':bundleId?'),
+        path: linkTo.notifications(':bundleName'),
         component: NotificationsListPage
     }
 ];
@@ -47,6 +54,7 @@ export const Routes: React.FunctionComponent = () => {
                     exact={ true }
                 />
             ))}
+            <RedirectToDefaultBundle />
         </Switch>
     );
 };

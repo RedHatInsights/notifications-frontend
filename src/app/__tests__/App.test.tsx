@@ -6,7 +6,6 @@ import * as React from 'react';
 
 import messages from '../../../locales/data.json';
 import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
-import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
@@ -57,34 +56,6 @@ describe('src/app/App', () => {
 
         expect(screen.getByTestId('loading')).toBeTruthy();
         jest.restoreAllMocks();
-    });
-
-    it('Shows loading when applications is not set', async () => {
-        jest.useFakeTimers();
-        const promise = Promise.resolve(new Rbac({}));
-        (fetchRBAC as jest.Mock).mockImplementation(() => promise);
-        let resolver;
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', new Promise(resolv => resolver = resolv));
-        render(
-            <App />,
-            {
-                wrapper: getConfiguredAppWrapper({
-                    appContext: {
-                        rbac: new Rbac({}),
-                        applications: undefined
-                    } as any
-                })
-            }
-        );
-
-        await act(async () => {
-            await jest.advanceTimersToNextTimer();
-        });
-
-        expect(screen.getByTestId('loading')).toBeTruthy();
-        jest.restoreAllMocks();
-        resolver();
-        await waitForAsyncEvents();
     });
 
     it('Shows the content when read is set', async () => {

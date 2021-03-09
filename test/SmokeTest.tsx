@@ -134,15 +134,6 @@ describe('Smoketest', () => {
             dataRbac
         );
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: [
-                {
-                    label: 'fobar',
-                    value: 'baz'
-                }
-            ]
-        });
-
         fetchMock.get('/api/integrations/v1.0/endpoints?limit=10&offset=0&type=webhook', {
             data: [
                 {
@@ -185,6 +176,26 @@ describe('Smoketest', () => {
             body: [
 
             ] as Array<Schemas.Endpoint>
+        });
+
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+            body: [
+                {
+                    displayName: 'Insights',
+                    name: 'insights',
+                    id: 'foobar'
+                }
+            ] as Array<Schemas.Facet>
+        });
+
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+            body: [
+                {
+                    displayName: 'Policies',
+                    name: 'policies',
+                    id: 'foobar-policy'
+                }
+            ] as Array<Schemas.Facet>
         });
 
         render(<div id="root"><App /></div>, {

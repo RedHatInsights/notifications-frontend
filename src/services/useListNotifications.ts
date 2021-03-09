@@ -12,7 +12,8 @@ export const listNotificationsActionCreator = (pager?: Page) => {
     return Operations.NotificationServiceGetEventTypes.actionCreator({
         limit: +query.limit,
         offset: +query.offset,
-        applicationIds: query.filterApplicationId as unknown as SetUUID
+        applicationIds: query.filterApplicationId as unknown as SetUUID,
+        bundleId: query.filterBundleId as unknown as string
     });
 };
 

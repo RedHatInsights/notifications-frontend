@@ -63,7 +63,24 @@ describe('src/Routes', () => {
             expect(screen.getByText('Integrations')).toBeVisible();
         });
 
-        it('Should render the placeholder on /notifications', async () => {
+        it('Should render on /notifications/foobar', async () => {
+            jest.useFakeTimers();
+            const getLocation = jest.fn();
+            const Wrapper = getConfiguredAppWrapper({
+                router: {
+                    initialEntries: [ '/notifications/foobar' ]
+                },
+                getLocation
+            });
+            render(<Routes />, {
+                wrapper: Wrapper
+            });
+
+            expect(getLocation().pathname).toBe('/notifications/foobar');
+            expect(screen.getByText(/notifications/i)).toBeVisible();
+        });
+
+        it('Should redirect on /notifications', async () => {
             jest.useFakeTimers();
             const getLocation = jest.fn();
             const Wrapper = getConfiguredAppWrapper({
@@ -76,7 +93,7 @@ describe('src/Routes', () => {
                 wrapper: Wrapper
             });
 
-            expect(getLocation().pathname).toBe('/notifications');
+            expect(getLocation().pathname).toBe('/notifications/insights');
             expect(screen.getByText(/notifications/i)).toBeVisible();
         });
     });

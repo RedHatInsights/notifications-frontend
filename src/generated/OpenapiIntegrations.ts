@@ -17,6 +17,7 @@ export namespace Schemas {
     accountId?: string | undefined | null;
     account_id?: string | undefined | null;
     application?: string | undefined | null;
+    bundle?: string | undefined | null;
     eventType?: string | undefined | null;
     event_type?: string | undefined | null;
     payload?: Map | undefined | null;
@@ -34,12 +35,6 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     updated?: string | undefined | null;
-  };
-
-  export const ApplicationFacet = zodSchemaApplicationFacet();
-  export type ApplicationFacet = {
-    label: string;
-    value: string;
   };
 
   export const Attributes = zodSchemaAttributes();
@@ -75,6 +70,9 @@ export namespace Schemas {
 
   export const EmailSubscriptionAttributes = zodSchemaEmailSubscriptionAttributes();
   export type EmailSubscriptionAttributes = unknown;
+
+  export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
+  export type EmailSubscriptionType = 'DAILY' | 'INSTANT';
 
   export const Endpoint = zodSchemaEndpoint();
   export type Endpoint = {
@@ -114,6 +112,13 @@ export namespace Schemas {
     display_name: string;
     endpoints?: SetEndpoint | undefined | null;
     id?: UUID | undefined | null;
+    name: string;
+  };
+
+  export const Facet = zodSchemaFacet();
+  export type Facet = {
+    displayName: string;
+    id: string;
     name: string;
   };
 
@@ -215,6 +220,9 @@ export namespace Schemas {
     uri?: string | undefined | null;
     uriBuilder?: UriBuilder | undefined | null;
   };
+
+  export const ListApplication = zodSchemaListApplication();
+  export type ListApplication = Array<Application>;
 
   export const ListEndpoint = zodSchemaListEndpoint();
   export type ListEndpoint = Array<Endpoint>;
@@ -496,6 +504,7 @@ export namespace Schemas {
           accountId: z.string().optional().nullable(),
           account_id: z.string().optional().nullable(),
           application: z.string().optional().nullable(),
+          bundle: z.string().optional().nullable(),
           eventType: z.string().optional().nullable(),
           event_type: z.string().optional().nullable(),
           payload: zodSchemaMap().optional().nullable(),
@@ -516,15 +525,6 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           updated: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaApplicationFacet() {
-      return z
-      .object({
-          label: z.string(),
-          value: z.string()
       })
       .nonstrict();
   }
@@ -571,6 +571,10 @@ export namespace Schemas {
 
   function zodSchemaEmailSubscriptionAttributes() {
       return z.unknown();
+  }
+
+  function zodSchemaEmailSubscriptionType() {
+      return z.enum([ 'DAILY', 'INSTANT' ]);
   }
 
   function zodSchemaEndpoint() {
@@ -628,6 +632,16 @@ export namespace Schemas {
           display_name: z.string(),
           endpoints: zodSchemaSetEndpoint().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
+          name: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaFacet() {
+      return z
+      .object({
+          displayName: z.string(),
+          id: z.string(),
           name: z.string()
       })
       .nonstrict();
@@ -758,6 +772,10 @@ export namespace Schemas {
           uriBuilder: zodSchemaUriBuilder().optional().nullable()
       })
       .nonstrict();
+  }
+
+  function zodSchemaListApplication() {
+      return z.array(zodSchemaApplication());
   }
 
   function zodSchemaListEndpoint() {
@@ -1175,16 +1193,29 @@ export namespace Operations {
         .build();
     };
   }
-  // PUT /endpoints/email/subscription/daily
-  export namespace EndpointServiceSubscribeDailyEmail {
+  // PUT /endpoints/email/subscription/{bundleName}/{applicationName}/{type}
+  export namespace EndpointServiceSubscribeEmail {
+    const ApplicationName = z.string();
+    type ApplicationName = string;
+    const BundleName = z.string();
+    type BundleName = string;
     const Response200 = z.boolean();
     type Response200 = boolean;
+    export interface Params {
+      applicationName: ApplicationName;
+      bundleName: BundleName;
+      type: Schemas.EmailSubscriptionType;
+    }
+
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (): ActionCreator => {
-        const path = '/api/integrations/v1.0/endpoints/email/subscription/daily';
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/integrations/v1.0/endpoints/email/subscription/{bundleName}/{applicationName}/{type}'
+        .replace('{applicationName}', params.applicationName.toString())
+        .replace('{bundleName}', params.bundleName.toString())
+        .replace('{type}', params.type.toString());
         const query = {} as Record<string, any>;
         return actionBuilder('PUT', path)
         .queryParams(query)
@@ -1194,56 +1225,29 @@ export namespace Operations {
         .build();
     };
   }
-  // DELETE /endpoints/email/subscription/daily
-  export namespace EndpointServiceUnsubscribeDailyEmail {
+  // DELETE /endpoints/email/subscription/{bundleName}/{applicationName}/{type}
+  export namespace EndpointServiceUnsubscribeEmail {
+    const ApplicationName = z.string();
+    type ApplicationName = string;
+    const BundleName = z.string();
+    type BundleName = string;
     const Response200 = z.boolean();
     type Response200 = boolean;
+    export interface Params {
+      applicationName: ApplicationName;
+      bundleName: BundleName;
+      type: Schemas.EmailSubscriptionType;
+    }
+
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (): ActionCreator => {
-        const path = '/api/integrations/v1.0/endpoints/email/subscription/daily';
-        const query = {} as Record<string, any>;
-        return actionBuilder('DELETE', path)
-        .queryParams(query)
-        .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
-        })
-        .build();
-    };
-  }
-  // PUT /endpoints/email/subscription/instant
-  export namespace EndpointServiceSubscribeInstantEmail {
-    const Response200 = z.boolean();
-    type Response200 = boolean;
-    export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (): ActionCreator => {
-        const path =
-        '/api/integrations/v1.0/endpoints/email/subscription/instant';
-        const query = {} as Record<string, any>;
-        return actionBuilder('PUT', path)
-        .queryParams(query)
-        .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
-        })
-        .build();
-    };
-  }
-  // DELETE /endpoints/email/subscription/instant
-  export namespace EndpointServiceUnsubscribeInstantEmail {
-    const Response200 = z.boolean();
-    type Response200 = boolean;
-    export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (): ActionCreator => {
-        const path =
-        '/api/integrations/v1.0/endpoints/email/subscription/instant';
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/integrations/v1.0/endpoints/email/subscription/{bundleName}/{applicationName}/{type}'
+        .replace('{applicationName}', params.applicationName.toString())
+        .replace('{bundleName}', params.bundleName.toString())
+        .replace('{type}', params.type.toString());
         const query = {} as Record<string, any>;
         return actionBuilder('DELETE', path)
         .queryParams(query)

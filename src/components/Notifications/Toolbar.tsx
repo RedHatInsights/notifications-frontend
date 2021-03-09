@@ -10,9 +10,9 @@ import {
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
-import { Schemas } from '../../generated/OpenapiNotifications';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import { Facet } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import {
     ClearNotificationFilters,
@@ -22,14 +22,13 @@ import {
 } from './Filter';
 import { GroupBy } from './Table/GroupBy';
 import { GroupByEnum } from './Types';
-import ApplicationFacet = Schemas.ApplicationFacet;
 
 interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
     setFilters: SetNotificationFilters;
     clearFilter: ClearNotificationFilters;
 
-    appFilterOptions: Array<ApplicationFacet>;
+    appFilterOptions: Array<Facet>;
 
     groupBy: GroupByEnum;
     onGroupBySelected: (selected: GroupByEnum) => void;
@@ -42,8 +41,8 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
     const filterMetadata = useMemo<ColumnsMetada<typeof NotificationFilterColumn>>(() => {
 
         const appFilterItems = props.appFilterOptions.map(a => ({
-            value: a.label,
-            label: <> {a.label}</>
+            value: a.displayName,
+            label: <> {a.displayName}</>
         }));
 
         return {

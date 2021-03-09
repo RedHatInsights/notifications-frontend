@@ -17,6 +17,7 @@ export namespace Schemas {
     accountId?: string | undefined | null;
     account_id?: string | undefined | null;
     application?: string | undefined | null;
+    bundle?: string | undefined | null;
     eventType?: string | undefined | null;
     event_type?: string | undefined | null;
     payload?: Map | undefined | null;
@@ -34,12 +35,6 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     updated?: string | undefined | null;
-  };
-
-  export const ApplicationFacet = zodSchemaApplicationFacet();
-  export type ApplicationFacet = {
-    label: string;
-    value: string;
   };
 
   export const Attributes = zodSchemaAttributes();
@@ -75,6 +70,9 @@ export namespace Schemas {
 
   export const EmailSubscriptionAttributes = zodSchemaEmailSubscriptionAttributes();
   export type EmailSubscriptionAttributes = unknown;
+
+  export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
+  export type EmailSubscriptionType = 'DAILY' | 'INSTANT';
 
   export const Endpoint = zodSchemaEndpoint();
   export type Endpoint = {
@@ -114,6 +112,13 @@ export namespace Schemas {
     display_name: string;
     endpoints?: SetEndpoint | undefined | null;
     id?: UUID | undefined | null;
+    name: string;
+  };
+
+  export const Facet = zodSchemaFacet();
+  export type Facet = {
+    displayName: string;
+    id: string;
     name: string;
   };
 
@@ -215,6 +220,9 @@ export namespace Schemas {
     uri?: string | undefined | null;
     uriBuilder?: UriBuilder | undefined | null;
   };
+
+  export const ListApplication = zodSchemaListApplication();
+  export type ListApplication = Array<Application>;
 
   export const ListEndpoint = zodSchemaListEndpoint();
   export type ListEndpoint = Array<Endpoint>;
@@ -496,6 +504,7 @@ export namespace Schemas {
           accountId: z.string().optional().nullable(),
           account_id: z.string().optional().nullable(),
           application: z.string().optional().nullable(),
+          bundle: z.string().optional().nullable(),
           eventType: z.string().optional().nullable(),
           event_type: z.string().optional().nullable(),
           payload: zodSchemaMap().optional().nullable(),
@@ -516,15 +525,6 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           updated: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaApplicationFacet() {
-      return z
-      .object({
-          label: z.string(),
-          value: z.string()
       })
       .nonstrict();
   }
@@ -571,6 +571,10 @@ export namespace Schemas {
 
   function zodSchemaEmailSubscriptionAttributes() {
       return z.unknown();
+  }
+
+  function zodSchemaEmailSubscriptionType() {
+      return z.enum([ 'DAILY', 'INSTANT' ]);
   }
 
   function zodSchemaEndpoint() {
@@ -628,6 +632,16 @@ export namespace Schemas {
           display_name: z.string(),
           endpoints: zodSchemaSetEndpoint().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
+          name: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaFacet() {
+      return z
+      .object({
+          displayName: z.string(),
+          id: z.string(),
           name: z.string()
       })
       .nonstrict();
@@ -758,6 +772,10 @@ export namespace Schemas {
           uriBuilder: zodSchemaUriBuilder().optional().nullable()
       })
       .nonstrict();
+  }
+
+  function zodSchemaListApplication() {
+      return z.array(zodSchemaApplication());
   }
 
   function zodSchemaListEndpoint() {
@@ -1179,6 +1197,7 @@ export namespace Operations {
     type Response200 = Array<Schemas.EventType>;
     export interface Params {
       applicationIds?: Schemas.SetUUID;
+      bundleId?: Schemas.UUID;
       limit?: Limit;
       offset?: Offset;
       pageNumber?: PageNumber;
@@ -1194,6 +1213,10 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         if (params.applicationIds !== undefined) {
             query.applicationIds = params.applicationIds;
+        }
+
+        if (params.bundleId !== undefined) {
+            query.bundleId = params.bundleId;
         }
 
         if (params.limit !== undefined) {
@@ -1357,8 +1380,8 @@ export namespace Operations {
   export namespace NotificationServiceGetApplicationsFacets {
     const BundleName = z.string();
     type BundleName = string;
-    const Response200 = z.array(Schemas.ApplicationFacet);
-    type Response200 = Array<Schemas.ApplicationFacet>;
+    const Response200 = z.array(Schemas.Facet);
+    type Response200 = Array<Schemas.Facet>;
     export interface Params {
       bundleName?: BundleName;
     }
@@ -1374,6 +1397,26 @@ export namespace Operations {
             query.bundleName = params.bundleName;
         }
 
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /notifications/facets/bundles
+  // Return a thin list of configured bundles. This can be used to configure a filter in the UI
+  export namespace NotificationServiceGetBundleFacets {
+    const Response200 = z.array(Schemas.Facet);
+    type Response200 = Array<Schemas.Facet>;
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/facets/bundles';
+        const query = {} as Record<string, any>;
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({

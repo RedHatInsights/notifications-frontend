@@ -1,15 +1,8 @@
-import {
-    arrayValue,
-    Filter,
-    Operator,
-    Page,
-    Sort
-} from '@redhat-cloud-services/insights-common-typescript';
+import { arrayValue, Filter, Operator, Page, Sort } from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
 import { NotificationFilterColumn, NotificationFilters } from '../../../components/Notifications/Filter';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
-import ApplicationFacet = Schemas.ApplicationFacet;
+import { Facet } from '../../../types/Notification';
 
 export interface UseNotificationPageReturn {
     page: Page;
@@ -19,7 +12,8 @@ export interface UseNotificationPageReturn {
 
 export const useNotificationPage = (
     filters: NotificationFilters,
-    appFilterOptions: Array<ApplicationFacet>,
+    bundle: Facet,
+    appFilterOptions: Array<Facet>,
     defaultPerPage: number,
     sort?: Sort): UseNotificationPageReturn => {
     const [ currentPage, setCurrentPage ] = useState<number>(1);
@@ -35,17 +29,19 @@ export const useNotificationPage = (
         if (appFilter) {
             const appIds: Array<string> = [];
             for (const appName of arrayValue(appFilter)) {
-                const filterOption = appFilterOptions.find(a => a.label === appName);
+                const filterOption = appFilterOptions.find(a => a.displayName === appName);
                 if (filterOption) {
-                    appIds.push(filterOption.value);
+                    appIds.push(filterOption.id);
                 }
             }
 
             filter.and('applicationId', Operator.EQUAL, appIds);
         }
 
+        filter.and('bundleId', Operator.EQUAL, bundle.id);
+
         return Page.of(currentPage, itemsPerPage, filter, sort);
-    }, [ currentPage, itemsPerPage, sort, filters, appFilterOptions ]);
+    }, [ currentPage, itemsPerPage, sort, filters, appFilterOptions, bundle ]);
 
     const changePage = useCallback((page: number) => setCurrentPage(page), [ setCurrentPage ]);
     const changeItemsPerPage = useCallback((perPage: number) => {

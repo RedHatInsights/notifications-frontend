@@ -46,7 +46,6 @@ describe('src/pages/Integrations/List/Page', () => {
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
-                            applications: [],
                             rbac: {
                                 canWriteNotifications: true,
                                 canWriteIntegrationsEndpoints: false,
@@ -87,7 +86,6 @@ describe('src/pages/Integrations/List/Page', () => {
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
-                            applications: [],
                             rbac: {
                                 canWriteNotifications: true,
                                 canWriteIntegrationsEndpoints: true,
@@ -128,7 +126,6 @@ describe('src/pages/Integrations/List/Page', () => {
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
-                            applications: [],
                             rbac: {
                                 canWriteNotifications: true,
                                 canWriteIntegrationsEndpoints: false,
@@ -172,7 +169,6 @@ describe('src/pages/Integrations/List/Page', () => {
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
-                            applications: [],
                             rbac: {
                                 canWriteNotifications: true,
                                 canWriteIntegrationsEndpoints: true,
@@ -215,7 +211,6 @@ describe('src/pages/Integrations/List/Page', () => {
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
-                            applications: [],
                             rbac: {
                                 canWriteNotifications: true,
                                 canWriteIntegrationsEndpoints: false,
@@ -274,7 +269,6 @@ describe('src/pages/Integrations/List/Page', () => {
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
-                            applications: [],
                             rbac: {
                                 canWriteNotifications: true,
                                 canWriteIntegrationsEndpoints: true,

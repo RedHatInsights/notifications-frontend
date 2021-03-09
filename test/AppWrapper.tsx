@@ -60,13 +60,7 @@ const defaultAppContextSettings = {
         canWriteIntegrationsEndpoints: true,
         canReadIntegrationsEndpoints: true,
         canReadNotifications: true
-    },
-    applications: [
-        {
-            label: 'Policies',
-            value: '123456'
-        }
-    ]
+    }
 };
 
 const InternalWrapper: React.FunctionComponent<Config> = (props) => {
