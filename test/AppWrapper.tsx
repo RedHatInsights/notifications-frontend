@@ -1,6 +1,6 @@
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import { getInsights, initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
 import fetchMock from 'fetch-mock';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
@@ -12,6 +12,7 @@ import { MemoryRouter as Router } from 'react-router-dom';
 
 import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
+import { createStore, resetStore } from '../src/store/Store';
 
 let setup = false;
 let client;
@@ -30,7 +31,7 @@ export const appWrapperSetup = () => {
         ]
     });
 
-    store = initStore().getStore();
+    store = createStore().getStore();
 };
 
 export const appWrapperCleanup = () => {
@@ -43,7 +44,7 @@ export const appWrapperCleanup = () => {
         setup = false;
 
         fetchMock.restore();
-        restoreStore();
+        resetStore();
     }
 };
 
