@@ -12,7 +12,7 @@ import {
     savedNotificationScopeSelector
 } from '../../../store/selectors/SavedNotificationScopeSelector';
 import { Status } from '../../../store/types/SavedNotificationScopeTypes';
-import { NewUserIntegration, UserIntegration } from '../../../types/Integration';
+import { Integration, NewUserIntegration, UserIntegration, UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 
 interface CreatePageProps {
@@ -77,12 +77,18 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
         setError(false);
 
         return saveIntegrationMutation.mutate(integration).then(response => {
-            if (!response.error) {
-                const title = props.isEdit ? `${integration.name} saved successfully` : `${integration.name} added successfully`;
+            if (response.payload?.status === 200) {
+
+                const savedIntegration: IntegrationRef =  response.payload?.type === 'Integration' ? {
+                    ...response.payload.value as Integration,
+                    type: response.payload.value.type as unknown as UserIntegrationType
+                } : integration as IntegrationRef;
+
+                const title = props.isEdit ? `${savedIntegration.name} saved successfully` : `${savedIntegration.name} added successfully`;
 
                 addSuccessNotification(
                     title,
-                    <AddNotificationBodyContainer integration={ integration as UserIntegration } />,
+                    <AddNotificationBodyContainer integration={ savedIntegration } />,
                     true
                 );
 
