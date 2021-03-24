@@ -7,7 +7,7 @@ export interface Notification {
     id: UUID;
     applicationDisplayName: string;
     eventTypeDisplayName: string;
-    actions: Array<Action>;
+    actions?: Array<Action>;
     useDefault?: boolean;
 }
 

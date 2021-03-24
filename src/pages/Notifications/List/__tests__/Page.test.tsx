@@ -415,8 +415,7 @@ describe('src/pages/Notifications/List/Page', () => {
                             display_name: 'My app desc'
                         },
                         display_name: 'my notification',
-                        name: 'Cool notification',
-                        endpoints: []
+                        name: 'Cool notification'
                     }
                 ] as Array<Schemas.EventType>
             });
@@ -457,8 +456,7 @@ describe('src/pages/Notifications/List/Page', () => {
                             display_name: 'My app desc'
                         },
                         display_name: 'my notification',
-                        name: 'Cool notification',
-                        endpoints: []
+                        name: 'Cool notification'
                     }
                 ] as Array<Schemas.EventType>
             });
@@ -505,8 +503,7 @@ describe('src/pages/Notifications/List/Page', () => {
                             display_name: 'My app desc'
                         },
                         display_name: 'my notification',
-                        name: 'Cool notification',
-                        endpoints: []
+                        name: 'Cool notification'
                     }
                 ] as Array<Schemas.EventType>
             });
@@ -558,7 +555,6 @@ describe('src/pages/Notifications/List/Page', () => {
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
-                        eventTypes: undefined,
                         id: 'app',
                         bundle_id: 'my-bundle-id',
                         name: 'app',
@@ -566,7 +562,6 @@ describe('src/pages/Notifications/List/Page', () => {
 
                     },
                     display_name: 'display_name',
-                    endpoints: [],
                     id: '15454656416',
                     name: 'mmmokay'
                 }
@@ -613,7 +608,6 @@ describe('src/pages/Notifications/List/Page', () => {
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
-                        eventTypes: undefined,
                         id: 'app',
                         bundle_id: 'my-bundle-id',
                         name: 'app',
@@ -621,7 +615,6 @@ describe('src/pages/Notifications/List/Page', () => {
 
                     },
                     display_name: 'display_name',
-                    endpoints: [],
                     id: '15454656416',
                     name: 'mmmokay'
                 }
@@ -668,7 +661,6 @@ describe('src/pages/Notifications/List/Page', () => {
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
-                        eventTypes: undefined,
                         id: 'app',
                         bundle_id: 'my-bundle-id',
                         name: 'app',
@@ -676,7 +668,6 @@ describe('src/pages/Notifications/List/Page', () => {
 
                     },
                     display_name: 'display_name',
-                    endpoints: [],
                     id: '15454656416',
                     name: 'mmmokay'
                 }
@@ -723,7 +714,6 @@ describe('src/pages/Notifications/List/Page', () => {
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
-                        eventTypes: undefined,
                         id: 'app',
                         bundle_id: 'my-bundle-id',
                         name: 'app',
@@ -731,7 +721,6 @@ describe('src/pages/Notifications/List/Page', () => {
 
                     },
                     display_name: 'display_name',
-                    endpoints: [],
                     id: '15454656416',
                     name: 'mmmokay'
                 }

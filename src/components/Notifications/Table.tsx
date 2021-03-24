@@ -168,8 +168,8 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
 
 const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByNone>, onEdit?: OnEditNotification, parent?: number) => {
     return notifications.reduce((rows, notification) => {
-        const rowSpan = Math.max(1, notification.useDefault ? 1 : notification.actions.length);
-        const firstAction = notification.actions.length > 0 ? notification.actions[0] : undefined;
+        const rowSpan = Math.max(1, notification.useDefault ? 1 : notification.actions?.length ?? 0);
+        const firstAction = notification.actions?.length ? notification.actions[0] : undefined;
 
         rows.push({
             id: `${parent !== undefined ? (parent.toString() + '-') : ''}${notification.id}`,
@@ -219,7 +219,7 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
                 }
             ],
             props: {
-                className: notification.actions.length > 1 ? noBorderBottom : ''
+                className: notification.actions?.length && notification.actions.length > 1 ? noBorderBottom : ''
             }
         });
 
@@ -229,6 +229,10 @@ const toTableRowsGroupedByNone = (notifications: Array<NotificationRowGroupedByN
         }
 
         for (let i = 1; i < rowSpan; ++i) {
+            if (notification.actions === undefined || notification.actions[i] === undefined) {
+                throw new Error(`Undefined notification.actions at index ${i}. ${notification.actions}`);
+            }
+
             const classNames = joinClasses(
                 (i + 1 === rowSpan ? '' : cellPaddingBottom),
                 cellPaddingTop
