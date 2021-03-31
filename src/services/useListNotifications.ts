@@ -5,14 +5,13 @@ import { useQuery } from 'react-fetching-library';
 import { Schemas } from '../generated/OpenapiIntegrations';
 import { Operations } from '../generated/OpenapiNotifications';
 import { toNotifications } from '../types/adapters/NotificationAdapter';
-import SetUUID = Schemas.SetUUID;
 
 export const listNotificationsActionCreator = (pager?: Page) => {
     const query = (pager ?? Page.defaultPage()).toQuery();
     return Operations.NotificationServiceGetEventTypes.actionCreator({
         limit: +query.limit,
         offset: +query.offset,
-        applicationIds: query.filterApplicationId as unknown as SetUUID,
+        applicationIds: query.filterApplicationId as unknown as Array<Schemas.UUID>,
         bundleId: query.filterBundleId as unknown as string
     });
 };

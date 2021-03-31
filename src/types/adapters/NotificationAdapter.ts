@@ -36,8 +36,8 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
         id: serverNotification.id,
         applicationDisplayName: serverNotification.application.display_name,
         eventTypeDisplayName: serverNotification.display_name,
-        actions: toActions(filterOutDefaultAction(serverNotification.endpoints ?? [])),
-        useDefault: usesDefault(serverNotification.endpoints ?? [])
+        actions: undefined,
+        useDefault: undefined
     };
 };
 

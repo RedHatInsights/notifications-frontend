@@ -154,11 +154,12 @@ export const EditNotificationPage: React.FunctionComponent<EditNotificationPageP
         const limit = pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS);
 
         const originalIds = oldActions.map(idMapper);
-        const newIds = data.actions.map((a, i) => a.integrationId === '' ? { ...a, integrationId: `new${i}` } : a).map(idMapper);
+        const newActions = data.actions ?? [];
+        const newIds = newActions.map((a, i) => a.integrationId === '' ? { ...a, integrationId: `new${i}` } : a).map(idMapper);
 
         const nonUserIntegrationsPromises: Array<Promise<boolean>> = [];
 
-        data.actions.map((a, index) => {
+        newActions.map((a, index) => {
             if (a.integrationId === '' && a.type === NotificationType.EMAIL_SUBSCRIPTION) {
                 nonUserIntegrationsPromises.push(limit(() => {
                     return query(createIntegrationActionCreator({
