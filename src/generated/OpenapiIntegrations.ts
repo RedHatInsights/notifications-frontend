@@ -195,7 +195,7 @@ export namespace Schemas {
       | null;
     endpointId?: UUID | undefined | null;
     eventId?: string | undefined | null;
-    id?: number | undefined | null;
+    id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
   };
@@ -461,7 +461,7 @@ export namespace Schemas {
           details: z.record(z.unknown()).optional().nullable(),
           endpointId: zodSchemaUUID().optional().nullable(),
           eventId: z.string().optional().nullable(),
-          id: z.number().int().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
       })
@@ -833,8 +833,6 @@ export namespace Operations {
   }
   // GET /endpoints/{id}/history/{history_id}/details
   export namespace EndpointServiceGetDetailedEndpointHistory {
-    const HistoryId = z.number().int();
-    type HistoryId = number;
     const Limit = z.number().int();
     type Limit = number;
     const Offset = z.number().int();
@@ -848,7 +846,7 @@ export namespace Operations {
     const Response200 = z.string();
     type Response200 = string;
     export interface Params {
-      historyId: HistoryId;
+      historyId: Schemas.UUID;
       id: Schemas.UUID;
       limit?: Limit;
       offset?: Offset;
