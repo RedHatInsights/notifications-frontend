@@ -30,8 +30,8 @@ const mockFacets = () => {
     fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
         body: [
             {
-                displayName: 'Insights',
-                name: 'insights',
+                displayName: 'Red Hat Enterprise Linux',
+                name: 'rhel',
                 id: 'foobar'
             }
         ] as Array<Schemas.Facet>
@@ -74,8 +74,8 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
             body: [
                 {
-                    displayName: 'Insights',
-                    name: 'insights',
+                    displayName: 'Red Hat Enterprise Linux',
+                    name: 'rhel',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
@@ -142,7 +142,7 @@ describe('src/pages/Notifications/List/Page', () => {
             </VerboseErrorBoundary>
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights')
+                    ...routePropsPageForBundle('rhel')
                 })
             }
         );
@@ -158,8 +158,8 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
             body: [
                 {
-                    displayName: 'Insights',
-                    name: 'insights',
+                    displayName: 'Red Hat Enterprise Linux',
+                    name: 'rhel',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
@@ -190,8 +190,8 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
             body: [
                 {
-                    displayName: 'Insights',
-                    name: 'insights',
+                    displayName: 'Red Hat Enterprise Linux',
+                    name: 'rhel',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
@@ -205,7 +205,7 @@ describe('src/pages/Notifications/List/Page', () => {
             </VerboseErrorBoundary>
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights')
+                    ...routePropsPageForBundle('rhel')
                 })
             }
         );
@@ -226,7 +226,7 @@ describe('src/pages/Notifications/List/Page', () => {
             </VerboseErrorBoundary>
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights')
+                    ...routePropsPageForBundle('rhel')
                 })
             }
         );
@@ -253,7 +253,7 @@ describe('src/pages/Notifications/List/Page', () => {
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights')
+                    ...routePropsPageForBundle('rhel')
                 })
             }
         );
@@ -279,7 +279,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
-                        ...routePropsPageForBundle('insights')
+                        ...routePropsPageForBundle('rhel')
                     })
                 }
             );
@@ -311,7 +311,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
-                        ...routePropsPageForBundle('insights')
+                        ...routePropsPageForBundle('rhel')
                     })
                 }
             );
@@ -349,7 +349,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
-                        ...routePropsPageForBundle('insights')
+                        ...routePropsPageForBundle('rhel')
                     })
                 }
             );
@@ -390,7 +390,7 @@ describe('src/pages/Notifications/List/Page', () => {
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights')
+                    ...routePropsPageForBundle('rhel')
                 })
             }
         );
@@ -428,7 +428,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
-                        ...routePropsPageForBundle('insights')
+                        ...routePropsPageForBundle('rhel')
                     })
                 }
             );
@@ -470,7 +470,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
-                        ...routePropsPageForBundle('insights')
+                        ...routePropsPageForBundle('rhel')
                     })
                 }
             );
@@ -518,7 +518,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 <NotificationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
-                        ...routePropsPageForBundle('insights')
+                        ...routePropsPageForBundle('rhel')
                     })
                 }
             );
@@ -577,7 +577,7 @@ describe('src/pages/Notifications/List/Page', () => {
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights'),
+                    ...routePropsPageForBundle('rhel'),
                     appContext: {
                         rbac: {
                             canWriteNotifications: false,
@@ -632,7 +632,7 @@ describe('src/pages/Notifications/List/Page', () => {
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights'),
+                    ...routePropsPageForBundle('rhel'),
                     appContext: {
                         rbac: {
                             canWriteNotifications: true,
@@ -687,7 +687,7 @@ describe('src/pages/Notifications/List/Page', () => {
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights'),
+                    ...routePropsPageForBundle('rhel'),
                     appContext: {
                         rbac: {
                             canWriteNotifications: false,
@@ -742,7 +742,7 @@ describe('src/pages/Notifications/List/Page', () => {
             <NotificationsListPage />
             , {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('insights'),
+                    ...routePropsPageForBundle('rhel'),
                     appContext: {
                         rbac: {
                             canWriteNotifications: true,

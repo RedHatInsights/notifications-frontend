@@ -181,8 +181,8 @@ describe('Smoketest', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
             body: [
                 {
-                    displayName: 'Insights',
-                    name: 'insights',
+                    displayName: 'Red Hat Enterprise Linux',
+                    name: 'rhel',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
