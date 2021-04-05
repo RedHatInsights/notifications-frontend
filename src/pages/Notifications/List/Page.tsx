@@ -1,9 +1,10 @@
-import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
+import { AppSkeleton, getInsights } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
+import { linkTo } from '../../../Routes';
 import { useGetApplications } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
@@ -24,9 +25,20 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 export const NotificationsListPage: React.FunctionComponent = () => {
 
     const params = useParams<NotificationListPageParams>();
+    const history = useHistory();
+    const insights = getInsights();
+    const onFunction = insights?.chrome?.on;
 
     const getBundles = useGetBundles();
     const getApplications = useGetApplications();
+
+    React.useEffect(() => {
+        if (onFunction) {
+            onFunction('APP_NAVIGATION', (event: any) => {
+                history.push(linkTo.notifications(event.navId));
+            });
+        }
+    }, [ history, onFunction ]);
 
     const bundle: Facet | BundleStatus = useMemo(() => {
         if (getBundles.payload?.status === 200) {
