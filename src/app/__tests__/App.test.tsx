@@ -1,7 +1,6 @@
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { fetchRBAC, Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { act, render, screen } from '@testing-library/react';
-import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
 import messages from '../../../locales/data.json';
@@ -40,9 +39,6 @@ describe('src/app/App', () => {
             return 'foo';
         });
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
@@ -80,9 +76,6 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
@@ -107,9 +100,6 @@ describe('src/app/App', () => {
                 notifications: [ 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
@@ -146,9 +136,6 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
 
         const Wrapper = getConfiguredAppWrapper({
             route: {

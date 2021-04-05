@@ -6,9 +6,9 @@ import { mockInsights } from 'insights-common-typescript-dev';
 import * as React from 'react';
 
 import App from '../src/app/App';
+import { Schemas } from '../src/generated/OpenapiIntegrations';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from './AppWrapper';
 import { waitForAsyncEvents } from './TestUtils';
-import { Schemas } from '../src/generated/OpenapiIntegrations';
 import Endpoint = Schemas.Endpoint;
 
 describe('Smoketest', () => {
@@ -49,7 +49,7 @@ describe('Smoketest', () => {
             dataRbac
         );
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
             body: [
                 {
                     label: 'fobar',
@@ -181,14 +181,14 @@ describe('Smoketest', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
             body: [
                 {
-                    displayName: 'Insights',
-                    name: 'insights',
+                    displayName: 'Red Hat Enterprise Linux',
+                    name: 'rhel',
                     id: 'foobar'
                 }
             ] as Array<Schemas.Facet>
         });
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
             body: [
                 {
                     displayName: 'Policies',
@@ -202,7 +202,7 @@ describe('Smoketest', () => {
             wrapper: getConfiguredAppWrapper({
                 route: {
                     location: {
-                        pathname: '/notifications/insights',
+                        pathname: '/notifications/rhel',
                         search: '',
                         hash: '',
                         state: {}

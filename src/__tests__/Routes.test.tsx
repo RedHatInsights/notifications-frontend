@@ -80,7 +80,7 @@ describe('src/Routes', () => {
             expect(screen.getByText(/notifications/i)).toBeVisible();
         });
 
-        it('Should redirect on /notifications', async () => {
+        it('Should redirect on /notifications/rhel', async () => {
             jest.useFakeTimers();
             const getLocation = jest.fn();
             const Wrapper = getConfiguredAppWrapper({
@@ -93,7 +93,7 @@ describe('src/Routes', () => {
                 wrapper: Wrapper
             });
 
-            expect(getLocation().pathname).toBe('/notifications/insights');
+            expect(getLocation().pathname).toBe('/notifications/rhel');
             expect(screen.getByText(/notifications/i)).toBeVisible();
         });
     });
