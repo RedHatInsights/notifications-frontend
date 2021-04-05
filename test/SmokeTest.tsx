@@ -6,9 +6,9 @@ import { mockInsights } from 'insights-common-typescript-dev';
 import * as React from 'react';
 
 import App from '../src/app/App';
+import { Schemas } from '../src/generated/OpenapiIntegrations';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from './AppWrapper';
 import { waitForAsyncEvents } from './TestUtils';
-import { Schemas } from '../src/generated/OpenapiIntegrations';
 import Endpoint = Schemas.Endpoint;
 
 describe('Smoketest', () => {
@@ -202,7 +202,7 @@ describe('Smoketest', () => {
             wrapper: getConfiguredAppWrapper({
                 route: {
                     location: {
-                        pathname: '/notifications/insights',
+                        pathname: '/notifications/rhel',
                         search: '',
                         hash: '',
                         state: {}
