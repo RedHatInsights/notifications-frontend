@@ -49,7 +49,7 @@ describe('Smoketest', () => {
             dataRbac
         );
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
             body: [
                 {
                     label: 'fobar',
@@ -188,7 +188,7 @@ describe('Smoketest', () => {
             ] as Array<Schemas.Facet>
         });
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
             body: [
                 {
                     displayName: 'Policies',

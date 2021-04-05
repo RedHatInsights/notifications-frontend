@@ -37,7 +37,7 @@ const mockFacets = () => {
         ] as Array<Schemas.Facet>
     });
 
-    fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+    fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
         body: [
             {
                 displayName: 'Policies',
@@ -81,7 +81,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.Facet>
         });
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
             body: [
                 {
                     displayName: 'Policies',
@@ -165,7 +165,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.Facet>
         });
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
             body: null
         });
 
@@ -197,7 +197,7 @@ describe('src/pages/Notifications/List/Page', () => {
             ] as Array<Schemas.Facet>
         });
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', new Promise(_resolve => resolve = _resolve));
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', new Promise(_resolve => resolve = _resolve));
 
         render(
             <VerboseErrorBoundary>

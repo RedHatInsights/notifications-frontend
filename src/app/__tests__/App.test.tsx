@@ -40,9 +40,6 @@ describe('src/app/App', () => {
             return 'foo';
         });
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
@@ -80,9 +77,6 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
@@ -107,9 +101,6 @@ describe('src/app/App', () => {
                 notifications: [ 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
@@ -146,9 +137,6 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=insights', {
-            body: []
-        });
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
