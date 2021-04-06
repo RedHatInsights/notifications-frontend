@@ -195,7 +195,7 @@ export namespace Schemas {
       | null;
     endpointId?: UUID | undefined | null;
     eventId?: string | undefined | null;
-    id?: number | undefined | null;
+    id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
   };
@@ -461,7 +461,7 @@ export namespace Schemas {
           details: z.record(z.unknown()).optional().nullable(),
           endpointId: zodSchemaUUID().optional().nullable(),
           eventId: z.string().optional().nullable(),
-          id: z.number().int().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
       })
