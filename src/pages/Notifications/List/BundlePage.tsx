@@ -1,11 +1,12 @@
-import { Button, ButtonVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, ExpandableSection } from '@patternfly/react-core';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import {
+    Environment,
     ExporterType,
     getInsights,
     InsightsEnvDetector,
-    RenderIfFalse
+    RenderIfFalse, RenderIfTrue
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React, useContext } from 'react';
 import { style } from 'typestyle';
@@ -30,6 +31,8 @@ import {
 import { useNotificationFilter } from './useNotificationFilter';
 import { useNotificationPage } from './useNotificationPage';
 import { useNotificationRows } from './useNotificationRows';
+import { BehaviorGroup } from '../../../components/Notifications/BehaviorGroup/BehaviorGroup';
+import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
@@ -45,10 +48,6 @@ const tableTitleClassName = style({
     paddingTop: global_spacer_md.var,
     paddingBottom: global_spacer_md.var,
     fontSize: '17px'
-});
-
-const noPaddingTopClassName = style({
-    paddingTop: 0
 });
 
 const emptyArray = [];
@@ -120,7 +119,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     </RenderIfFalse>
                 </InsightsEnvDetector>
             </PageHeader>
-            <Main className={ noPaddingTopClassName }>
+            <Main>
+                <BehaviorGroupsSection/>
                 <Section>
                     <DefaultBehavior
                         loading={ defaultNotificationBehavior.loading }
