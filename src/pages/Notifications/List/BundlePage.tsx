@@ -18,7 +18,7 @@ import { GroupByEnum } from '../../../components/Notifications/Types';
 import { Messages } from '../../../properties/Messages';
 import { useDefaultNotificationBehavior } from '../../../services/useDefaultNotificationBehavior';
 import { useListNotifications } from '../../../services/useListNotifications';
-import { stagingBetaAndProdBetaEnvironment } from '../../../types/Environments';
+import { stagingAndProd } from '../../../types/Environments';
 import { Facet, Notification } from '../../../types/Notification';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
 import {
@@ -114,7 +114,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
         <>
             <PageHeader>
                 <PageHeaderTitle { ...pageHeaderTitleProps } />
-                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingBetaAndProdBetaEnvironment }>
+                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProd }>
                     <RenderIfFalse>
                         <Button variant={ ButtonVariant.link }>{ Messages.pages.notifications.list.viewHistory }</Button>
                     </RenderIfFalse>

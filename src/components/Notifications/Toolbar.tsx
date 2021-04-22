@@ -11,7 +11,7 @@ import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
-import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import { stagingAndProd } from '../../types/Environments';
 import { Facet } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import {
@@ -78,21 +78,21 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
 
     const filterConfig = useInsightsEnvironmentFlag(
         getInsights(),
-        stagingBetaAndProdBetaEnvironment,
+        stagingAndProd,
         undefined,
         useCallback(() => primaryToolbarFilterConfig.filterConfig, [ primaryToolbarFilterConfig ])
     );
 
     const activeFiltersConfig = useInsightsEnvironmentFlag(
         getInsights(),
-        stagingBetaAndProdBetaEnvironment,
+        stagingAndProd,
         undefined,
         useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
     );
 
     const exportConfig = useInsightsEnvironmentFlag(
         getInsights(),
-        stagingBetaAndProdBetaEnvironment,
+        stagingAndProd,
         undefined,
         useCallback(() => exportConfigInternal, [ exportConfigInternal ])
     );
