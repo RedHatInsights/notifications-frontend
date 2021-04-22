@@ -2,7 +2,7 @@ import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patter
 import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { isStagingBetaOrProdBeta } from '../../../types/Environments';
+import { isStagingOrProd } from '../../../types/Environments';
 import { UserIntegrationType } from '../../../types/Integration';
 import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -56,7 +56,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
         });
     }, [ props.action ]);
 
-    const hideNonWebhooks = isStagingBetaOrProdBeta(getInsights());
+    const hideNonWebhooks = isStagingOrProd(getInsights());
 
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >

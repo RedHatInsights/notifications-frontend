@@ -14,7 +14,7 @@ import { style } from 'typestyle';
 
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { Messages } from '../../properties/Messages';
-import { stagingBetaAndProdBetaEnvironment } from '../../types/Environments';
+import { stagingAndProd } from '../../types/Environments';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
@@ -95,14 +95,14 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
 
     const filterConfig = useInsightsEnvironmentFlag(
         getInsights(),
-        stagingBetaAndProdBetaEnvironment,
+        stagingAndProd,
         undefined,
         useCallback(() => primaryToolbarFilterConfig.filterConfig, [ primaryToolbarFilterConfig ])
     );
 
     const activeFiltersConfig = useInsightsEnvironmentFlag(
         getInsights(),
-        stagingBetaAndProdBetaEnvironment,
+        stagingAndProd,
         undefined,
         useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
     );
