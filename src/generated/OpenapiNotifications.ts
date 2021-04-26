@@ -22,6 +22,17 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const AtomicInteger = zodSchemaAtomicInteger();
+  export type AtomicInteger = {
+    acquire?: number | undefined | null;
+    andDecrement?: number | undefined | null;
+    andIncrement?: number | undefined | null;
+    opaque?: number | undefined | null;
+    plain?: number | undefined | null;
+    release?: number | undefined | null;
+    value?: number | undefined | null;
+  };
+
   export const Attributes = zodSchemaAttributes();
   export type Attributes = unknown;
 
@@ -29,6 +40,32 @@ export namespace Schemas {
   export type BasicAuthentication = {
     password?: string | undefined | null;
     username?: string | undefined | null;
+  };
+
+  export const BehaviorGroup = zodSchemaBehaviorGroup();
+  export type BehaviorGroup = {
+    actions?: Array<BehaviorGroupAction> | undefined | null;
+    bundle_id: UUID;
+    created?: string | undefined | null;
+    default_behavior?: boolean | undefined | null;
+    displayName: string;
+    id?: UUID | undefined | null;
+    name: string;
+    updated?: string | undefined | null;
+  };
+
+  export const BehaviorGroupAction = zodSchemaBehaviorGroupAction();
+  export type BehaviorGroupAction = {
+    behaviorGroup?: BehaviorGroup | undefined | null;
+    created?: string | undefined | null;
+    endpoint?: Endpoint | undefined | null;
+    id?: BehaviorGroupActionId | undefined | null;
+  };
+
+  export const BehaviorGroupActionId = zodSchemaBehaviorGroupActionId();
+  export type BehaviorGroupActionId = {
+    behaviorGroupId: UUID;
+    endpointId: UUID;
   };
 
   export const Bundle = zodSchemaBundle();
@@ -160,6 +197,12 @@ export namespace Schemas {
     count: number;
   };
 
+  export const MigrateResponse = zodSchemaMigrateResponse();
+  export type MigrateResponse = {
+    accountsMigrated?: AtomicInteger | undefined | null;
+    eventTypesMigrated?: AtomicInteger | undefined | null;
+  };
+
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
     [x: string]: Array<unknown>;
@@ -260,6 +303,20 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaAtomicInteger() {
+      return z
+      .object({
+          acquire: z.number().int().optional().nullable(),
+          andDecrement: z.number().int().optional().nullable(),
+          andIncrement: z.number().int().optional().nullable(),
+          opaque: z.number().int().optional().nullable(),
+          plain: z.number().int().optional().nullable(),
+          release: z.number().int().optional().nullable(),
+          value: z.number().int().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaAttributes() {
       return z.unknown();
   }
@@ -269,6 +326,44 @@ export namespace Schemas {
       .object({
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroup() {
+      return z
+      .object({
+          actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
+          bundle_id: zodSchemaUUID(),
+          created: z.string().optional().nullable(),
+          default_behavior: z.boolean().optional().nullable(),
+          displayName: z.string(),
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroupAction() {
+      return z
+      .object({
+          behaviorGroup: z
+          .lazy(() => zodSchemaBehaviorGroup())
+          .optional()
+          .nullable(),
+          created: z.string().optional().nullable(),
+          endpoint: zodSchemaEndpoint().optional().nullable(),
+          id: zodSchemaBehaviorGroupActionId().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroupActionId() {
+      return z
+      .object({
+          behaviorGroupId: zodSchemaUUID(),
+          endpointId: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -429,6 +524,15 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaMigrateResponse() {
+      return z
+      .object({
+          accountsMigrated: zodSchemaAtomicInteger().optional().nullable(),
+          eventTypesMigrated: zodSchemaAtomicInteger().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaMultivaluedMapStringObject() {
       return z.record(z.array(z.unknown()));
   }
@@ -527,6 +631,203 @@ export namespace Schemas {
 }
 
 export namespace Operations {
+  // POST /notifications/behaviorGroups
+  // Create a behavior group.
+  export namespace NotificationServiceCreateBehaviorGroup {
+    export interface Params {
+      body: Schemas.BehaviorGroup;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'BehaviorGroup', 200, Schemas.BehaviorGroup>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/behaviorGroups';
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.BehaviorGroup, 'BehaviorGroup', 200)
+            ]
+        })
+        .build();
+    };
+  }
+  // PUT /notifications/behaviorGroups/{behaviorGroupId}/actions
+  // Add a list of actions to a behavior group.
+  export namespace NotificationServiceAddBehaviorGroupActions {
+    const Body = z.array(z.string());
+    type Body = Array<string>;
+    const Response200 = z.string();
+    type Response200 = string;
+    export interface Params {
+      behaviorGroupId: Schemas.UUID;
+      body: Body;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{behaviorGroupId}/actions'.replace(
+            '{behaviorGroupId}',
+            params.behaviorGroupId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('PUT', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // DELETE /notifications/behaviorGroups/{behaviorGroupId}/actions
+  // Delete a list of actions from a behavior group.
+  export namespace NotificationServiceDeleteBehaviorGroupActions {
+    const Body = z.array(z.string());
+    type Body = Array<string>;
+    const Response200 = z.boolean();
+    type Response200 = boolean;
+    export interface Params {
+      behaviorGroupId: Schemas.UUID;
+      body: Body;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{behaviorGroupId}/actions'.replace(
+            '{behaviorGroupId}',
+            params.behaviorGroupId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('DELETE', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // PUT /notifications/behaviorGroups/{id}
+  // Update a behavior group.
+  export namespace NotificationServiceUpdateBehaviorGroup {
+    const Response200 = z.boolean();
+    type Response200 = boolean;
+    export interface Params {
+      id: Schemas.UUID;
+      body: Schemas.BehaviorGroup;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
+            '{id}',
+            params.id.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('PUT', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // DELETE /notifications/behaviorGroups/{id}
+  // Delete a behavior group.
+  export namespace NotificationServiceDeleteBehaviorGroup {
+    const Response200 = z.boolean();
+    type Response200 = boolean;
+    export interface Params {
+      id: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
+            '{id}',
+            params.id.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('DELETE', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /notifications/bg/eventTypes/affectedByRemovalOfEndpoint/{endpointId}
+  // Retrieve the event types affected by the removal of an integration.
+  export namespace NotificationServiceGetEventTypesAffectedByRemovalOfEndpoint {
+    const Response200 = z.array(Schemas.EventType);
+    type Response200 = Array<Schemas.EventType>;
+    export interface Params {
+      endpointId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/bg/eventTypes/affectedByRemovalOfEndpoint/{endpointId}'.replace(
+            '{endpointId}',
+            params.endpointId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /notifications/bundles/{bundleId}/behaviorGroups
+  // Retrieve the behavior groups of a bundle.
+  export namespace NotificationServiceFindBehaviorGroupsByBundleId {
+    const Response200 = z.array(Schemas.BehaviorGroup);
+    type Response200 = Array<Schemas.BehaviorGroup>;
+    export interface Params {
+      bundleId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/bundles/{bundleId}/behaviorGroups'.replace(
+            '{bundleId}',
+            params.bundleId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
   // GET /notifications/defaults
   // Retrieve all integrations of the configured default actions.
   export namespace NotificationServiceGetEndpointsForDefaults {
@@ -602,6 +903,7 @@ export namespace Operations {
     };
   }
   // GET /notifications/eventTypes
+  // Retrieve all event types. The returned list can be filtered by bundle or application.
   export namespace NotificationServiceGetEventTypes {
     const ApplicationIds = z.array(z.string());
     type ApplicationIds = Array<string>;
@@ -655,6 +957,33 @@ export namespace Operations {
             query.sort_by = params.sortBy;
         }
 
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /notifications/eventTypes/affectedByRemovalOfBehaviorGroup/{behaviorGroupId}
+  // Retrieve the event types affected by the removal of a behavior group.
+  export namespace NotificationServiceGetEventTypesAffectedByRemovalOfBehaviorGroup {
+    const Response200 = z.array(Schemas.EventType);
+    type Response200 = Array<Schemas.EventType>;
+    export interface Params {
+      behaviorGroupId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfBehaviorGroup/{behaviorGroupId}'.replace(
+            '{behaviorGroupId}',
+            params.behaviorGroupId.toString()
+        );
+        const query = {} as Record<string, any>;
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
@@ -736,6 +1065,142 @@ export namespace Operations {
         }
 
         return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /notifications/eventTypes/{eventTypeId}/behaviorGroups
+  // Retrieve the behavior groups linked to an event type.
+  export namespace NotificationServiceGetLinkedBehaviorGroups {
+    const Limit = z.number().int();
+    type Limit = number;
+    const Offset = z.number().int();
+    type Offset = number;
+    const PageNumber = z.number().int();
+    type PageNumber = number;
+    const SortBy = z.string();
+    type SortBy = string;
+    const Response200 = z.array(Schemas.BehaviorGroup);
+    type Response200 = Array<Schemas.BehaviorGroup>;
+    export interface Params {
+      eventTypeId: Schemas.UUID;
+      limit?: Limit;
+      offset?: Offset;
+      pageNumber?: PageNumber;
+      sortBy?: SortBy;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups'.replace(
+            '{eventTypeId}',
+            params.eventTypeId.toString()
+        );
+        const query = {} as Record<string, any>;
+        if (params.limit !== undefined) {
+            query.limit = params.limit;
+        }
+
+        if (params.offset !== undefined) {
+            query.offset = params.offset;
+        }
+
+        if (params.pageNumber !== undefined) {
+            query.pageNumber = params.pageNumber;
+        }
+
+        if (params.sortBy !== undefined) {
+            query.sort_by = params.sortBy;
+        }
+
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // PUT /notifications/eventTypes/{eventTypeId}/behaviorGroups/{behaviorGroupId}
+  // Link a behavior group to an event type.
+  export namespace NotificationServiceLinkBehaviorGroupToEventType {
+    const Response200 = z.string();
+    type Response200 = string;
+    export interface Params {
+      behaviorGroupId: Schemas.UUID;
+      eventTypeId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups/{behaviorGroupId}'
+        .replace('{behaviorGroupId}', params.behaviorGroupId.toString())
+        .replace('{eventTypeId}', params.eventTypeId.toString());
+        const query = {} as Record<string, any>;
+        return actionBuilder('PUT', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // DELETE /notifications/eventTypes/{eventTypeId}/behaviorGroups/{behaviorGroupId}
+  // Unlink a behavior group from an event type.
+  export namespace NotificationServiceUnlinkBehaviorGroupFromEventType {
+    const Response204 = z.string();
+    type Response204 = string;
+    export interface Params {
+      behaviorGroupId: Schemas.UUID;
+      eventTypeId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 204, Response204>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups/{behaviorGroupId}'
+        .replace('{behaviorGroupId}', params.behaviorGroupId.toString())
+        .replace('{eventTypeId}', params.eventTypeId.toString());
+        const query = {} as Record<string, any>;
+        return actionBuilder('DELETE', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
+        })
+        .build();
+    };
+  }
+  // DELETE /notifications/eventTypes/{eventTypeId}/mute
+  // Mute an event type, removing all its link with behavior groups.
+  export namespace NotificationServiceMuteEventType {
+    const Response200 = z.boolean();
+    type Response200 = boolean;
+    export interface Params {
+      eventTypeId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/mute'.replace(
+            '{eventTypeId}',
+            params.eventTypeId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
             rules: [ new ValidateRule(Response200, 'unknown', 200) ]
