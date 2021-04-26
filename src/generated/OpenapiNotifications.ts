@@ -657,8 +657,8 @@ export namespace Operations {
     };
   }
   // PUT /notifications/behaviorGroups/{behaviorGroupId}/actions
-  // Add a list of actions to a behavior group.
-  export namespace NotificationServiceAddBehaviorGroupActions {
+  // Update the list of actions of a behavior group.
+  export namespace NotificationServiceUpdateBehaviorGroupActions {
     const Body = z.array(z.string());
     type Body = Array<string>;
     const Response200 = z.string();
@@ -679,37 +679,6 @@ export namespace Operations {
         );
         const query = {} as Record<string, any>;
         return actionBuilder('PUT', path)
-        .queryParams(query)
-        .data(params.body)
-        .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
-        })
-        .build();
-    };
-  }
-  // DELETE /notifications/behaviorGroups/{behaviorGroupId}/actions
-  // Delete a list of actions from a behavior group.
-  export namespace NotificationServiceDeleteBehaviorGroupActions {
-    const Body = z.array(z.string());
-    type Body = Array<string>;
-    const Response200 = z.boolean();
-    type Response200 = boolean;
-    export interface Params {
-      behaviorGroupId: Schemas.UUID;
-      body: Body;
-    }
-
-    export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{behaviorGroupId}/actions'.replace(
-            '{behaviorGroupId}',
-            params.behaviorGroupId.toString()
-        );
-        const query = {} as Record<string, any>;
-        return actionBuilder('DELETE', path)
         .queryParams(query)
         .data(params.body)
         .config({
