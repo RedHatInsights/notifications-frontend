@@ -22,6 +22,17 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const AtomicInteger = zodSchemaAtomicInteger();
+  export type AtomicInteger = {
+    acquire?: number | undefined | null;
+    andDecrement?: number | undefined | null;
+    andIncrement?: number | undefined | null;
+    opaque?: number | undefined | null;
+    plain?: number | undefined | null;
+    release?: number | undefined | null;
+    value?: number | undefined | null;
+  };
+
   export const Attributes = zodSchemaAttributes();
   export type Attributes = unknown;
 
@@ -29,6 +40,32 @@ export namespace Schemas {
   export type BasicAuthentication = {
     password?: string | undefined | null;
     username?: string | undefined | null;
+  };
+
+  export const BehaviorGroup = zodSchemaBehaviorGroup();
+  export type BehaviorGroup = {
+    actions?: Array<BehaviorGroupAction> | undefined | null;
+    bundle_id: UUID;
+    created?: string | undefined | null;
+    default_behavior?: boolean | undefined | null;
+    displayName: string;
+    id?: UUID | undefined | null;
+    name: string;
+    updated?: string | undefined | null;
+  };
+
+  export const BehaviorGroupAction = zodSchemaBehaviorGroupAction();
+  export type BehaviorGroupAction = {
+    behaviorGroup?: BehaviorGroup | undefined | null;
+    created?: string | undefined | null;
+    endpoint?: Endpoint | undefined | null;
+    id?: BehaviorGroupActionId | undefined | null;
+  };
+
+  export const BehaviorGroupActionId = zodSchemaBehaviorGroupActionId();
+  export type BehaviorGroupActionId = {
+    behaviorGroupId: UUID;
+    endpointId: UUID;
   };
 
   export const Bundle = zodSchemaBundle();
@@ -160,6 +197,12 @@ export namespace Schemas {
     count: number;
   };
 
+  export const MigrateResponse = zodSchemaMigrateResponse();
+  export type MigrateResponse = {
+    accountsMigrated?: AtomicInteger | undefined | null;
+    eventTypesMigrated?: AtomicInteger | undefined | null;
+  };
+
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
     [x: string]: Array<unknown>;
@@ -260,6 +303,20 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaAtomicInteger() {
+      return z
+      .object({
+          acquire: z.number().int().optional().nullable(),
+          andDecrement: z.number().int().optional().nullable(),
+          andIncrement: z.number().int().optional().nullable(),
+          opaque: z.number().int().optional().nullable(),
+          plain: z.number().int().optional().nullable(),
+          release: z.number().int().optional().nullable(),
+          value: z.number().int().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaAttributes() {
       return z.unknown();
   }
@@ -269,6 +326,44 @@ export namespace Schemas {
       .object({
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroup() {
+      return z
+      .object({
+          actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
+          bundle_id: zodSchemaUUID(),
+          created: z.string().optional().nullable(),
+          default_behavior: z.boolean().optional().nullable(),
+          displayName: z.string(),
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroupAction() {
+      return z
+      .object({
+          behaviorGroup: z
+          .lazy(() => zodSchemaBehaviorGroup())
+          .optional()
+          .nullable(),
+          created: z.string().optional().nullable(),
+          endpoint: zodSchemaEndpoint().optional().nullable(),
+          id: zodSchemaBehaviorGroupActionId().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroupActionId() {
+      return z
+      .object({
+          behaviorGroupId: zodSchemaUUID(),
+          endpointId: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -425,6 +520,15 @@ export namespace Schemas {
       return z
       .object({
           count: z.number().int()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaMigrateResponse() {
+      return z
+      .object({
+          accountsMigrated: zodSchemaAtomicInteger().optional().nullable(),
+          eventTypesMigrated: zodSchemaAtomicInteger().optional().nullable()
       })
       .nonstrict();
   }
@@ -601,6 +705,28 @@ export namespace Operations {
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
         const path = '/api/integrations/v1.0/endpoints';
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Schemas.Endpoint, 'Endpoint', 200) ]
+        })
+        .build();
+    };
+  }
+  // POST /endpoints/bg
+  export namespace EndpointServiceCreateEndpointBg {
+    export interface Params {
+      body: Schemas.Endpoint;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/integrations/v1.0/endpoints/bg';
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
