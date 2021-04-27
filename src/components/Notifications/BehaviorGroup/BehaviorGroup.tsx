@@ -1,12 +1,24 @@
+import {
+    Button,
+    ButtonVariant,
+    Card,
+    CardActions,
+    CardBody,
+    CardHeader,
+    CardHeaderMain,
+    Grid, GridItem
+} from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-
-import { Action } from '../../../types/Notification';
-import { Button, ButtonVariant, Card, CardActions, CardBody, CardHeader, CardHeaderMain } from '@patternfly/react-core';
 import { style } from 'typestyle';
 
+import { Action } from '../../../types/Notification';
+import { ActionComponent } from '../ActionComponent';
+import { Recipient } from '../Recipient';
+
 const cardClassName = style({
-    width: 300
+    width: 450,
+    height: '100%'
 });
 
 export interface BehaviorGroupProps extends OuiaComponentProps {
@@ -27,7 +39,18 @@ export const BehaviorGroup: React.FunctionComponent<BehaviorGroupProps> = props 
                 </CardActions>
             </CardHeader>
             <CardBody>
-                Actions be here
+                <Grid hasGutter>
+                    { props.actions.map(action => (
+                        <>
+                            <GridItem span={ 6 }>
+                                <ActionComponent isDefault={ false } action={ action } />
+                            </GridItem>
+                            <GridItem span={ 6 }>
+                                <Recipient action={ action } />
+                            </GridItem>
+                        </>
+                    )) }
+                </Grid>
             </CardBody>
         </Card>
     );
