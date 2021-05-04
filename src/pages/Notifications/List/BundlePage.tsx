@@ -1,8 +1,7 @@
-import { Button, ButtonVariant, ExpandableSection } from '@patternfly/react-core';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import {
-    Environment,
     ExporterType,
     getInsights,
     InsightsEnvDetector,
@@ -22,6 +21,7 @@ import { useListNotifications } from '../../../services/useListNotifications';
 import { stagingAndProd } from '../../../types/Environments';
 import { Facet, Notification } from '../../../types/Notification';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
+import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import {
     makeEditDefaultAction,
     makeEditNotificationAction,
@@ -31,8 +31,6 @@ import {
 import { useNotificationFilter } from './useNotificationFilter';
 import { useNotificationPage } from './useNotificationPage';
 import { useNotificationRows } from './useNotificationRows';
-import { BehaviorGroup } from '../../../components/Notifications/BehaviorGroup/BehaviorGroup';
-import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
@@ -120,7 +118,11 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 </InsightsEnvDetector>
             </PageHeader>
             <Main>
-                <BehaviorGroupsSection/>
+                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ [ 'ci', 'ci-beta', 'qa', 'qa-beta' ] }>
+                    <RenderIfTrue>
+                        <BehaviorGroupsSection bundleId={ props.bundle.id } />
+                    </RenderIfTrue>
+                </InsightsEnvDetector>
                 <Section>
                     <DefaultBehavior
                         loading={ defaultNotificationBehavior.loading }

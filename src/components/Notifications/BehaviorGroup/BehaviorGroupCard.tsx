@@ -12,7 +12,7 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { Action } from '../../../types/Notification';
+import { BehaviorGroup } from '../../../types/Notification';
 import { ActionComponent } from '../ActionComponent';
 import { Recipient } from '../Recipient';
 
@@ -22,25 +22,34 @@ const cardClassName = style({
 });
 
 export interface BehaviorGroupProps extends OuiaComponentProps {
-    behaviorGroupId?: string;
-    name: string;
-    actions: Array<Action>;
+    behaviorGroup: BehaviorGroup;
+    onEdit: (behaviorGroup: BehaviorGroup) => void;
 }
 
-export const BehaviorGroup: React.FunctionComponent<BehaviorGroupProps> = props => {
+export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = props => {
+
+    const onClickEdit = React.useCallback(() => {
+        const onEdit = props.onEdit;
+        onEdit(props.behaviorGroup);
+    }, [ props.behaviorGroup, props.onEdit ]);
+
     return (
         <Card isFlat className={ cardClassName }>
             <CardHeader>
-                <CardHeaderMain><b>{ props.name }</b></CardHeaderMain>
+                <CardHeaderMain><b>{ props.behaviorGroup.displayName }</b></CardHeaderMain>
                 <CardActions>
-                    { props.behaviorGroupId && (
-                        <Button variant={ ButtonVariant.link }>Edit</Button>
-                    ) }
+                    <Button variant={ ButtonVariant.link } onClick={ onClickEdit }>Edit</Button>
                 </CardActions>
             </CardHeader>
             <CardBody>
                 <Grid hasGutter>
-                    { props.actions.map(action => (
+                    <GridItem span={ 6 }>
+                        <b>Action</b>
+                    </GridItem>
+                    <GridItem span={ 6 }>
+                        <b>Recipient</b>
+                    </GridItem>
+                    { props.behaviorGroup.actions.map(action => (
                         <>
                             <GridItem span={ 6 }>
                                 <ActionComponent isDefault={ false } action={ action } />

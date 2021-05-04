@@ -22,17 +22,6 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
-  export const AtomicInteger = zodSchemaAtomicInteger();
-  export type AtomicInteger = {
-    acquire?: number | undefined | null;
-    andDecrement?: number | undefined | null;
-    andIncrement?: number | undefined | null;
-    opaque?: number | undefined | null;
-    plain?: number | undefined | null;
-    release?: number | undefined | null;
-    value?: number | undefined | null;
-  };
-
   export const Attributes = zodSchemaAttributes();
   export type Attributes = unknown;
 
@@ -48,7 +37,7 @@ export namespace Schemas {
     bundle_id: UUID;
     created?: string | undefined | null;
     default_behavior?: boolean | undefined | null;
-    displayName: string;
+    display_name: string;
     id?: UUID | undefined | null;
     name: string;
     updated?: string | undefined | null;
@@ -197,12 +186,6 @@ export namespace Schemas {
     count: number;
   };
 
-  export const MigrateResponse = zodSchemaMigrateResponse();
-  export type MigrateResponse = {
-    accountsMigrated?: AtomicInteger | undefined | null;
-    eventTypesMigrated?: AtomicInteger | undefined | null;
-  };
-
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
     [x: string]: Array<unknown>;
@@ -303,20 +286,6 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaAtomicInteger() {
-      return z
-      .object({
-          acquire: z.number().int().optional().nullable(),
-          andDecrement: z.number().int().optional().nullable(),
-          andIncrement: z.number().int().optional().nullable(),
-          opaque: z.number().int().optional().nullable(),
-          plain: z.number().int().optional().nullable(),
-          release: z.number().int().optional().nullable(),
-          value: z.number().int().optional().nullable()
-      })
-      .nonstrict();
-  }
-
   function zodSchemaAttributes() {
       return z.unknown();
   }
@@ -337,7 +306,7 @@ export namespace Schemas {
           bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
           default_behavior: z.boolean().optional().nullable(),
-          displayName: z.string(),
+          display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           updated: z.string().optional().nullable()
@@ -520,15 +489,6 @@ export namespace Schemas {
       return z
       .object({
           count: z.number().int()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaMigrateResponse() {
-      return z
-      .object({
-          accountsMigrated: zodSchemaAtomicInteger().optional().nullable(),
-          eventTypesMigrated: zodSchemaAtomicInteger().optional().nullable()
       })
       .nonstrict();
   }

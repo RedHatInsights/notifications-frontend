@@ -12,6 +12,8 @@ import { useContext } from 'react';
 import { ClientContext } from 'react-fetching-library';
 
 import { NotificationSaveModal } from '../../../components/Notifications/SaveModal';
+import { useGetIntegrations } from '../../../components/Notifications/useGetIntegrations';
+import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
 import {
     getDefaultActionIdAction,
     getDefaultActionIdDecoder
@@ -57,48 +59,14 @@ export type EditNotificationPageProps = {
     onClose: (saved: boolean) => void;
 } & (EditNotificationPagePropsNotification | EditNotificationPagePropsDefault);
 
-const recipients = [
-    'Admin',
-    'Another one',
-    'Default user access',
-    'Security admin',
-    'Stakeholders'
-];
-
-const getRecipients = async (search: string) => {
-    if (search !== '') {
-        search = search.toLowerCase();
-        return recipients.filter(r => r.toLowerCase().includes(search));
-    }
-
-    return recipients;
-};
-
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
 export const EditNotificationPage: React.FunctionComponent<EditNotificationPageProps> = (props) => {
 
     const { query } = useContext(ClientContext);
 
-    const getIntegrations = React.useCallback(async (type: UserIntegrationType, _search: string) => {
-        return query(listIntegrationsActionCreator(
-            Page.of(
-                1,
-                20,
-                new Filter()
-                .and('type', Operator.EQUAL, type)
-            )
-        )).then(response => {
-            let integrations: Array<IntegrationRef> = [];
-            const payload = response.payload ? listIntegrationIntegrationDecoder(response.payload) : undefined;
-
-            if (payload?.type === 'IntegrationPage') {
-                integrations = payload.value.data;
-            }
-
-            return integrations;
-        });
-    }, [ query ]);
+    const getRecipients = useGetRecipients();
+    const getIntegrations = useGetIntegrations();
 
     const onSave = React.useCallback(async (data: Notification | DefaultNotificationBehavior) => {
         const idMapper = (a: Action) => {

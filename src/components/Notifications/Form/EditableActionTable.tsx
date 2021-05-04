@@ -1,16 +1,15 @@
 import { Button, ButtonVariant } from '@patternfly/react-core';
 import { TimesIcon } from '@patternfly/react-icons';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
-import { useField, useFormikContext } from 'formik';
 import * as React from 'react';
 
 import { UserIntegrationType } from '../../../types/Integration';
-import { Action, DefaultNotificationBehavior, IntegrationRef, NotificationType } from '../../../types/Notification';
+import { Action, IntegrationRef, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
-import { ActionOption } from './ActionOption';
+import { RecipientForm } from '../EditableActionRow/RecipientForm';
+import { useEditableActionRow } from '../EditableActionRow/useEditableActionRow';
 import { ActionTypeahead } from './ActionTypeahead';
 import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
-import { RecipientOption } from './RecipientOption';
 import { RecipientTypeahead } from './RecipientTypeahead';
 
 export interface EditableActionTableProps {
@@ -33,51 +32,12 @@ interface EditableActionElementProps extends OuiaComponentProps {
 
 const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (props) => {
 
-    const { setFieldValue } = useFormikContext<Notification | DefaultNotificationBehavior>();
-    const [
-        recipientFieldProps,
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        _,
-        recipientFieldHelpers
-    ] = useField<Array<string> | undefined>(`${props.path}.recipient`);
-
-    const actionSelected = React.useCallback((value: ActionOption) => {
-        setFieldValue(`${props.path}.type`, value.notificationType);
-        if (value.integrationType) {
-            setFieldValue(`${props.path}.integration`, {
-                type: value.integrationType
-            });
-            setFieldValue(`${props.path}.recipient`, []);
-            setFieldValue(`${props.path}.integrationId`, '');
-        } else {
-            setFieldValue(`${props.path}.recipient`, []);
-            setFieldValue(`${props.path}.integration`, undefined);
-            setFieldValue(`${props.path}.integrationId`, '');
-        }
-    }, [ setFieldValue, props.path ]);
-
-    const integrationSelected = React.useCallback((value: RecipientOption) => {
-        if (typeof value.recipientOrIntegration !== 'string') {
-            setFieldValue(`${props.path}.integration`, value.recipientOrIntegration);
-            setFieldValue(`${props.path}.integrationId`, value.recipientOrIntegration.id);
-        }
-    }, [ setFieldValue, props.path ]);
-
-    const recipientSelected = React.useCallback((value: RecipientOption) => {
-        if (recipientFieldProps.value) {
-            const selected = recipientFieldProps.value;
-            const index = selected.indexOf(value.toString());
-            if (index === -1) {
-                recipientFieldHelpers.setValue([ ...selected, value.toString() ]);
-            } else {
-                recipientFieldHelpers.setValue([ ...selected ].filter((_, i) => i !== index));
-            }
-        }
-    }, [ recipientFieldProps, recipientFieldHelpers ]);
-
-    const recipientOnClear = React.useCallback(() => {
-        recipientFieldHelpers.setValue([]);
-    }, [ recipientFieldHelpers ]);
+    const {
+        recipientSelected,
+        recipientOnClear,
+        integrationSelected,
+        actionSelected
+    } = useEditableActionRow(props.path);
 
     return (
         <tr>
@@ -90,25 +50,14 @@ const EditableActionRow: React.FunctionComponent<EditableActionElementProps> = (
                 />
             </td>
             <td>
-                { props.action.type === NotificationType.INTEGRATION ? (
-                    <IntegrationRecipientTypeahead
-                        onSelected={ integrationSelected }
-                        integrationType={ props.action.integration?.type ?? UserIntegrationType.WEBHOOK }
-                        selected={ props.action.integration }
-                        getIntegrations={ props.getIntegrations }
-                        isDisabled={ props.isDisabled }
-                        ouiaId={ `${props.ouiaId ? 'recipient-' + props.ouiaId : undefined}` }
-                    />
-                ) : (
-                    <RecipientTypeahead
-                        onSelected={ recipientSelected }
-                        selected={ props.action.recipient }
-                        getRecipients={ props.getRecipients }
-                        isDisabled={ props.isDisabled }
-                        onClear={ recipientOnClear }
-                        ouiaId={ `${props.ouiaId ? 'recipient-' + props.ouiaId : undefined}` }
-                    />
-                ) }
+                <RecipientForm
+                    action={ props.action }
+                    integrationSelected={ integrationSelected }
+                    recipientSelected={ recipientSelected }
+                    recipientOnClear={ recipientOnClear }
+                    getIntegrations={ props.getIntegrations }
+                    getRecipients={ props.getRecipients }
+                />
             </td>
             <td>
                 <Button
