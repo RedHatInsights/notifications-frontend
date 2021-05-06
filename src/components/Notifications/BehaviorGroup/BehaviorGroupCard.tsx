@@ -49,15 +49,15 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
                     <GridItem span={ 6 }>
                         <b>Recipient</b>
                     </GridItem>
-                    { props.behaviorGroup.actions.map(action => (
-                        <>
+                    { props.behaviorGroup.actions.map((action, index) => (
+                        <React.Fragment key={ `${index}-${action.integrationId}` }>
                             <GridItem span={ 6 }>
                                 <ActionComponent isDefault={ false } action={ action } />
                             </GridItem>
                             <GridItem span={ 6 }>
                                 <Recipient action={ action } />
                             </GridItem>
-                        </>
+                        </React.Fragment>
                     )) }
                 </Grid>
             </CardBody>

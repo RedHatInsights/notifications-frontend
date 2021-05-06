@@ -11,6 +11,6 @@ const className = style({
 
 export const WebhookIcon: React.FunctionComponent<SVGIconProps> = () => {
     return (
-        <img className={ className } src={ icon } />
+        <img alt="Webhook" className={ className } src={ icon } />
     );
 };
