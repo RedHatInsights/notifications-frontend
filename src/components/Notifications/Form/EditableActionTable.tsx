@@ -4,13 +4,11 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 
 import { UserIntegrationType } from '../../../types/Integration';
-import { Action, IntegrationRef, NotificationType } from '../../../types/Notification';
+import { Action, IntegrationRef } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { RecipientForm } from '../EditableActionRow/RecipientForm';
 import { useEditableActionRow } from '../EditableActionRow/useEditableActionRow';
 import { ActionTypeahead } from './ActionTypeahead';
-import { IntegrationRecipientTypeahead } from './IntegrationRecipientTypeahead';
-import { RecipientTypeahead } from './RecipientTypeahead';
 
 export interface EditableActionTableProps {
     actions: Array<Action>;

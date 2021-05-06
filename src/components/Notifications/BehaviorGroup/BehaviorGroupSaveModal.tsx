@@ -53,10 +53,16 @@ const InternalBehaviorGroupSaveModal: React.FunctionComponent<InternalProps> = p
 };
 
 export const BehaviorGroupSaveModal: React.FunctionComponent<BehaviorGroupSaveModalProps> = props => {
-    const onSubmit = React.useCallback(async (_data: Partial<BehaviorGroup>) => {
+    const onSubmit = React.useCallback(async (data: Partial<BehaviorGroup>) => {
         const onClose = props.onClose;
-        onClose(true);
-    }, [ props.onClose ]);
+        const onSave = props.onSave;
+
+        const saved = await onSave(data as BehaviorGroup);
+
+        if (saved) {
+            onClose(true);
+        }
+    }, [ props.onClose, props.onSave ]);
 
     return (
         <Formik<Partial<BehaviorGroup>>

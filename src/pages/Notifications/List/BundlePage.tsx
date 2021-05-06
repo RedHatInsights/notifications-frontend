@@ -5,7 +5,7 @@ import {
     ExporterType,
     getInsights,
     InsightsEnvDetector,
-    RenderIfFalse, RenderIfTrue
+    RenderIfFalse
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React, useContext } from 'react';
 import { style } from 'typestyle';
@@ -118,10 +118,10 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 </InsightsEnvDetector>
             </PageHeader>
             <Main>
-                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ [ 'ci', 'ci-beta', 'qa', 'qa-beta' ] }>
-                    <RenderIfTrue>
+                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProd }>
+                    <RenderIfFalse>
                         <BehaviorGroupsSection bundleId={ props.bundle.id } />
-                    </RenderIfTrue>
+                    </RenderIfFalse>
                 </InsightsEnvDetector>
                 <Section>
                     <DefaultBehavior

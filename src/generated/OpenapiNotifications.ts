@@ -39,7 +39,6 @@ export namespace Schemas {
     default_behavior?: boolean | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
-    name: string;
     updated?: string | undefined | null;
   };
 
@@ -308,7 +307,6 @@ export namespace Schemas {
           default_behavior: z.boolean().optional().nullable(),
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
-          name: z.string(),
           updated: z.string().optional().nullable()
       })
       .nonstrict();

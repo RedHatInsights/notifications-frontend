@@ -2,8 +2,6 @@ import {
     Button,
     ButtonVariant,
     ExpandableSection,
-    Flex,
-    FlexItem,
     Split,
     SplitItem,
     Stack,
@@ -14,7 +12,7 @@ import { global_spacer_lg } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { BehaviorGroupCard } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupCard';
+import { BehaviorGroupCardList } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupCardList';
 import {
     makeCreateAction,
     makeEditAction,
@@ -41,12 +39,19 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     const [ modalState, dispatch ] = useFormModalReducer<BehaviorGroup>();
 
     const createGroup = React.useCallback(() => {
-        dispatch(makeCreateAction());
-    }, [ dispatch ]);
+        dispatch(makeCreateAction<BehaviorGroup>({
+            bundleId: props.bundleId
+        }));
+    }, [ dispatch, props.bundleId ]);
 
     const onCloseModal = React.useCallback((saved: boolean) => {
+        const reload = behaviorGroups.query;
+        if (saved) {
+            reload();
+        }
+
         dispatch(makeNoneAction());
-    }, [ dispatch ]);
+    }, [ dispatch, behaviorGroups.query ]);
 
     const onEdit = React.useCallback((behaviorGroup: BehaviorGroup) => {
         dispatch(makeEditAction(behaviorGroup));
@@ -68,7 +73,6 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                 value=""
                                 type="text"
                                 iconVariant='search'
-                                onChange={ (_value) => {} }
                                 aria-label="Search by name"
                                 placeholder="Search by name"
                             />
@@ -82,20 +86,9 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                     <span>Loading...</span>
                 ) : (
                     <StackItem>
-                        <Flex alignItems={ {
-                            default: 'alignItemsStretch'
-                        } }>
-                            { behaviorGroups.payload?.status === 200 && (
-                                behaviorGroups.payload.value.map(behaviorGroup => (
-                                    <FlexItem key={ behaviorGroup.id }>
-                                        <BehaviorGroupCard
-                                            behaviorGroup={ behaviorGroup }
-                                            onEdit={ onEdit }
-                                        />
-                                    </FlexItem>
-                                ))
-                            ) }
-                        </Flex>
+                        { behaviorGroups.payload?.status === 200 && (
+                            <BehaviorGroupCardList onEdit={ onEdit } behaviorGroups={ behaviorGroups.payload.value } />
+                        )}
                     </StackItem>
                 ) }
             </Stack>

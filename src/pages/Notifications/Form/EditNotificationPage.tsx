@@ -1,9 +1,6 @@
 import {
     addDangerNotification,
-    addSuccessNotification,
-    Filter,
-    Operator,
-    Page
+    addSuccessNotification
 } from '@redhat-cloud-services/insights-common-typescript';
 import assertNever from 'assert-never';
 import pLimit from 'p-limit';
@@ -29,18 +26,13 @@ import {
     getNotificationByIdActionDecoder,
     hasDefaultNotificationDecoder
 } from '../../../services/useGetNotificationActions';
-import {
-    listIntegrationIntegrationDecoder,
-    listIntegrationsActionCreator
-} from '../../../services/useListIntegrations';
 import { actionRemoveActionFromDefault } from '../../../services/useRemoveActionFromDN';
 import { actionRemoveActionFromNotification } from '../../../services/useRemoveActionFromNotification';
 import { createIntegrationActionCreator } from '../../../services/useSaveIntegration';
-import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
+import { IntegrationType } from '../../../types/Integration';
 import {
     Action,
     DefaultNotificationBehavior,
-    IntegrationRef,
     Notification,
     NotificationType
 } from '../../../types/Notification';

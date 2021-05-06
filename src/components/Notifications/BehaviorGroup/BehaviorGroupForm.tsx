@@ -6,7 +6,7 @@ import {
     OuiaComponentProps,
     ouiaIdConcat
 } from '@redhat-cloud-services/insights-common-typescript';
-import { FieldArray, FieldArrayRenderProps, FormikProps, useFormikContext } from 'formik';
+import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -94,7 +94,6 @@ const ActionRow: React.FunctionComponent<ActionRowProps> = props => {
 
 const ActionsArray: React.FunctionComponent<ActionsArraysProps> = props => {
     const { values, isSubmitting } = props.form;
-    console.log('values', values);
     const actions = React.useMemo(() => values.actions ?? [] as Array<Action>, [ values ]);
 
     const addAction = React.useCallback(() => {
@@ -123,7 +122,7 @@ const ActionsArray: React.FunctionComponent<ActionsArraysProps> = props => {
                 <b>Recipient</b>
             </GridItem>
             { actions.map((action, index) => (
-                <ActionRow
+                <ActionRow key={ `${index}-${action.integrationId}` }
                     action={ action }
                     getIntegrations={ props.getIntegrations }
                     getRecipients={ props.getRecipients }
@@ -147,9 +146,6 @@ const ActionsArray: React.FunctionComponent<ActionsArraysProps> = props => {
 };
 
 export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupProps> = props => {
-
-    const { values, isSubmitting } = useFormikContext<FormType>();
-
     return (
         <div { ... getOuiaProps('Notifications/BehaviorGroupForm', props) }>
             <div className={ subtitleClassName }>Enter a name and add actions for your new group.</div>
