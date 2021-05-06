@@ -971,7 +971,12 @@ describe('src/pages/Notifications/List/Page', () => {
                 ] as Array<Schemas.EventType>
             });
             mockFacets();
-            mockBehaviorGroup();
+            if (appears) {
+                mockBehaviorGroup();
+            } else {
+                fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', () => Promise.reject('should not call this'));
+            }
+
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
                     ...routePropsPageForBundle('rhel'),
