@@ -25,7 +25,6 @@ const decoder = validationResponseTransformer(
 );
 
 const saveBehaviorGroupActionCreator =  (behaviorGroup: BehaviorGroup | NewBehaviorGroup) => {
-    //
     if (behaviorGroup.id === undefined) {
         return Operations.NotificationServiceCreateBehaviorGroup.actionCreator({
             body: toShallowBehaviorGroupRequest(behaviorGroup)
