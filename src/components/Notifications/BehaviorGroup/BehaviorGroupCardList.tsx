@@ -22,7 +22,7 @@ interface BehaviorGroupCardListProps {
 export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> = props => {
 
     const ref = React.useCallback(container => {
-        if (container) {
+        if (container?.firstChild?.firstChild) {
             const height = container.firstChild.firstChild.getBoundingClientRect().height;
             container.firstChild.style['max-height'] = `${height}px`;
         }

@@ -933,6 +933,59 @@ describe('src/pages/Notifications/List/Page', () => {
     });
 
     describe('Behavior groups', () => {
+
+        it('Loads correctly on empty', async () => {
+            mockEnvironment('ci');
+            fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+                body: [] as Array<Schemas.Endpoint>
+            });
+            fetchMock.get(
+                '/api/notifications/v1.0/notifications/eventTypes/15454656416',
+                {
+                    body: []
+                }
+            );
+            fetchMock.get(defaultGetEventTypesUrl, {
+                body: [
+                    {
+                        application: {
+                            display_name: 'the app',
+                            created: Date.now().toString(),
+                            id: 'app',
+                            bundle_id: 'my-bundle-id',
+                            name: 'app',
+                            updated: Date.now().toString()
+                        },
+                        display_name: 'display_name',
+                        id: '15454656416',
+                        name: 'mmmokay'
+                    }
+                ] as Array<Schemas.EventType>
+            });
+            mockFacets();
+            fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
+                body: []
+            });
+
+            render(<NotificationsListPage />, {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('rhel'),
+                    appContext: {
+                        rbac: {
+                            canWriteNotifications: true,
+                            canWriteIntegrationsEndpoints: true,
+                            canReadIntegrationsEndpoints: true,
+                            canReadNotifications: true
+                        }
+                    }
+                })
+            });
+
+            await waitForAsyncEvents();
+
+            expect(screen.getAllByText(/behavior group/i).length).toBeGreaterThan(0);
+        });
+
         it.each<[Environment, boolean]>([
             [ 'ci', true ],
             [ 'ci-beta', true ],
