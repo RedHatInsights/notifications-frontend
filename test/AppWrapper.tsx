@@ -53,6 +53,7 @@ type Config = {
     route?: RouteProps;
     appContext?: AppContext;
     getLocation?: jest.Mock; // Pass a jest.fn() to get back the location hook
+    skipIsBetaMock?: boolean;
 }
 
 const defaultAppContextSettings = {
@@ -67,9 +68,11 @@ const defaultAppContextSettings = {
 const InternalWrapper: React.FunctionComponent<Config> = (props) => {
     const location = useLocation();
 
-    (getInsights().chrome.isBeta as jest.Mock).mockImplementation(() => {
-        return location.pathname.startsWith('/beta/');
-    });
+    if (props.skipIsBetaMock) {
+        (getInsights().chrome.isBeta as jest.Mock).mockImplementation(() => {
+            return location.pathname.startsWith('/beta/');
+        });
+    }
 
     if (props.getLocation) {
         props.getLocation.mockImplementation(() => location);

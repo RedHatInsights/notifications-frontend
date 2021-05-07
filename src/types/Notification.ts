@@ -44,3 +44,13 @@ export type Facet = Schemas.Facet;
 
 export type ServerNotificationRequest = Schemas.EventType;
 export type ServerNotificationResponse = Schemas.EventType;
+
+export type BehaviorGroup = {
+    id: UUID;
+    actions: Array<Action>;
+    bundleId: UUID,
+    isDefault: boolean;
+    displayName: string;
+}
+
+export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> & Omit<BehaviorGroup, 'id'>;

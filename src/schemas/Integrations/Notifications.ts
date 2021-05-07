@@ -16,14 +16,21 @@ const ActionNotify = Yup.object({
     integrationId: Yup.string().min(0)
 });
 
-export const WithActions = Yup.object({
-    actions: Yup.array(Yup.lazy(obj => {
-        if ((obj as any).hasOwnProperty('type')) {
-            if ((obj as any).type === NotificationType.INTEGRATION) {
-                return ActionIntegration;
-            }
+export const ActionsArray = Yup.array(Yup.lazy(obj => {
+    if ((obj as any).hasOwnProperty('type')) {
+        if ((obj as any).type === NotificationType.INTEGRATION) {
+            return ActionIntegration;
         }
+    }
 
-        return ActionNotify;
-    }))
+    return ActionNotify;
+}));
+
+export const WithActions = Yup.object({
+    actions: ActionsArray
+});
+
+export const BehaviorGroupSchema = Yup.object({
+    displayName: Yup.string().min(1),
+    actions: ActionsArray
 });

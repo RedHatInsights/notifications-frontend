@@ -21,6 +21,7 @@ import { useListNotifications } from '../../../services/useListNotifications';
 import { stagingAndProd } from '../../../types/Environments';
 import { Facet, Notification } from '../../../types/Notification';
 import { EditNotificationPage } from '../Form/EditNotificationPage';
+import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import {
     makeEditDefaultAction,
     makeEditNotificationAction,
@@ -45,10 +46,6 @@ const tableTitleClassName = style({
     paddingTop: global_spacer_md.var,
     paddingBottom: global_spacer_md.var,
     fontSize: '17px'
-});
-
-const noPaddingTopClassName = style({
-    paddingTop: 0
 });
 
 const emptyArray = [];
@@ -120,7 +117,12 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     </RenderIfFalse>
                 </InsightsEnvDetector>
             </PageHeader>
-            <Main className={ noPaddingTopClassName }>
+            <Main>
+                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProd }>
+                    <RenderIfFalse>
+                        <BehaviorGroupsSection bundleId={ props.bundle.id } />
+                    </RenderIfFalse>
+                </InsightsEnvDetector>
                 <Section>
                     <DefaultBehavior
                         loading={ defaultNotificationBehavior.loading }

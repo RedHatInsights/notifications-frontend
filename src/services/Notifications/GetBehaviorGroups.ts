@@ -1,0 +1,31 @@
+import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
+import { useQuery } from 'react-fetching-library';
+
+import { Operations } from '../../generated/OpenapiNotifications';
+import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
+import { UUID } from '../../types/Notification';
+
+const behaviorGroupDecoder = validationResponseTransformer(
+    (payload: Operations.NotificationServiceFindBehaviorGroupsByBundleId.Payload) => {
+        if (payload.status === 200) {
+            return validatedResponse(
+                'BehaviorGroups',
+                200,
+                payload.value.map(toBehaviorGroup),
+                payload.errors
+            );
+        }
+
+        return payload;
+    }
+);
+
+export const useGetBehaviorGroups = (bundleId: UUID) => {
+    return useTransformQueryResponse(
+        useQuery(Operations.NotificationServiceFindBehaviorGroupsByBundleId.actionCreator({
+            bundleId
+        })),
+        behaviorGroupDecoder
+    );
+};

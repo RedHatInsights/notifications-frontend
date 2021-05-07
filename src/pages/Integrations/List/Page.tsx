@@ -15,6 +15,7 @@ import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
+import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
@@ -24,7 +25,6 @@ import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useDeleteModalReducer } from './useDeleteModalReducer';
-import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from './useFormModalReducer';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 
@@ -37,6 +37,11 @@ const integrationFilterBuilder = (filters?: IntegrationFilters) => {
 
     return filter.and('type', Operator.EQUAL, IntegrationType.WEBHOOK);
 };
+
+const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
+    ...userIntegration,
+    name: `Copy of ${userIntegration.name}`
+});
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
@@ -59,8 +64,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ integrationsQuery.payload ]);
 
     const integrationRows = useIntegrationRows(integrations.data);
-
-    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer();
+    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer<UserIntegration>(userIntegrationCopier);
     const [ deleteModalState, dispatchDeleteModal ] = useDeleteModalReducer();
 
     const onAddIntegrationClicked = React.useCallback(() => {

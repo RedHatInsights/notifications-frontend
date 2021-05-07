@@ -21,7 +21,6 @@ module.exports = {
         '<rootDir>/test/'
     ],
     moduleNameMapper: {
-        '\\.(svg)$': 'identity-obj-proxy',
-        '\\.(css|scss)$': 'identity-obj-proxy'
+        '.+\\.(css|scss|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$': 'jest-transform-stub'
     }
 };
