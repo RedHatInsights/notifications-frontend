@@ -1,3 +1,8 @@
+import {
+    Environment,
+    getInsights,
+    InsightsType
+} from '@redhat-cloud-services/insights-common-typescript';
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -15,11 +20,6 @@ import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
-import {
-    Environment,
-    getInsights,
-    InsightsType
-} from '@redhat-cloud-services/insights-common-typescript';
 
 type RouterAndRoute = {
   router: MemoryRouterProps;
