@@ -4,7 +4,7 @@ import * as React from 'react';
 import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
-import { BehaviorGroupCard } from './BehaviorGroupCard';
+import { BehaviorGroupCard, BehaviorGroupCardSkeleton } from './BehaviorGroupCard';
 
 const cardsWrapperClassName = style({
     overflow: 'auto'
@@ -19,8 +19,14 @@ interface BehaviorGroupCardListProps {
     behaviorGroups: Array<BehaviorGroup>;
 }
 
-export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> = props => {
+interface BehaviorGroupCardListLayoutProps {
+    contents: Array<{
+        key: string;
+        element: React.ReactNode;
+    }>;
+}
 
+const BehaviorGroupCardListLayout: React.FunctionComponent<BehaviorGroupCardListLayoutProps> = props => {
     const ref = React.useCallback(container => {
         if (container?.firstChild?.firstChild) {
             const height = container.firstChild.firstChild.getBoundingClientRect().height;
@@ -35,15 +41,48 @@ export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardLis
                 alignContent={ { default: 'alignContentSpaceBetween' } }
                 className={ cardsWrapperClassName }
             >
-                { props.behaviorGroups.map(behaviorGroup => (
-                    <FlexItem key={ behaviorGroup.id } className={ cardWrapperClassName }>
-                        <BehaviorGroupCard
-                            behaviorGroup={ behaviorGroup }
-                            onEdit={ props.onEdit }
-                        />
+                { props.contents.map(content => (
+                    <FlexItem key={ content.key } className={ cardWrapperClassName }>
+                        { content.element }
                     </FlexItem>
                 ))}
             </Flex>
         </div>
+    );
+};
+
+export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> = props => {
+
+    return (
+        <BehaviorGroupCardListLayout
+            contents={ props.behaviorGroups.map(behaviorGroup => ({
+                key: behaviorGroup.id,
+                element: <BehaviorGroupCard
+                    behaviorGroup={ behaviorGroup }
+                    onEdit={ props.onEdit }
+                />
+            })) }
+        />
+    );
+};
+
+export const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
+    return (
+        <BehaviorGroupCardListLayout
+            contents={ [
+                {
+                    key: 'skeleton-1',
+                    element: <BehaviorGroupCardSkeleton />
+                },
+                {
+                    key: 'skeleton-2',
+                    element: <BehaviorGroupCardSkeleton />
+                },
+                {
+                    key: 'skeleton-3',
+                    element: <BehaviorGroupCardSkeleton />
+                }
+            ] }
+        />
     );
 };
