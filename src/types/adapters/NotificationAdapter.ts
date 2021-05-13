@@ -2,7 +2,7 @@ import { assertNever } from 'assert-never';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { ServerIntegrationResponse } from '../Integration';
-import { Action, Notification, NotificationType, ServerNotificationResponse } from '../Notification';
+import { Action, NotificationBase, NotificationType, ServerNotificationResponse } from '../Notification';
 import { filterOutDefaultAction, toIntegration, toUserIntegration } from './IntegrationAdapter';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
@@ -27,7 +27,7 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
 export const usesDefault = (endpoints: Array<Schemas.Endpoint>): boolean =>
     endpoints.findIndex(e => e.type === Schemas.EndpointType.enum.default) !== -1;
 
-export const toNotification = (serverNotification: ServerNotificationResponse): Notification => {
+export const toNotification = (serverNotification: ServerNotificationResponse): NotificationBase => {
     if (!serverNotification.id || !serverNotification.application) {
         throw new Error(`Unexpected notification from server ${JSON.stringify(serverNotification)}`);
     }
@@ -35,9 +35,7 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
     return {
         id: serverNotification.id,
         applicationDisplayName: serverNotification.application.display_name,
-        eventTypeDisplayName: serverNotification.display_name,
-        actions: undefined,
-        useDefault: undefined
+        eventTypeDisplayName: serverNotification.display_name
     };
 };
 

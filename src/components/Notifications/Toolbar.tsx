@@ -30,8 +30,8 @@ interface NotificationsToolbarProps extends OuiaComponentProps {
 
     appFilterOptions: Array<Facet>;
 
-    groupBy: GroupByEnum;
-    onGroupBySelected: (selected: GroupByEnum) => void;
+    groupBy?: GroupByEnum;
+    onGroupBySelected?: (selected: GroupByEnum) => void;
 
     onExport: (type: ExporterType) => void;
 }
@@ -102,7 +102,9 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
             <PrimaryToolbar
                 filterConfig={ filterConfig }
                 activeFiltersConfig={ activeFiltersConfig }
-                dedicatedAction={ <GroupBy selected={ props.groupBy } groupBy={ props.onGroupBySelected } /> }
+                dedicatedAction={ (props.groupBy && props.onGroupBySelected) ?
+                    <GroupBy selected={ props.groupBy } groupBy={ props.onGroupBySelected } /> :
+                    undefined }
                 exportConfig={ exportConfig }
             />
             { props.children }

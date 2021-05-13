@@ -3,12 +3,19 @@ import { UserIntegration } from './Integration';
 
 export type UUID = Schemas.UUID;
 
-export interface Notification {
+export interface NotificationBase {
     id: UUID;
     applicationDisplayName: string;
     eventTypeDisplayName: string;
+}
+
+export interface Notification extends NotificationBase {
     actions?: Array<Action>;
     useDefault?: boolean;
+}
+
+export interface NotificationBehaviorGroup extends NotificationBase {
+    behaviors?: Array<BehaviorGroup>;
 }
 
 export type IntegrationRef = Pick<UserIntegration, 'id' | 'name' | 'type' | 'isEnabled'>
