@@ -4,6 +4,7 @@ import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
     Integration,
     IntegrationBase,
+    IntegrationCamel,
     IntegrationHttp,
     IntegrationType,
     NewIntegration,
@@ -16,6 +17,8 @@ import {
 
 const getIntegrationType = (type: Schemas.EndpointType | undefined): IntegrationType => {
     switch (type) {
+        case Schemas.EndpointType.Enum.camel:
+            return IntegrationType.CAMEL;
         case Schemas.EndpointType.Enum.webhook:
             return IntegrationType.WEBHOOK;
         case Schemas.EndpointType.Enum.email_subscription:
@@ -33,6 +36,9 @@ export const getEndpointType = (type: IntegrationType | UserIntegrationType): Sc
         case IntegrationType.WEBHOOK:
         case UserIntegrationType.WEBHOOK:
             return Schemas.EndpointType.Enum.webhook;
+        case IntegrationType.CAMEL:
+        case UserIntegrationType.CAMEL:
+            return Schemas.EndpointType.Enum.camel;
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return Schemas.EndpointType.Enum.email_subscription;
         default:
@@ -58,6 +64,16 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 sslVerificationEnabled: !properties.disable_ssl_verification,
                 secretToken: properties.secret_token === null ? undefined : properties.secret_token,
                 method: properties.method ?? Schemas.HttpType.Enum.GET
+            };
+        case IntegrationType.CAMEL:
+            const properties2 = serverIntegration.properties as Schemas.CamelAttributes;
+            return {
+                ...integrationBase,
+                url: properties2.url || '',
+                sslVerificationEnabled: !properties2.disable_ssl_verification,
+                secretToken: properties2.secret_token === null ? undefined : properties2.secret_token,
+                basicAuth: properties2.basicAuth === null ? undefined : properties2.basicAuth,
+                extras: properties2.extras === null ? undefined : properties2.extras
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return {
@@ -99,6 +115,16 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 method: integrationHttp.method,
                 disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
                 secret_token: integrationHttp.secretToken
+            };
+        case IntegrationType.CAMEL:
+        case UserIntegrationType.CAMEL:
+            const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
+            return {
+                url: integrationCamel.url,
+                disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
+                secret_token: integrationCamel.secretToken,
+                basicAuth: integrationCamel.basicAuth,
+                extras: integrationCamel.extras
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return {};

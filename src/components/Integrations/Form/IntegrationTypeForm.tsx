@@ -4,6 +4,7 @@ import * as React from 'react';
 
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
+import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
 
 export interface IntegrationTypeForm extends OuiaComponentProps {
     type: UserIntegrationType;
@@ -13,6 +14,8 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
     switch (props.type) {
         case UserIntegrationType.WEBHOOK:
             return <IntegrationTypeHttpForm { ...props } />;
+        case UserIntegrationType.CAMEL:
+            return <IntegrationTypeCamelForm { ...props } />;
         default:
             assertNever(props.type);
     }

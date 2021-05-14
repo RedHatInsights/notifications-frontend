@@ -2,12 +2,14 @@ import { Schemas } from '../generated/OpenapiIntegrations';
 
 export enum IntegrationType {
     WEBHOOK = 'webhook',
+    CAMEL = 'camel',
     EMAIL_SUBSCRIPTION = 'email_subscription'
 }
 
 // Integrations that the user can create in the Integrations page
 export enum UserIntegrationType {
-    WEBHOOK = 'webhook'
+    WEBHOOK = 'webhook',
+    CAMEL = 'camel'
 }
 
 export interface IntegrationBase {
@@ -25,11 +27,20 @@ export interface IntegrationHttp extends IntegrationBase {
     method: Schemas.HttpType;
 }
 
+export interface IntegrationCamel extends IntegrationBase {
+    type: IntegrationType.CAMEL;
+    url: string;
+    sslVerificationEnabled: boolean;
+    secretToken?: string;
+    basicAuth?: string; // TODO this is a map { user, pass}
+    extras?: string; // TODO this is a freeform map<string,string>
+}
+
 export interface IntegrationEmailSubscription extends IntegrationBase {
     type: IntegrationType.EMAIL_SUBSCRIPTION
 }
 
-export type Integration = IntegrationHttp | IntegrationEmailSubscription;
+export type Integration = IntegrationHttp | IntegrationEmailSubscription | IntegrationCamel;
 
 type ToUserIntegration<T extends IntegrationBase, TYPE extends UserIntegrationType[keyof UserIntegrationType]> = Omit<T, 'type'> & {
     type: TYPE

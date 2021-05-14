@@ -22,6 +22,17 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const AtomicLong = zodSchemaAtomicLong();
+  export type AtomicLong = {
+    acquire?: number | undefined | null;
+    andDecrement?: number | undefined | null;
+    andIncrement?: number | undefined | null;
+    opaque?: number | undefined | null;
+    plain?: number | undefined | null;
+    release?: number | undefined | null;
+    value?: number | undefined | null;
+  };
+
   export const BasicAuthentication = zodSchemaBasicAuthentication();
   export type BasicAuthentication = {
     password?: string | undefined | null;
@@ -60,6 +71,21 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const CamelProperties = zodSchemaCamelProperties();
+  export type CamelProperties = {
+    basic_authentication?: BasicAuthentication | undefined | null;
+    disable_ssl_verification: boolean;
+    extras?:
+      | {
+          [x: string]: string;
+        }
+      | undefined
+      | null;
+    secret_token?: string | undefined | null;
+    sub_type?: string | undefined | null;
+    url: string;
+  };
+
   export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
@@ -74,7 +100,7 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     properties?:
-      | (WebhookProperties | EmailSubscriptionProperties)
+      | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
     type: EndpointType;
@@ -94,7 +120,11 @@ export namespace Schemas {
   export type EndpointProperties = unknown;
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType = 'webhook' | 'email_subscription' | 'default';
+  export type EndpointType =
+    | 'webhook'
+    | 'email_subscription'
+    | 'default'
+    | 'camel';
 
   export const EntityTag = zodSchemaEntityTag();
   export type EntityTag = {
@@ -182,6 +212,17 @@ export namespace Schemas {
   export const Meta = zodSchemaMeta();
   export type Meta = {
     count: number;
+  };
+
+  export const MigrationReport = zodSchemaMigrationReport();
+  export type MigrationReport = {
+    accountsWithDefaults?: AtomicLong | undefined | null;
+    accountsWithNonDefaults?: AtomicLong | undefined | null;
+    actionsPersisted?: AtomicLong | undefined | null;
+    behaviorGroupsAggregated?: AtomicLong | undefined | null;
+    behaviorGroupsPersisted?: AtomicLong | undefined | null;
+    behaviorsPersisted?: AtomicLong | undefined | null;
+    durationInMs?: AtomicLong | undefined | null;
   };
 
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
@@ -306,6 +347,20 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaAtomicLong() {
+      return z
+      .object({
+          acquire: z.number().int().optional().nullable(),
+          andDecrement: z.number().int().optional().nullable(),
+          andIncrement: z.number().int().optional().nullable(),
+          opaque: z.number().int().optional().nullable(),
+          plain: z.number().int().optional().nullable(),
+          release: z.number().int().optional().nullable(),
+          value: z.number().int().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaBasicAuthentication() {
       return z
       .object({
@@ -359,6 +414,21 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaCamelProperties() {
+      return z
+      .object({
+          basic_authentication: zodSchemaBasicAuthentication()
+          .optional()
+          .nullable(),
+          disable_ssl_verification: z.boolean(),
+          extras: z.record(z.string()).optional().nullable(),
+          secret_token: z.string().optional().nullable(),
+          sub_type: z.string().optional().nullable(),
+          url: z.string()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEmailSubscriptionProperties() {
       return z.unknown();
   }
@@ -378,7 +448,8 @@ export namespace Schemas {
           properties: z
           .union([
               zodSchemaWebhookProperties(),
-              zodSchemaEmailSubscriptionProperties()
+              zodSchemaEmailSubscriptionProperties(),
+              zodSchemaCamelProperties()
           ])
           .optional()
           .nullable(),
@@ -403,7 +474,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'default' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'default', 'camel' ]);
   }
 
   function zodSchemaEntityTag() {
@@ -504,6 +575,20 @@ export namespace Schemas {
       return z
       .object({
           count: z.number().int()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaMigrationReport() {
+      return z
+      .object({
+          accountsWithDefaults: zodSchemaAtomicLong().optional().nullable(),
+          accountsWithNonDefaults: zodSchemaAtomicLong().optional().nullable(),
+          actionsPersisted: zodSchemaAtomicLong().optional().nullable(),
+          behaviorGroupsAggregated: zodSchemaAtomicLong().optional().nullable(),
+          behaviorGroupsPersisted: zodSchemaAtomicLong().optional().nullable(),
+          behaviorsPersisted: zodSchemaAtomicLong().optional().nullable(),
+          durationInMs: zodSchemaAtomicLong().optional().nullable()
       })
       .nonstrict();
   }

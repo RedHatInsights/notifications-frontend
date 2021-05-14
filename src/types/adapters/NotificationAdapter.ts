@@ -43,6 +43,8 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
     switch (serverAction.type) {
         case Schemas.EndpointType.enum.webhook:
             return _toAction(NotificationType.INTEGRATION, serverAction);
+        case Schemas.EndpointType.enum.camel:
+            return _toAction(NotificationType.INTEGRATION, serverAction);
         case Schemas.EndpointType.enum.email_subscription:
             return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);
         case Schemas.EndpointType.enum.default:

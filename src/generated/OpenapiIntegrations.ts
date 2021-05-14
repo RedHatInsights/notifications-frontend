@@ -22,6 +22,17 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const AtomicLong = zodSchemaAtomicLong();
+  export type AtomicLong = {
+    acquire?: number | undefined | null;
+    andDecrement?: number | undefined | null;
+    andIncrement?: number | undefined | null;
+    opaque?: number | undefined | null;
+    plain?: number | undefined | null;
+    release?: number | undefined | null;
+    value?: number | undefined | null;
+  };
+
   export const BasicAuthentication = zodSchemaBasicAuthentication();
   export type BasicAuthentication = {
     password?: string | undefined | null;
@@ -60,6 +71,21 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
+  export const CamelProperties = zodSchemaCamelProperties();
+  export type CamelProperties = {
+    basic_authentication?: BasicAuthentication | undefined | null;
+    disable_ssl_verification: boolean;
+    extras?:
+      | {
+          [x: string]: string;
+        }
+      | undefined
+      | null;
+    secret_token?: string | undefined | null;
+    sub_type?: string | undefined | null;
+    url: string;
+  };
+
   export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
@@ -74,7 +100,7 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     properties?:
-      | (WebhookProperties | EmailSubscriptionProperties)
+      | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
     type: EndpointType;
@@ -94,7 +120,11 @@ export namespace Schemas {
   export type EndpointProperties = unknown;
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType = 'webhook' | 'email_subscription' | 'default';
+  export type EndpointType =
+    | 'webhook'
+    | 'email_subscription'
+    | 'default'
+    | 'camel';
 
   export const EntityTag = zodSchemaEntityTag();
   export type EntityTag = {
@@ -182,6 +212,17 @@ export namespace Schemas {
   export const Meta = zodSchemaMeta();
   export type Meta = {
     count: number;
+  };
+
+  export const MigrationReport = zodSchemaMigrationReport();
+  export type MigrationReport = {
+    accountsWithDefaults?: AtomicLong | undefined | null;
+    accountsWithNonDefaults?: AtomicLong | undefined | null;
+    actionsPersisted?: AtomicLong | undefined | null;
+    behaviorGroupsAggregated?: AtomicLong | undefined | null;
+    behaviorGroupsPersisted?: AtomicLong | undefined | null;
+    behaviorsPersisted?: AtomicLong | undefined | null;
+    durationInMs?: AtomicLong | undefined | null;
   };
 
   export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
@@ -309,6 +350,20 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaAtomicLong() {
+      return z
+      .object({
+          acquire: z.number().int().optional().nullable(),
+          andDecrement: z.number().int().optional().nullable(),
+          andIncrement: z.number().int().optional().nullable(),
+          opaque: z.number().int().optional().nullable(),
+          plain: z.number().int().optional().nullable(),
+          release: z.number().int().optional().nullable(),
+          value: z.number().int().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaBasicAuthentication() {
       return z
       .object({
@@ -362,6 +417,21 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaCamelProperties() {
+      return z
+      .object({
+          basic_authentication: zodSchemaBasicAuthentication()
+          .optional()
+          .nullable(),
+          disable_ssl_verification: z.boolean(),
+          extras: z.record(z.string()).optional().nullable(),
+          secret_token: z.string().optional().nullable(),
+          sub_type: z.string().optional().nullable(),
+          url: z.string()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEmailSubscriptionProperties() {
       return z.unknown();
   }
@@ -381,7 +451,8 @@ export namespace Schemas {
           properties: z
           .union([
               zodSchemaWebhookProperties(),
-              zodSchemaEmailSubscriptionProperties()
+              zodSchemaEmailSubscriptionProperties(),
+              zodSchemaCamelProperties()
           ])
           .optional()
           .nullable(),
@@ -406,7 +477,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'default' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'default', 'camel' ]);
   }
 
   function zodSchemaEntityTag() {
@@ -507,6 +578,20 @@ export namespace Schemas {
       return z
       .object({
           count: z.number().int()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaMigrationReport() {
+      return z
+      .object({
+          accountsWithDefaults: zodSchemaAtomicLong().optional().nullable(),
+          accountsWithNonDefaults: zodSchemaAtomicLong().optional().nullable(),
+          actionsPersisted: zodSchemaAtomicLong().optional().nullable(),
+          behaviorGroupsAggregated: zodSchemaAtomicLong().optional().nullable(),
+          behaviorGroupsPersisted: zodSchemaAtomicLong().optional().nullable(),
+          behaviorsPersisted: zodSchemaAtomicLong().optional().nullable(),
+          durationInMs: zodSchemaAtomicLong().optional().nullable()
       })
       .nonstrict();
   }
@@ -921,10 +1006,25 @@ export namespace Operations {
   }
   // GET /endpoints/{id}/history
   export namespace EndpointServiceGetEndpointHistory {
+    const IncludeDetail = z.boolean();
+    type IncludeDetail = boolean;
+    const Limit = z.number().int();
+    type Limit = number;
+    const Offset = z.number().int();
+    type Offset = number;
+    const PageNumber = z.number().int();
+    type PageNumber = number;
+    const SortBy = z.string();
+    type SortBy = string;
     const Response200 = z.array(Schemas.NotificationHistory);
     type Response200 = Array<Schemas.NotificationHistory>;
     export interface Params {
       id: Schemas.UUID;
+      includeDetail?: IncludeDetail;
+      limit?: Limit;
+      offset?: Offset;
+      pageNumber?: PageNumber;
+      sortBy?: SortBy;
     }
 
     export type Payload =
@@ -937,6 +1037,26 @@ export namespace Operations {
             params.id.toString()
         );
         const query = {} as Record<string, any>;
+        if (params.includeDetail !== undefined) {
+            query.includeDetail = params.includeDetail;
+        }
+
+        if (params.limit !== undefined) {
+            query.limit = params.limit;
+        }
+
+        if (params.offset !== undefined) {
+            query.offset = params.offset;
+        }
+
+        if (params.pageNumber !== undefined) {
+            query.pageNumber = params.pageNumber;
+        }
+
+        if (params.sortBy !== undefined) {
+            query.sort_by = params.sortBy;
+        }
+
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
@@ -953,8 +1073,6 @@ export namespace Operations {
     type Offset = number;
     const PageNumber = z.number().int();
     type PageNumber = number;
-    const PageSize = z.number().int();
-    type PageSize = number;
     const SortBy = z.string();
     type SortBy = string;
     const Response200 = z.string();
@@ -965,7 +1083,6 @@ export namespace Operations {
       limit?: Limit;
       offset?: Offset;
       pageNumber?: PageNumber;
-      pageSize?: PageSize;
       sortBy?: SortBy;
     }
 
@@ -988,10 +1105,6 @@ export namespace Operations {
 
         if (params.pageNumber !== undefined) {
             query.pageNumber = params.pageNumber;
-        }
-
-        if (params.pageSize !== undefined) {
-            query.pageSize = params.pageSize;
         }
 
         if (params.sortBy !== undefined) {
