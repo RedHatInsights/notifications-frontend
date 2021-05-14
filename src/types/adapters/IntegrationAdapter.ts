@@ -72,7 +72,7 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 url: properties2.url || '',
                 sslVerificationEnabled: !properties2.disable_ssl_verification,
                 secretToken: properties2.secret_token === null ? undefined : properties2.secret_token,
-                basicAuth: properties2.basicAuth === null ? undefined : properties2.basicAuth,
+                basicAuth: properties2.basic_authentication === null ? undefined : properties2.basic_authentication,
                 extras: properties2.extras === null ? undefined : properties2.extras
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
