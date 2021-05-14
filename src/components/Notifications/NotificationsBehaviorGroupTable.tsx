@@ -1,22 +1,28 @@
+import { Button, ButtonVariant } from '@patternfly/react-core';
+import { PencilAltIcon } from '@patternfly/react-icons';
+import { ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
+import { style } from 'typestyle';
+
 import { NotificationBehaviorGroup } from '../../types/Notification';
 import { ouia } from '../Ouia';
-import { expandable, ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
-import { Messages } from '../../properties/Messages';
-import { Button } from '@patternfly/react-core';
 
 export type OnEditNotification = (notification: NotificationBehaviorGroup) => void;
 
-export interface BehaviorGroupNotificationRows extends NotificationBehaviorGroup {
+export interface BehaviorGroupNotificationRow extends NotificationBehaviorGroup {
     loadingActionStatus: 'loading' | 'done' | 'error';
 }
 
 export interface NotificationsBehaviorGroupTableProps {
-    notifications: Array<BehaviorGroupNotificationRows>;
+    notifications: Array<BehaviorGroupNotificationRow>;
     onEdit?: OnEditNotification;
 }
 
-const toTableRows = (notifications: Array<BehaviorGroupNotificationRows>, onEdit?: OnEditNotification) => {
+const buttonRowClassName = style({
+    width: '10px !important'
+});
+
+const toTableRows = (notifications: Array<BehaviorGroupNotificationRow>, _onEdit?: OnEditNotification) => {
     return notifications.map((notification => ({
         id: notification.id,
         key: notification.id,
@@ -31,7 +37,12 @@ const toTableRows = (notifications: Array<BehaviorGroupNotificationRows>, onEdit
                 title: <span>{ notification.behaviors?.map(b => b.displayName).join(', ') }</span>
             },
             {
-                title: <Button>Edit</Button>
+                title: <Button variant={ ButtonVariant.plain }>
+                    <PencilAltIcon />
+                </Button>,
+                props: {
+                    className: buttonRowClassName
+                }
             }
         ]
     })));
