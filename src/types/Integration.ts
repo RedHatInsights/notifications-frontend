@@ -32,8 +32,11 @@ export interface IntegrationCamel extends IntegrationBase {
     url: string;
     sslVerificationEnabled: boolean;
     secretToken?: string;
-    basicAuth?: string; // TODO this is a map { user, pass}
-    extras?: string; // TODO this is a freeform map<string,string>
+    basicAuth?: {
+        user: string;
+        pass: string;
+    };
+    extras?: Record<string, string>;
 }
 
 export interface IntegrationEmailSubscription extends IntegrationBase {
