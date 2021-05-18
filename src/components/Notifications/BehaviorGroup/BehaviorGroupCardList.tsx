@@ -16,7 +16,7 @@ const cardWrapperClassName = style({
 
 interface BehaviorGroupCardListProps {
     onEdit: (behaviorGroup: BehaviorGroup) => void;
-    behaviorGroups: Array<BehaviorGroup>;
+    behaviorGroups: ReadonlyArray<BehaviorGroup>;
 }
 
 interface BehaviorGroupCardListLayoutProps {

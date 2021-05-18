@@ -23,9 +23,10 @@ import {
     makeEditAction,
     makeNoneAction,
     useFormModalReducer } from '../../../hooks/useFormModalReducer';
-import { useGetBehaviorGroups } from '../../../services/Notifications/GetBehaviorGroups';
 import { BehaviorGroup, UUID } from '../../../types/Notification';
+import { emptyImmutableArray } from '../../../utils/Immutable';
 import { EditBehaviorGroupPage } from '../Form/EditBehaviorGroupPage';
+import { BehaviorGroupContent } from './useBehaviorGroupContent';
 
 const expandableSectionClassName = {
     backgroundColor: global_BackgroundColor_100.var,
@@ -58,19 +59,7 @@ const emptyAddButtonClassName = style({
 
 interface BehaviorGroupSectionProps {
     bundleId: UUID;
-}
-
-type BehaviorGroupContent = {
-    isLoading: true;
-} | {
-    isLoading: false;
-    hasError: true;
-    error: string;
-} | {
-    isLoading: false;
-    hasError: false;
-    content: Array<BehaviorGroup>;
-    filtered: Array<BehaviorGroup>;
+    behaviorGroupContent: BehaviorGroupContent;
 }
 
 export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSectionProps> = props => {
@@ -78,36 +67,14 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     const [ isExpanded, setExpanded ] = React.useState(true);
     const [ filter, setFilter ] = React.useState<string>('');
 
-    const behaviorGroups = useGetBehaviorGroups(props.bundleId);
-
-    const contentWrapper = React.useMemo<BehaviorGroupContent>(() => {
-        const payload = behaviorGroups.payload;
-        const error = behaviorGroups.errorObject;
-        const loading = behaviorGroups.loading;
-
-        if (loading) {
-            return {
-                isLoading: true
-            };
-        }
-
-        if (payload?.status === 200) {
+    const filteredBehaviors = React.useMemo(() => {
+        if (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) {
             const lowerCaseFilter = filter.toLowerCase();
-            return {
-                isLoading: false,
-                hasError: false,
-                content: payload.value,
-                filtered: payload.value.filter(bg => bg.displayName.toLowerCase().includes(lowerCaseFilter))
-            };
+            return props.behaviorGroupContent.content.filter(bg => bg.displayName.toLowerCase().includes(lowerCaseFilter));
         }
 
-        return {
-            isLoading: false,
-            hasError: true,
-            error: error.toString()
-        };
-
-    }, [ behaviorGroups.payload, behaviorGroups.loading, filter, behaviorGroups.errorObject ]);
+        return emptyImmutableArray;
+    }, [ filter, props.behaviorGroupContent ]);
 
     const [ modalState, dispatch ] = useFormModalReducer<BehaviorGroup>();
 
@@ -118,13 +85,13 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     }, [ dispatch, props.bundleId ]);
 
     const onCloseModal = React.useCallback((saved: boolean) => {
-        const reload = behaviorGroups.query;
+        const reload = props.behaviorGroupContent.reload;
         if (saved) {
             reload();
         }
 
         dispatch(makeNoneAction());
-    }, [ dispatch, behaviorGroups.query ]);
+    }, [ dispatch, props.behaviorGroupContent.reload ]);
 
     const onEdit = React.useCallback((behaviorGroup: BehaviorGroup) => {
         dispatch(makeEditAction(behaviorGroup));
@@ -134,7 +101,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
         setFilter('');
     }, [ setFilter ]);
 
-    const contentId = 'behaviour-group-section-content';
+    const contentId = 'behavior-group-section-content';
 
     return (
         <div>
@@ -150,9 +117,9 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                             <Title className={ titleClassName } headingLevel="h2">Behavior groups</Title>
                         </SplitItem>
                         <SplitItem>
-                            { (!contentWrapper.isLoading && !contentWrapper.hasError) && (
-                                contentWrapper.content.length > 0 ?
-                                    <Badge isRead>{ contentWrapper.content.length }</Badge> :
+                            { (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
+                                props.behaviorGroupContent.content.length > 0 ?
+                                    <Badge isRead>{ props.behaviorGroupContent.content.length }</Badge> :
                                     <Button
                                         className={ emptyAddButtonClassName }
                                         variant={ ButtonVariant.primary }
@@ -179,7 +146,9 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                         changing assigned actions by locking action / recipient pairings when creating or editing
                         behavior groups.
                     </StackItem>
-                    { (contentWrapper.isLoading || contentWrapper.hasError || contentWrapper.content.length > 0) && (
+                    { (props.behaviorGroupContent.isLoading ||
+                        props.behaviorGroupContent.hasError ||
+                        props.behaviorGroupContent.content.length > 0) && (
                         <>
                             <StackItem>
                                 <Split hasGutter>
@@ -191,12 +160,12 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                             type="text"
                                             aria-label="Search by name"
                                             placeholder="Search by name"
-                                            isDisabled={ contentWrapper.isLoading }
+                                            isDisabled={ props.behaviorGroupContent.isLoading }
                                         />
                                     </SplitItem>
                                     <SplitItem>
                                         <Button
-                                            isDisabled={ contentWrapper.isLoading }
+                                            isDisabled={ props.behaviorGroupContent.isLoading }
                                             variant={ ButtonVariant.primary }
                                             onClick={ createGroup }
                                         >
@@ -206,12 +175,12 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                 </Split>
                             </StackItem>
                             <StackItem>
-                                { contentWrapper.isLoading ? (
+                                { props.behaviorGroupContent.isLoading ? (
                                     <BehaviorGroupCardListSkeleton />
-                                ) : contentWrapper.hasError ? (
+                                ) : props.behaviorGroupContent.hasError ? (
                                     <div>Error loading behavior groups</div>
                                 ) : (
-                                    <BehaviorGroupCardList onEdit={ onEdit } behaviorGroups={ contentWrapper.filtered } />
+                                    <BehaviorGroupCardList onEdit={ onEdit } behaviorGroups={ filteredBehaviors } />
                                 ) }
                             </StackItem>
                         </>

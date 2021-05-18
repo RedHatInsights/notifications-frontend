@@ -1,28 +1,29 @@
-import { Button, ButtonVariant } from '@patternfly/react-core';
+import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
 import { PencilAltIcon } from '@patternfly/react-icons';
 import { ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { NotificationBehaviorGroup } from '../../types/Notification';
+import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
+import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
+import { BehaviorGroup, NotificationBehaviorGroup } from '../../types/Notification';
+import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
+import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 
-export type OnEditNotification = (notification: NotificationBehaviorGroup) => void;
-
-export interface BehaviorGroupNotificationRow extends NotificationBehaviorGroup {
-    loadingActionStatus: 'loading' | 'done' | 'error';
-}
+export type OnEditNotification = (isLinked: boolean, notification: NotificationBehaviorGroup, behaviorGroup?: BehaviorGroup) => void;
 
 export interface NotificationsBehaviorGroupTableProps {
+    behaviorGroupContent: BehaviorGroupContent;
     notifications: Array<BehaviorGroupNotificationRow>;
     onEdit?: OnEditNotification;
 }
 
-const buttonRowClassName = style({
+const buttonCellClassName = style({
     width: '10px !important'
 });
 
-const toTableRows = (notifications: Array<BehaviorGroupNotificationRow>, _onEdit?: OnEditNotification) => {
+const toTableRows = (notifications: Array<BehaviorGroupNotificationRow>, behaviorGroupContent: BehaviorGroupContent, onEdit?: OnEditNotification) => {
     return notifications.map((notification => ({
         id: notification.id,
         key: notification.id,
@@ -34,14 +35,25 @@ const toTableRows = (notifications: Array<BehaviorGroupNotificationRow>, _onEdit
                 title: <span>{ notification.applicationDisplayName }</span>
             },
             {
-                title: <span>{ notification.behaviors?.map(b => b.displayName).join(', ') }</span>
+                title: notification.loadingActionStatus === 'loading' ?
+                    <Skeleton width="180px" /> :
+                    <span>
+                        <BehaviorGroupCell
+                            id={ `behavior-group-cell-${notification.id}` }
+                            notification={ notification }
+                            behaviorGroupContent={ behaviorGroupContent }
+                            selected={ notification.behaviors ?? emptyImmutableArray }
+                            isMuted={ false }
+                            onSelect={ onEdit }
+                        />
+                    </span>
             },
             {
                 title: <Button variant={ ButtonVariant.plain }>
                     <PencilAltIcon />
                 </Button>,
                 props: {
-                    className: buttonRowClassName
+                    className: buttonCellClassName
                 }
             }
         ]
@@ -69,7 +81,8 @@ const cells: Array<ICell> = [
 
 export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
 
-    const rows = React.useMemo(() => toTableRows(props.notifications, props.onEdit), [ props.notifications, props.onEdit ]);
+    const rows = React.useMemo(() => toTableRows(props.notifications, props.behaviorGroupContent, props.onEdit),
+        [ props.notifications, props.behaviorGroupContent, props.onEdit ]);
 
     return (
         <Table
