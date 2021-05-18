@@ -51,7 +51,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                     onSelect(!isSelected, props.notification, found);
                 }
             } else if (dataset.isMuted) {
-                // onSelect(props.notification);
+                console.error('Not yet implemented');
             }
         }
     }, [ props.onSelect, props.behaviorGroupContent, props.notification, props.selected ]);
@@ -90,28 +90,8 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                     </Split>
                 </DropdownItem>
             );
-
-            /*return (
-                <OptionsMenuItem
-                    key={ bg.id }
-                    onSelect={ onSelected }
-                    data-behavior-group-id={ bg.id }
-                    isSelected={ selected?.isLoading ? false : !!selected }
-                    isDisabled={ !props.onSelect || selected?.isLoading }
-                >
-                    <Split hasGutter>
-                        <SplitItem isFilled>
-                            { bg.displayName }
-                        </SplitItem>
-                        <SplitItem>
-                            { selected?.isLoading && <Spinner size="sm" /> }
-                        </SplitItem>
-                    </Split>
-                </OptionsMenuItem>
-            );*/
         }).concat(
             <OptionsMenuItem
-                /*onSelect={ onSelected }*/
                 data-is-muted={ true }
                 isSelected={ props.isMuted }
                 isDisabled={ !props.onSelect || anyIsLoading }
