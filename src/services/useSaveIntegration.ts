@@ -3,15 +3,15 @@ import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../generated/OpenapiIntegrations';
 import { toIntegration, toServerIntegrationRequest } from '../types/adapters/IntegrationAdapter';
-import { Integration, NewIntegration, NewUserIntegration, UserIntegration } from '../types/Integration';
+import { Integration, NewIntegration, NewUserIntegrationCamel, NewUserIntegrationHttp, UserIntegration } from '../types/Integration';
 
-export const createIntegrationActionCreator = (integration: NewIntegration | NewUserIntegration) => {
+export const createIntegrationActionCreator = (integration: NewIntegration | NewUserIntegrationCamel | NewUserIntegrationHttp) => {
     return Operations.EndpointServiceCreateEndpoint.actionCreator({
         body: toServerIntegrationRequest(integration)
     });
 };
 
-export const saveIntegrationActionCreator = (integration: Integration | NewIntegration | UserIntegration | NewUserIntegration) => {
+export const saveIntegrationActionCreator = (integration: Integration | NewIntegration | UserIntegration | NewUserIntegrationCamel | NewUserIntegrationHttp) => {
     if (integration.id) {
         return Operations.EndpointServiceUpdateEndpoint.actionCreator({
             body: toServerIntegrationRequest(integration),

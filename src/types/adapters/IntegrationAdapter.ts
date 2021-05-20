@@ -8,10 +8,13 @@ import {
     IntegrationHttp,
     IntegrationType,
     NewIntegration,
-    NewUserIntegration,
+    NewUserIntegrationHttp,
+    NewUserIntegrationCamel,
     ServerIntegrationRequest,
     ServerIntegrationResponse,
     UserIntegration,
+    UserIntegrationCamel,
+    UserIntegrationHttp,
     UserIntegrationType
 } from '../Integration';
 
@@ -72,8 +75,17 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 url: properties2.url || '',
                 sslVerificationEnabled: !properties2.disable_ssl_verification,
                 secretToken: properties2.secret_token === null ? undefined : properties2.secret_token,
-                basicAuth: properties2.basic_authentication === null ? undefined : properties2.basic_authentication,
-                extras: properties2.extras === null ? undefined : properties2.extras
+                
+                subType : properties2.sub_type === null ? undefined : properties2.sub_type,
+                basicAuth: properties2.basic_authentication === null ? 
+                 { user: '', pass: ''} 
+                 : 
+                { 
+                    user : properties2.basic_authentication?.username  === null ? undefined : properties2.basic_authentication?.username ,
+                    pass : properties2.basic_authentication?.password  === null ? undefined : properties2.basic_authentication?.password
+                },                    
+                 extras: properties2.extras === null ? undefined : properties2.extras
+                 
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return {
@@ -105,7 +117,7 @@ export const toIntegrations = (serverIntegrations: Array<ServerIntegrationRespon
     return filterOutDefaultAction(serverIntegrations).map(toIntegration);
 };
 
-export const toIntegrationProperties = (integration: Integration | NewIntegration | UserIntegration | NewUserIntegration) => {
+export const toIntegrationProperties = (integration: Integration | NewIntegration | UserIntegrationHttp | UserIntegrationCamel | NewUserIntegrationHttp | NewUserIntegrationCamel) => {
     switch (integration.type) {
         case IntegrationType.WEBHOOK:
         case UserIntegrationType.WEBHOOK:
@@ -134,7 +146,7 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
 };
 
 export const toServerIntegrationRequest =
-    (integration: Integration | NewIntegration | UserIntegration | NewUserIntegration): ServerIntegrationRequest => {
+    (integration: Integration | NewIntegration | UserIntegrationHttp | UserIntegrationCamel | NewUserIntegrationCamel | NewUserIntegrationHttp): ServerIntegrationRequest => {
         return {
             id: integration.id,
             name: integration.name,

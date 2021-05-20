@@ -32,6 +32,7 @@ export interface IntegrationCamel extends IntegrationBase {
     url: string;
     sslVerificationEnabled: boolean;
     secretToken?: string;
+    subType?: string;
     basicAuth?: {
         user: string;
         pass: string;
@@ -49,15 +50,19 @@ type ToUserIntegration<T extends IntegrationBase, TYPE extends UserIntegrationTy
     type: TYPE
 };
 
-export type UserIntegration = ToUserIntegration<IntegrationHttp, UserIntegrationType.WEBHOOK>;
+export type UserIntegrationHttp = ToUserIntegration<IntegrationHttp, UserIntegrationType.WEBHOOK>;
+export type UserIntegrationCamel = ToUserIntegration<IntegrationCamel, UserIntegrationType.CAMEL>;
+export type UserIntegration = UserIntegrationCamel | UserIntegrationHttp;
 
 type NewIntegrationKeys = 'id';
 
-export type NewIntegrationTemplate<T extends IntegrationBase | UserIntegration> = Omit<T, NewIntegrationKeys> & Partial<Pick<T, NewIntegrationKeys>>;
+export type NewIntegrationTemplate<T extends IntegrationBase | UserIntegrationHttp | UserIntegrationCamel> = Omit<T, NewIntegrationKeys> & Partial<Pick<T, NewIntegrationKeys>>;
 
 export type NewIntegrationBase = NewIntegrationTemplate<IntegrationBase>;
 export type NewIntegration = NewIntegrationTemplate<Integration>;
-export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
+export type NewUserIntegrationCamel = NewIntegrationTemplate<UserIntegrationCamel>;
+export type NewUserIntegrationHttp = NewIntegrationTemplate<UserIntegrationHttp>;
+export type NewUserIntegration = NewUserIntegrationCamel | NewUserIntegrationHttp;
 
 export type ServerIntegrationRequest = Schemas.Endpoint;
 export type ServerIntegrationResponse = Schemas.Endpoint;
