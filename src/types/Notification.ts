@@ -15,7 +15,7 @@ export interface Notification extends NotificationBase {
 }
 
 export interface NotificationBehaviorGroup extends NotificationBase {
-    behaviors?: Array<BehaviorGroup>;
+    readonly behaviors: ReadonlyArray<BehaviorGroup>;
 }
 
 export type IntegrationRef = Pick<UserIntegration, 'id' | 'name' | 'type' | 'isEnabled'>
@@ -53,11 +53,11 @@ export type ServerNotificationRequest = Schemas.EventType;
 export type ServerNotificationResponse = Schemas.EventType;
 
 export type BehaviorGroup = {
-    id: UUID;
-    actions: Array<Action>;
-    bundleId: UUID,
-    isDefault: boolean;
-    displayName: string;
+    readonly id: UUID;
+    readonly actions: ReadonlyArray<Action>;
+    readonly bundleId: UUID,
+    readonly isDefault: boolean;
+    readonly displayName: string;
 }
 
 export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> & Omit<BehaviorGroup, 'id'>;
