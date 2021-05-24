@@ -24,6 +24,6 @@ describe('src/utils/Find - Find utils', () => {
         expect(findByKey<{ bar: string, id: string }, 'bar'>('foo', 'bar')({
             id: 'foo',
             bar: 'baz'
-        })).toEqual(true);
+        })).toEqual(false);
     });
 });
