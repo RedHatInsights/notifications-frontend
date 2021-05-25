@@ -38,18 +38,16 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
     const useNotifications = useListNotifications(notificationPage.page);
     const {
         rows: notificationRows,
-        updateBehaviorGroupLink
+        updateBehaviorGroupLink,
+        setReadOnly: setNotificationReadOnly
     } = useBehaviorGroupNotificationRows(
         useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value : emptyArray
     );
 
-    const onEdit = React.useCallback((isLinked: boolean, notification: NotificationBehaviorGroup, behaviorGroup?: BehaviorGroup) => {
+    const onEdit = React.useCallback((isLinked: boolean, notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup) => {
         if (behaviorGroup) {
             updateBehaviorGroupLink(notification.id, behaviorGroup, isLinked);
-        } else {
-            console.log('Mute not yet implemented');
         }
-
     }, [ updateBehaviorGroupLink ]);
 
     return (
@@ -71,6 +69,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
                     notifications={ notificationRows }
                     behaviorGroupContent={ behaviorGroupContent }
                     onEdit={ onEdit }
+                    onSetEditMode={ setNotificationReadOnly }
                 />
             </NotificationsToolbar>
         </Section>

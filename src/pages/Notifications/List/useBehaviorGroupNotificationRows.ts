@@ -18,6 +18,7 @@ export interface BehaviorGroupRowElement extends BehaviorGroup {
 
 export interface BehaviorGroupNotificationRow extends NotificationBehaviorGroup {
     readonly loadingActionStatus: 'loading' | 'done' | 'error';
+    readonly isReadOnly: boolean;
     readonly behaviors: ReadonlyArray<BehaviorGroupRowElement>;
 }
 
@@ -83,10 +84,8 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
 
         query(linkBehaviorGroupAction(notificationId, behaviorGroup.id, linkBehavior)).then(result => {
             if (result.payload?.status === 200) {
-                console.log('200! setting loading to false');
                 setNotificationRows(produce(draft => {
                     getBehaviorGroup(draft, notificationId, behaviorGroup.id).isLoading = false;
-                    console.log('draft', draft);
                 }));
             } else if (result.payload?.status === 204) {
                 removeBehaviorGroup(notificationId, behaviorGroup.id);
@@ -96,12 +95,23 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
         });
     }, [ query, removeBehaviorGroup, setNotificationRows ]);
 
+    const setReadOnly = React.useCallback((notificationId: UUID, isReadOnly: boolean) => {
+        setNotificationRows(produce(draft => {
+            const notification = getNotification(draft, notificationId);
+            notification.isReadOnly = isReadOnly;
+            console.log('set notification', notification);
+        }));
+    }, [ setNotificationRows ]);
+
+    console.log(notificationRows);
+
     React.useEffect(() => {
         if (notifications !== prevNotificationInput) {
             setNotificationRows(_prev => notifications.map(notification => ({
                 ...notification,
                 loadingActionStatus: 'loading',
-                behaviors: []
+                behaviors: [],
+                isReadOnly: true
             })));
         }
 
@@ -132,6 +142,7 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
 
     return {
         rows: notificationRows,
-        updateBehaviorGroupLink
+        updateBehaviorGroupLink,
+        setReadOnly
     };
 };

@@ -1,5 +1,6 @@
 import {
-    DropdownItem,
+    Chip, ChipGroup,
+    DropdownItem, fillTemplate,
     OptionsMenu,
     OptionsMenuItem,
     OptionsMenuToggle,
@@ -22,8 +23,14 @@ interface BehaviorGroupCellProps {
     notification: NotificationBehaviorGroup;
     behaviorGroupContent: BehaviorGroupContent;
     selected: ReadonlyArray<BehaviorGroupRowElement>;
-    isMuted: boolean;
-    onSelect?: (linkBehavior: boolean, notification: NotificationBehaviorGroup, behaviorGroup?: BehaviorGroup) => void;
+    onSelect?: (linkBehavior: boolean, notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup) => void;
+    isReadOnly: boolean;
+}
+
+interface BehaviorGroupChip {
+    behaviorGroup: BehaviorGroup;
+    notification: BehaviorGroupCellProps['notification'];
+    onSelect?: BehaviorGroupCellProps['onSelect'];
 }
 
 const optionItemClassName = style({
@@ -35,6 +42,22 @@ const iconClassName = style({
     fontSize: global_icon_FontSize_sm.var,
     alignSelf: 'center'
 });
+
+const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
+    const unlink = React.useCallback(() => {
+        const onSelect = props.onSelect;
+        if (onSelect) {
+            onSelect(false, props.notification, props.behaviorGroup);
+        }
+    }, [ props.onSelect, props.behaviorGroup, props.notification ]);
+
+    return <Chip onClick={ unlink }>
+        { props.behaviorGroup.displayName }
+    </Chip>;
+};
+
+const numChips = 3;
+const remainingTemplate  = '${remaining} more';
 
 export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> = props => {
 
@@ -50,8 +73,6 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                     const isSelected = !!props.selected.find(el => el.id === found.id);
                     onSelect(!isSelected, props.notification, found);
                 }
-            } else if (dataset.isMuted) {
-                console.error('Not yet implemented');
             }
         }
     }, [ props.onSelect, props.behaviorGroupContent, props.notification, props.selected ]);
@@ -90,37 +111,40 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                     </Split>
                 </DropdownItem>
             );
-        }).concat(
-            <OptionsMenuItem
-                data-is-muted={ true }
-                isSelected={ props.isMuted }
-                isDisabled={ !props.onSelect || anyIsLoading }
-            >
-                <Split hasGutter>
-                    <SplitItem><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
-                    <SplitItem>Mute</SplitItem>
-                </Split>
-            </OptionsMenuItem>
-        );
-    }, [ props.behaviorGroupContent, props.selected, props.isMuted, props.onSelect, onSelected ]);
+        });
+    }, [ props.behaviorGroupContent, props.selected, props.onSelect, onSelected ]);
 
     const toggle = React.useMemo(() => {
-        let content;
+        return (
+            <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ (
+                <ChipGroup numChips={ numChips } collapsedText={ remainingTemplate }>
+                    { props.selected.map(value => (
+                        <BehaviorGroupChip key={ value.id } behaviorGroup={ value } notification={ props.notification } onSelect={ props.onSelect } />
+                    )) }
+                </ChipGroup>
+            ) } />
+        );
+    }, [ props.selected, props.notification, props.onSelect ]);
+
+    const readonlyText = React.useMemo(() => {
         if (props.selected.length === 0) {
-            content = <Split hasGutter>
+            return <Split hasGutter>
                 <SplitItem><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
                 <SplitItem>Mute</SplitItem>
             </Split>;
-        } else if (props.selected.length === 1) {
-            content = props.selected[0].displayName;
-        } else {
-            content = `${props.selected.length} selected`;
         }
 
-        return (
-            <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ content } />
-        );
+        const first = props.selected.slice(0, numChips).map(v => v.displayName).join(', ');
+        const remaining = props.selected.length > numChips ? fillTemplate(remainingTemplate, {
+            remaining: props.selected.length - numChips
+        }) : undefined;
+
+        return first + (remaining ? `and ${remaining}` : '');
     }, [ props.selected ]);
+
+    if (props.isReadOnly) {
+        return <span> { readonlyText } </span>;
+    }
 
     return <OptionsMenu id={ props.id } direction="up" menuItems={ items } toggle={ toggle } isOpen={ isOpen } menuAppendTo={ document.body } />;
 };
