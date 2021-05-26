@@ -8,18 +8,23 @@ import { getBehaviorGroupByNotificationAction } from '../../../services/Notifica
 import { linkBehaviorGroupAction } from '../../../services/Notifications/LinkBehaviorGroup';
 import { toBehaviorGroup } from '../../../types/adapters/BehaviorGroupAdapter';
 import { BehaviorGroup, Notification, NotificationBehaviorGroup, UUID } from '../../../types/Notification';
+import * as Arrays from '../../../utils/Arrays';
 import { findById } from '../../../utils/Find';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
-export interface BehaviorGroupRowElement extends BehaviorGroup {
-    readonly isLoading: boolean;
-}
-
-export interface BehaviorGroupNotificationRow extends NotificationBehaviorGroup {
+export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
     readonly loadingActionStatus: 'loading' | 'done' | 'error';
-    readonly behaviors: ReadonlyArray<BehaviorGroupRowElement>;
-}
+    readonly behaviors: ReadonlyArray<BehaviorGroup>;
+} & (
+    {
+        readonly isEditMode: false;
+    } |
+    {
+        readonly isEditMode: true;
+        readonly oldBehaviors: ReadonlyArray<BehaviorGroup>;
+    }
+);
 
 const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
     rows: T,
@@ -30,20 +35,6 @@ const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
     }
 
     return notification;
-};
-
-const getBehaviorGroup = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
-    rows: T,
-    notificationId: UUID,
-    behaviorGroupId: UUID): T[number]['behaviors'][number] => {
-
-    const notification = getNotification(rows, notificationId);
-    const behavior = notification.behaviors.find(findById(behaviorGroupId));
-    if (!behavior) {
-        throw new Error('Behavior group not found in rows');
-    }
-
-    return behavior;
 };
 
 export const useBehaviorGroupNotificationRows = (notifications: Array<Notification>) => {
@@ -65,43 +56,80 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
     }, [ setNotificationRows ]);
 
     const updateBehaviorGroupLink = React.useCallback((notificationId: UUID, behaviorGroup: BehaviorGroup, linkBehavior: boolean) => {
-        if (!linkBehavior) {
-            // Unlink, means that the behaviorGroup is there.
-            setNotificationRows(produce(draft => {
-                const behaviorGroupDraft = getBehaviorGroup(draft, notificationId, behaviorGroup.id);
-                behaviorGroupDraft.isLoading = true;
-            }));
-        } else {
+        if (linkBehavior) {
             setNotificationRows(produce(draft => {
                 const notification = getNotification(draft, notificationId);
                 notification.behaviors.push({
-                    ...castDraft(behaviorGroup),
-                    isLoading: true
+                    ...castDraft(behaviorGroup)
                 });
             }));
+        } else {
+            removeBehaviorGroup(notificationId, behaviorGroup.id);
+        }
+    }, [ removeBehaviorGroup, setNotificationRows ]);
+
+    const setEditMode = React.useCallback(async (notificationId: UUID, command: 'edit' | 'finish' | 'cancel') => {
+
+        if (command === 'finish') {
+            const notification = getNotification(notificationRows, notificationId);
+            if (notification.isEditMode) {
+                setNotificationRows(produce(draft => {
+                    const draftNotification = getNotification(draft, notificationId);
+                    draftNotification.loadingActionStatus = 'loading';
+                }));
+
+                const oldIds = notification.oldBehaviors.map(b => b.id);
+                const newIds = notification.behaviors.map(b => b.id);
+
+                const toRemove = Arrays.diff(oldIds, newIds);
+                const toAdd = Arrays.diff(newIds, oldIds);
+
+                await Promise.all(
+                    toRemove.map(id => query(linkBehaviorGroupAction(notificationId, id, false)))
+                    .concat(toAdd.map(id => query(linkBehaviorGroupAction(notificationId, id, true))))
+                );
+                // Todo: Check status and show a fail depending on the outcome
+
+                setNotificationRows(produce(draft => {
+                    const draftNotification = getNotification(draft, notificationId);
+                    draftNotification.loadingActionStatus = 'done';
+                }));
+            }
         }
 
-        query(linkBehaviorGroupAction(notificationId, behaviorGroup.id, linkBehavior)).then(result => {
-            if (result.payload?.status === 200) {
-                console.log('200! setting loading to false');
-                setNotificationRows(produce(draft => {
-                    getBehaviorGroup(draft, notificationId, behaviorGroup.id).isLoading = false;
-                    console.log('draft', draft);
-                }));
-            } else if (result.payload?.status === 204) {
-                removeBehaviorGroup(notificationId, behaviorGroup.id);
-            } else {
-                // TODO: Show error if this fails
+        setNotificationRows(produce(draft => {
+            const notification = getNotification(draft, notificationId);
+
+            if (notification.isEditMode && command === 'cancel') {
+                notification.behaviors = notification.oldBehaviors;
             }
-        });
-    }, [ query, removeBehaviorGroup, setNotificationRows ]);
+
+            notification.isEditMode = command === 'edit';
+            if (notification.isEditMode) {
+                notification.oldBehaviors = notification.behaviors;
+            }
+        }));
+    }, [ setNotificationRows, notificationRows, query ]);
+
+    const startEditMode = React.useCallback((notificationId: UUID) => {
+        setEditMode(notificationId, 'edit');
+    }, [ setEditMode ]);
+
+    const finishEditMode = React.useCallback((notificationId: UUID) => {
+        setEditMode(notificationId, 'finish');
+    }, [ setEditMode ]);
+
+    const cancelEditMode = React.useCallback((notificationId: UUID) => {
+        setEditMode(notificationId, 'cancel');
+    }, [ setEditMode ]);
 
     React.useEffect(() => {
         if (notifications !== prevNotificationInput) {
             setNotificationRows(_prev => notifications.map(notification => ({
                 ...notification,
                 loadingActionStatus: 'loading',
-                behaviors: []
+                behaviors: [],
+                isEditMode: false
             })));
         }
 
@@ -132,6 +160,9 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
 
     return {
         rows: notificationRows,
-        updateBehaviorGroupLink
+        updateBehaviorGroupLink,
+        startEditMode,
+        finishEditMode,
+        cancelEditMode
     };
 };

@@ -1,5 +1,4 @@
-import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
-import { PencilAltIcon } from '@patternfly/react-icons';
+import { Skeleton } from '@patternfly/react-core';
 import { ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -10,20 +9,34 @@ import { BehaviorGroup, NotificationBehaviorGroup } from '../../types/Notificati
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
+import { BehaviorGroupCellControl, OnNotificationIdHandler } from './Table/BehaviorGroupCellControl';
 
-export type OnEditNotification = (isLinked: boolean, notification: NotificationBehaviorGroup, behaviorGroup?: BehaviorGroup) => void;
+export type OnBehaviorGroupLinkUpdated = (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, isLinked: boolean) => void;
 
 export interface NotificationsBehaviorGroupTableProps {
     behaviorGroupContent: BehaviorGroupContent;
     notifications: Array<BehaviorGroupNotificationRow>;
-    onEdit?: OnEditNotification;
+    onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
+    onStartEditing: OnNotificationIdHandler;
+    onFinishEditing: OnNotificationIdHandler;
+    onCancelEditing: OnNotificationIdHandler;
 }
 
 const buttonCellClassName = style({
     width: '10px !important'
 });
 
-const toTableRows = (notifications: Array<BehaviorGroupNotificationRow>, behaviorGroupContent: BehaviorGroupContent, onEdit?: OnEditNotification) => {
+type Callbacks = {
+    onStartEditing: OnNotificationIdHandler;
+    onFinishEditing:  OnNotificationIdHandler;
+    onCancelEditing: OnNotificationIdHandler;
+    onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
+};
+
+const toTableRows = (
+    notifications: Array<BehaviorGroupNotificationRow>,
+    behaviorGroupContent: BehaviorGroupContent,
+    callback: Callbacks) => {
     return notifications.map((notification => ({
         id: notification.id,
         key: notification.id,
@@ -43,15 +56,19 @@ const toTableRows = (notifications: Array<BehaviorGroupNotificationRow>, behavio
                             notification={ notification }
                             behaviorGroupContent={ behaviorGroupContent }
                             selected={ notification.behaviors ?? emptyImmutableArray }
-                            isMuted={ false }
-                            onSelect={ onEdit }
+                            onSelect={ callback.onBehaviorGroupLinkUpdated }
+                            isEditMode={ notification.isEditMode }
                         />
                     </span>
             },
             {
-                title: <Button variant={ ButtonVariant.plain }>
-                    <PencilAltIcon />
-                </Button>,
+                title: <BehaviorGroupCellControl
+                    notificationId={ notification.id }
+                    isEditMode={ notification.isEditMode }
+                    onStartEditing={ callback.onStartEditing }
+                    onCancelEditMode={ callback.onCancelEditing }
+                    onFinishEditing={ callback.onFinishEditing }
+                />,
                 props: {
                     className: buttonCellClassName
                 }
@@ -81,8 +98,16 @@ const cells: Array<ICell> = [
 
 export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
 
-    const rows = React.useMemo(() => toTableRows(props.notifications, props.behaviorGroupContent, props.onEdit),
-        [ props.notifications, props.behaviorGroupContent, props.onEdit ]);
+    const callbacks: Callbacks = React.useMemo(() => ({
+        onStartEditing: props.onStartEditing,
+        onFinishEditing: props.onFinishEditing,
+        onCancelEditing: props.onCancelEditing,
+        onBehaviorGroupLinkUpdated: props.onBehaviorGroupLinkUpdated
+    }), [ props.onStartEditing, props.onFinishEditing, props.onCancelEditing, props.onBehaviorGroupLinkUpdated ]);
+
+    const rows = React.useMemo(() => {
+        return toTableRows(props.notifications, props.behaviorGroupContent, callbacks);
+    }, [ props.notifications, props.behaviorGroupContent, callbacks ]);
 
     return (
         <Table

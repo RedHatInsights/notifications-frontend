@@ -1,57 +1,66 @@
 import {
-    DropdownItem,
+    Chip, ChipGroup,
+    fillTemplate,
     OptionsMenu,
     OptionsMenuItem,
     OptionsMenuToggle,
-    Spinner,
     Split,
     SplitItem
 } from '@patternfly/react-core';
-import { BellSlashIcon, CheckIcon } from '@patternfly/react-icons';
-import { global_active_color_100, global_icon_FontSize_sm, global_palette_black_400 } from '@patternfly/react-tokens';
+import { BellSlashIcon } from '@patternfly/react-icons';
+import { global_palette_black_400 } from '@patternfly/react-tokens';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
-import { BehaviorGroupRowElement } from '../../../pages/Notifications/List/useBehaviorGroupNotificationRows';
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
+import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
 
 interface BehaviorGroupCellProps {
     id: string;
     notification: NotificationBehaviorGroup;
     behaviorGroupContent: BehaviorGroupContent;
-    selected: ReadonlyArray<BehaviorGroupRowElement>;
-    isMuted: boolean;
-    onSelect?: (linkBehavior: boolean, notification: NotificationBehaviorGroup, behaviorGroup?: BehaviorGroup) => void;
+    selected: ReadonlyArray<BehaviorGroup>;
+    onSelect?: (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, linkBehavior: boolean) => void;
+    isEditMode: boolean;
 }
 
-const optionItemClassName = style({
-    textAlign: 'left',
-    display: 'block'
-});
+interface BehaviorGroupChip {
+    behaviorGroup: BehaviorGroup;
+    notification: BehaviorGroupCellProps['notification'];
+    onSelect?: BehaviorGroupCellProps['onSelect'];
+}
 
-const iconClassName = style({
-    fontSize: global_icon_FontSize_sm.var,
-    alignSelf: 'center'
-});
+const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
+    const unlink = React.useCallback(() => {
+        const onSelect = props.onSelect;
+        if (onSelect) {
+            onSelect(props.notification, props.behaviorGroup, false);
+        }
+    }, [ props.onSelect, props.behaviorGroup, props.notification ]);
+
+    return <Chip onClick={ unlink }>
+        { props.behaviorGroup.displayName }
+    </Chip>;
+};
+
+const numChips = 3;
+const remainingTemplate  = '${remaining} more';
 
 export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> = props => {
 
     const [ isOpen, setOpen ] = React.useState(false);
 
-    const onSelected = React.useCallback((event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent) => {
+    const onSelected = React.useCallback((event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent) => {
         const dataset = (event?.currentTarget?.firstChild as HTMLElement)?.dataset ?? emptyImmutableObject;
         const onSelect = props.onSelect;
         if (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError && onSelect) {
             if (dataset.behaviorGroupId) {
-                const found = props.behaviorGroupContent.content.find(bg => bg.id === dataset.behaviorGroupId);
+                const found = props.behaviorGroupContent.content.find(findById(dataset.behaviorGroupId));
                 if (found) {
-                    const isSelected = !!props.selected.find(el => el.id === found.id);
-                    onSelect(!isSelected, props.notification, found);
+                    const isSelected = !!props.selected.find(findById(found.id));
+                    onSelect(props.notification, found, !isSelected);
                 }
-            } else if (dataset.isMuted) {
-                console.error('Not yet implemented');
             }
         }
     }, [ props.onSelect, props.behaviorGroupContent, props.notification, props.selected ]);
@@ -63,64 +72,53 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             ];
         }
 
-        let anyIsLoading = false;
-
         return props.behaviorGroupContent.content.map(bg => {
-            const selected = props.selected.find(el => el.id === bg.id);
-            anyIsLoading = anyIsLoading || (selected?.isLoading ?? false);
-            const showSelected = selected?.isLoading ? false : !!selected;
+            const selected = !!props.selected.find(findById(bg.id));
 
             return (
-                <DropdownItem
+                <OptionsMenuItem
                     key={ bg.id }
-                    component="button"
-                    onClick={ onSelected }
+                    onSelect={ onSelected }
                     data-behavior-group-id={ bg.id }
-                    isDisabled={ !props.onSelect || selected?.isLoading }
-                    className={ optionItemClassName }
+                    isSelected={ selected }
                 >
-                    <Split hasGutter>
-                        <SplitItem isFilled>
-                            { bg.displayName }
-                        </SplitItem>
-                        <SplitItem className={ iconClassName }>
-                            { selected?.isLoading && <Spinner size="sm" /> }
-                            { showSelected && <CheckIcon color={ global_active_color_100.value } /> }
-                        </SplitItem>
-                    </Split>
-                </DropdownItem>
+                    { bg.displayName }
+                </OptionsMenuItem>
             );
-        }).concat(
-            <OptionsMenuItem
-                data-is-muted={ true }
-                isSelected={ props.isMuted }
-                isDisabled={ !props.onSelect || anyIsLoading }
-            >
-                <Split hasGutter>
-                    <SplitItem><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
-                    <SplitItem>Mute</SplitItem>
-                </Split>
-            </OptionsMenuItem>
-        );
-    }, [ props.behaviorGroupContent, props.selected, props.isMuted, props.onSelect, onSelected ]);
+        });
+    }, [ props.behaviorGroupContent, props.selected, onSelected ]);
 
     const toggle = React.useMemo(() => {
-        let content;
+        return (
+            <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ (
+                <ChipGroup numChips={ numChips } collapsedText={ remainingTemplate }>
+                    { props.selected.map(value => (
+                        <BehaviorGroupChip key={ value.id } behaviorGroup={ value } notification={ props.notification } onSelect={ props.onSelect } />
+                    )) }
+                </ChipGroup>
+            ) } />
+        );
+    }, [ props.selected, props.notification, props.onSelect ]);
+
+    const readonlyText = React.useMemo(() => {
         if (props.selected.length === 0) {
-            content = <Split hasGutter>
+            return <Split hasGutter>
                 <SplitItem><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
                 <SplitItem>Mute</SplitItem>
             </Split>;
-        } else if (props.selected.length === 1) {
-            content = props.selected[0].displayName;
-        } else {
-            content = `${props.selected.length} selected`;
         }
 
-        return (
-            <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ content } />
-        );
+        const first = props.selected.slice(0, numChips).map(v => v.displayName).join(', ');
+        const remaining = props.selected.length > numChips ? fillTemplate(remainingTemplate, {
+            remaining: props.selected.length - numChips
+        }) : undefined;
+
+        return first + (remaining ? ` and ${remaining}` : '');
     }, [ props.selected ]);
+
+    if (!props.isEditMode) {
+        return <span> { readonlyText } </span>;
+    }
 
     return <OptionsMenu id={ props.id } direction="up" menuItems={ items } toggle={ toggle } isOpen={ isOpen } menuAppendTo={ document.body } />;
 };
