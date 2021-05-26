@@ -22,39 +22,10 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
-  export const Attributes = zodSchemaAttributes();
-  export type Attributes = unknown;
-
   export const BasicAuthentication = zodSchemaBasicAuthentication();
   export type BasicAuthentication = {
     password?: string | undefined | null;
     username?: string | undefined | null;
-  };
-
-  export const BehaviorGroup = zodSchemaBehaviorGroup();
-  export type BehaviorGroup = {
-    actions?: Array<BehaviorGroupAction> | undefined | null;
-    bundle_id: UUID;
-    created?: string | undefined | null;
-    default_behavior?: boolean | undefined | null;
-    display_name: string;
-    id?: UUID | undefined | null;
-    name: string;
-    updated?: string | undefined | null;
-  };
-
-  export const BehaviorGroupAction = zodSchemaBehaviorGroupAction();
-  export type BehaviorGroupAction = {
-    behaviorGroup?: BehaviorGroup | undefined | null;
-    created?: string | undefined | null;
-    endpoint?: Endpoint | undefined | null;
-    id?: BehaviorGroupActionId | undefined | null;
-  };
-
-  export const BehaviorGroupActionId = zodSchemaBehaviorGroupActionId();
-  export type BehaviorGroupActionId = {
-    behaviorGroupId: UUID;
-    endpointId: UUID;
   };
 
   export const Bundle = zodSchemaBundle();
@@ -66,8 +37,8 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
-  export const EmailSubscriptionAttributes = zodSchemaEmailSubscriptionAttributes();
-  export type EmailSubscriptionAttributes = unknown;
+  export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
+  export type EmailSubscriptionProperties = unknown;
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
   export type EmailSubscriptionType = 'DAILY' | 'INSTANT';
@@ -80,7 +51,7 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     properties?:
-      | (WebhookAttributes | EmailSubscriptionAttributes)
+      | (WebhookProperties | EmailSubscriptionProperties)
       | undefined
       | null;
     type: EndpointType;
@@ -96,6 +67,9 @@ export namespace Schemas {
     meta: Meta;
   };
 
+  export const EndpointProperties = zodSchemaEndpointProperties();
+  export type EndpointProperties = unknown;
+
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType = 'webhook' | 'email_subscription' | 'default';
 
@@ -108,6 +82,7 @@ export namespace Schemas {
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application | undefined | null;
+    application_id: UUID;
     description?: string | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
@@ -226,6 +201,28 @@ export namespace Schemas {
     invocationTime: number;
   };
 
+  export const RbacRaw = zodSchemaRbacRaw();
+  export type RbacRaw = {
+    data?:
+      | Array<{
+          [x: string]: unknown;
+        }>
+      | undefined
+      | null;
+    links?:
+      | {
+          [x: string]: string;
+        }
+      | undefined
+      | null;
+    meta?:
+      | {
+          [x: string]: number;
+        }
+      | undefined
+      | null;
+  };
+
   export const Response = zodSchemaResponse();
   export type Response = {
     allowedMethods?: Array<string> | undefined | null;
@@ -264,14 +261,17 @@ export namespace Schemas {
   export const UriBuilder = zodSchemaUriBuilder();
   export type UriBuilder = unknown;
 
-  export const WebhookAttributes = zodSchemaWebhookAttributes();
-  export type WebhookAttributes = {
+  export const WebhookProperties = zodSchemaWebhookProperties();
+  export type WebhookProperties = {
     basic_authentication?: BasicAuthentication | undefined | null;
-    disable_ssl_verification?: boolean | undefined | null;
+    disable_ssl_verification: boolean;
     method: HttpType;
     secret_token?: string | undefined | null;
     url: string;
   };
+
+  export const __Empty = zodSchema__Empty();
+  export type __Empty = string | undefined;
 
   function zodSchemaApplication() {
       return z
@@ -286,53 +286,11 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaAttributes() {
-      return z.unknown();
-  }
-
   function zodSchemaBasicAuthentication() {
       return z
       .object({
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaBehaviorGroup() {
-      return z
-      .object({
-          actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
-          bundle_id: zodSchemaUUID(),
-          created: z.string().optional().nullable(),
-          default_behavior: z.boolean().optional().nullable(),
-          display_name: z.string(),
-          id: zodSchemaUUID().optional().nullable(),
-          name: z.string(),
-          updated: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaBehaviorGroupAction() {
-      return z
-      .object({
-          behaviorGroup: z
-          .lazy(() => zodSchemaBehaviorGroup())
-          .optional()
-          .nullable(),
-          created: z.string().optional().nullable(),
-          endpoint: zodSchemaEndpoint().optional().nullable(),
-          id: zodSchemaBehaviorGroupActionId().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaBehaviorGroupActionId() {
-      return z
-      .object({
-          behaviorGroupId: zodSchemaUUID(),
-          endpointId: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -349,7 +307,7 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaEmailSubscriptionAttributes() {
+  function zodSchemaEmailSubscriptionProperties() {
       return z.unknown();
   }
 
@@ -367,8 +325,8 @@ export namespace Schemas {
           name: z.string(),
           properties: z
           .union([
-              zodSchemaWebhookAttributes(),
-              zodSchemaEmailSubscriptionAttributes()
+              zodSchemaWebhookProperties(),
+              zodSchemaEmailSubscriptionProperties()
           ])
           .optional()
           .nullable(),
@@ -388,6 +346,10 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaEndpointProperties() {
+      return z.unknown();
+  }
+
   function zodSchemaEndpointType() {
       return z.enum([ 'webhook', 'email_subscription', 'default' ]);
   }
@@ -405,6 +367,7 @@ export namespace Schemas {
       return z
       .object({
           application: zodSchemaApplication().optional().nullable(),
+          application_id: zodSchemaUUID(),
           description: z.string().optional().nullable(),
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
@@ -532,6 +495,16 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaRbacRaw() {
+      return z
+      .object({
+          data: z.array(z.record(z.unknown())).optional().nullable(),
+          links: z.record(z.string()).optional().nullable(),
+          meta: z.record(z.number().int()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaResponse() {
       return z
       .object({
@@ -575,18 +548,22 @@ export namespace Schemas {
       return z.unknown();
   }
 
-  function zodSchemaWebhookAttributes() {
+  function zodSchemaWebhookProperties() {
       return z
       .object({
           basic_authentication: zodSchemaBasicAuthentication()
           .optional()
           .nullable(),
-          disable_ssl_verification: z.boolean().optional().nullable(),
+          disable_ssl_verification: z.boolean(),
           method: zodSchemaHttpType(),
           secret_token: z.string().optional().nullable(),
           url: z.string()
       })
       .nonstrict();
+  }
+
+  function zodSchema__Empty() {
+      return z.string().max(0).optional();
   }
 }
 
@@ -815,14 +792,12 @@ export namespace Operations {
   }
   // DELETE /endpoints/{id}
   export namespace EndpointServiceDeleteEndpoint {
-    const Response204 = z.string();
-    type Response204 = string;
     export interface Params {
       id: Schemas.UUID;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 204, Response204>
+      | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -834,7 +809,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
+            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 204) ]
         })
         .build();
     };
@@ -867,14 +842,12 @@ export namespace Operations {
   }
   // DELETE /endpoints/{id}/enable
   export namespace EndpointServiceDisableEndpoint {
-    const Response204 = z.string();
-    type Response204 = string;
     export interface Params {
       id: Schemas.UUID;
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 204, Response204>
+      | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -886,7 +859,7 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response204, 'unknown', 204) ]
+            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 204) ]
         })
         .build();
     };
