@@ -1,12 +1,19 @@
 import {
-    Button,
-    ButtonVariant,
     Card,
     CardActions,
     CardBody,
     CardHeader,
     CardHeaderMain,
-    Grid, GridItem, Skeleton, Text, TextContent, TextVariants
+    Dropdown,
+    DropdownItem,
+    DropdownPosition,
+    Grid,
+    GridItem,
+    KebabToggle,
+    Skeleton,
+    Text,
+    TextContent,
+    TextVariants
 } from '@patternfly/react-core';
 import { c_form__label_FontSize } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
@@ -33,7 +40,7 @@ export interface BehaviorGroupProps extends OuiaComponentProps {
 
 export interface BehaviorGroupCardLayout {
     title: React.ReactNode;
-    actions: Array<React.ReactNode>;
+    dropdownItems?: Array<React.ReactNode>;
     contents: Array<{
         key: string;
         action: React.ReactNode;
@@ -42,12 +49,23 @@ export interface BehaviorGroupCardLayout {
 }
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
+    const [ isOpen, setOpen ] = React.useState(false);
+
+    const switchOpen = React.useCallback(() => setOpen(prev => !prev), [ setOpen ]);
+
     return (
         <Card isFlat className={ cardClassName }>
             <CardHeader>
                 <CardHeaderMain><TextContent><Text component={ TextVariants.h4 }> { props.title } </Text></TextContent></CardHeaderMain>
                 <CardActions>
-                    { props.actions }
+                    <Dropdown
+                        onSelect={ switchOpen }
+                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
+                        isOpen={ isOpen }
+                        isPlain
+                        dropdownItems={ props.dropdownItems }
+                        position={ DropdownPosition.right }
+                    />
                 </CardActions>
             </CardHeader>
             <CardBody>
@@ -84,10 +102,14 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
         onEdit(props.behaviorGroup);
     }, [ props.behaviorGroup, props.onEdit ]);
 
+    const dropdownItems = React.useMemo(() => [
+        <DropdownItem key="on-edit" onClick={ onClickEdit }> Edit </DropdownItem>
+    ], [ onClickEdit ]);
+
     return (
         <BehaviorGroupCardLayout
             title={ props.behaviorGroup.displayName }
-            actions={ [ <Button key="edit-button" variant={ ButtonVariant.link } onClick={ onClickEdit }>Edit</Button> ] }
+            dropdownItems={ dropdownItems }
             contents={ props.behaviorGroup.actions.map((action, index) => ({
                 key: `${index}-${action.integrationId}`,
                 recipient: <Recipient action={ action } />,
@@ -103,7 +125,6 @@ export const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
     return (
         <BehaviorGroupCardLayout
             title={ <Skeleton width="300px" /> }
-            actions={ [] }
             contents={ [
                 {
                     key: 'skeleton-1',
