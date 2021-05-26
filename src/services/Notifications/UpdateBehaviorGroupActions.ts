@@ -1,6 +1,6 @@
 import { useMutation } from 'react-fetching-library';
 
-import { Operations } from '../../generated/OpenapiNotifications';
+import { Operations } from '../../generated/OpenapiBehaviorGroups';
 import { UUID } from '../../types/Notification';
 
 type UpdateBehaviorGroupActionsParams = {
