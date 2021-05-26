@@ -17,9 +17,11 @@ import {
 } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
+import { Schemas as SchemasBehaviorGroup } from '../../../../generated/OpenapiBehaviorGroups';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
+import BehaviorGroup = SchemasBehaviorGroup.BehaviorGroup;
 
 type RouterAndRoute = {
   router: MemoryRouterProps;
@@ -167,8 +169,7 @@ const mockBehaviorGroup = () => {
                             }
                         }
                     }
-                ],
-                default_behavior: false
+                ]
             },
             {
                 created: '2021-05-05T18:14:40.698201',
@@ -192,8 +193,7 @@ const mockBehaviorGroup = () => {
                             properties: null
                         }
                     }
-                ],
-                default_behavior: false
+                ]
             },
             {
                 created: '2021-05-05T18:14:33.482023',
@@ -217,10 +217,9 @@ const mockBehaviorGroup = () => {
                             properties: null
                         }
                     }
-                ],
-                default_behavior: false
+                ]
             }
-        ]
+        ] as Array<BehaviorGroup>
     });
 };
 
@@ -580,6 +579,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: [
                     {
                         id: '3',
+                        application_id: 'my-app',
                         application: {
                             id: 'my-app',
                             bundle_id: 'my-bundle-id',
@@ -624,6 +624,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: [
                     {
                         id: '3',
+                        application_id: 'my-app',
                         application: {
                             id: 'my-app',
                             bundle_id: 'my-bundle-id',
@@ -676,6 +677,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: [
                     {
                         id: '3',
+                        application_id: 'my-app',
                         application: {
                             id: 'my-app',
                             bundle_id: 'my-bundle-id',
@@ -736,6 +738,7 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
+                    application_id: 'app',
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
@@ -788,6 +791,7 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
+                    application_id: 'app',
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
@@ -840,6 +844,7 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
+                    application_id: 'app',
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
@@ -893,6 +898,7 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get(defaultGetEventTypesUrl, {
             body: [
                 {
+                    application_id: 'app',
                     application: {
                         display_name: 'the app',
                         created: Date.now().toString(),
@@ -948,6 +954,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
+                        application_id: 'app',
                         application: {
                             display_name: 'the app',
                             created: Date.now().toString(),
@@ -1009,6 +1016,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
+                        application_id: 'app',
                         application: {
                             display_name: 'the app',
                             created: Date.now().toString(),
