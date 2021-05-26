@@ -56,7 +56,6 @@ export type BehaviorGroup = {
     readonly id: UUID;
     readonly actions: ReadonlyArray<Action>;
     readonly bundleId: UUID,
-    readonly isDefault: boolean;
     readonly displayName: string;
 }
 
