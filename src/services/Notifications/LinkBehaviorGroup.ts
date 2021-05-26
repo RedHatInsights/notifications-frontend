@@ -1,4 +1,4 @@
-import { Operations } from '../../generated/OpenapiNotifications';
+import { Operations } from '../../generated/OpenapiBehaviorGroups';
 import { UUID } from '../../types/Notification';
 import NotificationServiceLinkBehaviorGroupToEventType = Operations.NotificationServiceLinkBehaviorGroupToEventType;
 import NotificationServiceUnlinkBehaviorGroupFromEventType = Operations.NotificationServiceUnlinkBehaviorGroupFromEventType;

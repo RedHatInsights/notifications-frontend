@@ -51,7 +51,7 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 
     switch (integrationBase.type) {
         case IntegrationType.WEBHOOK:
-            const properties = serverIntegration.properties as Schemas.WebhookAttributes;
+            const properties = serverIntegration.properties as Schemas.WebhookProperties;
             return {
                 ...integrationBase,
                 url: properties.url || '',
