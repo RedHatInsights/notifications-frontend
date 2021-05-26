@@ -7,7 +7,7 @@ import { style } from 'typestyle';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useListNotifications } from '../../../services/useListNotifications';
-import { BehaviorGroup, Facet, NotificationBehaviorGroup } from '../../../types/Notification';
+import { BehaviorGroup, Facet, NotificationBehaviorGroup, UUID } from '../../../types/Notification';
 import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import { useBehaviorGroupContent } from './useBehaviorGroupContent';
 import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotificationRows';
@@ -39,16 +39,33 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
     const {
         rows: notificationRows,
         updateBehaviorGroupLink,
-        setReadOnly: setNotificationReadOnly
+        startEditMode,
+        finishEditMode,
+        cancelEditMode
     } = useBehaviorGroupNotificationRows(
         useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value : emptyArray
     );
 
-    const onEdit = React.useCallback((isLinked: boolean, notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup) => {
+    const onBehaviorGroupLinkUpdated = React.useCallback((
+        notification: NotificationBehaviorGroup,
+        behaviorGroup: BehaviorGroup,
+        isLinked: boolean) => {
         if (behaviorGroup) {
             updateBehaviorGroupLink(notification.id, behaviorGroup, isLinked);
         }
     }, [ updateBehaviorGroupLink ]);
+
+    const onStartEditing = React.useCallback((notificationId: UUID) => {
+        startEditMode(notificationId);
+    }, [ startEditMode ]);
+
+    const onFinishEditing = React.useCallback((notificationId: UUID) => {
+        finishEditMode(notificationId);
+    }, [ finishEditMode ]);
+
+    const onCancelEditing = React.useCallback((notificationId: UUID) => {
+        cancelEditMode(notificationId);
+    }, [ cancelEditMode ]);
 
     return (
         <Section>
@@ -68,8 +85,10 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
                 <NotificationsBehaviorGroupTable
                     notifications={ notificationRows }
                     behaviorGroupContent={ behaviorGroupContent }
-                    onEdit={ onEdit }
-                    onSetEditMode={ setNotificationReadOnly }
+                    onBehaviorGroupLinkUpdated={ onBehaviorGroupLinkUpdated }
+                    onStartEditing={ onStartEditing }
+                    onFinishEditing={ onFinishEditing }
+                    onCancelEditing={ onCancelEditing }
                 />
             </NotificationsToolbar>
         </Section>

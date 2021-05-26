@@ -10,7 +10,7 @@ export type OnNotificationIdHandler = (notificationId: UUID) => void;
 
 export interface BehaviorGroupCellControlProps {
     notificationId: UUID;
-    isReadOnly: boolean;
+    isEditMode: boolean;
     onStartEditing: OnNotificationIdHandler;
     onFinishEditing: OnNotificationIdHandler;
     onCancelEditMode: OnNotificationIdHandler;
@@ -23,7 +23,6 @@ interface ButtonWithNotificationIdProps extends Omit<ButtonProps, 'onClick'> {
 
 const toOnNotificationSetAdapter = (event: any, onClick: OnNotificationIdHandler) => {
     const dataset = (event.currentTarget as HTMLElement)?.dataset ?? emptyImmutableObject;
-    console.log(dataset);
     if (dataset.notificationId) {
         onClick(dataset.notificationId);
     }
@@ -46,7 +45,7 @@ export const BehaviorGroupCellControl: React.FunctionComponent<BehaviorGroupCell
         notificationId: props.notificationId
     };
 
-    if (props.isReadOnly) {
+    if (!props.isEditMode) {
         return <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onStartEditing }>
             <PencilAltIcon />
         </ButtonWithNotificationId>;

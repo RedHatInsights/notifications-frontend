@@ -1,30 +1,28 @@
 import {
     Chip, ChipGroup,
-    DropdownItem, fillTemplate,
+    fillTemplate,
     OptionsMenu,
     OptionsMenuItem,
     OptionsMenuToggle,
-    Spinner,
     Split,
     SplitItem
 } from '@patternfly/react-core';
-import { BellSlashIcon, CheckIcon } from '@patternfly/react-icons';
-import { global_active_color_100, global_icon_FontSize_sm, global_palette_black_400 } from '@patternfly/react-tokens';
+import { BellSlashIcon } from '@patternfly/react-icons';
+import { global_palette_black_400 } from '@patternfly/react-tokens';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
-import { BehaviorGroupRowElement } from '../../../pages/Notifications/List/useBehaviorGroupNotificationRows';
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
+import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
 
 interface BehaviorGroupCellProps {
     id: string;
     notification: NotificationBehaviorGroup;
     behaviorGroupContent: BehaviorGroupContent;
-    selected: ReadonlyArray<BehaviorGroupRowElement>;
-    onSelect?: (linkBehavior: boolean, notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup) => void;
-    isReadOnly: boolean;
+    selected: ReadonlyArray<BehaviorGroup>;
+    onSelect?: (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, linkBehavior: boolean) => void;
+    isEditMode: boolean;
 }
 
 interface BehaviorGroupChip {
@@ -33,21 +31,11 @@ interface BehaviorGroupChip {
     onSelect?: BehaviorGroupCellProps['onSelect'];
 }
 
-const optionItemClassName = style({
-    textAlign: 'left',
-    display: 'block'
-});
-
-const iconClassName = style({
-    fontSize: global_icon_FontSize_sm.var,
-    alignSelf: 'center'
-});
-
 const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
     const unlink = React.useCallback(() => {
         const onSelect = props.onSelect;
         if (onSelect) {
-            onSelect(false, props.notification, props.behaviorGroup);
+            onSelect(props.notification, props.behaviorGroup, false);
         }
     }, [ props.onSelect, props.behaviorGroup, props.notification ]);
 
@@ -63,15 +51,15 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
 
     const [ isOpen, setOpen ] = React.useState(false);
 
-    const onSelected = React.useCallback((event: React.MouseEvent<any> | React.KeyboardEvent | MouseEvent) => {
+    const onSelected = React.useCallback((event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent) => {
         const dataset = (event?.currentTarget?.firstChild as HTMLElement)?.dataset ?? emptyImmutableObject;
         const onSelect = props.onSelect;
         if (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError && onSelect) {
             if (dataset.behaviorGroupId) {
-                const found = props.behaviorGroupContent.content.find(bg => bg.id === dataset.behaviorGroupId);
+                const found = props.behaviorGroupContent.content.find(findById(dataset.behaviorGroupId));
                 if (found) {
-                    const isSelected = !!props.selected.find(el => el.id === found.id);
-                    onSelect(!isSelected, props.notification, found);
+                    const isSelected = !!props.selected.find(findById(found.id));
+                    onSelect(props.notification, found, !isSelected);
                 }
             }
         }
@@ -84,35 +72,21 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             ];
         }
 
-        let anyIsLoading = false;
-
         return props.behaviorGroupContent.content.map(bg => {
-            const selected = props.selected.find(el => el.id === bg.id);
-            anyIsLoading = anyIsLoading || (selected?.isLoading ?? false);
-            const showSelected = selected?.isLoading ? false : !!selected;
+            const selected = !!props.selected.find(findById(bg.id));
 
             return (
-                <DropdownItem
+                <OptionsMenuItem
                     key={ bg.id }
-                    component="button"
-                    onClick={ onSelected }
+                    onSelect={ onSelected }
                     data-behavior-group-id={ bg.id }
-                    isDisabled={ !props.onSelect || selected?.isLoading }
-                    className={ optionItemClassName }
+                    isSelected={ selected }
                 >
-                    <Split hasGutter>
-                        <SplitItem isFilled>
-                            { bg.displayName }
-                        </SplitItem>
-                        <SplitItem className={ iconClassName }>
-                            { selected?.isLoading && <Spinner size="sm" /> }
-                            { showSelected && <CheckIcon color={ global_active_color_100.value } /> }
-                        </SplitItem>
-                    </Split>
-                </DropdownItem>
+                    { bg.displayName }
+                </OptionsMenuItem>
             );
         });
-    }, [ props.behaviorGroupContent, props.selected, props.onSelect, onSelected ]);
+    }, [ props.behaviorGroupContent, props.selected, onSelected ]);
 
     const toggle = React.useMemo(() => {
         return (
@@ -139,10 +113,10 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             remaining: props.selected.length - numChips
         }) : undefined;
 
-        return first + (remaining ? `and ${remaining}` : '');
+        return first + (remaining ? ` and ${remaining}` : '');
     }, [ props.selected ]);
 
-    if (props.isReadOnly) {
+    if (!props.isEditMode) {
         return <span> { readonlyText } </span>;
     }
 
