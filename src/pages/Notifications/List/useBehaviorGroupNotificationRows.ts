@@ -8,7 +8,6 @@ import { getBehaviorGroupByNotificationAction } from '../../../services/Notifica
 import { linkBehaviorGroupAction } from '../../../services/Notifications/LinkBehaviorGroup';
 import { toBehaviorGroup } from '../../../types/adapters/BehaviorGroupAdapter';
 import { BehaviorGroup, Notification, NotificationBehaviorGroup, UUID } from '../../../types/Notification';
-import * as Arrays from '../../../utils/Arrays';
 import { findById } from '../../../utils/Find';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
@@ -78,17 +77,12 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
                     draftNotification.loadingActionStatus = 'loading';
                 }));
 
-                const oldIds = notification.oldBehaviors.map(b => b.id);
-                const newIds = notification.behaviors.map(b => b.id);
-
-                const toRemove = Arrays.diff(oldIds, newIds);
-                const toAdd = Arrays.diff(newIds, oldIds);
-
-                await Promise.all(
-                    toRemove.map(id => query(linkBehaviorGroupAction(notificationId, id, false)))
-                    .concat(toAdd.map(id => query(linkBehaviorGroupAction(notificationId, id, true))))
-                );
-                // Todo: Check status and show a fail depending on the outcome
+                const response = await query(linkBehaviorGroupAction(notificationId, notification.behaviors.map(b => b.id)));
+                if (response.payload?.status === 200) {
+                    // Todo: show success
+                } else {
+                    // Todo: Show failure
+                }
 
                 setNotificationRows(produce(draft => {
                     const draftNotification = getNotification(draft, notificationId);

@@ -2,7 +2,7 @@ import { useTransformQueryResponse } from '@redhat-cloud-services/insights-commo
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useQuery } from 'react-fetching-library';
 
-import { Operations } from '../../generated/OpenapiBehaviorGroups';
+import { Operations } from '../../generated/OpenapiPrivate';
 import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
 import { UUID } from '../../types/Notification';
 
