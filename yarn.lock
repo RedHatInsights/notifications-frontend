@@ -1493,10 +1493,10 @@
     "@scalprum/react-core" "^0.0.16"
     sanitize-html "^2.3.2"
 
-"@redhat-cloud-services/insights-common-typescript@4.6.3":
-  version "4.6.3"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-4.6.3.tgz#e0c3704ef1b4bb42a8e588269349a1694ee2289a"
-  integrity sha512-wN5npkHU4Ky6iZuxnKeQUKBY32xw4GamrItWv/daIHzuqZumcfj6qxSaKPrRZtxLAjzvoIRxPWlTToTWsczpeg==
+"@redhat-cloud-services/insights-common-typescript@4.7.0":
+  version "4.7.0"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-4.7.0.tgz#5858d94e9000000631d395d1bd9b2ca4b2d98991"
+  integrity sha512-VABAD8XfhZ641UinW1eBMPVJsoSdeFwLWVoRdx6dWzBSilgP39nlJL0D7dKhI6ZLxfyeN9uWrbFkRYTgT4ayVA==
   dependencies:
     camelcase "5.3.1"
     classnames "2.2.6"
@@ -6419,10 +6419,10 @@ inquirer@^6.2.2:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-insights-common-typescript-dev@0.1.13:
-  version "0.1.13"
-  resolved "https://registry.yarnpkg.com/insights-common-typescript-dev/-/insights-common-typescript-dev-0.1.13.tgz#ae4a686363e222f09b82273a3b0a98638e8bc1a7"
-  integrity sha512-rqmxdHvwK3ZeULNR9Hrjae0R03AMi9CuxLxyEqh+PUcLq011KFUoDnivfD2QS/Sw1/P0osYAUjAXhhv/eJnLNQ==
+insights-common-typescript-dev@0.1.14:
+  version "0.1.14"
+  resolved "https://registry.yarnpkg.com/insights-common-typescript-dev/-/insights-common-typescript-dev-0.1.14.tgz#bf5536ca636f43bd81614fd68a43a907fd766bdc"
+  integrity sha512-ok+s2AbAq6X6k3/sRNCF2blmKd3RzsVcsj3RQhw2L1tE9Xci/iBBqkrRotgTQTf/jrCZFUrq/Tfs0yb2Z3waEg==
 
 internal-ip@^4.3.0:
   version "4.3.0"
@@ -8790,18 +8790,18 @@ onetime@^5.1.0, onetime@^5.1.2:
   dependencies:
     mimic-fn "^2.1.0"
 
-openapi2typescript-cli@0.4.1:
-  version "0.4.1"
-  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.4.1.tgz#1215cbbc24b8facab92046ec3d7e5d78da14203a"
-  integrity sha512-Zvzdt3ywqZOnMrRWCpoSuJ9zhx9dd98O8BQEJlYQCQjnpMiYv9r6KpcmZWyC6TaH4fBryiSv2q2oQbFJE2zJ8A==
+openapi2typescript-cli@0.4.2:
+  version "0.4.2"
+  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.4.2.tgz#3b0f597f6f9ecf9acdbeb3b55ee2520f4e386f6d"
+  integrity sha512-PPL0cjruoNgE9w6Q7Oe+cXY3zbspOxe92+yCEeaasrj8mC1z2Xuw3BMSkc5B+z8b4EqsW1+t6k8Tv6hrETZxlQ==
   dependencies:
     eslint "6.0.0"
     prettier "2.1.1"
 
-openapi2typescript@0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/openapi2typescript/-/openapi2typescript-0.1.3.tgz#ea9ed93679973f696e1ed9e66d6232f96d7cbf46"
-  integrity sha512-8dEEC+AYD1+4yGoSCoNijkPEov6ork2WXtitJEujVIyvJc06u1+ykZtEM2i/lwTW0T1Xy+HJTAF9/i3fpkUoyw==
+openapi2typescript@0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/openapi2typescript/-/openapi2typescript-0.1.4.tgz#a9c4d120c2c14beb1af86cc4346128adefedad52"
+  integrity sha512-+B/JdDYnguq1vm9EueiaR7i5LUsKLSDO4UmnDr0eCwug6EfukvghMRzqYXqeQGoKRkK9GE9I34CaLa/NUiRDtQ==
   optionalDependencies:
     react-fetching-library "^1.7.4"
 

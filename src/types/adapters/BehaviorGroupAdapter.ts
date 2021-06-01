@@ -1,4 +1,4 @@
-import { Schemas } from '../../generated/OpenapiBehaviorGroups';
+import { Schemas } from '../../generated/OpenapiPrivate';
 import { BehaviorGroup, NewBehaviorGroup } from '../Notification';
 import { toAction } from './NotificationAdapter';
 

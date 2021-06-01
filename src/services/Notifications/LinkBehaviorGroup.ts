@@ -1,18 +1,10 @@
-import { Operations } from '../../generated/OpenapiBehaviorGroups';
+import { Operations } from '../../generated/OpenapiPrivate';
 import { UUID } from '../../types/Notification';
-import NotificationServiceLinkBehaviorGroupToEventType = Operations.NotificationServiceLinkBehaviorGroupToEventType;
-import NotificationServiceUnlinkBehaviorGroupFromEventType = Operations.NotificationServiceUnlinkBehaviorGroupFromEventType;
+import NotificationServiceUpdateEventTypeBehaviors = Operations.NotificationServiceUpdateEventTypeBehaviors;
 
-export const linkBehaviorGroupAction = (notificationId: UUID, behaviorGroupId: UUID, linkBehavior: boolean) => {
-    if (linkBehavior) {
-        return NotificationServiceLinkBehaviorGroupToEventType.actionCreator({
-            eventTypeId: notificationId,
-            behaviorGroupId
-        });
-    } else {
-        return NotificationServiceUnlinkBehaviorGroupFromEventType.actionCreator({
-            eventTypeId: notificationId,
-            behaviorGroupId
-        });
-    }
+export const linkBehaviorGroupAction = (notificationId: UUID, behaviorGroupIds: Array<UUID>) => {
+    return NotificationServiceUpdateEventTypeBehaviors.actionCreator({
+        body: behaviorGroupIds,
+        eventTypeId: notificationId
+    });
 };
