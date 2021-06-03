@@ -1,5 +1,5 @@
 import { Skeleton } from '@patternfly/react-core';
-import { ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { cellWidth, ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -89,7 +89,7 @@ const cells: Array<ICell> = [
     },
     {
         title: 'Behavior',
-        transforms: []
+        transforms: [ cellWidth(35) ]
     },
     {
         title: ''

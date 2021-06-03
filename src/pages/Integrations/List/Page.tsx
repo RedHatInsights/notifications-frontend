@@ -15,7 +15,8 @@ import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
-import { makeCreateAction, makeEditAction, makeNoneAction, useFormModalReducer } from '../../../hooks/useFormModalReducer';
+import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
+import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
@@ -24,7 +25,6 @@ import { integrationExporterFactory } from '../../../utils/exporters/Integration
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
-import { useDeleteModalReducer } from './useDeleteModalReducer';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 
@@ -64,20 +64,20 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
     }, [ integrationsQuery.payload ]);
 
     const integrationRows = useIntegrationRows(integrations.data);
-    const [ modalIsOpenState, dispatchModalIsOpen ] = useFormModalReducer<UserIntegration>(userIntegrationCopier);
-    const [ deleteModalState, dispatchDeleteModal ] = useDeleteModalReducer();
+    const [ modalIsOpenState, modalIsOpenActions ] = useFormModalReducer<UserIntegration>(userIntegrationCopier);
+    const [ deleteModalState, deleteModalActions ] = useDeleteModalReducer<UserIntegration>();
 
     const onAddIntegrationClicked = React.useCallback(() => {
-        dispatchModalIsOpen(makeCreateAction());
-    }, [ dispatchModalIsOpen ]);
+        modalIsOpenActions.create();
+    }, [ modalIsOpenActions ]);
 
     const onEdit = React.useCallback((integration: UserIntegration) => {
-        dispatchModalIsOpen(makeEditAction(integration));
-    }, [ dispatchModalIsOpen ]);
+        modalIsOpenActions.edit(integration);
+    }, [ modalIsOpenActions ]);
 
     const onDelete = React.useCallback((integration: UserIntegration) => {
-        dispatchDeleteModal(useDeleteModalReducer.makeDeleteAction(integration));
-    }, [ dispatchDeleteModal ]);
+        deleteModalActions.delete(integration);
+    }, [ deleteModalActions ]);
 
     const onExport = React.useCallback(async (type: ExporterType) => {
         const query = exportIntegrationsQuery.query;
@@ -127,11 +127,11 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
     const closeFormModal = React.useCallback((saved: boolean) => {
         const query = integrationsQuery.query;
-        dispatchModalIsOpen(makeNoneAction());
+        modalIsOpenActions.reset();
         if (saved) {
             query();
         }
-    }, [ dispatchModalIsOpen, integrationsQuery.query ]);
+    }, [ modalIsOpenActions, integrationsQuery.query ]);
 
     const closeDeleteModal = React.useCallback((deleted: boolean) => {
         const query = integrationsQuery.query;
@@ -139,8 +139,8 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             query();
         }
 
-        dispatchDeleteModal(useDeleteModalReducer.makeNoneAction());
-    }, [ dispatchDeleteModal, integrationsQuery.query ]);
+        deleteModalActions.reset();
+    }, [ deleteModalActions, integrationsQuery.query ]);
 
     // This is an estimate of how many rows are in the next page (Won't be always correct because a new row could be added while we are browsing)
     // Is used for the skeleton loading
@@ -182,10 +182,10 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                             onClose={ closeFormModal }
                         />
                     ) }
-                    { deleteModalState.integration && (
+                    { deleteModalState.data && (
                         <IntegrationDeleteModalPage
                             onClose={ closeDeleteModal }
-                            integration={ deleteModalState.integration }
+                            integration={ deleteModalState.data }
                         />
                     )}
                 </Section>

@@ -36,6 +36,7 @@ const contentTitleStyle = {
 export interface BehaviorGroupProps extends OuiaComponentProps {
     behaviorGroup: BehaviorGroup;
     onEdit: (behaviorGroup: BehaviorGroup) => void;
+    onDelete: (behaviorGroup: BehaviorGroup) => void;
 }
 
 export interface BehaviorGroupCardLayout {
@@ -102,9 +103,15 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
         onEdit(props.behaviorGroup);
     }, [ props.behaviorGroup, props.onEdit ]);
 
+    const onClickDelete = React.useCallback(() => {
+        const onDelete = props.onDelete;
+        onDelete(props.behaviorGroup);
+    }, [ props.behaviorGroup, props.onDelete ]);
+
     const dropdownItems = React.useMemo(() => [
-        <DropdownItem key="on-edit" onClick={ onClickEdit }> Edit </DropdownItem>
-    ], [ onClickEdit ]);
+        <DropdownItem key="on-edit" onClick={ onClickEdit }> Edit </DropdownItem>,
+        <DropdownItem key="on-delete" onClick={ onClickDelete }> Delete </DropdownItem>
+    ], [ onClickEdit, onClickDelete ]);
 
     return (
         <BehaviorGroupCardLayout
