@@ -1,6 +1,5 @@
 import {
     Chip, ChipGroup,
-    fillTemplate,
     OptionsMenu,
     OptionsMenuItem,
     OptionsMenuToggle,
@@ -8,6 +7,7 @@ import {
     SplitItem
 } from '@patternfly/react-core';
 import { BellSlashIcon } from '@patternfly/react-icons';
+import { TableText } from '@patternfly/react-table';
 import { global_palette_black_400 } from '@patternfly/react-tokens';
 import * as React from 'react';
 
@@ -15,7 +15,6 @@ import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehav
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
-import { TableText } from '@patternfly/react-table';
 
 interface BehaviorGroupCellProps {
     id: string;

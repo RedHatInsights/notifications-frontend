@@ -5,8 +5,8 @@ import {
     BehaviorGroupDeleteModalSkeleton
 } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal';
 import { useDeleteBehaviorGroupMutation } from '../../../services/Notifications/DeleteBehaviorGroup';
-import { BehaviorGroup } from '../../../types/Notification';
 import { useGetAffectedNotificationsByBehaviorGroupQuery } from '../../../services/Notifications/GetAffectedNotificationsByBehaviorGroup';
+import { BehaviorGroup } from '../../../types/Notification';
 
 export interface DeleteBehaviorGroupPageProps {
     behaviorGroup: BehaviorGroup;
