@@ -30,11 +30,13 @@ const toOnNotificationSetAdapter = (event: any, onClick: OnNotificationIdHandler
 };
 
 const ButtonWithNotificationId: React.FunctionComponent<ButtonWithNotificationIdProps> = props => {
+    const { notificationId, ...restProps } = props;
+
     const onClick = React.useCallback((event: any) => {
         toOnNotificationSetAdapter(event, props.onClick);
     }, [ props.onClick ]);
 
-    return <Button { ...props } onClick={ onClick } data-notification-id={ props.notificationId }>
+    return <Button { ...restProps } onClick={ onClick } data-notification-id={ notificationId }>
         { props.children }
     </Button>;
 };
