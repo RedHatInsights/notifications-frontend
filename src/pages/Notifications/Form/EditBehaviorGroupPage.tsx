@@ -1,3 +1,4 @@
+import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useContext } from 'react';
 import { ClientContext } from 'react-fetching-library';
@@ -11,7 +12,6 @@ import { deleteIntegrationActionCreator } from '../../../services/useDeleteInteg
 import { createIntegrationActionCreator } from '../../../services/useSaveIntegration';
 import { IntegrationType } from '../../../types/Integration';
 import { Action, BehaviorGroup, NewBehaviorGroup, NotificationType, UUID } from '../../../types/Notification';
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 
 interface EditBehaviorGroupPageProps {
     behaviorGroup?: Partial<BehaviorGroup>;

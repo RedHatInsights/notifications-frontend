@@ -1,6 +1,6 @@
 import { Button, ButtonProps, ButtonVariant, Split, SplitItem } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
-import { global_active_color_100, global_disabled_color_100,global_palette_black_600 } from '@patternfly/react-tokens';
+import { global_active_color_100, global_disabled_color_100, global_palette_black_600 } from '@patternfly/react-tokens';
 import * as React from 'react';
 
 import { UUID } from '../../../types/Notification';
