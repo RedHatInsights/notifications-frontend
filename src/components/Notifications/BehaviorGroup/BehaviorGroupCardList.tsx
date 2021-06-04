@@ -16,6 +16,7 @@ const cardWrapperClassName = style({
 
 interface BehaviorGroupCardListProps {
     onEdit: (behaviorGroup: BehaviorGroup) => void;
+    onDelete: (behaviorGroup: BehaviorGroup) => void;
     behaviorGroups: ReadonlyArray<BehaviorGroup>;
 }
 
@@ -60,6 +61,7 @@ export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardLis
                 element: <BehaviorGroupCard
                     behaviorGroup={ behaviorGroup }
                     onEdit={ props.onEdit }
+                    onDelete={ props.onDelete }
                 />
             })) }
         />

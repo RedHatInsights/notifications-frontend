@@ -4,7 +4,7 @@ notifications:
 dist: xenial
 os: linux
 node_js:
-- '10'
+- '14'
 cache:
   yarn: true
 env:

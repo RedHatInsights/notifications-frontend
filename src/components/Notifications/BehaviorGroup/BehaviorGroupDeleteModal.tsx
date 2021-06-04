@@ -29,25 +29,32 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
     const onDelete = useOnDeleteWrapper(props.onDelete, props.behaviorGroup);
 
     const cancelButtonTitle = React.useMemo(
-        () => props.conflictingNotifications.length === 0 ? 'Close' : 'Cancel',
+        () => props.conflictingNotifications.length === 0 ? 'Cancel' : 'Close',
         [ props.conflictingNotifications ]
     );
 
     const cancelButtonVariant = React.useMemo(
-        () => props.conflictingNotifications.length === 0 ? ButtonVariant.plain : ButtonVariant.link,
+        () => props.conflictingNotifications.length === 0 ? ButtonVariant.link : ButtonVariant.secondary,
         [ props.conflictingNotifications ]
     );
+
+    const [ ackDelete, setAckDelete ] = React.useState(false);
 
     const content = React.useMemo(() => {
         if (props.conflictingNotifications.length === 0) {
             return (
-                <Stack>
+                <Stack hasGutter>
                     <StackItem>
                         Action and recipient pairings assigned in <b>{ props.behaviorGroup.displayName }</b> will lost. You
                         will no longer be able to assign this behavior group to events.
                     </StackItem>
                     <StackItem>
-                        <Checkbox id="checkbox-delete-i-acknowledge" label="I acknowledge that this action cannot be undone" />
+                        <Checkbox
+                            id="checkbox-delete-i-acknowledge"
+                            label="I acknowledge that this action cannot be undone"
+                            onChange={ setAckDelete }
+                            isChecked={ ackDelete }
+                        />
                     </StackItem>
                 </Stack>
             );
@@ -55,7 +62,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
             const events = props.conflictingNotifications;
 
             return (
-                <Stack>
+                <Stack hasGutter>
                     <StackItem>
                         <b>{ props.behaviorGroup.displayName }</b> is associated to { events.length } events.
                         Please remove the behavior group from these events in order  to continue.
@@ -74,7 +81,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
                 </Stack>
             );
         }
-    }, [ props.conflictingNotifications, props.behaviorGroup ]);
+    }, [ props.conflictingNotifications, props.behaviorGroup, ackDelete, setAckDelete ]);
 
     return (
         <DeleteModal
@@ -86,6 +93,8 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
             onDelete={ onDelete }
             error={ props.error }
             titleIconVariant="warning"
+            actionButtonDisabled={ !ackDelete }
+            actionButtonHidden={ props.conflictingNotifications.length > 0 }
             cancelButtonTitle={ cancelButtonTitle }
             cancelButtonVariant={ cancelButtonVariant }
         />
@@ -101,9 +110,9 @@ export const BehaviorGroupDeleteModalSkeleton: React.FunctionComponent<BehaviorG
             title="Delete behavior group"
             actionButtonDisabled={ true }
             titleIconVariant="warning"
-            content={ <Stack>
-                <StackItem><Skeleton width="200px" /></StackItem>
-                <StackItem><Skeleton width="200px" /></StackItem>
+            content={ <Stack hasGutter>
+                <StackItem><Skeleton width="500px" /></StackItem>
+                <StackItem><Skeleton width="500px" /></StackItem>
             </Stack> }
             onClose={ props.onClose }
             isDeleting={ false }

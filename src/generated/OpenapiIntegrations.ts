@@ -28,6 +28,29 @@ export namespace Schemas {
     username?: string | undefined | null;
   };
 
+  export const BehaviorGroup = zodSchemaBehaviorGroup();
+  export type BehaviorGroup = {
+    actions?: Array<BehaviorGroupAction> | undefined | null;
+    bundle_id: UUID;
+    created?: string | undefined | null;
+    display_name: string;
+    id?: UUID | undefined | null;
+    updated?: string | undefined | null;
+  };
+
+  export const BehaviorGroupAction = zodSchemaBehaviorGroupAction();
+  export type BehaviorGroupAction = {
+    created?: string | undefined | null;
+    endpoint?: Endpoint | undefined | null;
+    id?: BehaviorGroupActionId | undefined | null;
+  };
+
+  export const BehaviorGroupActionId = zodSchemaBehaviorGroupActionId();
+  export type BehaviorGroupActionId = {
+    behaviorGroupId: UUID;
+    endpointId: UUID;
+  };
+
   export const Bundle = zodSchemaBundle();
   export type Bundle = {
     created?: string | undefined | null;
@@ -291,6 +314,38 @@ export namespace Schemas {
       .object({
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroup() {
+      return z
+      .object({
+          actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
+          bundle_id: zodSchemaUUID(),
+          created: z.string().optional().nullable(),
+          display_name: z.string(),
+          id: zodSchemaUUID().optional().nullable(),
+          updated: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroupAction() {
+      return z
+      .object({
+          created: z.string().optional().nullable(),
+          endpoint: zodSchemaEndpoint().optional().nullable(),
+          id: zodSchemaBehaviorGroupActionId().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBehaviorGroupActionId() {
+      return z
+      .object({
+          behaviorGroupId: zodSchemaUUID(),
+          endpointId: zodSchemaUUID()
       })
       .nonstrict();
   }

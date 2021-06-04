@@ -18,13 +18,12 @@ import {
     BehaviorGroupCardList,
     BehaviorGroupCardListSkeleton
 } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupCardList';
+import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import {
-    makeCreateAction,
-    makeEditAction,
-    makeNoneAction,
     useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { BehaviorGroup, UUID } from '../../../types/Notification';
 import { emptyImmutableArray } from '../../../utils/Immutable';
+import { DeleteBehaviorGroupPage } from '../Form/DeleteBehaviorGroupPage';
 import { EditBehaviorGroupPage } from '../Form/EditBehaviorGroupPage';
 import { BehaviorGroupContent } from './useBehaviorGroupContent';
 
@@ -76,13 +75,14 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
         return emptyImmutableArray;
     }, [ filter, props.behaviorGroupContent ]);
 
-    const [ modalState, dispatch ] = useFormModalReducer<BehaviorGroup>();
+    const [ editModalState, editModalActions ] = useFormModalReducer<BehaviorGroup>();
+    const [ deleteModalState, deleteModalActions ] = useDeleteModalReducer<BehaviorGroup>();
 
     const createGroup = React.useCallback(() => {
-        dispatch(makeCreateAction<BehaviorGroup>({
+        editModalActions.create({
             bundleId: props.bundleId
-        }));
-    }, [ dispatch, props.bundleId ]);
+        });
+    }, [ editModalActions, props.bundleId ]);
 
     const onCloseModal = React.useCallback((saved: boolean) => {
         const reload = props.behaviorGroupContent.reload;
@@ -90,12 +90,25 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
             reload();
         }
 
-        dispatch(makeNoneAction());
-    }, [ dispatch, props.behaviorGroupContent.reload ]);
+        editModalActions.reset();
+    }, [ editModalActions, props.behaviorGroupContent.reload ]);
 
     const onEdit = React.useCallback((behaviorGroup: BehaviorGroup) => {
-        dispatch(makeEditAction(behaviorGroup));
-    }, [ dispatch ]);
+        editModalActions.edit(behaviorGroup);
+    }, [ editModalActions ]);
+
+    const onDelete = React.useCallback((behaviorGroup: BehaviorGroup) => {
+        deleteModalActions.delete(behaviorGroup);
+    }, [ deleteModalActions ]);
+
+    const onCloseDelete = React.useCallback((deleted: boolean) => {
+        const reload = props.behaviorGroupContent.reload;
+        if (deleted) {
+            reload();
+        }
+
+        deleteModalActions.reset();
+    }, [ deleteModalActions, props.behaviorGroupContent.reload ]);
 
     const onClearFilter = React.useCallback(() => {
         setFilter('');
@@ -180,18 +193,24 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                 ) : props.behaviorGroupContent.hasError ? (
                                     <div>Error loading behavior groups</div>
                                 ) : (
-                                    <BehaviorGroupCardList onEdit={ onEdit } behaviorGroups={ filteredBehaviors } />
+                                    <BehaviorGroupCardList onEdit={ onEdit } onDelete={ onDelete } behaviorGroups={ filteredBehaviors } />
                                 ) }
                             </StackItem>
                         </>
                     ) }
                 </Stack>
-                { modalState.isOpen && (
+                { editModalState.isOpen && (
                     <EditBehaviorGroupPage
-                        behaviorGroup={ modalState.template }
+                        behaviorGroup={ editModalState.template }
                         onClose={ onCloseModal }
                     />
                 )}
+                { deleteModalState.isOpen && (
+                    <DeleteBehaviorGroupPage
+                        behaviorGroup={ deleteModalState.data }
+                        onClose={ onCloseDelete }
+                    />
+                ) }
             </ExpandableSection>
         </div>
     );

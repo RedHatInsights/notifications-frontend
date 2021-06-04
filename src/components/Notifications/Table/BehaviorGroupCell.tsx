@@ -1,6 +1,5 @@
 import {
     Chip, ChipGroup,
-    fillTemplate,
     OptionsMenu,
     OptionsMenuItem,
     OptionsMenuToggle,
@@ -8,6 +7,7 @@ import {
     SplitItem
 } from '@patternfly/react-core';
 import { BellSlashIcon } from '@patternfly/react-icons';
+import { TableText } from '@patternfly/react-table';
 import { global_palette_black_400 } from '@patternfly/react-tokens';
 import * as React from 'react';
 
@@ -43,9 +43,6 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
         { props.behaviorGroup.displayName }
     </Chip>;
 };
-
-const numChips = 3;
-const remainingTemplate  = '${remaining} more';
 
 export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> = props => {
 
@@ -91,7 +88,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     const toggle = React.useMemo(() => {
         return (
             <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ (
-                <ChipGroup numChips={ numChips } collapsedText={ remainingTemplate }>
+                <ChipGroup>
                     { props.selected.map(value => (
                         <BehaviorGroupChip key={ value.id } behaviorGroup={ value } notification={ props.notification } onSelect={ props.onSelect } />
                     )) }
@@ -108,16 +105,11 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             </Split>;
         }
 
-        const first = props.selected.slice(0, numChips).map(v => v.displayName).join(', ');
-        const remaining = props.selected.length > numChips ? fillTemplate(remainingTemplate, {
-            remaining: props.selected.length - numChips
-        }) : undefined;
-
-        return first + (remaining ? ` and ${remaining}` : '');
+        return props.selected.map(v => v.displayName).join(', ');
     }, [ props.selected ]);
 
     if (!props.isEditMode) {
-        return <span> { readonlyText } </span>;
+        return <TableText wrapModifier="truncate"> { readonlyText } </TableText>;
     }
 
     return <OptionsMenu id={ props.id } direction="up" menuItems={ items } toggle={ toggle } isOpen={ isOpen } menuAppendTo={ document.body } />;

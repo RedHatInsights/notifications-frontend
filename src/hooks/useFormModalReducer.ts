@@ -4,7 +4,7 @@ import { useMemo, useReducer } from 'react';
 enum UseFormModalReducerActionType {
     EDIT = 'edit',
     CREATE = 'create',
-    NONE = 'none'
+    RESET = 'reset'
 }
 
 interface UseFormModalReducerActionCreate<T> {
@@ -17,11 +17,16 @@ interface UseFormModalReducerActionEdit<T> {
     template: T;
 }
 
-interface UseFormModalReducerActionNone {
-    type: UseFormModalReducerActionType.NONE;
+interface UseFormModalReducerActionReset {
+    type: UseFormModalReducerActionType.RESET;
 }
 
-type UseFormModalReducerAction<T> = UseFormModalReducerActionCreate<T> | UseFormModalReducerActionEdit<T> | UseFormModalReducerActionNone;
+type UseFormModalReducerAction<T> = UseFormModalReducerActionCreate<T> | UseFormModalReducerActionEdit<T> | UseFormModalReducerActionReset;
+type ReducerAction<T> = {
+    create: (template?: Partial<T>) => void;
+    edit: (template: T) => void;
+    reset: () => void;
+};
 
 interface UseFormModalReducerState<T> {
     isOpen: boolean;
@@ -30,7 +35,7 @@ interface UseFormModalReducerState<T> {
     isCopy: boolean;
 }
 
-const noneState: UseFormModalReducerState<undefined> = {
+const initialState: UseFormModalReducerState<undefined> = {
     isOpen: false,
     isEdit: false,
     template: undefined,
@@ -59,8 +64,8 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
                     template: action.template,
                     isCopy: false
                 };
-            case UseFormModalReducerActionType.NONE:
-                return noneState;
+            case UseFormModalReducerActionType.RESET:
+                return initialState;
             default:
                 assertNever(action);
         }
@@ -69,24 +74,32 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
     return reducer;
 };
 
-export const makeCreateAction = <T>(template?: Partial<T>): UseFormModalReducerActionCreate<T> => ({
+const makeCreateAction = <T>(template?: Partial<T>): UseFormModalReducerActionCreate<T> => ({
     type: UseFormModalReducerActionType.CREATE,
     template
 });
 
-export const makeEditAction = <T>(template: T): UseFormModalReducerActionEdit<T> => ({
+const makeEditAction = <T>(template: T): UseFormModalReducerActionEdit<T> => ({
     type: UseFormModalReducerActionType.EDIT,
     template
 });
 
-export const makeNoneAction = (): UseFormModalReducerActionNone => ({
-    type: UseFormModalReducerActionType.NONE
+const makeResetAction = (): UseFormModalReducerActionReset => ({
+    type: UseFormModalReducerActionType.RESET
 });
 
-export const useFormModalReducer = <T>(copyFunction?: CopyFunction<T>) => {
+export const useFormModalReducer = <T>(copyFunction?: CopyFunction<T>): [ UseFormModalReducerState<T>, ReducerAction<T> ] => {
     const reducer = useMemo(() => {
         return buildReducer(copyFunction);
     }, [ copyFunction ]);
 
-    return useReducer(reducer, noneState);
+    const [ state, dispatch ] = useReducer(reducer, initialState);
+
+    const actions = useMemo<ReducerAction<T>>(() => ({
+        create: (data?: Partial<T>) => dispatch(makeCreateAction(data)),
+        edit: (data: T) => dispatch(makeEditAction(data)),
+        reset: () => dispatch(makeResetAction())
+    }), [ dispatch ]);
+
+    return [ state, actions ];
 };
