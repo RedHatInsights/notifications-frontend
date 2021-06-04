@@ -1,6 +1,6 @@
 import { Button, ButtonProps, ButtonVariant, Split, SplitItem } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
-import { global_active_color_100, global_palette_black_600 } from '@patternfly/react-tokens';
+import { global_active_color_100, global_disabled_color_100,global_palette_black_600 } from '@patternfly/react-tokens';
 import * as React from 'react';
 
 import { UUID } from '../../../types/Notification';
@@ -14,6 +14,7 @@ export interface BehaviorGroupCellControlProps {
     onStartEditing: OnNotificationIdHandler;
     onFinishEditing: OnNotificationIdHandler;
     onCancelEditMode: OnNotificationIdHandler;
+    isDisabled: boolean;
 }
 
 interface ButtonWithNotificationIdProps extends Omit<ButtonProps, 'onClick'> {
@@ -42,7 +43,8 @@ export const BehaviorGroupCellControl: React.FunctionComponent<BehaviorGroupCell
 
     const commonButtonProps = {
         variant: ButtonVariant.plain,
-        notificationId: props.notificationId
+        notificationId: props.notificationId,
+        isDisabled: props.isDisabled
     };
 
     if (!props.isEditMode) {
@@ -54,12 +56,12 @@ export const BehaviorGroupCellControl: React.FunctionComponent<BehaviorGroupCell
             <Split>
                 <SplitItem>
                     <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onFinishEditing }>
-                        <CheckIcon color={ global_active_color_100.value } />
+                        <CheckIcon color={ props.isDisabled ? global_disabled_color_100.value : global_active_color_100.value } />
                     </ButtonWithNotificationId>
                 </SplitItem>
                 <SplitItem>
                     <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onCancelEditMode }>
-                        <CloseIcon color={ global_palette_black_600.value } />
+                        <CloseIcon color={ props.isDisabled ? global_disabled_color_100.value : global_palette_black_600.value } />
                     </ButtonWithNotificationId>
                 </SplitItem>
             </Split>

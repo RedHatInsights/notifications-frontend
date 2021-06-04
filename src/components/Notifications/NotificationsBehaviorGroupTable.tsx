@@ -68,6 +68,7 @@ const toTableRows = (
                     onStartEditing={ callback.onStartEditing }
                     onCancelEditMode={ callback.onCancelEditing }
                     onFinishEditing={ callback.onFinishEditing }
+                    isDisabled={ notification.loadingActionStatus !== 'done' }
                 />,
                 props: {
                     className: buttonCellClassName
