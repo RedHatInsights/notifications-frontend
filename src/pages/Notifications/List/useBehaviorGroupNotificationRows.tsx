@@ -90,7 +90,7 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
                         'Saving behavior',
                         <>
                             There was an error saving the behavior
-                             of <b>{notification.applicationDisplayName} / {notification.eventTypeDisplayName}</b>.
+                             of <b>{notification.applicationDisplayName} - {notification.eventTypeDisplayName}</b>.
                         </>
                     );
                     setNotificationRows(produce(draft => {
