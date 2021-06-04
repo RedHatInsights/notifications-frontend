@@ -1,3 +1,4 @@
+import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import produce, { castDraft } from 'immer';
 import pLimit from 'p-limit';
 import * as React from 'react';
@@ -79,30 +80,40 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
 
                 const response = await query(linkBehaviorGroupAction(notificationId, notification.behaviors.map(b => b.id)));
                 if (response.payload?.status === 200) {
-                    // Todo: show success
+                    setNotificationRows(produce(draft => {
+                        const draftNotification = getNotification(draft, notificationId);
+                        draftNotification.isEditMode = false;
+                        draftNotification.loadingActionStatus = 'done';
+                    }));
                 } else {
-                    // Todo: Show failure
+                    addDangerNotification(
+                        'Saving behavior',
+                        <>
+                            There was an error saving the behavior
+                             of <b>{notification.applicationDisplayName} / {notification.eventTypeDisplayName}</b>.
+                        </>
+                    );
+                    setNotificationRows(produce(draft => {
+                        const draftNotification = getNotification(draft, notificationId);
+                        draftNotification.isEditMode = true;
+                        draftNotification.loadingActionStatus = 'done';
+                    }));
+                }
+            }
+        } else {
+            setNotificationRows(produce(draft => {
+                const notification = getNotification(draft, notificationId);
+
+                if (notification.isEditMode && command === 'cancel') {
+                    notification.behaviors = notification.oldBehaviors;
                 }
 
-                setNotificationRows(produce(draft => {
-                    const draftNotification = getNotification(draft, notificationId);
-                    draftNotification.loadingActionStatus = 'done';
-                }));
-            }
+                notification.isEditMode = command === 'edit';
+                if (notification.isEditMode) {
+                    notification.oldBehaviors = notification.behaviors;
+                }
+            }));
         }
-
-        setNotificationRows(produce(draft => {
-            const notification = getNotification(draft, notificationId);
-
-            if (notification.isEditMode && command === 'cancel') {
-                notification.behaviors = notification.oldBehaviors;
-            }
-
-            notification.isEditMode = command === 'edit';
-            if (notification.isEditMode) {
-                notification.oldBehaviors = notification.behaviors;
-            }
-        }));
     }, [ setNotificationRows, notificationRows, query ]);
 
     const startEditMode = React.useCallback((notificationId: UUID) => {

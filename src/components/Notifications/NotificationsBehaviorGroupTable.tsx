@@ -49,7 +49,7 @@ const toTableRows = (
             },
             {
                 title: notification.loadingActionStatus === 'loading' ?
-                    <Skeleton width="180px" /> :
+                    <Skeleton width="90%" /> :
                     <span>
                         <BehaviorGroupCell
                             id={ `behavior-group-cell-${notification.id}` }

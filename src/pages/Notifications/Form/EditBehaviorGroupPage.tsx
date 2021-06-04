@@ -11,6 +11,7 @@ import { deleteIntegrationActionCreator } from '../../../services/useDeleteInteg
 import { createIntegrationActionCreator } from '../../../services/useSaveIntegration';
 import { IntegrationType } from '../../../types/Integration';
 import { Action, BehaviorGroup, NewBehaviorGroup, NotificationType, UUID } from '../../../types/Notification';
+import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 
 interface EditBehaviorGroupPageProps {
     behaviorGroup?: Partial<BehaviorGroup>;
@@ -78,13 +79,50 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
                 .filter(action => action.type !== NotificationType.INTEGRATION)
                 .filter(action => !data.actions.find(newAction => newAction.integrationId === action.integrationId))
                 .map(oldNonUserAction =>  query(deleteIntegrationActionCreator(oldNonUserAction.integrationId)));
+
+                if (data.id === undefined) {
+                    addSuccessNotification(
+                        'New behavior group created',
+                        <>
+                            Group <b> { data.displayName } </b> created successfully.
+                        </>
+                    );
+                } else {
+                    addSuccessNotification(
+                        'Behavior group saved',
+                        <>
+                            Group <b> { data.displayName } </b> was saved successfully.
+                        </>
+                    );
+                }
+
                 return true;
             }
 
-            throw new Error('Behavior group actions weren\'t saved');
+            if (data.id === undefined) {
+                addDangerNotification(
+                    'Behavior group failed to be created',
+                    <>
+                        Failed to create group <b> { data.displayName }</b>.
+                        <br />
+                        Please try again.
+                    </>
+                );
+            } else {
+                addDangerNotification(
+                    'Behavior group failed to save',
+                    <>
+                        Failed to save group <b> { data.displayName }</b>.
+                        <br />
+                        Please try again.
+                    </>
+                );
+            }
+
+            return false;
         }).catch(err => {
             console.error('Error saving behavior groups', err);
-            return false;
+            throw err;
         });
     }, [ saveBehaviorGroupMutation.mutate, updateBehaviorGroupActionsMutation.mutate, props.behaviorGroup, query ]);
 

@@ -1,4 +1,6 @@
+import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { useEffect } from 'react';
 
 import {
     BehaviorGroupDeleteModal,
@@ -23,11 +25,43 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
         const response = await mutate(behaviorGroup.id);
 
         if (response.payload?.status === 200) {
+            addSuccessNotification(
+                'Behavior group deleted',
+                <>
+                    Group <b>{ behaviorGroup.displayName }</b> deleted successfully.
+                </>
+            );
             return true;
         }
 
+        addDangerNotification(
+            'Behavior group failed to be deleted',
+            <>
+                Failed to delete group <b> { behaviorGroup.displayName }</b>.
+                <br />
+                Please try again.
+            </>
+        );
+
         return false;
     }, [ deleteBehaviorGroup.mutate ]);
+
+    useEffect(() => {
+        const payload = affected.payload;
+        const onClose = props.onClose;
+        if (payload && payload.status !== 200) {
+            addDangerNotification(
+                'Associated events failed to load ',
+                <>
+                    Failed to load associated events for group <b> { props.behaviorGroup.displayName }</b>.
+                    <br />
+                    Please try again.
+                </>
+            );
+
+            onClose(false);
+        }
+    }, [ affected.payload, props.behaviorGroup, props.onClose ]);
 
     if (affected.loading) {
         return <BehaviorGroupDeleteModalSkeleton
@@ -36,7 +70,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
     }
 
     if (affected.payload?.status !== 200) {
-        throw new Error('Error while loading affected notifications');
+        return null;
     }
 
     return <BehaviorGroupDeleteModal
