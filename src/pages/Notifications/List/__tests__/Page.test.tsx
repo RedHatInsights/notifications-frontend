@@ -78,6 +78,27 @@ const mockFacets = () => {
     );
 };
 
+const mockEventTypes = (eventTypeId: string) => {
+    fetchMock.get(defaultGetEventTypesUrl, {
+        body: [
+            {
+                application_id: 'app',
+                application: {
+                    display_name: 'the app',
+                    created: Date.now().toString(),
+                    id: 'app',
+                    bundle_id: 'my-bundle-id',
+                    name: 'app',
+                    updated: Date.now().toString()
+                },
+                display_name: 'display_name',
+                id: eventTypeId,
+                name: 'mmmokay'
+            }
+        ] as Array<Schemas.EventType>
+    });
+};
+
 const mockBehaviorGroup = () => {
     fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
         body: [
@@ -85,7 +106,7 @@ const mockBehaviorGroup = () => {
                 created: '2021-05-05T18:14:46.618528',
                 id: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
                 display_name: 'Stuff',
-                bundle_id: '68368eb4-9319-4362-8bf3-43da6b72d37f',
+                bundle_id: 'my-bundle-id',
                 actions: [
                     {
                         created: '2021-05-05T18:14:47.291189',
@@ -175,7 +196,7 @@ const mockBehaviorGroup = () => {
                 created: '2021-05-05T18:14:40.698201',
                 id: '412e37bf-b669-46da-8e19-c031c40df410',
                 display_name: 'more',
-                bundle_id: '68368eb4-9319-4362-8bf3-43da6b72d37f',
+                bundle_id: 'my-bundle-id',
                 actions: [
                     {
                         created: '2021-05-05T18:14:41.406439',
@@ -199,7 +220,7 @@ const mockBehaviorGroup = () => {
                 created: '2021-05-05T18:14:33.482023',
                 id: '6945a772-9b37-4748-b4fe-01a33472ff17',
                 display_name: 'xyz',
-                bundle_id: '68368eb4-9319-4362-8bf3-43da6b72d37f',
+                bundle_id: 'my-bundle-id',
                 actions: [
                     {
                         created: '2021-05-05T18:14:34.198221',
@@ -225,6 +246,19 @@ const mockBehaviorGroup = () => {
 
 const defaultGetEventTypesUrl =
   '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=10&offset=0';
+
+const mockBehaviorGroupsOfEventTypes = (eventTypeId: string, returnEmpty?: boolean) => {
+    fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${eventTypeId}/behaviorGroups`, {
+        body: returnEmpty ? [] : [
+            {
+                bundle_id: 'my-bundle-id',
+                created: '2021-05-04T22:08:07.268356',
+                display_name: 'Behavior group 4',
+                id: 'c06e3a00-3005-4576-b45a-94cd1d2337f2'
+            }
+        ]
+    });
+};
 
 describe('src/pages/Notifications/List/Page', () => {
     beforeEach(() => {
@@ -991,6 +1025,183 @@ describe('src/pages/Notifications/List/Page', () => {
             await waitForAsyncEvents();
 
             expect(screen.getAllByText(/behavior group/i).length).toBeGreaterThan(0);
+        });
+
+        it('Switches to behavior group mode (no behavior groups)', async () => {
+            mockEnvironment('ci');
+            fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+                body: [] as Array<Schemas.Endpoint>
+            });
+            fetchMock.get(
+                '/api/notifications/v1.0/notifications/eventTypes/15454656416',
+                {
+                    body: []
+                }
+            );
+            mockEventTypes('my-event-type-id');
+            mockFacets();
+            fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
+                body: []
+            });
+
+            render(<NotificationsListPage />, {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('rhel'),
+                    appContext: {
+                        rbac: {
+                            canWriteNotifications: true,
+                            canWriteIntegrationsEndpoints: true,
+                            canReadIntegrationsEndpoints: true,
+                            canReadNotifications: true
+                        }
+                    }
+                })
+            });
+
+            await waitForAsyncEvents();
+
+            const numberOfMatches = screen.getAllByText(/behavior group/i).length;
+            expect(numberOfMatches).toBe(2);
+
+            userEvent.click(screen.getByRole('checkbox', {
+                name: /behavior group/i
+            }));
+
+            await waitForAsyncEvents();
+
+            expect(screen.getAllByText(/behavior group/i).length).toBeGreaterThan(numberOfMatches);
+
+        });
+
+        it('Create behavior group when there are no behavior groups', async () => {
+            mockEnvironment('ci');
+            fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+                body: [] as Array<Schemas.Endpoint>
+            });
+            fetchMock.get(
+                '/api/notifications/v1.0/notifications/eventTypes/my-event-type-id',
+                {
+                    body: []
+                }
+            );
+            mockEventTypes('my-event-type-id');
+            mockFacets();
+            fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
+                body: []
+            });
+            mockBehaviorGroupsOfEventTypes('my-event-type-id', true);
+
+            render(<NotificationsListPage />, {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('rhel'),
+                    appContext: {
+                        rbac: {
+                            canWriteNotifications: true,
+                            canWriteIntegrationsEndpoints: true,
+                            canReadIntegrationsEndpoints: true,
+                            canReadNotifications: true
+                        }
+                    }
+                })
+            });
+
+            await waitForAsyncEvents();
+
+            userEvent.click(screen.getByRole('checkbox', {
+                name: /behavior group/i
+            }));
+            await waitForAsyncEvents();
+
+            userEvent.click(screen.getByText(/create new group/i));
+            await waitForAsyncEvents();
+            expect(screen.getByText(/Create new behavior group/i)).toBeVisible();
+        });
+
+        it('Switches to behavior group mode', async () => {
+            mockEnvironment('ci');
+            fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+                body: [] as Array<Schemas.Endpoint>
+            });
+            fetchMock.get(
+                '/api/notifications/v1.0/notifications/eventTypes/15454656416',
+                {
+                    body: []
+                }
+            );
+            mockEventTypes('my-event-type-id');
+            mockBehaviorGroupsOfEventTypes('my-event-type-id');
+            mockFacets();
+            mockBehaviorGroup();
+
+            render(<NotificationsListPage />, {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('rhel'),
+                    appContext: {
+                        rbac: {
+                            canWriteNotifications: true,
+                            canWriteIntegrationsEndpoints: true,
+                            canReadIntegrationsEndpoints: true,
+                            canReadNotifications: true
+                        }
+                    }
+                })
+            });
+
+            await waitForAsyncEvents();
+
+            const numberOfMatches = screen.getAllByText(/behavior group/i).length;
+            expect(numberOfMatches).toBe(2);
+
+            userEvent.click(screen.getByRole('checkbox', {
+                name: /behavior group/i
+            }));
+
+            await waitForAsyncEvents();
+
+            expect(screen.getAllByText(/behavior group/i).length).toBeGreaterThan(numberOfMatches);
+
+        });
+
+        it('Create behavior group when there are behavior groups', async () => {
+            mockEnvironment('ci');
+            fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+                body: [] as Array<Schemas.Endpoint>
+            });
+            fetchMock.get(
+                '/api/notifications/v1.0/notifications/eventTypes/15454656416',
+                {
+                    body: []
+                }
+            );
+            mockEventTypes('my-event-type-id');
+            mockBehaviorGroupsOfEventTypes('my-event-type-id');
+            mockFacets();
+            mockBehaviorGroup();
+
+            render(<NotificationsListPage />, {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('rhel'),
+                    appContext: {
+                        rbac: {
+                            canWriteNotifications: true,
+                            canWriteIntegrationsEndpoints: true,
+                            canReadIntegrationsEndpoints: true,
+                            canReadNotifications: true
+                        }
+                    }
+                })
+            });
+
+            await waitForAsyncEvents();
+
+            userEvent.click(screen.getByRole('checkbox', {
+                name: /behavior group/i
+            }));
+            await waitForAsyncEvents();
+
+            userEvent.click(screen.getByText(/create new group/i));
+            await waitForAsyncEvents();
+            expect(screen.getByText(/Create new behavior group/i)).toBeVisible();
         });
 
         it.each<[Environment, boolean]>([

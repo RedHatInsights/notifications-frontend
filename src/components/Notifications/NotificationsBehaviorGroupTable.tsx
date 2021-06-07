@@ -49,7 +49,7 @@ const toTableRows = (
             },
             {
                 title: notification.loadingActionStatus === 'loading' ?
-                    <Skeleton width="180px" /> :
+                    <Skeleton width="90%" /> :
                     <span>
                         <BehaviorGroupCell
                             id={ `behavior-group-cell-${notification.id}` }
@@ -68,6 +68,7 @@ const toTableRows = (
                     onStartEditing={ callback.onStartEditing }
                     onCancelEditMode={ callback.onCancelEditing }
                     onFinishEditing={ callback.onFinishEditing }
+                    isDisabled={ notification.loadingActionStatus !== 'done' }
                 />,
                 props: {
                     className: buttonCellClassName

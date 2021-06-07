@@ -137,6 +137,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                         className={ emptyAddButtonClassName }
                                         variant={ ButtonVariant.primary }
                                         onClick={ createGroup }
+                                        component='a'
                                     >
                                         Create new group
                                     </Button>
