@@ -46,11 +46,12 @@ const BehaviorGroupCardListLayout: React.FunctionComponent<BehaviorGroupCardList
     }, [ measuredSizing ]);
 
     return (
-        <div ref={ ref }>
+        <div ref={ ref } data-testid="ref-card-list-container">
             <Flex
                 alignItems={ { default: 'alignItemsStretch' } }
                 alignContent={ { default: 'alignContentSpaceBetween' } }
                 className={ cardsWrapperClassName }
+                data-testid="card-list-container"
             >
                 { props.contents.map(content => (
                     <FlexItem key={ content.key } className={ cardWrapperClassName }>
