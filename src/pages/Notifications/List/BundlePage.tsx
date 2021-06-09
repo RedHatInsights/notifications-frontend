@@ -1,10 +1,9 @@
-import { Button, ButtonVariant, FormGroup, Switch } from '@patternfly/react-core';
-import { FlaskIcon } from '@patternfly/react-icons';
+import { Button, ButtonVariant } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
-    InsightsEnvDetector, RenderIf,
-    RenderIfFalse, RenderIfTrue
+    InsightsEnvDetector,
+    RenderIfFalse
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
 import { style } from 'typestyle';
@@ -13,7 +12,6 @@ import { Messages } from '../../../properties/Messages';
 import { stagingAndProd } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
-import { BundlePageContent } from './BundlePageContent';
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
@@ -31,9 +29,6 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
         title: Messages.pages.notifications.list.title
     };
 
-    const [ isUsingBehaviorGroup, setUsingBehaviorGroup ] = React.useState<boolean>(false);
-    const renderIfUsingBehaviorGroupResolver = React.useCallback(() => isUsingBehaviorGroup, [ isUsingBehaviorGroup ]);
-
     return (
         <>
             <PageHeader>
@@ -43,31 +38,9 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                         <Button variant={ ButtonVariant.link }>{ Messages.pages.notifications.list.viewHistory }</Button>
                     </RenderIfFalse>
                 </InsightsEnvDetector>
-                <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProd }>
-                    <RenderIfFalse>
-                        <FormGroup fieldId="use-behavior-group-check">
-                            <Switch
-                                id="use-behavior-group-check"
-                                isChecked={ isUsingBehaviorGroup }
-                                label={ <>
-                                    <FlaskIcon />
-                                    <span>Use behavior groups</span>
-                                </> }
-                                onChange={ setUsingBehaviorGroup }
-                            />
-                        </FormGroup>
-                    </RenderIfFalse>
-                </InsightsEnvDetector>
             </PageHeader>
             <Main>
-                <RenderIf renderIf={ renderIfUsingBehaviorGroupResolver }>
-                    <RenderIfTrue>
-                        <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
-                    </RenderIfTrue>
-                    <RenderIfFalse>
-                        <BundlePageContent applications={ props.applications } bundle={ props.bundle } />
-                    </RenderIfFalse>
-                </RenderIf>
+                <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
             </Main>
         </>
     );

@@ -11,14 +11,14 @@ export type OnNotificationIdHandler = (notificationId: UUID) => void;
 export interface BehaviorGroupCellControlProps {
     notificationId: UUID;
     isEditMode: boolean;
-    onStartEditing: OnNotificationIdHandler;
-    onFinishEditing: OnNotificationIdHandler;
-    onCancelEditMode: OnNotificationIdHandler;
+    onStartEditing?: OnNotificationIdHandler;
+    onFinishEditing?: OnNotificationIdHandler;
+    onCancelEditMode?: OnNotificationIdHandler;
     isDisabled: boolean;
 }
 
 interface ButtonWithNotificationIdProps extends Omit<ButtonProps, 'onClick'> {
-    onClick: OnNotificationIdHandler;
+    onClick?: OnNotificationIdHandler;
     notificationId: UUID;
 }
 
@@ -30,13 +30,17 @@ const toOnNotificationSetAdapter = (event: any, onClick: OnNotificationIdHandler
 };
 
 const ButtonWithNotificationId: React.FunctionComponent<ButtonWithNotificationIdProps> = props => {
-    const { notificationId, ...restProps } = props;
+    const { notificationId, isDisabled: rawIsDisabled, onClick: rawOnClick, ...restProps } = props;
 
     const onClick = React.useCallback((event: any) => {
-        toOnNotificationSetAdapter(event, props.onClick);
-    }, [ props.onClick ]);
+        if (rawOnClick) {
+            toOnNotificationSetAdapter(event, rawOnClick);
+        }
+    }, [ rawOnClick ]);
 
-    return <Button { ...restProps } onClick={ onClick } data-notification-id={ notificationId }>
+    const isDisabled = rawIsDisabled || !onClick;
+
+    return <Button { ...restProps } onClick={ onClick } isDisabled={ isDisabled } data-notification-id={ notificationId }>
         { props.children }
     </Button>;
 };

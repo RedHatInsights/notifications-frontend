@@ -35,8 +35,8 @@ const contentTitleStyle = {
 
 export interface BehaviorGroupProps extends OuiaComponentProps {
     behaviorGroup: BehaviorGroup;
-    onEdit: (behaviorGroup: BehaviorGroup) => void;
-    onDelete: (behaviorGroup: BehaviorGroup) => void;
+    onEdit?: (behaviorGroup: BehaviorGroup) => void;
+    onDelete?: (behaviorGroup: BehaviorGroup) => void;
 }
 
 export interface BehaviorGroupCardLayout {
@@ -100,17 +100,21 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
 export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = props => {
     const onClickEdit = React.useCallback(() => {
         const onEdit = props.onEdit;
-        onEdit(props.behaviorGroup);
+        if (onEdit) {
+            onEdit(props.behaviorGroup);
+        }
     }, [ props.behaviorGroup, props.onEdit ]);
 
     const onClickDelete = React.useCallback(() => {
         const onDelete = props.onDelete;
-        onDelete(props.behaviorGroup);
+        if (onDelete) {
+            onDelete(props.behaviorGroup);
+        }
     }, [ props.behaviorGroup, props.onDelete ]);
 
     const dropdownItems = React.useMemo(() => [
-        <DropdownItem key="on-edit" onClick={ onClickEdit }> Edit </DropdownItem>,
-        <DropdownItem key="on-delete" onClick={ onClickDelete }> Delete </DropdownItem>
+        <DropdownItem key="on-edit" onClick={ onClickEdit } isDisabled={ !onClickEdit } > Edit </DropdownItem>,
+        <DropdownItem key="on-delete" onClick={ onClickDelete } isDisabled={ !onClickDelete }> Delete </DropdownItem>
     ], [ onClickEdit, onClickDelete ]);
 
     return (

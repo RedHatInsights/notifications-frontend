@@ -16,8 +16,8 @@ const cardWrapperClassName = style({
 });
 
 interface BehaviorGroupCardListProps {
-    onEdit: (behaviorGroup: BehaviorGroup) => void;
-    onDelete: (behaviorGroup: BehaviorGroup) => void;
+    onEdit?: (behaviorGroup: BehaviorGroup) => void;
+    onDelete?: (behaviorGroup: BehaviorGroup) => void;
     behaviorGroups: ReadonlyArray<BehaviorGroup>;
 }
 

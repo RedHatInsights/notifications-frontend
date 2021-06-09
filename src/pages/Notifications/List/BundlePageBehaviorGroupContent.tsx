@@ -4,6 +4,7 @@ import { ExporterType } from '@redhat-cloud-services/insights-common-typescript'
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useListNotifications } from '../../../services/useListNotifications';
@@ -29,6 +30,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
 
     const notificationsFilter = useNotificationFilter(props.applications.map(a => a.displayName.toString()));
     const behaviorGroupContent = useBehaviorGroupContent(props.bundle.id);
+
+    const { rbac } = useAppContext();
 
     const onExport = React.useCallback((type: ExporterType) => {
         console.log('Export to', type);
@@ -86,9 +89,9 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
                     notifications={ notificationRows }
                     behaviorGroupContent={ behaviorGroupContent }
                     onBehaviorGroupLinkUpdated={ onBehaviorGroupLinkUpdated }
-                    onStartEditing={ onStartEditing }
-                    onFinishEditing={ onFinishEditing }
-                    onCancelEditing={ onCancelEditing }
+                    onStartEditing={ rbac.canWriteNotifications ? onStartEditing : undefined }
+                    onFinishEditing={ rbac.canWriteNotifications ? onFinishEditing : undefined }
+                    onCancelEditing={ rbac.canWriteNotifications ? onCancelEditing : undefined }
                 />
             </NotificationsToolbar>
         </Section>
