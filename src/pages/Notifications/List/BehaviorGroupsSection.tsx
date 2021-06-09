@@ -78,7 +78,8 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     const [ editModalState, editModalActions ] = useFormModalReducer<BehaviorGroup>();
     const [ deleteModalState, deleteModalActions ] = useDeleteModalReducer<BehaviorGroup>();
 
-    const createGroup = React.useCallback(() => {
+    const createGroup = React.useCallback((event) => {
+        event.stopPropagation();
         editModalActions.create({
             bundleId: props.bundleId
         });
