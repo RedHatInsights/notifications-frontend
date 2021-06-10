@@ -44,24 +44,13 @@ export namespace Schemas {
     actions?: Array<BehaviorGroupAction> | undefined | null;
     bundle_id: UUID;
     created?: string | undefined | null;
-<<<<<<< HEAD
     display_name: string;
     id?: UUID | undefined | null;
-=======
-    default_behavior?: boolean | undefined | null;
-    display_name: string;
-    id?: UUID | undefined | null;
-    name: string;
->>>>>>> 753271b (Bring back behaviour groups.)
     updated?: string | undefined | null;
   };
 
   export const BehaviorGroupAction = zodSchemaBehaviorGroupAction();
   export type BehaviorGroupAction = {
-<<<<<<< HEAD
-=======
-    behaviorGroup?: BehaviorGroup | undefined | null;
->>>>>>> 753271b (Bring back behaviour groups.)
     created?: string | undefined | null;
     endpoint?: Endpoint | undefined | null;
     id?: BehaviorGroupActionId | undefined | null;
@@ -390,15 +379,8 @@ export namespace Schemas {
           actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
           bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
-<<<<<<< HEAD
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
-=======
-          default_behavior: z.boolean().optional().nullable(),
-          display_name: z.string(),
-          id: zodSchemaUUID().optional().nullable(),
-          name: z.string(),
->>>>>>> 753271b (Bring back behaviour groups.)
           updated: z.string().optional().nullable()
       })
       .nonstrict();
@@ -407,13 +389,6 @@ export namespace Schemas {
   function zodSchemaBehaviorGroupAction() {
       return z
       .object({
-<<<<<<< HEAD
-=======
-          behaviorGroup: z
-          .lazy(() => zodSchemaBehaviorGroup())
-          .optional()
-          .nullable(),
->>>>>>> 753271b (Bring back behaviour groups.)
           created: z.string().optional().nullable(),
           endpoint: zodSchemaEndpoint().optional().nullable(),
           id: zodSchemaBehaviorGroupActionId().optional().nullable()
