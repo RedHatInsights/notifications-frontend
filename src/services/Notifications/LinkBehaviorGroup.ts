@@ -1,4 +1,4 @@
-import { Operations } from '../../generated/OpenapiPrivate';
+import { Operations } from '../../generated/OpenapiNotifications';
 import { UUID } from '../../types/Notification';
 import NotificationServiceUpdateEventTypeBehaviors = Operations.NotificationServiceUpdateEventTypeBehaviors;
 

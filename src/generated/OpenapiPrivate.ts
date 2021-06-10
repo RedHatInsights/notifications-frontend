@@ -724,6 +724,7 @@ export namespace Schemas {
   }
 }
 
+<<<<<<< HEAD
 export namespace Operations {
   // POST /api/notifications/v1.0/notifications/behaviorGroups
   // Create a behavior group.
@@ -1024,3 +1025,6 @@ export namespace Operations {
     };
   }
 }
+=======
+export namespace Operations {}
+>>>>>>> 017c8fb (Update openapi to notifications-backend 191)

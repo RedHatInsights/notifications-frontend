@@ -816,28 +816,6 @@ export namespace Operations {
         .build();
     };
   }
-  // POST /endpoints/bg
-  export namespace EndpointServiceCreateEndpointBg {
-    export interface Params {
-      body: Schemas.Endpoint;
-    }
-
-    export type Payload =
-      | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/integrations/v1.0/endpoints/bg';
-        const query = {} as Record<string, any>;
-        return actionBuilder('POST', path)
-        .queryParams(query)
-        .data(params.body)
-        .config({
-            rules: [ new ValidateRule(Schemas.Endpoint, 'Endpoint', 200) ]
-        })
-        .build();
-    };
-  }
   // PUT /endpoints/email/subscription/{bundleName}/{applicationName}/{type}
   export namespace EndpointServiceSubscribeEmail {
     const ApplicationName = z.string();
