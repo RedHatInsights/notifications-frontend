@@ -11,7 +11,7 @@ import { Route, RouteProps } from 'react-router';
 import { MemoryRouter as Router } from 'react-router-dom';
 
 import messages from '../locales/data.json';
-import { AppContext } from '../src/app/AppContext';
+import { AppContext, ServerStatus } from '../src/app/AppContext';
 import { createStore, resetStore } from '../src/store/Store';
 
 let setup = false;
@@ -51,17 +51,20 @@ export const appWrapperCleanup = () => {
 type Config = {
     router?: MemoryRouterProps;
     route?: RouteProps;
-    appContext?: AppContext;
+    appContext?: Partial<AppContext>;
     getLocation?: jest.Mock; // Pass a jest.fn() to get back the location hook
     skipIsBetaMock?: boolean;
 }
 
-const defaultAppContextSettings = {
+const defaultAppContextSettings: AppContext = {
     rbac: {
         canWriteNotifications: true,
         canWriteIntegrationsEndpoints: true,
         canReadIntegrationsEndpoints: true,
         canReadNotifications: true
+    },
+    server: {
+        status: ServerStatus.RUNNING
     }
 };
 
@@ -91,7 +94,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
             <Provider store={ store }>
                 <Router { ...props.router } >
                     <ClientContextProvider client={ client }>
-                        <AppContext.Provider value={ props.appContext || defaultAppContextSettings }>
+                        <AppContext.Provider value={ { ...defaultAppContextSettings, ...props.appContext } }>
                             <NotificationsPortal />
                             <InternalWrapper { ...props }>
                                 <Route { ...props.route } >
@@ -106,7 +109,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
     );
 };
 
-export const getConfiguredAppWrapper = (config?: Config) => {
+export const getConfiguredAppWrapper = (config?: Partial<Config>) => {
     const ConfiguredAppWrapper: React.FunctionComponent = (props) => {
         return (
             <AppWrapper { ...config }>{ props.children }</AppWrapper>
