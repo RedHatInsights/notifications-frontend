@@ -1,8 +1,9 @@
 import './App.scss';
 
-import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
+import { Maintenance, NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
+import { AppSkeleton, toUtc } from '@redhat-cloud-services/insights-common-typescript';
+import format from 'date-fns/format';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { useLocation } from 'react-router';
@@ -11,12 +12,16 @@ import Config from '../config/Config';
 import messages from '../properties/DefinedMessages';
 import { Routes } from '../Routes';
 import { getSubApp } from '../utils/Basename';
-import { AppContext } from './AppContext';
+import { AppContext, ServerStatus } from './AppContext';
 import { useApp } from './useApp';
+
+const utcFormat = 'HH:mm';
+const regularFormat = 'hh:mma';
+const timezoneFormat = 'O';
 
 const App: React.ComponentType = () => {
     const intl = useIntl();
-    const { rbac } = useApp();
+    const { rbac, server } = useApp();
     const location = useLocation();
 
     const serviceName = React.useMemo(() => {
@@ -42,15 +47,33 @@ const App: React.ComponentType = () => {
         return false;
     }, [ rbac, location.pathname ]);
 
-    if (!rbac) {
+    if (!rbac || !server) {
         return (
             <AppSkeleton />
         );
     }
 
+    if (server.status === ServerStatus.MAINTENANCE) {
+
+        const utcStartTime = format(toUtc(server.from), utcFormat);
+        const utcEndTime = format(toUtc(server.to), utcFormat);
+        const startTime = format(server.from, regularFormat);
+        const endTime = format(server.to, regularFormat);
+        const timezone = format(server.to, timezoneFormat);
+
+        return <Maintenance
+            utcStartTime={ utcStartTime }
+            utcEndTime={ utcEndTime }
+            startTime={ startTime }
+            endTime={ endTime }
+            timeZone={ timezone }
+        />;
+    }
+
     return (
         <AppContext.Provider value={ {
-            rbac
+            rbac,
+            server
         } }>
             { hasReadPermissions ? (
                 <>
