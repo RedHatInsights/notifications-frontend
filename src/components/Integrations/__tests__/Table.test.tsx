@@ -8,7 +8,7 @@ import { IntlProvider } from 'react-intl';
 
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
-import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationType } from '../../../types/Integration';
 import { IntegrationRow, IntegrationsTable } from '../Table';
 
 describe('components/Integrations/Table', () => {
@@ -16,7 +16,7 @@ describe('components/Integrations/Table', () => {
     const integrationTemplate: Readonly<IntegrationRow> = {
         id: 'integration-id',
         name: 'integration-name',
-        type: UserIntegrationType.WEBHOOK,
+        type: IntegrationType.WEBHOOK,
         isEnabled: true,
         method: Schemas.HttpType.Enum.GET,
         url: 'http://foobar.com',
@@ -63,7 +63,7 @@ describe('components/Integrations/Table', () => {
     it('Renders webhook type as Webhook', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             isLoading={ false }
-            integrations={ [{ ...integrationTemplate, type: UserIntegrationType.WEBHOOK }] }
+            integrations={ [{ ...integrationTemplate, type: IntegrationType.WEBHOOK }] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 

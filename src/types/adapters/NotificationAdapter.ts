@@ -1,13 +1,13 @@
 import { assertNever } from 'assert-never';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
-import { ServerIntegrationResponse } from '../Integration';
+import { ServerIntegrationResponse, UserIntegration } from '../Integration';
 import { Action, NotificationBase, NotificationType, ServerNotificationResponse } from '../Notification';
-import { filterOutDefaultAction, toIntegration, toUserIntegration } from './IntegrationAdapter';
+import { filterOutDefaultAction, toIntegration } from './IntegrationAdapter';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
     if (type === NotificationType.INTEGRATION) {
-        const userIntegration = toUserIntegration(serverAction);
+        const userIntegration = toIntegration(serverAction) as UserIntegration;
         return {
             type,
             integrationId: userIntegration.id,
@@ -42,6 +42,8 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
 export const toAction = (serverAction: ServerIntegrationResponse): Action => {
     switch (serverAction.type) {
         case Schemas.EndpointType.enum.webhook:
+            return _toAction(NotificationType.INTEGRATION, serverAction);
+        case Schemas.EndpointType.enum.camel:
             return _toAction(NotificationType.INTEGRATION, serverAction);
         case Schemas.EndpointType.enum.email_subscription:
             return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);

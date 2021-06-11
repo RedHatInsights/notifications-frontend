@@ -3,7 +3,7 @@ import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights
 import * as React from 'react';
 
 import { isStagingOrProd } from '../../../types/Environments';
-import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationType } from '../../../types/Integration';
 import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { ActionOption } from './ActionOption';
@@ -14,7 +14,7 @@ const getSelectOptions = () => [
         kind: 'notification',
         type
     })),
-    ...[ UserIntegrationType.WEBHOOK ].map(type => new ActionOption({
+    ...[ IntegrationType.WEBHOOK as const ].map(type => new ActionOption({
         kind: 'integration',
         type
     }))

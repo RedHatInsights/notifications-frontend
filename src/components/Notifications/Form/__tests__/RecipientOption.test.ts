@@ -1,4 +1,4 @@
-import { UserIntegrationType } from '../../../../types/Integration';
+import { IntegrationType } from '../../../../types/Integration';
 import { RecipientOption } from '../RecipientOption';
 
 describe('src/components/Notifications/Form/RecipientOption', () => {
@@ -7,7 +7,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const b = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -26,13 +26,13 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const c = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
         const d = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -49,13 +49,13 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const c = new RecipientOption({
             name: 'baz',
             isEnabled: true,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: 'abc'
         });
         const d = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -67,7 +67,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const d = new RecipientOption({
             name: 'bar',
             isEnabled: false,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -84,7 +84,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const a = new RecipientOption({
             name: 'baz',
             isEnabled: true,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
 
@@ -95,7 +95,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const a = new RecipientOption({
             name: 'baz',
             isEnabled: false,
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
 

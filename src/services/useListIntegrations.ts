@@ -5,8 +5,8 @@ import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 import {
     Operations
 } from '../generated/OpenapiIntegrations';
-import { getEndpointType, toUserIntegrations } from '../types/adapters/IntegrationAdapter';
-import { IntegrationType } from '../types/Integration';
+import { getEndpointType, toIntegrations } from '../types/adapters/IntegrationAdapter';
+import { IntegrationType, UserIntegration } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
     const query = (pager ?? Page.defaultPage()).toQuery();
@@ -24,7 +24,7 @@ export const listIntegrationIntegrationDecoder = validationResponseTransformer((
             'IntegrationPage',
             200,
             {
-                data: toUserIntegrations(payload.value.data),
+                data: toIntegrations(payload.value.data) as Array<UserIntegration>,
                 count: payload.value.meta.count
             },
             payload.errors

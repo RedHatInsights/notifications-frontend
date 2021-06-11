@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
-import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationType } from '../../../types/Integration';
 import { IntegrationDeleteModal } from '../DeleteModal';
 
 describe('src/components/Integrations/DeleteModal', () => {
@@ -18,7 +18,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ jestMock.fn() }
                 integration={ {
                     name: 'foobar',
-                    type: UserIntegrationType.WEBHOOK,
+                    type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -70,7 +70,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 ] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: UserIntegrationType.WEBHOOK,
+                    type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -94,7 +94,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 notifications={ [] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: UserIntegrationType.WEBHOOK,
+                    type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -147,7 +147,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 ] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: UserIntegrationType.WEBHOOK,
+                    type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -187,7 +187,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ onClose }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: UserIntegrationType.WEBHOOK,
+                    type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
@@ -215,7 +215,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onClose={ onClose }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
-                    type: UserIntegrationType.WEBHOOK,
+                    type: IntegrationType.WEBHOOK,
                     isEnabled: true,
                     url: 'url',
                     id: '123',
