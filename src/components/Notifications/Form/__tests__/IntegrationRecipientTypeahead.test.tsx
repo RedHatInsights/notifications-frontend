@@ -5,20 +5,20 @@ import jestMock from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { UserIntegrationType } from '../../../../types/Integration';
+import { IntegrationType } from '../../../../types/Integration';
 import { IntegrationRef } from '../../../../types/Notification';
 import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
 
 const ref1: IntegrationRef = {
     id: '1234',
-    type: UserIntegrationType.WEBHOOK,
+    type: IntegrationType.WEBHOOK,
     isEnabled: true,
     name: 'Integration 1234'
 };
 
 const ref2: IntegrationRef = {
     id: 'abcd',
-    type: UserIntegrationType.WEBHOOK,
+    type: IntegrationType.WEBHOOK,
     isEnabled: true,
     name: 'ABCD'
 };
@@ -28,7 +28,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ jestMock.fn<any, any>(async () => [ ref1, ref2 ]) }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ jestMock.fn() }
         />);
         await waitForAsyncEvents();
@@ -39,7 +39,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ jestMock.fn<any, any>(async () => [ ref1, ref2 ]) }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ jestMock.fn() }
             isDisabled={ true }
         />);
@@ -51,7 +51,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ ref1 }
             getIntegrations={ jestMock.fn<any, any>(async () => [ ]) }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ jestMock.fn() }
         />);
 
@@ -63,7 +63,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ jestMock.fn<any, any>(async () => [ ref1, ref2 ]) }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ jestMock.fn() }
         />);
         userEvent.click(screen.getByRole('button', {
@@ -79,17 +79,17 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ getIntegrations }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ jestMock.fn() }
         />);
         await waitForAsyncEvents();
-        expect(getIntegrations).toHaveBeenCalledWith(UserIntegrationType.WEBHOOK, '');
+        expect(getIntegrations).toHaveBeenCalledWith(IntegrationType.WEBHOOK, '');
     });
 
     it('When writing, getIntegrations is called with the input', async () => {
         const guyRef: IntegrationRef = {
             id: '1234',
-            type: UserIntegrationType.WEBHOOK,
+            type: IntegrationType.WEBHOOK,
             isEnabled: true,
             name: 'guy integration'
         };
@@ -105,14 +105,14 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ getIntegrations }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ jestMock.fn() }
         />);
         await waitForAsyncEvents();
         await act(async () => {
             await userEvent.type(screen.getByRole('textbox'), 'guy');
         });
-        expect(getIntegrations).toHaveBeenCalledWith(UserIntegrationType.WEBHOOK, 'guy');
+        expect(getIntegrations).toHaveBeenCalledWith(IntegrationType.WEBHOOK, 'guy');
         expect(screen.getByText('guy integration')).toBeTruthy();
     });
 
@@ -121,7 +121,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
             getIntegrations={ jestMock.fn<any, any>(async () => [ ref1, ref2 ]) }
-            integrationType={ UserIntegrationType.WEBHOOK }
+            integrationType={ IntegrationType.WEBHOOK }
             onSelected={ onSelected }
         />);
         userEvent.click(screen.getByRole('button', {

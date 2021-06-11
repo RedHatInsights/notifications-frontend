@@ -1,25 +1,27 @@
 import { Schemas } from '../generated/OpenapiIntegrations';
 
+// Integrations that exist
 export enum IntegrationType {
     WEBHOOK = 'webhook',
     CAMEL = 'camel',
     EMAIL_SUBSCRIPTION = 'email_subscription'
 }
 
-// Integrations that the user can create in the Integrations page
-export enum UserIntegrationType {
-    WEBHOOK = 'webhook',
-    CAMEL = 'camel'
-}
+export const UserIntegrationType = {
+    WEBHOOK: IntegrationType.WEBHOOK,
+    CAMEL: IntegrationType.CAMEL
+} as const;
 
-export interface IntegrationBase {
+export type UserIntegrationType = (typeof UserIntegrationType)[keyof typeof UserIntegrationType];
+
+export interface IntegrationBase<T extends IntegrationType> {
     id: string;
     name: string;
-    type: IntegrationType;
+    type: T;
     isEnabled: boolean;
 }
 
-export interface IntegrationHttp extends IntegrationBase {
+export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK> {
     type: IntegrationType.WEBHOOK;
     url: string;
     sslVerificationEnabled: boolean;
@@ -27,7 +29,7 @@ export interface IntegrationHttp extends IntegrationBase {
     method: Schemas.HttpType;
 }
 
-export interface IntegrationCamel extends IntegrationBase {
+export interface IntegrationCamel extends IntegrationBase<IntegrationType.CAMEL> {
     type: IntegrationType.CAMEL;
     url: string;
     sslVerificationEnabled: boolean;
@@ -40,29 +42,26 @@ export interface IntegrationCamel extends IntegrationBase {
     extras?: Record<string, string>;
 }
 
-export interface IntegrationEmailSubscription extends IntegrationBase {
+export interface IntegrationEmailSubscription extends IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION> {
     type: IntegrationType.EMAIL_SUBSCRIPTION
 }
 
 export type Integration = IntegrationHttp | IntegrationEmailSubscription | IntegrationCamel;
 
-type ToUserIntegration<T extends IntegrationBase, TYPE extends UserIntegrationType[keyof UserIntegrationType]> = Omit<T, 'type'> & {
-    type: TYPE
-};
-
-export type UserIntegrationHttp = ToUserIntegration<IntegrationHttp, UserIntegrationType.WEBHOOK>;
-export type UserIntegrationCamel = ToUserIntegration<IntegrationCamel, UserIntegrationType.CAMEL>;
-export type UserIntegration = UserIntegrationCamel | UserIntegrationHttp;
+// Integrations that the user can create in the Integrations page;
+export type UserIntegration = Extract<Integration, {
+    type: UserIntegrationType
+}>;
 
 type NewIntegrationKeys = 'id';
 
-export type NewIntegrationTemplate<T extends IntegrationBase | UserIntegrationHttp | UserIntegrationCamel> = Omit<T, NewIntegrationKeys> & Partial<Pick<T, NewIntegrationKeys>>;
+export type NewIntegrationTemplate<
+    T extends IntegrationBase<IntegrationType>
+> = Omit<T, NewIntegrationKeys> & Partial<Pick<T, NewIntegrationKeys>>;
 
-export type NewIntegrationBase = NewIntegrationTemplate<IntegrationBase>;
+export type NewIntegrationBase = NewIntegrationTemplate<IntegrationBase<UserIntegrationType>>;
 export type NewIntegration = NewIntegrationTemplate<Integration>;
-export type NewUserIntegrationCamel = NewIntegrationTemplate<UserIntegrationCamel>;
-export type NewUserIntegrationHttp = NewIntegrationTemplate<UserIntegrationHttp>;
-export type NewUserIntegration = NewUserIntegrationCamel | NewUserIntegrationHttp;
+export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
 
 export type ServerIntegrationRequest = Schemas.Endpoint;
 export type ServerIntegrationResponse = Schemas.Endpoint;

@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import { UserIntegrationType } from '../../../types/Integration';
+import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
 import { Action, IntegrationRef, NotificationType } from '../../../types/Notification';
 import { IntegrationRecipientTypeahead } from '../Form/IntegrationRecipientTypeahead';
 import { RecipientTypeahead } from '../Form/RecipientTypeahead';
@@ -20,7 +20,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
         return (
             <IntegrationRecipientTypeahead
                 onSelected={ props.integrationSelected }
-                integrationType={ props.action.integration?.type ?? UserIntegrationType.WEBHOOK }
+                integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
                 selected={ props.action.integration }
                 getIntegrations={ props.getIntegrations }
             />

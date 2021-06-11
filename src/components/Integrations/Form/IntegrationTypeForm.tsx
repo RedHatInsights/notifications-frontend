@@ -2,9 +2,9 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import { assertNever } from 'assert-never';
 import * as React from 'react';
 
-import { UserIntegrationType } from '../../../types/Integration';
-import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
+import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
+import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 
 export interface IntegrationTypeForm extends OuiaComponentProps {
     type: UserIntegrationType;
@@ -12,9 +12,9 @@ export interface IntegrationTypeForm extends OuiaComponentProps {
 
 export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
     switch (props.type) {
-        case UserIntegrationType.WEBHOOK:
+        case IntegrationType.WEBHOOK:
             return <IntegrationTypeHttpForm { ...props } />;
-        case UserIntegrationType.CAMEL:
+        case IntegrationType.CAMEL:
             return <IntegrationTypeCamelForm { ...props } />;
         default:
             assertNever(props.type);

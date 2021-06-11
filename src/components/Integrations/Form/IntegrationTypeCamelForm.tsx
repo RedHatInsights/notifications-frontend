@@ -5,8 +5,8 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 
 export const IntegrationTypeCamelForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
+    // <!-- this should be a dropdown -->
     return (
-//         <!-- this should be a dropdown -->
         <div className="pf-c-form" { ...getOuiaProps('Integrations/HttpForm', props) } >
             <FormTextInput
                 isRequired={ true }
@@ -37,10 +37,10 @@ export const IntegrationTypeCamelForm: React.FunctionComponent<IntegrationTypeFo
                 name="secretToken"
                 ouiaId={ ouiaIdConcat(props.ouiaId, 'secret-token') }
             />
-/*
+            { /*
             TODO add BasicAuthentication here
             TODO add extras here
- */
+            */ }
         </div>
     );
 };

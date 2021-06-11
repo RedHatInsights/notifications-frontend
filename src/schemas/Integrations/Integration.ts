@@ -2,8 +2,8 @@ import * as Yup from 'yup';
 
 import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
-    IntegrationHttp,
     IntegrationCamel,
+    IntegrationHttp,
     IntegrationType, NewIntegration,
     NewIntegrationBase, NewIntegrationTemplate
 } from '../../types/Integration';
@@ -36,6 +36,7 @@ export const IntegrationSchema = Yup.lazy<NewIntegration | NewIntegrationBase | 
         if (value.type === IntegrationType.WEBHOOK) {
             return IntegrationHttpSchema;
         }
+
         if (value.type === IntegrationType.CAMEL) {
             return IntegrationCamelSchema;
         }

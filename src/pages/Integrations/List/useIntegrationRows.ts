@@ -39,7 +39,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
     const setIntegrationRowByIndex = useCallback((index: number, partialIntegration: Partial<IntegrationRow>) => {
         setIntegrationRows(prevIntegrations => {
             const newIntegrations = [ ...prevIntegrations ];
-            newIntegrations[index] = { ...newIntegrations[index], ...partialIntegration };
+            newIntegrations[index] = { ...newIntegrations[index], ...partialIntegration } as IntegrationRow;
             return newIntegrations;
         });
     }, [ setIntegrationRows ]);
@@ -52,7 +52,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
             }
 
             const newIntegrations = [ ...prevIntegrations ];
-            newIntegrations[index] = { ...newIntegrations[index], ...partialIntegration };
+            newIntegrations[index] = { ...newIntegrations[index], ...partialIntegration } as IntegrationRow;
             return newIntegrations;
         });
     }, [ setIntegrationRows ]);
