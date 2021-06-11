@@ -86,6 +86,13 @@ export namespace Schemas {
     url: string;
   };
 
+  export const CurrentStatus = zodSchemaCurrentStatus();
+  export type CurrentStatus = {
+    endTime?: string | undefined | null;
+    startTime?: string | undefined | null;
+    status: Status;
+  };
+
   export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
@@ -312,6 +319,9 @@ export namespace Schemas {
     stringHeaders?: MultivaluedMapStringString | undefined | null;
   };
 
+  export const Status = zodSchemaStatus();
+  export type Status = 'MAINTENANCE' | 'UP';
+
   export const StatusType = zodSchemaStatusType();
   export type StatusType = {
     family?: Family | undefined | null;
@@ -428,6 +438,16 @@ export namespace Schemas {
           secret_token: z.string().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           url: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaCurrentStatus() {
+      return z
+      .object({
+          endTime: z.string().optional().nullable(),
+          startTime: z.string().optional().nullable(),
+          status: zodSchemaStatus()
       })
       .nonstrict();
   }
@@ -668,6 +688,10 @@ export namespace Schemas {
           .nullable()
       })
       .nonstrict();
+  }
+
+  function zodSchemaStatus() {
+      return z.enum([ 'MAINTENANCE', 'UP' ]);
   }
 
   function zodSchemaStatusType() {

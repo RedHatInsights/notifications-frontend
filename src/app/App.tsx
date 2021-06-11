@@ -12,8 +12,9 @@ import Config from '../config/Config';
 import messages from '../properties/DefinedMessages';
 import { Routes } from '../Routes';
 import { getSubApp } from '../utils/Basename';
-import { AppContext, ServerStatus } from './AppContext';
+import { AppContext } from './AppContext';
 import { useApp } from './useApp';
+import { ServerStatus } from '../types/Server';
 
 const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';

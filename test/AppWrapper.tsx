@@ -11,8 +11,9 @@ import { Route, RouteProps } from 'react-router';
 import { MemoryRouter as Router } from 'react-router-dom';
 
 import messages from '../locales/data.json';
-import { AppContext, ServerStatus } from '../src/app/AppContext';
+import { AppContext } from '../src/app/AppContext';
 import { createStore, resetStore } from '../src/store/Store';
+import { ServerStatus } from '../src/types/Server';
 
 let setup = false;
 let client;

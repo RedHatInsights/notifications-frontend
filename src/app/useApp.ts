@@ -3,11 +3,14 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Config from '../config/Config';
-import { AppContext, Server } from './AppContext';
+import { AppContext } from './AppContext';
+import { Server } from '../types/Server';
+import { useGetServerStatus } from '../services/GetServerStatus';
 
 export const useApp = (): Partial<AppContext> => {
 
     const history = useHistory();
+    const serverStatus = useGetServerStatus();
     const [ rbac, setRbac ] = useState<Rbac>();
     const [ server, setServer ] = useState<Server>();
 
@@ -27,6 +30,12 @@ export const useApp = (): Partial<AppContext> => {
             insights.chrome.identifyApp(appId);
         });
     }, [ history ]);
+
+    useEffect(() => {
+        if (serverStatus.payload?.type === 'ServerStatus') {
+            setServer(serverStatus.payload.value);
+        }
+    }, [ serverStatus.payload ]);
 
     useEffect(() => {
         waitForInsights().then(insights => {

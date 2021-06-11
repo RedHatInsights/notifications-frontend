@@ -1,22 +1,6 @@
 import * as React from 'react';
 import { useContext } from 'react';
-
-export enum ServerStatus {
-    RUNNING= 'RUNNING',
-    MAINTENANCE = 'MAINTENANCE'
-}
-
-type ServerRunning = {
-    status: ServerStatus.RUNNING;
-}
-
-type ServerMaintenance = {
-    status: ServerStatus.MAINTENANCE;
-    from: Date,
-    to: Date
-}
-
-export type Server = ServerRunning | ServerMaintenance;
+import { Server, ServerStatus } from '../types/Server';
 
 export interface AppContext {
     rbac: {

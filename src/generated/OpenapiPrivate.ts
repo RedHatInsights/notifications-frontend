@@ -86,6 +86,13 @@ export namespace Schemas {
     url: string;
   };
 
+  export const CurrentStatus = zodSchemaCurrentStatus();
+  export type CurrentStatus = {
+    endTime?: string | undefined | null;
+    startTime?: string | undefined | null;
+    status: Status;
+  };
+
   export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
@@ -312,6 +319,9 @@ export namespace Schemas {
     stringHeaders?: MultivaluedMapStringString | undefined | null;
   };
 
+  export const Status = zodSchemaStatus();
+  export type Status = 'MAINTENANCE' | 'UP';
+
   export const StatusType = zodSchemaStatusType();
   export type StatusType = {
     family?: Family | undefined | null;
@@ -425,6 +435,16 @@ export namespace Schemas {
           secret_token: z.string().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           url: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaCurrentStatus() {
+      return z
+      .object({
+          endTime: z.string().optional().nullable(),
+          startTime: z.string().optional().nullable(),
+          status: zodSchemaStatus()
       })
       .nonstrict();
   }
@@ -665,6 +685,10 @@ export namespace Schemas {
           .nullable()
       })
       .nonstrict();
+  }
+
+  function zodSchemaStatus() {
+      return z.enum([ 'MAINTENANCE', 'UP' ]);
   }
 
   function zodSchemaStatusType() {
@@ -976,6 +1000,25 @@ export namespace Operations {
         .data(params.body)
         .config({
             rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /api/notifications/v1.0/status
+  export namespace StatusServiceGetCurrentStatus {
+    export type Payload =
+      | ValidatedResponse<'CurrentStatus', 200, Schemas.CurrentStatus>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (): ActionCreator => {
+        const path = '/api/notifications/v1.0/status';
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.CurrentStatus, 'CurrentStatus', 200)
+            ]
         })
         .build();
     };
