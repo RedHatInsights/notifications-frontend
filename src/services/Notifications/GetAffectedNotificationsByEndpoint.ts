@@ -6,13 +6,13 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { toNotifications } from '../../types/adapters/NotificationAdapter';
 
 const notificationsForEndpointActionCreator = (integrationId: string) => {
-    return Operations.NotificationServiceGetEventTypesAffectedByEndpointId.actionCreator({
+    return Operations.NotificationServiceGetEventTypesAffectedByRemovalOfEndpoint.actionCreator({
         endpointId: integrationId
     });
 };
 
 const defaultNotificationsDecoder = validationResponseTransformer(
-    (payload: Operations.NotificationServiceGetEventTypesAffectedByEndpointId.Payload) => {
+    (payload: Operations.NotificationServiceGetEventTypesAffectedByRemovalOfEndpoint.Payload) => {
         if (payload.status === 200) {
             return validatedResponse(
                 'Notifications',
