@@ -6,7 +6,7 @@ import { Operations } from '../generated/OpenapiPrivate';
 import { toServer } from '../types/adapters/ServerAdapter';
 
 const adapter = validationResponseTransformer((payload: Operations.StatusServiceGetCurrentStatus.Payload) => {
-    if (payload?.status === 200) {
+    if (payload.status === 200) {
         return validatedResponse(
             'ServerStatus',
             200,
