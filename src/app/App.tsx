@@ -11,10 +11,10 @@ import { useLocation } from 'react-router';
 import Config from '../config/Config';
 import messages from '../properties/DefinedMessages';
 import { Routes } from '../Routes';
+import { ServerStatus } from '../types/Server';
 import { getSubApp } from '../utils/Basename';
 import { AppContext } from './AppContext';
 import { useApp } from './useApp';
-import { ServerStatus } from '../types/Server';
 
 const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';

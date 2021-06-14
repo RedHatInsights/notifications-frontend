@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Config from '../config/Config';
-import { AppContext } from './AppContext';
-import { Server } from '../types/Server';
 import { useGetServerStatus } from '../services/GetServerStatus';
+import { Server } from '../types/Server';
+import { AppContext } from './AppContext';
 
 export const useApp = (): Partial<AppContext> => {
 
