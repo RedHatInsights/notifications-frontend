@@ -88,8 +88,8 @@ export namespace Schemas {
 
   export const CurrentStatus = zodSchemaCurrentStatus();
   export type CurrentStatus = {
-    endTime?: string | undefined | null;
-    startTime?: string | undefined | null;
+    end_time?: string | undefined | null;
+    start_time?: string | undefined | null;
     status: Status;
   };
 
@@ -442,8 +442,8 @@ export namespace Schemas {
   function zodSchemaCurrentStatus() {
       return z
       .object({
-          endTime: z.string().optional().nullable(),
-          startTime: z.string().optional().nullable(),
+          end_time: z.string().optional().nullable(),
+          start_time: z.string().optional().nullable(),
           status: zodSchemaStatus()
       })
       .nonstrict();
