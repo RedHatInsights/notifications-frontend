@@ -6,8 +6,8 @@ import * as React from 'react';
 
 import messages from '../../../locales/data.json';
 import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
-import App from '../App';
 import { waitForAsyncEvents } from '../../../test/TestUtils';
+import App from '../App';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
     const real = jest.requireActual('@redhat-cloud-services/insights-common-typescript');
