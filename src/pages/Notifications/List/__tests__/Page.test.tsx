@@ -3,6 +3,7 @@ import {
     getInsights,
     InsightsType
 } from '@redhat-cloud-services/insights-common-typescript';
+import { getByLabelText, getByRole } from '@testing-library/react';
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -20,7 +21,6 @@ import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
-import { getByLabelText, getByRole } from '@testing-library/dom';
 
 type RouterAndRoute = {
   router: MemoryRouterProps;
@@ -479,7 +479,7 @@ describe('src/pages/Notifications/List/Page', () => {
     });
 
     describe('Clicking edit button of notification row', () => {
-        it.only('Sets in edit mode', async () => {
+        it('Sets in edit mode', async () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });

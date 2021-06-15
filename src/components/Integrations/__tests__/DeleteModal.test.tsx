@@ -38,34 +38,30 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onDelete={ fn() }
                 isDeleting={ false }
                 onClose={ fn() }
-                notifications={ [
+                behaviorGroups={ [
                     {
-                        useDefault: false,
                         actions: [],
                         id: '1',
-                        applicationDisplayName: 'Foo application',
-                        eventTypeDisplayName: 'Foo event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Foo stuff'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '2',
-                        applicationDisplayName: 'Bar application',
-                        eventTypeDisplayName: 'Bar event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Bar application'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '3',
-                        applicationDisplayName: 'Baz application',
-                        eventTypeDisplayName: 'Baz event type'
+                        bundleId: 'other-id',
+                        displayName: 'Baz peek'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '4',
-                        applicationDisplayName: '24446666688888888000000000',
-                        eventTypeDisplayName: 'Password'
+                        bundleId: 'other-id',
+                        displayName: 'Nothing else'
                     }
                 ] }
                 integration={ {
@@ -91,7 +87,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onDelete={ fn() }
                 isDeleting={ false }
                 onClose={ fn() }
-                notifications={ [] }
+                behaviorGroups={ [] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
                     type: IntegrationType.WEBHOOK,
@@ -115,34 +111,30 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onDelete={ fn() }
                 isDeleting={ false }
                 onClose={ fn() }
-                notifications={ [
+                behaviorGroups={ [
                     {
-                        useDefault: false,
                         actions: [],
                         id: '1',
-                        applicationDisplayName: 'Foo application',
-                        eventTypeDisplayName: 'Foo event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Foo stuff'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '2',
-                        applicationDisplayName: 'Bar application',
-                        eventTypeDisplayName: 'Bar event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Bar application'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '3',
-                        applicationDisplayName: 'Baz application',
-                        eventTypeDisplayName: 'Baz event type'
+                        bundleId: 'other-id',
+                        displayName: 'Baz peek'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '4',
-                        applicationDisplayName: '24446666688888888000000000',
-                        eventTypeDisplayName: 'Password'
+                        bundleId: 'other-id',
+                        displayName: 'Nothing else'
                     }
                 ] }
                 integration={ {

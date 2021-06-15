@@ -3,14 +3,14 @@ import { DeleteModal, DeleteModalProps } from '@redhat-cloud-services/insights-c
 import * as React from 'react';
 
 import { UserIntegration } from '../../types/Integration';
-import { Notification } from '../../types/Notification';
+import { BehaviorGroup } from '../../types/Notification';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 
 interface IntegrationDeleteModalProps extends Omit<DeleteModalProps, UsedProps> {
     integration?: UserIntegration;
     onDelete: (integration: UserIntegration) => boolean | Promise<boolean>;
-    notifications?: Array<Notification>;
+    behaviorGroups?: Array<BehaviorGroup>;
 }
 
 export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteModalProps> = (props) => {
@@ -26,30 +26,31 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
     }, [ props.onDelete, props.integration ]);
 
     const content = React.useMemo(() => {
-        if (props.notifications === undefined) {
+        if (props.behaviorGroups === undefined) {
             return (
                 <span data-testid="loading">
                     <Skeleton />
                 </span>
             );
-        } else if (props.notifications.length === 0) {
+        } else if (props.behaviorGroups.length === 0) {
             return <span
                 data-testid="removing-integration-without-notifications"
             >
-                Removing integration <strong>{ props.integration?.name }</strong> does not affect any notification events.
+                Removing integration <strong>{ props.integration?.name }</strong> does not affect any behavior group.
             </span>;
         } else {
-            const eventText = props.notifications.length !== 1 ? 'events' : 'event';
+            const behaviorGroupText = props.behaviorGroups.length !== 1 ? 'behavior groups' : 'behavior group';
             return (
-                <span data-testid={ `removing-integration-with-notifications-${props.notifications.length}` }>
-                    Removing integration <strong>{ props.integration?.name }</strong> affects {props.notifications.length} notification {eventText}.
-                    { props.notifications.length > 0 && <ExpandableSection toggleText={ `View ${props.notifications.length} ${eventText}.` }>
+                <span data-testid={ `removing-integration-with-notifications-${props.behaviorGroups.length}` }>
+                    Removing integration <strong>{ props.integration?.name }</strong> affects {props.behaviorGroups.length} {behaviorGroupText}.
+                    { props.behaviorGroups.length > 0 &&
+                    <ExpandableSection toggleText={ `View ${props.behaviorGroups.length} ${behaviorGroupText}.` }>
                         <List>
-                            { props.notifications.map(notification => (
+                            { props.behaviorGroups.map(behaviorGroup => (
                                 <ListItem
-                                    key={ notification.id }
+                                    key={ behaviorGroup.id }
                                 >
-                                    { notification.applicationDisplayName }: { notification.eventTypeDisplayName }
+                                    { behaviorGroup.bundleId }: { behaviorGroup.displayName }
                                 </ListItem>
                             )) }
                         </List>
@@ -57,7 +58,7 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
                 </span>
             );
         }
-    }, [ props.notifications, props.integration ]);
+    }, [ props.behaviorGroups, props.integration ]);
 
     if (!props.integration) {
         return null;

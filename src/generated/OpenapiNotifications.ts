@@ -750,6 +750,33 @@ export namespace Operations {
         .build();
     };
   }
+  // GET /notifications/behaviorGroups/affectedByRemovalOfEndpoint/{endpointId}
+  // Retrieve the behavior groups affected by the removal of an endpoint.
+  export namespace NotificationServiceGetBehaviorGroupsAffectedByRemovalOfEndpoint {
+    const Response200 = z.array(Schemas.BehaviorGroup);
+    type Response200 = Array<Schemas.BehaviorGroup>;
+    export interface Params {
+      endpointId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/notifications/behaviorGroups/affectedByRemovalOfEndpoint/{endpointId}'.replace(
+            '{endpointId}',
+            params.endpointId.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
   // PUT /notifications/behaviorGroups/{behaviorGroupId}/actions
   // Update the list of actions of a behavior group.
   export namespace NotificationServiceUpdateBehaviorGroupActions {
@@ -944,33 +971,6 @@ export namespace Operations {
         const path = '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfBehaviorGroup/{behaviorGroupId}'.replace(
             '{behaviorGroupId}',
             params.behaviorGroupId.toString()
-        );
-        const query = {} as Record<string, any>;
-        return actionBuilder('GET', path)
-        .queryParams(query)
-        .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
-        })
-        .build();
-    };
-  }
-  // GET /notifications/eventTypes/affectedByRemovalOfEndpoint/{endpointId}
-  // Retrieve the event types affected by the removal of an integration.
-  export namespace NotificationServiceGetEventTypesAffectedByRemovalOfEndpoint {
-    const Response200 = z.array(Schemas.EventType);
-    type Response200 = Array<Schemas.EventType>;
-    export interface Params {
-      endpointId: Schemas.UUID;
-    }
-
-    export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfEndpoint/{endpointId}'.replace(
-            '{endpointId}',
-            params.endpointId.toString()
         );
         const query = {} as Record<string, any>;
         return actionBuilder('GET', path)
