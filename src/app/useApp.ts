@@ -3,12 +3,16 @@ import { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import Config from '../config/Config';
+import { useGetServerStatus } from '../services/GetServerStatus';
+import { Server } from '../types/Server';
 import { AppContext } from './AppContext';
 
-export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'rbac'>> => {
+export const useApp = (): Partial<AppContext> => {
 
     const history = useHistory();
-    const [ rbac, setRbac ] = useState<Rbac | undefined>(undefined);
+    const serverStatus = useGetServerStatus();
+    const [ rbac, setRbac ] = useState<Rbac>();
+    const [ server, setServer ] = useState<Server>();
 
     useEffect(() => {
         waitForInsights().then((insights) => {
@@ -28,6 +32,12 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
     }, [ history ]);
 
     useEffect(() => {
+        if (serverStatus.payload?.type === 'ServerStatus') {
+            setServer(serverStatus.payload.value);
+        }
+    }, [ serverStatus.payload ]);
+
+    useEffect(() => {
         waitForInsights().then(insights => {
             insights.chrome.auth.getUser().then(() => {
                 fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
@@ -41,6 +51,7 @@ export const useApp = (): Omit<AppContext, 'rbac'> & Partial<Pick<AppContext, 'r
             canReadNotifications: rbac.hasPermission('notifications', 'notifications', 'read'),
             canWriteIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'write'),
             canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read')
-        } : undefined
+        } : undefined,
+        server
     };
 };

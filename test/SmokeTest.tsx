@@ -11,9 +11,25 @@ import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from './A
 import { waitForAsyncEvents } from './TestUtils';
 import Endpoint = Schemas.Endpoint;
 
+const mockMaintenance = (isUp: boolean) => {
+    const response = isUp ? {
+        status: 'UP'
+    } : {
+        start_time: '2021-06-11T13:09:31.213141',
+        end_time: '2021-06-11T18:09:31.213141',
+        status: 'MAINTENANCE'
+    };
+
+    fetchMock.get('/api/notifications/v1.0/status', {
+        status: 200,
+        body: response
+    });
+};
+
 describe('Smoketest', () => {
     it('Opens the main integrations page in multiple browsers', async () => {
         mockInsights();
+        mockMaintenance(true);
         appWrapperSetup();
         const rbacUrl = '/api/rbac/v1/access/?application=notifications%2Cintegrations';
         const dataRbac = {
@@ -100,6 +116,8 @@ describe('Smoketest', () => {
     it('Opens the main notifications page in multiple browsers', async () => {
         mockInsights();
         appWrapperSetup();
+        mockMaintenance(true);
+
         const rbacUrl = '/api/rbac/v1/access/?application=notifications%2Cintegrations';
         const dataRbac = {
             data: [
@@ -162,8 +180,7 @@ describe('Smoketest', () => {
                         display_name: 'My app desc'
                     },
                     display_name: 'my notification',
-                    name: 'Cool notification',
-                    endpoints: []
+                    name: 'Cool notification'
                 }
             ] as Array<Schemas.EventType>
         });

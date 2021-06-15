@@ -1,10 +1,12 @@
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { fetchRBAC, Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { act, render, screen } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
 import messages from '../../../locales/data.json';
 import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
+import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
@@ -22,6 +24,21 @@ jest.mock('../../Routes', () => {
         Routes: MockedRoutes
     };
 });
+
+const mockMaintenance = (isUp: boolean) => {
+    const response = isUp ? {
+        status: 'UP'
+    } : {
+        start_time: '2021-06-11T13:09:31.213141',
+        end_time: '2021-06-11T18:09:31.213141',
+        status: 'MAINTENANCE'
+    };
+
+    fetchMock.get('/api/notifications/v1.0/status', {
+        status: 200,
+        body: response
+    });
+};
 
 describe('src/app/App', () => {
 
@@ -45,6 +62,7 @@ describe('src/app/App', () => {
                 wrapper: AppWrapper
             }
         );
+        mockMaintenance(true);
 
         await act(async () => {
             await jest.advanceTimersToNextTimer();
@@ -56,6 +74,7 @@ describe('src/app/App', () => {
 
     it('Shows the content when read is set', async () => {
         jest.useFakeTimers();
+        mockMaintenance(true);
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
@@ -87,6 +106,8 @@ describe('src/app/App', () => {
             await jest.advanceTimersToNextTimer();
         });
 
+        await waitForAsyncEvents();
+
         expect(screen.getByTestId('content')).toBeTruthy();
     });
 
@@ -100,6 +121,7 @@ describe('src/app/App', () => {
                 notifications: [ 'write' ]
             }
         })));
+        mockMaintenance(true);
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
@@ -136,6 +158,7 @@ describe('src/app/App', () => {
                 notifications: [ 'read', 'write' ]
             }
         })));
+        mockMaintenance(true);
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
