@@ -54,19 +54,19 @@ export const BehaviorGroupCellControl: React.FunctionComponent<BehaviorGroupCell
     };
 
     if (!props.isEditMode) {
-        return <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onStartEditing }>
+        return <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onStartEditing } aria-label="edit">
             <PencilAltIcon />
         </ButtonWithNotificationId>;
     } else {
         return (
             <Split>
                 <SplitItem>
-                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onFinishEditing }>
+                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onFinishEditing } aria-label="done" >
                         <CheckIcon color={ props.isDisabled ? global_disabled_color_100.value : global_active_color_100.value } />
                     </ButtonWithNotificationId>
                 </SplitItem>
                 <SplitItem>
-                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onCancelEditMode }>
+                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onCancelEditMode } aria-label="cancel">
                         <CloseIcon color={ props.isDisabled ? global_disabled_color_100.value : global_palette_black_600.value } />
                     </ButtonWithNotificationId>
                 </SplitItem>

@@ -128,4 +128,4 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
             <TableBody />
         </Table>
     );
-}, 'Notifications/BehaviorGroupTable');
+}, 'Notifications/Table');
