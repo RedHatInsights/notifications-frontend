@@ -42,6 +42,7 @@ export namespace Schemas {
   export const BehaviorGroup = zodSchemaBehaviorGroup();
   export type BehaviorGroup = {
     actions?: Array<BehaviorGroupAction> | undefined | null;
+    bundle?: Bundle | undefined | null;
     bundle_id: UUID;
     created?: string | undefined | null;
     display_name: string;
@@ -384,6 +385,7 @@ export namespace Schemas {
       return z
       .object({
           actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
+          bundle: zodSchemaBundle().optional().nullable(),
           bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
           display_name: z.string(),

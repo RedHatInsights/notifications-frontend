@@ -50,7 +50,7 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
                                 <ListItem
                                     key={ behaviorGroup.id }
                                 >
-                                    { behaviorGroup.bundleId }: { behaviorGroup.displayName }
+                                    { behaviorGroup.bundleName }: { behaviorGroup.displayName }
                                 </ListItem>
                             )) }
                         </List>

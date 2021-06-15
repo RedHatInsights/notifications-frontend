@@ -38,7 +38,7 @@ const ButtonWithNotificationId: React.FunctionComponent<ButtonWithNotificationId
         }
     }, [ rawOnClick ]);
 
-    const isDisabled = rawIsDisabled || !onClick;
+    const isDisabled = rawIsDisabled || !rawOnClick;
 
     return <Button { ...restProps } onClick={ onClick } isDisabled={ isDisabled } data-notification-id={ notificationId }>
         { props.children }

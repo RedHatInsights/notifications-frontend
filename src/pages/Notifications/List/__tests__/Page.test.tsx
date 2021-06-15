@@ -3,8 +3,8 @@ import {
     getInsights,
     InsightsType
 } from '@redhat-cloud-services/insights-common-typescript';
-import { getByLabelText, getByRole } from '@testing-library/react';
-import { getByText, render, screen } from '@testing-library/react';
+import { getByLabelText, queryAllByLabelText } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { mockInsights, ouiaSelectors } from 'insights-common-typescript-dev';
@@ -517,9 +517,9 @@ describe('src/pages/Notifications/List/Page', () => {
             .getByOuia('PF4/Table');
 
             userEvent.click(
-                getByRole(
+                getByLabelText(
                     table,
-                    /button/i
+                    /edit/i
                 )
             );
 
@@ -528,14 +528,14 @@ describe('src/pages/Notifications/List/Page', () => {
             expect(getByLabelText(table, /cancel/)).toBeVisible();
         });
 
-        it('and then cancel, closes the modal', async () => {
+        it('and then cancel, removes done/cancel', async () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
             fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
-                        id: '3',
+                        id: defaultEventTypeId,
                         application_id: 'my-app',
                         application: {
                             id: 'my-app',
@@ -548,11 +548,12 @@ describe('src/pages/Notifications/List/Page', () => {
                     }
                 ] as Array<Schemas.EventType>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
+            fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
                 body: []
             });
             mockFacets();
             mockBehaviorGroup();
+            mockBehaviorGroupsOfEventTypes();
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
                     ...routePropsPageForBundle('rhel')
@@ -560,25 +561,28 @@ describe('src/pages/Notifications/List/Page', () => {
             });
 
             await waitForAsyncEvents();
+            const table = ouiaSelectors
+            .getByOuia('Notifications/Notifications/Table')
+            .getByOuia('PF4/Table');
+
             userEvent.click(
-                getByText(
-                    ouiaSelectors
-                    .getByOuia('Notifications/Notifications/Table')
-                    .getByOuia('PF4/Table'),
+                getByLabelText(
+                    table,
                     /edit/i
                 )
             );
 
             await waitForAsyncEvents();
             userEvent.click(
-                ouiaSelectors
-                .getByOuia('PF4/ModalContent')
-                .getByOuia('PF4/Button', 'cancel')
+                getByLabelText(
+                    table,
+                    /cancel/i
+                )
             );
 
-            expect(
-                screen.queryByText(/Edit default notification actions/i)
-            ).toBeFalsy();
+            expect(getByLabelText(table, /edit/)).toBeVisible();
+            expect(queryAllByLabelText(table, /cancel/).length).toBe(0);
+            expect(queryAllByLabelText(table, /done/).length).toBe(0);
         });
 
         it('and then save closes the modal and shows a notification if no changes are made', async () => {
@@ -588,7 +592,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get(defaultGetEventTypesUrl, {
                 body: [
                     {
-                        id: '3',
+                        id: defaultEventTypeId,
                         application_id: 'my-app',
                         application: {
                             id: 'my-app',
@@ -601,11 +605,19 @@ describe('src/pages/Notifications/List/Page', () => {
                     }
                 ] as Array<Schemas.EventType>
             });
-            fetchMock.get('/api/notifications/v1.0/notifications/eventTypes/3', {
+            fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
                 body: []
             });
             mockFacets();
             mockBehaviorGroup();
+            mockBehaviorGroupsOfEventTypes();
+
+            let saveLoadingResolver;
+            fetchMock.put(
+                `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}/behaviorGroups`,
+                new Promise(resolve => saveLoadingResolver = resolve)
+            );
+
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
                     ...routePropsPageForBundle('rhel')
@@ -613,134 +625,38 @@ describe('src/pages/Notifications/List/Page', () => {
             });
 
             await waitForAsyncEvents();
+            const table = ouiaSelectors
+            .getByOuia('Notifications/Notifications/Table')
+            .getByOuia('PF4/Table');
+
             userEvent.click(
-                getByText(
-                    ouiaSelectors
-                    .getByOuia('Notifications/Notifications/Table')
-                    .getByOuia('PF4/Table'),
+                getByLabelText(
+                    table,
                     /edit/i
                 )
             );
 
             await waitForAsyncEvents();
             userEvent.click(
-                ouiaSelectors
-                .getByOuia('PF4/ModalContent')
-                .getByOuia('PF4/Button', 'action')
+                getByLabelText(
+                    table,
+                    /done/i
+                )
             );
 
             await waitForAsyncEvents();
-            expect(screen.queryByText(/Actions updated/)).toBeTruthy();
-            expect(
-                screen.queryByText(/Edit default notification actions/i)
-            ).toBeFalsy();
-        });
-    });
+            expect(getByLabelText(table, /done/)).toBeDisabled();
+            expect(getByLabelText(table, /cancel/)).toBeDisabled();
 
-    it('Without write permissions edit default notification is disabled', async () => {
-        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
-            body: [] as Array<Schemas.Endpoint>
-        });
-        fetchMock.get(
-            `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-            {
-                body: []
-            }
-        );
-        fetchMock.get(defaultGetEventTypesUrl, {
-            body: [
-                {
-                    application_id: 'app',
-                    application: {
-                        display_name: 'the app',
-                        created: Date.now().toString(),
-                        id: 'app',
-                        bundle_id: 'my-bundle-id',
-                        name: 'app',
-                        updated: Date.now().toString()
-                    },
-                    display_name: 'display_name',
-                    id: defaultEventTypeId,
-                    name: 'mmmokay'
-                }
-            ] as Array<Schemas.EventType>
-        });
-        mockFacets();
-        mockBehaviorGroup();
-        render(<NotificationsListPage />, {
-            wrapper: getConfiguredAppWrapper({
-                ...routePropsPageForBundle('rhel'),
-                appContext: {
-                    rbac: {
-                        canWriteNotifications: false,
-                        canWriteIntegrationsEndpoints: true,
-                        canReadIntegrationsEndpoints: true,
-                        canReadNotifications: true
-                    }
-                }
-            })
-        });
+            saveLoadingResolver({
+                status: 200
+            });
+            await waitForAsyncEvents();
 
-        await waitForAsyncEvents();
-        expect(
-            getByText(
-                ouiaSelectors.getByOuia('Notifications/Notifications/DefaultBehavior'),
-                /Edit/i
-            )
-        ).toBeDisabled();
-    });
-
-    it('With write and read permissions edit default notification is enabled', async () => {
-        fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
-            body: [] as Array<Schemas.Endpoint>
+            expect(getByLabelText(table, /edit/)).toBeEnabled();
+            expect(queryAllByLabelText(table, /cancel/).length).toBe(0);
+            expect(queryAllByLabelText(table, /done/).length).toBe(0);
         });
-        fetchMock.get(
-            `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-            {
-                body: []
-            }
-        );
-        fetchMock.get(defaultGetEventTypesUrl, {
-            body: [
-                {
-                    application_id: 'app',
-                    application: {
-                        display_name: 'the app',
-                        created: Date.now().toString(),
-                        id: 'app',
-                        bundle_id: 'my-bundle-id',
-                        name: 'app',
-                        updated: Date.now().toString()
-                    },
-                    display_name: 'display_name',
-                    id: defaultEventTypeId,
-                    name: 'mmmokay'
-                }
-            ] as Array<Schemas.EventType>
-        });
-        mockFacets();
-        mockBehaviorGroup();
-        render(<NotificationsListPage />, {
-            wrapper: getConfiguredAppWrapper({
-                ...routePropsPageForBundle('rhel'),
-                appContext: {
-                    rbac: {
-                        canWriteNotifications: true,
-                        canWriteIntegrationsEndpoints: true,
-                        canReadIntegrationsEndpoints: true,
-                        canReadNotifications: true
-                    }
-                }
-            })
-        });
-
-        await waitForAsyncEvents();
-        expect(
-            getByText(
-                ouiaSelectors.getByOuia('Notifications/Notifications/DefaultBehavior'),
-                /Edit/i
-            )
-        ).toBeEnabled();
     });
 
     it('Without write permissions edit notification is disabled', async () => {
@@ -773,6 +689,7 @@ describe('src/pages/Notifications/List/Page', () => {
         });
         mockFacets();
         mockBehaviorGroup();
+        mockBehaviorGroupsOfEventTypes();
         render(<NotificationsListPage />, {
             wrapper: getConfiguredAppWrapper({
                 ...routePropsPageForBundle('rhel'),
@@ -790,9 +707,9 @@ describe('src/pages/Notifications/List/Page', () => {
 
         await waitForAsyncEvents();
         expect(
-            getByText(
+            getByLabelText(
                 ouiaSelectors.getByOuia('Notifications/Notifications/Table'),
-                /Edit/i
+                /edit/i
             )
         ).toBeDisabled();
     });
@@ -827,6 +744,7 @@ describe('src/pages/Notifications/List/Page', () => {
         });
         mockFacets();
         mockBehaviorGroup();
+        mockBehaviorGroupsOfEventTypes();
         render(<NotificationsListPage />, {
             wrapper: getConfiguredAppWrapper({
                 ...routePropsPageForBundle('rhel'),
@@ -843,9 +761,9 @@ describe('src/pages/Notifications/List/Page', () => {
 
         await waitForAsyncEvents();
         expect(
-            getByText(
+            getByLabelText(
                 ouiaSelectors.getByOuia('Notifications/Notifications/Table'),
-                /Edit/i
+                /edit/i
             )
         ).toBeEnabled();
     });
