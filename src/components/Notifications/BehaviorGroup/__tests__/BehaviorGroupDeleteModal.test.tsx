@@ -116,7 +116,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
 
         userEvent.click(screen.getByText(/this action cannot be undone/i));
         userEvent.click(screen.getByText(/remove/i, { selector: 'button' }));
-        expect(fn).toHaveBeenCalledWith(commonBehaviorGroup);
+        expect(onDelete).toHaveBeenCalledWith(commonBehaviorGroup);
     });
 
     it('On close is called when clicking cancel button', () => {
