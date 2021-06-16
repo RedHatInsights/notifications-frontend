@@ -2,7 +2,7 @@
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
-import jestMock from 'jest-mock';
+import { fn } from 'jest-mock';
 import * as React from 'react';
 import { IntlProvider } from 'react-intl';
 
@@ -325,7 +325,7 @@ describe('components/Integrations/Table', () => {
 
     it('Clicking Details arrow calls onCollapse with the integration, index and opposite of isOpen', async () => {
         const integration = { ...integrationTemplate, isOpen: true };
-        const onCollapse = jestMock.fn();
+        const onCollapse = fn();
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             isLoading={ false }
             integrations={ [ integration ] }
@@ -342,7 +342,7 @@ describe('components/Integrations/Table', () => {
 
     it('Clicking Enable Switch calls onEnable with the integration, index and opposite of isEnabled', async () => {
         const integration = { ...integrationTemplate, isEnabled: true };
-        const onEnable = jestMock.fn();
+        const onEnable = fn();
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             isLoading={ false }
             integrations={ [ integration ] }

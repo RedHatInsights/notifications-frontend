@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import jestMock from 'jest-mock';
+import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
@@ -11,9 +11,9 @@ describe('src/components/Integrations/SaveModal', () => {
     it('Has Add integration title if isEdit is false', async () => {
         render(
             <IntegrationSaveModal
-                onSave={ jestMock.fn() }
+                onSave={ fn() }
                 isSaving={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 initialIntegration={ {
                     name: 'foobar',
                     type: IntegrationType.WEBHOOK,
@@ -31,9 +31,9 @@ describe('src/components/Integrations/SaveModal', () => {
     it('Has Edit integration title if isEdit is true', async () => {
         render(
             <IntegrationSaveModal
-                onSave={ jestMock.fn() }
+                onSave={ fn() }
                 isSaving={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 initialIntegration={ {
                     name: 'foobar',
                     type: IntegrationType.WEBHOOK,
@@ -52,9 +52,9 @@ describe('src/components/Integrations/SaveModal', () => {
     it('Has the integration name in an input', async () => {
         render(
             <IntegrationSaveModal
-                onSave={ jestMock.fn() }
+                onSave={ fn() }
                 isSaving={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 initialIntegration={ {
                     name: 'sdiofgjiofdsjgoifjso',
                     type: IntegrationType.WEBHOOK,
@@ -73,9 +73,9 @@ describe('src/components/Integrations/SaveModal', () => {
     it('When the integration.type is not specified, it uses Webhook', async () => {
         render(
             <IntegrationSaveModal
-                onSave={ jestMock.fn() }
+                onSave={ fn() }
                 isSaving={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 initialIntegration={ {
                     name: 'sdiofgjiofdsjgoifjso',
                     isEnabled: true,
@@ -91,8 +91,8 @@ describe('src/components/Integrations/SaveModal', () => {
     });
 
     it('Clicking save button triggers onSave if return value is true it triggers onClose', async () => {
-        const onSave = jestMock.fn(() => true);
-        const onClose = jestMock.fn();
+        const onSave = fn(() => true);
+        const onClose = fn();
         render(
             <IntegrationSaveModal
                 onSave={ onSave }
@@ -118,8 +118,8 @@ describe('src/components/Integrations/SaveModal', () => {
     });
 
     it('Clicking save button triggers onSave if return value is false it does not trigger onClose', async () => {
-        const onSave = jestMock.fn(() => false);
-        const onClose = jestMock.fn();
+        const onSave = fn(() => false);
+        const onClose = fn();
         render(
             <IntegrationSaveModal
                 onSave={ onSave }

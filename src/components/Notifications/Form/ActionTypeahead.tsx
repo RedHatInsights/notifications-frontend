@@ -29,8 +29,8 @@ export interface ActionTypeaheadProps extends OuiaComponentProps {
 export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
 
-    const toggle = React.useCallback(() => {
-        setOpen(prev => !prev);
+    const toggle = React.useCallback((isExpanded: boolean) => {
+        setOpen(isExpanded);
     }, [ setOpen ]);
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {

@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import jestMock from 'jest-mock';
+import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
@@ -17,7 +17,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         render(
-            <ActionTypeahead action={ action } onSelected={ jestMock.fn() } />
+            <ActionTypeahead action={ action } onSelected={ fn() } />
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeVisible();
@@ -32,7 +32,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         render(
-            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ jestMock.fn() } />
+            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ fn() } />
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeDisabled();
@@ -46,7 +46,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
                 'Foo', 'Bar'
             ]
         };
-        const actionSelected = jestMock.fn();
+        const actionSelected = fn();
         render(
             <ActionTypeahead action={ action } onSelected={ actionSelected } />
         );
@@ -65,12 +65,13 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
                 'Foo', 'Bar'
             ]
         };
-        const actionSelected = jestMock.fn();
+        const actionSelected = fn();
         render(
             <ActionTypeahead action={ action } onSelected={ actionSelected } />
         );
 
         userEvent.click(screen.getByRole('button'));
+        await waitForAsyncEvents();
         userEvent.click(screen.getAllByRole('option')[0]);
         await waitForAsyncEvents();
         expect(screen.queryAllByRole('option')).toHaveLength(0);
