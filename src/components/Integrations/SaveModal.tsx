@@ -53,9 +53,9 @@ export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalP
         return {
             // The call is twice, because we use lazy evaluation for the integration base type.
             // To ensure we get the defaults on the second level (webhook, slack, etc) we need to call it again
-            ...IntegrationSchema.cast(IntegrationSchema.cast()),
+            ...IntegrationSchema.cast(IntegrationSchema.cast({})),
             ...props.initialIntegration
-        };
+        } as PartialIntegration;
     });
 
     const onSubmit = React.useCallback(async (integration: PartialIntegration) => {
