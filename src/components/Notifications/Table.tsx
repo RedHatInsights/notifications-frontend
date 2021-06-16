@@ -342,7 +342,7 @@ export const NotificationsTable: React.FunctionComponent<NotificationsTableProps
         }
 
         const index = notifications.data.findIndex(n => n.applicationDisplayName === data.id);
-        if (onCollapse && index !== undefined && index !== -1) {
+        if (index !== undefined && index !== -1) {
             onCollapse(index, isOpen);
         }
 

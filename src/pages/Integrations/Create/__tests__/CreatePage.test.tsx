@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import jestMock from 'jest-mock';
+import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
@@ -16,7 +16,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         render(
             <CreatePage
                 initialIntegration={ {} }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
@@ -29,7 +29,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 initialIntegration={ {
                     name: 'foobar'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
@@ -42,7 +42,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 initialIntegration={ {
                     name: 'foobar'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
@@ -51,7 +51,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
     });
 
     it('Calls onClose when clicking the x', async () => {
-        const onClose = jestMock.fn();
+        const onClose = fn();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -66,7 +66,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
     });
 
     it('Calls onClose when clicking the cancel button', async () => {
-        const onClose = jestMock.fn();
+        const onClose = fn();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -84,7 +84,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         render(
             <CreatePage
                 initialIntegration={ {} }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
@@ -98,7 +98,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
@@ -112,7 +112,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
@@ -126,7 +126,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 isEdit={ true }
             />);
         await waitForAsyncEvents();
@@ -160,7 +160,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />,
             {
                 wrapper: getConfiguredAppWrapper()
@@ -189,7 +189,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     name: 'foobar',
                     url: 'http://google.com'
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />,
             {
                 wrapper: getConfiguredAppWrapper()
@@ -234,7 +234,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     url: 'http://google.com',
                     isEnabled: true
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />,
             {
                 wrapper: getConfiguredAppWrapper()
@@ -286,7 +286,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     url: 'http://google.com',
                     isEnabled: false
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />,
             {
                 wrapper: getConfiguredAppWrapper()
@@ -327,7 +327,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     url: 'http://google.com',
                     isEnabled: true
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />,
             {
                 wrapper: getConfiguredAppWrapper()
@@ -368,7 +368,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                     url: 'http://google.com',
                     isEnabled: false
                 } }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />,
             {
                 wrapper: getConfiguredAppWrapper()

@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
-import jestMock from 'jest-mock';
+import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
@@ -13,9 +13,9 @@ describe('src/components/Integrations/DeleteModal', () => {
     it('Has Remove integration title', () => {
         render(
             <IntegrationDeleteModal
-                onDelete={ jestMock.fn() }
+                onDelete={ fn() }
                 isDeleting={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 integration={ {
                     name: 'foobar',
                     type: IntegrationType.WEBHOOK,
@@ -35,9 +35,9 @@ describe('src/components/Integrations/DeleteModal', () => {
     it('Passing notifications renders the expanded content with the number of elements', () => {
         render(
             <IntegrationDeleteModal
-                onDelete={ jestMock.fn() }
+                onDelete={ fn() }
                 isDeleting={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 notifications={ [
                     {
                         useDefault: false,
@@ -88,9 +88,9 @@ describe('src/components/Integrations/DeleteModal', () => {
     it('Passing empty notifications renders a different message', () => {
         render(
             <IntegrationDeleteModal
-                onDelete={ jestMock.fn() }
+                onDelete={ fn() }
                 isDeleting={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 notifications={ [] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
@@ -112,9 +112,9 @@ describe('src/components/Integrations/DeleteModal', () => {
     it('Opening the expandable reveals the notifications', () => {
         render(
             <IntegrationDeleteModal
-                onDelete={ jestMock.fn() }
+                onDelete={ fn() }
                 isDeleting={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
                 notifications={ [
                     {
                         useDefault: false,
@@ -168,9 +168,9 @@ describe('src/components/Integrations/DeleteModal', () => {
     it('Does not render if integration is undefined', () => {
         render(
             <IntegrationDeleteModal
-                onDelete={ jestMock.fn() }
+                onDelete={ fn() }
                 isDeleting={ false }
-                onClose={ jestMock.fn() }
+                onClose={ fn() }
             />
         );
 
@@ -178,8 +178,8 @@ describe('src/components/Integrations/DeleteModal', () => {
     });
 
     it('Clicking delete calls onDelete, if returns true calls onClose', async () => {
-        const onDelete = jestMock.fn(() => true);
-        const onClose = jestMock.fn();
+        const onDelete = fn(() => true);
+        const onClose = fn();
         render(
             <IntegrationDeleteModal
                 onDelete={ onDelete }
@@ -206,8 +206,8 @@ describe('src/components/Integrations/DeleteModal', () => {
     });
 
     it('Clicking delete calls onDelete, if returns false it does not call onClose', async () => {
-        const onDelete = jestMock.fn(() => false);
-        const onClose = jestMock.fn();
+        const onDelete = fn(() => false);
+        const onClose = fn();
         render(
             <IntegrationDeleteModal
                 onDelete={ onDelete }

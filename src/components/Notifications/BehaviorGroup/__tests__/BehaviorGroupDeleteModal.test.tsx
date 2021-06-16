@@ -1,6 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import jestMock from 'jest-mock';
+import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { BehaviorGroupDeleteModal } from '../BehaviorGroupDeleteModal';
@@ -14,8 +14,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
                 actions: [],
                 bundleId: 'bundle-id'
             } }
-            onDelete={ jestMock.fn() }
-            onClose={ jestMock.fn() }
+            onDelete={ fn() }
+            onClose={ fn() }
             conflictingNotifications={ [{
                 id: 'conflict-1',
                 eventTypeDisplayName: 'EventBar',
@@ -37,8 +37,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
                 actions: [],
                 bundleId: 'bundle-id'
             } }
-            onDelete={ jestMock.fn() }
-            onClose={ jestMock.fn() }
+            onDelete={ fn() }
+            onClose={ fn() }
             conflictingNotifications={ [] }
             isDeleting={ false }
         />);
@@ -54,8 +54,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
                 actions: [],
                 bundleId: 'bundle-id'
             } }
-            onDelete={ jestMock.fn() }
-            onClose={ jestMock.fn() }
+            onDelete={ fn() }
+            onClose={ fn() }
             conflictingNotifications={ [{
                 id: 'conflict-1',
                 eventTypeDisplayName: 'EventBar',
@@ -78,8 +78,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
                 actions: [],
                 bundleId: 'bundle-id'
             } }
-            onDelete={ jestMock.fn() }
-            onClose={ jestMock.fn() }
+            onDelete={ fn() }
+            onClose={ fn() }
             conflictingNotifications={ [] }
             isDeleting={ false }
         />);
@@ -95,8 +95,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
                 actions: [],
                 bundleId: 'bundle-id'
             } }
-            onDelete={ jestMock.fn() }
-            onClose={ jestMock.fn() }
+            onDelete={ fn() }
+            onClose={ fn() }
             conflictingNotifications={ [] }
             isDeleting={ false }
         />);
@@ -112,8 +112,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
                 actions: [],
                 bundleId: 'bundle-id'
             } }
-            onDelete={ jestMock.fn() }
-            onClose={ jestMock.fn() }
+            onDelete={ fn() }
+            onClose={ fn() }
             conflictingNotifications={ [] }
             isDeleting={ false }
         />);
@@ -126,7 +126,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
     });
 
     it('On delete with the behavior is called when clicking Remove button', () => {
-        const fn = jestMock.fn<boolean, []>();
+        const onDelete = fn<boolean, []>();
         const bg = {
             id: 'foo',
             displayName: 'Foo',
@@ -135,19 +135,19 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
         };
         render(<BehaviorGroupDeleteModal
             behaviorGroup={ bg }
-            onDelete={ fn }
-            onClose={ jestMock.fn() }
+            onDelete={ onDelete }
+            onClose={ fn() }
             conflictingNotifications={ [] }
             isDeleting={ false }
         />);
 
         userEvent.click(screen.getByText(/this action cannot be undone/i));
         userEvent.click(screen.getByText(/remove/i, { selector: 'button' }));
-        expect(fn).toHaveBeenCalledWith(bg);
+        expect(onDelete).toHaveBeenCalledWith(bg);
     });
 
     it('On close is called when clicking cancel button', () => {
-        const fn = jestMock.fn();
+        const onClose = fn();
         const bg = {
             id: 'foo',
             displayName: 'Foo',
@@ -156,13 +156,13 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
         };
         render(<BehaviorGroupDeleteModal
             behaviorGroup={ bg }
-            onDelete={ jestMock.fn() }
-            onClose={ fn }
+            onDelete={ fn() }
+            onClose={ onClose }
             conflictingNotifications={ [] }
             isDeleting={ false }
         />);
 
         userEvent.click(screen.getByText(/cancel/i, { selector: 'button' }));
-        expect(fn).toHaveBeenCalled();
+        expect(onClose).toHaveBeenCalled();
     });
 });
