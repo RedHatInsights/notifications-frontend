@@ -33,11 +33,16 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     const getApplications = useGetApplications();
 
     React.useEffect(() => {
+        let unregister;
         if (onFunction) {
-            onFunction('APP_NAVIGATION', (event: any) => {
+            unregister = onFunction('APP_NAVIGATION', (event: any) => {
                 history.push(linkTo.notifications(event.navId));
             });
         }
+
+        return () => {
+            typeof unregister === 'function' && unregister();
+        };
     }, [ history, onFunction ]);
 
     const bundle: Facet | BundleStatus = useMemo(() => {
