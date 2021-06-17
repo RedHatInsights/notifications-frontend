@@ -11,14 +11,14 @@ export type OnNotificationIdHandler = (notificationId: UUID) => void;
 export interface BehaviorGroupCellControlProps {
     notificationId: UUID;
     isEditMode: boolean;
-    onStartEditing: OnNotificationIdHandler;
-    onFinishEditing: OnNotificationIdHandler;
-    onCancelEditMode: OnNotificationIdHandler;
+    onStartEditing?: OnNotificationIdHandler;
+    onFinishEditing?: OnNotificationIdHandler;
+    onCancelEditMode?: OnNotificationIdHandler;
     isDisabled: boolean;
 }
 
 interface ButtonWithNotificationIdProps extends Omit<ButtonProps, 'onClick'> {
-    onClick: OnNotificationIdHandler;
+    onClick?: OnNotificationIdHandler;
     notificationId: UUID;
 }
 
@@ -30,13 +30,17 @@ const toOnNotificationSetAdapter = (event: any, onClick: OnNotificationIdHandler
 };
 
 const ButtonWithNotificationId: React.FunctionComponent<ButtonWithNotificationIdProps> = props => {
-    const { notificationId, ...restProps } = props;
+    const { notificationId, isDisabled: rawIsDisabled, onClick: rawOnClick, ...restProps } = props;
 
     const onClick = React.useCallback((event: any) => {
-        toOnNotificationSetAdapter(event, props.onClick);
-    }, [ props.onClick ]);
+        if (rawOnClick) {
+            toOnNotificationSetAdapter(event, rawOnClick);
+        }
+    }, [ rawOnClick ]);
 
-    return <Button { ...restProps } onClick={ onClick } data-notification-id={ notificationId }>
+    const isDisabled = rawIsDisabled || !rawOnClick;
+
+    return <Button { ...restProps } onClick={ onClick } isDisabled={ isDisabled } data-notification-id={ notificationId }>
         { props.children }
     </Button>;
 };
@@ -50,19 +54,19 @@ export const BehaviorGroupCellControl: React.FunctionComponent<BehaviorGroupCell
     };
 
     if (!props.isEditMode) {
-        return <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onStartEditing }>
+        return <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onStartEditing } aria-label="edit">
             <PencilAltIcon />
         </ButtonWithNotificationId>;
     } else {
         return (
             <Split>
                 <SplitItem>
-                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onFinishEditing }>
+                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onFinishEditing } aria-label="done" >
                         <CheckIcon color={ props.isDisabled ? global_disabled_color_100.value : global_active_color_100.value } />
                     </ButtonWithNotificationId>
                 </SplitItem>
                 <SplitItem>
-                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onCancelEditMode }>
+                    <ButtonWithNotificationId { ...commonButtonProps } onClick={ props.onCancelEditMode } aria-label="cancel">
                         <CloseIcon color={ props.isDisabled ? global_disabled_color_100.value : global_palette_black_600.value } />
                     </ButtonWithNotificationId>
                 </SplitItem>

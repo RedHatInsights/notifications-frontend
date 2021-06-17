@@ -38,34 +38,34 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onDelete={ fn() }
                 isDeleting={ false }
                 onClose={ fn() }
-                notifications={ [
+                behaviorGroups={ [
                     {
-                        useDefault: false,
                         actions: [],
                         id: '1',
-                        applicationDisplayName: 'Foo application',
-                        eventTypeDisplayName: 'Foo event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Foo stuff',
+                        bundleName: 'b1'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '2',
-                        applicationDisplayName: 'Bar application',
-                        eventTypeDisplayName: 'Bar event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Bar application',
+                        bundleName: 'b1'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '3',
-                        applicationDisplayName: 'Baz application',
-                        eventTypeDisplayName: 'Baz event type'
+                        bundleId: 'other-id',
+                        displayName: 'Baz peek',
+                        bundleName: 'ABC'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '4',
-                        applicationDisplayName: '24446666688888888000000000',
-                        eventTypeDisplayName: 'Password'
+                        bundleId: '24446666688888888000000000',
+                        displayName: 'Password',
+                        bundleName: 'Fake'
                     }
                 ] }
                 integration={ {
@@ -91,7 +91,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onDelete={ fn() }
                 isDeleting={ false }
                 onClose={ fn() }
-                notifications={ [] }
+                behaviorGroups={ [] }
                 integration={ {
                     name: 'sdiofgjiofdsjgoifjso',
                     type: IntegrationType.WEBHOOK,
@@ -115,34 +115,34 @@ describe('src/components/Integrations/DeleteModal', () => {
                 onDelete={ fn() }
                 isDeleting={ false }
                 onClose={ fn() }
-                notifications={ [
+                behaviorGroups={ [
                     {
-                        useDefault: false,
                         actions: [],
                         id: '1',
-                        applicationDisplayName: 'Foo application',
-                        eventTypeDisplayName: 'Foo event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Foo stuff',
+                        bundleName: 'b1'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '2',
-                        applicationDisplayName: 'Bar application',
-                        eventTypeDisplayName: 'Bar event type'
+                        bundleId: 'bundle-id',
+                        displayName: 'Bar application',
+                        bundleName: 'b1'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '3',
-                        applicationDisplayName: 'Baz application',
-                        eventTypeDisplayName: 'Baz event type'
+                        bundleId: 'other-id',
+                        displayName: 'Baz peek',
+                        bundleName: 'ABC'
                     },
                     {
-                        useDefault: false,
                         actions: [],
                         id: '4',
-                        applicationDisplayName: '24446666688888888000000000',
-                        eventTypeDisplayName: 'Password'
+                        bundleId: '24446666688888888000000000',
+                        displayName: 'Password',
+                        bundleName: 'Fake'
                     }
                 ] }
                 integration={ {
@@ -158,11 +158,11 @@ describe('src/components/Integrations/DeleteModal', () => {
             />
         );
 
-        userEvent.click(screen.getByText(/View 4 events./i));
-        expect(screen.getByText('Foo application: Foo event type')).toBeVisible();
-        expect(screen.getByText('Bar application: Bar event type')).toBeVisible();
-        expect(screen.getByText('Baz application: Baz event type')).toBeVisible();
-        expect(screen.getByText('24446666688888888000000000: Password')).toBeVisible();
+        userEvent.click(screen.getByText(/View 4 behavior groups./i));
+        expect(screen.getByText('b1: Foo stuff')).toBeVisible();
+        expect(screen.getByText('b1: Bar application')).toBeVisible();
+        expect(screen.getByText('ABC: Baz peek')).toBeVisible();
+        expect(screen.getByText('Fake: Password')).toBeVisible();
     });
 
     it('Does not render if integration is undefined', () => {

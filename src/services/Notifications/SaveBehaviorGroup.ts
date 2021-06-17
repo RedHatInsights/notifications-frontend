@@ -2,7 +2,7 @@ import { useTransformQueryResponse } from '@redhat-cloud-services/insights-commo
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useMutation } from 'react-fetching-library';
 
-import { Operations } from '../../generated/OpenapiPrivate';
+import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup, toShallowBehaviorGroupRequest } from '../../types/adapters/BehaviorGroupAdapter';
 import { BehaviorGroup, NewBehaviorGroup } from '../../types/Notification';
 

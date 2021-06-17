@@ -14,6 +14,7 @@ import { global_BackgroundColor_100, global_palette_black_1000, global_spacer_lg
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { useAppContext } from '../../../app/AppContext';
 import {
     BehaviorGroupCardList,
     BehaviorGroupCardListSkeleton
@@ -65,6 +66,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
 
     const [ isExpanded, setExpanded ] = React.useState(true);
     const [ filter, setFilter ] = React.useState<string>('');
+    const { rbac } = useAppContext();
 
     const filteredBehaviors = React.useMemo(() => {
         if (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) {
@@ -139,6 +141,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                         variant={ ButtonVariant.primary }
                                         onClick={ createGroup }
                                         component='a'
+                                        isDisabled={ !rbac.canWriteNotifications }
                                     >
                                         Create new group
                                     </Button>
@@ -180,7 +183,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                     </SplitItem>
                                     <SplitItem>
                                         <Button
-                                            isDisabled={ props.behaviorGroupContent.isLoading }
+                                            isDisabled={ props.behaviorGroupContent.isLoading || !rbac.canWriteNotifications }
                                             variant={ ButtonVariant.primary }
                                             onClick={ createGroup }
                                         >
@@ -195,7 +198,11 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                 ) : props.behaviorGroupContent.hasError ? (
                                     <div>Error loading behavior groups</div>
                                 ) : (
-                                    <BehaviorGroupCardList onEdit={ onEdit } onDelete={ onDelete } behaviorGroups={ filteredBehaviors } />
+                                    <BehaviorGroupCardList
+                                        onEdit={ rbac.canWriteNotifications ? onEdit : undefined }
+                                        onDelete={ rbac.canWriteNotifications ? onDelete : undefined }
+                                        behaviorGroups={ filteredBehaviors }
+                                    />
                                 ) }
                             </StackItem>
                         </>

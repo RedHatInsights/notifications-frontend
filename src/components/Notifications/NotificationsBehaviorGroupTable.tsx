@@ -17,9 +17,9 @@ export interface NotificationsBehaviorGroupTableProps {
     behaviorGroupContent: BehaviorGroupContent;
     notifications: Array<BehaviorGroupNotificationRow>;
     onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
-    onStartEditing: OnNotificationIdHandler;
-    onFinishEditing: OnNotificationIdHandler;
-    onCancelEditing: OnNotificationIdHandler;
+    onStartEditing?: OnNotificationIdHandler;
+    onFinishEditing?: OnNotificationIdHandler;
+    onCancelEditing?: OnNotificationIdHandler;
 }
 
 const buttonCellClassName = style({
@@ -36,7 +36,7 @@ type Callbacks = {
 const toTableRows = (
     notifications: Array<BehaviorGroupNotificationRow>,
     behaviorGroupContent: BehaviorGroupContent,
-    callback: Callbacks) => {
+    callbacks?: Callbacks) => {
     return notifications.map((notification => ({
         id: notification.id,
         key: notification.id,
@@ -56,7 +56,7 @@ const toTableRows = (
                             notification={ notification }
                             behaviorGroupContent={ behaviorGroupContent }
                             selected={ notification.behaviors ?? emptyImmutableArray }
-                            onSelect={ callback.onBehaviorGroupLinkUpdated }
+                            onSelect={ callbacks?.onBehaviorGroupLinkUpdated }
                             isEditMode={ notification.isEditMode }
                         />
                     </span>
@@ -65,9 +65,9 @@ const toTableRows = (
                 title: <BehaviorGroupCellControl
                     notificationId={ notification.id }
                     isEditMode={ notification.isEditMode }
-                    onStartEditing={ callback.onStartEditing }
-                    onCancelEditMode={ callback.onCancelEditing }
-                    onFinishEditing={ callback.onFinishEditing }
+                    onStartEditing={ callbacks?.onStartEditing }
+                    onCancelEditMode={ callbacks?.onCancelEditing }
+                    onFinishEditing={ callbacks?.onFinishEditing }
                     isDisabled={ notification.loadingActionStatus !== 'done' }
                 />,
                 props: {
@@ -99,12 +99,19 @@ const cells: Array<ICell> = [
 
 export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
 
-    const callbacks: Callbacks = React.useMemo(() => ({
-        onStartEditing: props.onStartEditing,
-        onFinishEditing: props.onFinishEditing,
-        onCancelEditing: props.onCancelEditing,
-        onBehaviorGroupLinkUpdated: props.onBehaviorGroupLinkUpdated
-    }), [ props.onStartEditing, props.onFinishEditing, props.onCancelEditing, props.onBehaviorGroupLinkUpdated ]);
+    const callbacks: Callbacks | undefined = React.useMemo(() => {
+
+        if (props.onStartEditing && props.onFinishEditing && props.onCancelEditing) {
+            return {
+                onStartEditing: props.onStartEditing,
+                onFinishEditing: props.onFinishEditing,
+                onCancelEditing: props.onCancelEditing,
+                onBehaviorGroupLinkUpdated: props.onBehaviorGroupLinkUpdated
+            };
+        }
+
+        return undefined;
+    }, [ props.onStartEditing, props.onFinishEditing, props.onCancelEditing, props.onBehaviorGroupLinkUpdated ]);
 
     const rows = React.useMemo(() => {
         return toTableRows(props.notifications, props.behaviorGroupContent, callbacks);
@@ -121,4 +128,4 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
             <TableBody />
         </Table>
     );
-}, 'Notifications/BehaviorGroupTable');
+}, 'Notifications/Table');
