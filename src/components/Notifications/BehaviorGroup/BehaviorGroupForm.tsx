@@ -4,6 +4,7 @@ import { global_spacer_md } from '@patternfly/react-tokens';
 import { FormTextInput, OuiaComponentProps, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
 import { FieldArray, FieldArrayRenderProps, FormikProps, useField } from 'formik';
 import * as React from 'react';
+import { DeepPartial } from 'ts-essentials';
 import { style } from 'typestyle';
 
 import { IntegrationType, UserIntegrationType } from '../../../types/Integration';
@@ -12,7 +13,6 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { RecipientForm } from '../EditableActionRow/RecipientForm';
 import { useEditableActionRow } from '../EditableActionRow/useEditableActionRow';
 import { ActionTypeahead } from '../Form/ActionTypeahead';
-import { DeepPartial } from 'ts-essentials';
 
 interface EditBehaviorGroupProps extends OuiaComponentProps {
     getRecipients: (search: string) => Promise<Array<string>>;
@@ -60,6 +60,8 @@ const ActionRow: React.FunctionComponent<ActionRowProps> = props => {
     const error = React.useMemo(() => {
         if (typeof meta.error === 'string') {
             return meta.error;
+        } else if ((meta.error as any)?.integration?.id) {
+            return 'Select a recipient for this integration';
         }
 
         return undefined;
