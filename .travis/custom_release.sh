@@ -7,7 +7,7 @@ source ./.github/scripts/commands.sh
 if [ "${TRAVIS_BRANCH}" = "master" ]
 then
     ensure_beta
-    for env in ci
+    for env in ci qa
     do
         echo "PUSHING ${env}-beta"
         rm -rf ./dist/.git
@@ -19,7 +19,7 @@ fi
 if [ "${TRAVIS_BRANCH}" = "master" ]
 then
     ensure_stable
-    for env in ci
+    for env in ci qa
     do
         echo "PUSHING ${env}-stable"
         rm -rf ./dist/.git
