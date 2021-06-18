@@ -63,7 +63,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     const selectableOptions = React.useMemo(() => getSelectOptions(props.selectedNotifications)
     .filter((o) => !hideNonWebhooks
             || o.notificationType === NotificationType.INTEGRATION)
-    .map(o => <SelectOption key={ o.toString() } value={ o } />), [ getSelectOptions, hideNonWebhooks, props.selectedNotifications ]);
+    .map(o => <SelectOption key={ o.toString() } value={ o } />), [ hideNonWebhooks, props.selectedNotifications ]);
 
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >
