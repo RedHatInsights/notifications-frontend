@@ -94,7 +94,8 @@ export namespace Schemas {
     status: Status;
   };
 
-  export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
+  export const EmailSubscriptionProperties =
+    zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
@@ -233,12 +234,14 @@ export namespace Schemas {
     durationInMs?: AtomicLong | undefined | null;
   };
 
-  export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
+  export const MultivaluedMapStringObject =
+    zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
     [x: string]: Array<unknown>;
   };
 
-  export const MultivaluedMapStringString = zodSchemaMultivaluedMapStringString();
+  export const MultivaluedMapStringString =
+    zodSchemaMultivaluedMapStringString();
   export type MultivaluedMapStringString = {
     [x: string]: Array<string>;
   };

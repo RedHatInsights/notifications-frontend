@@ -94,7 +94,8 @@ export namespace Schemas {
     status: Status;
   };
 
-  export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
+  export const EmailSubscriptionProperties =
+    zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
@@ -233,12 +234,14 @@ export namespace Schemas {
     durationInMs?: AtomicLong | undefined | null;
   };
 
-  export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
+  export const MultivaluedMapStringObject =
+    zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
     [x: string]: Array<unknown>;
   };
 
-  export const MultivaluedMapStringString = zodSchemaMultivaluedMapStringString();
+  export const MultivaluedMapStringString =
+    zodSchemaMultivaluedMapStringString();
   export type MultivaluedMapStringString = {
     [x: string]: Array<string>;
   };
@@ -766,7 +769,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/behaviorGroups/affectedByRemovalOfEndpoint/{endpointId}'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/behaviorGroups/affectedByRemovalOfEndpoint/{endpointId}'.replace(
             '{endpointId}',
             params.endpointId.toString()
         );
@@ -796,7 +800,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{behaviorGroupId}/actions'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/behaviorGroups/{behaviorGroupId}/actions'.replace(
             '{behaviorGroupId}',
             params.behaviorGroupId.toString()
         );
@@ -825,7 +830,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
             '{id}',
             params.id.toString()
         );
@@ -853,7 +859,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
             '{id}',
             params.id.toString()
         );
@@ -880,7 +887,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/bundles/{bundleId}/behaviorGroups'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/bundles/{bundleId}/behaviorGroups'.replace(
             '{bundleId}',
             params.bundleId.toString()
         );
@@ -970,7 +978,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfBehaviorGroup/{behaviorGroupId}'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/eventTypes/affectedByRemovalOfBehaviorGroup/{behaviorGroupId}'.replace(
             '{behaviorGroupId}',
             params.behaviorGroupId.toString()
         );
@@ -1009,7 +1018,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups'.replace(
             '{eventTypeId}',
             params.eventTypeId.toString()
         );
@@ -1055,7 +1065,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups'.replace(
+        const path =
+        '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups'.replace(
             '{eventTypeId}',
             params.eventTypeId.toString()
         );
