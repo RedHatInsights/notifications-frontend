@@ -94,7 +94,8 @@ export namespace Schemas {
     status: Status;
   };
 
-  export const EmailSubscriptionProperties = zodSchemaEmailSubscriptionProperties();
+  export const EmailSubscriptionProperties =
+    zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = unknown;
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
@@ -233,12 +234,14 @@ export namespace Schemas {
     durationInMs?: AtomicLong | undefined | null;
   };
 
-  export const MultivaluedMapStringObject = zodSchemaMultivaluedMapStringObject();
+  export const MultivaluedMapStringObject =
+    zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
     [x: string]: Array<unknown>;
   };
 
-  export const MultivaluedMapStringString = zodSchemaMultivaluedMapStringString();
+  export const MultivaluedMapStringString =
+    zodSchemaMultivaluedMapStringString();
   export type MultivaluedMapStringString = {
     [x: string]: Array<string>;
   };
@@ -837,7 +840,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/integrations/v1.0/endpoints/email/subscription/{bundleName}/{applicationName}/{type}'
+        const path =
+        '/api/integrations/v1.0/endpoints/email/subscription/{bundleName}/{applicationName}/{type}'
         .replace('{applicationName}', params.applicationName.toString())
         .replace('{bundleName}', params.bundleName.toString())
         .replace('{type}', params.type.toString());
@@ -869,7 +873,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/integrations/v1.0/endpoints/email/subscription/{bundleName}/{applicationName}/{type}'
+        const path =
+        '/api/integrations/v1.0/endpoints/email/subscription/{bundleName}/{applicationName}/{type}'
         .replace('{applicationName}', params.applicationName.toString())
         .replace('{bundleName}', params.bundleName.toString())
         .replace('{type}', params.type.toString());
@@ -1095,7 +1100,8 @@ export namespace Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-        const path = '/api/integrations/v1.0/endpoints/{id}/history/{history_id}/details'
+        const path =
+        '/api/integrations/v1.0/endpoints/{id}/history/{history_id}/details'
         .replace('{history_id}', params.historyId.toString())
         .replace('{id}', params.id.toString());
         const query = {} as Record<string, any>;
