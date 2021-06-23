@@ -14,7 +14,7 @@ export type BehaviorGroupContent = {
 } | {
     isLoading: false;
     hasError: false;
-    content: Array<BehaviorGroup>;
+    content: ReadonlyArray<BehaviorGroup>;
     reload: () => void;
 }
 
