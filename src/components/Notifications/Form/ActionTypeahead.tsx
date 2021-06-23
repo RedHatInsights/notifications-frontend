@@ -4,12 +4,13 @@ import * as React from 'react';
 
 import { isStagingOrProd } from '../../../types/Environments';
 import { IntegrationType } from '../../../types/Integration';
-import { Action, ActionNotify, NotificationType } from '../../../types/Notification';
+import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { ActionOption } from './ActionOption';
 
-const getSelectOptions = () => [
-    ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION ] as Array<ActionNotify['type']>)
+const getSelectOptions = (selectedNotifications: ReadonlyArray<NotificationType>) => [
+    ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION ] as ReadonlyArray<NotificationType>)
+    .filter(type => !selectedNotifications.includes(type))
     .map(type => new ActionOption({
         kind: 'notification',
         type
@@ -21,6 +22,7 @@ const getSelectOptions = () => [
 ];
 
 export interface ActionTypeaheadProps extends OuiaComponentProps {
+    selectedNotifications: ReadonlyArray<NotificationType>;
     action: Action;
     isDisabled?: boolean;
     onSelected: (actionOption: ActionOption) => void;
@@ -58,6 +60,11 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
 
     const hideNonWebhooks = isStagingOrProd(getInsights());
 
+    const selectableOptions = React.useMemo(() => getSelectOptions(props.selectedNotifications)
+    .filter((o) => !hideNonWebhooks
+            || o.notificationType === NotificationType.INTEGRATION)
+    .map(o => <SelectOption key={ o.toString() } value={ o } />), [ hideNonWebhooks, props.selectedNotifications ]);
+
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >
             <Select
@@ -70,10 +77,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
             >
-                { getSelectOptions()
-                .filter((o) => !hideNonWebhooks
-                    || o.notificationType === NotificationType.INTEGRATION)
-                .map(o => <SelectOption key={ o.toString() } value={ o } />) }
+                { selectableOptions }
             </Select>
         </div>
     );

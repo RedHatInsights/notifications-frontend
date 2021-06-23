@@ -17,7 +17,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         render(
-            <ActionTypeahead action={ action } onSelected={ fn() } />
+            <ActionTypeahead selectedNotifications={ [] } action={ action } onSelected={ fn() } />
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeVisible();
@@ -32,10 +32,32 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             ]
         };
         render(
-            <ActionTypeahead action={ action } isDisabled={ true } onSelected={ fn() } />
+            <ActionTypeahead selectedNotifications={ [] } action={ action } isDisabled={ true } onSelected={ fn() } />
         );
 
         expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeDisabled();
+    });
+
+    it('Selected notification doesnt show except for Integrations', async () => {
+        const action: Action = {
+            type: NotificationType.DRAWER,
+            integrationId: '123-4567-8901',
+            recipient: [
+                'Foo', 'Bar'
+            ]
+        };
+        const actionSelected = fn();
+        render(
+            <ActionTypeahead
+                selectedNotifications={ [ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER, NotificationType.INTEGRATION ] }
+                action={ action }
+                onSelected={ actionSelected }
+            />
+        );
+
+        userEvent.click(screen.getByRole('button'));
+        expect(screen.queryByText(/send an email/i)).not.toBeInTheDocument();
+        expect(screen.queryByText(/integration:/i)).toBeInTheDocument();
     });
 
     it('Calls actionSelected when selecting any action', async () => {
@@ -48,7 +70,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         };
         const actionSelected = fn();
         render(
-            <ActionTypeahead action={ action } onSelected={ actionSelected } />
+            <ActionTypeahead selectedNotifications={ [] } action={ action } onSelected={ actionSelected } />
         );
 
         userEvent.click(screen.getByRole('button'));
@@ -67,7 +89,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         };
         const actionSelected = fn();
         render(
-            <ActionTypeahead action={ action } onSelected={ actionSelected } />
+            <ActionTypeahead selectedNotifications={ [] } action={ action } onSelected={ actionSelected } />
         );
 
         userEvent.click(screen.getByRole('button'));
