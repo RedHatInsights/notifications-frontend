@@ -55,6 +55,14 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
         }));
     }, [ setNotificationRows ]);
 
+    const updateBehaviorGroups = React.useCallback((behaviorGroups: ReadonlyArray<BehaviorGroup>) => {
+        setNotificationRows(produce(draft => {
+            for (const content of draft) {
+                content.behaviors = castDraft(content.behaviors.map(ob => behaviorGroups.find(nb => nb.id === ob.id) || ob));
+            }
+        }));
+    }, [ setNotificationRows ]);
+
     const updateBehaviorGroupLink = React.useCallback((notificationId: UUID, behaviorGroup: BehaviorGroup, linkBehavior: boolean) => {
         if (linkBehavior) {
             setNotificationRows(produce(draft => {
@@ -166,6 +174,7 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
     return {
         rows: notificationRows,
         updateBehaviorGroupLink,
+        updateBehaviorGroups,
         startEditMode,
         finishEditMode,
         cancelEditMode

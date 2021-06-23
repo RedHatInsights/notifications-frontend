@@ -44,10 +44,19 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
         updateBehaviorGroupLink,
         startEditMode,
         finishEditMode,
-        cancelEditMode
+        cancelEditMode,
+        updateBehaviorGroups
     } = useBehaviorGroupNotificationRows(
         useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value : emptyArray
     );
+
+    const behaviorGroups = !behaviorGroupContent.isLoading && !behaviorGroupContent.hasError ? behaviorGroupContent.content : undefined;
+
+    React.useEffect(() => {
+        if (behaviorGroups) {
+            updateBehaviorGroups(behaviorGroups);
+        }
+    }, [ behaviorGroups, updateBehaviorGroups ]);
 
     const onBehaviorGroupLinkUpdated = React.useCallback((
         notification: NotificationBehaviorGroup,
