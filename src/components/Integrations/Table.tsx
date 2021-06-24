@@ -136,15 +136,19 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
 
 const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
     <>
-        <CheckCircleIcon color={ global_success_color_100.value } data-testid="success-icon" />
-        <span className={ smallMarginLeft }>Success</span>
+        <span>
+            <CheckCircleIcon color={ global_success_color_100.value } data-testid="success-icon" />
+            <span className={ smallMarginLeft }>Success</span>
+        </span>
     </>
 );
 
 const LastConnectionAttemptError: React.FunctionComponent = () => (
     <>
-        <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon" />
-        <span className={ smallMarginLeft }>Failure</span>
+        <span>
+            <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon" />
+            <span className={ smallMarginLeft }>Failure</span>
+        </span>
     </>
 );
 
@@ -161,8 +165,10 @@ const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> 
     switch (status) {
         case LastConnectionAttemptStatus.UNKNOWN:
             return <>
-                <OffIcon data-testid="off-icon" />
-                <span className={ smallMarginLeft }>Unknown</span>
+                <span>
+                    <OffIcon data-testid="off-icon" />
+                    <span className={ smallMarginLeft }>Unknown</span>
+                </span>
             </>;
         case LastConnectionAttemptStatus.SUCCESS:
             return <><LastConnectionAttemptSuccess /></>;
