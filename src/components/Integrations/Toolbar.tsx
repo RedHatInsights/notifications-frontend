@@ -10,7 +10,7 @@ import {
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useCallback } from 'react';
-import { style } from 'typestyle';
+import { cssRaw, style } from 'typestyle';
 
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { Messages } from '../../properties/Messages';
@@ -18,6 +18,14 @@ import { stagingAndProd } from '../../types/Environments';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
+
+cssRaw(`
+    @media only screen and (max-width: 768px) {
+        #integrations-bottom-toolbar .ins-c-primary-toolbar__pagination {
+            flex: 1;
+        }
+    }
+`);
 
 interface IntegrationsToolbarProps extends OuiaComponentProps {
     onAddIntegration?: () => void;
