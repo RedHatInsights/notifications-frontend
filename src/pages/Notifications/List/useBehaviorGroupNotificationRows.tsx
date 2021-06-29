@@ -144,29 +144,29 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
                 behaviors: [],
                 isEditMode: false
             })));
-        }
 
-        if (notifications) {
-            limit.clearQueue();
+            if (notifications) {
+                limit.clearQueue();
 
-            notifications.map(notification => notification.id).forEach(notificationId => {
-                limit(() => query(getBehaviorGroupByNotificationAction(notificationId))).then(response => {
-                    setNotificationRows(produce(draft => {
-                        const draftNotification = getNotification(draft, notificationId);
-                        if (response.payload?.status === 200) {
-                            draftNotification.loadingActionStatus = 'done';
-                            draftNotification.behaviors = response.payload.value.map(toBehaviorGroup).map(bg => ({
-                                ...bg,
-                                isLoading: false,
-                                actions: castDraft(bg.actions)
-                            }));
-                        } else {
-                            draftNotification.loadingActionStatus = 'error';
-                            draftNotification.behaviors = [];
-                        }
-                    }));
+                notifications.map(notification => notification.id).forEach(notificationId => {
+                    limit(() => query(getBehaviorGroupByNotificationAction(notificationId))).then(response => {
+                        setNotificationRows(produce(draft => {
+                            const draftNotification = getNotification(draft, notificationId);
+                            if (response.payload?.status === 200) {
+                                draftNotification.loadingActionStatus = 'done';
+                                draftNotification.behaviors = response.payload.value.map(toBehaviorGroup).map(bg => ({
+                                    ...bg,
+                                    isLoading: false,
+                                    actions: castDraft(bg.actions)
+                                }));
+                            } else {
+                                draftNotification.loadingActionStatus = 'error';
+                                draftNotification.behaviors = [];
+                            }
+                        }));
+                    });
                 });
-            });
+            }
         }
 
     }, [ notifications, limit, query, prevNotificationInput, setNotificationRows ]);
