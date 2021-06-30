@@ -69,14 +69,16 @@ const ActionRow: React.FunctionComponent<ActionRowProps> = props => {
 
     return (
         <>
-            <GridItem span={ 6 }>
+            <GridItem sm={ 12 } md={ 6 }>
+                <b>Actions</b>
                 <ActionTypeahead
                     selectedNotifications={ props.selectedNotifications }
                     action={ props.action }
                     onSelected={ actionSelected }
                 />
             </GridItem>
-            <GridItem span={ 6 }>
+            <GridItem sm={ 12 } md={ 6 }>
+                <b>Recipient</b>
                 <Split>
                     <SplitItem isFilled>
                         <RecipientForm
@@ -147,12 +149,6 @@ const ActionsArray: React.FunctionComponent<ActionsArraysProps> = props => {
 
     return (
         <>
-            <GridItem span={ 6 }>
-                <b>Actions</b>
-            </GridItem>
-            <GridItem span={ 6 }>
-                <b>Recipient</b>
-            </GridItem>
             { actions.map((action, index) => (
                 <ActionRow
                     key={ `${index}-${action.integrationId}` }
