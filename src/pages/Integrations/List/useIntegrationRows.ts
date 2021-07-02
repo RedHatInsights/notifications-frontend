@@ -9,7 +9,9 @@ import { usePrevious } from 'react-use';
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { Messages } from '../../../properties/Messages';
 import { listIntegrationHistoryActionCreator } from '../../../services/useListIntegrationHistory';
-import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
+import {
+    switchIntegrationEnabledStatusActionCreator
+} from '../../../services/useSwitchIntegrationEnabledStatus';
 import { SavedNotificationScopeActions } from '../../../store/actions/SavedNotificationScopeAction';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState, Status } from '../../../store/types/SavedNotificationScopeTypes';
@@ -32,7 +34,6 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
         notificationAppStateSelector, notificationAppStateEqualFn
     );
 
-    const switchStatus = useSwitchIntegrationEnabledStatus();
     const { query } = useContext(ClientContext);
     const [ limit ] = useState<pLimit.Limit>(() => pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS));
 
@@ -115,7 +116,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
             }
         }
 
-        switchStatus.mutate(_integration).then((response) => {
+        query(switchIntegrationEnabledStatusActionCreator(_integration)).then((response) => {
             if (!response.error) {
                 setIntegrationRowByIndex(index, {
                     isEnabled,
@@ -146,7 +147,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
             }
         });
 
-    }, [ setIntegrationRowByIndex, switchStatus, reduxDispatch, savedNotificationScope ]);
+    }, [ setIntegrationRowByIndex, query, reduxDispatch, savedNotificationScope ]);
 
     useEffect(() => {
         if (savedNotificationScope) {
