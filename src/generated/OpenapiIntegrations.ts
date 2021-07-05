@@ -225,13 +225,10 @@ export namespace Schemas {
 
   export const MigrationReport = zodSchemaMigrationReport();
   export type MigrationReport = {
-    accountsWithDefaults?: AtomicLong | undefined | null;
-    accountsWithNonDefaults?: AtomicLong | undefined | null;
-    actionsPersisted?: AtomicLong | undefined | null;
-    behaviorGroupsAggregated?: AtomicLong | undefined | null;
-    behaviorGroupsPersisted?: AtomicLong | undefined | null;
-    behaviorsPersisted?: AtomicLong | undefined | null;
+    deletedEndpoints?: AtomicLong | undefined | null;
     durationInMs?: AtomicLong | undefined | null;
+    updatedAccounts?: AtomicLong | undefined | null;
+    updatedBehaviorGroupActions?: AtomicLong | undefined | null;
   };
 
   export const MultivaluedMapStringObject =
@@ -276,6 +273,37 @@ export namespace Schemas {
     invocationTime: number;
   };
 
+  export const PageRbacGroup = zodSchemaPageRbacGroup();
+  export type PageRbacGroup = {
+    data: Array<RbacGroup>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
+  };
+
+  export const PageRbacUser = zodSchemaPageRbacUser();
+  export type PageRbacUser = {
+    data: Array<RbacUser>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
+  };
+
+  export const RbacGroup = zodSchemaRbacGroup();
+  export type RbacGroup = {
+    created?: string | undefined | null;
+    description?: string | undefined | null;
+    modified?: string | undefined | null;
+    name?: string | undefined | null;
+    platform_default?: boolean | undefined | null;
+    principalCount?: number | undefined | null;
+    roleCount?: number | undefined | null;
+    system?: boolean | undefined | null;
+    uuid?: UUID | undefined | null;
+  };
+
   export const RbacRaw = zodSchemaRbacRaw();
   export type RbacRaw = {
     data?:
@@ -296,6 +324,18 @@ export namespace Schemas {
         }
       | undefined
       | null;
+  };
+
+  export const RbacUser = zodSchemaRbacUser();
+  export type RbacUser = {
+    active?: boolean | undefined | null;
+    email?: string | undefined | null;
+    firstName?: string | undefined | null;
+    isActive?: boolean | undefined | null;
+    isOrgAdmin?: boolean | undefined | null;
+    lastName?: string | undefined | null;
+    orgAdmin?: boolean | undefined | null;
+    username?: string | undefined | null;
   };
 
   export const Response = zodSchemaResponse();
@@ -610,13 +650,12 @@ export namespace Schemas {
   function zodSchemaMigrationReport() {
       return z
       .object({
-          accountsWithDefaults: zodSchemaAtomicLong().optional().nullable(),
-          accountsWithNonDefaults: zodSchemaAtomicLong().optional().nullable(),
-          actionsPersisted: zodSchemaAtomicLong().optional().nullable(),
-          behaviorGroupsAggregated: zodSchemaAtomicLong().optional().nullable(),
-          behaviorGroupsPersisted: zodSchemaAtomicLong().optional().nullable(),
-          behaviorsPersisted: zodSchemaAtomicLong().optional().nullable(),
-          durationInMs: zodSchemaAtomicLong().optional().nullable()
+          deletedEndpoints: zodSchemaAtomicLong().optional().nullable(),
+          durationInMs: zodSchemaAtomicLong().optional().nullable(),
+          updatedAccounts: zodSchemaAtomicLong().optional().nullable(),
+          updatedBehaviorGroupActions: zodSchemaAtomicLong()
+          .optional()
+          .nullable()
       })
       .nonstrict();
   }
@@ -660,12 +699,63 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaPageRbacGroup() {
+      return z
+      .object({
+          data: z.array(zodSchemaRbacGroup()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaPageRbacUser() {
+      return z
+      .object({
+          data: z.array(zodSchemaRbacUser()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRbacGroup() {
+      return z
+      .object({
+          created: z.string().optional().nullable(),
+          description: z.string().optional().nullable(),
+          modified: z.string().optional().nullable(),
+          name: z.string().optional().nullable(),
+          platform_default: z.boolean().optional().nullable(),
+          principalCount: z.number().int().optional().nullable(),
+          roleCount: z.number().int().optional().nullable(),
+          system: z.boolean().optional().nullable(),
+          uuid: zodSchemaUUID().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaRbacRaw() {
       return z
       .object({
           data: z.array(z.record(z.unknown())).optional().nullable(),
           links: z.record(z.string()).optional().nullable(),
           meta: z.record(z.number().int()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRbacUser() {
+      return z
+      .object({
+          active: z.boolean().optional().nullable(),
+          email: z.string().optional().nullable(),
+          firstName: z.string().optional().nullable(),
+          isActive: z.boolean().optional().nullable(),
+          isOrgAdmin: z.boolean().optional().nullable(),
+          lastName: z.string().optional().nullable(),
+          orgAdmin: z.boolean().optional().nullable(),
+          username: z.string().optional().nullable()
       })
       .nonstrict();
   }
@@ -883,6 +973,28 @@ export namespace Operations {
         .queryParams(query)
         .config({
             rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // POST /endpoints/system/email_subscription
+  export namespace EndpointServiceGetOrCreateEmailSubscriptionEndpoint {
+    export interface Params {
+      body: Schemas.EmailSubscriptionProperties;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/integrations/v1.0/endpoints/system/email_subscription';
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Schemas.Endpoint, 'Endpoint', 200) ]
         })
         .build();
     };
