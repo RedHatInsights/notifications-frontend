@@ -2,7 +2,13 @@ import { assertNever } from 'assert-never';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { ServerIntegrationResponse, UserIntegration } from '../Integration';
-import { Action, NotificationBase, NotificationType, ServerNotificationResponse } from '../Notification';
+import {
+    Action,
+    NotificationBase,
+    NotificationType,
+    ServerNotificationResponse,
+    SystemProperties
+} from '../Notification';
 import { filterOutDefaultAction, toIntegration } from './IntegrationAdapter';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
@@ -56,3 +62,13 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
 
 export const toNotifications = (serverNotifications: Array<ServerNotificationResponse>) => serverNotifications.map(toNotification);
 export const toActions = (serverActions: Array<ServerIntegrationResponse>): Array<Action> => filterOutDefaultAction(serverActions).map(toAction);
+
+export const toSystemProperties = (action: Action): SystemProperties => {
+    if (action.type === NotificationType.EMAIL_SUBSCRIPTION) {
+        return {
+            type: NotificationType.EMAIL_SUBSCRIPTION
+        };
+    } else {
+        throw new Error(`No system properties for type ${action.type}`);
+    }
+};

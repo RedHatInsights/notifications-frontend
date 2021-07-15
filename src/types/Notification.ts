@@ -61,3 +61,8 @@ export type BehaviorGroup = {
 }
 
 export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> & Omit<BehaviorGroup, 'id'>;
+
+export type EmailSystemProperties = {
+    type: NotificationType.EMAIL_SUBSCRIPTION
+}
+export type SystemProperties = EmailSystemProperties;
