@@ -1,16 +1,18 @@
-import { Skeleton } from '@patternfly/react-core';
-import { cellWidth, ICell, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
+import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
+import { cellWidth, IActions, ICell, IRowData, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import { global_active_color_100, global_disabled_color_100, global_palette_black_600 } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
-import { BehaviorGroup, NotificationBehaviorGroup } from '../../types/Notification';
+import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Notification';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
-import { BehaviorGroupCellControl, OnNotificationIdHandler } from './Table/BehaviorGroupCellControl';
 
+type OnNotificationIdHandler = (notificationId: UUID) => void;
 export type OnBehaviorGroupLinkUpdated = (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, isLinked: boolean) => void;
 
 export interface NotificationsBehaviorGroupTableProps {
@@ -22,8 +24,8 @@ export interface NotificationsBehaviorGroupTableProps {
     onCancelEditing?: OnNotificationIdHandler;
 }
 
-const buttonCellClassName = style({
-    width: '10px !important'
+const actionButtonClassName = style({
+    float: 'right'
 });
 
 type Callbacks = {
@@ -40,6 +42,7 @@ const toTableRows = (
     return notifications.map((notification => ({
         id: notification.id,
         key: notification.id,
+        notification,
         cells: [
             {
                 title: <span>{ notification.eventTypeDisplayName }</span>
@@ -60,19 +63,6 @@ const toTableRows = (
                             isEditMode={ notification.isEditMode }
                         />
                     </span>
-            },
-            {
-                title: <BehaviorGroupCellControl
-                    notificationId={ notification.id }
-                    isEditMode={ notification.isEditMode }
-                    onStartEditing={ callbacks?.onStartEditing }
-                    onCancelEditMode={ callbacks?.onCancelEditing }
-                    onFinishEditing={ callbacks?.onFinishEditing }
-                    isDisabled={ notification.loadingActionStatus !== 'done' }
-                />,
-                props: {
-                    className: buttonCellClassName
-                }
             }
         ]
     })));
@@ -91,9 +81,6 @@ const cells: Array<ICell> = [
     {
         title: 'Behavior',
         transforms: [ cellWidth(35) ]
-    },
-    {
-        title: ''
     }
 ];
 
@@ -117,12 +104,61 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
         return toTableRows(props.notifications, props.behaviorGroupContent, callbacks);
     }, [ props.notifications, props.behaviorGroupContent, callbacks ]);
 
+    const actionResolver = (rowData: IRowData): IActions => {
+        const notification: BehaviorGroupNotificationRow = rowData.notification;
+
+        const isDisabled = notification.loadingActionStatus !== 'done';
+
+        if (!notification.isEditMode) {
+            return [
+                {
+                    key: 'edit',
+                    className: actionButtonClassName,
+                    title: <Button aria-label="edit" variant={ ButtonVariant.plain } isDisabled={ isDisabled }>
+                        <PencilAltIcon />
+                    </Button>,
+                    isPlainText: true,
+                    isOutsideDropdown: true,
+                    onClick: () => callbacks?.onStartEditing(notification.id),
+                    isDisabled
+                }
+            ];
+        }
+
+        return [
+            {
+                key: 'done',
+                className: actionButtonClassName,
+                title: <Button aria-label="done" variant={ ButtonVariant.plain } isDisabled={ isDisabled }>
+                    <CheckIcon color={ isDisabled ? global_disabled_color_100.value : global_active_color_100.value } />
+                </Button>,
+                isPlainText: true,
+                isOutsideDropdown: true,
+                onClick: () => callbacks?.onFinishEditing(notification.id),
+                isDisabled
+            },
+            {
+                key: 'cancel',
+                className: actionButtonClassName,
+                title: <Button aria-label="cancel" variant={ ButtonVariant.plain } isDisabled={ isDisabled }>
+                    <CloseIcon color={ isDisabled ? global_disabled_color_100.value : global_palette_black_600.value } />
+                </Button>,
+                isPlainText: true,
+                isOutsideDropdown: true,
+                onClick: () => callbacks?.onCancelEditing(notification.id),
+                isDisabled
+            }
+        ];
+    };
+
     return (
         <Table
             aria-label="Notifications"
             rows={ rows }
             cells={ cells }
             variant={ TableVariant.compact }
+            actionResolver={ actionResolver }
+            actionsToggle={ (() => <span />) as any }
         >
             <TableHeader />
             <TableBody />
