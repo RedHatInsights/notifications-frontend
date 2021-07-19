@@ -84,6 +84,8 @@ const cells: Array<ICell> = [
     }
 ];
 
+const emptySpan = () => <span />;
+
 export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
 
     const callbacks: Callbacks | undefined = React.useMemo(() => {
@@ -104,7 +106,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
         return toTableRows(props.notifications, props.behaviorGroupContent, callbacks);
     }, [ props.notifications, props.behaviorGroupContent, callbacks ]);
 
-    const actionResolver = (rowData: IRowData): IActions => {
+    const actionResolver = React.useCallback((rowData: IRowData): IActions => {
         const notification: BehaviorGroupNotificationRow = rowData.notification;
 
         const isDisabled = notification.loadingActionStatus !== 'done';
@@ -117,10 +119,9 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                     title: <Button aria-label="edit" variant={ ButtonVariant.plain } isDisabled={ isDisabled }>
                         <PencilAltIcon />
                     </Button>,
-                    isPlainText: true,
                     isOutsideDropdown: true,
                     onClick: () => callbacks?.onStartEditing(notification.id),
-                    isDisabled
+                    isDisabled: isDisabled || !callbacks
                 }
             ];
         }
@@ -132,10 +133,9 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                 title: <Button aria-label="done" variant={ ButtonVariant.plain } isDisabled={ isDisabled }>
                     <CheckIcon color={ isDisabled ? global_disabled_color_100.value : global_active_color_100.value } />
                 </Button>,
-                isPlainText: true,
                 isOutsideDropdown: true,
                 onClick: () => callbacks?.onFinishEditing(notification.id),
-                isDisabled
+                isDisabled: isDisabled || !callbacks
             },
             {
                 key: 'cancel',
@@ -143,13 +143,12 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                 title: <Button aria-label="cancel" variant={ ButtonVariant.plain } isDisabled={ isDisabled }>
                     <CloseIcon color={ isDisabled ? global_disabled_color_100.value : global_palette_black_600.value } />
                 </Button>,
-                isPlainText: true,
                 isOutsideDropdown: true,
                 onClick: () => callbacks?.onCancelEditing(notification.id),
-                isDisabled
+                isDisabled: isDisabled || !callbacks
             }
         ];
-    };
+    }, [ callbacks ]);
 
     return (
         <Table
@@ -158,7 +157,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
             cells={ cells }
             variant={ TableVariant.compact }
             actionResolver={ actionResolver }
-            actionsToggle={ (() => <span />) as any }
+            actionsToggle={ emptySpan as any }
         >
             <TableHeader />
             <TableBody />
