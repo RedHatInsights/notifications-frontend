@@ -21,7 +21,6 @@ export const useBehaviorGroupActionHandlers = (
 
     const handleActionSelected = useCallback((index: number) => (value: ActionOption) => {
         setActions(produce(prev => {
-            console.log('Action selected for index', index, ' and type', value.notificationType);
             const row = prev[index];
             row.type = value.notificationType;
             row.integrationId = '';

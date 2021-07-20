@@ -86,7 +86,6 @@ const toTableRows = (
     globalHandlers: GetRecipientAndIntegrationsHandler,
     setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => void
 ): Array<IRow> => {
-    console.log('rendering table rows');
     return actions.map((action, index) => {
         let error: string | undefined = undefined;
         let isTouched = false;
@@ -99,8 +98,6 @@ const toTableRows = (
         }
 
         if (action.type === NotificationType.INTEGRATION) {
-            console.log('touched', touched[index]);
-            console.log('errors', errors[index]);
             if (touched[index]?.integration) {
                 isTouched = true;
             }
@@ -136,7 +133,6 @@ const toTableRows = (
                         error={ error }
                         onOpenChange={ isOpen => {
                             if (!isOpen) {
-                                console.log('touching', path);
                                 setFieldTouched(path, true, false);
                             }
                         } }
@@ -152,8 +148,6 @@ const emptySpan = () => <span />;
 export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGroupFormTableProps> = (props) => {
 
     const { values, setValues, isSubmitting, errors, touched, setFieldTouched } = props.form;
-    console.log(touched);
-    console.log(errors);
     const actions = React.useMemo<ReadonlyArray<Action>>(() => values.actions ?? [] as ReadonlyArray<Action>, [ values ]);
     const touchedActions = React.useMemo(() => touched?.actions ?? [], [ touched ]);
     const errorActions = React.useMemo(() => errors?.actions ?? [], [ errors ]);
