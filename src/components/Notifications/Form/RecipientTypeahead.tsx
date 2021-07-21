@@ -1,6 +1,7 @@
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { usePrevious } from 'react-use';
 
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { RecipientOption } from './RecipientOption';
@@ -13,11 +14,13 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
     getRecipients: (search: string) => Promise<Array<string>>;
     isDisabled?: boolean;
     onClear: () => void;
+    onOpenChange?: (isOpen: boolean) => void;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
     const [ state, dispatchers ] = useTypeaheadReducer<string>();
+    const prevOpen = usePrevious(isOpen);
 
     React.useEffect(() => {
         const getRecipients = props.getRecipients;
@@ -37,6 +40,13 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
     const toggle = React.useCallback((isOpen: boolean) => {
         setOpen(isOpen);
     }, [ setOpen ]);
+
+    React.useEffect(() => {
+        const onOpenChange = props.onOpenChange;
+        if (prevOpen !== undefined && prevOpen !== isOpen) {
+            onOpenChange && onOpenChange(isOpen);
+        }
+    }, [ prevOpen, isOpen, props.onOpenChange ]);
 
     const options = useRecipientOptionMemo(state);
 

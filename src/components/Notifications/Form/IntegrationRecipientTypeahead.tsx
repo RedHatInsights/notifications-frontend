@@ -1,6 +1,7 @@
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { usePrevious } from 'react-use';
 
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
@@ -15,16 +16,25 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     integrationType: UserIntegrationType;
     isDisabled?: boolean;
     onSelected: (recipientOption: RecipientOption) => void;
+    onOpenChange?: (isOpen: boolean) => void;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
+    const prevOpen = usePrevious(isOpen);
 
     const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRef>();
 
     const toggle = React.useCallback((isOpen: boolean) => {
         setOpen(isOpen);
     }, [ setOpen ]);
+
+    React.useEffect(() => {
+        const onOpenChange = props.onOpenChange;
+        if (prevOpen !== undefined && prevOpen !== isOpen) {
+            onOpenChange && onOpenChange(isOpen);
+        }
+    }, [ prevOpen, isOpen, props.onOpenChange ]);
 
     React.useEffect(() => {
         const getIntegrations = props.getIntegrations;
