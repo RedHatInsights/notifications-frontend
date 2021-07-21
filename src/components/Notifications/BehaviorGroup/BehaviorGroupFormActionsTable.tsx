@@ -4,19 +4,18 @@ import {
     cellWidth,
     IActions,
     ICell,
+    IRow,
     IRowData,
     Table,
     TableBody,
     TableHeader,
-    TableVariant,
-    IRow
-} from '@patternfly/react-table';
+    TableVariant } from '@patternfly/react-table';
 import { important } from 'csx';
 import { FieldArrayRenderProps, FormikProps } from 'formik';
 import produce, { castDraft, Draft } from 'immer';
 import * as React from 'react';
 import { DeepPartial } from 'ts-essentials';
-import { style } from 'typestyle';
+import { cssRaw, style } from 'typestyle';
 
 import { IntegrationType } from '../../../types/Integration';
 import { Action, BehaviorGroup, NewBehaviorGroup, NotificationType } from '../../../types/Notification';
@@ -28,6 +27,14 @@ import {
     UseBehaviorGroupActionHandlers,
     useBehaviorGroupActionHandlers
 } from './useBehaviorGroupActionHandlers';
+
+cssRaw(`
+    @media only screen and (max-width: 768px) {
+        .pf-c-select .pf-c-select__toggle-typeahead {
+            --pf-c-select__toggle-typeahead--FlexBasis: 0;
+        }
+    }
+`);
 
 export type BehaviorGroupFormTableProps =
     FieldArrayRenderProps & GetRecipientAndIntegrationsHandler & {
