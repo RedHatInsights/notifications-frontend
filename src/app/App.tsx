@@ -22,7 +22,7 @@ const timezoneFormat = 'O';
 
 const App: React.ComponentType = () => {
     const intl = useIntl();
-    const { rbac, server } = useApp();
+    const { rbac, server, isOrgAdmin } = useApp();
     const location = useLocation();
 
     const serviceName = React.useMemo(() => {
@@ -74,7 +74,8 @@ const App: React.ComponentType = () => {
     return (
         <AppContext.Provider value={ {
             rbac,
-            server
+            server,
+            isOrgAdmin: !!isOrgAdmin
         } }>
             { hasReadPermissions ? (
                 <>

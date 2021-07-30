@@ -1,6 +1,6 @@
 import {
     Badge,
-    Button,
+    Button, ButtonProps,
     ButtonVariant,
     ExpandableSection,
     ExpandableSectionToggle,
@@ -8,7 +8,7 @@ import {
     SplitItem,
     Stack,
     StackItem,
-    Title
+    Title, Tooltip
 } from '@patternfly/react-core';
 import { global_BackgroundColor_100, global_palette_black_1000, global_spacer_lg } from '@patternfly/react-tokens';
 import * as React from 'react';
@@ -61,6 +61,32 @@ interface BehaviorGroupSectionProps {
     bundleId: UUID;
     behaviorGroupContent: BehaviorGroupContent;
 }
+
+type BehaviorGroupAddButtonProps = Pick<ButtonProps, 'className' | 'onClick' | 'isDisabled' | 'component'>;
+
+const BehaviorGroupAddButton: React.FunctionComponent<BehaviorGroupAddButtonProps> = props => {
+    const { isDisabled, ...buttonProps } = props;
+    const { isOrgAdmin } = useAppContext();
+
+    const button = <Button
+        { ...buttonProps }
+        isAriaDisabled={ isDisabled }
+        variant={ ButtonVariant.primary }
+    >
+        Create new group
+    </Button>;
+
+    if (isDisabled) {
+        const content = isOrgAdmin ?
+            'You need the Notifications administrator role to perform this action' :
+            'You do not have permissions to perform this action. Contact your org admin for more information';
+        return <Tooltip content={ content }>
+            { button }
+        </Tooltip>;
+    }
+
+    return button;
+};
 
 export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSectionProps> = props => {
 
@@ -136,15 +162,12 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                             { (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
                                 props.behaviorGroupContent.content.length > 0 ?
                                     <Badge isRead>{ props.behaviorGroupContent.content.length }</Badge> :
-                                    <Button
+                                    <BehaviorGroupAddButton
                                         className={ emptyAddButtonClassName }
-                                        variant={ ButtonVariant.primary }
-                                        onClick={ createGroup }
                                         component='a'
+                                        onClick={ createGroup }
                                         isDisabled={ !rbac.canWriteNotifications }
-                                    >
-                                        Create new group
-                                    </Button>
+                                    />
                             ) }
                         </SplitItem>
                     </Split>
@@ -182,13 +205,10 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                         />
                                     </SplitItem>
                                     <SplitItem>
-                                        <Button
+                                        <BehaviorGroupAddButton
                                             isDisabled={ props.behaviorGroupContent.isLoading || !rbac.canWriteNotifications }
-                                            variant={ ButtonVariant.primary }
                                             onClick={ createGroup }
-                                        >
-                                            Create new group
-                                        </Button>
+                                        />
                                     </SplitItem>
                                 </Split>
                             </StackItem>

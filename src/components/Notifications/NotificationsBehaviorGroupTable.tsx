@@ -84,7 +84,9 @@ const cells: Array<ICell> = [
     }
 ];
 
-const emptySpan = () => <span />;
+// This will actually silence lots of warning we are having in the console about unwanted elements.
+const EmptySpan: React.FunctionComponent<any> = _props => <span />;
+const emptySpanProducer = () => <EmptySpan />;
 
 export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
 
@@ -157,7 +159,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
             cells={ cells }
             variant={ TableVariant.compact }
             actionResolver={ actionResolver }
-            actionsToggle={ emptySpan as any }
+            actionsToggle={ emptySpanProducer as any }
         >
             <TableHeader />
             <TableBody />

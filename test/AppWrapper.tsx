@@ -66,7 +66,8 @@ const defaultAppContextSettings: AppContext = {
     },
     server: {
         status: ServerStatus.RUNNING
-    }
+    },
+    isOrgAdmin: false
 };
 
 const InternalWrapper: React.FunctionComponent<Config> = (props) => {

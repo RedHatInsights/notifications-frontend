@@ -13,6 +13,7 @@ export const useApp = (): Partial<AppContext> => {
     const serverStatus = useGetServerStatus();
     const [ rbac, setRbac ] = useState<Rbac>();
     const [ server, setServer ] = useState<Server>();
+    const [ isOrgAdmin, setOrgAdmin ] = useState<boolean>(false);
 
     useEffect(() => {
         waitForInsights().then((insights) => {
@@ -39,7 +40,8 @@ export const useApp = (): Partial<AppContext> => {
 
     useEffect(() => {
         waitForInsights().then(insights => {
-            insights.chrome.auth.getUser().then(() => {
+            insights.chrome.auth.getUser().then(user => {
+                setOrgAdmin(user.identity.user.is_org_admin);
                 fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
             });
         });
@@ -52,6 +54,7 @@ export const useApp = (): Partial<AppContext> => {
             canWriteIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'write'),
             canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read')
         } : undefined,
+        isOrgAdmin,
         server
     };
 };
