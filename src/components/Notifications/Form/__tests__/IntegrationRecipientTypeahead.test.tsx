@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { fn } from 'jest-mock';
@@ -109,11 +109,10 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
             onSelected={ fn() }
         />);
         await waitForAsyncEvents();
-        await act(async () => {
-            await userEvent.type(screen.getByRole('textbox'), 'guy');
-        });
-        expect(getIntegrations).toHaveBeenCalledWith(IntegrationType.WEBHOOK, 'guy');
-        expect(screen.getByText('guy integration')).toBeTruthy();
+
+        userEvent.type(screen.getByRole('textbox'), 'guy');
+        expect(await screen.findByText('guy integration')).toBeTruthy();
+        await waitFor(() => expect(getIntegrations).toHaveBeenCalledWith(IntegrationType.WEBHOOK, 'guy'));
     });
 
     it('onSelected GetsCalled when selecting an element', async () => {
