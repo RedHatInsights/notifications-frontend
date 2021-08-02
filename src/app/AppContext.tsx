@@ -10,6 +10,7 @@ export interface AppContext {
         canWriteNotifications: boolean;
         canReadNotifications: boolean;
     },
+    isOrgAdmin: boolean,
     server: Server
 }
 
@@ -20,6 +21,7 @@ export const AppContext = React.createContext<AppContext>({
         canWriteIntegrationsEndpoints: false,
         canWriteNotifications: false
     },
+    isOrgAdmin: false,
     server: {
         status: ServerStatus.RUNNING
     }

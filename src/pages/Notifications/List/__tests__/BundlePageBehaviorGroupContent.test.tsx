@@ -175,4 +175,157 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         // Toast, behavior group section and table
         expect(screen.getAllByText(/Foobar/i).length).toBe(3);
     });
+
+    it('Add group button should appear', async () => {
+        const behaviorGroups = getBehaviorGroups(2);
+        const notifications = getNotifications(policiesApplication, [
+            [ behaviorGroups[0] ],
+            [],
+            []
+        ]);
+
+        mockNotifications(notifications);
+        mockBehaviorGroups(behaviorGroups);
+
+        render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
+            wrapper: getConfiguredAppWrapper()
+        });
+
+        await waitForAsyncEvents();
+
+        expect(screen.getByText(/Create new group/i)).toBeInTheDocument();
+    });
+
+    it('Add group button should be enabled with the write permissions', async () => {
+        const behaviorGroups = getBehaviorGroups(2);
+        const notifications = getNotifications(policiesApplication, [
+            [ behaviorGroups[0] ],
+            [],
+            []
+        ]);
+
+        mockNotifications(notifications);
+        mockBehaviorGroups(behaviorGroups);
+
+        render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
+            wrapper: getConfiguredAppWrapper({
+                appContext: {
+                    rbac: {
+                        canWriteNotifications: true,
+                        canWriteIntegrationsEndpoints: true,
+                        canReadNotifications: true,
+                        canReadIntegrationsEndpoints: true
+                    }
+                }
+            })
+        });
+
+        await waitForAsyncEvents();
+
+        expect(screen.getByText(/Create new group/i)).toBeEnabled();
+
+        // Check that is not aria-disabled
+        expect(screen.getByText(/Create new group/i)).not.toHaveAttribute('aria-disabled', 'true');
+    });
+
+    it('Add group button should be disabled with no write permissions', async () => {
+        const behaviorGroups = getBehaviorGroups(2);
+        const notifications = getNotifications(policiesApplication, [
+            [ behaviorGroups[0] ],
+            [],
+            []
+        ]);
+
+        mockNotifications(notifications);
+        mockBehaviorGroups(behaviorGroups);
+
+        render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
+            wrapper: getConfiguredAppWrapper({
+                appContext: {
+                    rbac: {
+                        canWriteNotifications: false,
+                        canWriteIntegrationsEndpoints: false,
+                        canReadNotifications: true,
+                        canReadIntegrationsEndpoints: true
+                    }
+                }
+            })
+        });
+
+        await waitForAsyncEvents();
+
+        // The component is not really disabled (html-wise)
+        expect(screen.getByText(/Create new group/i)).toHaveAttribute('aria-disabled', 'true');
+    });
+
+    it('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
+        const behaviorGroups = getBehaviorGroups(2);
+        const notifications = getNotifications(policiesApplication, [
+            [ behaviorGroups[0] ],
+            [],
+            []
+        ]);
+
+        mockNotifications(notifications);
+        mockBehaviorGroups(behaviorGroups);
+
+        render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
+            wrapper: getConfiguredAppWrapper({
+                appContext: {
+                    rbac: {
+                        canWriteNotifications: false,
+                        canWriteIntegrationsEndpoints: false,
+                        canReadNotifications: true,
+                        canReadIntegrationsEndpoints: true
+                    },
+                    isOrgAdmin: false
+                }
+            })
+        });
+
+        await waitForAsyncEvents();
+
+        // The component is not really disabled (html-wise)
+        expect(screen.getByText(/Create new group/i)).toHaveAttribute('aria-disabled', 'true');
+        userEvent.hover(screen.getByText(/Create new group/i));
+        expect(await screen.findByText(
+            /You do not have permissions to perform this action. Contact your org admin for more information/i
+        )).toBeInTheDocument();
+    });
+
+    it('Add group button should tooltip with no write permissions and user is an org_admin', async () => {
+        const behaviorGroups = getBehaviorGroups(2);
+        const notifications = getNotifications(policiesApplication, [
+            [ behaviorGroups[0] ],
+            [],
+            []
+        ]);
+
+        mockNotifications(notifications);
+        mockBehaviorGroups(behaviorGroups);
+
+        render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
+            wrapper: getConfiguredAppWrapper({
+                appContext: {
+                    rbac: {
+                        canWriteNotifications: false,
+                        canWriteIntegrationsEndpoints: false,
+                        canReadNotifications: true,
+                        canReadIntegrationsEndpoints: true
+                    },
+                    isOrgAdmin: true
+                }
+            })
+        });
+
+        await waitForAsyncEvents();
+
+        // The component is not really disabled (html-wise)
+        expect(screen.getByText(/Create new group/i)).toHaveAttribute('aria-disabled', 'true');
+        userEvent.hover(screen.getByText(/Create new group/i));
+
+        expect(await screen.findByText(
+            /You need the Notifications administrator role to perform this action/i
+        )).toBeInTheDocument();
+    });
 });
