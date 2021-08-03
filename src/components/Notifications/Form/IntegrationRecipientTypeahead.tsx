@@ -6,13 +6,13 @@ import { usePrevious } from 'react-use';
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
 
 export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     selected: Partial<IntegrationRef> | undefined;
-    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     integrationType: UserIntegrationType;
     isDisabled?: boolean;
     onSelected: (recipientOption: RecipientOption) => void;
@@ -22,6 +22,7 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
     const prevOpen = usePrevious(isOpen);
+    const { getIntegrations } = useRecipientContext();
 
     const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRef>();
 
@@ -37,19 +38,17 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ prevOpen, isOpen, props.onOpenChange ]);
 
     React.useEffect(() => {
-        const getIntegrations = props.getIntegrations;
         getIntegrations(props.integrationType, '').then(integrations => dispatchers.setDefaults(integrations));
-    }, [ props.getIntegrations, props.integrationType, dispatchers ]);
+    }, [ getIntegrations, props.integrationType, dispatchers ]);
 
     React.useEffect(() => {
-        const getIntegrations = props.getIntegrations;
         if (state.loadingFilter) {
             getIntegrations(props.integrationType, state.lastSearch).then(integrations => dispatchers.setFilterValue(
                 state.lastSearch,
                 integrations
             ));
         }
-    }, [ props.getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
+    }, [ getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
 
     const options = useRecipientOptionMemo(state);
 

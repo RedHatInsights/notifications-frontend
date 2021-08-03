@@ -2,8 +2,8 @@ import assertNever from 'assert-never';
 import { Reducer, useCallback, useMemo, useReducer } from 'react';
 
 export interface ReducerState<T> {
-    filterValues: Array<T>;
-    defaultValues: Array<T>;
+    filterValues: ReadonlyArray<T>;
+    defaultValues: ReadonlyArray<T>;
     show: 'default' | 'filter';
     loadingFilter: boolean;
     loadingDefault: boolean;
@@ -25,10 +25,10 @@ type ReducerAction<T> = {
 } | {
     type: ReducerActionType.SET_FILTER_VALUE;
     search: string;
-    values: Array<T>;
+    values: ReadonlyArray<T>;
 } | {
     type: ReducerActionType.SET_DEFAULTS;
-    values: Array<T>;
+    values: ReadonlyArray<T>;
 }
 
 const reducerFunction = <T>(state: ReducerState<T>, action: ReducerAction<T>): ReducerState<T> => {
@@ -89,7 +89,7 @@ export const useTypeaheadReducer = <T>() => {
         lastSearch: ''
     } as ReducerState<T>);
 
-    const setFilterValue = useCallback((search: string, values: Array<T>) => dispatch({
+    const setFilterValue = useCallback((search: string, values: ReadonlyArray<T>) => dispatch({
         type: ReducerActionType.SET_FILTER_VALUE,
         values,
         search
@@ -100,7 +100,7 @@ export const useTypeaheadReducer = <T>() => {
         search
     }), [ dispatch ]);
 
-    const setDefaults = useCallback((values: Array<T>) => dispatch({
+    const setDefaults = useCallback((values: ReadonlyArray<T>) => dispatch({
         type: ReducerActionType.SET_DEFAULTS,
         values
     }), [ dispatch ]);

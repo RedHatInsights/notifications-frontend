@@ -5,16 +5,28 @@ import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+import { GetNotificationRecipients, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { RecipientTypeahead } from '../RecipientTypeahead';
+
+const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
+    const context: RecipientContext = {
+        getIntegrations: fn(),
+        getNotificationRecipients: getRecipients ?? fn(async () => [])
+    };
+
+    const Wrapper: React.FunctionComponent = props => <RecipientContextProvider value={ context }>{ props.children }</RecipientContextProvider>;
+    return Wrapper;
+};
 
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
     it('Renders if selected is undefined', async () => {
         render(<RecipientTypeahead
             selected={ undefined }
             onSelected={ fn() }
-            getRecipients={ fn(async () => []) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
     });
@@ -24,9 +36,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ undefined }
             onSelected={ fn() }
-            getRecipients={ fn(async () => []) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(screen.getByRole('button')).toBeDisabled();
     });
@@ -36,9 +49,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ undefined }
             onSelected={ fn() }
-            getRecipients={ fn(async () => []) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(screen.getByText('All registered users')).toBeVisible();
     });
@@ -49,10 +63,11 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ undefined }
             onSelected={ fn() }
-            getRecipients={ fn(async () => []) }
             onClear={ fn() }
             isDisabled={ true }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(screen.getByRole('textbox')).toBeDisabled();
     });
@@ -63,9 +78,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi' ] }
             onSelected={ fn() }
-            getRecipients={ fn(async () => []) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(screen.getByText('comi')).toBeVisible();
     });
@@ -76,9 +92,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'tales' ] }
             onSelected={ fn() }
-            getRecipients={ fn(async () => [ 'tales' ]) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+        });
         await waitForAsyncEvents();
         expect(screen.getByText('comi')).toBeVisible();
         expect(screen.getByText('tales')).toBeVisible();
@@ -91,9 +108,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ fn() }
-            getRecipients={ fn(async () => [ 'tales' ]) }
             onClear={ onClear }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+        });
 
         userEvent.click(screen.getByRole('button', {
             name: /Clear all/i
@@ -108,9 +126,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ fn() }
-            getRecipients={ fn(async () => [ 'tales' ]) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+        });
 
         userEvent.click(screen.getByRole('button', {
             name: /Options menu/i
@@ -124,9 +143,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ fn() }
-            getRecipients={ getRecipient }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(getRecipient)
+        });
 
         await waitForAsyncEvents();
         expect(getRecipient).toHaveBeenCalledWith('');
@@ -139,9 +159,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ fn() }
-            getRecipients={ getRecipient }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(getRecipient)
+        });
 
         await waitForAsyncEvents();
         await act(async () => {
@@ -157,9 +178,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         render(<RecipientTypeahead
             selected={ [ 'comi', 'murray' ] }
             onSelected={ onSelected }
-            getRecipients={ fn(async () => [ 'tales' ]) }
             onClear={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+        });
 
         userEvent.click(screen.getByRole('button', {
             name: /Options menu/i

@@ -6,11 +6,12 @@ import { ClientContext } from 'react-fetching-library';
 import { listIntegrationIntegrationDecoder, listIntegrationsActionCreator } from '../../services/useListIntegrations';
 import { UserIntegrationType } from '../../types/Integration';
 import { IntegrationRef } from '../../types/Notification';
+import { GetIntegrations } from './RecipientContext';
 
-export const useGetIntegrations = () => {
+export const useGetIntegrations = (): GetIntegrations => {
     const { query } = useContext(ClientContext);
 
-    return React.useCallback(async (type: UserIntegrationType, _search: string) => {
+    return React.useCallback(async (type: UserIntegrationType, _search?: string) => {
         return query(listIntegrationsActionCreator(
             Page.of(
                 1,
@@ -19,7 +20,7 @@ export const useGetIntegrations = () => {
                 .and('type', Operator.EQUAL, type)
             )
         )).then(response => {
-            let integrations: Array<IntegrationRef> = [];
+            let integrations: ReadonlyArray<IntegrationRef> = [];
             const payload = response.payload ? listIntegrationIntegrationDecoder(response.payload) : undefined;
 
             if (payload?.type === 'IntegrationPage') {

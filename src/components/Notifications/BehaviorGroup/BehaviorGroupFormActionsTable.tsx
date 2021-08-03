@@ -21,7 +21,6 @@ import { IntegrationType } from '../../../types/Integration';
 import { Action, BehaviorGroup, NewBehaviorGroup, NotificationType } from '../../../types/Notification';
 import { RecipientForm } from '../EditableActionRow/RecipientForm';
 import { ActionTypeahead } from '../Form/ActionTypeahead';
-import { EditBehaviorGroupProps } from './BehaviorGroupForm';
 import {
     SetActionUpdater,
     UseBehaviorGroupActionHandlers,
@@ -37,12 +36,11 @@ cssRaw(`
 `);
 
 export type BehaviorGroupFormTableProps =
-    FieldArrayRenderProps & GetRecipientAndIntegrationsHandler & {
+    FieldArrayRenderProps & {
     form: FormikProps<FormType>;
 }
 
 type FormType = DeepPartial<BehaviorGroup | NewBehaviorGroup>;
-type GetRecipientAndIntegrationsHandler = Pick<EditBehaviorGroupProps, 'getRecipients' | 'getIntegrations'>;
 
 const tableHeaderClassName = style({
     $nest: {
@@ -90,7 +88,6 @@ const toTableRows = (
     touched: any,
     selectedNotifications: ReadonlyArray<NotificationType>,
     rowHandlers: UseBehaviorGroupActionHandlers,
-    globalHandlers: GetRecipientAndIntegrationsHandler,
     setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => void
 ): Array<IRow> => {
     return actions.map((action, index) => {
@@ -135,8 +132,6 @@ const toTableRows = (
                         integrationSelected={ rowHandlers.handleIntegrationSelected(index) }
                         recipientSelected={ rowHandlers.handleRecipientSelected(index) }
                         recipientOnClear={ rowHandlers.handleRecipientOnClear(index) }
-                        getRecipients={ globalHandlers.getRecipients }
-                        getIntegrations={ globalHandlers.getIntegrations }
                         error={ error }
                         onOpenChange={ isOpen => {
                             if (!isOpen) {
@@ -163,11 +158,6 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
         () => new Array(...new Set<NotificationType>(actions.map(a => a.type))) as ReadonlyArray<NotificationType>,
         [ actions ]
     );
-
-    const globalHandlers = React.useMemo(() => ({
-        getIntegrations: props.getIntegrations,
-        getRecipients: props.getRecipients
-    }), [ props.getIntegrations, props.getRecipients ]);
 
     const setValueDispatch = React.useCallback((updater: SetActionUpdater) => {
         setValues(produce(prev => {
@@ -210,8 +200,8 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
     const rowHandlers = useBehaviorGroupActionHandlers(setValueDispatch);
 
     const rows = React.useMemo(
-        () => toTableRows(actions, errorActions, touchedActions, selectedNotifications, rowHandlers, globalHandlers, setFieldTouched),
-        [ actions, errorActions, touchedActions, selectedNotifications, rowHandlers, globalHandlers, setFieldTouched ]
+        () => toTableRows(actions, errorActions, touchedActions, selectedNotifications, rowHandlers, setFieldTouched),
+        [ actions, errorActions, touchedActions, selectedNotifications, rowHandlers, setFieldTouched ]
     );
 
     const actionResolver = React.useCallback((rowData: IRowData): IActions => {

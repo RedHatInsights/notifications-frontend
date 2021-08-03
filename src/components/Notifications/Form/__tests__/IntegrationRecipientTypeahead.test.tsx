@@ -7,6 +7,7 @@ import * as React from 'react';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { IntegrationType } from '../../../../types/Integration';
 import { IntegrationRef } from '../../../../types/Notification';
+import { GetIntegrations, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
 
 const ref1: IntegrationRef = {
@@ -23,14 +24,25 @@ const ref2: IntegrationRef = {
     name: 'ABCD'
 };
 
+const getConfiguredWrapper = (getIntegrations?: GetIntegrations) => {
+    const context: RecipientContext = {
+        getIntegrations: getIntegrations ?? fn<any, any>(async () => [ ref1, ref2 ]),
+        getNotificationRecipients: fn()
+    };
+
+    const Wrapper: React.FunctionComponent = props => <RecipientContextProvider value={ context }>{ props.children }</RecipientContextProvider>;
+    return Wrapper;
+};
+
 describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () => {
     it('Renders', async () => {
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
-            getIntegrations={ fn<any, any>(async () => [ ref1, ref2 ]) }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
     });
@@ -38,11 +50,12 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     it('Renders disabled if isDisabled', async () => {
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
-            getIntegrations={ fn<any, any>(async () => [ ref1, ref2 ]) }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ fn() }
             isDisabled={ true }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         await waitForAsyncEvents();
         expect(screen.getByRole('textbox')).toBeDisabled();
     });
@@ -50,10 +63,11 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     it('Renders the selected even if getIntegrations does not yield it', async () => {
         render(<IntegrationRecipientTypeahead
             selected={ ref1 }
-            getIntegrations={ fn<any, any>(async () => [ ]) }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(async () => [])
+        });
 
         await waitForAsyncEvents();
         expect(screen.getByDisplayValue('Integration 1234')).toBeVisible();
@@ -62,10 +76,11 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     it('Clicking will show the options', async () => {
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
-            getIntegrations={ fn<any, any>(async () => [ ref1, ref2 ]) }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         userEvent.click(screen.getByRole('button', {
             name: /Options menu/i
         }));
@@ -78,10 +93,11 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         const getIntegrations = fn<any, any>(async () => [ ref1, ref2 ]);
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
-            getIntegrations={ getIntegrations }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(getIntegrations)
+        });
         await waitForAsyncEvents();
         expect(getIntegrations).toHaveBeenCalledWith(IntegrationType.WEBHOOK, '');
     });
@@ -104,10 +120,11 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
 
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
-            getIntegrations={ getIntegrations }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ fn() }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper(getIntegrations)
+        });
         await waitForAsyncEvents();
 
         userEvent.type(screen.getByRole('textbox'), 'guy');
@@ -119,10 +136,11 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         const onSelected = fn();
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
-            getIntegrations={ fn<any, any>(async () => [ ref1, ref2 ]) }
             integrationType={ IntegrationType.WEBHOOK }
             onSelected={ onSelected }
-        />);
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
         userEvent.click(screen.getByRole('button', {
             name: /Options menu/i
         }));
