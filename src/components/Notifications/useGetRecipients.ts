@@ -1,3 +1,5 @@
+import { GetNotificationRecipients } from './RecipientContext';
+
 const recipients = [
     'Admin',
     'Another one',
@@ -6,15 +8,15 @@ const recipients = [
     'Stakeholders'
 ];
 
-const getRecipients = async (search: string) => {
-    if (search !== '') {
-        search = search.toLowerCase();
-        return recipients.filter(r => r.toLowerCase().includes(search));
+const getRecipients = async (search?: string) => {
+    if (search && search !== '') {
+        const lowerCaseSearchString = search.toLowerCase();
+        return recipients.filter(r => r.toLowerCase().includes(lowerCaseSearchString));
     }
 
     return recipients;
 };
 
-export const useGetRecipients = () => {
+export const useGetRecipients = (): GetNotificationRecipients => {
     return getRecipients;
 };

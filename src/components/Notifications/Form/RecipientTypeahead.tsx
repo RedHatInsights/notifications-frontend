@@ -4,6 +4,7 @@ import * as React from 'react';
 import { usePrevious } from 'react-use';
 
 import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
@@ -11,7 +12,6 @@ import { useTypeaheadReducer } from './useTypeaheadReducer';
 export interface RecipientTypeaheadProps extends OuiaComponentProps {
     selected: Array<string> | undefined;
     onSelected: (value: RecipientOption) => void;
-    getRecipients: (search: string) => Promise<Array<string>>;
     isDisabled?: boolean;
     onClear: () => void;
     onOpenChange?: (isOpen: boolean) => void;
@@ -21,21 +21,20 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
     const [ isOpen, setOpen ] = React.useState(false);
     const [ state, dispatchers ] = useTypeaheadReducer<string>();
     const prevOpen = usePrevious(isOpen);
+    const { getNotificationRecipients } = useRecipientContext();
 
     React.useEffect(() => {
-        const getRecipients = props.getRecipients;
-        getRecipients('').then(recipients => dispatchers.setDefaults(recipients));
-    }, [ props.getRecipients, dispatchers ]);
+        getNotificationRecipients('').then(recipients => dispatchers.setDefaults(recipients));
+    }, [ getNotificationRecipients, dispatchers ]);
 
     React.useEffect(() => {
-        const getRecipients = props.getRecipients;
         if (state.loadingFilter) {
-            getRecipients(state.lastSearch).then(recipients => dispatchers.setFilterValue(
+            getNotificationRecipients(state.lastSearch).then(recipients => dispatchers.setFilterValue(
                 state.lastSearch,
                 recipients
             ));
         }
-    }, [ props.getRecipients, state.loadingFilter, state.lastSearch, dispatchers ]);
+    }, [ getNotificationRecipients, state.loadingFilter, state.lastSearch, dispatchers ]);
 
     const toggle = React.useCallback((isOpen: boolean) => {
         setOpen(isOpen);

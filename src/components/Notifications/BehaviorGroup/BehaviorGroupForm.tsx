@@ -5,14 +5,11 @@ import { FieldArray } from 'formik';
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import {  UserIntegrationType } from '../../../types/Integration';
-import { BehaviorGroup, IntegrationRef } from '../../../types/Notification';
+import { BehaviorGroup } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { BehaviorGroupFormActionsTable } from './BehaviorGroupFormActionsTable';
 
 export interface EditBehaviorGroupProps extends OuiaComponentProps {
-    getRecipients: (search: string) => Promise<Array<string>>;
-    getIntegrations: (type: UserIntegrationType, search: string) => Promise<Array<IntegrationRef>>;
     behaviorGroup?: Partial<BehaviorGroup>;
 }
 
@@ -40,8 +37,6 @@ export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupPro
                             <>
                                 <BehaviorGroupFormActionsTable
                                     { ...helpers }
-                                    getRecipients={ props.getRecipients }
-                                    getIntegrations={ props.getIntegrations }
                                 />
                             </>
                         ) }

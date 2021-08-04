@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { ClientContext } from 'react-fetching-library';
 
 import { BehaviorGroupSaveModal } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupSaveModal';
+import { RecipientContextProvider } from '../../../components/Notifications/RecipientContext';
 import { useGetIntegrations } from '../../../components/Notifications/useGetIntegrations';
 import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
 import { getDefaultSystemEndpointAction } from '../../../services/Integrations/GetDefaultSystemEndpoint';
@@ -32,6 +33,11 @@ const needsSaving = (original: Partial<BehaviorGroup> | undefined, updated: Beha
 export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPageProps> = props => {
     const getRecipients = useGetRecipients();
     const getIntegrations = useGetIntegrations();
+
+    const actionsContextValue = React.useMemo(() => ({
+        getIntegrations,
+        getNotificationRecipients: getRecipients
+    }), [ getIntegrations, getRecipients ]);
 
     const saveBehaviorGroupMutation = useSaveBehaviorGroupMutation();
     const updateBehaviorGroupActionsMutation = useUpdateBehaviorGroupActionsMutation();
@@ -132,13 +138,13 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
     }, [ fetchingIntegrations, saveBehaviorGroupMutation.loading, updateBehaviorGroupActionsMutation.loading ]);
 
     return (
-        <BehaviorGroupSaveModal
-            data={ props.behaviorGroup }
-            isSaving={ isSaving }
-            onClose={ props.onClose }
-            onSave={ onSave }
-            getRecipients={ getRecipients }
-            getIntegrations={ getIntegrations }
-        />
+        <RecipientContextProvider value={ actionsContextValue }>
+            <BehaviorGroupSaveModal
+                data={ props.behaviorGroup }
+                isSaving={ isSaving }
+                onClose={ props.onClose }
+                onSave={ onSave }
+            />
+        </RecipientContextProvider>
     );
 };
