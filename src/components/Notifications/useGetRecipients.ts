@@ -1,20 +1,18 @@
+import { NotificationRecipient } from '../../types/Recipient';
 import { GetNotificationRecipients } from './RecipientContext';
 
-const recipients = [
-    'Admin',
-    'Another one',
-    'Default user access',
-    'Security admin',
-    'Stakeholders'
+const all: ReadonlyArray<NotificationRecipient> = [
+    new NotificationRecipient(false),
+    new NotificationRecipient(true)
 ];
 
 const getRecipients = async (search?: string) => {
-    if (search && search !== '') {
-        const lowerCaseSearchString = search.toLowerCase();
-        return recipients.filter(r => r.toLowerCase().includes(lowerCaseSearchString));
+    if (search) {
+        const lowerCaseSearch = search.toLowerCase();
+        return all.filter(r => r.displayName.toLowerCase().includes(lowerCaseSearch));
     }
 
-    return recipients;
+    return all;
 };
 
 export const useGetRecipients = (): GetNotificationRecipients => {

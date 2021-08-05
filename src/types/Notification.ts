@@ -1,5 +1,6 @@
 import { Schemas } from '../generated/OpenapiNotifications';
 import { UserIntegration } from './Integration';
+import { NotificationRecipient } from './Recipient';
 
 export type UUID = Schemas.UUID;
 
@@ -36,7 +37,7 @@ export interface ActionIntegration extends ActionBase {
 
 export interface ActionNotify extends ActionBase {
     type: NotificationType.EMAIL_SUBSCRIPTION | NotificationType.DRAWER;
-    recipient: Array<string>;
+    recipient: ReadonlyArray<NotificationRecipient>;
 }
 
 export type Action = ActionIntegration | ActionNotify;

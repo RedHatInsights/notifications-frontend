@@ -3,6 +3,7 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
+import { NotificationRecipient, Recipient } from '../../../types/Recipient';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
@@ -10,7 +11,7 @@ import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
 
 export interface RecipientTypeaheadProps extends OuiaComponentProps {
-    selected: Array<string> | undefined;
+    selected: ReadonlyArray<NotificationRecipient> | undefined;
     onSelected: (value: RecipientOption) => void;
     isDisabled?: boolean;
     onClear: () => void;
@@ -19,7 +20,7 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
-    const [ state, dispatchers ] = useTypeaheadReducer<string>();
+    const [ state, dispatchers ] = useTypeaheadReducer<Recipient>();
     const prevOpen = usePrevious(isOpen);
     const { getNotificationRecipients } = useRecipientContext();
 
@@ -65,14 +66,13 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         return options;
     }, [ dispatchers, options ]);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const selection = React.useMemo(() => {
         const sel = props.selected;
         if (sel === undefined) {
             return undefined;
         }
 
-        return (sel as Array<string>).map(s => new RecipientOption(s));
+        return (sel as ReadonlyArray<NotificationRecipient>).map(s => new RecipientOption(s));
 
     }, [ props.selected ]);
 
@@ -86,15 +86,14 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
     return (
         <div { ...getOuiaProps('RecipientTypeahead', props) }>
             <Select
-                variant={ SelectVariant.single }
+                variant={ SelectVariant.typeaheadMulti }
                 typeAheadAriaLabel="Select the recipients"
-                selections={ 'All registered users' }
+                selections={ selection }
                 onSelect={ onSelect }
                 onToggle={ toggle }
                 isOpen={ isOpen }
                 onFilter={ onFilter }
                 menuAppendTo={ document.body }
-                isDisabled={ true }
             >
                 { options }
             </Select>

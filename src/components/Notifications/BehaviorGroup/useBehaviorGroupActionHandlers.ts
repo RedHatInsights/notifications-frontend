@@ -1,8 +1,9 @@
-import produce from 'immer';
+import produce, { castImmutable } from 'immer';
 import { SetStateAction, useCallback } from 'react';
 import { DeepPartial } from 'ts-essentials';
 
 import { Action, ActionIntegration, ActionNotify, NotificationType } from '../../../types/Notification';
+import { IntegrationRecipient, NotificationRecipient } from '../../../types/Recipient';
 import { ActionOption } from '../Form/ActionOption';
 import { RecipientOption } from '../Form/RecipientOption';
 
@@ -38,10 +39,10 @@ export const useBehaviorGroupActionHandlers = (
 
     const handleIntegrationSelected = useCallback((index: number) => (value: RecipientOption) => {
         setActions(produce(prev => {
-            if (typeof value.recipientOrIntegration !== 'string') {
+            if (value.recipient instanceof IntegrationRecipient) {
                 const rowAsIntegration = prev[index] as DeepPartial<ActionIntegration>;
-                rowAsIntegration.integration = value.recipientOrIntegration;
-                rowAsIntegration.integrationId = value.recipientOrIntegration.id;
+                rowAsIntegration.integration = value.recipient.integration;
+                rowAsIntegration.integrationId = value.recipient.integration.id;
             }
         }));
     }, [ setActions ]);
@@ -52,9 +53,10 @@ export const useBehaviorGroupActionHandlers = (
             if (row.type !== NotificationType.INTEGRATION) {
                 const rowAsNotification = row as DeepPartial<ActionNotify>;
                 if (rowAsNotification.recipient) {
-                    const index = rowAsNotification.recipient.indexOf(value.toString());
+                    const index = rowAsNotification.recipient.findIndex(r => value.recipient.equals(r as NotificationRecipient));
+                    console.log('index', index);
                     if (index === -1) {
-                        rowAsNotification.recipient = [ ...rowAsNotification.recipient, value.toString() ];
+                        rowAsNotification.recipient = [ ...rowAsNotification.recipient, value.recipient ];
                     } else {
                         rowAsNotification.recipient = rowAsNotification.recipient.filter((_, i) => i !== index);
                     }

@@ -2,9 +2,9 @@ import { createContext, useContext } from 'react';
 
 import { UserIntegrationType } from '../../types/Integration';
 import { IntegrationRef } from '../../types/Notification';
+import { Recipient } from '../../types/Recipient';
 
 export type GetIntegrations = (type: UserIntegrationType, search?: string) => Promise<ReadonlyArray<IntegrationRef>>;
-export type Recipient = string;
 export type GetNotificationRecipients = (filter?: string) => Promise<ReadonlyArray<Recipient>>;
 
 export interface RecipientContext {
