@@ -37,11 +37,11 @@ export class NotificationRecipient extends Recipient {
     readonly key;
 
     public constructor(sendToAdmin: boolean) {
-        let displayName = 'Send to';
+        let displayName = 'Users:';
         if (sendToAdmin) {
-            displayName += ' admins';
+            displayName += ' Admins';
         } else {
-            displayName += ' users';
+            displayName += ' All';
         }
 
         super(displayName);

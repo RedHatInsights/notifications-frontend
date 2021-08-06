@@ -1,4 +1,4 @@
-import produce, { castImmutable } from 'immer';
+import produce from 'immer';
 import { SetStateAction, useCallback } from 'react';
 import { DeepPartial } from 'ts-essentials';
 
@@ -24,7 +24,6 @@ export const useBehaviorGroupActionHandlers = (
         setActions(produce(prev => {
             const row = prev[index];
             row.type = value.notificationType;
-            row.integrationId = '';
             if (value.integrationType) {
                 const rowAsIntegration = row as DeepPartial<ActionIntegration>;
                 rowAsIntegration.integration = {
@@ -42,7 +41,6 @@ export const useBehaviorGroupActionHandlers = (
             if (value.recipient instanceof IntegrationRecipient) {
                 const rowAsIntegration = prev[index] as DeepPartial<ActionIntegration>;
                 rowAsIntegration.integration = value.recipient.integration;
-                rowAsIntegration.integrationId = value.recipient.integration.id;
             }
         }));
     }, [ setActions ]);

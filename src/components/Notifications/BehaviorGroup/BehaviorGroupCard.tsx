@@ -122,7 +122,7 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
             title={ props.behaviorGroup.displayName }
             dropdownItems={ dropdownItems }
             contents={ props.behaviorGroup.actions.map((action, index) => ({
-                key: `${index}-${action.integrationId}`,
+                key: `${index}-${action.type}`,
                 recipient: <Recipient action={ action } />,
                 action: <ActionComponent isDefault={ false } action={ action } />
             })) }

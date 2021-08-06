@@ -183,7 +183,6 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
         } else {
             newAction = {
                 type: NotificationType.EMAIL_SUBSCRIPTION,
-                integrationId: '',
                 recipient: []
             };
         }

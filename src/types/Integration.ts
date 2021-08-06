@@ -1,4 +1,5 @@
 import { Schemas } from '../generated/OpenapiIntegrations';
+import { UUID } from './Notification';
 
 // Integrations that exist
 export enum IntegrationType {
@@ -43,7 +44,10 @@ export interface IntegrationCamel extends IntegrationBase<IntegrationType.CAMEL>
 }
 
 export interface IntegrationEmailSubscription extends IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION> {
-    type: IntegrationType.EMAIL_SUBSCRIPTION
+    type: IntegrationType.EMAIL_SUBSCRIPTION,
+    onlyAdmin: boolean;
+    ignorePreferences: boolean;
+    groupId?: UUID
 }
 
 export type Integration = IntegrationHttp | IntegrationEmailSubscription | IntegrationCamel;
