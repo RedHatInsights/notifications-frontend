@@ -11,7 +11,7 @@ import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
 
 export interface RecipientTypeaheadProps extends OuiaComponentProps {
-    selected: ReadonlyArray<NotificationRecipient> | undefined;
+    selected: ReadonlyArray<NotificationRecipient>;
     onSelected: (value: RecipientOption) => void;
     isDisabled?: boolean;
     onClear: () => void;
@@ -94,6 +94,8 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                 isOpen={ isOpen }
                 onFilter={ onFilter }
                 menuAppendTo={ document.body }
+                isDisabled={ props.isDisabled }
+                onClear={ props.onClear }
             >
                 { options }
             </Select>

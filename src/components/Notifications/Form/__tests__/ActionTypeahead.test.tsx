@@ -6,15 +6,18 @@ import * as React from 'react';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Action, NotificationType } from '../../../../types/Notification';
 import { ActionTypeahead } from '../ActionTypeahead';
+import { NotificationRecipient } from '../../../../types/Recipient';
+
+const ALL_RECIPIENTS = [
+    new NotificationRecipient(undefined, false),
+    new NotificationRecipient(undefined, true)
+] as ReadonlyArray<NotificationRecipient>;
 
 describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders the passed action type', () => {
         const action: Action = {
             type: NotificationType.DRAWER,
-            integrationId: '123-4567-8901',
-            recipient: [
-                'Foo', 'Bar'
-            ]
+            recipient: ALL_RECIPIENTS
         };
         render(
             <ActionTypeahead selectedNotifications={ [] } action={ action } onSelected={ fn() } />
@@ -26,10 +29,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders disabled if isDisabled', () => {
         const action: Action = {
             type: NotificationType.DRAWER,
-            integrationId: '123-4567-8901',
-            recipient: [
-                'Foo', 'Bar'
-            ]
+            recipient: ALL_RECIPIENTS
         };
         render(
             <ActionTypeahead selectedNotifications={ [] } action={ action } isDisabled={ true } onSelected={ fn() } />
@@ -41,10 +41,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Selected notification doesnt show except for Integrations', async () => {
         const action: Action = {
             type: NotificationType.DRAWER,
-            integrationId: '123-4567-8901',
-            recipient: [
-                'Foo', 'Bar'
-            ]
+            recipient: ALL_RECIPIENTS
         };
         const actionSelected = fn();
         render(
@@ -63,10 +60,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Calls actionSelected when selecting any action', async () => {
         const action: Action = {
             type: NotificationType.DRAWER,
-            integrationId: '123-4567-8901',
-            recipient: [
-                'Foo', 'Bar'
-            ]
+            recipient: ALL_RECIPIENTS
         };
         const actionSelected = fn();
         render(
@@ -82,10 +76,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Closes selection list when clicking on an action', async () => {
         const action: Action = {
             type: NotificationType.DRAWER,
-            integrationId: '123-4567-8901',
-            recipient: [
-                'Foo', 'Bar'
-            ]
+            recipient: ALL_RECIPIENTS
         };
         const actionSelected = fn();
         render(

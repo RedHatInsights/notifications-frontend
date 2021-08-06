@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Schemas } from '../../../../generated/OpenapiNotifications';
-import { Facet } from '../../../../types/Notification';
+import { Facet, NotificationType } from '../../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupContent';
 import BehaviorGroup = Schemas.BehaviorGroup;
 import EventType = Schemas.EventType;
@@ -13,6 +13,7 @@ import { getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import Endpoint = Schemas.Endpoint;
+import { NotificationRecipient } from '../../../../types/Recipient';
 
 const policiesApplication: Facet = {
     id: 'app-1',
@@ -140,7 +141,11 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         fetchMock.post('/api/integrations/v1.0/endpoints', {
             status: 200,
             body: {
-                properties: {},
+                properties: {
+                    only_admins: false,
+                    group_id: undefined,
+                    ignore_preferences: false
+                },
                 id: 'x',
                 type: 'email_subscription',
                 description: '',
@@ -159,16 +164,23 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
         const pf4Card = ouiaSelectors.getByOuia('PF4/Card');
 
-        userEvent.click(getByRole(pf4Card, 'button'));
-        userEvent.click(getByText(pf4Card, /edit/i));
+        act(() => userEvent.click(getByRole(pf4Card, 'button')));
+        act(() => userEvent.click(getByText(pf4Card, /edit/i)));
         await waitForAsyncEvents();
         await userEvent.clear(screen.getByLabelText(/Group name/i));
         await userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar');
         await waitForAsyncEvents();
 
+        act(() => userEvent.click(getByRole(ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'), 'button')));
+        await waitForAsyncEvents();
+
+        act(() => userEvent.click(screen.getByText(/Users: All/i)));
+        await waitForAsyncEvents();
+
         behaviorGroups[0].display_name = 'Foobar';
 
-        userEvent.click(screen.getByText(/save/i));
+        expect(screen.getByText(/save/i)).toHaveAttribute('aria-disabled', 'false');
+        act(() => userEvent.click(screen.getByText(/save/i)));
         await waitForAsyncEvents();
 
         expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument();

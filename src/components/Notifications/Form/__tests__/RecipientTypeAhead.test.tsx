@@ -1,10 +1,10 @@
 import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
+import { NotificationRecipient } from '../../../../types/Recipient';
 import { GetNotificationRecipients, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { RecipientTypeahead } from '../RecipientTypeahead';
 
@@ -18,50 +18,22 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
     return Wrapper;
 };
 
+const SELECTED_ALL = [
+    new NotificationRecipient(undefined, false),
+    new NotificationRecipient(undefined, true)
+] as ReadonlyArray<NotificationRecipient>;
+
+const SELECTED_SEND_TO_ADMIN = [
+    new NotificationRecipient(undefined, true)
+] as ReadonlyArray<NotificationRecipient>;
+
+const createDefaultGetMock = () => fn(async () => [ new NotificationRecipient(undefined, true) ]);
+
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
-    it('Renders if selected is undefined', async () => {
-        render(<RecipientTypeahead
-            selected={ undefined }
-            onSelected={ fn() }
-            onClear={ fn() }
-        />, {
-            wrapper: getConfiguredWrapper()
-        });
-        await waitForAsyncEvents();
-        expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
-    });
 
-    // Remove this once we support selecting the recipients
-    it('Appears as disabled', async () => {
+    it('Renders disabled if isDisabled', async () => {
         render(<RecipientTypeahead
-            selected={ undefined }
-            onSelected={ fn() }
-            onClear={ fn() }
-        />, {
-            wrapper: getConfiguredWrapper()
-        });
-        await waitForAsyncEvents();
-        expect(screen.getByRole('button')).toBeDisabled();
-    });
-
-    // Remove this once we support selecting the recipients
-    it('Has text "All registered users"', async () => {
-        render(<RecipientTypeahead
-            selected={ undefined }
-            onSelected={ fn() }
-            onClear={ fn() }
-        />, {
-            wrapper: getConfiguredWrapper()
-        });
-        await waitForAsyncEvents();
-        expect(screen.getByText('All registered users')).toBeVisible();
-    });
-
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Renders disabled if isDisabled', async () => {
-        render(<RecipientTypeahead
-            selected={ undefined }
+            selected={ SELECTED_ALL }
             onSelected={ fn() }
             onClear={ fn() }
             isDisabled={ true }
@@ -72,45 +44,39 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(screen.getByRole('textbox')).toBeDisabled();
     });
 
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Renders the selected even if getRecipients does not yield it', async () => {
+    it('Renders the selected even if getRecipients does not yield it', async () => {
         render(<RecipientTypeahead
-            selected={ [ 'comi' ] }
+            selected={ SELECTED_SEND_TO_ADMIN }
             onSelected={ fn() }
             onClear={ fn() }
         />, {
             wrapper: getConfiguredWrapper()
         });
         await waitForAsyncEvents();
-        expect(screen.getByText('comi')).toBeVisible();
+        expect(screen.getByText('Users: Admins')).toBeVisible();
     });
 
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Renders multiple selected', async () => {
+    it('Renders multiple selected', async () => {
         render(<RecipientTypeahead
-            selected={ [ 'comi', 'tales' ] }
+            selected={ SELECTED_ALL }
             onSelected={ fn() }
             onClear={ fn() }
         />, {
-            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+            wrapper: getConfiguredWrapper(createDefaultGetMock())
         });
         await waitForAsyncEvents();
-        expect(screen.getByText('comi')).toBeVisible();
-        expect(screen.getByText('tales')).toBeVisible();
+        expect(screen.getByText('Users: Admins')).toBeVisible();
+        expect(screen.getByText('Users: All')).toBeVisible();
     });
 
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Clicking clear button will call onClear', async () => {
+    it('Clicking clear button will call onClear', async () => {
         const onClear = fn();
         render(<RecipientTypeahead
-            selected={ [ 'comi', 'murray' ] }
+            selected={ SELECTED_ALL }
             onSelected={ fn() }
             onClear={ onClear }
         />, {
-            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+            wrapper: getConfiguredWrapper(createDefaultGetMock())
         });
 
         userEvent.click(screen.getByRole('button', {
@@ -120,28 +86,27 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(onClear).toHaveBeenCalled();
     });
 
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('Clicking will show the options', async () => {
+    it('Clicking will show the options', async () => {
         render(<RecipientTypeahead
-            selected={ [ 'comi', 'murray' ] }
+            selected={ SELECTED_ALL }
             onSelected={ fn() }
             onClear={ fn() }
         />, {
-            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+            wrapper: getConfiguredWrapper(createDefaultGetMock())
         });
 
         userEvent.click(screen.getByRole('button', {
             name: /Options menu/i
         }));
         await waitForAsyncEvents();
-        expect(screen.getByText('tales')).toBeVisible();
+        screen.getAllByText('Users: Admins').map(e => expect(e).toBeVisible());
+        screen.getAllByText('Users: All').map(e => expect(e).toBeVisible());
     });
 
     it('getRecipients is called on init', async () => {
-        const getRecipient = fn(async () => [ 'tales' ]);
+        const getRecipient = createDefaultGetMock();
         render(<RecipientTypeahead
-            selected={ [ 'comi', 'murray' ] }
+            selected={ SELECTED_ALL }
             onSelected={ fn() }
             onClear={ fn() }
         />, {
@@ -152,12 +117,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         expect(getRecipient).toHaveBeenCalledWith('');
     });
 
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('When writing, getRecipients is called with the input', async () => {
-        const getRecipient = fn(async () => [ 'tales' ]);
+    it('When writing, getRecipients is called with the input', async () => {
+        const getRecipient = createDefaultGetMock();
         render(<RecipientTypeahead
-            selected={ [ 'comi', 'murray' ] }
+            selected={ SELECTED_ALL }
             onSelected={ fn() }
             onClear={ fn() }
         />, {
@@ -165,30 +128,26 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         });
 
         await waitForAsyncEvents();
-        await act(async () => {
-            await userEvent.type(screen.getByRole('textbox'), 'guy');
-        });
+        userEvent.type(screen.getByRole('textbox'), 'guy');
+        await waitForAsyncEvents();
         expect(getRecipient).toHaveBeenCalledWith('guy');
     });
 
-    // Removing until we support selecting the recipients
-    // eslint-disable-next-line jest/no-disabled-tests
-    it.skip('onSelected GetsCalled when selecting an element', async () => {
+    it('onSelected GetsCalled when selecting an element', async () => {
         const onSelected = jest.fn();
         render(<RecipientTypeahead
-            selected={ [ 'comi', 'murray' ] }
+            selected={ SELECTED_ALL }
             onSelected={ onSelected }
             onClear={ fn() }
         />, {
-            wrapper: getConfiguredWrapper(fn(async () => [ 'tales' ]))
+            wrapper: getConfiguredWrapper(createDefaultGetMock())
         });
 
         userEvent.click(screen.getByRole('button', {
             name: /Options menu/i
         }));
         await waitForAsyncEvents();
-        userEvent.click(screen.getAllByRole('option')[0]);
-        await waitForAsyncEvents();
+        act(() => userEvent.click(screen.getAllByRole('option')[0]));
         expect(onSelected).toHaveBeenCalled();
     });
 });

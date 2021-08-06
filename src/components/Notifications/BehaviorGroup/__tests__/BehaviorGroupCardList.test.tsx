@@ -36,7 +36,6 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupCardList', () 
             bundleId: 'foo',
             actions: [
                 {
-                    integrationId: 'bar',
                     recipient: [],
                     type: NotificationType.EMAIL_SUBSCRIPTION
                 }

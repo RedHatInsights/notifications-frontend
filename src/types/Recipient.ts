@@ -15,7 +15,7 @@ export class IntegrationRecipient extends Recipient {
     readonly integration: IntegrationRef;
 
     public constructor(integration: IntegrationRef) {
-        super(integration.name);
+        super(integration.name + (integration.isEnabled ? '' : ' - Disabled'));
         this.integration = integration;
     }
 
