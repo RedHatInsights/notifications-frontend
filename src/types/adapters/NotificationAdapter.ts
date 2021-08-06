@@ -26,7 +26,7 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
 
     return {
         type,
-        recipient: [ new NotificationRecipient(integration.onlyAdmin) ]
+        recipient: [ new NotificationRecipient(integration.id, integration.onlyAdmin) ]
     };
 };
 
@@ -62,10 +62,8 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
 
 export const reduceActions = (actions: ReadonlyArray<Action>): ReadonlyArray<Action> => actions.reduce((actions, current) => {
     return produce(actions, draft => {
-        console.log('reading', current.type);
         if (current.type === NotificationType.EMAIL_SUBSCRIPTION) {
             const existingAction = draft.find(a => a.type === current.type) as ActionNotify;
-            console.log('existing', existingAction);
             if (existingAction) {
                 castDraft(existingAction.recipient).push(current.recipient[0]);
             } else {
@@ -80,7 +78,6 @@ export const reduceActions = (actions: ReadonlyArray<Action>): ReadonlyArray<Act
 export const toNotifications = (serverNotifications: Array<ServerNotificationResponse>) => serverNotifications.map(toNotification);
 
 export const toSystemProperties = (action: Action): ReadonlyArray<SystemProperties> => {
-    console.log('Calling toSystemProperties of', action);
     if (action.type === NotificationType.EMAIL_SUBSCRIPTION) {
         return action.recipient.map(r => ({
             type: NotificationType.EMAIL_SUBSCRIPTION,

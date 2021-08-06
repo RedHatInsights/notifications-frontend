@@ -2,8 +2,8 @@ import { NotificationRecipient } from '../../types/Recipient';
 import { GetNotificationRecipients } from './RecipientContext';
 
 const all: ReadonlyArray<NotificationRecipient> = [
-    new NotificationRecipient(false),
-    new NotificationRecipient(true)
+    new NotificationRecipient(undefined, false),
+    new NotificationRecipient(undefined, true)
 ];
 
 const getRecipients = async (search?: string) => {

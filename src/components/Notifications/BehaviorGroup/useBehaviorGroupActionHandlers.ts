@@ -52,7 +52,6 @@ export const useBehaviorGroupActionHandlers = (
                 const rowAsNotification = row as DeepPartial<ActionNotify>;
                 if (rowAsNotification.recipient) {
                     const index = rowAsNotification.recipient.findIndex(r => value.recipient.equals(r as NotificationRecipient));
-                    console.log('index', index);
                     if (index === -1) {
                         rowAsNotification.recipient = [ ...rowAsNotification.recipient, value.recipient ];
                     } else {

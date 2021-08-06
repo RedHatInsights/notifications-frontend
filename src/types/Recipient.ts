@@ -1,4 +1,4 @@
-import { IntegrationRef } from './Notification';
+import { IntegrationRef, UUID } from './Notification';
 
 export abstract class Recipient {
     readonly displayName: string;
@@ -33,10 +33,11 @@ export class IntegrationRecipient extends Recipient {
 }
 
 export class NotificationRecipient extends Recipient {
-    readonly sendToAdmin;
-    readonly key;
+    readonly sendToAdmin: boolean;
+    readonly integrationId: UUID | undefined;
+    readonly key: string;
 
-    public constructor(sendToAdmin: boolean) {
+    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean) {
         let displayName = 'Users:';
         if (sendToAdmin) {
             displayName += ' Admins';
@@ -47,6 +48,7 @@ export class NotificationRecipient extends Recipient {
         super(displayName);
         this.key = sendToAdmin ? 'admin' : 'user';
         this.sendToAdmin = sendToAdmin;
+        this.integrationId = integrationId;
     }
 
     public getKey() {

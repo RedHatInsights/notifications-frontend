@@ -17,8 +17,6 @@ export const toBehaviorGroup = (serverBehaviorGroup: ServerBehaviorGroup): Behav
         return reportBehaviorGroup(serverBehaviorGroup);
     }) || [];
 
-    console.log('actions', reduceActions(actions));
-
     return {
         actions: reduceActions(actions),
         bundleId: serverBehaviorGroup.bundle_id,
