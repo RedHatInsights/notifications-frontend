@@ -5,7 +5,7 @@ import * as React from 'react';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Schemas } from '../../../../generated/OpenapiNotifications';
-import { Facet, NotificationType } from '../../../../types/Notification';
+import { Facet } from '../../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupContent';
 import BehaviorGroup = Schemas.BehaviorGroup;
 import EventType = Schemas.EventType;
@@ -13,7 +13,6 @@ import { getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ouiaSelectors } from 'insights-common-typescript-dev';
 import Endpoint = Schemas.Endpoint;
-import { NotificationRecipient } from '../../../../types/Recipient';
 
 const policiesApplication: Facet = {
     id: 'app-1',

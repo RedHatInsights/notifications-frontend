@@ -5,8 +5,8 @@ import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Action, NotificationType } from '../../../../types/Notification';
-import { ActionTypeahead } from '../ActionTypeahead';
 import { NotificationRecipient } from '../../../../types/Recipient';
+import { ActionTypeahead } from '../ActionTypeahead';
 
 const ALL_RECIPIENTS = [
     new NotificationRecipient(undefined, false),
