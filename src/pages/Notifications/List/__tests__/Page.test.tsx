@@ -122,7 +122,11 @@ const mockBehaviorGroup = () => {
                             description: '',
                             enabled: true,
                             type: 'email_subscription',
-                            properties: null
+                            properties: {
+                                only_admins: false,
+                                group_id: undefined,
+                                ignore_preferences: false
+                            }
                         }
                     },
                     {
@@ -212,7 +216,11 @@ const mockBehaviorGroup = () => {
                             description: '',
                             enabled: true,
                             type: 'email_subscription',
-                            properties: null
+                            properties: {
+                                only_admins: false,
+                                group_id: undefined,
+                                ignore_preferences: false
+                            }
                         }
                     }
                 ]
@@ -236,7 +244,11 @@ const mockBehaviorGroup = () => {
                             description: '',
                             enabled: true,
                             type: 'email_subscription',
-                            properties: null
+                            properties: {
+                                only_admins: false,
+                                group_id: undefined,
+                                ignore_preferences: false
+                            }
                         }
                     }
                 ]

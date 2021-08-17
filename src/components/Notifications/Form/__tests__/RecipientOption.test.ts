@@ -1,103 +1,120 @@
 import { IntegrationType } from '../../../../types/Integration';
+import { IntegrationRecipient, NotificationRecipient } from '../../../../types/Recipient';
 import { RecipientOption } from '../RecipientOption';
 
 describe('src/components/Notifications/Form/RecipientOption', () => {
     it('CompareTo returns equal for the same object', () => {
-        const a = new RecipientOption('foobar');
-        const b = new RecipientOption({
+        const recipient1 = new NotificationRecipient(undefined, true);
+        const recipient2 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
+
+        const a = new RecipientOption(recipient1);
+        const b = new RecipientOption(recipient2);
 
         expect(a.compareTo(a)).toBe(true);
         expect(b.compareTo(b)).toBe(true);
     });
 
-    it('CompareTo returns true for objects with same string', () => {
-        const a = new RecipientOption('foobar');
-        const b = new RecipientOption('foobar');
+    it('CompareTo returns true for objects with same values', () => {
+        const recipient1 = new NotificationRecipient(undefined, true);
+        const recipient2 = new NotificationRecipient(undefined, true);
+        const a = new RecipientOption(recipient1);
+        const b = new RecipientOption(recipient2);
 
         expect(a.compareTo(b)).toBe(true);
     });
 
     it('CompareTo returns true for objects with same IntegrationRef', () => {
-        const c = new RecipientOption({
+        const recipient1 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
-        const d = new RecipientOption({
+        const recipient2 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
+        const c = new RecipientOption(recipient1);
+        const d = new RecipientOption(recipient2);
 
         expect(c.compareTo(d)).toBe(true);
     });
 
-    it('CompareTo returns false for objects with different strings', () => {
-        const a = new RecipientOption('foobar');
-        const b = new RecipientOption('xyz');
+    it('CompareTo returns false for objects with different values', () => {
+        const recipient1 = new NotificationRecipient(undefined, true);
+        const recipient2 = new NotificationRecipient(undefined, false);
+        const a = new RecipientOption(recipient1);
+        const b = new RecipientOption(recipient2);
         expect(a.compareTo(b)).toBe(false);
     });
 
     it('CompareTo returns false for objects with different integration ref', () => {
-        const c = new RecipientOption({
+        const recipient1 = new IntegrationRecipient({
             name: 'baz',
             isEnabled: true,
             type: IntegrationType.WEBHOOK,
             id: 'abc'
         });
-        const d = new RecipientOption({
+        const recipient2 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
+        const c = new RecipientOption(recipient1);
+        const d = new RecipientOption(recipient2);
 
         expect(c.compareTo(d)).toBe(false);
     });
 
-    it('CompareTo returns false when mixing strings and integration ref', () => {
-        const c = new RecipientOption('bar');
-        const d = new RecipientOption({
+    it('CompareTo returns false when mixing notification and integration', () => {
+        const recipient1 = new NotificationRecipient(undefined, true);
+        const recipient2 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
+        const c = new RecipientOption(recipient1);
+        const d = new RecipientOption(recipient2);
 
         expect(c.compareTo(d)).toBe(false);
     });
 
-    it('toString returns the string', () => {
-        const a = new RecipientOption('bar');
+    it('toString returns the description', () => {
+        const recipient1 = new NotificationRecipient(undefined, true);
+        const a = new RecipientOption(recipient1);
 
-        expect(a.toString()).toEqual('bar');
+        expect(a.toString()).toEqual('Users: Admins');
     });
 
     it('toString returns the name of the integrationRef if enabled', () => {
-        const a = new RecipientOption({
+        const recipient1 = new IntegrationRecipient({
             name: 'baz',
             isEnabled: true,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
+        const a = new RecipientOption(recipient1);
 
         expect(a.toString()).toEqual('baz');
     });
 
     it('toString appends "- Disabled" the name of the integrationRef', () => {
-        const a = new RecipientOption({
+        const recipient1 = new IntegrationRecipient({
             name: 'baz',
             isEnabled: false,
             type: IntegrationType.WEBHOOK,
             id: '123456789'
         });
+        const a = new RecipientOption(recipient1);
 
         expect(a.toString()).toEqual('baz - Disabled');
     });

@@ -1,5 +1,6 @@
 import { Schemas } from '../generated/OpenapiNotifications';
 import { UserIntegration } from './Integration';
+import { NotificationRecipient } from './Recipient';
 
 export type UUID = Schemas.UUID;
 
@@ -26,7 +27,6 @@ export interface DefaultNotificationBehavior {
 
 export interface ActionBase {
     type: NotificationType;
-    integrationId: UUID;
 }
 
 export interface ActionIntegration extends ActionBase {
@@ -36,10 +36,16 @@ export interface ActionIntegration extends ActionBase {
 
 export interface ActionNotify extends ActionBase {
     type: NotificationType.EMAIL_SUBSCRIPTION | NotificationType.DRAWER;
-    recipient: Array<string>;
+    recipient: ReadonlyArray<NotificationRecipient>;
 }
 
 export type Action = ActionIntegration | ActionNotify;
+
+export const isActionNotify = (action: Action): action is ActionNotify =>
+    action.type === NotificationType.EMAIL_SUBSCRIPTION || action.type === NotificationType.DRAWER;
+
+export const isActionIntegration = (action: Action): action is ActionIntegration =>
+    action.type === NotificationType.INTEGRATION;
 
 export enum NotificationType {
     EMAIL_SUBSCRIPTION = 'EMAIL_SUBSCRIPTION',
@@ -63,6 +69,11 @@ export type BehaviorGroup = {
 export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> & Omit<BehaviorGroup, 'id'>;
 
 export type EmailSystemProperties = {
-    type: NotificationType.EMAIL_SUBSCRIPTION
+    type: NotificationType.EMAIL_SUBSCRIPTION;
+    props: {
+        onlyAdmins: boolean;
+        ignorePreferences: false;
+        groupId: undefined;
+    }
 }
 export type SystemProperties = EmailSystemProperties;

@@ -1,4 +1,5 @@
 import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
+import produce from 'immer';
 import isEqual from 'lodash/isEqual';
 import uniqWith from 'lodash/uniqWith';
 import * as React from 'react';
@@ -14,7 +15,7 @@ import { useSaveBehaviorGroupMutation } from '../../../services/Notifications/Sa
 import { useUpdateBehaviorGroupActionsMutation } from '../../../services/Notifications/UpdateBehaviorGroupActions';
 import { toSystemProperties } from '../../../types/adapters/NotificationAdapter';
 import {
-    BehaviorGroup,
+    BehaviorGroup, isActionIntegration, isActionNotify,
     NewBehaviorGroup,
     NotificationType,
     SystemProperties,
@@ -60,8 +61,13 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
             }) : Promise.resolve(data.id)).then(behaviorGroupId => {
 
             // Determine what system Integrations we need to fetch
-            const toFetch: Array<SystemProperties> = uniqWith(
-                data.actions.filter(action => !action.integrationId).map(action => toSystemProperties(action)),
+            const toFetch: ReadonlyArray<SystemProperties> = uniqWith(
+                ([] as Array<SystemProperties>)
+                .concat(...data.actions.filter(isActionNotify)
+                .map(action => produce(action, draft => {
+                    draft.recipient = draft.recipient.filter(r => !r.integrationId);
+                }))
+                .map(action => toSystemProperties(action))),
                 isEqual
             );
 
@@ -74,15 +80,22 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
             }
 
             return Promise.all(
-                toFetch.map(props => query(getDefaultSystemEndpointAction(props))
+                toFetch.map(systemProps => query(getDefaultSystemEndpointAction(systemProps))
                 .then(result => result.payload?.type === 'Endpoint' ? result.payload.value.id : undefined)
                 )
             ).then(newIds => {
+                const endpointsToAdd = [
+                    // fetched
+                    ...newIds as UUID[],
+                    // integrations
+                    ...data.actions.filter(isActionIntegration).map(action => action.integration.id),
+                    // Existing actions with id
+                    ...data.actions.filter(isActionNotify).map(a => a.recipient).flat().map(r => r.integrationId).filter(r => r) as UUID[]
+                ];
+
                 return updateBehaviorGroupActions({
                     behaviorGroupId: behaviorGroupId as UUID,
-                    endpointIds: data.actions.map(action => action.integrationId)
-                    .filter(id => id)
-                    .concat(newIds as Array<string>)
+                    endpointIds: endpointsToAdd
                 });
             });
         }).then(value => {

@@ -5,6 +5,7 @@ import { usePrevious } from 'react-use';
 
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
+import { IntegrationRecipient } from '../../../types/Recipient';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
@@ -24,7 +25,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     const prevOpen = usePrevious(isOpen);
     const { getIntegrations } = useRecipientContext();
 
-    const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRef>();
+    const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRecipient>();
 
     const toggle = React.useCallback((isOpen: boolean) => {
         setOpen(isOpen);
@@ -38,14 +39,14 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ prevOpen, isOpen, props.onOpenChange ]);
 
     React.useEffect(() => {
-        getIntegrations(props.integrationType, '').then(integrations => dispatchers.setDefaults(integrations));
+        getIntegrations(props.integrationType, '').then(integrations => dispatchers.setDefaults(integrations.map(i => new IntegrationRecipient(i))));
     }, [ getIntegrations, props.integrationType, dispatchers ]);
 
     React.useEffect(() => {
         if (state.loadingFilter) {
             getIntegrations(props.integrationType, state.lastSearch).then(integrations => dispatchers.setFilterValue(
                 state.lastSearch,
-                integrations
+                integrations.map(i => new IntegrationRecipient(i))
             ));
         }
     }, [ getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
@@ -74,7 +75,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
             return undefined;
         }
 
-        return new RecipientOption(sel as IntegrationRef);
+        return new RecipientOption(new IntegrationRecipient(sel as IntegrationRef));
     }, [ props.selected ]);
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {

@@ -30,5 +30,5 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
         );
     }
 
-    return <span>All registered users</span>;
+    return <span>{ props.action.recipient.map(r => r.displayName).join(', ') }</span>;
 };

@@ -1,32 +1,23 @@
 import { SelectOptionObject } from '@patternfly/react-core';
 
-import { IntegrationRef } from '../../../types/Notification';
+import { Recipient } from '../../../types/Recipient';
 
 export class RecipientOption implements SelectOptionObject {
-    readonly recipientOrIntegration: string | IntegrationRef;
+    readonly recipient: Recipient;
 
-    constructor(recipientOrIntegration: string | IntegrationRef) {
-        this.recipientOrIntegration = recipientOrIntegration;
+    constructor(recipient: Recipient) {
+        this.recipient = recipient;
     }
 
     compareTo(selectOption: any): boolean {
-        if (selectOption instanceof RecipientOption && typeof selectOption.recipientOrIntegration === typeof this.recipientOrIntegration) {
-            if (typeof selectOption.recipientOrIntegration === 'string') {
-                return selectOption.recipientOrIntegration === this.recipientOrIntegration;
-            } else {
-                return selectOption.recipientOrIntegration.id === (this.recipientOrIntegration as IntegrationRef).id;
-            }
+        if (selectOption instanceof RecipientOption) {
+            return this.recipient.equals(selectOption.recipient);
         }
 
         return false;
     }
 
     toString(): string {
-        if (typeof this.recipientOrIntegration === 'string') {
-            return this.recipientOrIntegration;
-        } else {
-            const postfix = this.recipientOrIntegration.isEnabled ? '' : ' - Disabled';
-            return `${this.recipientOrIntegration.name}${postfix}`;
-        }
+        return this.recipient.displayName;
     }
 }

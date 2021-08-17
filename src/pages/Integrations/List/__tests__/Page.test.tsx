@@ -31,7 +31,13 @@ describe('src/pages/Integrations/List/Page', () => {
                         description: 'My integration desc',
                         enabled: true,
                         name: 'my integration name',
-                        properties: {},
+                        properties: {
+                            basic_authentication: undefined,
+                            disable_ssl_verification: false,
+                            method: 'GET',
+                            secret_token: undefined,
+                            url: 'http://foo'
+                        },
                         updated: Date.now().toString()
                     } as Endpoint
                 ],
@@ -71,7 +77,13 @@ describe('src/pages/Integrations/List/Page', () => {
                         description: 'My integration desc',
                         enabled: true,
                         name: 'my integration name',
-                        properties: {},
+                        properties: {
+                            basic_authentication: undefined,
+                            disable_ssl_verification: false,
+                            method: 'GET',
+                            secret_token: undefined,
+                            url: 'http://foo'
+                        },
                         updated: Date.now().toString()
                     } as Endpoint
                 ],
@@ -111,7 +123,13 @@ describe('src/pages/Integrations/List/Page', () => {
                         description: 'My integration desc',
                         enabled: true,
                         name: 'my integration name',
-                        properties: {},
+                        properties: {
+                            basic_authentication: undefined,
+                            disable_ssl_verification: false,
+                            method: 'GET',
+                            secret_token: undefined,
+                            url: 'http://foo'
+                        },
                         updated: Date.now().toString()
                     } as Endpoint
                 ],
@@ -154,7 +172,13 @@ describe('src/pages/Integrations/List/Page', () => {
                         description: 'My integration desc',
                         enabled: true,
                         name: 'my integration name',
-                        properties: {},
+                        properties: {
+                            basic_authentication: undefined,
+                            disable_ssl_verification: false,
+                            method: 'GET',
+                            secret_token: undefined,
+                            url: 'http://foo'
+                        },
                         updated: Date.now().toString()
                     } as Endpoint
                 ],
@@ -196,7 +220,13 @@ describe('src/pages/Integrations/List/Page', () => {
                         description: 'My integration desc',
                         enabled: true,
                         name: 'my integration name',
-                        properties: {},
+                        properties: {
+                            basic_authentication: undefined,
+                            disable_ssl_verification: false,
+                            method: 'GET',
+                            secret_token: undefined,
+                            url: 'http://foo'
+                        },
                         updated: Date.now().toString()
                     } as Endpoint
                 ],
@@ -254,7 +284,13 @@ describe('src/pages/Integrations/List/Page', () => {
                         description: 'My integration desc',
                         enabled: true,
                         name: 'my integration name',
-                        properties: {},
+                        properties: {
+                            basic_authentication: undefined,
+                            disable_ssl_verification: false,
+                            method: 'GET',
+                            secret_token: undefined,
+                            url: 'http://foo'
+                        },
                         updated: Date.now().toString()
                     } as Endpoint
                 ],

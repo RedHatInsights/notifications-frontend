@@ -96,7 +96,11 @@ export namespace Schemas {
 
   export const EmailSubscriptionProperties =
     zodSchemaEmailSubscriptionProperties();
-  export type EmailSubscriptionProperties = unknown;
+  export type EmailSubscriptionProperties = {
+    group_id?: UUID | undefined | null;
+    ignore_preferences: boolean;
+    only_admins: boolean;
+  };
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
   export type EmailSubscriptionType = 'DAILY' | 'INSTANT';
@@ -338,6 +342,12 @@ export namespace Schemas {
     username?: string | undefined | null;
   };
 
+  export const RequestEmailSubscriptionProperties =
+    zodSchemaRequestEmailSubscriptionProperties();
+  export type RequestEmailSubscriptionProperties = {
+    only_admins: boolean;
+  };
+
   export const Response = zodSchemaResponse();
   export type Response = {
     allowedMethods?: Array<string> | undefined | null;
@@ -498,7 +508,13 @@ export namespace Schemas {
   }
 
   function zodSchemaEmailSubscriptionProperties() {
-      return z.unknown();
+      return z
+      .object({
+          group_id: zodSchemaUUID().optional().nullable(),
+          ignore_preferences: z.boolean(),
+          only_admins: z.boolean()
+      })
+      .nonstrict();
   }
 
   function zodSchemaEmailSubscriptionType() {
@@ -760,6 +776,14 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaRequestEmailSubscriptionProperties() {
+      return z
+      .object({
+          only_admins: z.boolean()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaResponse() {
       return z
       .object({
@@ -980,7 +1004,7 @@ export namespace Operations {
   // POST /endpoints/system/email_subscription
   export namespace EndpointServiceGetOrCreateEmailSubscriptionEndpoint {
     export interface Params {
-      body: Schemas.EmailSubscriptionProperties;
+      body: Schemas.RequestEmailSubscriptionProperties;
     }
 
     export type Payload =

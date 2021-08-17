@@ -4,7 +4,7 @@ import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
     Integration,
     IntegrationBase,
-    IntegrationCamel,
+    IntegrationCamel, IntegrationEmailSubscription,
     IntegrationHttp,
     IntegrationType,
     NewIntegration,
@@ -71,7 +71,15 @@ const toIntegrationCamel = (integrationBase: IntegrationBase<IntegrationType.CAM
             pass: notNull(properties.basic_authentication?.password, '')
         },
     extras: notNull(properties.extras)
+});
 
+const toIntegrationEmail = (
+    integrationBase: IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
+    properties: Schemas.EmailSubscriptionProperties): IntegrationEmailSubscription => ({
+    ...integrationBase,
+    ignorePreferences: properties.ignore_preferences,
+    groupId: properties.group_id === null ? undefined : properties.group_id,
+    onlyAdmin: properties.only_admins
 });
 
 export const toIntegration = (serverIntegration: ServerIntegrationResponse): Integration => {
@@ -98,10 +106,10 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
         }
 
         case IntegrationType.EMAIL_SUBSCRIPTION:
-            return {
-                ...integrationBase,
-                type: IntegrationType.EMAIL_SUBSCRIPTION
-            };
+            return toIntegrationEmail(
+                integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
+                serverIntegration.properties as Schemas.EmailSubscriptionProperties
+            );
         default:
             assertNever(integrationBase.type);
     }
@@ -111,7 +119,9 @@ export const toIntegrations = (serverIntegrations: Array<ServerIntegrationRespon
     return filterOutDefaultAction(serverIntegrations).map(toIntegration);
 };
 
-export const toIntegrationProperties = (integration: Integration | NewIntegration) => {
+type ServerIntegrationProperties = Schemas.EmailSubscriptionProperties | Schemas.WebhookProperties | Schemas.CamelProperties
+
+export const toIntegrationProperties = (integration: Integration | NewIntegration): ServerIntegrationProperties => {
     switch (integration.type) {
         case IntegrationType.WEBHOOK:
             const integrationHttp: IntegrationHttp = integration as IntegrationHttp;
@@ -127,11 +137,19 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 url: integrationCamel.url,
                 disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
                 secret_token: integrationCamel.secretToken,
-                basicAuth: integrationCamel.basicAuth,
+                basic_authentication: {
+                    username: integrationCamel.basicAuth?.user,
+                    password: integrationCamel.basicAuth?.pass
+                },
                 extras: integrationCamel.extras
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
-            return {};
+            const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;
+            return {
+                only_admins: integrationEmail.onlyAdmin,
+                group_id: integrationEmail.groupId,
+                ignore_preferences: integrationEmail.ignorePreferences
+            };
         default:
             assertNever(integration);
     }
