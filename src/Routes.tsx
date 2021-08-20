@@ -5,6 +5,7 @@ import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
+import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 
 interface Path {
     path: string;
@@ -13,7 +14,8 @@ interface Path {
 
 export const linkTo = {
     integrations: () => '/integrations',
-    notifications: (bundle: string) => `/notifications/${bundle}`
+    notifications: (bundle: string) => `/notifications/${bundle}`,
+    eventLog: () => '/notifications/eventlog'
 };
 
 const EmptyPage: React.FunctionComponent = () => null;
@@ -26,6 +28,10 @@ const pathRoutes: Path[] = [
     {
         path: linkTo.integrations(),
         component: IntegrationsListPage
+    },
+    {
+        path: linkTo.eventLog(),
+        component: EventLogPage
     },
     {
         path: linkTo.notifications(':bundleName'),

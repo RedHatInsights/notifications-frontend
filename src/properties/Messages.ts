@@ -32,7 +32,7 @@ const MutableMessages = {
         notifications: {
             list: {
                 title: 'Notifications',
-                viewHistory: 'View notification history'
+                viewHistory: 'View event log'
             }
         },
         error: {
