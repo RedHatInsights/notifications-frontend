@@ -35,6 +35,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
         title: Messages.pages.notifications.list.title
     };
 
+    const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
+
     return (
         <>
             <PageHeader>
@@ -43,7 +45,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     <SplitItem>
                         <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProd }>
                             <RenderIfFalse>
-                                <Link component={ ButtonLink } to={ linkTo.eventLog } >{ Messages.pages.notifications.list.viewHistory }</Link>
+                                <Link component={ ButtonLink } to={ eventLogPageUrl } >{ Messages.pages.notifications.list.viewHistory }</Link>
                             </RenderIfFalse>
                         </InsightsEnvDetector>
                     </SplitItem>

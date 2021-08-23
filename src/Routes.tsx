@@ -15,7 +15,7 @@ interface Path {
 export const linkTo = {
     integrations: () => '/integrations',
     notifications: (bundle: string) => `/notifications/${bundle}`,
-    eventLog: () => '/notifications/eventlog'
+    eventLog: (bundle?: string) => `/notifications/eventlog${bundle ? `?bundle=${bundle}` : ''}`
 };
 
 const EmptyPage: React.FunctionComponent = () => null;

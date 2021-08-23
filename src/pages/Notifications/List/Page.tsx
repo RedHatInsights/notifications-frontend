@@ -5,7 +5,7 @@ import { useHistory, useParams } from 'react-router-dom';
 
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
 import { linkTo } from '../../../Routes';
-import { useGetApplications } from '../../../services/Notifications/GetApplications';
+import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
@@ -30,7 +30,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     const onFunction = insights?.chrome?.on;
 
     const getBundles = useGetBundles();
-    const getApplications = useGetApplications();
+    const getApplications = useGetApplicationsLazy();
 
     React.useEffect(() => {
         let unregister;
