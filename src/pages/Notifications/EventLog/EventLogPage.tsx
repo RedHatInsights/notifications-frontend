@@ -8,7 +8,8 @@ import { Messages } from '../../../properties/Messages';
 import { NotificationEvent } from '../../../types/Event';
 import { useEventLogFilter } from './useEventLogFilter';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
-import { useGetApplications, useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
+import { useGetApplications } from '../../../services/Notifications/GetApplications';
+import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
 
 const events: ReadonlyArray<NotificationEvent> = [
     {
@@ -422,6 +423,10 @@ export const EventLogPage: React.FunctionComponent = () => {
 
     const eventLogFilters = useEventLogFilter();
 
+    const perPageChanged = React.useCallback((_perPage: number) => 0, []);
+    const pageChanged = React.useCallback((_page: number) => 0, []);
+    const setDateFilter = React.useCallback((v) => console.log('set date filter to', v), []);
+
     return (
         <>
             <PageHeader>
@@ -435,6 +440,14 @@ export const EventLogPage: React.FunctionComponent = () => {
                     { ...eventLogFilters }
                     bundleOptions={ bundles }
                     applicationOptions={ applications }
+                    dateFilter={ EventLogDateFilterValue.LAST_14 }
+                    setDateFilter={ setDateFilter }
+                    count={ 99 }
+                    perPageChanged={ perPageChanged }
+                    pageChanged={ pageChanged }
+                    perPage={ 10 }
+                    page={ 1 }
+                    pageCount={ 10 }
                 >
                     <EventLogTable events={ events } />
                 </EventLogToolbar>

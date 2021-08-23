@@ -1,3 +1,4 @@
+import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
     ColumnsMetada,
@@ -6,9 +7,10 @@ import {
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { getOuiaProps } from '../../../utils/getOuiaProps';
-import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
 import { Facet } from '../../../types/Notification';
+import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
+import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
 
 interface EventLogToolbarProps extends OuiaComponentProps {
     filters: EventLogFilters,
@@ -17,6 +19,16 @@ interface EventLogToolbarProps extends OuiaComponentProps {
 
     bundleOptions: ReadonlyArray<Facet>;
     applicationOptions: ReadonlyArray<Facet>;
+
+    pageCount: number;
+    count: number;
+    page: number;
+    perPage: number;
+    pageChanged: (page: number) => void;
+    perPageChanged: (page: number) => void;
+
+    dateFilter: EventLogDateFilterValue;
+    setDateFilter: (value: EventLogDateFilterValue) => void;
 }
 
 export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (props) => {
@@ -54,8 +66,6 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         };
     }, [ props.bundleOptions, props.applicationOptions ]);
 
-    console.log('filterMetadata', filterMetadata);
-
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
         EventLogFilterColumn,
         props.filters,
@@ -64,13 +74,48 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         filterMetadata
     );
 
+    const pageChanged = React.useCallback((_event: unknown, page: number) => {
+        const inner = props.pageChanged;
+        inner(page);
+    }, [ props.pageChanged ]);
+
+    const perPageChanged = React.useCallback((_event: unknown, perPage: number) => {
+        const inner = props.perPageChanged;
+        inner(perPage);
+    }, [ props.perPageChanged ]);
+
+    const topPaginationProps = React.useMemo<PaginationProps>(() => ({
+        itemCount: props.count,
+        page: props.page,
+        perPage: props.perPage,
+        isCompact: true,
+        variant: PaginationVariant.top,
+        onSetPage: pageChanged,
+        onFirstClick: pageChanged,
+        onPreviousClick: pageChanged,
+        onNextClick: pageChanged,
+        onLastClick: pageChanged,
+        onPageInput: pageChanged,
+        onPerPageSelect: perPageChanged
+    }), [ props.count, props.page, props.perPage, pageChanged, perPageChanged ]);
+
+    const bottomPaginationProps = React.useMemo<PaginationProps>(() => ({
+        ...topPaginationProps,
+        isCompact: false,
+        variant: PaginationVariant.bottom
+    }), [ topPaginationProps ]);
+
     return (
         <div { ...getOuiaProps('Notifications/EventLog/DualToolbar', props) }>
             <PrimaryToolbar
                 { ...primaryToolbarFilterConfig }
+                dedicatedAction={ <EventLogDateFilter value={ props.dateFilter } setValue={ props.setDateFilter } /> }
+                pagination={ topPaginationProps }
             />
             { props.children }
-            <PrimaryToolbar />
+            <PrimaryToolbar
+                pagination={ bottomPaginationProps }
+            />
         </div>
     );
 };
