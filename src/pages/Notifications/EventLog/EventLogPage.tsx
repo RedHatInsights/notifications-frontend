@@ -10,6 +10,7 @@ import { useEventLogFilter } from './useEventLogFilter';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { useGetApplications } from '../../../services/Notifications/GetApplications';
 import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
+import { ValidatedResponse } from 'openapi2typescript';
 
 const events: ReadonlyArray<NotificationEvent> = [
     {
@@ -421,11 +422,12 @@ export const EventLogPage: React.FunctionComponent = () => {
         return [];
     }, [ getApplications.payload ]);
 
+    const [ dateFilter, setDateFilter ] = React.useState(EventLogDateFilterValue.LAST_14);
+
     const eventLogFilters = useEventLogFilter();
 
     const perPageChanged = React.useCallback((_perPage: number) => 0, []);
     const pageChanged = React.useCallback((_page: number) => 0, []);
-    const setDateFilter = React.useCallback((v) => console.log('set date filter to', v), []);
 
     return (
         <>
@@ -440,7 +442,7 @@ export const EventLogPage: React.FunctionComponent = () => {
                     { ...eventLogFilters }
                     bundleOptions={ bundles }
                     applicationOptions={ applications }
-                    dateFilter={ EventLogDateFilterValue.LAST_14 }
+                    dateFilter={ dateFilter }
                     setDateFilter={ setDateFilter }
                     count={ 99 }
                     perPageChanged={ perPageChanged }
