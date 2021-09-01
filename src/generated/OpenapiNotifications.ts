@@ -22,17 +22,6 @@ export namespace Schemas {
     updated?: string | undefined | null;
   };
 
-  export const AtomicLong = zodSchemaAtomicLong();
-  export type AtomicLong = {
-    acquire?: number | undefined | null;
-    andDecrement?: number | undefined | null;
-    andIncrement?: number | undefined | null;
-    opaque?: number | undefined | null;
-    plain?: number | undefined | null;
-    release?: number | undefined | null;
-    value?: number | undefined | null;
-  };
-
   export const BasicAuthentication = zodSchemaBasicAuthentication();
   export type BasicAuthentication = {
     password?: string | undefined | null;
@@ -227,14 +216,6 @@ export namespace Schemas {
     count: number;
   };
 
-  export const MigrationReport = zodSchemaMigrationReport();
-  export type MigrationReport = {
-    deletedEndpoints?: AtomicLong | undefined | null;
-    durationInMs?: AtomicLong | undefined | null;
-    updatedAccounts?: AtomicLong | undefined | null;
-    updatedBehaviorGroupActions?: AtomicLong | undefined | null;
-  };
-
   export const MultivaluedMapStringObject =
     zodSchemaMultivaluedMapStringObject();
   export type MultivaluedMapStringObject = {
@@ -271,7 +252,6 @@ export namespace Schemas {
       | undefined
       | null;
     endpointId?: UUID | undefined | null;
-    eventId?: string | undefined | null;
     id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
@@ -342,6 +322,14 @@ export namespace Schemas {
     username?: string | undefined | null;
   };
 
+  export const RenderEmailTemplateRequest =
+    zodSchemaRenderEmailTemplateRequest();
+  export type RenderEmailTemplateRequest = {
+    body_template: string;
+    payload: string;
+    subject_template: string;
+  };
+
   export const RequestEmailSubscriptionProperties =
     zodSchemaRequestEmailSubscriptionProperties();
   export type RequestEmailSubscriptionProperties = {
@@ -407,20 +395,6 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           updated: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaAtomicLong() {
-      return z
-      .object({
-          acquire: z.number().int().optional().nullable(),
-          andDecrement: z.number().int().optional().nullable(),
-          andIncrement: z.number().int().optional().nullable(),
-          opaque: z.number().int().optional().nullable(),
-          plain: z.number().int().optional().nullable(),
-          release: z.number().int().optional().nullable(),
-          value: z.number().int().optional().nullable()
       })
       .nonstrict();
   }
@@ -660,19 +634,6 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaMigrationReport() {
-      return z
-      .object({
-          deletedEndpoints: zodSchemaAtomicLong().optional().nullable(),
-          durationInMs: zodSchemaAtomicLong().optional().nullable(),
-          updatedAccounts: zodSchemaAtomicLong().optional().nullable(),
-          updatedBehaviorGroupActions: zodSchemaAtomicLong()
-          .optional()
-          .nullable()
-      })
-      .nonstrict();
-  }
-
   function zodSchemaMultivaluedMapStringObject() {
       return z.record(z.array(z.unknown()));
   }
@@ -704,7 +665,6 @@ export namespace Schemas {
           created: z.string().optional().nullable(),
           details: z.record(z.unknown()).optional().nullable(),
           endpointId: zodSchemaUUID().optional().nullable(),
-          eventId: z.string().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
@@ -769,6 +729,16 @@ export namespace Schemas {
           lastName: z.string().optional().nullable(),
           orgAdmin: z.boolean().optional().nullable(),
           username: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRenderEmailTemplateRequest() {
+      return z
+      .object({
+          body_template: z.string(),
+          payload: z.string(),
+          subject_template: z.string()
       })
       .nonstrict();
   }
