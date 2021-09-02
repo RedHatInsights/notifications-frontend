@@ -24,7 +24,7 @@
     "formik": "2.2.9",
     "glob": "7.1.7",
     "http-status-codes": "2.1.4",
-    "immer": "9.0.3",
+    "immer": "9.0.6",
     "in-browser-download": "2.0.0",
     "lodash": "4.17.21",
     "openapi2typescript": "0.1.5",
