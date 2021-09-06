@@ -2,15 +2,14 @@ import { Text, TextContent } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import * as React from 'react';
 
+import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
 import { EventLogTable } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
 import { Messages } from '../../../properties/Messages';
-import { NotificationEvent } from '../../../types/Event';
-import { useEventLogFilter } from './useEventLogFilter';
-import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { useGetApplications } from '../../../services/Notifications/GetApplications';
-import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
-import { ValidatedResponse } from 'openapi2typescript';
+import { useGetBundles } from '../../../services/Notifications/GetBundles';
+import { EventPeriod, NotificationEvent } from '../../../types/Event';
+import { useEventLogFilter } from './useEventLogFilter';
 
 const events: ReadonlyArray<NotificationEvent> = [
     {
@@ -400,6 +399,8 @@ const events: ReadonlyArray<NotificationEvent> = [
     }
 ];
 
+const RETENTION_DAYS = 14;
+
 export const EventLogPage: React.FunctionComponent = () => {
 
     const getBundles = useGetBundles();
@@ -428,6 +429,7 @@ export const EventLogPage: React.FunctionComponent = () => {
 
     const perPageChanged = React.useCallback((_perPage: number) => 0, []);
     const pageChanged = React.useCallback((_page: number) => 0, []);
+    const [ period, setPeriod ] = React.useState<EventPeriod>([ undefined, undefined ]);
 
     return (
         <>
@@ -450,6 +452,9 @@ export const EventLogPage: React.FunctionComponent = () => {
                     perPage={ 10 }
                     page={ 1 }
                     pageCount={ 10 }
+                    retentionDays={ RETENTION_DAYS }
+                    period={ period }
+                    setPeriod={ setPeriod }
                 >
                     <EventLogTable events={ events } />
                 </EventLogToolbar>

@@ -6,7 +6,10 @@ import {
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { Dispatch } from 'react';
+import { SetStateAction } from 'react';
 
+import { EventPeriod } from '../../../types/Event';
 import { Facet } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
@@ -29,6 +32,10 @@ interface EventLogToolbarProps extends OuiaComponentProps {
 
     dateFilter: EventLogDateFilterValue;
     setDateFilter: (value: EventLogDateFilterValue) => void;
+
+    retentionDays: number;
+    period: EventPeriod;
+    setPeriod: Dispatch<SetStateAction<EventPeriod>>;
 }
 
 export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (props) => {
@@ -109,7 +116,13 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         <div { ...getOuiaProps('Notifications/EventLog/DualToolbar', props) }>
             <PrimaryToolbar
                 { ...primaryToolbarFilterConfig }
-                dedicatedAction={ <EventLogDateFilter value={ props.dateFilter } setValue={ props.setDateFilter } /> }
+                dedicatedAction={ <EventLogDateFilter
+                    value={ props.dateFilter }
+                    setValue={ props.setDateFilter }
+                    retentionDays={ props.retentionDays }
+                    setPeriod={ props.setPeriod }
+                    period={ props.period }
+                /> }
                 pagination={ topPaginationProps }
             />
             { props.children }

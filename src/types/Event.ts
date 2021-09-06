@@ -7,3 +7,5 @@ export interface NotificationEvent {
     bundle: string;
     date: Date;
 }
+
+export type EventPeriod = [ Date | undefined, Date | undefined ];
