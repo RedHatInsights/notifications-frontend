@@ -11,14 +11,14 @@ import {
 } from '@patternfly/react-core';
 import { global_palette_black_600, global_spacer_sm } from '@patternfly/react-tokens';
 import { important } from 'csx';
-import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
+import { add, format, isAfter, isBefore, parseISO } from 'date-fns';
+import produce from 'immer';
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 import { style } from 'typestyle';
 
 import { EventPeriod } from '../../../types/Event';
-import produce from 'immer';
 
 export enum EventLogDateFilterValue {
     TODAY = 'today',

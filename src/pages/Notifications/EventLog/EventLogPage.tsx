@@ -1,20 +1,20 @@
 import { Text, TextContent } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
+import { Filter, Operator, toUtc } from '@redhat-cloud-services/insights-common-typescript';
+import { format, sub, toDate } from 'date-fns';
 import * as React from 'react';
 
 import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
+import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
 import { EventLogTable } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
+import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
+import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
 import { useGetApplications } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { EventPeriod } from '../../../types/Event';
 import { useEventLogFilter } from './useEventLogFilter';
-import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
-import { usePage } from '../../../hooks/usePage';
-import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
-import { Filter, Operator, toUtc } from '@redhat-cloud-services/insights-common-typescript';
-import { format, sub, toDate } from 'date-fns';
 
 const RETENTION_DAYS = 14;
 const DATE_FORMAT = 'yyyy-MM-dd';

@@ -4,8 +4,8 @@ import { Route, RouteProps, Switch } from 'react-router';
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
-import { NotificationsListPage } from './pages/Notifications/List/Page';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
+import { NotificationsListPage } from './pages/Notifications/List/Page';
 
 interface Path {
     path: string;

@@ -882,8 +882,8 @@ export namespace Operations {
     type BundleIds = Array<string>;
     const EndDate = z.string();
     type EndDate = string;
-    const EventTypeName = z.string();
-    type EventTypeName = string;
+    const EventTypeDisplayName = z.string();
+    type EventTypeDisplayName = string;
     const Limit = z.number().int();
     type Limit = number;
     const Offset = z.number().int();
@@ -896,7 +896,7 @@ export namespace Operations {
       appIds?: AppIds;
       bundleIds?: BundleIds;
       endDate?: EndDate;
-      eventTypeName?: EventTypeName;
+      eventTypeDisplayName?: EventTypeDisplayName;
       limit?: Limit;
       offset?: Offset;
       sortBy?: SortBy;
@@ -922,8 +922,8 @@ export namespace Operations {
             query.endDate = params.endDate;
         }
 
-        if (params.eventTypeName !== undefined) {
-            query.eventTypeName = params.eventTypeName;
+        if (params.eventTypeDisplayName !== undefined) {
+            query.eventTypeDisplayName = params.eventTypeDisplayName;
         }
 
         if (params.limit !== undefined) {
