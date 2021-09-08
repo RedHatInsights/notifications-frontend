@@ -1,11 +1,10 @@
-import { AppSkeleton, getInsights } from '@redhat-cloud-services/insights-common-typescript';
+import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
-import { linkTo } from '../../../Routes';
-import { useGetApplications } from '../../../services/Notifications/GetApplications';
+import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
@@ -25,25 +24,9 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 export const NotificationsListPage: React.FunctionComponent = () => {
 
     const params = useParams<NotificationListPageParams>();
-    const history = useHistory();
-    const insights = getInsights();
-    const onFunction = insights?.chrome?.on;
 
     const getBundles = useGetBundles();
-    const getApplications = useGetApplications();
-
-    React.useEffect(() => {
-        let unregister;
-        if (onFunction) {
-            unregister = onFunction('APP_NAVIGATION', (event: any) => {
-                history.push(linkTo.notifications(event.navId));
-            });
-        }
-
-        return () => {
-            typeof unregister === 'function' && unregister();
-        };
-    }, [ history, onFunction ]);
+    const getApplications = useGetApplicationsLazy();
 
     const bundle: Facet | BundleStatus = useMemo(() => {
         if (getBundles.payload?.status === 200) {

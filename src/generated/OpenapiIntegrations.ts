@@ -134,6 +134,23 @@ export namespace Schemas {
     weak?: boolean | undefined | null;
   };
 
+  export const EventLogEntry = zodSchemaEventLogEntry();
+  export type EventLogEntry = {
+    actions: Array<EventLogEntryAction>;
+    application: string;
+    bundle: string;
+    created: string;
+    event_type: string;
+    id: UUID;
+  };
+
+  export const EventLogEntryAction = zodSchemaEventLogEntryAction();
+  export type EventLogEntryAction = {
+    endpoint_type: EndpointType;
+    id: UUID;
+    invocation_result: boolean;
+  };
+
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application | undefined | null;
@@ -255,6 +272,15 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
+  };
+
+  export const PageEventLogEntry = zodSchemaPageEventLogEntry();
+  export type PageEventLogEntry = {
+    data: Array<EventLogEntry>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
   };
 
   export const PageRbacGroup = zodSchemaPageRbacGroup();
@@ -544,6 +570,29 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaEventLogEntry() {
+      return z
+      .object({
+          actions: z.array(zodSchemaEventLogEntryAction()),
+          application: z.string(),
+          bundle: z.string(),
+          created: z.string(),
+          event_type: z.string(),
+          id: zodSchemaUUID()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventLogEntryAction() {
+      return z
+      .object({
+          endpoint_type: zodSchemaEndpointType(),
+          id: zodSchemaUUID(),
+          invocation_result: z.boolean()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEventType() {
       return z
       .object({
@@ -671,6 +720,16 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaPageEventLogEntry() {
+      return z
+      .object({
+          data: z.array(zodSchemaEventLogEntry()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
       })
       .nonstrict();
   }

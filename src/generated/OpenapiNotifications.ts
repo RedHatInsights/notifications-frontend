@@ -134,6 +134,23 @@ export namespace Schemas {
     weak?: boolean | undefined | null;
   };
 
+  export const EventLogEntry = zodSchemaEventLogEntry();
+  export type EventLogEntry = {
+    actions: Array<EventLogEntryAction>;
+    application: string;
+    bundle: string;
+    created: string;
+    event_type: string;
+    id: UUID;
+  };
+
+  export const EventLogEntryAction = zodSchemaEventLogEntryAction();
+  export type EventLogEntryAction = {
+    endpoint_type: EndpointType;
+    id: UUID;
+    invocation_result: boolean;
+  };
+
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application | undefined | null;
@@ -255,6 +272,15 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
+  };
+
+  export const PageEventLogEntry = zodSchemaPageEventLogEntry();
+  export type PageEventLogEntry = {
+    data: Array<EventLogEntry>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
   };
 
   export const PageRbacGroup = zodSchemaPageRbacGroup();
@@ -541,6 +567,29 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaEventLogEntry() {
+      return z
+      .object({
+          actions: z.array(zodSchemaEventLogEntryAction()),
+          application: z.string(),
+          bundle: z.string(),
+          created: z.string(),
+          event_type: z.string(),
+          id: zodSchemaUUID()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventLogEntryAction() {
+      return z
+      .object({
+          endpoint_type: zodSchemaEndpointType(),
+          id: zodSchemaUUID(),
+          invocation_result: z.boolean()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEventType() {
       return z
       .object({
@@ -668,6 +717,16 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaPageEventLogEntry() {
+      return z
+      .object({
+          data: z.array(zodSchemaEventLogEntry()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
       })
       .nonstrict();
   }
@@ -814,6 +873,89 @@ export namespace Schemas {
 }
 
 export namespace Operations {
+  // GET /event
+  // Retrieve the event log entries.
+  export namespace EventServiceGetEvents {
+    const AppIds = z.array(z.string());
+    type AppIds = Array<string>;
+    const BundleIds = z.array(z.string());
+    type BundleIds = Array<string>;
+    const EndDate = z.string();
+    type EndDate = string;
+    const EventTypeDisplayName = z.string();
+    type EventTypeDisplayName = string;
+    const Limit = z.number().int();
+    type Limit = number;
+    const Offset = z.number().int();
+    type Offset = number;
+    const SortBy = z.string();
+    type SortBy = string;
+    const StartDate = z.string();
+    type StartDate = string;
+    export interface Params {
+      appIds?: AppIds;
+      bundleIds?: BundleIds;
+      endDate?: EndDate;
+      eventTypeDisplayName?: EventTypeDisplayName;
+      limit?: Limit;
+      offset?: Offset;
+      sortBy?: SortBy;
+      startDate?: StartDate;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'PageEventLogEntry', 200, Schemas.PageEventLogEntry>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/event';
+        const query = {} as Record<string, any>;
+        if (params.appIds !== undefined) {
+            query.appIds = params.appIds;
+        }
+
+        if (params.bundleIds !== undefined) {
+            query.bundleIds = params.bundleIds;
+        }
+
+        if (params.endDate !== undefined) {
+            query.endDate = params.endDate;
+        }
+
+        if (params.eventTypeDisplayName !== undefined) {
+            query.eventTypeDisplayName = params.eventTypeDisplayName;
+        }
+
+        if (params.limit !== undefined) {
+            query.limit = params.limit;
+        }
+
+        if (params.offset !== undefined) {
+            query.offset = params.offset;
+        }
+
+        if (params.sortBy !== undefined) {
+            query.sortBy = params.sortBy;
+        }
+
+        if (params.startDate !== undefined) {
+            query.startDate = params.startDate;
+        }
+
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(
+                    Schemas.PageEventLogEntry,
+                    'PageEventLogEntry',
+                    200
+                )
+            ]
+        })
+        .build();
+    };
+  }
   // POST /notifications/behaviorGroups
   // Create a behavior group.
   export namespace NotificationServiceCreateBehaviorGroup {

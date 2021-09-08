@@ -1,9 +1,10 @@
-import { useParameterizedQuery } from 'react-fetching-library';
+import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 
-export const getApplicationsAction = (bundleName: string) => Operations.NotificationServiceGetApplicationsFacets.actionCreator({
+export const getApplicationsAction = (bundleName?: string) => Operations.NotificationServiceGetApplicationsFacets.actionCreator({
     bundleName
 });
 
-export const useGetApplications = () => useParameterizedQuery(getApplicationsAction);
+export const useGetApplicationsLazy = () => useParameterizedQuery(getApplicationsAction);
+export const useGetApplications = (bundleName?: string) => useQuery(getApplicationsAction(bundleName));
