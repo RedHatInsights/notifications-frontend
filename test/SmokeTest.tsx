@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import fetchMock from 'fetch-mock';
-import { mockInsights } from 'insights-common-typescript-dev';
+import { mockInsights as mockInsightsInternal } from 'insights-common-typescript-dev';
 import * as React from 'react';
 
 import App from '../src/app/App';
@@ -23,6 +23,16 @@ const mockMaintenance = (isUp: boolean) => {
     fetchMock.get('/api/notifications/v1.0/status', {
         status: 200,
         body: response
+    });
+};
+
+declare const insights: any;
+
+const mockInsights = () => {
+    mockInsightsInternal();
+    insights.chrome.on = jest.fn(() => {
+        // eslint-disable-next-line @typescript-eslint/no-empty-function
+        return () => {};
     });
 };
 
