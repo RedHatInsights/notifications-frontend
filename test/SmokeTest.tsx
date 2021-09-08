@@ -3,7 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import fetchMock from 'fetch-mock';
 import { mockInsights as mockInsightsInternal } from 'insights-common-typescript-dev';
-import jestMock from 'jest-mock';
+import * as jestMock from 'jest-mock';
 import * as React from 'react';
 
 import App from '../src/app/App';
