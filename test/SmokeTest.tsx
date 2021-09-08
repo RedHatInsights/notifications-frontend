@@ -3,6 +3,7 @@ import axios from 'axios';
 import MockAdapter from 'axios-mock-adapter';
 import fetchMock from 'fetch-mock';
 import { mockInsights as mockInsightsInternal } from 'insights-common-typescript-dev';
+import jestMock from 'jest-mock';
 import * as React from 'react';
 
 import App from '../src/app/App';
@@ -30,7 +31,7 @@ declare const insights: any;
 
 const mockInsights = () => {
     mockInsightsInternal();
-    insights.chrome.on = jest.fn(() => {
+    insights.chrome.on = jestMock.fn(() => {
         // eslint-disable-next-line @typescript-eslint/no-empty-function
         return () => {};
     });
