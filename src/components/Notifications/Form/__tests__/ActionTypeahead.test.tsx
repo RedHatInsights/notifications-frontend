@@ -53,8 +53,11 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
         );
 
         userEvent.click(screen.getByRole('button'));
+        await waitForAsyncEvents();
+
         expect(screen.queryByText(/send an email/i)).not.toBeInTheDocument();
-        expect(screen.queryByText(/integration:/i)).toBeInTheDocument();
+        expect(screen.queryByText(/integration: webhook/i)).toBeInTheDocument();
+        expect(screen.queryByText(/integration: camel/i)).toBeInTheDocument();
     });
 
     it('Calls actionSelected when selecting any action', async () => {

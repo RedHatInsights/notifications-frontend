@@ -3,6 +3,7 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
+import { Messages } from '../../../properties/Messages';
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 import { IntegrationRecipient } from '../../../types/Recipient';
@@ -11,7 +12,6 @@ import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
-import { Messages } from '../../../properties/Messages';
 
 export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     selected: Partial<IntegrationRef> | undefined;
