@@ -77,7 +77,8 @@ const MutableMessages = {
                 description: 'There was a problem trying to disable the integration: "{0}".\nPlease try again.'
             },
             integrationType: {
-                [IntegrationType.WEBHOOK]: 'Webhook'
+                [IntegrationType.WEBHOOK]: 'Webhook',
+                [IntegrationType.CAMEL]: 'Camel'
             }
         },
         notifications: {

@@ -3,19 +3,22 @@ import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights
 import * as React from 'react';
 
 import { isStagingOrProd } from '../../../types/Environments';
-import { IntegrationType } from '../../../types/Integration';
+import { UserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { ActionOption } from './ActionOption';
 
-const getSelectOptions = (selectedNotifications: ReadonlyArray<NotificationType>) => [
-    ...([ NotificationType.DRAWER, NotificationType.EMAIL_SUBSCRIPTION ] as ReadonlyArray<NotificationType>)
+const getSelectOptions = (
+    availableNotificationTypes: ReadonlyArray<NotificationType>,
+    availableIntegrationTypes: ReadonlyArray<UserIntegrationType>,
+    selectedNotifications: ReadonlyArray<NotificationType>) => [
+    ...availableNotificationTypes
     .filter(type => !selectedNotifications.includes(type))
     .map(type => new ActionOption({
         kind: 'notification',
         type
     })),
-    ...[ IntegrationType.WEBHOOK as const ].map(type => new ActionOption({
+    ...availableIntegrationTypes.map(type => new ActionOption({
         kind: 'integration',
         type
     }))
@@ -58,12 +61,19 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
         });
     }, [ props.action ]);
 
-    const hideNonWebhooks = isStagingOrProd(getInsights());
+    const showAsProd = isStagingOrProd(getInsights());
 
-    const selectableOptions = React.useMemo(() => getSelectOptions(props.selectedNotifications)
-    .filter((o) => !hideNonWebhooks
-            || o.notificationType === NotificationType.INTEGRATION)
-    .map(o => <SelectOption key={ o.toString() } value={ o } />), [ hideNonWebhooks, props.selectedNotifications ]);
+    const selectableOptions = React.useMemo(() => {
+        const notificationTypes = showAsProd ?
+            [ NotificationType.EMAIL_SUBSCRIPTION ]
+            : [ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER ];
+        const integrationTypes = showAsProd ?
+            [ UserIntegrationType.WEBHOOK ]
+            : [ UserIntegrationType.WEBHOOK, UserIntegrationType.CAMEL ];
+
+        return getSelectOptions(notificationTypes, integrationTypes, props.selectedNotifications)
+        .map(o => <SelectOption key={ o.toString() } value={ o } />);
+    }, [ showAsProd, props.selectedNotifications ]);
 
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >

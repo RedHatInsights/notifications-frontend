@@ -3,6 +3,7 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
+import { Messages } from '../../../properties/Messages';
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 import { IntegrationRecipient } from '../../../types/Recipient';
@@ -86,12 +87,14 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         }
     }, [ props.onSelected ]);
 
+    const chooseText = `Choose ${Messages.components.integrations.integrationType[props.integrationType].toLowerCase()}`;
+
     return (
         <div { ...getOuiaProps('IntegrationRecipientTypeahead', props) }>
             <Select
                 variant={ SelectVariant.typeahead }
-                typeAheadAriaLabel="Choose webhook"
-                placeholderText="Choose webhook"
+                typeAheadAriaLabel={ chooseText }
+                placeholderText={ chooseText }
                 selections={ selection }
                 onSelect={ onSelect }
                 onToggle={ toggle }
