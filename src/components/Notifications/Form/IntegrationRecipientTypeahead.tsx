@@ -11,6 +11,7 @@ import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
+import { Messages } from '../../../properties/Messages';
 
 export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     selected: Partial<IntegrationRef> | undefined;
@@ -86,12 +87,14 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         }
     }, [ props.onSelected ]);
 
+    const chooseText = `Choose ${Messages.components.integrations.integrationType[props.integrationType].toLowerCase()}`;
+
     return (
         <div { ...getOuiaProps('IntegrationRecipientTypeahead', props) }>
             <Select
                 variant={ SelectVariant.typeahead }
-                typeAheadAriaLabel="Choose webhook"
-                placeholderText="Choose webhook"
+                typeAheadAriaLabel={ chooseText }
+                placeholderText={ chooseText }
                 selections={ selection }
                 onSelect={ onSelect }
                 onToggle={ toggle }
