@@ -11,6 +11,7 @@ import {
     SortDirection
 } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
+import Config from '../../../config/Config';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
@@ -72,7 +73,7 @@ export const EventLogPage: React.FunctionComponent = () => {
         return Sort.by(column, direction);
     }, [ sortColumn, sortDirection ]);
 
-    const eventsPage = usePage<EventLogFilters>(10, filterBuilder, eventLogFilters.filters, sort);
+    const eventsPage = usePage<EventLogFilters>(Config.paging.defaultPerPage, filterBuilder, eventLogFilters.filters, sort);
 
     const eventsQuery = useGetEvents(eventsPage.page);
 
