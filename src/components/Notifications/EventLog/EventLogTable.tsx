@@ -19,7 +19,6 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                     <Td><Skeleton /></Td>
                     <Td><Skeleton /></Td>
                     <Td><Skeleton /></Td>
-                    <Td><Skeleton /></Td>
                 </Tr>
             ))
         );
@@ -27,8 +26,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
         rows = props.events.map(e => (
             <Tr key={ e.id }>
                 <Td>{ e.event }</Td>
-                <Td>{ e.application }</Td>
-                <Td>{ e.bundle }</Td>
+                <Td>{ e.application } - { e.bundle }</Td>
                 <Td><UtcDate date={ e.date } /></Td>
             </Tr>
         ));
@@ -40,7 +38,6 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                 <Tr>
                     <Th>Event</Th>
                     <Th>Application</Th>
-                    <Th>Bundle</Th>
                     <Th>Date and time</Th>
                 </Tr>
             </Thead>
