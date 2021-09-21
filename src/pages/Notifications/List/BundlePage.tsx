@@ -14,6 +14,7 @@ import { linkTo } from '../../../Routes';
 import { stagingAndProd } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
+import { ButtonLink } from '../../../components/ButtonLink';
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
@@ -23,10 +24,6 @@ interface NotificationListBundlePageProps {
 const displayInlineClassName = style({
     display: 'inline'
 });
-
-const ButtonLink: React.FunctionComponent<{ navigate: () => void }> = (props) => {
-    return <Button variant={ ButtonVariant.secondary } onClick={ props.navigate }>{ props.children }</Button>;
-};
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
 
