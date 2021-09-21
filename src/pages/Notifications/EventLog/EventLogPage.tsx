@@ -20,8 +20,14 @@ import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { EventPeriod } from '../../../types/Event';
 import { useEventLogFilter } from './useEventLogFilter';
 import { useFilterBuilder } from './useFilterBuilder';
+import { style } from 'typestyle';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 
 const RETENTION_DAYS = 14;
+
+const subtitleClassName = style({
+    paddingTop: global_spacer_sm.value
+});
 
 export const EventLogPage: React.FunctionComponent = () => {
 
@@ -95,7 +101,7 @@ export const EventLogPage: React.FunctionComponent = () => {
         <>
             <PageHeader>
                 <PageHeaderTitle title={ Messages.pages.notifications.eventLog.title } />
-                <TextContent>
+                <TextContent className={ subtitleClassName }>
                     <Text>{ Messages.pages.notifications.eventLog.subtitle }</Text>
                 </TextContent>
             </PageHeader>
