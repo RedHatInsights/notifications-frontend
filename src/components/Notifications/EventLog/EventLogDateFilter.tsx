@@ -9,9 +9,9 @@ import {
     SplitItem,
     TextInputProps
 } from '@patternfly/react-core';
-import { global_palette_black_600, global_spacer_sm, global_active_color_100 } from '@patternfly/react-tokens';
+import { global_active_color_100, global_palette_black_600, global_spacer_sm } from '@patternfly/react-tokens';
 import { important } from 'csx';
-import { add, format, isAfter, isBefore, parseISO } from 'date-fns';
+import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
 import * as React from 'react';
 import { Dispatch } from 'react';
@@ -121,16 +121,13 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = props =
         const startDate = parseISO(start);
         setPeriod(produce(draft => {
             draft[0] = startDate;
-            // This causes a too many renders issue:
-            // https://github.com/patternfly/patternfly-react/issues/6272
-            // if (!draft[1]) {
-            //     draft[1] = min([ add(startDate, { days: 1 }), maxDate ]);
-            // }
+            if (!draft[1]) {
+                draft[1] = min([ add(startDate, { days: 1 }), maxDate ]);
+            }
         }));
     }, [
-        props.setPeriod // ,
-        // uncomment when above issue is fixed
-        // maxDate
+        props.setPeriod,
+        maxDate
     ]);
 
     const setEndDate = React.useCallback((end: string) => {
