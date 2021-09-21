@@ -1,7 +1,5 @@
 import { Skeleton } from '@patternfly/react-core';
-import { TableComposable, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table';
-import { SortByDirection } from '@patternfly/react-table/src/components/Table/SortColumn';
-import { IExtraColumnData } from '@patternfly/react-table/src/components/Table/TableTypes';
+import { IExtraColumnData, SortByDirection, TableComposable, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table';
 import * as React from 'react';
 
 import { NotificationEvent } from '../../../types/Event';
