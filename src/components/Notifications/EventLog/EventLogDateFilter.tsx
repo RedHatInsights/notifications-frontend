@@ -9,7 +9,7 @@ import {
     SplitItem,
     TextInputProps
 } from '@patternfly/react-core';
-import { global_palette_black_600, global_spacer_sm } from '@patternfly/react-tokens';
+import { global_palette_black_600, global_spacer_sm, global_active_color_100 } from '@patternfly/react-tokens';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, parseISO } from 'date-fns';
 import produce from 'immer';
@@ -44,9 +44,13 @@ const toClassName = style({
 
 const datePickerClassName = style({
     backgroundColor: important('white'),
+    cursor: 'pointer',
     $nest: {
         '&::placeholder': {
             color: important('black')
+        },
+        '&:hover': {
+            borderBottomColor: global_active_color_100.value
         }
     }
 });
