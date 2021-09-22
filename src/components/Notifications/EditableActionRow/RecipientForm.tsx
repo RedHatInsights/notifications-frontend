@@ -1,4 +1,4 @@
-import { FormHelperText } from '@patternfly/react-core';
+import { FormHelperText, Select, SelectVariant } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 
@@ -9,7 +9,7 @@ import { IntegrationRecipientTypeahead } from '../Form/IntegrationRecipientTypea
 import { RecipientTypeahead } from '../Form/RecipientTypeahead';
 
 interface RecipientFormProps {
-    action: Action;
+    action?: Action;
     integrationSelected: ReturnType<UseBehaviorGroupActionHandlers['handleIntegrationSelected']>;
     recipientSelected: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientSelected']>;
     recipientOnClear: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientOnClear']>;
@@ -17,10 +17,16 @@ interface RecipientFormProps {
     error?: string;
 }
 
+const dummyOnToggle = () => false;
+
 export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props => {
     let recipient: React.ReactNode;
 
-    if (props.action.type === NotificationType.INTEGRATION) {
+    if (!props.action) {
+        recipient = (
+            <div><Select variant={ SelectVariant.typeahead } isDisabled onToggle={ dummyOnToggle } isOpen={ false } /></div>
+        );
+    } else if (props.action.type === NotificationType.INTEGRATION) {
         recipient = (
             <IntegrationRecipientTypeahead
                 onSelected={ props.integrationSelected }

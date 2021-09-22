@@ -170,6 +170,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         await userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar');
         await waitForAsyncEvents();
 
+        act(() => userEvent.click(getByRole(ouiaSelectors.getByOuia('Notifications/ActionTypeahead'), 'button')));
+        await waitForAsyncEvents();
+
+        act(() => userEvent.click(screen.getByText(/Send an email/i)));
+        await waitForAsyncEvents();
+
         act(() => userEvent.click(getByRole(ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'), 'button')));
         await waitForAsyncEvents();
 

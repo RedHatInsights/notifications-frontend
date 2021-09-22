@@ -17,7 +17,6 @@ import * as React from 'react';
 import { DeepPartial } from 'ts-essentials';
 import { cssRaw, style } from 'typestyle';
 
-import { IntegrationType } from '../../../types/Integration';
 import { Action, BehaviorGroup, NewBehaviorGroup, NotificationType } from '../../../types/Notification';
 import { RecipientForm } from '../EditableActionRow/RecipientForm';
 import { ActionTypeahead } from '../Form/ActionTypeahead';
@@ -83,7 +82,7 @@ const cells: Array<ICell> = [
 ];
 
 const toTableRows = (
-    actions: ReadonlyArray<Action>,
+    actions: ReadonlyArray<Action | undefined>,
     errors: any,
     touched: any,
     selectedNotifications: ReadonlyArray<NotificationType>,
@@ -95,13 +94,13 @@ const toTableRows = (
         let isTouched = false;
         let path;
 
-        if (action.type === NotificationType.INTEGRATION) {
+        if (action?.type === NotificationType.INTEGRATION) {
             path = `actions.${index}.integration`;
         } else {
             path = `actions.${index}.recipient`;
         }
 
-        if (action.type === NotificationType.INTEGRATION) {
+        if (action?.type === NotificationType.INTEGRATION) {
             if (touched[index]?.integration) {
                 isTouched = true;
             }
@@ -150,12 +149,14 @@ const emptySpan = () => <span />;
 export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGroupFormTableProps> = (props) => {
 
     const { values, setValues, isSubmitting, errors, touched, setFieldTouched } = props.form;
-    const actions = React.useMemo<ReadonlyArray<Action>>(() => values.actions ?? [] as ReadonlyArray<Action>, [ values ]);
+    const actions = React.useMemo<ReadonlyArray<Action | undefined>>(() => values.actions ?? [] as ReadonlyArray<Action>, [ values ]);
     const touchedActions = React.useMemo(() => touched?.actions ?? [], [ touched ]);
     const errorActions = React.useMemo(() => errors?.actions ?? [], [ errors ]);
 
     const selectedNotifications = React.useMemo(
-        () => new Array(...new Set<NotificationType>(actions.map(a => a.type))) as ReadonlyArray<NotificationType>,
+        () => new Array(...new Set<NotificationType>(
+            (actions.filter(a => a) as ReadonlyArray<Action>).map(a => a.type)
+        )) as ReadonlyArray<NotificationType>,
         [ actions ]
     );
 
@@ -172,23 +173,8 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
 
     const addAction = React.useCallback(() => {
         const push = props.push;
-        let newAction: DeepPartial<Action>;
-        if (selectedNotifications.includes(NotificationType.EMAIL_SUBSCRIPTION)) {
-            newAction = {
-                type: NotificationType.INTEGRATION,
-                integration: {
-                    type: IntegrationType.WEBHOOK
-                }
-            };
-        } else {
-            newAction = {
-                type: NotificationType.EMAIL_SUBSCRIPTION,
-                recipient: []
-            };
-        }
-
-        push(newAction);
-    }, [ props.push, selectedNotifications ]);
+        push(undefined);
+    }, [ props.push ]);
 
     React.useEffect(() => {
         if (actions.length === 0) {

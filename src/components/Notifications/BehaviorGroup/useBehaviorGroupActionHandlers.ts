@@ -22,6 +22,10 @@ export const useBehaviorGroupActionHandlers = (
 
     const handleActionSelected = useCallback((index: number) => (value: ActionOption) => {
         setActions(produce(prev => {
+            if (!prev[index]) {
+                prev[index] = {};
+            }
+
             const row = prev[index];
             row.type = value.notificationType;
             if (value.integrationType) {

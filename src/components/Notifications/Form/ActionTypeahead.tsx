@@ -26,7 +26,7 @@ const getSelectOptions = (
 
 export interface ActionTypeaheadProps extends OuiaComponentProps {
     selectedNotifications: ReadonlyArray<NotificationType>;
-    action: Action;
+    action?: Action;
     isDisabled?: boolean;
     onSelected: (actionOption: ActionOption) => void;
 }
@@ -48,6 +48,10 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     }, [ props.onSelected, setOpen ]);
 
     const selectedOption = React.useMemo(() => {
+        if (!props.action) {
+            return undefined;
+        }
+
         if (props.action.type === NotificationType.INTEGRATION) {
             return new ActionOption({
                 kind: 'integration',
@@ -79,7 +83,9 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
         <div { ...getOuiaProps('ActionTypeahead', props) } >
             <Select
                 variant={ SelectVariant.typeahead }
-                typeAheadAriaLabel="Select an action type"
+                typeAheadAriaLabel="Select action"
+                aria-label="Select action"
+                placeholderText="Select action"
                 selections={ selectedOption }
                 onToggle={ toggle }
                 isOpen={ isOpen }
