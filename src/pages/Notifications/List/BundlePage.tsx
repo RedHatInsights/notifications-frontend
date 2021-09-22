@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, Split, SplitItem } from '@patternfly/react-core';
+import { Split, SplitItem } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
@@ -9,6 +9,7 @@ import { default as React } from 'react';
 import { Link } from 'react-router-dom';
 import { style } from 'typestyle';
 
+import { ButtonLink } from '../../../components/ButtonLink';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { stagingAndProd } from '../../../types/Environments';
@@ -23,10 +24,6 @@ interface NotificationListBundlePageProps {
 const displayInlineClassName = style({
     display: 'inline'
 });
-
-const ButtonLink: React.FunctionComponent<{ navigate: () => void }> = (props) => {
-    return <Button variant={ ButtonVariant.secondary } onClick={ props.navigate }>{ props.children }</Button>;
-};
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
 

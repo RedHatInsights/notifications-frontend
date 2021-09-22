@@ -33,7 +33,8 @@ export const useGetEvents = (page?: Page) => {
             appIds: query.filterAppIds as [],
             startDate: query.filterStart as string,
             endDate: query.filterEnd as string,
-            eventTypeDisplayName: query.filterEvent as string
+            eventTypeDisplayName: query.filterEvent as string,
+            sortBy: `${query.sortColumn}:${query.sortDirection}`
         })),
         eventDecoder
     );

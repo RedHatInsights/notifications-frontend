@@ -15,6 +15,9 @@ const Config = {
         title: 'Notifications | Settings'
     },
     pages: {
+    },
+    paging: {
+        defaultPerPage: 20
     }
 };
 
