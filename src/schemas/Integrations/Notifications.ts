@@ -19,7 +19,7 @@ const ActionNotify = Yup.object({
 type ActionsType = Yup.TypeOf<typeof ActionIntegration> | Yup.TypeOf<typeof ActionNotify>;
 
 export const ActionsArray = Yup.array(Yup.lazy(obj => {
-    if ((obj as any).hasOwnProperty('type')) {
+    if (obj && (obj as any).hasOwnProperty('type')) {
         if ((obj as any).type === NotificationType.INTEGRATION) {
             return ActionIntegration;
         }
