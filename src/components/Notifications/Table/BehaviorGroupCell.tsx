@@ -112,5 +112,5 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
         return <TableText wrapModifier="truncate"> { readonlyText } </TableText>;
     }
 
-    return <OptionsMenu id={ props.id } direction="up" menuItems={ items } toggle={ toggle } isOpen={ isOpen } menuAppendTo={ document.body } />;
+    return <OptionsMenu id={ props.id } direction="down" menuItems={ items } toggle={ toggle } isOpen={ isOpen } menuAppendTo={ document.body } />;
 };
