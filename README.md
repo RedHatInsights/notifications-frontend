@@ -77,14 +77,20 @@ For more info refer to [Insights Frontend Starter App README](https://github.com
 
 Deployments come from the `.travis/custom_release.sh` file. Push to certain branches to deploy to certain environments:
 
-### Pushing to master
+### Pushing to master and prod branches.
 
-Anytime a build of the master branch happens, Travis builds and pushes a new commit to the ci-beta & qa-beta branch in your build repo. Pull requests on master will not be deployed until they are merged, but they will be built to assure linting, snapshots, etc. are working as expected.
+Anytime a build of the `master` branch happens, Travis builds and pushes a new commit to the ci-beta, qa-beta, ci-stable and qa-stable branch of notifications-frontend-build repository. Pull requests on master will not be deployed until they are merged, but they will be built to assure linting, snapshots, etc. are working as expected.
+A push to `prod` branch  will push new commits to `prod-stable` and `prod-beta` of branch of notifications-frontend-build repository.
+It's possible to only push to `prod-stable` or `prod-beta` by creating these branches, but any other push to `prod` branch will overwrite these changes.
 
-master -> qa-beta & ci-beta
-prod-beta -> prod-beta
-master-stable -> qa-stable & ci-stable
-prod-stable -> prod-stable
+### Deploying to prod
+
+To deploy to prod, delete the `prod` branch and create it again from the wanted commit/branch.
+
+### Testing if generated files (openapi) are in sync
+
+One can manually verify if the files are in sync by running `yarn schema-check`. This will, by default, compare with prod.
+It is possible to specify the path the server by passing is as the first argument, e.g. `yarn schema-check http://localhost:8085.
 
 ### Testing - jest
 
