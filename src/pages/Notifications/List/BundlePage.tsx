@@ -12,7 +12,7 @@ import { style } from 'typestyle';
 import { ButtonLink } from '../../../components/ButtonLink';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
-import { stagingAndProd } from '../../../types/Environments';
+import { stagingAndProdStable } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
@@ -40,7 +40,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 <Split>
                     <SplitItem isFilled><PageHeaderTitle { ...pageHeaderTitleProps } /></SplitItem>
                     <SplitItem>
-                        <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProd }>
+                        <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProdStable }>
                             <RenderIfFalse>
                                 <Link component={ ButtonLink } to={ eventLogPageUrl } >{ Messages.pages.notifications.list.viewHistory }</Link>
                             </RenderIfFalse>
