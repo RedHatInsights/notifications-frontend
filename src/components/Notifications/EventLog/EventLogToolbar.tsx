@@ -55,6 +55,7 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
                     exclusive: false,
                     items: bundleOptions.map(b => ({
                         value: b.name,
+                        chipValue: b.displayName,
                         label: b.displayName
                     }))
                 }
@@ -66,6 +67,7 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
                     exclusive: false,
                     items: applicationOptions.map(a => ({
                         value: a.name,
+                        chipValue: a.displayName,
                         label: a.displayName
                     }))
                 }
