@@ -76,11 +76,15 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
                 limit.clearQueue();
 
                 integrations.map(integration => integration.id).forEach(integrationId => {
-                    limit(() => query(listIntegrationHistoryActionCreator(integrationId))).then(response => {
+                    limit(() => query(listIntegrationHistoryActionCreator({
+                        integrationId,
+                        limit: 5,
+                        sortBy: 'invocation_time:desc'
+                    }))).then(response => {
 
                         if (response.payload && response.payload.status === 200) {
-                            const last5 = (response.payload.value.reverse().slice(0, 5)).map(p => ({
-                                isSuccess: !!p.invocationResult,
+                            const last5 = response.payload.value.map(p => ({
+                                isSuccess: p.invocationResult,
                                 date: new Date(p.created as string)
                             }));
                             setIntegrationRowById(integrationId, {
