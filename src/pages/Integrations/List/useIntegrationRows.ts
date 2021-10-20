@@ -79,7 +79,7 @@ export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
                     limit(() => query(listIntegrationHistoryActionCreator({
                         integrationId,
                         limit: 5,
-                        sortBy: 'created:desc'
+                        sortBy: 'nh.created:desc'
                     }))).then(response => {
 
                         if (response.payload && response.payload.status === 200) {
