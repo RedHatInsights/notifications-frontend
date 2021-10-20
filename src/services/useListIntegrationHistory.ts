@@ -1,7 +1,15 @@
 import { Operations } from '../generated/OpenapiIntegrations';
 
-export const listIntegrationHistoryActionCreator = (integrationId: string) => {
+type IntegrationHistoryParams = {
+    integrationId: string;
+    limit?: number;
+    sortBy?: 'nh.created:desc'
+}
+
+export const listIntegrationHistoryActionCreator = (params: IntegrationHistoryParams) => {
     return Operations.EndpointServiceGetEndpointHistory.actionCreator({
-        id: integrationId
+        id: params.integrationId,
+        limit: params.limit,
+        sortBy: params.sortBy
     });
 };
