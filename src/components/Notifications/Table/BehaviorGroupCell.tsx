@@ -8,7 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { BellSlashIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
-import { global_palette_black_400, global_palette_black_700 } from '@patternfly/react-tokens';
+import { global_palette_black_400, global_palette_black_700, global_spacer_sm } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -23,6 +23,10 @@ const grayFontClassName = style({
 
 const noBehaviorGroupsClassName = style({
     textAlign: 'left'
+});
+
+const bellClassName = style({
+    marginRight: global_spacer_sm.value
 });
 
 interface BehaviorGroupCellProps {
@@ -129,8 +133,8 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
 
     const readonlyText = React.useMemo(() => {
         if (props.selected.length === 0) {
-            return <Split hasGutter>
-                <SplitItem><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
+            return <Split>
+                <SplitItem className={ bellClassName }><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
                 <SplitItem>Mute</SplitItem>
             </Split>;
         }
