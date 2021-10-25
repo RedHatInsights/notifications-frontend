@@ -8,13 +8,22 @@ import {
 } from '@patternfly/react-core';
 import { BellSlashIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
-import { global_palette_black_400 } from '@patternfly/react-tokens';
+import { global_palette_black_400, global_palette_black_700 } from '@patternfly/react-tokens';
 import * as React from 'react';
+import { style } from 'typestyle';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
+
+const grayFontClassName = style({
+    color: global_palette_black_700.value
+});
+
+const noBehaviorGroupsClassName = style({
+    textAlign: 'left'
+});
 
 interface BehaviorGroupCellProps {
     id: string;
@@ -69,6 +78,18 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             ];
         }
 
+        if (props.behaviorGroupContent.content.length === 0) {
+            return [
+                <OptionsMenuItem key="empty" isDisabled>
+                    <span className={ noBehaviorGroupsClassName }>
+                        You have no behavior groups. <br />
+                        Create a new group by clicking on the <br />
+                        &apos;Create new group&apos; button above.
+                    </span>
+                </OptionsMenuItem>
+            ];
+        }
+
         return props.behaviorGroupContent.content.map(bg => {
             const selected = !!props.selected.find(findById(bg.id));
 
@@ -88,11 +109,20 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     const toggle = React.useMemo(() => {
         return (
             <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ (
-                <ChipGroup>
-                    { props.selected.map(value => (
-                        <BehaviorGroupChip key={ value.id } behaviorGroup={ value } notification={ props.notification } onSelect={ props.onSelect } />
-                    )) }
-                </ChipGroup>
+                props.selected.length === 0 ? (
+                    <span className={ grayFontClassName }>Select behavior group</span>
+                ) : (
+                    <ChipGroup>
+                        { props.selected.map(value => (
+                            <BehaviorGroupChip
+                                key={ value.id }
+                                behaviorGroup={ value }
+                                notification={ props.notification }
+                                onSelect={ props.onSelect }
+                            />
+                        )) }
+                    </ChipGroup>
+                )
             ) } />
         );
     }, [ props.selected, props.notification, props.onSelect ]);
