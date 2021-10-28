@@ -78,6 +78,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                             <LabelGroup>
                                 { e.actions.map(a => (<Popover
                                     key={ a.id }
+                                    isVisible={ false /* Remove this to allow to show/hide the popover */ }
                                     hasAutoWidth
                                     bodyContent={ <EventLogActionPopoverContent id={ a.id } type={ a.endpointType } success={ a.success } /> }
                                 >
