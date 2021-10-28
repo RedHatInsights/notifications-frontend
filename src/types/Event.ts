@@ -1,3 +1,4 @@
+import { IntegrationType } from './Integration';
 import { UUID } from './Notification';
 
 export interface NotificationEvent {
@@ -5,6 +6,11 @@ export interface NotificationEvent {
     event: string;
     application: string;
     bundle: string;
+    actions: ReadonlyArray<{
+        id: UUID;
+        success: boolean;
+        endpointType: IntegrationType;
+    }>;
     date: Date;
 }
 
