@@ -5,7 +5,7 @@ import * as React from 'react';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
-import { IntegrationsListPage } from '../Page';
+import { ConnectedIntegrationsListPage } from '../Page';
 import Endpoint = Schemas.Endpoint;
 import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -48,7 +48,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <IntegrationsListPage />
+                <ConnectedIntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -94,7 +94,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <IntegrationsListPage />
+                <ConnectedIntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -140,7 +140,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <IntegrationsListPage />
+                <ConnectedIntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -189,7 +189,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <IntegrationsListPage />
+                <ConnectedIntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -237,7 +237,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <IntegrationsListPage />
+                <ConnectedIntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -301,7 +301,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <IntegrationsListPage />
+                <ConnectedIntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {

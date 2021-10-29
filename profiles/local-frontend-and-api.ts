@@ -4,7 +4,7 @@
 const goodGuyLib = require('good-guy-http');
 const SECTION = 'settings';
 const APP_MOUNTS = [ 'notifications', 'integrations' ];
-const FRONTEND_PORT = 8002;
+const FRONTEND_PORT = 8003;
 const API_PORT = 8085;
 const routes = {};
 

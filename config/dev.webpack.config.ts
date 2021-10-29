@@ -9,7 +9,8 @@ const { config: webpackConfig, plugins } = config({
     debug: true,
     https: true,
     useFileHash: false,
-    deployment: process.env.BETA ? 'beta/apps' : 'apps'
+    deployment: process.env.BETA ? 'beta/apps' : 'apps',
+    port: 8003
 });
 
 webpackConfig.devtool = 'eval-cheap-module-source-map';
