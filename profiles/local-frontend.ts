@@ -5,7 +5,7 @@ const goodGuyLib = require('good-guy-http');
 
 const SECTION = 'settings';
 const APP_MOUNTS = [ 'notifications', 'integrations' ];
-const FRONTEND_PORT = 8002;
+const FRONTEND_PORT = 8003;
 const routes = {};
 
 APP_MOUNTS.forEach(mount => {
@@ -14,6 +14,12 @@ APP_MOUNTS.forEach(mount => {
     routes[`/beta/apps/${mount}`]       = { host: `https://localhost:${FRONTEND_PORT}` };
     routes[`/apps/${mount}`]            = { host: `https://localhost:${FRONTEND_PORT}` };
 });
+
+// Running along with policies
+// routes['/beta/insights/policies'] = { host: `https://localhost:8002` };
+// routes['/insights/policies'] = { host: `https://localhost:8002` };
+// routes['/beta/apps/policies'] = { host: `https://localhost:8002` };
+// routes['/apps/policies'] = { host: `https://localhost:8002` };
 
 module.exports = {
     routes,

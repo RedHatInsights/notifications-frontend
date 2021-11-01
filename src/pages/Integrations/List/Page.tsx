@@ -10,6 +10,8 @@ import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
 import { useContext } from 'react';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
@@ -20,6 +22,8 @@ import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
+import { NotificationAppState } from '../../../store/types/NotificationAppState';
+import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
 import { IntegrationType, UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
@@ -43,7 +47,12 @@ const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
     name: `Copy of ${userIntegration.name}`
 });
 
-export const IntegrationsListPage: React.FunctionComponent = () => {
+interface IntegrationsListPageProps {
+    reduxDispatch: Dispatch;
+    savedNotificationScope: SavedNotificationScopeState;
+}
+
+export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageProps> = props => {
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();
@@ -63,7 +72,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         };
     }, [ integrationsQuery.payload ]);
 
-    const integrationRows = useIntegrationRows(integrations.data);
+    const integrationRows = useIntegrationRows(integrations.data, props.reduxDispatch, props.savedNotificationScope);
     const [ modalIsOpenState, modalIsOpenActions ] = useFormModalReducer<UserIntegration>(userIntegrationCopier);
     const [ deleteModalState, deleteModalActions ] = useDeleteModalReducer<UserIntegration>();
 
@@ -193,3 +202,14 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
         </>
     );
 };
+
+const notificationAppStateSelector = (state: NotificationAppState) => ({
+    savedNotificationScope: state.savedNotificationScope
+});
+
+export const ConnectedIntegrationsListPage = connect(
+    notificationAppStateSelector,
+    dispatch => ({
+        reduxDispatch: dispatch
+    })
+)(IntegrationsListPage);

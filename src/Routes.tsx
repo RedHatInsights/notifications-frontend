@@ -5,7 +5,7 @@ import { matchPath, Route, RouteProps, Switch, useHistory } from 'react-router';
 
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
-import { IntegrationsListPage } from './pages/Integrations/List/Page';
+import { ConnectedIntegrationsListPage } from './pages/Integrations/List/Page';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
 import { getBaseName } from './utils/Basename';
@@ -30,7 +30,7 @@ const pathRoutes: Path[] = [
     },
     {
         path: linkTo.integrations(),
-        component: IntegrationsListPage
+        component: ConnectedIntegrationsListPage
     },
     {
         path: linkTo.eventLog(),
