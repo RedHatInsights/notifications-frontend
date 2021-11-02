@@ -2,9 +2,9 @@ import { addDangerNotification } from '@redhat-cloud-services/insights-common-ty
 import pLimit from 'p-limit';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from 'react-fetching-library';
-import { useDispatch, useSelector } from 'react-redux';
 import { format } from 'react-string-format';
 import { usePrevious } from 'react-use';
+import { Dispatch } from 'redux';
 
 import { IntegrationRow } from '../../../components/Integrations/Table';
 import { Messages } from '../../../properties/Messages';
@@ -13,26 +13,17 @@ import {
     switchIntegrationEnabledStatusActionCreator
 } from '../../../services/useSwitchIntegrationEnabledStatus';
 import { SavedNotificationScopeActions } from '../../../store/actions/SavedNotificationScopeAction';
-import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState, Status } from '../../../store/types/SavedNotificationScopeTypes';
 import { UserIntegration } from '../../../types/Integration';
 
-const notificationAppStateSelector = (state: NotificationAppState): SavedNotificationScopeState => state.savedNotificationScope;
-
-const notificationAppStateEqualFn = (left: SavedNotificationScopeState, right: SavedNotificationScopeState): boolean => {
-    return left?.integration === right?.integration && left?.status === right?.status;
-};
-
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
-export const useIntegrationRows = (integrations: Array<UserIntegration>) => {
+export const useIntegrationRows = (
+    integrations: Array<UserIntegration>,
+    reduxDispatch: Dispatch,
+    savedNotificationScope: SavedNotificationScopeState) => {
     const [ integrationRows, setIntegrationRows ] = useState<Array<IntegrationRow>>([]);
     const prevIntegrationsInput = usePrevious(integrations);
-
-    const reduxDispatch = useDispatch();
-    const savedNotificationScope = useSelector<NotificationAppState, SavedNotificationScopeState>(
-        notificationAppStateSelector, notificationAppStateEqualFn
-    );
 
     const { query } = useContext(ClientContext);
     const [ limit ] = useState<pLimit.Limit>(() => pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS));

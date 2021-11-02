@@ -1,6 +1,7 @@
 import { ActionModalError, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 
 import { AddNotificationBody } from '../../../components/Integrations/AddNotificationBody';
 import { IntegrationSaveModal } from '../../../components/Integrations/SaveModal';
@@ -8,10 +9,10 @@ import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration
 import { useSwitchIntegrationEnabledStatus } from '../../../services/useSwitchIntegrationEnabledStatus';
 import { SavedNotificationScopeActions } from '../../../store/actions/SavedNotificationScopeAction';
 import {
-    savedNotificationScopeEqualFn,
     savedNotificationScopeSelector
 } from '../../../store/selectors/SavedNotificationScopeSelector';
-import { Status } from '../../../store/types/SavedNotificationScopeTypes';
+import { NotificationAppState } from '../../../store/types/NotificationAppState';
+import { SavedNotificationScopeState, Status } from '../../../store/types/SavedNotificationScopeTypes';
 import { Integration, NewUserIntegration, UserIntegration, UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 
@@ -23,46 +24,57 @@ interface CreatePageProps {
 
 interface AddNotificationBodyContainer {
     integration: IntegrationRef;
+    reduxDispatch: Dispatch;
+    savedNotificationScope: SavedNotificationScopeState;
 }
 
 const AddNotificationBodyContainer: React.FunctionComponent<AddNotificationBodyContainer> = (props) => {
-
-    const savedNotificationScope = useSelector(savedNotificationScopeSelector, savedNotificationScopeEqualFn);
-    const dispatch = useDispatch();
     const switchIntegrationEnabledStatus = useSwitchIntegrationEnabledStatus();
 
     const onClick = React.useCallback((): void => {
+        const reduxDispatch = props.reduxDispatch;
         const mutate = switchIntegrationEnabledStatus.mutate;
+        const savedNotificationScope = props.savedNotificationScope;
         if (savedNotificationScope) {
-            dispatch(SavedNotificationScopeActions.start());
+            reduxDispatch(SavedNotificationScopeActions.start());
             const integration = savedNotificationScope.integration;
             mutate(integration).then(response => {
                 if (!response.error) {
-                    dispatch(SavedNotificationScopeActions.finish(!integration.isEnabled));
+                    reduxDispatch(SavedNotificationScopeActions.finish(!integration.isEnabled));
                 } else {
-                    dispatch(SavedNotificationScopeActions.finish(integration.isEnabled));
+                    reduxDispatch(SavedNotificationScopeActions.finish(integration.isEnabled));
                 }
             });
         }
-    }, [ switchIntegrationEnabledStatus.mutate, dispatch, savedNotificationScope ]);
+    }, [ switchIntegrationEnabledStatus.mutate, props.reduxDispatch, props.savedNotificationScope ]);
 
     React.useEffect(() => {
-        dispatch(SavedNotificationScopeActions.setIntegration(props.integration));
+        const reduxDispatch = props.reduxDispatch;
+        reduxDispatch(SavedNotificationScopeActions.setIntegration(props.integration));
         return () => {
-            dispatch(SavedNotificationScopeActions.unset());
+            reduxDispatch(SavedNotificationScopeActions.unset());
         };
-    }, [ dispatch, props.integration ]);
+    }, [ props.reduxDispatch, props.integration ]);
 
-    if (!savedNotificationScope) {
+    if (!props.savedNotificationScope) {
         return <React.Fragment />;
     }
 
     return <AddNotificationBody
-        integration={ savedNotificationScope.integration }
-        isLoading={ savedNotificationScope.status === Status.LOADING }
+        integration={ props.savedNotificationScope.integration }
+        isLoading={ props.savedNotificationScope.status === Status.LOADING }
         switchEnabled={ onClick }
     />;
 };
+
+const ConnectedAddNotificationBodyContainer = connect(
+    (state: NotificationAppState) => ({
+        savedNotificationScope: savedNotificationScopeSelector(state)
+    }),
+    dispatch => ({
+        reduxDispatch: dispatch
+    })
+)(AddNotificationBodyContainer);
 
 export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
 
@@ -88,7 +100,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
 
                 addSuccessNotification(
                     title,
-                    <AddNotificationBodyContainer integration={ savedIntegration } />,
+                    <ConnectedAddNotificationBodyContainer integration={ savedIntegration } />,
                     true
                 );
 

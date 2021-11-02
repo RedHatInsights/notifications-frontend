@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { fn } from 'jest-mock';
@@ -244,7 +244,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         userEvent.click(screen.getByText(/save/i));
         await waitForAsyncEvents();
         expect(screen.getByText(/disable integration/i)).toBeTruthy();
-        userEvent.click(screen.getByText(/disable integration/i));
+        act(() => {
+            userEvent.click(screen.getByText(/disable integration/i));
+        });
         await waitForAsyncEvents();
         expect(fetchMock.called('/api/integrations/v1.0/endpoints/foobar/enable', {
             method: 'DELETE'
@@ -296,7 +298,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         userEvent.click(screen.getByText(/save/i));
         await waitForAsyncEvents();
         expect(screen.getByText(/enable integration/i)).toBeTruthy();
-        userEvent.click(screen.getByText(/enable integration/i));
+        act(() => {
+            userEvent.click(screen.getByText(/enable integration/i));
+        });
         await waitForAsyncEvents();
         expect(fetchMock.called('/api/integrations/v1.0/endpoints/foobar/enable', {
             method: 'PUT'
@@ -337,7 +341,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         userEvent.click(screen.getByText(/save/i));
         await waitForAsyncEvents();
         expect(screen.getByText(/disable integration/i)).toBeTruthy();
-        userEvent.click(screen.getByText(/disable integration/i));
+        act(() => {
+            userEvent.click(screen.getByText(/disable integration/i));
+        });
         await waitForAsyncEvents();
         expect(fetchMock.called('/api/integrations/v1.0/endpoints/foobar/enable', {
             method: 'DELETE'
@@ -378,7 +384,9 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
         userEvent.click(screen.getByText(/save/i));
         await waitForAsyncEvents();
         expect(screen.getByText(/enable integration/i)).toBeTruthy();
-        userEvent.click(screen.getByText(/enable integration/i));
+        act(() => {
+            userEvent.click(screen.getByText(/enable integration/i));
+        });
         await waitForAsyncEvents();
         expect(fetchMock.called('/api/integrations/v1.0/endpoints/foobar/enable', {
             method: 'PUT'

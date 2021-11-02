@@ -1,5 +1,7 @@
 import { DeepReadonly } from 'ts-essentials';
 
+import { IntegrationType } from '../types/Integration';
+
 const apiVersion = 'v1.0';
 const apiBaseUrl = `/api/notifications/${apiVersion}`;
 
@@ -14,6 +16,11 @@ const Config = {
         subAppId: 'notifications',
         title: 'Notifications | Settings'
     },
+    integrationNames: {
+        [IntegrationType.CAMEL]: 'Integration: Camel',
+        [IntegrationType.WEBHOOK]: 'Integration: Webhook',
+        [IntegrationType.EMAIL_SUBSCRIPTION]: 'Email'
+    } as Record<IntegrationType, string>,
     pages: {
     },
     paging: {
