@@ -137,6 +137,7 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 url: integrationCamel.url,
                 disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
                 secret_token: integrationCamel.secretToken,
+                sub_type: integrationCamel.subType,
                 basic_authentication: {
                     username: integrationCamel.basicAuth?.user,
                     password: integrationCamel.basicAuth?.pass

@@ -15,9 +15,8 @@ import { IntegrationType, NewUserIntegration } from '../../types/Integration';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 
-const options = [ IntegrationType.WEBHOOK ]
-.map(type => Messages.components.integrations.integrationType[type])
-.map(label => (<FormSelectOption key={ label } label={ label } />));
+const options = [ IntegrationType.WEBHOOK, IntegrationType.CAMEL ]
+.map(type => (<FormSelectOption key={ type } label={ Messages.components.integrations.integrationType[type] } value={ type } />));
 
 export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (props) => {
 

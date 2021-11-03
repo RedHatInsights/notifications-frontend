@@ -39,7 +39,7 @@ const integrationFilterBuilder = (filters?: IntegrationFilters) => {
         filter.and('active', Operator.EQUAL, isEnabled.toString());
     }
 
-    return filter.and('type', Operator.EQUAL, IntegrationType.WEBHOOK);
+    return filter.and('type', Operator.EQUAL, [ IntegrationType.WEBHOOK, IntegrationType.CAMEL ]);
 };
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
@@ -58,6 +58,7 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
     const integrationFilter = useIntegrationFilter();
     const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
+    console.log('results', integrationsQuery.payload?.value);
     const exportIntegrationsQuery = useListIntegrationPQuery();
 
     const integrations = React.useMemo(() => {

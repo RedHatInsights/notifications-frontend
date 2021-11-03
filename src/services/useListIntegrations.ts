@@ -13,7 +13,7 @@ export const listIntegrationsActionCreator = (pager?: Page) => {
     return Operations.EndpointServiceGetEndpoints.actionCreator({
         limit: +query.limit,
         offset: +query.offset,
-        type: query.filterType ? getEndpointType(query.filterType as IntegrationType) : undefined,
+        type: query.filterType ? (query.filterType as Array<IntegrationType>).map(t => getEndpointType(t)) : undefined,
         active: query.filterActive ? query.filterActive === 'true' : undefined
     });
 };
