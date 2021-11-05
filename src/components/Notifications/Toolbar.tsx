@@ -1,8 +1,8 @@
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
-    ColumnsMetada,
     ExporterType,
     getInsights,
+    OptionalColumnsMetada,
     OuiaComponentProps,
     useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
@@ -11,7 +11,7 @@ import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
-import { stagingAndProd } from '../../types/Environments';
+import { isStagingOrProd, stagingAndProd } from '../../types/Environments';
 import { Facet } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import {
@@ -38,7 +38,8 @@ interface NotificationsToolbarProps extends OuiaComponentProps {
 
 export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> = (props) => {
 
-    const filterMetadata = useMemo<ColumnsMetada<typeof NotificationFilterColumn>>(() => {
+    const insights = getInsights();
+    const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
 
         const appFilterItems = props.appFilterOptions.map(a => ({
             value: a.displayName,
@@ -46,7 +47,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         }));
 
         return {
-            [NotificationFilterColumn.NAME]: {
+            [NotificationFilterColumn.NAME]: isStagingOrProd(insights) ? undefined : {
                 label: 'Event type',
                 placeholder: 'Filter by event type'
             },
@@ -59,12 +60,12 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                     items: appFilterItems
                 }
             },
-            [NotificationFilterColumn.ACTION]: {
+            [NotificationFilterColumn.ACTION]: isStagingOrProd(insights) ? undefined : {
                 label: 'Action',
                 placeholder: 'Filter by action'
             }
         };
-    }, [ props.appFilterOptions ]);
+    }, [ props.appFilterOptions, insights ]);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
         NotificationFilterColumn,
@@ -76,19 +77,8 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
 
     const exportConfigInternal = useTableExportConfig(props.onExport);
 
-    const filterConfig = useInsightsEnvironmentFlag(
-        getInsights(),
-        stagingAndProd,
-        undefined,
-        useCallback(() => primaryToolbarFilterConfig.filterConfig, [ primaryToolbarFilterConfig ])
-    );
-
-    const activeFiltersConfig = useInsightsEnvironmentFlag(
-        getInsights(),
-        stagingAndProd,
-        undefined,
-        useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
-    );
+    const filterConfig = primaryToolbarFilterConfig.filterConfig;
+    const activeFiltersConfig = primaryToolbarFilterConfig.activeFiltersConfig;
 
     const exportConfig = useInsightsEnvironmentFlag(
         getInsights(),
