@@ -58,7 +58,6 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
     const integrationFilter = useIntegrationFilter();
     const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
-    console.log('results', integrationsQuery.payload?.value);
     const exportIntegrationsQuery = useListIntegrationPQuery();
 
     const integrations = React.useMemo(() => {
