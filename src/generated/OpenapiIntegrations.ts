@@ -146,6 +146,7 @@ export namespace Schemas {
         }
       | undefined
       | null;
+    endpoint_id: UUID;
     endpoint_type: EndpointType;
     id: UUID;
     invocation_result: boolean;
@@ -395,6 +396,7 @@ export namespace Schemas {
       return z
       .object({
           details: z.record(z.unknown()).optional().nullable(),
+          endpoint_id: zodSchemaUUID(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
           invocation_result: z.boolean()
@@ -933,23 +935,11 @@ export namespace Operations {
   }
   // GET /endpoints/{id}/history/{history_id}/details
   export namespace EndpointServiceGetDetailedEndpointHistory {
-    const Limit = z.number().int();
-    type Limit = number;
-    const Offset = z.number().int();
-    type Offset = number;
-    const PageNumber = z.number().int();
-    type PageNumber = number;
-    const SortBy = z.string();
-    type SortBy = string;
     const Response200 = z.string();
     type Response200 = string;
     export interface Params {
       historyId: Schemas.UUID;
       id: Schemas.UUID;
-      limit?: Limit;
-      offset?: Offset;
-      pageNumber?: PageNumber;
-      sortBy?: SortBy;
     }
 
     export type Payload =
@@ -964,22 +954,6 @@ export namespace Operations {
         .replace('{history_id}', params.historyId.toString())
         .replace('{id}', params.id.toString());
         const query = {} as Record<string, any>;
-        if (params.limit !== undefined) {
-            query.limit = params.limit;
-        }
-
-        if (params.offset !== undefined) {
-            query.offset = params.offset;
-        }
-
-        if (params.pageNumber !== undefined) {
-            query.pageNumber = params.pageNumber;
-        }
-
-        if (params.sortBy !== undefined) {
-            query.sort_by = params.sortBy;
-        }
-
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
