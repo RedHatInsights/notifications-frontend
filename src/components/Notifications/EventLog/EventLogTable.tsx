@@ -6,7 +6,7 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { NotificationEvent } from '../../../types/Event';
-import { IntegrationType } from '../../../types/Integration';
+import { GetIntegrationRecipient, IntegrationType } from '../../../types/Integration';
 import { UtcDate } from '../../UtcDate';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
 
@@ -18,6 +18,7 @@ export interface EventLogTableProps {
     onSort: (column: EventLogTableColumns, direction: SortDirection) => void;
     sortColumn: EventLogTableColumns;
     sortDirection: SortDirection;
+    getIntegrationRecipient: GetIntegrationRecipient;
 }
 
 export enum EventLogTableColumns {
@@ -78,9 +79,13 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                             <LabelGroup>
                                 { e.actions.map(a => (<Popover
                                     key={ a.id }
-                                    isVisible={ false /* Remove this to allow to show/hide the popover */ }
                                     hasAutoWidth
-                                    bodyContent={ <EventLogActionPopoverContent id={ a.id } type={ a.endpointType } success={ a.success } /> }
+                                    bodyContent={ <EventLogActionPopoverContent
+                                        id={ a.id }
+                                        type={ a.endpointType }
+                                        success={ a.success }
+                                        getIntegrationRecipient={ props.getIntegrationRecipient }
+                                    /> }
                                 >
                                     <Label
                                         className={ labelClassName }
@@ -98,7 +103,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                 </Tr>
             ));
         }
-    }, [ props.loading, props.events ]);
+    }, [ props.loading, props.events, props.getIntegrationRecipient ]);
 
     return (
         <TableComposable>

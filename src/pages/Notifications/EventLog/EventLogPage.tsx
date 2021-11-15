@@ -2,7 +2,9 @@ import { Split, SplitItem, Text, TextContent } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
+import assertNever from 'assert-never';
 import * as React from 'react';
+import { useParameterizedQuery } from 'react-fetching-library';
 import { Link } from 'react-router-dom';
 import { style } from 'typestyle';
 
@@ -16,13 +18,16 @@ import {
 } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
 import Config from '../../../config/Config';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
+import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
 import { useGetApplications } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { EventPeriod } from '../../../types/Event';
+import { UUID } from '../../../types/Notification';
 import { useEventLogFilter } from './useEventLogFilter';
 import { useFilterBuilder } from './useFilterBuilder';
 
@@ -33,7 +38,7 @@ const subtitleClassName = style({
 });
 
 export const EventLogPage: React.FunctionComponent = () => {
-
+    const getEndpoint = useParameterizedQuery(getEndpointAction);
     const getBundles = useGetBundles();
     const bundles = React.useMemo(() => {
         const payload = getBundles.payload;
@@ -109,6 +114,32 @@ export const EventLogPage: React.FunctionComponent = () => {
         return linkTo.notifications('');
     }, [ eventLogFilters.filters ]);
 
+    const getIntegrationRecipient = React.useCallback(async (id: UUID) => {
+        const query = getEndpoint.query;
+        const endpoint = await query(id);
+        if (endpoint.payload?.type === 'Endpoint') {
+            const type = endpoint.payload.value.type;
+            switch (type) {
+                case 'camel':
+                case 'webhook':
+                    return endpoint.payload.value.name;
+                case 'email_subscription':
+                    const properties = endpoint.payload.value.properties as Schemas.EmailSubscriptionProperties;
+                    if (properties.only_admins) {
+                        return 'Users: Admin';
+                    }
+
+                    return 'Users: All';
+                case 'default':
+                    throw new Error('Invalid integration type');
+                default:
+                    assertNever(type);
+            }
+        }
+
+        return 'Error while loading';
+    }, [ getEndpoint.query ]);
+
     return (
         <>
             <PageHeader>
@@ -149,6 +180,7 @@ export const EventLogPage: React.FunctionComponent = () => {
                         onSort={ onSort }
                         sortColumn={ sortColumn }
                         sortDirection={ sortDirection }
+                        getIntegrationRecipient={ getIntegrationRecipient }
                     />
                 </EventLogToolbar>
             </Main>
