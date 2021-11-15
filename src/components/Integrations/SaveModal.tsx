@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Messages } from '../../properties/Messages';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
-import { NewUserIntegration, UserIntegration } from '../../types/Integration';
+import { IntegrationType, NewUserIntegration, UserIntegration } from '../../types/Integration';
 import { IntegrationsForm } from './Form';
 
 type PartialIntegration = Partial<UserIntegration>;
@@ -50,12 +50,20 @@ const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationS
 export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalProps> = (props) => {
 
     const [ initialIntegration ] = React.useState<PartialIntegration>(() => {
-        return {
+        const initial = {
             // The call is twice, because we use lazy evaluation for the integration base type.
             // To ensure we get the defaults on the second level (webhook, slack, etc) we need to call it again
             ...IntegrationSchema.cast(IntegrationSchema.cast({})),
             ...props.initialIntegration
         } as PartialIntegration;
+
+        // patch extras to be a string for CAMEL
+        if (initial.type === IntegrationType.CAMEL && typeof initial.extras === 'object') {
+            // We are casting as any, because `extras` is an object, but we need it to be a string for the form
+            initial.extras = JSON.stringify(initial.extras, undefined, 2) as any;
+        }
+
+        return initial;
     });
 
     const onSubmit = React.useCallback(async (integration: PartialIntegration) => {

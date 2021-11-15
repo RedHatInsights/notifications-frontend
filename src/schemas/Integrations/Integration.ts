@@ -28,15 +28,34 @@ export const IntegrationHttpSchema: Yup.SchemaOf<NewIntegrationTemplate<Integrat
 
 export const IntegrationCamelSchema: Yup.SchemaOf<NewIntegrationTemplate<IntegrationCamel>> = IntegrationSchemaBase.concat(Yup.object().shape({
     type: Yup.mixed<IntegrationType.CAMEL>().oneOf([ IntegrationType.CAMEL ]).required(),
-    url: Yup.string().required('Provide a url/host for this Integration.'),
+    url: Yup.string().url().required('Provide a url/host for this Integration.'),
     sslVerificationEnabled: Yup.boolean().default(true),
     secretToken: Yup.string().notRequired(),
-    subType: Yup.string().notRequired(),
+    subType: Yup.string().required('Provide a camel sub-type'),
     basicAuth: Yup.object().shape({
-        user: Yup.string().required('Provide a user.'),
-        pass: Yup.string().required('Provide a password.')
-    }).optional(),
+        user: Yup.string().when('pass',
+            {
+                is: pass => pass && pass.length > 0,
+                then: Yup.string().required('Provide an user')
+            }
+        ),
+        pass: Yup.string().when('user',
+            {
+                is: user => user && user.length > 0,
+                then: Yup.string().required('Provide a password.')
+            }
+        )
+    }, [ [ 'user', 'pass' ] ]).optional(),
     extras: Yup.mixed()
+    .default({})
+    .transform(s => {
+        try {
+            return JSON.parse(s);
+        } catch (e) {
+            return null;
+        }
+    })
+    .test('valid-json-object', 'Provide a valid json object', extras => extras && typeof extras === 'object')
 }));
 
 export const IntegrationSchema: Lazy<Yup.SchemaOf<NewIntegration | NewIntegrationBase | NewIntegrationBase>> = Yup.lazy(value => {
