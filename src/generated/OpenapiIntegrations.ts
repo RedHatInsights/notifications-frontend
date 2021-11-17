@@ -128,12 +128,6 @@ export namespace Schemas {
     | 'default'
     | 'camel';
 
-  export const EntityTag = zodSchemaEntityTag();
-  export type EntityTag = {
-    value?: string | undefined | null;
-    weak?: boolean | undefined | null;
-  };
-
   export const EventLogEntry = zodSchemaEventLogEntry();
   export type EventLogEntry = {
     actions: Array<EventLogEntryAction>;
@@ -146,6 +140,13 @@ export namespace Schemas {
 
   export const EventLogEntryAction = zodSchemaEventLogEntryAction();
   export type EventLogEntryAction = {
+    details?:
+      | {
+          [x: string]: unknown;
+        }
+      | undefined
+      | null;
+    endpoint_id: UUID;
     endpoint_type: EndpointType;
     id: UUID;
     invocation_result: boolean;
@@ -168,95 +169,12 @@ export namespace Schemas {
     name: string;
   };
 
-  export const Family = zodSchemaFamily();
-  export type Family =
-    | 'CLIENT_ERROR'
-    | 'INFORMATIONAL'
-    | 'OTHER'
-    | 'REDIRECTION'
-    | 'SERVER_ERROR'
-    | 'SUCCESSFUL';
-
   export const HttpType = zodSchemaHttpType();
   export type HttpType = 'GET' | 'POST' | 'PUT';
-
-  export const Link = zodSchemaLink();
-  export type Link = {
-    params?:
-      | {
-          [x: string]: string;
-        }
-      | undefined
-      | null;
-    rel?: string | undefined | null;
-    rels?: Array<string> | undefined | null;
-    title?: string | undefined | null;
-    type?: string | undefined | null;
-    uri?: string | undefined | null;
-    uriBuilder?: UriBuilder | undefined | null;
-  };
-
-  export const Locale = zodSchemaLocale();
-  export type Locale = {
-    country?: string | undefined | null;
-    displayCountry?: string | undefined | null;
-    displayLanguage?: string | undefined | null;
-    displayName?: string | undefined | null;
-    displayScript?: string | undefined | null;
-    displayVariant?: string | undefined | null;
-    extensionKeys?: Array<string> | undefined | null;
-    iSO3Country?: string | undefined | null;
-    iSO3Language?: string | undefined | null;
-    language?: string | undefined | null;
-    script?: string | undefined | null;
-    unicodeLocaleAttributes?: Array<string> | undefined | null;
-    unicodeLocaleKeys?: Array<string> | undefined | null;
-    variant?: string | undefined | null;
-  };
-
-  export const MediaType = zodSchemaMediaType();
-  export type MediaType = {
-    parameters?:
-      | {
-          [x: string]: string;
-        }
-      | undefined
-      | null;
-    subtype?: string | undefined | null;
-    type?: string | undefined | null;
-    wildcardSubtype?: boolean | undefined | null;
-    wildcardType?: boolean | undefined | null;
-  };
 
   export const Meta = zodSchemaMeta();
   export type Meta = {
     count: number;
-  };
-
-  export const MultivaluedMapStringObject =
-    zodSchemaMultivaluedMapStringObject();
-  export type MultivaluedMapStringObject = {
-    [x: string]: Array<unknown>;
-  };
-
-  export const MultivaluedMapStringString =
-    zodSchemaMultivaluedMapStringString();
-  export type MultivaluedMapStringString = {
-    [x: string]: Array<string>;
-  };
-
-  export const NewCookie = zodSchemaNewCookie();
-  export type NewCookie = {
-    comment?: string | undefined | null;
-    domain?: string | undefined | null;
-    expiry?: string | undefined | null;
-    httpOnly?: boolean | undefined | null;
-    maxAge?: number | undefined | null;
-    name?: string | undefined | null;
-    path?: string | undefined | null;
-    secure?: boolean | undefined | null;
-    value?: string | undefined | null;
-    version?: number | undefined | null;
   };
 
   export const NotificationHistory = zodSchemaNotificationHistory();
@@ -283,71 +201,6 @@ export namespace Schemas {
     meta: Meta;
   };
 
-  export const PageRbacGroup = zodSchemaPageRbacGroup();
-  export type PageRbacGroup = {
-    data: Array<RbacGroup>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
-  };
-
-  export const PageRbacUser = zodSchemaPageRbacUser();
-  export type PageRbacUser = {
-    data: Array<RbacUser>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
-  };
-
-  export const RbacGroup = zodSchemaRbacGroup();
-  export type RbacGroup = {
-    created?: string | undefined | null;
-    description?: string | undefined | null;
-    modified?: string | undefined | null;
-    name?: string | undefined | null;
-    platform_default?: boolean | undefined | null;
-    principalCount?: number | undefined | null;
-    roleCount?: number | undefined | null;
-    system?: boolean | undefined | null;
-    uuid?: UUID | undefined | null;
-  };
-
-  export const RbacRaw = zodSchemaRbacRaw();
-  export type RbacRaw = {
-    data?:
-      | Array<{
-          [x: string]: unknown;
-        }>
-      | undefined
-      | null;
-    links?:
-      | {
-          [x: string]: string;
-        }
-      | undefined
-      | null;
-    meta?:
-      | {
-          [x: string]: number;
-        }
-      | undefined
-      | null;
-  };
-
-  export const RbacUser = zodSchemaRbacUser();
-  export type RbacUser = {
-    active?: boolean | undefined | null;
-    email?: string | undefined | null;
-    firstName?: string | undefined | null;
-    isActive?: boolean | undefined | null;
-    isOrgAdmin?: boolean | undefined | null;
-    lastName?: string | undefined | null;
-    orgAdmin?: boolean | undefined | null;
-    username?: string | undefined | null;
-  };
-
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
@@ -362,46 +215,11 @@ export namespace Schemas {
     only_admins: boolean;
   };
 
-  export const Response = zodSchemaResponse();
-  export type Response = {
-    allowedMethods?: Array<string> | undefined | null;
-    cookies?:
-      | {
-          [x: string]: NewCookie;
-        }
-      | undefined
-      | null;
-    date?: string | undefined | null;
-    entity?: unknown | undefined | null;
-    entityTag?: EntityTag | undefined | null;
-    headers?: MultivaluedMapStringObject | undefined | null;
-    language?: Locale | undefined | null;
-    lastModified?: string | undefined | null;
-    length?: number | undefined | null;
-    links?: Array<Link> | undefined | null;
-    location?: string | undefined | null;
-    mediaType?: MediaType | undefined | null;
-    metadata?: MultivaluedMapStringObject | undefined | null;
-    status?: number | undefined | null;
-    statusInfo?: StatusType | undefined | null;
-    stringHeaders?: MultivaluedMapStringString | undefined | null;
-  };
-
   export const Status = zodSchemaStatus();
   export type Status = 'MAINTENANCE' | 'UP';
 
-  export const StatusType = zodSchemaStatusType();
-  export type StatusType = {
-    family?: Family | undefined | null;
-    reasonPhrase?: string | undefined | null;
-    statusCode?: number | undefined | null;
-  };
-
   export const UUID = zodSchemaUUID();
   export type UUID = string;
-
-  export const UriBuilder = zodSchemaUriBuilder();
-  export type UriBuilder = unknown;
 
   export const WebhookProperties = zodSchemaWebhookProperties();
   export type WebhookProperties = {
@@ -561,15 +379,6 @@ export namespace Schemas {
       return z.enum([ 'webhook', 'email_subscription', 'default', 'camel' ]);
   }
 
-  function zodSchemaEntityTag() {
-      return z
-      .object({
-          value: z.string().optional().nullable(),
-          weak: z.boolean().optional().nullable()
-      })
-      .nonstrict();
-  }
-
   function zodSchemaEventLogEntry() {
       return z
       .object({
@@ -586,6 +395,8 @@ export namespace Schemas {
   function zodSchemaEventLogEntryAction() {
       return z
       .object({
+          details: z.record(z.unknown()).optional().nullable(),
+          endpoint_id: zodSchemaUUID(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
           invocation_result: z.boolean()
@@ -616,97 +427,14 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaFamily() {
-      return z.enum([
-          'CLIENT_ERROR',
-          'INFORMATIONAL',
-          'OTHER',
-          'REDIRECTION',
-          'SERVER_ERROR',
-          'SUCCESSFUL'
-      ]);
-  }
-
   function zodSchemaHttpType() {
       return z.enum([ 'GET', 'POST', 'PUT' ]);
-  }
-
-  function zodSchemaLink() {
-      return z
-      .object({
-          params: z.record(z.string()).optional().nullable(),
-          rel: z.string().optional().nullable(),
-          rels: z.array(z.string()).optional().nullable(),
-          title: z.string().optional().nullable(),
-          type: z.string().optional().nullable(),
-          uri: z.string().optional().nullable(),
-          uriBuilder: zodSchemaUriBuilder().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaLocale() {
-      return z
-      .object({
-          country: z.string().optional().nullable(),
-          displayCountry: z.string().optional().nullable(),
-          displayLanguage: z.string().optional().nullable(),
-          displayName: z.string().optional().nullable(),
-          displayScript: z.string().optional().nullable(),
-          displayVariant: z.string().optional().nullable(),
-          extensionKeys: z.array(z.string()).optional().nullable(),
-          iSO3Country: z.string().optional().nullable(),
-          iSO3Language: z.string().optional().nullable(),
-          language: z.string().optional().nullable(),
-          script: z.string().optional().nullable(),
-          unicodeLocaleAttributes: z.array(z.string()).optional().nullable(),
-          unicodeLocaleKeys: z.array(z.string()).optional().nullable(),
-          variant: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaMediaType() {
-      return z
-      .object({
-          parameters: z.record(z.string()).optional().nullable(),
-          subtype: z.string().optional().nullable(),
-          type: z.string().optional().nullable(),
-          wildcardSubtype: z.boolean().optional().nullable(),
-          wildcardType: z.boolean().optional().nullable()
-      })
-      .nonstrict();
   }
 
   function zodSchemaMeta() {
       return z
       .object({
           count: z.number().int()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaMultivaluedMapStringObject() {
-      return z.record(z.array(z.unknown()));
-  }
-
-  function zodSchemaMultivaluedMapStringString() {
-      return z.record(z.array(z.string()));
-  }
-
-  function zodSchemaNewCookie() {
-      return z
-      .object({
-          comment: z.string().optional().nullable(),
-          domain: z.string().optional().nullable(),
-          expiry: z.string().optional().nullable(),
-          httpOnly: z.boolean().optional().nullable(),
-          maxAge: z.number().int().optional().nullable(),
-          name: z.string().optional().nullable(),
-          path: z.string().optional().nullable(),
-          secure: z.boolean().optional().nullable(),
-          value: z.string().optional().nullable(),
-          version: z.number().int().optional().nullable()
       })
       .nonstrict();
   }
@@ -734,67 +462,6 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaPageRbacGroup() {
-      return z
-      .object({
-          data: z.array(zodSchemaRbacGroup()),
-          links: z.record(z.string()),
-          meta: zodSchemaMeta()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaPageRbacUser() {
-      return z
-      .object({
-          data: z.array(zodSchemaRbacUser()),
-          links: z.record(z.string()),
-          meta: zodSchemaMeta()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRbacGroup() {
-      return z
-      .object({
-          created: z.string().optional().nullable(),
-          description: z.string().optional().nullable(),
-          modified: z.string().optional().nullable(),
-          name: z.string().optional().nullable(),
-          platform_default: z.boolean().optional().nullable(),
-          principalCount: z.number().int().optional().nullable(),
-          roleCount: z.number().int().optional().nullable(),
-          system: z.boolean().optional().nullable(),
-          uuid: zodSchemaUUID().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRbacRaw() {
-      return z
-      .object({
-          data: z.array(z.record(z.unknown())).optional().nullable(),
-          links: z.record(z.string()).optional().nullable(),
-          meta: z.record(z.number().int()).optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRbacUser() {
-      return z
-      .object({
-          active: z.boolean().optional().nullable(),
-          email: z.string().optional().nullable(),
-          firstName: z.string().optional().nullable(),
-          isActive: z.boolean().optional().nullable(),
-          isOrgAdmin: z.boolean().optional().nullable(),
-          lastName: z.string().optional().nullable(),
-          orgAdmin: z.boolean().optional().nullable(),
-          username: z.string().optional().nullable()
-      })
-      .nonstrict();
-  }
-
   function zodSchemaRenderEmailTemplateRequest() {
       return z
       .object({
@@ -813,51 +480,12 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaResponse() {
-      return z
-      .object({
-          allowedMethods: z.array(z.string()).optional().nullable(),
-          cookies: z.record(zodSchemaNewCookie()).optional().nullable(),
-          date: z.string().optional().nullable(),
-          entity: z.unknown().optional().nullable(),
-          entityTag: zodSchemaEntityTag().optional().nullable(),
-          headers: zodSchemaMultivaluedMapStringObject().optional().nullable(),
-          language: zodSchemaLocale().optional().nullable(),
-          lastModified: z.string().optional().nullable(),
-          length: z.number().int().optional().nullable(),
-          links: z.array(zodSchemaLink()).optional().nullable(),
-          location: z.string().optional().nullable(),
-          mediaType: zodSchemaMediaType().optional().nullable(),
-          metadata: zodSchemaMultivaluedMapStringObject().optional().nullable(),
-          status: z.number().int().optional().nullable(),
-          statusInfo: zodSchemaStatusType().optional().nullable(),
-          stringHeaders: zodSchemaMultivaluedMapStringString()
-          .optional()
-          .nullable()
-      })
-      .nonstrict();
-  }
-
   function zodSchemaStatus() {
       return z.enum([ 'MAINTENANCE', 'UP' ]);
   }
 
-  function zodSchemaStatusType() {
-      return z
-      .object({
-          family: zodSchemaFamily().optional().nullable(),
-          reasonPhrase: z.string().optional().nullable(),
-          statusCode: z.number().int().optional().nullable()
-      })
-      .nonstrict();
-  }
-
   function zodSchemaUUID() {
       return z.string();
-  }
-
-  function zodSchemaUriBuilder() {
-      return z.unknown();
   }
 
   function zodSchemaWebhookProperties() {
@@ -892,8 +520,8 @@ export namespace Operations {
     type PageNumber = number;
     const SortBy = z.string();
     type SortBy = string;
-    const Type = z.string();
-    type Type = string;
+    const Type = z.array(z.string());
+    type Type = Array<string>;
     export interface Params {
       active?: Active;
       limit?: Limit;
@@ -905,6 +533,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'EndpointPage', 200, Schemas.EndpointPage>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -937,7 +567,11 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Schemas.EndpointPage, 'EndpointPage', 200) ]
+            rules: [
+                new ValidateRule(Schemas.EndpointPage, 'EndpointPage', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -950,6 +584,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -959,7 +595,11 @@ export namespace Operations {
         .queryParams(query)
         .data(params.body)
         .config({
-            rules: [ new ValidateRule(Schemas.Endpoint, 'Endpoint', 200) ]
+            rules: [
+                new ValidateRule(Schemas.Endpoint, 'Endpoint', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -980,6 +620,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -992,7 +634,11 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [
+                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1013,6 +659,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1025,7 +673,11 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [
+                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1038,6 +690,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1047,7 +701,11 @@ export namespace Operations {
         .queryParams(query)
         .data(params.body)
         .config({
-            rules: [ new ValidateRule(Schemas.Endpoint, 'Endpoint', 200) ]
+            rules: [
+                new ValidateRule(Schemas.Endpoint, 'Endpoint', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1060,6 +718,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1071,7 +731,11 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Schemas.Endpoint, 'Endpoint', 200) ]
+            rules: [
+                new ValidateRule(Schemas.Endpoint, 'Endpoint', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1087,6 +751,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1099,7 +765,11 @@ export namespace Operations {
         .queryParams(query)
         .data(params.body)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [
+                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1112,6 +782,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1123,7 +795,11 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 204) ]
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 204),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1138,6 +814,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1149,7 +827,11 @@ export namespace Operations {
         return actionBuilder('PUT', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [
+                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1162,6 +844,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1173,7 +857,11 @@ export namespace Operations {
         return actionBuilder('DELETE', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 204) ]
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 204),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
@@ -1203,6 +891,8 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1234,34 +924,28 @@ export namespace Operations {
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [
+                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };
   }
   // GET /endpoints/{id}/history/{history_id}/details
   export namespace EndpointServiceGetDetailedEndpointHistory {
-    const Limit = z.number().int();
-    type Limit = number;
-    const Offset = z.number().int();
-    type Offset = number;
-    const PageNumber = z.number().int();
-    type PageNumber = number;
-    const SortBy = z.string();
-    type SortBy = string;
     const Response200 = z.string();
     type Response200 = string;
     export interface Params {
       historyId: Schemas.UUID;
       id: Schemas.UUID;
-      limit?: Limit;
-      offset?: Offset;
-      pageNumber?: PageNumber;
-      sortBy?: SortBy;
     }
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1270,26 +954,14 @@ export namespace Operations {
         .replace('{history_id}', params.historyId.toString())
         .replace('{id}', params.id.toString());
         const query = {} as Record<string, any>;
-        if (params.limit !== undefined) {
-            query.limit = params.limit;
-        }
-
-        if (params.offset !== undefined) {
-            query.offset = params.offset;
-        }
-
-        if (params.pageNumber !== undefined) {
-            query.pageNumber = params.pageNumber;
-        }
-
-        if (params.sortBy !== undefined) {
-            query.sort_by = params.sortBy;
-        }
-
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-            rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+            rules: [
+                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };

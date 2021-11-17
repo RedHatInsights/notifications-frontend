@@ -74,3 +74,5 @@ export interface IntegrationConnectionAttempt {
     date: Date;
     isSuccess: boolean;
 }
+
+export type GetIntegrationRecipient = (integrationId: UUID) => Promise<string> | string;

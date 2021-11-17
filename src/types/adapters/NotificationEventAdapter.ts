@@ -13,7 +13,7 @@ export const toNotificationEvent = (serverEvent: ServerEvent): NotificationEvent
     event: serverEvent.event_type,
     date: fromUtc(new Date(serverEvent.created)),
     actions: serverEvent.actions.map(a => ({
-        id: a.id,
+        id: a.endpoint_id,
         endpointType: toNotificationEventAction(a.endpoint_type),
         success: a.invocation_result
     }))

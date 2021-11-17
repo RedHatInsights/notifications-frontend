@@ -39,7 +39,7 @@ const integrationFilterBuilder = (filters?: IntegrationFilters) => {
         filter.and('active', Operator.EQUAL, isEnabled.toString());
     }
 
-    return filter.and('type', Operator.EQUAL, IntegrationType.WEBHOOK);
+    return filter.and('type', Operator.EQUAL, [ IntegrationType.WEBHOOK, IntegrationType.CAMEL ]);
 };
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({

@@ -17,7 +17,7 @@ export const useGetIntegrations = (): GetIntegrations => {
                 1,
                 20,
                 new Filter()
-                .and('type', Operator.EQUAL, type)
+                .and('type', Operator.EQUAL, [ type ])
             )
         )).then(response => {
             let integrations: ReadonlyArray<IntegrationRef> = [];

@@ -1,4 +1,5 @@
-import { Checkbox, FormTextInput, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
+import { FormSection } from '@patternfly/react-core';
+import { Checkbox, FormTextArea, FormTextInput, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -10,11 +11,11 @@ export const IntegrationTypeCamelForm: React.FunctionComponent<IntegrationTypeFo
         <div className="pf-c-form" { ...getOuiaProps('Integrations/HttpForm', props) } >
             <FormTextInput
                 isRequired={ true }
-                label="Type"
+                label="Sub type"
                 type="text"
-                name="sub_type"
+                name="subType"
                 id="integration-type-camel-type"
-                ouiaId={ ouiaIdConcat(props.ouiaId, 'endpoint-type') }
+                ouiaId={ ouiaIdConcat(props.ouiaId, 'camel-type') }
             />
             <FormTextInput
                 isRequired={ true }
@@ -37,10 +38,21 @@ export const IntegrationTypeCamelForm: React.FunctionComponent<IntegrationTypeFo
                 name="secretToken"
                 ouiaId={ ouiaIdConcat(props.ouiaId, 'secret-token') }
             />
-            { /*
-            TODO add BasicAuthentication here
-            TODO add extras here
-            */ }
+            <FormSection title="Basic auth">
+                <FormTextInput
+                    id="basic-auth-user"
+                    name="basicAuth.user"
+                    label="User"
+                    ouiaId={ ouiaIdConcat(props.ouiaId, 'basic-auth-user') }
+                />
+                <FormTextInput
+                    id="basic-auth-pass"
+                    name="basicAuth.pass"
+                    label="Password"
+                    ouiaId={ ouiaIdConcat(props.ouiaId, 'basic-auth-pass') }
+                />
+            </FormSection>
+            <FormTextArea id="form-extras" name="extras" label="Extras" ouiaId={ ouiaIdConcat(props.ouiaId, 'extras') } />
         </div>
     );
 };
