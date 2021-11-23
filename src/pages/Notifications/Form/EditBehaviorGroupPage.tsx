@@ -49,6 +49,7 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
         const updateBehaviorGroupActions = updateBehaviorGroupActionsMutation.mutate;
         const saveBehaviorGroup = saveBehaviorGroupMutation.mutate;
 
+        // Determine if we need to save the behavior group before updating the actions
         return (needsSaving(props.behaviorGroup, data) ?
             saveBehaviorGroup(data).then(value => {
                 if (value.payload?.type === 'BehaviorGroup') {
@@ -84,14 +85,30 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
                 .then(result => result.payload?.type === 'Endpoint' ? result.payload.value.id : undefined)
                 )
             ).then(newIds => {
-                const endpointsToAdd = [
-                    // fetched
-                    ...newIds as UUID[],
-                    // integrations
-                    ...data.actions.filter(isActionIntegration).map(action => action.integration.id),
-                    // Existing actions with id
-                    ...data.actions.filter(isActionNotify).map(a => a.recipient).flat().map(r => r.integrationId).filter(r => r) as UUID[]
-                ];
+                // We want to preserve the order
+                const remainingIds = [ ... newIds ] as UUID[];
+                const endpointsToAdd = data.actions.reduce(
+                    (toAdd, action) => {
+                        if (isActionNotify(action)) {
+                            action.recipient.forEach(recipient => {
+                                if (recipient.integrationId) {
+                                    toAdd.push(recipient.integrationId);
+                                } else if (remainingIds.length > 0) {
+                                    toAdd.push(remainingIds.shift() as UUID);
+                                } else {
+                                    throw new Error(`No more ids remaining to assign: actions ${data.actions} newIds: ${newIds}`);
+                                }
+                            });
+                        } else if (isActionIntegration(action)) {
+                            toAdd.push(action.integration.id);
+                        } else {
+                            throw new Error(`Unknown action type: ${action}`);
+                        }
+
+                        return toAdd;
+                    },
+                    [] as Array<UUID>
+                );
 
                 return updateBehaviorGroupActions({
                     behaviorGroupId: behaviorGroupId as UUID,
