@@ -48,29 +48,33 @@ type NotNullType = {
 
 const notNull: NotNullType = <T>(value: T | undefined | null, defaultValue?: T): T | undefined => value === null ? defaultValue : value;
 
-const toIntegrationWebhook = (integrationBase: IntegrationBase<IntegrationType.WEBHOOK>, properties: Schemas.WebhookProperties): IntegrationHttp => ({
+const toIntegrationWebhook = (
+    integrationBase: IntegrationBase<IntegrationType.WEBHOOK>,
+    properties?: Schemas.WebhookProperties): IntegrationHttp => ({
     ...integrationBase,
-    url: properties.url || '',
-    sslVerificationEnabled: !properties.disable_ssl_verification,
-    secretToken: notNull(properties.secret_token),
-    method: properties.method ?? Schemas.HttpType.Enum.GET
+    url: properties?.url ?? '',
+    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
+    secretToken: notNull(properties?.secret_token),
+    method: properties?.method ?? Schemas.HttpType.Enum.GET
 });
 
-const toIntegrationCamel = (integrationBase: IntegrationBase<IntegrationType.CAMEL>, properties: Schemas.CamelProperties): IntegrationCamel => ({
+const toIntegrationCamel = (
+    integrationBase: IntegrationBase<IntegrationType.CAMEL>,
+    properties?: Schemas.CamelProperties): IntegrationCamel => ({
     ...integrationBase,
-    url: properties.url || '',
-    sslVerificationEnabled: !properties.disable_ssl_verification,
-    secretToken: notNull(properties.secret_token),
+    url: properties?.url ?? '',
+    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
+    secretToken: notNull(properties?.secret_token),
 
-    subType: notNull(properties.sub_type),
-    basicAuth: properties.basic_authentication === null ?
+    subType: notNull(properties?.sub_type),
+    basicAuth: properties?.basic_authentication === null ?
         undefined
         :
         {
-            user: notNull(properties.basic_authentication?.username, ''),
-            pass: notNull(properties.basic_authentication?.password, '')
+            user: notNull(properties?.basic_authentication?.username, ''),
+            pass: notNull(properties?.basic_authentication?.password, '')
         },
-    extras: notNull(properties.extras)
+    extras: notNull(properties?.extras)
 });
 
 const toIntegrationEmail = (
