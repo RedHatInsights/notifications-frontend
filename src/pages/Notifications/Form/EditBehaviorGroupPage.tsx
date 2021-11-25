@@ -1,35 +1,19 @@
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
-import produce from 'immer';
-import isEqual from 'lodash/isEqual';
-import uniqWith from 'lodash/uniqWith';
 import * as React from 'react';
-import { useContext } from 'react';
-import { ClientContext } from 'react-fetching-library';
 
 import { BehaviorGroupSaveModal } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupSaveModal';
 import { RecipientContextProvider } from '../../../components/Notifications/RecipientContext';
 import { useGetIntegrations } from '../../../components/Notifications/useGetIntegrations';
 import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
-import { getDefaultSystemEndpointAction } from '../../../services/Integrations/GetDefaultSystemEndpoint';
-import { useSaveBehaviorGroupMutation } from '../../../services/Notifications/SaveBehaviorGroup';
-import { useUpdateBehaviorGroupActionsMutation } from '../../../services/Notifications/UpdateBehaviorGroupActions';
-import { toSystemProperties } from '../../../types/adapters/NotificationAdapter';
 import {
-    BehaviorGroup, isActionIntegration, isActionNotify,
-    NewBehaviorGroup,
-    NotificationType,
-    SystemProperties,
-    UUID
+    BehaviorGroup
 } from '../../../types/Notification';
+import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
+import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 
 interface EditBehaviorGroupPageProps {
     behaviorGroup?: Partial<BehaviorGroup>;
     onClose: (saved: boolean) => void;
 }
-
-const needsSaving = (original: Partial<BehaviorGroup> | undefined, updated: BehaviorGroup | NewBehaviorGroup) => {
-    return original?.id === undefined || original.displayName !== updated.displayName;
-};
 
 export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPageProps> = props => {
     const getRecipients = useGetRecipients();
@@ -40,107 +24,34 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
         getNotificationRecipients: getRecipients
     }), [ getIntegrations, getRecipients ]);
 
-    const saveBehaviorGroupMutation = useSaveBehaviorGroupMutation();
-    const updateBehaviorGroupActionsMutation = useUpdateBehaviorGroupActionsMutation();
-    const { query } = useContext(ClientContext);
-    const [ fetchingIntegrations, setFetchingIntegrations ] = React.useState<boolean>(false);
+    const saving = useSaveBehaviorGroup(props.behaviorGroup);
 
-    const onSave = React.useCallback(async (data: BehaviorGroup | NewBehaviorGroup) => {
-        const updateBehaviorGroupActions = updateBehaviorGroupActionsMutation.mutate;
-        const saveBehaviorGroup = saveBehaviorGroupMutation.mutate;
+    const onSave = React.useCallback(async (behaviorGroup: BehaviorGroup) => {
+        const save = saving.save;
+        const result = await save(behaviorGroup);
 
-        // Determine if we need to save the behavior group before updating the actions
-        return (needsSaving(props.behaviorGroup, data) ?
-            saveBehaviorGroup(data).then(value => {
-                if (value.payload?.type === 'BehaviorGroup') {
-                    return value.payload.value.id;
-                } else if (value.payload?.status === 200) {
-                    return data.id;
-                }
-
-                throw new Error('Behavior group wasn\'t saved');
-            }) : Promise.resolve(data.id)).then(behaviorGroupId => {
-
-            // Determine what system Integrations we need to fetch
-            const toFetch: ReadonlyArray<SystemProperties> = uniqWith(
-                ([] as Array<SystemProperties>)
-                .concat(...data.actions.filter(isActionNotify)
-                .map(action => produce(action, draft => {
-                    draft.recipient = draft.recipient.filter(r => !r.integrationId);
-                }))
-                .map(action => toSystemProperties(action))),
-                isEqual
-            );
-
-            if (toFetch.find(props => props.type !== NotificationType.EMAIL_SUBSCRIPTION)) {
-                throw new Error('Only email subscriptions are created when assigning behavior groups');
-            }
-
-            if (toFetch.length > 0) {
-                setFetchingIntegrations(true);
-            }
-
-            return Promise.all(
-                toFetch.map(systemProps => query(getDefaultSystemEndpointAction(systemProps))
-                .then(result => result.payload?.type === 'Endpoint' ? result.payload.value.id : undefined)
-                )
-            ).then(newIds => {
-                // We want to preserve the order
-                const remainingIds = [ ... newIds ] as UUID[];
-                const endpointsToAdd = data.actions.reduce(
-                    (toAdd, action) => {
-                        if (isActionNotify(action)) {
-                            action.recipient.forEach(recipient => {
-                                if (recipient.integrationId) {
-                                    toAdd.push(recipient.integrationId);
-                                } else if (remainingIds.length > 0) {
-                                    toAdd.push(remainingIds.shift() as UUID);
-                                } else {
-                                    throw new Error(`No more ids remaining to assign: actions ${data.actions} newIds: ${newIds}`);
-                                }
-                            });
-                        } else if (isActionIntegration(action)) {
-                            toAdd.push(action.integration.id);
-                        } else {
-                            throw new Error(`Unknown action type: ${action}`);
-                        }
-
-                        return toAdd;
-                    },
-                    [] as Array<UUID>
+        if (result.status) {
+            if (result.operation === SaveBehaviorGroupResult.CREATE) {
+                addSuccessNotification(
+                    'New behavior group created',
+                    <>
+                        Group <b> { behaviorGroup.displayName } </b> created successfully.
+                    </>
                 );
-
-                return updateBehaviorGroupActions({
-                    behaviorGroupId: behaviorGroupId as UUID,
-                    endpointIds: endpointsToAdd
-                });
-            });
-        }).then(value => {
-            if (value.payload?.status === 200) {
-                if (data.id === undefined) {
-                    addSuccessNotification(
-                        'New behavior group created',
-                        <>
-                            Group <b> { data.displayName } </b> created successfully.
-                        </>
-                    );
-                } else {
-                    addSuccessNotification(
-                        'Behavior group saved',
-                        <>
-                            Group <b> { data.displayName } </b> was saved successfully.
-                        </>
-                    );
-                }
-
-                return true;
+            } else {
+                addSuccessNotification(
+                    'Behavior group saved',
+                    <>
+                        Group <b> { behaviorGroup.displayName } </b> was saved successfully.
+                    </>
+                );
             }
-
-            if (data.id === undefined) {
+        } else {
+            if (result.operation === SaveBehaviorGroupResult.CREATE) {
                 addDangerNotification(
                     'Behavior group failed to be created',
                     <>
-                        Failed to create group <b> { data.displayName }</b>.
+                        Failed to create group <b> { behaviorGroup.displayName }</b>.
                         <br />
                         Please try again.
                     </>
@@ -149,29 +60,22 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
                 addDangerNotification(
                     'Behavior group failed to save',
                     <>
-                        Failed to save group <b> { data.displayName }</b>.
+                        Failed to save group <b> { behaviorGroup.displayName }</b>.
                         <br />
                         Please try again.
                     </>
                 );
             }
+        }
 
-            return false;
-        }).catch(err => {
-            console.error('Error saving behavior groups', err);
-            throw err;
-        });
-    }, [ saveBehaviorGroupMutation.mutate, updateBehaviorGroupActionsMutation.mutate, props.behaviorGroup, query ]);
-
-    const isSaving = React.useMemo(() => {
-        return fetchingIntegrations || saveBehaviorGroupMutation.loading || updateBehaviorGroupActionsMutation.loading;
-    }, [ fetchingIntegrations, saveBehaviorGroupMutation.loading, updateBehaviorGroupActionsMutation.loading ]);
+        return result.status;
+    }, [ saving.save ]);
 
     return (
         <RecipientContextProvider value={ actionsContextValue }>
             <BehaviorGroupSaveModal
                 data={ props.behaviorGroup }
-                isSaving={ isSaving }
+                isSaving={ saving.isSaving }
                 onClose={ props.onClose }
                 onSave={ onSave }
             />
