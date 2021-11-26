@@ -1,8 +1,6 @@
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
 import isEqual from 'lodash/isEqual';
 import uniqWith from 'lodash/uniqWith';
-import * as React from 'react';
 import { Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
 import { ClientContext, useClient } from 'react-fetching-library';
 

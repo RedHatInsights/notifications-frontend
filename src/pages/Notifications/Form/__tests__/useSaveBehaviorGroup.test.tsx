@@ -1,12 +1,11 @@
 import { act, renderHook } from '@testing-library/react-hooks';
-import * as React from 'react';
-
-import { NotificationType } from '../../../../types/Notification';
-import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from '../useSaveBehaviorGroup';
-import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import fetchMock from 'fetch-mock';
+
+import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { IntegrationType } from '../../../../types/Integration';
+import { NotificationType } from '../../../../types/Notification';
 import { NotificationRecipient } from '../../../../types/Recipient';
+import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from '../useSaveBehaviorGroup';
 
 const RESPONSE_SUCCESS_UPDATED_BG = {
     headers: {

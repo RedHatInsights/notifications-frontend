@@ -1,3 +1,4 @@
+import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { BehaviorGroupSaveModal } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupSaveModal';
@@ -8,7 +9,6 @@ import {
     BehaviorGroup
 } from '../../../types/Notification';
 import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 
 interface EditBehaviorGroupPageProps {
     behaviorGroup?: Partial<BehaviorGroup>;
