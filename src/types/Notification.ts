@@ -64,6 +64,7 @@ export type BehaviorGroup = {
     readonly bundleId: UUID,
     readonly displayName: string;
     readonly bundleName: string;
+    readonly isDefault: boolean;
 }
 
 export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> & Omit<BehaviorGroup, 'id'>;

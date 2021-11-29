@@ -15,6 +15,7 @@ import {
     TextContent,
     TextVariants
 } from '@patternfly/react-core';
+import { LockIcon } from '@patternfly/react-icons';
 import { c_form__label_FontSize } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
@@ -47,6 +48,7 @@ export interface BehaviorGroupCardLayout {
         action: React.ReactNode;
         recipient: React.ReactNode;
     }>;
+    isDefaultBehavior?: boolean;
 }
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
@@ -59,15 +61,19 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
             <CardHeader>
                 <CardHeaderMain><TextContent><Text component={ TextVariants.h4 }> { props.title } </Text></TextContent></CardHeaderMain>
                 <CardActions>
-                    <Dropdown
-                        onSelect={ switchOpen }
-                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
-                        isOpen={ isOpen }
-                        isPlain
-                        dropdownItems={ props.dropdownItems }
-                        position={ DropdownPosition.right }
-                        menuAppendTo={ () => document.body }
-                    />
+                    { props.isDefaultBehavior ? (
+                        <LockIcon />
+                    ) : (
+                        <Dropdown
+                            onSelect={ switchOpen }
+                            toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
+                            isOpen={ isOpen }
+                            isPlain
+                            dropdownItems={ props.dropdownItems }
+                            position={ DropdownPosition.right }
+                            menuAppendTo={ () => document.body }
+                        />
+                    ) }
                 </CardActions>
             </CardHeader>
             <CardBody>
@@ -127,6 +133,7 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
                 recipient: <Recipient action={ action } />,
                 action: <ActionComponent isDefault={ false } action={ action } />
             })) }
+            isDefaultBehavior={ !!props.behaviorGroup.isDefault }
         />
     );
 };

@@ -6,9 +6,10 @@ import {
     Split,
     SplitItem
 } from '@patternfly/react-core';
-import { BellSlashIcon } from '@patternfly/react-icons';
+import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
 import { global_palette_black_400, global_palette_black_700, global_spacer_sm } from '@patternfly/react-tokens';
+import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -44,6 +45,8 @@ interface BehaviorGroupChip {
     onSelect?: BehaviorGroupCellProps['onSelect'];
 }
 
+const CommaSeparator: React.FunctionComponent = () => <span>, </span>;
+
 const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
     const unlink = React.useCallback(() => {
         const onSelect = props.onSelect;
@@ -52,7 +55,7 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
         }
     }, [ props.onSelect, props.behaviorGroup, props.notification ]);
 
-    return <Chip onClick={ unlink }>
+    return <Chip onClick={ unlink } isReadOnly={ props.behaviorGroup.isDefault } >
         { props.behaviorGroup.displayName }
     </Chip>;
 };
@@ -94,7 +97,11 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             ];
         }
 
-        return props.behaviorGroupContent.content.map(bg => {
+        const behaviorGroups = [
+            ...props.selected.filter(b => b.isDefault),
+            ...props.behaviorGroupContent.content.filter(b => !b.isDefault)
+        ];
+        return behaviorGroups.map(bg => {
             const selected = !!props.selected.find(findById(bg.id));
 
             return (
@@ -103,8 +110,9 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                     onSelect={ onSelected }
                     data-behavior-group-id={ bg.id }
                     isSelected={ selected }
+                    isDisabled={ bg.isDefault }
                 >
-                    { bg.displayName }
+                    { bg.isDefault && <LockIcon /> } { bg.displayName }
                 </OptionsMenuItem>
             );
         });
@@ -139,7 +147,9 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             </Split>;
         }
 
-        return props.selected.map(v => v.displayName).join(', ');
+        return join(props.selected.map(b => <>
+            { b.isDefault && <LockIcon /> } { b.displayName }
+        </>), CommaSeparator);
     }, [ props.selected ]);
 
     if (!props.isEditMode) {

@@ -34,6 +34,7 @@ export namespace Schemas {
     bundle?: Bundle | undefined | null;
     bundle_id: UUID;
     created?: string | undefined | null;
+    default_behavior?: boolean | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
     updated?: string | undefined | null;
@@ -259,6 +260,7 @@ export namespace Schemas {
           bundle: zodSchemaBundle().optional().nullable(),
           bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
+          default_behavior: z.boolean().optional().nullable(),
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           updated: z.string().optional().nullable()

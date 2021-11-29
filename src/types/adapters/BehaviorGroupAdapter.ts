@@ -22,7 +22,8 @@ export const toBehaviorGroup = (serverBehaviorGroup: ServerBehaviorGroup): Behav
         bundleId: serverBehaviorGroup.bundle_id,
         displayName: serverBehaviorGroup.display_name,
         id: serverBehaviorGroup.id ?? reportBehaviorGroup(serverBehaviorGroup),
-        bundleName: serverBehaviorGroup.bundle?.display_name ?? ''
+        bundleName: serverBehaviorGroup.bundle?.display_name ?? '',
+        isDefault: !!serverBehaviorGroup.default_behavior
     };
 };
 
