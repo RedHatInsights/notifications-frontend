@@ -1,6 +1,7 @@
 import {
     Bullseye,
     DatePicker,
+    DatePickerRef,
     Select,
     SelectOption,
     SelectOptionObject,
@@ -14,7 +15,7 @@ import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
 import * as React from 'react';
-import { Dispatch } from 'react';
+import { Dispatch, useRef } from 'react';
 import { SetStateAction } from 'react';
 import { style } from 'typestyle';
 
@@ -140,15 +141,37 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = props =
     const startValue: string | undefined = React.useMemo(() => props.period[0] ? format(props.period[0], 'yyyy-MM-dd') : undefined, [ props.period ]);
     const endValue: string | undefined = React.useMemo(() => props.period[1] ? format(props.period[1], 'yyyy-MM-dd') : undefined, [ props.period ]);
 
+    const startDateRef = useRef<DatePickerRef>(null);
+    const endDateRef = useRef<DatePickerRef>(null);
+
+    const onClickStartDateInput = React.useCallback(() => {
+        startDateRef.current?.setCalendarOpen(true);
+    }, [ startDateRef ]);
+
+    const onClickEndDateInput = React.useCallback(() => {
+        endDateRef.current?.setCalendarOpen(true);
+    }, [ endDateRef ]);
+
+    const startDateInputProps = React.useMemo<TextInputProps>(() => ({
+        ...dateInputProps,
+        onClick: onClickStartDateInput
+    }), [ onClickStartDateInput ]);
+
+    const endDateInputProps = React.useMemo<TextInputProps>(() => ({
+        ...dateInputProps,
+        onClick: onClickEndDateInput
+    }), [ onClickEndDateInput ]);
+
     return (
         <Split>
             <SplitItem>
                 <DatePicker
                     placeholder="Start"
-                    inputProps={ dateInputProps }
+                    inputProps={ startDateInputProps }
                     validators={ startRangeValidators }
                     onChange={ setStartDate }
                     value={ startValue }
+                    ref={ startDateRef }
                 />
             </SplitItem>
             <SplitItem>
@@ -159,10 +182,11 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = props =
             <SplitItem>
                 <DatePicker
                     placeholder="End"
-                    inputProps={ dateInputProps }
+                    inputProps={ endDateInputProps }
                     validators={ endRangeValidators }
                     onChange={ setEndDate }
                     value={ endValue }
+                    ref={ endDateRef }
                 />
             </SplitItem>
         </Split>
