@@ -154,6 +154,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         fetchMock.put(`/api/notifications/v1.0/notifications/behaviorGroups/${behaviorGroups[0].id}/actions`, {
             status: 200
         });
+        fetchMock.post('/api/integrations/v1.0/endpoints/system/email_subscription', {
+            description: 'email',
+            name: 'email',
+            id: 'e-new',
+            type: 'email_subscription'
+        });
 
         render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
             wrapper: getConfiguredAppWrapper()
