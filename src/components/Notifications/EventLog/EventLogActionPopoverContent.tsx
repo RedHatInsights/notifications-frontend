@@ -1,4 +1,4 @@
-import { Skeleton } from '@patternfly/react-core';
+import { Skeleton, Tooltip } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import { important } from 'csx';
 import * as React from 'react';
@@ -15,7 +15,7 @@ const headerClass = style({
 });
 
 interface EventLogActionPopoverContentProps {
-    id: UUID;
+    id?: UUID;
     type: IntegrationType;
     success: boolean;
     getIntegrationRecipient: GetIntegrationRecipient;
@@ -24,7 +24,7 @@ interface EventLogActionPopoverContentProps {
 export const EventLogActionPopoverContent: React.FunctionComponent<EventLogActionPopoverContentProps> = props => {
 
     const { id, getIntegrationRecipient } = props;
-    const recipient = useAsync(async () => getIntegrationRecipient(id), [ id, getIntegrationRecipient ]);
+    const recipient = useAsync(async () => id && getIntegrationRecipient(id), [ id, getIntegrationRecipient ]);
 
     return (
         <TableComposable
@@ -42,7 +42,11 @@ export const EventLogActionPopoverContent: React.FunctionComponent<EventLogActio
                 <Tr>
                     <Td>{ actionLabelMap[props.type] }</Td>
                     <Td>
-                        { recipient.loading ?  <Skeleton width="150px"  /> : recipient.value }
+                        { id ? recipient.loading ?  <Skeleton width="150px"  /> : recipient.value : (
+                            <Tooltip content="The integration no longer exists, it could have been deleted.">
+                                <span>Unknown integration</span>
+                            </Tooltip>
+                        ) }
                     </Td>
                     <Td>{ props.success ? <>Success</> : <> Failure</> }</Td>
                 </Tr>
