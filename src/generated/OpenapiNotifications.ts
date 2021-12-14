@@ -146,7 +146,7 @@ export namespace Schemas {
         }
       | undefined
       | null;
-    endpoint_id: UUID;
+    endpoint_id?: UUID | undefined | null;
     endpoint_type: EndpointType;
     id: UUID;
     invocation_result: boolean;
@@ -396,7 +396,7 @@ export namespace Schemas {
       return z
       .object({
           details: z.record(z.unknown()).optional().nullable(),
-          endpoint_id: zodSchemaUUID(),
+          endpoint_id: zodSchemaUUID().optional().nullable(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
           invocation_result: z.boolean()

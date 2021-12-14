@@ -7,7 +7,7 @@ export interface NotificationEvent {
     application: string;
     bundle: string;
     actions: ReadonlyArray<{
-        id: UUID;
+        id?: UUID;
         success: boolean;
         endpointType: IntegrationType;
     }>;
