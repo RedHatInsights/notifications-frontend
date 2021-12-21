@@ -1,4 +1,4 @@
-import { FormHelperText, Select, SelectVariant } from '@patternfly/react-core';
+import { FormHelperText, HelperText, HelperTextItem, Select, SelectVariant } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 
@@ -50,8 +50,10 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
         <>
             { recipient }
             { props.error && (
-                <FormHelperText isError icon={ <ExclamationCircleIcon /> } isHidden={ !props.error }>
-                    { props.error }
+                <FormHelperText isHidden={ !props.error }>
+                    <HelperText>
+                        <HelperTextItem variant='error' >
+                            { props.error } </HelperTextItem></HelperText>
                 </FormHelperText>
             ) }
         </>
