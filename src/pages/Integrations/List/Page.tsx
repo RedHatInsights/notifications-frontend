@@ -24,13 +24,15 @@ import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
-import { IntegrationType, UserIntegration } from '../../../types/Integration';
+import { IntegrationType, isCamelType, UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
+
+const wantedTypes = [ IntegrationType.WEBHOOK, ...Object.values(IntegrationType).filter(v => isCamelType(v)) ];
 
 const integrationFilterBuilder = (filters?: IntegrationFilters) => {
     const filter = new Filter();
@@ -39,7 +41,7 @@ const integrationFilterBuilder = (filters?: IntegrationFilters) => {
         filter.and('active', Operator.EQUAL, isEnabled.toString());
     }
 
-    return filter.and('type', Operator.EQUAL, [ IntegrationType.WEBHOOK, IntegrationType.CAMEL ]);
+    return filter.and('type', Operator.EQUAL, wantedTypes);
 };
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({

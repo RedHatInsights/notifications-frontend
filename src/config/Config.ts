@@ -17,7 +17,7 @@ const Config = {
         title: 'Notifications | Settings'
     },
     integrationNames: {
-        [IntegrationType.CAMEL]: 'Integration: Camel',
+        [IntegrationType.SPLUNK]: 'Integration: Splunk',
         [IntegrationType.WEBHOOK]: 'Integration: Webhook',
         [IntegrationType.EMAIL_SUBSCRIPTION]: 'Email'
     } as Record<IntegrationType, string>,

@@ -79,7 +79,7 @@ const MutableMessages = {
             },
             integrationType: {
                 [IntegrationType.WEBHOOK]: 'Webhook',
-                [IntegrationType.CAMEL]: 'Camel'
+                [IntegrationType.SPLUNK]: 'Splunk'
             }
         },
         notifications: {

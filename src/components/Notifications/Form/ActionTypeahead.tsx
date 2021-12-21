@@ -2,7 +2,7 @@ import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patter
 import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { isStagingOrProd } from '../../../types/Environments';
+import { isStagingOrProd, isStagingStableOrAnyProd } from '../../../types/Environments';
 import { UserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -65,19 +65,19 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
         });
     }, [ props.action ]);
 
-    const showAsProd = isStagingOrProd(getInsights());
+    const hideCamel = isStagingStableOrAnyProd(getInsights());
 
     const selectableOptions = React.useMemo(() => {
-        const notificationTypes = showAsProd ?
+        const notificationTypes = hideCamel ?
             [ NotificationType.EMAIL_SUBSCRIPTION ]
             : [ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER ];
-        const integrationTypes = showAsProd ?
+        const integrationTypes = hideCamel ?
             [ UserIntegrationType.WEBHOOK ]
-            : [ UserIntegrationType.WEBHOOK, UserIntegrationType.CAMEL ];
+            : [ UserIntegrationType.WEBHOOK, UserIntegrationType.SPLUNK ];
 
         return getSelectOptions(notificationTypes, integrationTypes, props.selectedNotifications)
         .map(o => <SelectOption key={ o.toString() } value={ o } />);
-    }, [ showAsProd, props.selectedNotifications ]);
+    }, [ hideCamel, props.selectedNotifications ]);
 
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >

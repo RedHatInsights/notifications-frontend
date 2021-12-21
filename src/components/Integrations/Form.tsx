@@ -5,7 +5,7 @@ import * as React from 'react';
 
 import { Messages } from '../../properties/Messages';
 import { maxIntegrationNameLength } from '../../schemas/Integrations/Integration';
-import { isStagingOrProd } from '../../types/Environments';
+import { isStagingStableOrAnyProd } from '../../types/Environments';
 import { IntegrationType, NewUserIntegration } from '../../types/Integration';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
@@ -16,9 +16,9 @@ export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (pr
     const insights = getInsights();
 
     const options = React.useMemo(() => {
-        const options = isStagingOrProd(insights) ? [ IntegrationType.WEBHOOK ] : [
+        const options = isStagingStableOrAnyProd(insights) ? [ IntegrationType.WEBHOOK ] : [
             IntegrationType.WEBHOOK,
-            IntegrationType.CAMEL
+            IntegrationType.SPLUNK
         ];
 
         return options
