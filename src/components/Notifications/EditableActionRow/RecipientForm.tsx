@@ -1,5 +1,4 @@
 import { FormHelperText, HelperText, HelperTextItem, Select, SelectVariant } from '@patternfly/react-core';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
