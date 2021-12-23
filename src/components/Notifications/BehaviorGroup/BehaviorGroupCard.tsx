@@ -52,7 +52,7 @@ export interface BehaviorGroupCardLayout {
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
     const [ isOpen, setOpen ] = React.useState(false);
-    const { isOrgAdmin } = useAppContext();
+    const { rbac } = useAppContext();
 
     const switchOpen = React.useCallback(() => setOpen(prev => !prev), [ setOpen ]);
 
@@ -63,7 +63,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                 <CardActions>
                     <Dropdown
                         onSelect={ switchOpen }
-                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems || !isOrgAdmin } /> }
+                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems || !rbac.canWriteNotifications } /> }
                         isOpen={ isOpen }
                         isPlain
                         dropdownItems={ props.dropdownItems }
