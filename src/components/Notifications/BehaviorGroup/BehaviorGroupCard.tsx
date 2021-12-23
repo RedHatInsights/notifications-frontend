@@ -66,6 +66,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                         isPlain
                         dropdownItems={ props.dropdownItems }
                         position={ DropdownPosition.right }
+                        menuAppendTo={ () => document.body }
                     />
                 </CardActions>
             </CardHeader>
