@@ -162,16 +162,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         });
 
         render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
-            wrapper: getConfiguredAppWrapper({
-                appContext: {
-                    rbac: {
-                        canReadIntegrationsEndpoints: true,
-                        canReadNotifications: true,
-                        canWriteIntegrationsEndpoints: true,
-                        canWriteNotifications: true
-                    }
-                }
-            })
+            wrapper: getConfiguredAppWrapper()
         });
 
         await waitForAsyncEvents();
