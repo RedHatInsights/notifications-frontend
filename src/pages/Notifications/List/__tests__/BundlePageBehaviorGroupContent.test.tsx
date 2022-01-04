@@ -121,8 +121,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         expect(screen.getAllByText(/Behavior-1/).length).toBe(1);
     });
 
-    // eslint-disable-next-line jest/no-focused-tests
-    it.only('Upon edition of a behavior group, updates the name on the notification table', async () => {
+    it('Upon edition of a behavior group, updates the name on the notification table', async () => {
         const behaviorGroups = getBehaviorGroups(1);
         const notifications = getNotifications(policiesApplication, [
             behaviorGroups
