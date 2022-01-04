@@ -14,7 +14,8 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
     switch (props.type) {
         case IntegrationType.WEBHOOK:
             return <IntegrationTypeHttpForm { ...props } />;
-        case IntegrationType.SPLUNK:
+        case IntegrationType.SPLUNK: // Todo: Make it easier to add types
+        case IntegrationType.ANYCAMEL:
             return <IntegrationTypeCamelForm { ...props } />;
         default:
             assertNever(props.type);

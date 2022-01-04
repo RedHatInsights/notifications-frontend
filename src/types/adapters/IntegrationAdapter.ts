@@ -14,9 +14,12 @@ import {
     ServerIntegrationResponse
 } from '../Integration';
 
+// Todo: Make it easier to add types
 const CAMEL_SUBTYPE_SPLUNK = 'splunk';
+const CAMEL_SUBTYPE_ANYCAMEL = 'anycamel';
 const CAMEL_SUBTYPES = [
-    CAMEL_SUBTYPE_SPLUNK
+    CAMEL_SUBTYPE_SPLUNK,
+    CAMEL_SUBTYPE_ANYCAMEL
 ];
 
 const getIntegrationType = (serverIntegration: ServerIntegrationResponse): IntegrationType => {
@@ -25,7 +28,9 @@ const getIntegrationType = (serverIntegration: ServerIntegrationResponse): Integ
             const subType = (serverIntegration.properties as Schemas.CamelProperties).sub_type;
             if (subType === CAMEL_SUBTYPE_SPLUNK) {
                 return IntegrationType.SPLUNK;
-            }
+            } else if (subType === CAMEL_SUBTYPE_ANYCAMEL) {
+                return IntegrationType.ANYCAMEL;
+            } // Todo: Make it easier to add more types
 
             throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${subType}`);
         case Schemas.EndpointType.Enum.webhook:
@@ -45,6 +50,7 @@ export const getEndpointType = (type: IntegrationType): Schemas.EndpointType => 
         case IntegrationType.WEBHOOK:
             return Schemas.EndpointType.Enum.webhook;
         case IntegrationType.SPLUNK:
+        case IntegrationType.ANYCAMEL: // Todo: Make it easier to add types
             return Schemas.EndpointType.Enum.camel;
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return Schemas.EndpointType.Enum.email_subscription;
@@ -55,8 +61,10 @@ export const getEndpointType = (type: IntegrationType): Schemas.EndpointType => 
 
 export const getCamelEndpointSubType = (type: CamelIntegrationType): string => {
     switch (type) {
-        case IntegrationType.SPLUNK:
+        case IntegrationType.SPLUNK: // Todo: Make it easier to add types
             return CAMEL_SUBTYPE_SPLUNK;
+        case IntegrationType.ANYCAMEL:
+            return CAMEL_SUBTYPE_ANYCAMEL;
         default:
             assertNever(type);
     }
@@ -121,7 +129,9 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 serverIntegration.properties as Schemas.WebhookProperties
             );
 
-        case IntegrationType.SPLUNK: {
+        case IntegrationType.SPLUNK:
+        case IntegrationType.ANYCAMEL:
+        { // Todo: Make it easier to add types
             return toIntegrationCamel(
                 integrationBase as IntegrationBase<CamelIntegrationType>,
                 serverIntegration.properties as Schemas.CamelProperties
@@ -157,7 +167,8 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
                 secret_token: integrationHttp.secretToken
             };
-        case IntegrationType.SPLUNK:
+        case IntegrationType.SPLUNK: // Todo: Make it easier to add types
+        case IntegrationType.ANYCAMEL:
             const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
             return {
                 url: integrationCamel.url,

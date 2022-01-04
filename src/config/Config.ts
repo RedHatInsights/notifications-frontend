@@ -16,7 +16,8 @@ const Config = {
         subAppId: 'notifications',
         title: 'Notifications | Settings'
     },
-    integrationNames: {
+    integrationNames: { // Todo: Make it easier to add types: Maybe merge with Messages settings
+        [IntegrationType.ANYCAMEL]: 'Integration: AnyCamel',
         [IntegrationType.SPLUNK]: 'Integration: Splunk',
         [IntegrationType.WEBHOOK]: 'Integration: Webhook',
         [IntegrationType.EMAIL_SUBSCRIPTION]: 'Email'

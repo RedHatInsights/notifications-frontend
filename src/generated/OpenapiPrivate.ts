@@ -106,6 +106,8 @@ export namespace Schemas {
       | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
+    sub_type?: string | undefined | null;
+    subtype_ok?: boolean | undefined | null;
     type: EndpointType;
     updated?: string | undefined | null;
   };
@@ -149,6 +151,7 @@ export namespace Schemas {
       | undefined
       | null;
     endpoint_id?: UUID | undefined | null;
+    endpoint_sub_type?: string | undefined | null;
     endpoint_type: EndpointType;
     id: UUID;
     invocation_result: boolean;
@@ -363,6 +366,8 @@ export namespace Schemas {
           ])
           .optional()
           .nullable(),
+          sub_type: z.string().optional().nullable(),
+          subtype_ok: z.boolean().optional().nullable(),
           type: zodSchemaEndpointType(),
           updated: z.string().optional().nullable()
       })
@@ -406,6 +411,7 @@ export namespace Schemas {
       .object({
           details: z.record(z.unknown()).optional().nullable(),
           endpoint_id: zodSchemaUUID().optional().nullable(),
+          endpoint_sub_type: z.string().optional().nullable(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
           invocation_result: z.boolean()

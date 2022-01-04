@@ -18,7 +18,8 @@ export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (pr
     const options = React.useMemo(() => {
         const options = isStagingStableOrAnyProd(insights) ? [ IntegrationType.WEBHOOK ] : [
             IntegrationType.WEBHOOK,
-            IntegrationType.SPLUNK
+            IntegrationType.SPLUNK, // Todo: Make it easier to add types
+            IntegrationType.ANYCAMEL
         ];
 
         return options

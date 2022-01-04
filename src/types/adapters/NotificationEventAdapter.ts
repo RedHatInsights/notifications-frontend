@@ -56,7 +56,7 @@ const toNotificationEventAction = (serverEndpointType: ServerEvent['actions'][nu
     switch (serverEndpointType) {
         // Todo: Need to pull the subtype and have a loading state or something similar for the type.
         case 'camel':
-            return IntegrationType.SPLUNK;
+            return IntegrationType.SPLUNK; // Todo: Use subtype
         case 'email_subscription':
             return IntegrationType.EMAIL_SUBSCRIPTION;
         case 'webhook':

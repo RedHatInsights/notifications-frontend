@@ -77,9 +77,10 @@ const MutableMessages = {
                 title: 'Unable to disable the Integration',
                 description: 'There was a problem trying to disable the integration: "{0}".\nPlease try again.'
             },
-            integrationType: {
+            integrationType: { // Todo: Make it easier to add types: Maybe merge with Config settings
                 [IntegrationType.WEBHOOK]: 'Webhook',
-                [IntegrationType.SPLUNK]: 'Splunk'
+                [IntegrationType.SPLUNK]: 'Splunk',
+                [IntegrationType.ANYCAMEL]: 'AnyCamel'
             }
         },
         notifications: {
