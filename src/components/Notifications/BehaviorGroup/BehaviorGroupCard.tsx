@@ -20,6 +20,7 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { useAppContext } from '../../../app/AppContext';
 import { BehaviorGroup } from '../../../types/Notification';
 import { ActionComponent } from '../ActionComponent';
 import { Recipient } from '../Recipient';
@@ -51,6 +52,7 @@ export interface BehaviorGroupCardLayout {
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
     const [ isOpen, setOpen ] = React.useState(false);
+    const { rbac } = useAppContext();
 
     const switchOpen = React.useCallback(() => setOpen(prev => !prev), [ setOpen ]);
 
@@ -61,7 +63,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                 <CardActions>
                     <Dropdown
                         onSelect={ switchOpen }
-                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
+                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems || !rbac.canWriteNotifications } /> }
                         isOpen={ isOpen }
                         isPlain
                         dropdownItems={ props.dropdownItems }
