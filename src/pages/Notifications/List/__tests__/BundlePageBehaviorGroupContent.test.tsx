@@ -121,7 +121,8 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         expect(screen.getAllByText(/Behavior-1/).length).toBe(1);
     });
 
-    it('Upon edition of a behavior group, updates the name on the notification table', async () => {
+    // eslint-disable-next-line jest/no-focused-tests
+    it.only('Upon edition of a behavior group, updates the name on the notification table', async () => {
         const behaviorGroups = getBehaviorGroups(1);
         const notifications = getNotifications(policiesApplication, [
             behaviorGroups
@@ -162,15 +163,26 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         });
 
         render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
-            wrapper: getConfiguredAppWrapper()
+            wrapper: getConfiguredAppWrapper({
+                appContext: {
+                    rbac: {
+                        canReadIntegrationsEndpoints: true,
+                        canReadNotifications: true,
+                        canWriteIntegrationsEndpoints: true,
+                        canWriteNotifications: true
+                    }
+                }
+            })
         });
 
         await waitForAsyncEvents();
 
         const pf4Card = ouiaSelectors.getByOuia('PF4/Card');
-
         act(() => userEvent.click(getByRole(pf4Card, 'button')));
-        act(() => userEvent.click(getByText(pf4Card, /edit/i)));
+
+        const pf4CardDropdown = getByRole(document.body, 'menu');
+        act(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
+
         await waitForAsyncEvents();
         await userEvent.clear(screen.getByLabelText(/Group name/i));
         await userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar');
