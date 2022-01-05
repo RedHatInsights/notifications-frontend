@@ -46,13 +46,12 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
     }
 
     return (
-        <>
-            { recipient }
+        <> { recipient }
             { props.error && (
                 <FormHelperText isHidden={ !props.error }>
                     <HelperText>
-                        <HelperTextItem variant='error' >
-                            { props.error } </HelperTextItem></HelperText>
+                        <HelperTextItem variant='error'>
+                            {props.error} </HelperTextItem></HelperText>
                 </FormHelperText>
             ) }
         </>
