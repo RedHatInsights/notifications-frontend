@@ -168,9 +168,11 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         await waitForAsyncEvents();
 
         const pf4Card = ouiaSelectors.getByOuia('PF4/Card');
-
         act(() => userEvent.click(getByRole(pf4Card, 'button')));
-        act(() => userEvent.click(getByText(pf4Card, /edit/i)));
+
+        const pf4CardDropdown = getByRole(document.body, 'menu');
+        act(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
+
         await waitForAsyncEvents();
         await userEvent.clear(screen.getByLabelText(/Group name/i));
         await userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar');
