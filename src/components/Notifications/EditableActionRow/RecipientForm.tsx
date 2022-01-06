@@ -36,7 +36,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
                 selected={ props.action.integration }
                 onOpenChange={ props.onOpenChange }
-                error={ props.error }
+                validated={ props.validated }
             />
         );
     } else {
@@ -46,7 +46,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 selected={ props.action.recipient }
                 onClear={ props.recipientOnClear }
                 onOpenChange={ props.onOpenChange }
-                error={ props.error }
+                validated={ props.validated }
             />
         );
     }
@@ -54,12 +54,11 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
     return (
         <> { recipient }
             { props.error && (
-                <><select className='pf-c-form-control' required aria-invalid='true'> </select>
                     <FormHelperText isHidden={ !props.error }>
                         <HelperText>
                             <HelperTextItem variant='error'>
                                 {props.error} </HelperTextItem></HelperText>
-                    </FormHelperText></>
+                    </FormHelperText>
             ) }
         </>
     );

@@ -16,7 +16,6 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
     isDisabled?: boolean;
     onClear: () => void;
     onOpenChange?: (isOpen: boolean) => void;
-    error?: string;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
