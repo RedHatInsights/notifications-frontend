@@ -82,11 +82,22 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
         const integrationSelected = props.onSelected;
+        let validatedState = 'success';
+        const validated = validatedState;
         if (value instanceof RecipientOption) {
             integrationSelected(value);
             setOpen(false);
         }
-    }, [ props.onSelected ]);
+
+        if (selection === undefined) {
+            validatedState = 'error';
+        } else {
+            validatedState = 'success';
+        }
+
+        return validated;
+
+    }, [ props.onSelected, selection ]);
 
     const chooseText = `Choose ${Messages.components.integrations.integrationType[props.integrationType].toLowerCase()}`;
 
