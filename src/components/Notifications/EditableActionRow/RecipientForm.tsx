@@ -1,4 +1,4 @@
-import { FormHelperText, HelperText, HelperTextItem, Select, SelectVariant } from '@patternfly/react-core';
+import { FormHelperText, Select, SelectVariant } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
