@@ -16,6 +16,7 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
     isDisabled?: boolean;
     onClear: () => void;
     onOpenChange?: (isOpen: boolean) => void;
+    validated: string | undefined;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
@@ -96,6 +97,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
                 onClear={ props.onClear }
+                validated='default'
             >
                 { options }
             </Select>

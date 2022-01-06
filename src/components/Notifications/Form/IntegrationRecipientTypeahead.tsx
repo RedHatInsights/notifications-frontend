@@ -1,5 +1,4 @@
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { truncate } from '@patternfly/react-table';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
@@ -20,7 +19,7 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     isDisabled?: boolean;
     onSelected: (recipientOption: RecipientOption) => void;
     onOpenChange?: (isOpen: boolean) => void;
-    validated: () => string;
+    validated: string | undefined;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
@@ -89,17 +88,6 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         }
     }, [ props.onSelected ]);
 
-    const validated = (selection: 'default') => {
-        let validatedState = 'success';
-        if (selection === null) {
-            validatedState = 'error';
-        } else {
-            validatedState = 'success';
-        }
-
-        return validatedState;
-    };
-
     const chooseText = `Choose ${Messages.components.integrations.integrationType[props.integrationType].toLowerCase()}`;
 
     return (
@@ -115,7 +103,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
                 onFilter={ onFilter }
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
-                validated={ validated }
+                validated='default'
             >
                 { options }
             </Select>

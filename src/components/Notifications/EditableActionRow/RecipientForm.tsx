@@ -1,8 +1,5 @@
 import { FormHelperText, HelperText, HelperTextItem, Select, SelectVariant } from '@patternfly/react-core';
-<<<<<<< HEAD
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
-=======
->>>>>>> 80b0301f0adfb7af41271620a596e7bfbdd16aad
+import { validatedResponse } from 'openapi2typescript';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
@@ -36,7 +33,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
                 selected={ props.action.integration }
                 onOpenChange={ props.onOpenChange }
-                validated={ props.validated }
+                validated={ props.error }
             />
         );
     } else {
@@ -46,7 +43,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 selected={ props.action.recipient }
                 onClear={ props.recipientOnClear }
                 onOpenChange={ props.onOpenChange }
-                validated={ props.validated }
+                validated={ props.error }
             />
         );
     }
@@ -54,11 +51,11 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
     return (
         <> { recipient }
             { props.error && (
-                    <FormHelperText isHidden={ !props.error }>
-                        <HelperText>
-                            <HelperTextItem variant='error'>
-                                {props.error} </HelperTextItem></HelperText>
-                    </FormHelperText>
+                <FormHelperText isHidden={ !props.error }>
+                    <HelperText>
+                        <HelperTextItem variant='error'>
+                            {props.error} </HelperTextItem></HelperText>
+                </FormHelperText>
             ) }
         </>
     );
