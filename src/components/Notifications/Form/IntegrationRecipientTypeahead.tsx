@@ -19,7 +19,7 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     isDisabled?: boolean;
     onSelected: (recipientOption: RecipientOption) => void;
     onOpenChange?: (isOpen: boolean) => void;
-    validated: string | undefined;
+    error: boolean;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
@@ -82,22 +82,12 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
 
     const onSelect = React.useCallback((_event, value: string | SelectOptionObject) => {
         const integrationSelected = props.onSelected;
-        let validatedState = 'success';
-        const validated = validatedState;
         if (value instanceof RecipientOption) {
             integrationSelected(value);
             setOpen(false);
         }
 
-        if (selection === undefined) {
-            validatedState = 'error';
-        } else {
-            validatedState = 'success';
-        }
-
-        return validated;
-
-    }, [ props.onSelected, selection ]);
+    }, [ props.onSelected ]);
 
     const chooseText = `Choose ${Messages.components.integrations.integrationType[props.integrationType].toLowerCase()}`;
 
@@ -114,7 +104,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
                 onFilter={ onFilter }
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
-                validated='default'
+                validated={ props.error ? 'error' : undefined  }
             >
                 { options }
             </Select>

@@ -1,5 +1,4 @@
 import { FormHelperText, HelperText, HelperTextItem, Select, SelectVariant } from '@patternfly/react-core';
-import { validatedResponse } from 'openapi2typescript';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
@@ -33,7 +32,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
                 selected={ props.action.integration }
                 onOpenChange={ props.onOpenChange }
-                validated={ props.error }
+                error={ !!props.error }
             />
         );
     } else {
@@ -43,7 +42,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 selected={ props.action.recipient }
                 onClear={ props.recipientOnClear }
                 onOpenChange={ props.onOpenChange }
-                validated={ props.error }
+                error={ !!props.error }
             />
         );
     }
@@ -51,10 +50,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
     return (
         <> { recipient }
             { props.error && (
-                <FormHelperText isHidden={ !props.error }>
-                    <HelperText>
-                        <HelperTextItem variant='error'>
-                            {props.error} </HelperTextItem></HelperText>
+                <FormHelperText isError isHidden={ !props.error }>{ props.error }
                 </FormHelperText>
             ) }
         </>
