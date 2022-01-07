@@ -1,4 +1,5 @@
-import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { StripeIconConfig } from '@patternfly/react-icons';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
@@ -12,6 +13,7 @@ import { useTypeaheadReducer } from './useTypeaheadReducer';
 
 export interface RecipientTypeaheadProps extends OuiaComponentProps {
     selected: ReadonlyArray<NotificationRecipient>;
+    description: Readonly<NotificationRecipient>;
     onSelected: (value: RecipientOption) => void;
     isDisabled?: boolean;
     onClear: () => void;
@@ -100,7 +102,12 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                 onClear={ props.onClear }
                 validated={ props.error ? 'error' : undefined  }
             >
-                { options }
+                {options.map((option, index) => (
+                    <SelectOption
+                        key={ index }
+                        { ...(option.props.description && { description: option.props.description }) }
+                    />
+                ))}
             </Select>
         </div>
     );

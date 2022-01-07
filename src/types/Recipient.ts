@@ -38,8 +38,9 @@ export class NotificationRecipient extends Recipient {
     readonly key: string;
     readonly description: string | undefined;
 
-    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean, description: string) {
+    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean) {
         let displayName = 'Users:';
+        let description = '';
         if (sendToAdmin) {
             displayName += ' Admins';
             description += ' Organization administrators for your account';
