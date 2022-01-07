@@ -1,5 +1,5 @@
 import { Schemas } from '../../generated/OpenapiNotifications';
-import { BehaviorGroup, NewBehaviorGroup } from '../Notification';
+import { BehaviorGroup, BehaviorGroupRequest } from '../Notification';
 import { reduceActions, toAction } from './NotificationAdapter';
 
 type ServerBehaviorGroup = Schemas.BehaviorGroup;
@@ -27,7 +27,7 @@ export const toBehaviorGroup = (serverBehaviorGroup: ServerBehaviorGroup): Behav
     };
 };
 
-export const toShallowBehaviorGroupRequest = (behaviorGroup: BehaviorGroup | NewBehaviorGroup): ServerBehaviorGroup => {
+export const toShallowBehaviorGroupRequest = (behaviorGroup: BehaviorGroupRequest): ServerBehaviorGroup => {
     return {
         bundle_id: behaviorGroup.bundleId,
         display_name: behaviorGroup.displayName

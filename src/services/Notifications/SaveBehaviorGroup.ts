@@ -4,7 +4,7 @@ import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup, toShallowBehaviorGroupRequest } from '../../types/adapters/BehaviorGroupAdapter';
-import { BehaviorGroup, NewBehaviorGroup } from '../../types/Notification';
+import { BehaviorGroup, BehaviorGroupRequest, NewBehaviorGroup } from '../../types/Notification';
 
 type Payload = Operations.NotificationServiceCreateBehaviorGroup.Payload
     | Operations.NotificationServiceUpdateBehaviorGroup.Payload;
@@ -24,7 +24,7 @@ const decoder = validationResponseTransformer(
     }
 );
 
-const saveBehaviorGroupActionCreator =  (behaviorGroup: BehaviorGroup | NewBehaviorGroup) => {
+const saveBehaviorGroupActionCreator =  (behaviorGroup: BehaviorGroupRequest) => {
     if (behaviorGroup.id === undefined) {
         return Operations.NotificationServiceCreateBehaviorGroup.actionCreator({
             body: toShallowBehaviorGroupRequest(behaviorGroup)
