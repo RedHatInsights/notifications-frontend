@@ -19,7 +19,7 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
     isDisabled?: boolean;
     onSelected: (recipientOption: RecipientOption) => void;
     onOpenChange?: (isOpen: boolean) => void;
-    error: boolean;
+    error?: boolean;
 }
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
