@@ -3,7 +3,6 @@ import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
-import { NotificationRecipient } from '../../../types/Recipient';
 import { UseBehaviorGroupActionHandlers } from '../BehaviorGroup/useBehaviorGroupActionHandlers';
 import { IntegrationRecipientTypeahead } from '../Form/IntegrationRecipientTypeahead';
 import { RecipientTypeahead } from '../Form/RecipientTypeahead';
