@@ -1,5 +1,4 @@
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { StripeIconConfig } from '@patternfly/react-icons';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
