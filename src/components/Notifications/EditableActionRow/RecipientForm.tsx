@@ -15,7 +15,6 @@ interface RecipientFormProps {
     recipientOnClear: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientOnClear']>;
     onOpenChange?: (isOpen: boolean) => void;
     error?: string;
-    description: Readonly<NotificationRecipient>;
 }
 
 const dummyOnToggle = () => false;
@@ -45,7 +44,6 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 onClear={ props.recipientOnClear }
                 onOpenChange={ props.onOpenChange }
                 error={ !!props.error }
-                description={ props.description }
             />
         );
     }
