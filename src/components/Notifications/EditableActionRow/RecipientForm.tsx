@@ -1,5 +1,4 @@
 import { FormHelperText, Select, SelectVariant } from '@patternfly/react-core';
-import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
@@ -33,6 +32,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
                 selected={ props.action.integration }
                 onOpenChange={ props.onOpenChange }
+                error={ !!props.error }
             />
         );
     } else {
@@ -42,16 +42,15 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props 
                 selected={ props.action.recipient }
                 onClear={ props.recipientOnClear }
                 onOpenChange={ props.onOpenChange }
+                error={ !!props.error }
             />
         );
     }
 
     return (
-        <>
-            { recipient }
+        <> { recipient }
             { props.error && (
-                <FormHelperText isError icon={ <ExclamationCircleIcon /> } isHidden={ !props.error }>
-                    { props.error }
+                <FormHelperText isError isHidden={ !props.error }>{ props.error }
                 </FormHelperText>
             ) }
         </>
