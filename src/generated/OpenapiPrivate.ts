@@ -137,6 +137,7 @@ export namespace Schemas {
     created: string;
     event_type: string;
     id: UUID;
+    payload?: string | undefined | null;
   };
 
   export const EventLogEntryAction = zodSchemaEventLogEntryAction();
@@ -208,6 +209,14 @@ export namespace Schemas {
     body_template: string;
     payload: string;
     subject_template: string;
+  };
+
+  export const RequestDefaultBehaviorGroupPropertyList =
+    zodSchemaRequestDefaultBehaviorGroupPropertyList();
+  export type RequestDefaultBehaviorGroupPropertyList = {
+    group_id?: UUID | undefined | null;
+    ignore_preferences: boolean;
+    only_admins: boolean;
   };
 
   export const RequestEmailSubscriptionProperties =
@@ -386,7 +395,8 @@ export namespace Schemas {
           bundle: z.string(),
           created: z.string(),
           event_type: z.string(),
-          id: zodSchemaUUID()
+          id: zodSchemaUUID(),
+          payload: z.string().optional().nullable()
       })
       .nonstrict();
   }
@@ -467,6 +477,16 @@ export namespace Schemas {
           body_template: z.string(),
           payload: z.string(),
           subject_template: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRequestDefaultBehaviorGroupPropertyList() {
+      return z
+      .object({
+          group_id: zodSchemaUUID().optional().nullable(),
+          ignore_preferences: z.boolean(),
+          only_admins: z.boolean()
       })
       .nonstrict();
   }
