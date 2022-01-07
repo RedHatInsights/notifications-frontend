@@ -267,7 +267,7 @@ describe('src/pages/Integrations/List/Page', () => {
                 getByText(dropdownContainer, /Edit/i)
             ).toHaveAttribute('aria-disabled', 'true');
             expect(
-                getByText(dropdownContainer, /Remove/i)
+                getByText(dropdownContainer, /Delete/i)
             ).toHaveAttribute('aria-disabled', 'true');
             expect(
                 getByText(dropdownContainer, /(Enable|Disable)/i)
@@ -330,7 +330,7 @@ describe('src/pages/Integrations/List/Page', () => {
                 getByText(dropdownContainer, /Edit/i)
             ).toHaveAttribute('aria-disabled', 'false');
             expect(
-                getByText(dropdownContainer, /Remove/i)
+                getByText(dropdownContainer, /Delete/i)
             ).toHaveAttribute('aria-disabled', 'false');
             expect(
                 getByText(dropdownContainer, /(Enable|Disable)/i)

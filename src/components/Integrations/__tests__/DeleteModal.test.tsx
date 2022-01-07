@@ -10,7 +10,7 @@ import { IntegrationType } from '../../../types/Integration';
 import { IntegrationDeleteModal } from '../DeleteModal';
 
 describe('src/components/Integrations/DeleteModal', () => {
-    it('Has Remove integration title', () => {
+    it('Has Delete integration title', () => {
         render(
             <IntegrationDeleteModal
                 onDelete={ fn() }
@@ -29,7 +29,7 @@ describe('src/components/Integrations/DeleteModal', () => {
             />
         );
 
-        expect(screen.getByText('Remove integration')).toBeTruthy();
+        expect(screen.getByText('Delete integration')).toBeTruthy();
     });
 
     it('Passing notifications renders the expanded content with the number of elements', () => {
