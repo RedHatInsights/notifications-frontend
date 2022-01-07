@@ -19,7 +19,7 @@ interface InternalProps {
 }
 
 const InternalBehaviorGroupSaveModal: React.FunctionComponent<InternalProps> = props => {
-    const title =  `${props.data?.actions ? 'Edit' : 'Create new'} behavior group`;
+    const title =  `${props.data?.id ? 'Edit' : 'Create new'} behavior group`;
 
     const { handleSubmit, isValid, isSubmitting } = useFormikContext<Notification | DefaultNotificationBehavior>();
 
