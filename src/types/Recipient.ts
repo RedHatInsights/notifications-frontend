@@ -36,19 +36,23 @@ export class NotificationRecipient extends Recipient {
     readonly sendToAdmin: boolean;
     readonly integrationId: UUID | undefined;
     readonly key: string;
+    readonly description: string | undefined;
 
-    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean) {
+    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean, description: string) {
         let displayName = 'Users:';
         if (sendToAdmin) {
             displayName += ' Admins';
+            description += ' Organization administrators for your account';
         } else {
             displayName += ' All';
+            description += ' All users in your organization who subscribed to this email in their User Preferences';
         }
 
         super(displayName);
         this.key = sendToAdmin ? 'admin' : 'user';
         this.sendToAdmin = sendToAdmin;
         this.integrationId = integrationId;
+        this.description = description;
     }
 
     public getKey() {
