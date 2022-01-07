@@ -21,7 +21,8 @@ export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupPro
 
     return (
         <div { ... getOuiaProps('Notifications/BehaviorGroupForm', props) }>
-            <div className={ subtitleClassName }>Enter a name and add actions for your new group.</div>
+            <div className={ subtitleClassName }>{`${ props.behaviorGroup?.actions ?
+                'Edit your existing behavior group' : 'Enter a name and add actions for your new group.'}` } </div>
             <Form>
                 <Grid hasGutter>
                     <GridItem span={ 12 }>
