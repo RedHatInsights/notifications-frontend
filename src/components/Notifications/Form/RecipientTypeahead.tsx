@@ -104,7 +104,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                 {options.map((option, index) => (
                     <SelectOption
                         key={ index }
-                        { ...(option.props.description && { description: option.props.description }) }
+                        description={ option.props.description }
                     />
                 ))}
             </Select>
