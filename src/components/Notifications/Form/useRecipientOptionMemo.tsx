@@ -2,12 +2,18 @@ import { SelectOption } from '@patternfly/react-core';
 import assertNever from 'assert-never';
 import * as React from 'react';
 
-import { Recipient } from '../../../types/Recipient';
+import { NotificationRecipient, Recipient } from '../../../types/Recipient';
 import { RecipientOption } from './RecipientOption';
 import { ReducerState } from './useTypeaheadReducer';
 
-const mapper = (r: Recipient) =>
-    <SelectOption key={ r.getKey() } value={ new RecipientOption(r) } />;
+const mapper = (r: Recipient) => {
+    let description;
+    if (r instanceof NotificationRecipient) {
+        description = r.description;
+    }
+
+    return <SelectOption key={ r.getKey() } value={ new RecipientOption(r) } description={ description } />;
+};
 
 export const useRecipientOptionMemo = (state: ReducerState<Recipient>) => {
     return React.useMemo(() => {
