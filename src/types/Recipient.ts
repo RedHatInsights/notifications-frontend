@@ -46,7 +46,7 @@ export class NotificationRecipient extends Recipient {
             description += ' Organization administrators for your account';
         } else {
             displayName += ' All';
-            description += ' All users in your organization who subscribed to this email in their User Preferences';
+            description = 'All users in your organization who subscribed to this email in their User Preferences';
         }
 
         super(displayName);
