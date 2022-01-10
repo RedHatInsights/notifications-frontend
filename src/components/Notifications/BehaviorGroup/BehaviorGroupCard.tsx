@@ -13,9 +13,10 @@ import {
     Skeleton,
     Text,
     TextContent,
-    TextVariants
+    TextVariants, Tooltip
 } from '@patternfly/react-core';
-import { c_form__label_FontSize } from '@patternfly/react-tokens';
+import { LockIcon } from '@patternfly/react-icons';
+import { c_form__label_FontSize, global_spacer_form_element, global_spacer_md } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -27,6 +28,13 @@ import { Recipient } from '../Recipient';
 const cardClassName = style({
     width: 450,
     height: '100%'
+});
+
+const lockedSpacer = style({
+    marginTop: global_spacer_form_element.value,
+    marginBottom: global_spacer_form_element.value,
+    marginLeft: global_spacer_md.value,
+    marginRight: global_spacer_md.value
 });
 
 const contentTitleStyle = {
@@ -47,6 +55,7 @@ export interface BehaviorGroupCardLayout {
         action: React.ReactNode;
         recipient: React.ReactNode;
     }>;
+    isDefaultBehavior?: boolean;
 }
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
@@ -59,15 +68,23 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
             <CardHeader>
                 <CardHeaderMain><TextContent><Text component={ TextVariants.h4 }> { props.title } </Text></TextContent></CardHeaderMain>
                 <CardActions>
-                    <Dropdown
-                        onSelect={ switchOpen }
-                        toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
-                        isOpen={ isOpen }
-                        isPlain
-                        dropdownItems={ props.dropdownItems }
-                        position={ DropdownPosition.right }
-                        menuAppendTo={ () => document.body }
-                    />
+                    { props.isDefaultBehavior ? (
+                        <div className={ lockedSpacer }>
+                            <Tooltip content="This behavior group is system specified and cannot be edited.">
+                                <LockIcon />
+                            </Tooltip>
+                        </div>
+                    ) : (
+                        <Dropdown
+                            onSelect={ switchOpen }
+                            toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
+                            isOpen={ isOpen }
+                            isPlain
+                            dropdownItems={ props.dropdownItems }
+                            position={ DropdownPosition.right }
+                            menuAppendTo={ () => document.body }
+                        />
+                    ) }
                 </CardActions>
             </CardHeader>
             <CardBody>
@@ -127,6 +144,7 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
                 recipient: <Recipient action={ action } />,
                 action: <ActionComponent isDefault={ false } action={ action } />
             })) }
+            isDefaultBehavior={ !!props.behaviorGroup.isDefault }
         />
     );
 };

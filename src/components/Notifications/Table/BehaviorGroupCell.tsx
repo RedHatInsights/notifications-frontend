@@ -4,11 +4,12 @@ import {
     OptionsMenuItem,
     OptionsMenuToggle,
     Split,
-    SplitItem
+    SplitItem, Tooltip
 } from '@patternfly/react-core';
-import { BellSlashIcon } from '@patternfly/react-icons';
+import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
-import { global_palette_black_400, global_palette_black_700, global_spacer_sm } from '@patternfly/react-tokens';
+import { global_palette_black_400, global_palette_black_700, global_spacer_sm, global_spacer_xs } from '@patternfly/react-tokens';
+import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -25,8 +26,12 @@ const noBehaviorGroupsClassName = style({
     textAlign: 'left'
 });
 
-const bellClassName = style({
+const rightSpacerSm = style({
     marginRight: global_spacer_sm.value
+});
+
+const inlineSpacer = style({
+    marginRight: global_spacer_xs.value
 });
 
 interface BehaviorGroupCellProps {
@@ -44,6 +49,8 @@ interface BehaviorGroupChip {
     onSelect?: BehaviorGroupCellProps['onSelect'];
 }
 
+const CommaSeparator: React.FunctionComponent = () => <span>, </span>;
+
 const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
     const unlink = React.useCallback(() => {
         const onSelect = props.onSelect;
@@ -52,7 +59,7 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = props => {
         }
     }, [ props.onSelect, props.behaviorGroup, props.notification ]);
 
-    return <Chip onClick={ unlink }>
+    return <Chip onClick={ unlink } isReadOnly={ props.behaviorGroup.isDefault } >
         { props.behaviorGroup.displayName }
     </Chip>;
 };
@@ -94,7 +101,11 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             ];
         }
 
-        return props.behaviorGroupContent.content.map(bg => {
+        const behaviorGroups = [
+            ...props.selected.filter(b => b.isDefault),
+            ...props.behaviorGroupContent.content.filter(b => !b.isDefault)
+        ];
+        return behaviorGroups.map(bg => {
             const selected = !!props.selected.find(findById(bg.id));
 
             return (
@@ -103,21 +114,27 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                     onSelect={ onSelected }
                     data-behavior-group-id={ bg.id }
                     isSelected={ selected }
+                    isDisabled={ bg.isDefault }
                 >
-                    { bg.displayName }
+                    { bg.isDefault && <LockIcon className={ rightSpacerSm } /> } { bg.displayName }
                 </OptionsMenuItem>
             );
         });
     }, [ props.behaviorGroupContent, props.selected, onSelected ]);
 
+    const sortedSelected = React.useMemo(() => [
+        ...props.selected.filter(b => b.isDefault),
+        ...props.selected.filter(b => !b.isDefault)
+    ], [ props.selected ]);
+
     const toggle = React.useMemo(() => {
         return (
             <OptionsMenuToggle onToggle={ setOpen } toggleTemplate={ (
-                props.selected.length === 0 ? (
+                sortedSelected.length === 0 ? (
                     <span className={ grayFontClassName }>Select behavior group</span>
                 ) : (
                     <ChipGroup>
-                        { props.selected.map(value => (
+                        { sortedSelected.map(value => (
                             <BehaviorGroupChip
                                 key={ value.id }
                                 behaviorGroup={ value }
@@ -129,18 +146,25 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                 )
             ) } />
         );
-    }, [ props.selected, props.notification, props.onSelect ]);
+    }, [ sortedSelected, props.notification, props.onSelect ]);
 
     const readonlyText = React.useMemo(() => {
-        if (props.selected.length === 0) {
+        if (sortedSelected.length === 0) {
             return <Split>
-                <SplitItem className={ bellClassName }><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
+                <SplitItem className={ rightSpacerSm }><BellSlashIcon color={ global_palette_black_400.value } /></SplitItem>
                 <SplitItem>Mute</SplitItem>
             </Split>;
         }
 
-        return props.selected.map(v => v.displayName).join(', ');
-    }, [ props.selected ]);
+        return join(sortedSelected.map(b => <>
+            { b.isDefault && <Tooltip
+                content={ `${b.displayName} behavior is attached to this event and cannot be changed.` +
+                'Add additional behavior groups to assign different actions or recipients.' }
+            >
+                <LockIcon color={ global_palette_black_400.value } className={ inlineSpacer } />
+            </Tooltip>} { b.displayName }
+        </>), CommaSeparator);
+    }, [ sortedSelected ]);
 
     if (!props.isEditMode) {
         return <TableText wrapModifier="truncate"> { readonlyText } </TableText>;

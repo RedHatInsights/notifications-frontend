@@ -44,28 +44,32 @@ describe('src/components/Integrations/DeleteModal', () => {
                         id: '1',
                         bundleId: 'bundle-id',
                         displayName: 'Foo stuff',
-                        bundleName: 'b1'
+                        bundleName: 'b1',
+                        isDefault: false
                     },
                     {
                         actions: [],
                         id: '2',
                         bundleId: 'bundle-id',
                         displayName: 'Bar application',
-                        bundleName: 'b1'
+                        bundleName: 'b1',
+                        isDefault: false
                     },
                     {
                         actions: [],
                         id: '3',
                         bundleId: 'other-id',
                         displayName: 'Baz peek',
-                        bundleName: 'ABC'
+                        bundleName: 'ABC',
+                        isDefault: false
                     },
                     {
                         actions: [],
                         id: '4',
                         bundleId: '24446666688888888000000000',
                         displayName: 'Password',
-                        bundleName: 'Fake'
+                        bundleName: 'Fake',
+                        isDefault: false
                     }
                 ] }
                 integration={ {
@@ -121,28 +125,32 @@ describe('src/components/Integrations/DeleteModal', () => {
                         id: '1',
                         bundleId: 'bundle-id',
                         displayName: 'Foo stuff',
-                        bundleName: 'b1'
+                        bundleName: 'b1',
+                        isDefault: false
                     },
                     {
                         actions: [],
                         id: '2',
                         bundleId: 'bundle-id',
                         displayName: 'Bar application',
-                        bundleName: 'b1'
+                        bundleName: 'b1',
+                        isDefault: false
                     },
                     {
                         actions: [],
                         id: '3',
                         bundleId: 'other-id',
                         displayName: 'Baz peek',
-                        bundleName: 'ABC'
+                        bundleName: 'ABC',
+                        isDefault: false
                     },
                     {
                         actions: [],
                         id: '4',
                         bundleId: '24446666688888888000000000',
                         displayName: 'Password',
-                        bundleName: 'Fake'
+                        bundleName: 'Fake',
+                        isDefault: false
                     }
                 ] }
                 integration={ {

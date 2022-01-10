@@ -11,7 +11,8 @@ const commonBehaviorGroup: Readonly<BehaviorGroup> = {
     displayName: 'Foo',
     actions: [],
     bundleId: 'bundle-id',
-    bundleName: 'foobar'
+    bundleName: 'foobar',
+    isDefault: false
 };
 
 describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', () => {

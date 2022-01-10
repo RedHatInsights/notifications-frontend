@@ -9,7 +9,7 @@ import { useSaveBehaviorGroupMutation } from '../../../services/Notifications/Sa
 import { useUpdateBehaviorGroupActionsMutation } from '../../../services/Notifications/UpdateBehaviorGroupActions';
 import { toSystemProperties } from '../../../types/adapters/NotificationAdapter';
 import {
-    BehaviorGroup,
+    BehaviorGroup, BehaviorGroupRequest,
     isActionIntegration,
     isActionNotify,
     NewBehaviorGroup,
@@ -18,13 +18,13 @@ import {
     UUID
 } from '../../../types/Notification';
 
-const behaviorGroupNeedsUpdate = (original: Partial<BehaviorGroup> | undefined, updated: BehaviorGroup | NewBehaviorGroup) => {
+const behaviorGroupNeedsUpdate = (original: Partial<BehaviorGroup> | undefined, updated: BehaviorGroupRequest) => {
     return original?.id === undefined || original.displayName !== updated.displayName;
 };
 
 const saveBehaviorGroup = async (
     original: Partial<BehaviorGroup> | undefined,
-    updated: BehaviorGroup | NewBehaviorGroup,
+    updated: BehaviorGroupRequest,
     save: ReturnType<typeof useSaveBehaviorGroupMutation>['mutate']
 ) => {
     // Determine if we need to save the behavior group before updating the actions
@@ -187,7 +187,7 @@ export const useSaveBehaviorGroup = (behaviorGroup?: Partial<BehaviorGroup>) => 
 
     const [ fetchingIntegrations, setFetchingIntegrations ] = useState<boolean>(false);
 
-    const save = useCallback(async (data: BehaviorGroup | NewBehaviorGroup) => {
+    const save = useCallback(async (data: BehaviorGroupRequest) => {
         const updateBehaviorGroupActions = updateBehaviorGroupActionsMutation.mutate;
 
         return saveBehaviorGroup(behaviorGroup, data, saveBehaviorGroupMutation.mutate)
