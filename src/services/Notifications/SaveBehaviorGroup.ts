@@ -4,7 +4,7 @@ import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup, toShallowBehaviorGroupRequest } from '../../types/adapters/BehaviorGroupAdapter';
-import { BehaviorGroup, BehaviorGroupRequest, NewBehaviorGroup } from '../../types/Notification';
+import { BehaviorGroupRequest } from '../../types/Notification';
 
 type Payload = Operations.NotificationServiceCreateBehaviorGroup.Payload
     | Operations.NotificationServiceUpdateBehaviorGroup.Payload;
