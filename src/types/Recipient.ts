@@ -43,7 +43,7 @@ export class NotificationRecipient extends Recipient {
         let description = '';
         if (sendToAdmin) {
             displayName += ' Admins';
-            description += ' Organization administrators for your account';
+            description = 'Organization administrators for your account';
         } else {
             displayName += ' All';
             description = 'All users in your organization who subscribed to this email in their User Preferences';
