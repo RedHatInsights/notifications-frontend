@@ -42,7 +42,8 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupCardList', () 
             ],
             displayName: 'My group',
             id: 'bar',
-            bundleName: 'foobar'
+            bundleName: 'foobar',
+            isDefault: false
         }];
 
         window. HTMLDivElement.prototype.getBoundingClientRect = () => makeRect();

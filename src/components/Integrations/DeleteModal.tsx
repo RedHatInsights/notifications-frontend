@@ -36,13 +36,13 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
             return <span
                 data-testid="removing-integration-without-notifications"
             >
-                Removing integration <strong>{ props.integration?.name }</strong> does not affect any behavior group.
+                Deleting integration <strong>{ props.integration?.name }</strong> does not affect any behavior group.
             </span>;
         } else {
             const behaviorGroupText = props.behaviorGroups.length !== 1 ? 'behavior groups' : 'behavior group';
             return (
                 <span data-testid={ `removing-integration-with-notifications-${props.behaviorGroups.length}` }>
-                    Removing integration <strong>{ props.integration?.name }</strong> affects {props.behaviorGroups.length} {behaviorGroupText}.
+                    Deleting integration <strong>{ props.integration?.name }</strong> affects {props.behaviorGroups.length} {behaviorGroupText}.
                     { props.behaviorGroups.length > 0 &&
                     <ExpandableSection toggleText={ `View ${props.behaviorGroups.length} ${behaviorGroupText}.` }>
                         <List>
@@ -68,12 +68,13 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
         <DeleteModal
             isOpen={ true }
             isDeleting={ props.isDeleting }
-            title={ 'Remove integration' }
+            title={ 'Delete integration' }
             content={ content }
             onClose={ props.onClose }
             onDelete={ onDeleteInternal }
             error={ props.error }
             titleIconVariant="warning"
+            actionButtonTitle='Delete'
         />
     );
 };

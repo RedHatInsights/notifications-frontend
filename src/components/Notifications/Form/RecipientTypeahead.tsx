@@ -16,6 +16,7 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
     isDisabled?: boolean;
     onClear: () => void;
     onOpenChange?: (isOpen: boolean) => void;
+    error?: boolean;
 }
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
@@ -81,6 +82,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         if (value instanceof RecipientOption) {
             onSelected(value);
         }
+
     }, [ props.onSelected ]);
 
     return (
@@ -96,6 +98,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
                 onClear={ props.onClear }
+                validated={ props.error ? 'error' : undefined  }
             >
                 { options }
             </Select>
