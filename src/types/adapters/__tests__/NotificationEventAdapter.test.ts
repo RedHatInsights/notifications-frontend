@@ -1,7 +1,7 @@
 import { Schemas } from '../../../generated/OpenapiNotifications';
-import { toNotificationEvent } from '../NotificationEventAdapter';
 import { NotificationEventStatus } from '../../Event';
 import { IntegrationType } from '../../Integration';
+import { toNotificationEvent } from '../NotificationEventAdapter';
 
 type ServerEvent = Schemas.EventLogEntry;
 
