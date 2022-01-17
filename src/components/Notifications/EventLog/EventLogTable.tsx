@@ -1,11 +1,13 @@
-import { Label, LabelGroup, Popover, Skeleton } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { Label, LabelGroup, LabelProps, Popover, Skeleton } from '@patternfly/react-core';
+import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { IExtraColumnData, SortByDirection, TableComposable, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table';
+import { c_alert_m_warning__icon_Color } from '@patternfly/react-tokens';
+import assertNever from 'assert-never';
 import * as React from 'react';
 import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
-import { NotificationEvent } from '../../../types/Event';
+import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient, IntegrationType } from '../../../types/Integration';
 import { UtcDate } from '../../UtcDate';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
@@ -32,6 +34,28 @@ const actionLabelMap: Record<IntegrationType, string> = Config.integrationNames;
 const labelClassName = style({
     cursor: 'pointer'
 });
+
+export const toLabelProps = (action: NotificationEventAction): Pick<LabelProps, 'color' | 'icon'> => {
+    switch (action.status) {
+        case NotificationEventStatus.SUCCESS:
+            return {
+                color: 'green',
+                icon: <CheckCircleIcon />
+            };
+        case NotificationEventStatus.ERROR:
+            return {
+                color: 'red',
+                icon: <ExclamationCircleIcon />
+            };
+        case NotificationEventStatus.WARNING:
+            return {
+                color: undefined,
+                icon: <ExclamationTriangleIcon color={ c_alert_m_warning__icon_Color.value } />
+            };
+        default:
+            assertNever(action.status);
+    }
+};
 
 export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props => {
     const onSort = React.useCallback((
@@ -81,16 +105,13 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                                     key={ a.id }
                                     hasAutoWidth
                                     bodyContent={ <EventLogActionPopoverContent
-                                        id={ a.id }
-                                        type={ a.endpointType }
-                                        success={ a.success }
+                                        action={ a }
                                         getIntegrationRecipient={ props.getIntegrationRecipient }
                                     /> }
                                 >
                                     <Label
                                         className={ labelClassName }
-                                        icon={ a.success ? <CheckCircleIcon /> : <ExclamationCircleIcon /> }
-                                        color={ a.success ? 'green' : 'red' }
+                                        { ...toLabelProps(a) }
                                     >
                                         { actionLabelMap[a.endpointType] }
                                     </Label>
