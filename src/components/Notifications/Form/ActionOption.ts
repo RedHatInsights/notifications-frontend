@@ -1,5 +1,6 @@
 import { SelectOptionObject } from '@patternfly/react-core';
 
+import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
 import { UserIntegrationType } from '../../../types/Integration';
 import { NotificationType } from '../../../types/Notification';
@@ -35,9 +36,9 @@ export class ActionOption implements SelectOptionObject {
     }
 
     toString(): string {
-        const actionName = Messages.components.notifications.types[this.notificationType];
+        const actionName = Config.notifications.types[this.notificationType].name;
         if (this.integrationType) {
-            const integrationName = Messages.components.integrations.integrationType[this.integrationType];
+            const integrationName = Config.integrations.types[this.integrationType].name;
             return `${actionName}: ${integrationName}`;
         }
 

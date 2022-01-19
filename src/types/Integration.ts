@@ -6,7 +6,7 @@ export enum IntegrationType {
     WEBHOOK = 'webhook',
     EMAIL_SUBSCRIPTION = 'email_subscription',
     SPLUNK = 'camel:splunk',
-    ANYCAMEL = 'camel:any-camel'
+    ANYCAMEL = 'camel:anycamel'
 }
 
 export const UserIntegrationType = {

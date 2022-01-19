@@ -7,6 +7,7 @@ import { assertNever } from 'assert-never';
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import Config from '../../config/Config';
 import { Messages } from '../../properties/Messages';
 import { Action, NotificationType } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
@@ -90,9 +91,9 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
     return (
         <ActionComponentWrapper { ...props }>
             <ActionTypeToIcon actionType={ props.action.type } />
-            <span className={ marginLeftClassName }>{ Messages.components.notifications.types[props.action.type] }</span>
+            <span className={ marginLeftClassName }>{ Config.notifications.types[props.action.type].name }</span>
             { props.action.type === NotificationType.INTEGRATION && (
-                <span>: { Messages.components.integrations.integrationType[props.action.integration.type] }</span>
+                <span>: { Config.integrations.types[props.action.integration.type].name }</span>
             ) }
         </ActionComponentWrapper>
     );

@@ -2,7 +2,7 @@ import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patter
 import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { isStagingOrProd, isStagingStableOrAnyProd } from '../../../types/Environments';
+import { isStagingStableOrAnyProd } from '../../../types/Environments';
 import { UserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';

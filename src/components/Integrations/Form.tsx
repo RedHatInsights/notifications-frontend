@@ -3,6 +3,7 @@ import { Form, FormSelect, FormTextInput, getInsights, OuiaComponentProps, ouiaI
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 
+import Config from '../../config/Config';
 import { Messages } from '../../properties/Messages';
 import { maxIntegrationNameLength } from '../../schemas/Integrations/Integration';
 import { isStagingStableOrAnyProd } from '../../types/Environments';
@@ -23,7 +24,7 @@ export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (pr
         ];
 
         return options
-        .map(type => (<FormSelectOption key={ type } label={ Messages.components.integrations.integrationType[type] } value={ type } />));
+        .map(type => (<FormSelectOption key={ type } label={ Config.integrations.types[type].name } value={ type } />));
     }, [ insights ]);
 
     return (

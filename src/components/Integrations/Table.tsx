@@ -38,6 +38,7 @@ import * as React from 'react';
 import { useIntl } from 'react-intl';
 import { style } from 'typestyle';
 
+import Config from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
 import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
@@ -197,7 +198,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                     title: integration.name
                 },
                 {
-                    title: Messages.components.integrations.integrationType[integration.type]
+                    title: Config.integrations.types[integration.type].name
                 },
                 {
                     title: getConnectionAttemptCell(integration.lastConnectionAttempts, integration.isConnectionAttemptLoading)

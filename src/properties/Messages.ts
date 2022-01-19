@@ -2,7 +2,6 @@ import { intlHelper } from '@redhat-cloud-services/frontend-components-translati
 import { createIntl, createIntlCache } from 'react-intl';
 import { DeepReadonly } from 'ts-essentials';
 
-import { IntegrationType } from '../types/Integration';
 import messages from './DefinedMessages';
 
 const cache = createIntlCache();
@@ -76,19 +75,9 @@ const MutableMessages = {
             disableError: {
                 title: 'Unable to disable the Integration',
                 description: 'There was a problem trying to disable the integration: "{0}".\nPlease try again.'
-            },
-            integrationType: { // Todo: Make it easier to add types: Maybe merge with Config settings
-                [IntegrationType.WEBHOOK]: 'Webhook',
-                [IntegrationType.SPLUNK]: 'Splunk',
-                [IntegrationType.ANYCAMEL]: 'AnyCamel'
             }
         },
         notifications: {
-            types: {
-                EMAIL_SUBSCRIPTION: 'Send an email',
-                DRAWER: 'Send to notification drawer',
-                INTEGRATION: 'Integration'
-            },
             toolbar: {
                 actions: {
 

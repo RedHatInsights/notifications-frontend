@@ -29,8 +29,6 @@ export enum EventLogTableColumns {
     DATE
 }
 
-const actionLabelMap: Record<IntegrationType, string> = Config.integrationNames;
-
 const labelClassName = style({
     cursor: 'pointer'
 });
@@ -113,7 +111,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                                         className={ labelClassName }
                                         { ...toLabelProps(a) }
                                     >
-                                        { actionLabelMap[a.endpointType] }
+                                        { Config.integrations.types[a.endpointType].action }
                                     </Label>
                                 </Popover>))}
                             </LabelGroup>
