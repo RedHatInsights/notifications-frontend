@@ -2,6 +2,7 @@ import { Schemas } from '../generated/OpenapiIntegrations';
 import { UUID } from './Notification';
 
 // Integrations that exist
+// Value should always be type:sub_type or only type if doesn't use sub_types
 export enum IntegrationType {
     WEBHOOK = 'webhook',
     EMAIL_SUBSCRIPTION = 'email_subscription',

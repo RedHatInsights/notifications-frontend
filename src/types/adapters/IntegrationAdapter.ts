@@ -8,66 +8,33 @@ import {
     IntegrationCamel,
     IntegrationEmailSubscription,
     IntegrationHttp,
-    IntegrationType,
+    IntegrationType, isCamelType,
     NewIntegration,
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
 
-// Todo: Make it easier to add types
-const CAMEL_SUBTYPE_SPLUNK = 'splunk';
-const CAMEL_SUBTYPE_ANYCAMEL = 'anycamel';
-const CAMEL_SUBTYPES = [
-    CAMEL_SUBTYPE_SPLUNK,
-    CAMEL_SUBTYPE_ANYCAMEL
-];
+interface ExternalCompositeTyped {
+    type: string;
+    sub_type?: string | null;
+}
 
-const getIntegrationType = (serverIntegration: ServerIntegrationResponse): IntegrationType => {
-    switch (serverIntegration.type) {
-        case Schemas.EndpointType.Enum.camel:
-            const subType = (serverIntegration.properties as Schemas.CamelProperties).sub_type;
-            if (subType === CAMEL_SUBTYPE_SPLUNK) {
-                return IntegrationType.SPLUNK;
-            } else if (subType === CAMEL_SUBTYPE_ANYCAMEL) {
-                return IntegrationType.ANYCAMEL;
-            } // Todo: Make it easier to add more types
-
-            throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${subType}`);
-        case Schemas.EndpointType.Enum.webhook:
-            return IntegrationType.WEBHOOK;
-        case Schemas.EndpointType.Enum.email_subscription:
-            return IntegrationType.EMAIL_SUBSCRIPTION;
-        case Schemas.EndpointType.Enum.default:
-        case undefined:
-            throw new Error(`Unexpected type: ${serverIntegration.type}`);
-        default:
-            assertNever(serverIntegration.type);
+export const getIntegrationType = (serverIntegration: ExternalCompositeTyped): IntegrationType => {
+    for (const integration of Object.values(IntegrationType)) {
+        if (serverIntegration.sub_type) {
+            if (integration === `${serverIntegration.type}:${serverIntegration.sub_type}`) {
+                return integration as IntegrationType;
+            }
+        } else if (integration === serverIntegration.type) {
+            return integration as IntegrationType;
+        }
     }
+
+    throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${serverIntegration.sub_type}`);
 };
 
-export const getEndpointType = (type: IntegrationType): Schemas.EndpointType => {
-    switch (type) {
-        case IntegrationType.WEBHOOK:
-            return Schemas.EndpointType.Enum.webhook;
-        case IntegrationType.SPLUNK:
-        case IntegrationType.ANYCAMEL: // Todo: Make it easier to add types
-            return Schemas.EndpointType.Enum.camel;
-        case IntegrationType.EMAIL_SUBSCRIPTION:
-            return Schemas.EndpointType.Enum.email_subscription;
-        default:
-            assertNever(type);
-    }
-};
-
-export const getCamelEndpointSubType = (type: CamelIntegrationType): string => {
-    switch (type) {
-        case IntegrationType.SPLUNK: // Todo: Make it easier to add types
-            return CAMEL_SUBTYPE_SPLUNK;
-        case IntegrationType.ANYCAMEL:
-            return CAMEL_SUBTYPE_ANYCAMEL;
-        default:
-            assertNever(type);
-    }
+export const getEndpointType = (type: IntegrationType): [ Schemas.EndpointType, string] => {
+    return type.split(':', 2) as [ Schemas.EndpointType, string ];
 };
 
 type NotNullType = {
@@ -122,22 +89,19 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
         type: getIntegrationType(serverIntegration)
     };
 
+    if (isCamelType(integrationBase.type)) {
+        return toIntegrationCamel(
+            integrationBase as IntegrationBase<CamelIntegrationType>,
+            serverIntegration.properties as Schemas.CamelProperties
+        );
+    }
+
     switch (integrationBase.type) {
         case IntegrationType.WEBHOOK:
             return toIntegrationWebhook(
                 integrationBase as IntegrationBase<IntegrationType.WEBHOOK>,
                 serverIntegration.properties as Schemas.WebhookProperties
             );
-
-        case IntegrationType.SPLUNK:
-        case IntegrationType.ANYCAMEL:
-        { // Todo: Make it easier to add types
-            return toIntegrationCamel(
-                integrationBase as IntegrationBase<CamelIntegrationType>,
-                serverIntegration.properties as Schemas.CamelProperties
-            );
-        }
-
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return toIntegrationEmail(
                 integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
@@ -151,14 +115,30 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 export const toIntegrations = (serverIntegrations: Array<ServerIntegrationResponse>): Array<Integration> => {
     return serverIntegrations
     .filter(filterOutDefaultAction)
-    .filter(filterOutUnknownCamel)
     .map(toIntegration);
 };
 
 type ServerIntegrationProperties = Schemas.EmailSubscriptionProperties | Schemas.WebhookProperties | Schemas.CamelProperties
 
 export const toIntegrationProperties = (integration: Integration | NewIntegration): ServerIntegrationProperties => {
-    switch (integration.type) {
+
+    const type = integration.type;
+
+    if (isCamelType(type)) {
+        const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
+        return {
+            url: integrationCamel.url,
+            disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
+            secret_token: integrationCamel.secretToken,
+            basic_authentication: {
+                username: integrationCamel.basicAuth?.user,
+                password: integrationCamel.basicAuth?.pass
+            },
+            extras: integrationCamel.extras
+        };
+    }
+
+    switch (type) {
         case IntegrationType.WEBHOOK:
             const integrationHttp: IntegrationHttp = integration as IntegrationHttp;
             return {
@@ -166,20 +146,6 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 method: integrationHttp.method,
                 disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
                 secret_token: integrationHttp.secretToken
-            };
-        case IntegrationType.SPLUNK: // Todo: Make it easier to add types
-        case IntegrationType.ANYCAMEL:
-            const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
-            return {
-                url: integrationCamel.url,
-                disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
-                secret_token: integrationCamel.secretToken,
-                sub_type: getCamelEndpointSubType(integration.type),
-                basic_authentication: {
-                    username: integrationCamel.basicAuth?.user,
-                    password: integrationCamel.basicAuth?.pass
-                },
-                extras: integrationCamel.extras
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;
@@ -189,17 +155,19 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 ignore_preferences: integrationEmail.ignorePreferences
             };
         default:
-            assertNever(integration);
+            assertNever(type);
     }
 };
 
 export const toServerIntegrationRequest =
     (integration: Integration | NewIntegration): ServerIntegrationRequest => {
+        const [ type, subType ] = getEndpointType(integration.type);
         return {
             id: integration.id,
             name: integration.name,
             enabled: integration.isEnabled,
-            type: getEndpointType(integration.type),
+            type,
+            sub_type: subType,
             description: '',
             properties: toIntegrationProperties(integration)
         };
@@ -207,7 +175,3 @@ export const toServerIntegrationRequest =
 
 export const filterOutDefaultAction = (serverNotification: ServerIntegrationResponse) =>
     serverNotification.type !== Schemas.EndpointType.enum.default;
-
-export const filterOutUnknownCamel = (serverNotification: ServerIntegrationResponse) =>
-    serverNotification.type !== Schemas.EndpointType.Enum.camel ||
-    CAMEL_SUBTYPES.includes((serverNotification.properties as Schemas.CamelProperties).sub_type || '');

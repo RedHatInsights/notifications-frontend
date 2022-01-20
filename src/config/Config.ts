@@ -1,6 +1,6 @@
 import { DeepReadonly } from 'ts-essentials';
 
-import { IntegrationType } from '../types/Integration';
+import { IntegrationType, UserIntegrationType } from '../types/Integration';
 import { NotificationType } from '../types/Notification';
 
 const apiVersion = 'v1.0';
@@ -66,12 +66,30 @@ const Config = {
     integrations: {
         subAppId: 'integrations',
         title: 'Integrations | Settings',
-        types: computeIntegrationConfig(integrationTypes)
+        types: computeIntegrationConfig(integrationTypes),
+        integrationActions: {
+            released: [
+                UserIntegrationType.WEBHOOK
+            ],
+            experimental: [
+                UserIntegrationType.WEBHOOK,
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.ANYCAMEL
+            ]
+        }
     },
     notifications: {
         subAppId: 'notifications',
         title: 'Notifications | Settings',
-        types: notificationTypes
+        types: notificationTypes,
+        actions: {
+            released: [
+                NotificationType.EMAIL_SUBSCRIPTION
+            ],
+            experimental: [
+                NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER
+            ]
+        }
     },
     pages: {
     },

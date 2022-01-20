@@ -1,4 +1,4 @@
-import { Environment, getInsightsEnvironment, InsightsType } from '@redhat-cloud-services/insights-common-typescript';
+import { Environment, getInsights, getInsightsEnvironment, InsightsType } from '@redhat-cloud-services/insights-common-typescript';
 
 export const stagingAndProd: Array<Environment> = [
     'stage-beta',
@@ -24,4 +24,9 @@ export const isStagingOrProd = (insights: InsightsType) => {
 
 export const isStagingStableOrAnyProd = (insights: InsightsType) => {
     return stagingStableAndAnyProd.includes(getInsightsEnvironment(insights));
+};
+
+export const isReleased = () => {
+    const insights = getInsights();
+    return isStagingStableOrAnyProd(insights);
 };

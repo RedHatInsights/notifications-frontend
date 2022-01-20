@@ -18,11 +18,7 @@ export const maxIntegrationNameLength = 150;
 export const IntegrationSchemaBase: Yup.SchemaOf<NewIntegrationBase> = Yup.object({
     id: Yup.string().optional(),
     name: Yup.string().required('Write a name for this Integration.').max(maxIntegrationNameLength).trim(),
-    type: Yup.mixed<IntegrationType>().oneOf([ // Todo: Make it easier to add types
-        IntegrationType.WEBHOOK,
-        IntegrationType.SPLUNK,
-        IntegrationType.ANYCAMEL
-    ]).default(IntegrationType.WEBHOOK).optional(),
+    type: Yup.mixed<IntegrationType>().oneOf(Object.values(IntegrationType)).default(IntegrationType.WEBHOOK).optional(),
     isEnabled: Yup.boolean().default(true).required()
 });
 

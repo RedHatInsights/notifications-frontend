@@ -2,8 +2,8 @@ import { fromUtc } from '@redhat-cloud-services/insights-common-typescript';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../Event';
-import { IntegrationType } from '../Integration';
 import { UUID } from '../Notification';
+import { getIntegrationType } from './IntegrationAdapter';
 
 type ServerEvent = Schemas.EventLogEntry;
 
@@ -46,23 +46,11 @@ const groupActions = (actions: ServerEvent['actions']): ReadonlyArray<Notificati
 
 const initAction = (action: ServerEvent['actions'][number]): NotificationEventAction => ({
     id: action.endpoint_id ?? undefined,
-    endpointType: toNotificationEventAction(action.endpoint_type),
+    endpointType: getIntegrationType({
+        type: action.endpoint_type,
+        sub_type: action.endpoint_sub_type
+    }),
     status: action.invocation_result ? NotificationEventStatus.SUCCESS : NotificationEventStatus.ERROR,
     successCount: action.invocation_result ? 1 : 0,
     errorCount: action.invocation_result ? 0 : 1
 });
-
-const toNotificationEventAction = (serverEndpointType: ServerEvent['actions'][number]['endpoint_type']) => {
-    switch (serverEndpointType) {
-        // Todo: Need to pull the subtype and have a loading state or something similar for the type.
-        case 'camel':
-            return IntegrationType.SPLUNK; // Todo: Use subtype
-        case 'email_subscription':
-            return IntegrationType.EMAIL_SUBSCRIPTION;
-        case 'webhook':
-            return IntegrationType.WEBHOOK;
-        case 'default':
-        default:
-            throw new Error(`unknown endpoint type: ${serverEndpointType}`);
-    }
-};
