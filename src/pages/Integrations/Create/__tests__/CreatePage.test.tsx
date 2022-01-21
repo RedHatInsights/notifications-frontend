@@ -7,7 +7,6 @@ import * as React from 'react';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import Config from '../../../../config/Config';
-import { Messages } from '../../../../properties/Messages';
 import { IntegrationType } from '../../../../types/Integration';
 import { CreatePage } from '../CreatePage';
 

@@ -4,7 +4,6 @@ import * as React from 'react';
 import { usePrevious } from 'react-use';
 
 import Config from '../../../config/Config';
-import { Messages } from '../../../properties/Messages';
 import { UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 import { IntegrationRecipient } from '../../../types/Recipient';

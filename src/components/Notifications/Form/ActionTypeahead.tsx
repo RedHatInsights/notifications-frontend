@@ -73,8 +73,8 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
             Config.notifications.actions.released :
             Config.notifications.actions.experimental;
         const integrationTypes = released ?
-            Config.integrations.integrationActions.released :
-            Config.integrations.integrationActions.experimental;
+            Config.integrations.actions.released :
+            Config.integrations.actions.experimental;
 
         return getSelectOptions(notificationTypes, integrationTypes, props.selectedNotifications)
         .map(o => <SelectOption key={ o.toString() } value={ o } />);

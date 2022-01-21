@@ -17,8 +17,8 @@ export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (pr
 
     const options = React.useMemo(() => {
         const options = released ?
-            Config.integrations.integrationActions.released :
-            Config.integrations.integrationActions.experimental;
+            Config.integrations.actions.released :
+            Config.integrations.actions.experimental;
 
         return options
         .map(type => (<FormSelectOption key={ type } label={ Config.integrations.types[type].name } value={ type } />));

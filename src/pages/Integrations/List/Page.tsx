@@ -61,8 +61,8 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
             'type',
             Operator.EQUAL,
             released ?
-                Config.integrations.integrationActions.released as Array<string> :
-                Config.integrations.integrationActions.experimental as Array<string>
+                Config.integrations.actions.released as Array<string> :
+                Config.integrations.actions.experimental as Array<string>
         );
     }, [ released ]);
 

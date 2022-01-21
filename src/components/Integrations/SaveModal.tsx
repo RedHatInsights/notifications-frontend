@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Messages } from '../../properties/Messages';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
-import { IntegrationType, isCamelIntegrationType, isCamelType, NewUserIntegration, UserIntegration } from '../../types/Integration';
+import { isCamelIntegrationType, NewUserIntegration, UserIntegration } from '../../types/Integration';
 import { IntegrationsForm } from './Form';
 
 type PartialIntegration = Partial<UserIntegration>;

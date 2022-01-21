@@ -5,7 +5,7 @@ import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 import {
     Operations
 } from '../generated/OpenapiIntegrations';
-import { getEndpointType, toIntegrations } from '../types/adapters/IntegrationAdapter';
+import { toIntegrations } from '../types/adapters/IntegrationAdapter';
 import { IntegrationType, UserIntegration } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {

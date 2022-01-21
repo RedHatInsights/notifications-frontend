@@ -6,14 +6,12 @@ import { UUID } from './Notification';
 export enum IntegrationType {
     WEBHOOK = 'webhook',
     EMAIL_SUBSCRIPTION = 'email_subscription',
-    SPLUNK = 'camel:splunk',
-    ANYCAMEL = 'camel:anycamel'
+    SPLUNK = 'camel:splunk'
 }
 
 export const UserIntegrationType = {
     WEBHOOK: IntegrationType.WEBHOOK,
-    SPLUNK: IntegrationType.SPLUNK,
-    ANYCAMEL: IntegrationType.ANYCAMEL
+    SPLUNK: IntegrationType.SPLUNK
 } as const;
 
 export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;

@@ -1,7 +1,6 @@
 import { SelectOptionObject } from '@patternfly/react-core';
 
 import Config from '../../../config/Config';
-import { Messages } from '../../../properties/Messages';
 import { UserIntegrationType } from '../../../types/Integration';
 import { NotificationType } from '../../../types/Notification';
 

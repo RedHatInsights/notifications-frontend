@@ -107,7 +107,6 @@ export namespace Schemas {
       | undefined
       | null;
     sub_type?: string | undefined | null;
-    subtype_ok?: boolean | undefined | null;
     type: EndpointType;
     updated?: string | undefined | null;
   };
@@ -217,7 +216,6 @@ export namespace Schemas {
   export const RequestDefaultBehaviorGroupPropertyList =
     zodSchemaRequestDefaultBehaviorGroupPropertyList();
   export type RequestDefaultBehaviorGroupPropertyList = {
-    group_id?: UUID | undefined | null;
     ignore_preferences: boolean;
     only_admins: boolean;
   };
@@ -367,7 +365,6 @@ export namespace Schemas {
           .optional()
           .nullable(),
           sub_type: z.string().optional().nullable(),
-          subtype_ok: z.boolean().optional().nullable(),
           type: zodSchemaEndpointType(),
           updated: z.string().optional().nullable()
       })
@@ -490,7 +487,6 @@ export namespace Schemas {
   function zodSchemaRequestDefaultBehaviorGroupPropertyList() {
       return z
       .object({
-          group_id: zodSchemaUUID().optional().nullable(),
           ignore_preferences: z.boolean(),
           only_admins: z.boolean()
       })

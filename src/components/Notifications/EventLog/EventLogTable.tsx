@@ -8,7 +8,7 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
-import { GetIntegrationRecipient, IntegrationType } from '../../../types/Integration';
+import { GetIntegrationRecipient } from '../../../types/Integration';
 import { UtcDate } from '../../UtcDate';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
 

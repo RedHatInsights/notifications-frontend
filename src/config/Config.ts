@@ -21,9 +21,6 @@ interface NotificationTypeConfig {
 }
 
 const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
-    [IntegrationType.ANYCAMEL]: {
-        name: 'AnyCamel'
-    },
     [IntegrationType.SPLUNK]: {
         name: 'Splunk'
     },
@@ -67,14 +64,13 @@ const Config = {
         subAppId: 'integrations',
         title: 'Integrations | Settings',
         types: computeIntegrationConfig(integrationTypes),
-        integrationActions: {
+        actions: {
             released: [
                 UserIntegrationType.WEBHOOK
             ],
             experimental: [
                 UserIntegrationType.WEBHOOK,
-                UserIntegrationType.SPLUNK,
-                UserIntegrationType.ANYCAMEL
+                UserIntegrationType.SPLUNK
             ]
         }
     },

@@ -8,7 +8,6 @@ import * as React from 'react';
 import { style } from 'typestyle';
 
 import Config from '../../config/Config';
-import { Messages } from '../../properties/Messages';
 import { Action, NotificationType } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { WebhookIcon } from '../Icons/WebhookIcon';
