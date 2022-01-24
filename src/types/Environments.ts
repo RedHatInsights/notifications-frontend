@@ -14,7 +14,7 @@ export const stagingAndProdStable: Array<Environment> = [
 
 export const stagingStableAndAnyProd: Array<Environment> = [
     'stage',
-    // 'prod-beta', // Todo: Add it back
+    'prod-beta',
     'prod'
 ];
 
