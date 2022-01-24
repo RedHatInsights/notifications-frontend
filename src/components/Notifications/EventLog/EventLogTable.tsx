@@ -127,7 +127,9 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
     }, [ props.loading, props.events, props.getIntegrationRecipient ]);
 
     return (
-        <TableComposable>
+        <TableComposable
+            isStickyHeader={ true }
+        >
             <Thead>
                 <Tr>
                     <Th

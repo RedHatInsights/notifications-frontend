@@ -374,6 +374,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                     onCollapse={ onCollapseHandler }
                     rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
                     actionResolver={ actionsResolverCallback }
+                    isStickyHeader={ true }
                 >
                     <TableHeader />
                     <TableBody />

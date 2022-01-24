@@ -68,6 +68,7 @@ export const EventLogActionPopoverContent: React.FunctionComponent<EventLogActio
         <TableComposable
             borders={ false }
             variant={ TableVariant.compact }
+            isStickyHeader={ true }
         >
             <Thead>
                 <Tr>
