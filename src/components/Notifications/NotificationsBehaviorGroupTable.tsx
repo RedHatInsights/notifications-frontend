@@ -160,6 +160,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
             variant={ TableVariant.compact }
             actionResolver={ actionResolver }
             actionsToggle={ emptySpanProducer as any }
+            isStickyHeader={ true }
         >
             <TableHeader />
             <TableBody />

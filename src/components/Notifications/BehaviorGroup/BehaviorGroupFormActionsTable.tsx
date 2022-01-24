@@ -217,6 +217,7 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
                 actionsToggle={ emptySpan as any }
                 borders={ false }
                 variant={ TableVariant.compact }
+                isStickyHeader={ true }
             >
                 <TableHeader className={ tableHeaderClassName } />
                 <TableBody className={ tableBodyClassName } />
