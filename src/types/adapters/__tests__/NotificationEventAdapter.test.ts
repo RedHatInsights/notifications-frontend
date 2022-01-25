@@ -82,6 +82,13 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     errorCount: 1
                 },
                 {
+                    id: 'id-04',
+                    status: NotificationEventStatus.SUCCESS,
+                    endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
+                    successCount: 2,
+                    errorCount: 0
+                },
+                {
                     id: 'id-02',
                     status: NotificationEventStatus.SUCCESS,
                     endpointType: IntegrationType.WEBHOOK,
@@ -94,13 +101,6 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     endpointType: IntegrationType.WEBHOOK,
                     successCount: 0,
                     errorCount: 1
-                },
-                {
-                    id: 'id-04',
-                    status: NotificationEventStatus.SUCCESS,
-                    endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
-                    successCount: 2,
-                    errorCount: 0
                 }
             ]
         });

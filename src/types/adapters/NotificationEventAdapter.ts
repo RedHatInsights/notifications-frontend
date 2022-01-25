@@ -13,10 +13,16 @@ export const toNotificationEvent = (serverEvent: ServerEvent): NotificationEvent
     application: serverEvent.application,
     event: serverEvent.event_type,
     date: fromUtc(new Date(serverEvent.created)),
-    actions: groupActions(serverEvent.actions)
+    actions: sortEventActions(groupActions(serverEvent.actions))
 });
 
-const groupActions = (actions: ServerEvent['actions']): ReadonlyArray<NotificationEventAction> => {
+const sortEventActions = (actions: Array<NotificationEventAction>) => {
+    return actions.sort(
+        (first, second) => first.endpointType.localeCompare(second.endpointType)
+    );
+};
+
+const groupActions = (actions: ServerEvent['actions']): Array<NotificationEventAction> => {
     const actionsById: Record<UUID, NotificationEventAction> = {};
     const actionsWithoutEndpoint: Array<NotificationEventAction> = [];
 
