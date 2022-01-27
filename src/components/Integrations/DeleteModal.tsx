@@ -42,9 +42,10 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
             const behaviorGroupText = props.behaviorGroups.length !== 1 ? 'behavior groups' : 'behavior group';
             return (
                 <span data-testid={ `removing-integration-with-notifications-${props.behaviorGroups.length}` }>
-                    Deleting integration <strong>{ props.integration?.name }</strong> affects {props.behaviorGroups.length} {behaviorGroupText}.
+                    Delete integration <strong>{ props.integration?.name }</strong> affects {props.behaviorGroups.length} {behaviorGroupText}.
+                    The end point associated with this integration will not recieve notifications for the following events.
                     { props.behaviorGroups.length > 0 &&
-                    <ExpandableSection toggleText={ `View ${props.behaviorGroups.length} ${behaviorGroupText}.` }>
+                    <ExpandableSection toggleText={ `View ${props.behaviorGroups.length} ${behaviorGroupText}` }>
                         <List>
                             { props.behaviorGroups.map(behaviorGroup => (
                                 <ListItem
