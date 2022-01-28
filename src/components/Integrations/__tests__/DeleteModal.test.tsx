@@ -166,7 +166,7 @@ describe('src/components/Integrations/DeleteModal', () => {
             />
         );
 
-        userEvent.click(screen.getByText(/View 4 behavior groups./i));
+        userEvent.click(screen.getByText(/View 4 behavior groups/i));
         expect(screen.getByText('b1: Foo stuff')).toBeVisible();
         expect(screen.getByText('b1: Bar application')).toBeVisible();
         expect(screen.getByText('ABC: Baz peek')).toBeVisible();
