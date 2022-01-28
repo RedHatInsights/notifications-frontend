@@ -1,5 +1,6 @@
-import { Label, Tooltip } from '@patternfly/react-core';
-import { global_spacer_sm } from '@patternfly/react-tokens';
+import { Tooltip } from '@patternfly/react-core';
+import { BanIcon } from '@patternfly/react-icons';
+import { global_disabled_color_100, global_spacer_sm } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -11,7 +12,9 @@ interface RecipientProps {
 }
 
 const disabledLabelClassName = style({
-    marginLeft: global_spacer_sm.var
+    marginLeft: global_spacer_sm.var,
+    color: global_disabled_color_100.value
+
 });
 
 export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
@@ -22,7 +25,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
                 { !props.action.integration.isEnabled && (
                     <>
                         <Tooltip content="This integration has been disabled. This action wil not fire until it is enabled." position="bottom">
-                            <Label variant={ props.hasOutline ? 'outline' : 'filled' } className={ disabledLabelClassName }>Disabled</Label>
+                            <BanIcon className={ disabledLabelClassName } />
                         </Tooltip>
                     </>
                 )}
