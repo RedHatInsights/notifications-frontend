@@ -33,8 +33,12 @@ export const getIntegrationType = (serverIntegration: ExternalCompositeTyped): I
     throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${serverIntegration.sub_type}`);
 };
 
-export const getEndpointType = (type: IntegrationType): [ Schemas.EndpointType, string] => {
-    return type.split(':', 2) as [ Schemas.EndpointType, string ];
+const getEndpointType = (type: IntegrationType): { type: Schemas.EndpointType, subType?: string } => {
+    const splitType = type.split(':', 2);
+    return {
+        type: splitType[0] as Schemas.EndpointType,
+        subType: splitType.length === 2 ? splitType[1] : undefined
+    };
 };
 
 type NotNullType = {
@@ -161,7 +165,7 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
 
 export const toServerIntegrationRequest =
     (integration: Integration | NewIntegration): ServerIntegrationRequest => {
-        const [ type, subType ] = getEndpointType(integration.type);
+        const { type, subType } = getEndpointType(integration.type);
         return {
             id: integration.id,
             name: integration.name,
