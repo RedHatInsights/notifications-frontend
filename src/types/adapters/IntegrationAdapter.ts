@@ -2,43 +2,43 @@ import { assertNever } from 'assert-never';
 
 import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
+    CamelIntegrationType,
     Integration,
     IntegrationBase,
-    IntegrationCamel, IntegrationEmailSubscription,
+    IntegrationCamel,
+    IntegrationEmailSubscription,
     IntegrationHttp,
-    IntegrationType,
+    IntegrationType, isCamelType,
     NewIntegration,
     ServerIntegrationRequest,
     ServerIntegrationResponse
 } from '../Integration';
 
-const getIntegrationType = (type: Schemas.EndpointType | undefined): IntegrationType => {
-    switch (type) {
-        case Schemas.EndpointType.Enum.camel:
-            return IntegrationType.CAMEL;
-        case Schemas.EndpointType.Enum.webhook:
-            return IntegrationType.WEBHOOK;
-        case Schemas.EndpointType.Enum.email_subscription:
-            return IntegrationType.EMAIL_SUBSCRIPTION;
-        case Schemas.EndpointType.Enum.default:
-        case undefined:
-            throw new Error(`Unexpected type: ${type}`);
-        default:
-            assertNever(type);
+interface ExternalCompositeTyped {
+    type: string;
+    sub_type?: string | null;
+}
+
+export const getIntegrationType = (serverIntegration: ExternalCompositeTyped): IntegrationType => {
+    for (const integration of Object.values(IntegrationType)) {
+        if (serverIntegration.sub_type) {
+            if (integration === `${serverIntegration.type}:${serverIntegration.sub_type}`) {
+                return integration as IntegrationType;
+            }
+        } else if (integration === serverIntegration.type) {
+            return integration as IntegrationType;
+        }
     }
+
+    throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${serverIntegration.sub_type}`);
 };
 
-export const getEndpointType = (type: IntegrationType): Schemas.EndpointType => {
-    switch (type) {
-        case IntegrationType.WEBHOOK:
-            return Schemas.EndpointType.Enum.webhook;
-        case IntegrationType.CAMEL:
-            return Schemas.EndpointType.Enum.camel;
-        case IntegrationType.EMAIL_SUBSCRIPTION:
-            return Schemas.EndpointType.Enum.email_subscription;
-        default:
-            assertNever(type);
-    }
+const getEndpointType = (type: IntegrationType): { type: Schemas.EndpointType, subType?: string } => {
+    const splitType = type.split(':', 2);
+    return {
+        type: splitType[0] as Schemas.EndpointType,
+        subType: splitType.length === 2 ? splitType[1] : undefined
+    };
 };
 
 type NotNullType = {
@@ -59,14 +59,12 @@ const toIntegrationWebhook = (
 });
 
 const toIntegrationCamel = (
-    integrationBase: IntegrationBase<IntegrationType.CAMEL>,
+    integrationBase: IntegrationBase<CamelIntegrationType>,
     properties?: Schemas.CamelProperties): IntegrationCamel => ({
     ...integrationBase,
     url: properties?.url ?? '',
     sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
     secretToken: notNull(properties?.secret_token),
-
-    subType: notNull(properties?.sub_type),
     basicAuth: properties?.basic_authentication === null ?
         undefined
         :
@@ -92,8 +90,15 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
         id: serverIntegration.id || '',
         name: serverIntegration.name || '',
         isEnabled: !!serverIntegration.enabled,
-        type: getIntegrationType(serverIntegration.type)
+        type: getIntegrationType(serverIntegration)
     };
+
+    if (isCamelType(integrationBase.type)) {
+        return toIntegrationCamel(
+            integrationBase as IntegrationBase<CamelIntegrationType>,
+            serverIntegration.properties as Schemas.CamelProperties
+        );
+    }
 
     switch (integrationBase.type) {
         case IntegrationType.WEBHOOK:
@@ -101,14 +106,6 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 integrationBase as IntegrationBase<IntegrationType.WEBHOOK>,
                 serverIntegration.properties as Schemas.WebhookProperties
             );
-
-        case IntegrationType.CAMEL: {
-            return toIntegrationCamel(
-                integrationBase as IntegrationBase<IntegrationType.CAMEL>,
-                serverIntegration.properties as Schemas.CamelProperties
-            );
-        }
-
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return toIntegrationEmail(
                 integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
@@ -120,13 +117,32 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 };
 
 export const toIntegrations = (serverIntegrations: Array<ServerIntegrationResponse>): Array<Integration> => {
-    return filterOutDefaultAction(serverIntegrations).map(toIntegration);
+    return serverIntegrations
+    .filter(filterOutDefaultAction)
+    .map(toIntegration);
 };
 
 type ServerIntegrationProperties = Schemas.EmailSubscriptionProperties | Schemas.WebhookProperties | Schemas.CamelProperties
 
 export const toIntegrationProperties = (integration: Integration | NewIntegration): ServerIntegrationProperties => {
-    switch (integration.type) {
+
+    const type = integration.type;
+
+    if (isCamelType(type)) {
+        const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
+        return {
+            url: integrationCamel.url,
+            disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
+            secret_token: integrationCamel.secretToken,
+            basic_authentication: {
+                username: integrationCamel.basicAuth?.user,
+                password: integrationCamel.basicAuth?.pass
+            },
+            extras: integrationCamel.extras
+        };
+    }
+
+    switch (type) {
         case IntegrationType.WEBHOOK:
             const integrationHttp: IntegrationHttp = integration as IntegrationHttp;
             return {
@@ -134,19 +150,6 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 method: integrationHttp.method,
                 disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
                 secret_token: integrationHttp.secretToken
-            };
-        case IntegrationType.CAMEL:
-            const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
-            return {
-                url: integrationCamel.url,
-                disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
-                secret_token: integrationCamel.secretToken,
-                sub_type: integrationCamel.subType,
-                basic_authentication: {
-                    username: integrationCamel.basicAuth?.user,
-                    password: integrationCamel.basicAuth?.pass
-                },
-                extras: integrationCamel.extras
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;
@@ -156,21 +159,23 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 ignore_preferences: integrationEmail.ignorePreferences
             };
         default:
-            assertNever(integration);
+            assertNever(type);
     }
 };
 
 export const toServerIntegrationRequest =
     (integration: Integration | NewIntegration): ServerIntegrationRequest => {
+        const { type, subType } = getEndpointType(integration.type);
         return {
             id: integration.id,
             name: integration.name,
             enabled: integration.isEnabled,
-            type: getEndpointType(integration.type),
+            type,
+            sub_type: subType,
             description: '',
             properties: toIntegrationProperties(integration)
         };
     };
 
-export const filterOutDefaultAction = (serverNotifications: Array<ServerIntegrationResponse>) =>
-    serverNotifications.filter(e => e.type !== Schemas.EndpointType.enum.default);
+export const filterOutDefaultAction = (serverNotification: ServerIntegrationResponse) =>
+    serverNotification.type !== Schemas.EndpointType.enum.default;

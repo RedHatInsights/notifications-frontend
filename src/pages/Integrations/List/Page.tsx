@@ -17,6 +17,7 @@ import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
+import Config from '../../../config/Config';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { usePage } from '../../../hooks/usePage';
@@ -24,23 +25,14 @@ import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
-import { IntegrationType, UserIntegration } from '../../../types/Integration';
+import { isReleased } from '../../../types/Environments';
+import { UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
-
-const integrationFilterBuilder = (filters?: IntegrationFilters) => {
-    const filter = new Filter();
-    if (filters?.enabled?.length === 1) {
-        const isEnabled = filters.enabled[0].toLocaleLowerCase() === 'enabled';
-        filter.and('active', Operator.EQUAL, isEnabled.toString());
-    }
-
-    return filter.and('type', Operator.EQUAL, [ IntegrationType.WEBHOOK, IntegrationType.CAMEL ]);
-};
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
     ...userIntegration,
@@ -56,6 +48,24 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();
+
+    const released = isReleased();
+    const integrationFilterBuilder = React.useCallback((filters?: IntegrationFilters) => {
+        const filter = new Filter();
+        if (filters?.enabled?.length === 1) {
+            const isEnabled = filters.enabled[0].toLocaleLowerCase() === 'enabled';
+            filter.and('active', Operator.EQUAL, isEnabled.toString());
+        }
+
+        return filter.and(
+            'type',
+            Operator.EQUAL,
+            released ?
+                Config.integrations.actions.released as Array<string> :
+                Config.integrations.actions.experimental as Array<string>
+        );
+    }, [ released ]);
+
     const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
     const exportIntegrationsQuery = useListIntegrationPQuery();

@@ -8,6 +8,7 @@ import {
     ServerIntegrationResponse
 } from '../../Integration';
 import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
+import EndpointType = Schemas.EndpointType;
 
 describe('src/types/adapters/IntegrationAdapter', () => {
     describe('toIntegration', () => {
@@ -71,7 +72,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 enabled: true,
                 name: 'abc',
                 description: 'dragons be here',
-                type: undefined as unknown as IntegrationType,
+                type: undefined as unknown as EndpointType,
                 properties: {
                     url: 'https://foobarbaz.com',
                     disable_ssl_verification: false,

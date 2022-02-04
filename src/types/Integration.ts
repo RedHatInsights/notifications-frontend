@@ -2,16 +2,24 @@ import { Schemas } from '../generated/OpenapiIntegrations';
 import { UUID } from './Notification';
 
 // Integrations that exist
+// Value should always be type:sub_type or only type if doesn't use sub_types
 export enum IntegrationType {
     WEBHOOK = 'webhook',
-    CAMEL = 'camel',
-    EMAIL_SUBSCRIPTION = 'email_subscription'
+    EMAIL_SUBSCRIPTION = 'email_subscription',
+    SPLUNK = 'camel:splunk'
 }
 
 export const UserIntegrationType = {
     WEBHOOK: IntegrationType.WEBHOOK,
-    CAMEL: IntegrationType.CAMEL
+    SPLUNK: IntegrationType.SPLUNK
 } as const;
+
+export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;
+export type CamelIntegrationType = Subtypes<IntegrationType, 'camel'>;
+
+export const isCamelType = (type?: IntegrationType): type is CamelIntegrationType => !!type && type.startsWith('camel:');
+export const isCamelIntegrationType = (integration: Partial<Integration>): integration is IntegrationCamel =>
+    !!integration.type && isCamelType(integration.type);
 
 export type UserIntegrationType = (typeof UserIntegrationType)[keyof typeof UserIntegrationType];
 
@@ -30,12 +38,11 @@ export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK
     method: Schemas.HttpType;
 }
 
-export interface IntegrationCamel extends IntegrationBase<IntegrationType.CAMEL> {
-    type: IntegrationType.CAMEL;
+export interface IntegrationCamel extends IntegrationBase<CamelIntegrationType> {
+    type: CamelIntegrationType;
     url: string;
     sslVerificationEnabled: boolean;
     secretToken?: string;
-    subType?: string;
     basicAuth?: {
         user: string;
         pass: string;

@@ -1,29 +1,28 @@
 import { FormSelectOption } from '@patternfly/react-core';
-import { Form, FormSelect, FormTextInput, getInsights, OuiaComponentProps, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
+import { Form, FormSelect, FormTextInput, OuiaComponentProps, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 
-import { Messages } from '../../properties/Messages';
+import Config from '../../config/Config';
 import { maxIntegrationNameLength } from '../../schemas/Integrations/Integration';
-import { isStagingOrProd } from '../../types/Environments';
-import { IntegrationType, NewUserIntegration } from '../../types/Integration';
+import { isReleased } from '../../types/Environments';
+import { NewUserIntegration } from '../../types/Integration';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 
 export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (props) => {
 
     const { values } = useFormikContext<NewUserIntegration>();
-    const insights = getInsights();
+    const released = isReleased();
 
     const options = React.useMemo(() => {
-        const options = isStagingOrProd(insights) ? [ IntegrationType.WEBHOOK ] : [
-            IntegrationType.WEBHOOK,
-            IntegrationType.CAMEL
-        ];
+        const options = released ?
+            Config.integrations.actions.released :
+            Config.integrations.actions.experimental;
 
         return options
-        .map(type => (<FormSelectOption key={ type } label={ Messages.components.integrations.integrationType[type] } value={ type } />));
-    }, [ insights ]);
+        .map(type => (<FormSelectOption key={ type } label={ Config.integrations.types[type].name } value={ type } />));
+    }, [ released ]);
 
     return (
         <Form { ...getOuiaProps('Integrations/Form', props) }>

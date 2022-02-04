@@ -1,26 +1,92 @@
 import { DeepReadonly } from 'ts-essentials';
 
-import { IntegrationType } from '../types/Integration';
+import { IntegrationType, UserIntegrationType } from '../types/Integration';
+import { NotificationType } from '../types/Notification';
 
 const apiVersion = 'v1.0';
 const apiBaseUrl = `/api/notifications/${apiVersion}`;
 
 export const withBaseUrl = (path: string) => `${apiBaseUrl}${path}`;
 
+interface IntegrationTypeConfigBase {
+    name: string;
+}
+
+interface IntegrationTypeConfig extends IntegrationTypeConfigBase {
+    action: string;
+}
+
+interface NotificationTypeConfig {
+    name: string;
+}
+
+const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
+    [IntegrationType.SPLUNK]: {
+        name: 'Splunk'
+    },
+    [IntegrationType.WEBHOOK]: {
+        name: 'Webhook'
+    },
+    [IntegrationType.EMAIL_SUBSCRIPTION]: {
+        name: 'Email'
+    }
+};
+
+const notificationTypes: Record<NotificationType, NotificationTypeConfig> = {
+    [NotificationType.EMAIL_SUBSCRIPTION]: {
+        name: 'Send an email'
+    },
+    [NotificationType.DRAWER]: {
+        name: 'Send to notification drawer'
+    },
+    [NotificationType.INTEGRATION]: {
+        name: 'Integration'
+    }
+};
+
+const computeIntegrationConfig = (base: Record<IntegrationType, IntegrationTypeConfigBase>) : Record<IntegrationType, IntegrationTypeConfig> => {
+    const complete = {} as Record<IntegrationType, IntegrationTypeConfig>;
+
+    const transform = (type: IntegrationType, element: IntegrationTypeConfigBase): IntegrationTypeConfig => ({
+        ...element,
+        action: type === IntegrationType.EMAIL_SUBSCRIPTION ? element.name : `Integration: ${element.name}`
+    });
+
+    Object.keys(base).forEach((key) => {
+        complete[key] = transform(key as IntegrationType, base[key]);
+    });
+
+    return complete;
+};
+
 const Config = {
     integrations: {
         subAppId: 'integrations',
-        title: 'Integrations | Settings'
+        title: 'Integrations | Settings',
+        types: computeIntegrationConfig(integrationTypes),
+        actions: {
+            released: [
+                UserIntegrationType.WEBHOOK
+            ],
+            experimental: [
+                UserIntegrationType.WEBHOOK,
+                UserIntegrationType.SPLUNK
+            ]
+        }
     },
     notifications: {
         subAppId: 'notifications',
-        title: 'Notifications | Settings'
+        title: 'Notifications | Settings',
+        types: notificationTypes,
+        actions: {
+            released: [
+                NotificationType.EMAIL_SUBSCRIPTION
+            ],
+            experimental: [
+                NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER
+            ]
+        }
     },
-    integrationNames: {
-        [IntegrationType.CAMEL]: 'Integration: Camel',
-        [IntegrationType.WEBHOOK]: 'Integration: Webhook',
-        [IntegrationType.EMAIL_SUBSCRIPTION]: 'Email'
-    } as Record<IntegrationType, string>,
     pages: {
     },
     paging: {

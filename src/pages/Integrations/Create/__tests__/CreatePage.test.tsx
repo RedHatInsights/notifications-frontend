@@ -6,7 +6,7 @@ import * as React from 'react';
 
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { Messages } from '../../../../properties/Messages';
+import Config from '../../../../config/Config';
 import { IntegrationType } from '../../../../types/Integration';
 import { CreatePage } from '../CreatePage';
 
@@ -46,7 +46,7 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 isEdit={ false }
             />);
         await waitForAsyncEvents();
-        const firstIntegrationTypeDisplayName = Messages.components.integrations.integrationType[Object.values(IntegrationType)[0]];
+        const firstIntegrationTypeDisplayName = Config.integrations.types[Object.values(IntegrationType)[0]].name;
         expect(screen.getByDisplayValue(firstIntegrationTypeDisplayName)).toBeTruthy();
     });
 
