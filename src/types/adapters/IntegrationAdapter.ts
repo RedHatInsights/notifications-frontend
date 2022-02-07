@@ -47,6 +47,7 @@ type NotNullType = {
 }
 
 const notNull: NotNullType = <T>(value: T | undefined | null, defaultValue?: T): T | undefined => value === null ? defaultValue : value;
+const toSecretToken = (secretToken: string | undefined | null): string | undefined => secretToken === '' ? undefined : notNull(secretToken);
 
 const toIntegrationWebhook = (
     integrationBase: IntegrationBase<IntegrationType.WEBHOOK>,
@@ -54,7 +55,7 @@ const toIntegrationWebhook = (
     ...integrationBase,
     url: properties?.url ?? '',
     sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
-    secretToken: notNull(properties?.secret_token),
+    secretToken: toSecretToken(properties?.secret_token),
     method: properties?.method ?? Schemas.HttpType.Enum.GET
 });
 
@@ -64,7 +65,7 @@ const toIntegrationCamel = (
     ...integrationBase,
     url: properties?.url ?? '',
     sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
-    secretToken: notNull(properties?.secret_token),
+    secretToken: toSecretToken(properties?.secret_token),
     basicAuth: properties?.basic_authentication === null ?
         undefined
         :
@@ -133,7 +134,7 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
         return {
             url: integrationCamel.url,
             disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
-            secret_token: integrationCamel.secretToken,
+            secret_token: toSecretToken(integrationCamel.secretToken),
             basic_authentication: {
                 username: integrationCamel.basicAuth?.user,
                 password: integrationCamel.basicAuth?.pass
@@ -149,7 +150,7 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 url: integrationHttp.url,
                 method: integrationHttp.method,
                 disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
-                secret_token: integrationHttp.secretToken
+                secret_token: toSecretToken(integrationHttp.secretToken)
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;
