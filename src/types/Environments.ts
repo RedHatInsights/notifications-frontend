@@ -18,6 +18,11 @@ export const stagingStableAndAnyProd: Array<Environment> = [
     'prod'
 ];
 
+export const staging: Array<Environment> = [
+    'stage',
+    'stage-beta'
+];
+
 export const isStagingOrProd = (insights: InsightsType) => {
     return stagingAndProd.includes(getInsightsEnvironment(insights));
 };
