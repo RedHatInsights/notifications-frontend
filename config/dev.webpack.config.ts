@@ -7,9 +7,11 @@ import { updateTsLoaderRule } from './common.webpack.config';
 const { config: webpackConfig, plugins } = config({
     rootFolder: resolve(__dirname, '../'),
     debug: true,
-    https: true,
     useFileHash: false,
+    useProxy: true,
     deployment: process.env.BETA ? 'beta/apps' : 'apps',
+    appUrl: process.env.BETA ? '/beta/settings/notifications' : '/settings/notifications',
+    env: process.env.BETA ? 'stage-beta' : 'stage-stable',
     port: 8003
 });
 
