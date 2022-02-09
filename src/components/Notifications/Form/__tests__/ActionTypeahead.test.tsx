@@ -57,7 +57,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
 
         expect(screen.queryByText(/send an email/i)).not.toBeInTheDocument();
         expect(screen.queryByText(/integration: webhook/i)).toBeInTheDocument();
-        expect(screen.queryByText(/integration: camel/i)).toBeInTheDocument();
+        expect(screen.queryByText(/integration: splunk/i)).toBeInTheDocument();
     });
 
     it('Calls actionSelected when selecting any action', async () => {

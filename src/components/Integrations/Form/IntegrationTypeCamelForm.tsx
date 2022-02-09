@@ -6,17 +6,8 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 
 export const IntegrationTypeCamelForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
-    // <!-- this should be a dropdown -->
     return (
         <div className="pf-c-form" { ...getOuiaProps('Integrations/HttpForm', props) } >
-            <FormTextInput
-                isRequired={ true }
-                label="Sub type"
-                type="text"
-                name="subType"
-                id="integration-type-camel-type"
-                ouiaId={ ouiaIdConcat(props.ouiaId, 'camel-type') }
-            />
             <FormTextInput
                 isRequired={ true }
                 label="Endpoint URL"

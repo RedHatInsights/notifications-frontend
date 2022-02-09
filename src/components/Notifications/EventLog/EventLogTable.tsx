@@ -8,7 +8,7 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
-import { GetIntegrationRecipient, IntegrationType } from '../../../types/Integration';
+import { GetIntegrationRecipient } from '../../../types/Integration';
 import { UtcDate } from '../../UtcDate';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
 
@@ -28,8 +28,6 @@ export enum EventLogTableColumns {
     APPLICATION,
     DATE
 }
-
-const actionLabelMap: Record<IntegrationType, string> = Config.integrationNames;
 
 const labelClassName = style({
     cursor: 'pointer'
@@ -113,7 +111,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                                         className={ labelClassName }
                                         { ...toLabelProps(a) }
                                     >
-                                        { actionLabelMap[a.endpointType] }
+                                        { Config.integrations.types[a.endpointType].action }
                                     </Label>
                                 </Popover>))}
                             </LabelGroup>

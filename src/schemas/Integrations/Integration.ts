@@ -3,10 +3,14 @@ import Lazy from 'yup/lib/Lazy';
 
 import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
+    CamelIntegrationType,
     IntegrationCamel,
     IntegrationHttp,
-    IntegrationType, NewIntegration,
-    NewIntegrationBase, NewIntegrationTemplate
+    IntegrationType,
+    isCamelType,
+    NewIntegration,
+    NewIntegrationBase,
+    NewIntegrationTemplate
 } from '../../types/Integration';
 
 export const maxIntegrationNameLength = 150;
@@ -14,7 +18,7 @@ export const maxIntegrationNameLength = 150;
 export const IntegrationSchemaBase: Yup.SchemaOf<NewIntegrationBase> = Yup.object({
     id: Yup.string().optional(),
     name: Yup.string().required('Write a name for this Integration.').max(maxIntegrationNameLength).trim(),
-    type: Yup.mixed<IntegrationType>().oneOf([ IntegrationType.WEBHOOK, IntegrationType.CAMEL ]).default(IntegrationType.WEBHOOK).optional(),
+    type: Yup.mixed<IntegrationType>().oneOf(Object.values(IntegrationType)).default(IntegrationType.WEBHOOK).optional(),
     isEnabled: Yup.boolean().default(true).required()
 });
 
@@ -27,11 +31,12 @@ export const IntegrationHttpSchema: Yup.SchemaOf<NewIntegrationTemplate<Integrat
 }));
 
 export const IntegrationCamelSchema: Yup.SchemaOf<NewIntegrationTemplate<IntegrationCamel>> = IntegrationSchemaBase.concat(Yup.object().shape({
-    type: Yup.mixed<IntegrationType.CAMEL>().oneOf([ IntegrationType.CAMEL ]).required(),
+    type: Yup.mixed<CamelIntegrationType>().oneOf(
+        Object.values(IntegrationType).filter(v => isCamelType(v)) as Array<CamelIntegrationType>
+    ).required(),
     url: Yup.string().url().required('Provide a url/host for this Integration.'),
     sslVerificationEnabled: Yup.boolean().default(true),
     secretToken: Yup.string().notRequired(),
-    subType: Yup.string().required('Provide a camel sub-type'),
     basicAuth: Yup.object().shape({
         user: Yup.string().when('pass',
             {
@@ -64,7 +69,7 @@ export const IntegrationSchema: Lazy<Yup.SchemaOf<NewIntegration | NewIntegratio
             return IntegrationHttpSchema;
         }
 
-        if (value.type === IntegrationType.CAMEL) {
+        if (isCamelType(value.type)) {
             return IntegrationCamelSchema;
         }
     }

@@ -12,7 +12,6 @@ import Config from '../../../config/Config';
 import { NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient, IntegrationType } from '../../../types/Integration';
 
-const actionLabelMap: Record<IntegrationType, string> = Config.integrationNames;
 const headerClass = style({
     minWidth: important('90px')
 });
@@ -79,7 +78,7 @@ export const EventLogActionPopoverContent: React.FunctionComponent<EventLogActio
             </Thead>
             <Tbody>
                 <Tr>
-                    <Td>{ actionLabelMap[props.action.endpointType] }</Td>
+                    <Td>{ Config.integrations.types[props.action.endpointType].action }</Td>
                     <Td>
                         { id ? recipient.loading ?  <Skeleton width="150px"  /> : recipient.value : (
                             <Tooltip content="The integration no longer exists, it could have been deleted.">

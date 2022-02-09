@@ -1,8 +1,9 @@
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { getInsights, OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { isStagingOrProd } from '../../../types/Environments';
+import Config from '../../../config/Config';
+import { isReleased } from '../../../types/Environments';
 import { UserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -65,19 +66,19 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
         });
     }, [ props.action ]);
 
-    const showAsProd = isStagingOrProd(getInsights());
+    const released = isReleased();
 
     const selectableOptions = React.useMemo(() => {
-        const notificationTypes = showAsProd ?
-            [ NotificationType.EMAIL_SUBSCRIPTION ]
-            : [ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER ];
-        const integrationTypes = showAsProd ?
-            [ UserIntegrationType.WEBHOOK ]
-            : [ UserIntegrationType.WEBHOOK, UserIntegrationType.CAMEL ];
+        const notificationTypes = released ?
+            Config.notifications.actions.released :
+            Config.notifications.actions.experimental;
+        const integrationTypes = released ?
+            Config.integrations.actions.released :
+            Config.integrations.actions.experimental;
 
         return getSelectOptions(notificationTypes, integrationTypes, props.selectedNotifications)
         .map(o => <SelectOption key={ o.toString() } value={ o } />);
-    }, [ showAsProd, props.selectedNotifications ]);
+    }, [ released, props.selectedNotifications ]);
 
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >
