@@ -22,37 +22,10 @@ Notifications frontend for Red Hat Insights
 
 ## Running locally
 
-To run locally, we need the following:
+You need to configure your `/etc/hosts` to have the hosts for `prod.foo` and `stage.foo`.
+Check or execute [this](https://raw.githubusercontent.com/RedHatInsights/insights-proxy/master/scripts/patch-etc-hosts.sh) script for details.
 
-1. Run insights proxy
-2. Run `notifications-frontend` application.
-
-### Running insights proxy
-
-In order to run it locally, you need to git clone
-[insights-proxy](https://github.com/RedHatInsights/insights-proxy) repository and set PROXY_PATH to your local clone.
-
-There are two modes to run the proxy, one is used when you want to provide your own backend and engine for development or
-testing of the components. You do that by starting the proxy by running:
-
-NOTE: You need to do this once in `insights-proxy repository`: `sudo bash scripts/patch-etc-hosts.sh` to modify `/etc/hosts` on your machine
-
-```shell
-yarn proxy
-```
-
-The other mode is when you want to hook to the whole environment (ci, qa, etc) only replacing the UI.
-In this mode, the UI will talk to servers in the environment you choose (depending the url). This is convenient when
-you need to use the data that is already there.
-To do that, simple start the proxy by running:
-
-```shell
-yarn proxy-ui
-```
-
-### Running notifications-frontend
-
-Install the dependencies:
+Install the dependencies using `yarn``:
 
 ```shell
 yarn
@@ -64,12 +37,9 @@ and run the application:
 yarn start
 ```
 
-After that, you can head to the [dev page](https://ci.foo.redhat.com:1337/insights/notifications),
-[qa page](https://qa.foo.redhat.com:1337/insights/notifications) or
- [prod page](https://prod.foo.redhat.com:1337/beta/insights/notifications).
-
-You will likely need to accept the certificates of these pages and the
-[websocket page](https://localhost:8002/sockjs-node/info)
+After that, you can head to the page show (stage by default).
+You can set the environment and if you want to use your local development server by copying the file [env.sample](./env.sample) to `.env`
+and starting again by calling `yarn start`.
 
 For more info refer to [Insights Frontend Starter App README](https://github.com/RedHatInsights/insights-frontend-starter-app/blob/master/README.md)
 
