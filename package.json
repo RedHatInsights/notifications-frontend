@@ -128,7 +128,7 @@
     "lint:ts": "eslint --ext js,ts,tsx config src",
     "lint:ts:fix": "eslint --ext js,ts,tsx config src --fix",
     "lint:sass": "stylelint 'src/**/*.scss' --config .stylelintrc.json",
-    "start": "NODE_ENV=development env-cmd webpack serve --config config/dev.webpack.config.ts",
+    "start": "NODE_ENV=development env-cmd --silent webpack serve --config config/dev.webpack.config.ts",
     "build:prod": "NODE_ENV=production webpack --config config/prod.webpack.config.ts",
     "ci": "npm-run-all build:prod lint 'test --coverage --forceExit --maxWorkers=4 --detectOpenHandles'",
     "verify": "npm-run-all build:prod lint test",
