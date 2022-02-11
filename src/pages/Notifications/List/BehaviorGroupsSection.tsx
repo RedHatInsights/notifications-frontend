@@ -4,12 +4,14 @@ import {
     ButtonVariant,
     ExpandableSection,
     ExpandableSectionToggle,
+    Popover,
     SearchInput, Split,
     SplitItem,
     Stack,
     StackItem,
     Title, Tooltip
 } from '@patternfly/react-core';
+import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 import { global_BackgroundColor_100, global_palette_black_1000, global_spacer_lg } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -170,6 +172,19 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                     />
                             ) }
                         </SplitItem>
+                        <SplitItem>
+                            <Popover
+                                position='right'
+                                headerContent={ <div>Behavior groups</div> }
+                                bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure
+                                    which notification actions different users will be able to receive. Once you&apos;ve created a behavior group,
+                                    you can assign it to an event using the Events table below.
+                                </div> }
+                                footerContent={ <div> You may also prevent users from changing assigned actions by locking action/recipient pairings
+                                    when creating or editing behavior groups.</div> }>
+                                <OutlinedQuestionCircleIcon color={ 'pf-global-black' } />
+                            </Popover>
+                        </SplitItem>
                     </Split>
                 </ExpandableSectionToggle>
             </div>
@@ -181,12 +196,6 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                 isDetached
             >
                 <Stack hasGutter>
-                    <StackItem>
-                        Configure default actions for notifications recipients. Keep in mind that users will be able
-                        to change settings for all entitled events in User Preferences. You can prevent users from
-                        changing assigned actions by locking action / recipient pairings when creating or editing
-                        behavior groups.
-                    </StackItem>
                     { (props.behaviorGroupContent.isLoading ||
                         props.behaviorGroupContent.hasError ||
                         props.behaviorGroupContent.content.length > 0) && (
