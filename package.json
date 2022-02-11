@@ -94,7 +94,7 @@
     "jest": "27.0.4",
     "jest-mock": "27.0.3",
     "jest-transform-stub": "2.0.0",
-    "karma": "6.3.3",
+    "karma": "6.3.14",
     "karma-chrome-launcher": "3.1.0",
     "karma-firefox-launcher": "2.1.1",
     "karma-jasmine": "4.0.1",
