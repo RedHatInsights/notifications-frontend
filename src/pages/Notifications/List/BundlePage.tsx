@@ -30,7 +30,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     const pageHeaderTitleProps = {
         className: displayInlineClassName,
-        title: Messages.pages.notifications.list.title + props.bundle.displayName
+        title: `${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`
     };
 
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
