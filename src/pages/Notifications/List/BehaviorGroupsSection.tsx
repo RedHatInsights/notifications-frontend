@@ -175,6 +175,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                         <SplitItem>
                             <Popover
                                 position='right'
+                                appendTo={ () => document.body }
                                 headerContent={ <div>Behavior groups</div> }
                                 bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure
                                     which notification actions different users will be able to receive. Once you&apos;ve created a behavior group,

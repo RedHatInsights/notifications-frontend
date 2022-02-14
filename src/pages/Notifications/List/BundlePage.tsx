@@ -41,7 +41,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     <SplitItem isFilled><PageHeaderTitle { ...pageHeaderTitleProps } />
                         <StackItem>This service allows you to configure which notifications different users within your organization
                             will be entitled to receiving. To do this, create behavior groups and apply them to different events.
-                            Users will be able to opt-in or out of receiving authorized event notifications in their User Preferences. </StackItem>
+                            Users will be able to opt-in or out of receiving authorized event notifications in their
+                        <Link to={ `/user-preferences/notifications/${props.bundle.name}` }> User Preferences</Link>. </StackItem>
                     </SplitItem>
                     <SplitItem>
                         <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProdStable }>
