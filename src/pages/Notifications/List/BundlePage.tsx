@@ -3,6 +3,7 @@ import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/fronte
 import {
     getInsights,
     InsightsEnvDetector,
+    localUrl,
     RenderIfFalse
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
@@ -42,7 +43,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                         <StackItem>This service allows you to configure which notifications different users within your organization
                             will be entitled to receiving. To do this, create behavior groups and apply them to different events.
                             Users will be able to opt-in or out of receiving authorized event notifications in their
-                        <Link to={ `/user-preferences/notifications/${props.bundle.name}` }> User Preferences</Link>. </StackItem>
+                        <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
+                            getInsights().chrome.isBeta()) }> User Preferences</a>. </StackItem>
                     </SplitItem>
                     <SplitItem>
                         <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProdStable }>
