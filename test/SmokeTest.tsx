@@ -241,6 +241,7 @@ describe('Smoketest', () => {
 
         await waitForAsyncEvents();
 
-        return screen.findByText('Notifications').then(value => expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
+        return screen.findByText('Notifications | Red Hat Enterprise Linux').then(value =>
+            expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
     });
 });
