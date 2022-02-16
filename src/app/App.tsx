@@ -3,7 +3,7 @@ import './App.scss';
 import { Switch } from '@patternfly/react-core';
 import { Maintenance, NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-import { AppSkeleton, getInsights, InsightsEnvDetector, RenderIfTrue, toUtc } from '@redhat-cloud-services/insights-common-typescript';
+import { AppSkeleton, getInsights, InsightsEnvDetector, localUrl, RenderIfTrue, toUtc } from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
@@ -14,6 +14,7 @@ import Config from '../config/Config';
 import messages from '../properties/DefinedMessages';
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
+import { Facet } from '../types/Notification';
 import { ServerStatus } from '../types/Server';
 import { getSubApp } from '../utils/Basename';
 import { AppContext } from './AppContext';
@@ -27,12 +28,21 @@ const switchClassname = style({
     padding: 8
 });
 
-const App: React.ComponentType = () => {
+interface GetBundleProps {
+    bundles?: Facet;
+}
+
+const App: React.ComponentType<GetBundleProps> = (props) => {
+
     const intl = useIntl();
     const { rbac, server, isOrgAdmin } = useApp();
     const location = useLocation();
     const insights = getInsights();
     const [ usingExperimental, setUsingExperimental ] = React.useState<boolean>(false);
+    const userPreferences = <a href={ localUrl(`/user-preferences/notifications/${ props.bundles?.name }`,
+        getInsights().chrome.isBeta()) }> User Preferences </a>;
+    const myUserAccess = <a href={ localUrl(`/settings/my-user-access?bundle=${ props.bundles?.name }`,
+        getInsights().chrome.isBeta()) }> User Preferences </a>;
 
     const serviceName = React.useMemo(() => {
         switch (getSubApp(location.pathname)) {
@@ -45,13 +55,13 @@ const App: React.ComponentType = () => {
         }
     }, [ intl, location.pathname ]);
 
-    const hasReadPermissions = React.useMemo(() => {
+    const hasWritePermissions = React.useMemo(() => {
         const appId = getSubApp(location.pathname);
         switch (appId) {
             case Config.integrations.subAppId:
-                return rbac?.canReadIntegrationsEndpoints;
+                return rbac?.canWriteIntegrationsEndpoints;
             case Config.notifications.subAppId:
-                return rbac?.canReadNotifications;
+                return rbac?.canWriteNotifications;
         }
 
         return false;
@@ -97,7 +107,7 @@ const App: React.ComponentType = () => {
             server,
             isOrgAdmin: !!isOrgAdmin
         } }>
-            { hasReadPermissions ? (
+            { hasWritePermissions ? (
                 <>
                     <NotificationsPortal />
                     <InsightsEnvDetector insights={ insights } onEnvironment={ staging }>
@@ -114,7 +124,14 @@ const App: React.ComponentType = () => {
                     <Routes />
                 </>
             ) : (
-                <NotAuthorized serviceName={ serviceName } />
+                <>
+                    <NotAuthorized
+                        description={ `Contact your organization administrator for more information or visit
+                        ${ myUserAccess } to learn more about your permissions. To manage your notifications,
+                        go to your ${ userPreferences }.` }
+                        serviceName={ serviceName }
+                    />
+                </>
             ) }
         </AppContext.Provider>
     );
