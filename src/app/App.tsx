@@ -62,9 +62,9 @@ const App: React.ComponentType = () => {
         const appId = getSubApp(location.pathname);
         switch (appId) {
             case Config.integrations.subAppId:
-                return rbac?.canWriteIntegrationsEndpoints;
+                return rbac?.canReadIntegrationsEndpoints;
             case Config.notifications.subAppId:
-                return rbac?.canWriteNotifications;
+                return rbac?.canReadNotifications;
         }
 
         return false;
