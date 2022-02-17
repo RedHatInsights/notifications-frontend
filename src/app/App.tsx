@@ -1,6 +1,6 @@
 import './App.scss';
 
-import { Switch } from '@patternfly/react-core';
+import { Split, SplitItem, StackItem, Switch } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { Maintenance, NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
@@ -62,9 +62,9 @@ const App: React.ComponentType = () => {
         const appId = getSubApp(location.pathname);
         switch (appId) {
             case Config.integrations.subAppId:
-                return rbac?.canReadIntegrationsEndpoints;
+                return rbac?.canWriteIntegrationsEndpoints;
             case Config.notifications.subAppId:
-                return rbac?.canReadNotifications;
+                return rbac?.canWriteNotifications;
         }
 
         return false;
@@ -130,7 +130,14 @@ const App: React.ComponentType = () => {
                 <>
 
                     <PageHeader>
-                        <PageHeaderTitle { ...pageHeaderTitleProps }></PageHeaderTitle>
+                        <Split>
+                            <SplitItem isFilled>
+                                <PageHeaderTitle { ...pageHeaderTitleProps }></PageHeaderTitle>
+                                <StackItem>This service allows you to configure which notifications different users within your organization
+                            will be entitled to receiving. To do this, create behavior groups and apply them to different events.
+                            Users will be able to opt-in or out of receiving authorized event notifications in their { userPreferences }. </StackItem>
+                            </SplitItem>
+                        </Split>
                     </PageHeader>
                     <Main>
                         <NotAuthorized
