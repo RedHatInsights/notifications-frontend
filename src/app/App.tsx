@@ -1,6 +1,7 @@
 import './App.scss';
 
 import { Switch } from '@patternfly/react-core';
+import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { Maintenance, NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
 import { AppSkeleton, getInsights, InsightsEnvDetector, localUrl, RenderIfTrue, toUtc } from '@redhat-cloud-services/insights-common-typescript';
@@ -53,13 +54,17 @@ const App: React.ComponentType = () => {
         }
     }, [ intl, location.pathname ]);
 
+    const pageHeaderTitleProps = {
+        title: `${ serviceName }`
+    };
+
     const hasReadPermissions = React.useMemo(() => {
         const appId = getSubApp(location.pathname);
         switch (appId) {
             case Config.integrations.subAppId:
-                return rbac?.canReadIntegrationsEndpoints;
+                return rbac?.canWriteIntegrationsEndpoints;
             case Config.notifications.subAppId:
-                return rbac?.canReadNotifications;
+                return rbac?.canWriteNotifications;
         }
 
         return false;
@@ -123,12 +128,18 @@ const App: React.ComponentType = () => {
                 </>
             ) : (
                 <>
-                    <NotAuthorized
-                        description={ <> Contact your organization administrator for more information or visit
-                            { myUserAccess } to learn more about your permissions. To manage your notifications,
+
+                    <PageHeader>
+                        <PageHeaderTitle { ...pageHeaderTitleProps }></PageHeaderTitle>
+                    </PageHeader>
+                    <Main>
+                        <NotAuthorized
+                            description={ <> Contact your organization administrator for more information or visit
+                                { myUserAccess } to learn more about your permissions. To manage your notifications,
                         go to your { userPreferences }. </> }
-                        serviceName={ serviceName }
-                    />
+                            serviceName={ serviceName }
+                        />
+                    </Main>
                 </>
             ) }
         </AppContext.Provider>
