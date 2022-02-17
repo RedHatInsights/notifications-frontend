@@ -24,8 +24,8 @@ export namespace Schemas {
 
   export const BasicAuthentication = zodSchemaBasicAuthentication();
   export type BasicAuthentication = {
-    password?: string | undefined | null;
-    username?: string | undefined | null;
+    password: string;
+    username: string;
   };
 
   export const BehaviorGroup = zodSchemaBehaviorGroup();
@@ -257,8 +257,8 @@ export namespace Schemas {
   function zodSchemaBasicAuthentication() {
       return z
       .object({
-          password: z.string().optional().nullable(),
-          username: z.string().optional().nullable()
+          password: z.string(),
+          username: z.string()
       })
       .nonstrict();
   }
