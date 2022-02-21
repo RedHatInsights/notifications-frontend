@@ -34,7 +34,8 @@ export const useGetEvents = (page?: Page) => {
             startDate: query.filterStart as string,
             endDate: query.filterEnd as string,
             eventTypeDisplayName: query.filterEvent as string,
-            sortBy: `${query.sortColumn}:${query.sortDirection}`
+            sortBy: `${query.sortColumn}:${query.sortDirection}`,
+            includeActions: true
         })),
         eventDecoder
     );
