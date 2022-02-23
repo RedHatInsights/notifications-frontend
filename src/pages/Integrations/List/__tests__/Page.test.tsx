@@ -7,9 +7,9 @@ import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { ConnectedIntegrationsListPage } from '../Page';
 import Endpoint = Schemas.Endpoint;
+import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 
 describe('src/pages/Integrations/List/Page', () => {
     beforeEach(() => {

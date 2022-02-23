@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
+import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { fn } from 'jest-mock';
 import * as React from 'react';
 import { IntlProvider } from 'react-intl';

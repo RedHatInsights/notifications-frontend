@@ -1,6 +1,6 @@
+import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 import { fn } from 'jest-mock';
 import * as React from 'react';
 

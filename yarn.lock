@@ -1714,6 +1714,11 @@
     "@redhat-cloud-services/frontend-components-utilities" "*"
     redux-promise-middleware "6.1.2"
 
+"@redhat-cloud-services/frontend-components-testing@0.1.0":
+  version "0.1.0"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-testing/-/frontend-components-testing-0.1.0.tgz#c066f6c50fb0e238ec0c4a7dfb6d532fb2ec5290"
+  integrity sha512-sdCp3x6HWEaK2qDYXaZkcm5hscY7p1d8BXpi8IxvMXkHV40xn2JYjk/06hSJ/2mcHHxVcLiOvrNeajsUft+pAA==
+
 "@redhat-cloud-services/frontend-components-translations@3.2.2":
   version "3.2.2"
   resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-translations/-/frontend-components-translations-3.2.2.tgz#bb4b39514b80bfb1722958f42dfb4c5b3ea5938d"
