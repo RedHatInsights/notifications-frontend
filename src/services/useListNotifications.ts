@@ -21,7 +21,10 @@ const decoder = validationResponseTransformer((payload: Operations.NotificationS
         return validatedResponse(
             'eventTypesArray',
             200,
-            toNotifications(payload.value),
+            {
+                ...payload.value,
+                data: toNotifications(payload.value.data)
+            },
             payload.errors
         );
     }

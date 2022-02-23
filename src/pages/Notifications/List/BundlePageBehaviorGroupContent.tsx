@@ -1,6 +1,6 @@
 import { global_spacer_xl } from '@patternfly/react-tokens';
 import { Section } from '@redhat-cloud-services/frontend-components';
-import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
+import { ExporterType, Filter } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -14,6 +14,11 @@ import { useBehaviorGroupContent } from './useBehaviorGroupContent';
 import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotificationRows';
 import { useNotificationFilter } from './useNotificationFilter';
 import { useNotificationPage } from './useNotificationPage';
+import { usePage } from '../../../hooks/usePage';
+import { NotificationFilters } from '../../../components/Notifications/Filter';
+import Config from '../../../config/Config';
+import { useCallback } from 'react';
+import { EventLogTableColumns, SortDirection } from '../../../components/Notifications/EventLog/EventLogTable';
 
 interface BundlePageBehaviorGroupContentProps {
     applications: Array<Facet>;
@@ -24,7 +29,14 @@ const behaviorGroupSectionClassName = style({
     marginBottom: global_spacer_xl.var
 });
 
-const emptyArray = [];
+const noEvents = [];
+
+const useFilterBuilder = (bundle: Facet, appFilterOptions: Array<Facet>) => {
+    return useCallback((filters?: NotificationFilters) => {
+        const filter = new Filter();
+        return filter;
+    }, [ bundle, appFilterOptions ]);
+};
 
 export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageBehaviorGroupContentProps> = props => {
 
@@ -37,8 +49,25 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
         console.log('Export to', type);
     }, []);
 
+    const filterBuilder = useFilterBuilder(props.bundle, props.applications);
+    // sort
+    const [ sortDirection, setSortDirection ] = React.useState<SortDirection>('desc');
+    const [ sortColumn, setSortColumn ] = React.useState<EventLogTableColumns>(EventLogTableColumns.DATE);
+
+    const notificationsPage = usePage(Config.paging.defaultPerPage, filterBuilder, notificationsFilter, )
+
     const notificationPage = useNotificationPage(notificationsFilter.debouncedFilters, props.bundle, props.applications, 10);
     const useNotifications = useListNotifications(notificationPage.page);
+
+    const notificationsPageData = React.useMemo(() => {
+        const payload = useNotifications.payload;
+        if (payload) {
+
+        }
+
+        return emptyPage;
+    }, [ useNotifications.payload ]);
+
     const {
         rows: notificationRows,
         updateBehaviorGroupLink,
@@ -47,7 +76,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
         cancelEditMode,
         updateBehaviorGroups
     } = useBehaviorGroupNotificationRows(
-        useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value : emptyArray
+        useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value.data : noEvents
     );
 
     const behaviorGroups = !behaviorGroupContent.isLoading && !behaviorGroupContent.hasError ? behaviorGroupContent.content : undefined;
