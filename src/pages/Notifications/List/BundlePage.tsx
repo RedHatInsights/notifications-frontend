@@ -23,7 +23,8 @@ interface NotificationListBundlePageProps {
 }
 
 const displayInlineClassName = style({
-    display: 'inline'
+    display: 'inline',
+    paddingBottom: '8px'
 });
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
@@ -40,9 +41,9 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             <PageHeader>
                 <Split>
                     <SplitItem isFilled><PageHeaderTitle { ...pageHeaderTitleProps } />
-                        <StackItem>This service allows you to configure which notifications different users within your organization
-                            will be entitled to receiving. To do this, create behavior groups and apply them to different events.
-                            Users will be able to opt-in or out of receiving authorized event notifications in their
+                        <StackItem>This service allows you to configure which notifications different
+                        users within your organization will be entitled to receiving. To do this, create behavior groups and apply
+                        them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
                         <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
                             getInsights().chrome.isBeta()) }> User Preferences</a>. </StackItem>
                     </SplitItem>

@@ -1,22 +1,16 @@
 import './App.scss';
 
-import { Split, SplitItem, StackItem, Switch } from '@patternfly/react-core';
-import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
-import { Maintenance, NotAuthorized } from '@redhat-cloud-services/frontend-components';
+import { Switch } from '@patternfly/react-core';
+import { Maintenance } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-import { AppSkeleton, getInsights, InsightsEnvDetector, localUrl, RenderIfTrue, toUtc } from '@redhat-cloud-services/insights-common-typescript';
+import { AppSkeleton, getInsights, InsightsEnvDetector, RenderIfTrue, toUtc } from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import * as React from 'react';
-import { useIntl } from 'react-intl';
-import { useLocation } from 'react-router';
 import { style } from 'typestyle';
 
-import Config from '../config/Config';
-import messages from '../properties/DefinedMessages';
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
-import { getSubApp } from '../utils/Basename';
 import { AppContext } from './AppContext';
 import { useApp } from './useApp';
 
@@ -30,45 +24,45 @@ const switchClassname = style({
 
 const App: React.ComponentType = () => {
 
-    const intl = useIntl();
+    // const intl = useIntl();
     const { rbac, server, isOrgAdmin } = useApp();
-    const location = useLocation();
+    // const location = useLocation();
     const insights = getInsights();
     const [ usingExperimental, setUsingExperimental ] = React.useState<boolean>(false);
 
-    const url = window.location.pathname;
-    const filename = url.substring(url.lastIndexOf('/') + 1);
-    const userPreferences = <a href={ localUrl(`/user-preferences/notifications/${ filename }`,
-        getInsights().chrome.isBeta()) }> User Preferences </a>;
-    const myUserAccess = <a href={ localUrl(`/settings/my-user-access?bundle=${ filename }`,
-        getInsights().chrome.isBeta()) }> My User Access </a>;
+    // const url = window.location.pathname;
+    // const bundle = url.substring(url.lastIndexOf('/') + 1);
+    // const userPreferences = <a href={ localUrl(`/user-preferences/notifications/`,
+    //     getInsights().chrome.isBeta()) }> User Preferences </a>;
+    // const myUserAccess = <a href={ localUrl(`/settings/my-user-access?bundle=${ bundle }`,
+    //     getInsights().chrome.isBeta()) }> My User Access </a>;
 
-    const serviceName = React.useMemo(() => {
-        switch (getSubApp(location.pathname)) {
-            case Config.integrations.subAppId:
-                return intl.formatMessage(messages.integrations);
-            case Config.notifications.subAppId:
-                return intl.formatMessage(messages.notifications);
-            default:
-                return '';
-        }
-    }, [ intl, location.pathname ]);
+    // const serviceName = React.useMemo(() => {
+    //     switch (getSubApp(location.pathname)) {
+    //         case Config.integrations.subAppId:
+    //             return intl.formatMessage(messages.integrations);
+    //         case Config.notifications.subAppId:
+    //             return intl.formatMessage(messages.notifications);
+    //         default:
+    //             return '';
+    //     }
+    // }, [ intl, location.pathname ]);
 
-    const pageHeaderTitleProps = {
-        title: `${ serviceName }`
-    };
+    // const pageHeaderTitleProps = {
+    //     title: `${ serviceName }`
+    // };
 
-    const hasReadPermissions = React.useMemo(() => {
-        const appId = getSubApp(location.pathname);
-        switch (appId) {
-            case Config.integrations.subAppId:
-                return rbac?.canWriteIntegrationsEndpoints;
-            case Config.notifications.subAppId:
-                return rbac?.canWriteNotifications;
-        }
+    // const hasReadPermissions = React.useMemo(() => {
+    //     const appId = getSubApp(location.pathname);
+    //     switch (appId) {
+    //         case Config.integrations.subAppId:
+    //             return rbac?.canReadIntegrationsEndpoints;
+    //         case Config.notifications.subAppId:
+    //             return rbac?.canReadNotifications;
+    //     }
 
-        return false;
-    }, [ rbac, location.pathname ]);
+    //     return false;
+    // }, [ rbac, location.pathname ]);
 
     const toggleExperimental = React.useCallback((isEnabled) => {
         if (isEnabled) {
@@ -87,7 +81,7 @@ const App: React.ComponentType = () => {
         );
     }
 
-    if (server.status === ServerStatus.MAINTENANCE) {
+    {if (server.status === ServerStatus.MAINTENANCE) {
 
         const utcStartTime = format(toUtc(server.from), utcFormat);
         const utcEndTime = format(toUtc(server.to), utcFormat);
@@ -102,7 +96,7 @@ const App: React.ComponentType = () => {
             endTime={ endTime }
             timeZone={ timezone }
         />;
-    }
+    }}
 
     return (
         <AppContext.Provider value={ {
@@ -110,45 +104,22 @@ const App: React.ComponentType = () => {
             server,
             isOrgAdmin: !!isOrgAdmin
         } }>
-            { hasReadPermissions ? (
-                <>
-                    <NotificationsPortal />
-                    <InsightsEnvDetector insights={ insights } onEnvironment={ staging }>
-                        <RenderIfTrue>
-                            <Switch
-                                className={ switchClassname }
-                                isChecked={ usingExperimental }
-                                onChange={ toggleExperimental }
-                                labelOff="Enable experimental features"
-                                label="Disable experimental features"
-                            />
-                        </RenderIfTrue>
-                    </InsightsEnvDetector>
-                    <Routes />
-                </>
-            ) : (
-                <>
-
-                    <PageHeader>
-                        <Split>
-                            <SplitItem isFilled>
-                                <PageHeaderTitle { ...pageHeaderTitleProps }></PageHeaderTitle>
-                                <StackItem>This service allows you to configure which notifications different users within your organization
-                            will be entitled to receiving. To do this, create behavior groups and apply them to different events.
-                            Users will be able to opt-in or out of receiving authorized event notifications in their { userPreferences }. </StackItem>
-                            </SplitItem>
-                        </Split>
-                    </PageHeader>
-                    <Main>
-                        <NotAuthorized
-                            description={ <> Contact your organization administrator for more information or visit
-                                { myUserAccess } to learn more about your permissions. To manage your notifications,
-                        go to your { userPreferences }. </> }
-                            serviceName={ serviceName }
+            <>
+                <NotificationsPortal />
+                <InsightsEnvDetector insights={ insights } onEnvironment={ staging }>
+                    <RenderIfTrue>
+                        <Switch
+                            className={ switchClassname }
+                            isChecked={ usingExperimental }
+                            onChange={ toggleExperimental }
+                            labelOff="Enable experimental features"
+                            label="Disable experimental features"
                         />
-                    </Main>
-                </>
-            ) }
+                    </RenderIfTrue>
+                </InsightsEnvDetector>
+                <Routes />
+            </>
+
         </AppContext.Provider>
     );
 };
