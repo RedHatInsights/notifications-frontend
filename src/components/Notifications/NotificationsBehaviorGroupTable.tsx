@@ -1,6 +1,12 @@
 import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
-import { cellWidth, IActions, ICell, IRowData, Table, TableBody, TableHeader, TableVariant } from '@patternfly/react-table';
+import {
+    TableComposable,
+    TableVariant,
+    Tbody, Td, Th,
+    Thead, ThProps, Tr
+} from '@patternfly/react-table';
+import { TdActionsType } from '@patternfly/react-table/dist/esm/components/Table/base';
 import { global_active_color_100, global_disabled_color_100, global_palette_black_600 } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -35,86 +41,15 @@ type Callbacks = {
     onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
 };
 
-const toTableRows = (
-    notifications: Array<BehaviorGroupNotificationRow>,
-    behaviorGroupContent: BehaviorGroupContent,
-    callbacks?: Callbacks) => {
-    return notifications.map((notification => ({
-        id: notification.id,
-        key: notification.id,
-        notification,
-        cells: [
-            {
-                title: <span>{ notification.eventTypeDisplayName }</span>
-            },
-            {
-                title: <span>{ notification.applicationDisplayName }</span>
-            },
-            {
-                title: notification.loadingActionStatus === 'loading' ?
-                    <Skeleton width="90%" /> :
-                    <span>
-                        <BehaviorGroupCell
-                            id={ `behavior-group-cell-${notification.id}` }
-                            notification={ notification }
-                            behaviorGroupContent={ behaviorGroupContent }
-                            selected={ notification.behaviors ?? emptyImmutableArray }
-                            onSelect={ callbacks?.onBehaviorGroupLinkUpdated }
-                            isEditMode={ notification.isEditMode }
-                        />
-                    </span>
-            }
-        ]
-    })));
-};
+const HiddenActionsToggle = () => <React.Fragment />;
 
-const cells: Array<ICell> = [
-    {
-        title: 'Event',
-        transforms: [],
-        cellFormatters: []
-    },
-    {
-        title: 'Application',
-        transforms: []
-    },
-    {
-        title: 'Behavior',
-        transforms: [ cellWidth(35) ]
-    }
-];
+const getActions = (notification: BehaviorGroupNotificationRow, callbacks?: Callbacks): TdActionsType => {
+    const isDisabled = notification.loadingActionStatus !== 'done';
 
-// This will actually silence lots of warning we are having in the console about unwanted elements.
-const EmptySpan: React.FunctionComponent<any> = _props => <span />;
-const emptySpanProducer = () => <EmptySpan />;
-
-export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
-
-    const callbacks: Callbacks | undefined = React.useMemo(() => {
-
-        if (props.onStartEditing && props.onFinishEditing && props.onCancelEditing) {
-            return {
-                onStartEditing: props.onStartEditing,
-                onFinishEditing: props.onFinishEditing,
-                onCancelEditing: props.onCancelEditing,
-                onBehaviorGroupLinkUpdated: props.onBehaviorGroupLinkUpdated
-            };
-        }
-
-        return undefined;
-    }, [ props.onStartEditing, props.onFinishEditing, props.onCancelEditing, props.onBehaviorGroupLinkUpdated ]);
-
-    const rows = React.useMemo(() => {
-        return toTableRows(props.notifications, props.behaviorGroupContent, callbacks);
-    }, [ props.notifications, props.behaviorGroupContent, callbacks ]);
-
-    const actionResolver = React.useCallback((rowData: IRowData): IActions => {
-        const notification: BehaviorGroupNotificationRow = rowData.notification;
-
-        const isDisabled = notification.loadingActionStatus !== 'done';
-
-        if (!notification.isEditMode) {
-            return [
+    if (!notification.isEditMode) {
+        return {
+            actionsToggle: HiddenActionsToggle,
+            items: [
                 {
                     key: 'edit',
                     className: actionButtonClassName,
@@ -125,10 +60,13 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                     onClick: () => callbacks?.onStartEditing(notification.id),
                     isDisabled: isDisabled || !callbacks
                 }
-            ];
-        }
+            ]
+        };
+    }
 
-        return [
+    return {
+        actionsToggle: HiddenActionsToggle,
+        items: [
             {
                 key: 'done',
                 className: actionButtonClassName,
@@ -149,21 +87,96 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                 onClick: () => callbacks?.onCancelEditing(notification.id),
                 isDisabled: isDisabled || !callbacks
             }
-        ];
-    }, [ callbacks ]);
+        ]
+    };
+};
+
+export enum NotificationsTableColumns {
+    EVENT,
+    APPLICATION,
+    BEHAVIOR
+}
+
+export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTableProps>(props => {
+
+    const callbacks: Callbacks | undefined = React.useMemo(() => {
+
+        if (props.onStartEditing && props.onFinishEditing && props.onCancelEditing) {
+            return {
+                onStartEditing: props.onStartEditing,
+                onFinishEditing: props.onFinishEditing,
+                onCancelEditing: props.onCancelEditing,
+                onBehaviorGroupLinkUpdated: props.onBehaviorGroupLinkUpdated
+            };
+        }
+
+        return undefined;
+    }, [ props.onStartEditing, props.onFinishEditing, props.onCancelEditing, props.onBehaviorGroupLinkUpdated ]);
+
+    const sortOptions: Record<NotificationsTableColumns, undefined | ThProps['sort']> = React.useMemo(() => ({
+        [NotificationsTableColumns.EVENT]: undefined,
+        [NotificationsTableColumns.APPLICATION]: undefined,
+        [NotificationsTableColumns.BEHAVIOR]: undefined
+    }), [ ]);
+
+    const rows = React.useMemo(() => {
+        const notifications = props.notifications;
+        const behaviorGroupContent = props.behaviorGroupContent;
+        return notifications.map(notification => {
+            return (
+                <Tr key={ notification.id }>
+                    <Td>{notification.eventTypeDisplayName}</Td>
+                    <Td>{notification.applicationDisplayName}</Td>
+                    <Td>{notification.loadingActionStatus === 'loading' ? (
+                        <Skeleton width="90%" />
+                    ) : (
+                        <BehaviorGroupCell
+                            id={ `behavior-group-cell-${notification.id}` }
+                            notification={ notification }
+                            behaviorGroupContent={ behaviorGroupContent }
+                            selected={ notification.behaviors ?? emptyImmutableArray }
+                            onSelect={ callbacks?.onBehaviorGroupLinkUpdated }
+                            isEditMode={ notification.isEditMode }
+                        />
+                    )}</Td>
+                    <Td
+                        actions={ getActions(notification, callbacks) }
+                    />
+                </Tr>
+            );
+        });
+    }, [ props.notifications, props.behaviorGroupContent, callbacks ]);
 
     return (
-        <Table
+        <TableComposable
             aria-label="Notifications"
-            rows={ rows }
-            cells={ cells }
-            variant={ TableVariant.compact }
-            actionResolver={ actionResolver }
-            actionsToggle={ emptySpanProducer as any }
             isStickyHeader={ true }
+            variant={ TableVariant.compact }
         >
-            <TableHeader />
-            <TableBody />
-        </Table>
+            <Thead>
+                <Tr>
+                    <Th
+                        sort={ sortOptions[NotificationsTableColumns.EVENT] }
+                    >
+                        Event
+                    </Th>
+                    <Th
+                        sort={ sortOptions[NotificationsTableColumns.APPLICATION] }
+                    >
+                        Application
+                    </Th>
+                    <Th
+                        sort={ sortOptions[NotificationsTableColumns.BEHAVIOR] }
+                        width={ 35 }
+                    >
+                        Behavior
+                    </Th>
+                    <Th />
+                </Tr>
+            </Thead>
+            <Tbody>
+                { rows }
+            </Tbody>
+        </TableComposable>
     );
 }, 'Notifications/Table');
