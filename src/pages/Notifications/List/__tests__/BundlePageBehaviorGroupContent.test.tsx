@@ -9,9 +9,9 @@ import { Facet } from '../../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupContent';
 import BehaviorGroup = Schemas.BehaviorGroup;
 import EventType = Schemas.EventType;
+import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { ouiaSelectors } from 'insights-common-typescript-dev';
 import Endpoint = Schemas.Endpoint;
 
 const policiesApplication: Facet = {
