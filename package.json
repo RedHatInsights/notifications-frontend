@@ -55,6 +55,7 @@
     "@babel/preset-env": "7.12.1",
     "@babel/preset-react": "7.12.5",
     "@redhat-cloud-services/frontend-components-config": "4.6.1",
+    "@redhat-cloud-services/frontend-components-testing": "0.1.0",
     "@testing-library/dom": "7.27.0",
     "@testing-library/jest-dom": "5.11.6",
     "@testing-library/react": "11.1.2",

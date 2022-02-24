@@ -953,6 +953,8 @@ export namespace Operations {
     type EndpointTypes = Array<Schemas.EndpointType>;
     const EventTypeDisplayName = z.string();
     type EventTypeDisplayName = string;
+    const IncludeActions = z.boolean();
+    type IncludeActions = boolean;
     const IncludeDetails = z.boolean();
     type IncludeDetails = boolean;
     const IncludePayload = z.boolean();
@@ -973,6 +975,7 @@ export namespace Operations {
       endDate?: EndDate;
       endpointTypes?: EndpointTypes;
       eventTypeDisplayName?: EventTypeDisplayName;
+      includeActions?: IncludeActions;
       includeDetails?: IncludeDetails;
       includePayload?: IncludePayload;
       invocationResults?: InvocationResults;
@@ -1009,6 +1012,10 @@ export namespace Operations {
 
         if (params.eventTypeDisplayName !== undefined) {
             query.eventTypeDisplayName = params.eventTypeDisplayName;
+        }
+
+        if (params.includeActions !== undefined) {
+            query.includeActions = params.includeActions;
         }
 
         if (params.includeDetails !== undefined) {
