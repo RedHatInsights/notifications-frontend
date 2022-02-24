@@ -24,45 +24,9 @@ const switchClassname = style({
 
 const App: React.ComponentType = () => {
 
-    // const intl = useIntl();
     const { rbac, server, isOrgAdmin } = useApp();
-    // const location = useLocation();
     const insights = getInsights();
     const [ usingExperimental, setUsingExperimental ] = React.useState<boolean>(false);
-
-    // const url = window.location.pathname;
-    // const bundle = url.substring(url.lastIndexOf('/') + 1);
-    // const userPreferences = <a href={ localUrl(`/user-preferences/notifications/`,
-    //     getInsights().chrome.isBeta()) }> User Preferences </a>;
-    // const myUserAccess = <a href={ localUrl(`/settings/my-user-access?bundle=${ bundle }`,
-    //     getInsights().chrome.isBeta()) }> My User Access </a>;
-
-    // const serviceName = React.useMemo(() => {
-    //     switch (getSubApp(location.pathname)) {
-    //         case Config.integrations.subAppId:
-    //             return intl.formatMessage(messages.integrations);
-    //         case Config.notifications.subAppId:
-    //             return intl.formatMessage(messages.notifications);
-    //         default:
-    //             return '';
-    //     }
-    // }, [ intl, location.pathname ]);
-
-    // const pageHeaderTitleProps = {
-    //     title: `${ serviceName }`
-    // };
-
-    // const hasReadPermissions = React.useMemo(() => {
-    //     const appId = getSubApp(location.pathname);
-    //     switch (appId) {
-    //         case Config.integrations.subAppId:
-    //             return rbac?.canReadIntegrationsEndpoints;
-    //         case Config.notifications.subAppId:
-    //             return rbac?.canReadNotifications;
-    //     }
-
-    //     return false;
-    // }, [ rbac, location.pathname ]);
 
     const toggleExperimental = React.useCallback((isEnabled) => {
         if (isEnabled) {

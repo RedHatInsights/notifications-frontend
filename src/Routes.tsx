@@ -3,10 +3,9 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { matchPath, Route, RouteProps, Switch, useHistory } from 'react-router';
 
-import { NotificationsPermissionsPage } from './components/Notifications/NotificationsPermissions';
+import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
-import { ConnectedIntegrationsListPage } from './pages/Integrations/List/Page';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { getBaseName } from './utils/Basename';
 
@@ -30,7 +29,7 @@ const pathRoutes: Path[] = [
     },
     {
         path: linkTo.integrations(),
-        component: ConnectedIntegrationsListPage
+        component: CheckReadPermissions
     },
     {
         path: linkTo.eventLog(),
@@ -38,7 +37,7 @@ const pathRoutes: Path[] = [
     },
     {
         path: linkTo.notifications(':bundleName'),
-        component: NotificationsPermissionsPage
+        component: CheckReadPermissions
     }
 ];
 
