@@ -33,5 +33,10 @@ export const isStagingStableOrAnyProd = (insights: InsightsType) => {
 
 export const isReleased = () => {
     const insights = getInsights();
-    return isStagingStableOrAnyProd(insights);
+    return isStagingOrProd(insights);
+};
+
+export const isStable = () => {
+    const insights = getInsights();
+    return stagingAndProdStable.includes(getInsightsEnvironment(insights));
 };

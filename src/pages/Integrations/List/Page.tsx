@@ -25,7 +25,7 @@ import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
-import { isReleased } from '../../../types/Environments';
+import { isStable } from '../../../types/Environments';
 import { UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
@@ -49,7 +49,7 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();
 
-    const released = isReleased();
+    const stable = isStable();
     const integrationFilterBuilder = React.useCallback((filters?: IntegrationFilters) => {
         const filter = new Filter();
         if (filters?.enabled?.length === 1) {
@@ -60,11 +60,11 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
         return filter.and(
             'type',
             Operator.EQUAL,
-            released ?
-                Config.integrations.actions.released as Array<string> :
-                Config.integrations.actions.experimental as Array<string>
+            stable ?
+                Config.integrations.actions.stable as Array<string> :
+                Config.integrations.actions.beta as Array<string>
         );
-    }, [ released ]);
+    }, [ stable ]);
 
     const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
