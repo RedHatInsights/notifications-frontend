@@ -82,22 +82,40 @@ const mockFacets = () => {
 
 const mockEventTypes = (eventTypeId: string = defaultEventTypeId) => {
     fetchMock.get(defaultGetEventTypesUrl, {
-        body: [
-            {
-                application_id: 'app',
-                application: {
-                    display_name: 'the app',
-                    created: Date.now().toString(),
-                    id: 'app',
-                    bundle_id: 'my-bundle-id',
-                    name: 'app',
-                    updated: Date.now().toString()
-                },
-                display_name: 'display_name',
-                id: eventTypeId,
-                name: 'mmmokay'
+        body: {
+            links: {},
+            meta: {
+                count: 1
+            },
+            data: [
+                {
+                    application_id: 'app',
+                    application: {
+                        display_name: 'the app',
+                        created: Date.now().toString(),
+                        id: 'app',
+                        bundle_id: 'my-bundle-id',
+                        name: 'app',
+                        updated: Date.now().toString()
+                    },
+                    display_name: 'display_name',
+                    id: eventTypeId,
+                    name: 'mmmokay'
+                }
+            ]
+        } as Schemas.PageEventType
+    });
+};
+
+const mockNoEventTypes = () => {
+    fetchMock.get(defaultGetEventTypesUrl, {
+        body: {
+            links: {},
+            data: [],
+            meta: {
+                count: 0
             }
-        ] as Array<Schemas.EventType>
+        } as Schemas.PageEventType
     });
 };
 
@@ -259,7 +277,7 @@ const mockBehaviorGroup = () => {
 };
 
 const defaultGetEventTypesUrl =
-  '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=10&offset=0';
+  '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=20&offset=0&sort_by=e.application.displayName%3ADESC';
 
 const mockBehaviorGroupsOfEventTypes = (eventTypeId: string = defaultEventTypeId, returnEmpty?: boolean) => {
     fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${eventTypeId}/behaviorGroups`, {
@@ -284,9 +302,7 @@ describe('src/pages/Notifications/List/Page', () => {
     });
 
     it('If the bundle is not found, redirects to rhel', async () => {
-        fetchMock.get(defaultGetEventTypesUrl, {
-            body: [] as Array<Schemas.EventType>
-        });
+        mockNoEventTypes();
         fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
             body: [
                 {
@@ -474,9 +490,7 @@ describe('src/pages/Notifications/List/Page', () => {
         fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
             body: [] as Array<Schemas.Endpoint>
         });
-        fetchMock.get(defaultGetEventTypesUrl, {
-            body: [] as Array<Schemas.EventType>
-        });
+        mockNoEventTypes();
         mockFacets();
         mockBehaviorGroup();
         render(<NotificationsListPage />, {
@@ -496,22 +510,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get(defaultGetEventTypesUrl, {
-                body: [
-                    {
-                        id: defaultEventTypeId,
-                        application_id: 'my-app',
-                        application: {
-                            id: 'my-app',
-                            bundle_id: 'my-bundle-id',
-                            name: 'My app',
-                            display_name: 'My app desc'
-                        },
-                        display_name: 'my notification',
-                        name: 'Cool notification'
-                    }
-                ] as Array<Schemas.EventType>
-            });
+            mockEventTypes(defaultEventTypeId);
             fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
                 body: []
             });
@@ -545,22 +544,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get(defaultGetEventTypesUrl, {
-                body: [
-                    {
-                        id: defaultEventTypeId,
-                        application_id: 'my-app',
-                        application: {
-                            id: 'my-app',
-                            bundle_id: 'my-bundle-id',
-                            name: 'My app',
-                            display_name: 'My app desc'
-                        },
-                        display_name: 'my notification',
-                        name: 'Cool notification'
-                    }
-                ] as Array<Schemas.EventType>
-            });
+            mockEventTypes(defaultEventTypeId);
             fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
                 body: []
             });
@@ -602,22 +586,7 @@ describe('src/pages/Notifications/List/Page', () => {
             fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
                 body: [] as Array<Schemas.Endpoint>
             });
-            fetchMock.get(defaultGetEventTypesUrl, {
-                body: [
-                    {
-                        id: defaultEventTypeId,
-                        application_id: 'my-app',
-                        application: {
-                            id: 'my-app',
-                            bundle_id: 'my-bundle-id',
-                            name: 'My app',
-                            display_name: 'My app desc'
-                        },
-                        display_name: 'my notification',
-                        name: 'Cool notification'
-                    }
-                ] as Array<Schemas.EventType>
-            });
+            mockEventTypes(defaultEventTypeId);
             fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
                 body: []
             });
@@ -682,24 +651,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             }
         );
-        fetchMock.get(defaultGetEventTypesUrl, {
-            body: [
-                {
-                    application_id: 'app',
-                    application: {
-                        display_name: 'the app',
-                        created: Date.now().toString(),
-                        id: 'app',
-                        bundle_id: 'my-bundle-id',
-                        name: 'app',
-                        updated: Date.now().toString()
-                    },
-                    display_name: 'display_name',
-                    id: defaultEventTypeId,
-                    name: 'mmmokay'
-                }
-            ] as Array<Schemas.EventType>
-        });
+        mockEventTypes(defaultEventTypeId);
         mockFacets();
         mockBehaviorGroup();
         mockBehaviorGroupsOfEventTypes();
@@ -737,24 +689,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 body: []
             }
         );
-        fetchMock.get(defaultGetEventTypesUrl, {
-            body: [
-                {
-                    application_id: 'app',
-                    application: {
-                        display_name: 'the app',
-                        created: Date.now().toString(),
-                        id: 'app',
-                        bundle_id: 'my-bundle-id',
-                        name: 'app',
-                        updated: Date.now().toString()
-                    },
-                    display_name: 'display_name',
-                    id: defaultEventTypeId,
-                    name: 'mmmokay'
-                }
-            ] as Array<Schemas.EventType>
-        });
+        mockEventTypes(defaultEventTypeId);
         mockFacets();
         mockBehaviorGroup();
         mockBehaviorGroupsOfEventTypes();
@@ -790,24 +725,7 @@ describe('src/pages/Notifications/List/Page', () => {
                     body: []
                 }
             );
-            fetchMock.get(defaultGetEventTypesUrl, {
-                body: [
-                    {
-                        application_id: 'app',
-                        application: {
-                            display_name: 'the app',
-                            created: Date.now().toString(),
-                            id: 'app',
-                            bundle_id: 'my-bundle-id',
-                            name: 'app',
-                            updated: Date.now().toString()
-                        },
-                        display_name: 'display_name',
-                        id: defaultEventTypeId,
-                        name: 'mmmokay'
-                    }
-                ] as Array<Schemas.EventType>
-            });
+            mockEventTypes(defaultEventTypeId);
             mockFacets();
             mockBehaviorGroupsOfEventTypes();
             fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
@@ -927,24 +845,7 @@ describe('src/pages/Notifications/List/Page', () => {
                     body: []
                 }
             );
-            fetchMock.get(defaultGetEventTypesUrl, {
-                body: [
-                    {
-                        application_id: 'app',
-                        application: {
-                            display_name: 'the app',
-                            created: Date.now().toString(),
-                            id: 'app',
-                            bundle_id: 'my-bundle-id',
-                            name: 'app',
-                            updated: Date.now().toString()
-                        },
-                        display_name: 'display_name',
-                        id: defaultEventTypeId,
-                        name: 'mmmokay'
-                    }
-                ] as Array<Schemas.EventType>
-            });
+            mockEventTypes(defaultEventTypeId);
             mockFacets();
             if (appears) {
                 mockBehaviorGroup();

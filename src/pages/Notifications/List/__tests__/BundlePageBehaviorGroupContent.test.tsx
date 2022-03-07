@@ -75,10 +75,19 @@ const mockBehaviorGroups = (behaviorGroups: Array<BehaviorGroup>) => {
 };
 
 const mockNotifications = (notifications: Array<NotificationWithBehaviorGroup>) => {
-    fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes?bundleId=${bundle.id}&limit=10&offset=0`, {
-        status: 200,
-        body: notifications.map(n => n.notification)
-    });
+    fetchMock.get(
+        `/api/notifications/v1.0/notifications/eventTypes?bundleId=${bundle.id}&limit=20&offset=0&sort_by=e.application.displayName%3ADESC`,
+        {
+            status: 200,
+            body: {
+                data: notifications.map(n => n.notification),
+                meta: {
+                    count: notifications.length
+                },
+                links: {}
+            }
+        }
+    );
 
     notifications.forEach(n => fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${n.notification.id}/behaviorGroups`, {
         status: 200,
