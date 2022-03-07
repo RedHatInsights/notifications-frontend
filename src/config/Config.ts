@@ -65,10 +65,10 @@ const Config = {
         title: 'Integrations | Settings',
         types: computeIntegrationConfig(integrationTypes),
         actions: {
-            released: [
+            stable: [
                 UserIntegrationType.WEBHOOK
             ],
-            experimental: [
+            beta: [
                 UserIntegrationType.WEBHOOK,
                 UserIntegrationType.SPLUNK
             ]

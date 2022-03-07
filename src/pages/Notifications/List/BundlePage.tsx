@@ -2,9 +2,7 @@ import { Split, SplitItem, StackItem } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
-    InsightsEnvDetector,
-    localUrl,
-    RenderIfFalse
+    localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
 import { Link } from 'react-router-dom';
@@ -13,7 +11,6 @@ import { style } from 'typestyle';
 import { ButtonLink } from '../../../components/ButtonLink';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
-import { stagingAndProdStable } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
@@ -47,11 +44,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                             getInsights().chrome.isBeta()) }> User Preferences</a>. </StackItem>
                     </SplitItem>
                     <SplitItem>
-                        <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProdStable }>
-                            <RenderIfFalse>
-                                <Link component={ ButtonLink } to={ eventLogPageUrl } >{ Messages.pages.notifications.list.viewHistory }</Link>
-                            </RenderIfFalse>
-                        </InsightsEnvDetector>
+                        <Link component={ ButtonLink } to={ eventLogPageUrl } >{ Messages.pages.notifications.list.viewHistory }</Link>
                     </SplitItem>
                 </Split>
             </PageHeader>
