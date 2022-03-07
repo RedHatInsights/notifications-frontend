@@ -83,7 +83,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >
             <Select
-                variant={ SelectVariant.typeahead }
+                variant={ SelectVariant.single }
                 typeAheadAriaLabel="Select action"
                 aria-label="Select action"
                 placeholderText="Select action"
