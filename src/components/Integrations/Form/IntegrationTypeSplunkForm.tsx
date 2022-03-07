@@ -23,7 +23,7 @@ export const IntegrationTypeSplunkForm: React.FunctionComponent<IntegrationTypeF
                 ouiaId={ ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled') }
             />
             <FormGroup fieldId='integration-type-camel-secret-token'
-                helperText="The defined secret token is sent as a Splunk's HTTP Event Collector.">
+                helperText="The defined secret token is sent as a Splunk's HTTP Event Collector token.">
                 <FormTextInput
                     isRequired={ false }
                     label="Secret token"
