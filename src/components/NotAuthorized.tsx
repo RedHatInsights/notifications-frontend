@@ -30,7 +30,7 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
     const intl = useIntl();
 
     const userPreferences = <a href={ localUrl(`/user-preferences/notifications/`,
-        getInsights().chrome.isBeta()) }> User Preferences </a>;
+        getInsights().chrome.isBeta()) }> User Preferences</a>;
     const myUserAccess = <a href={ localUrl(`/settings/my-user-access?bundle=rhel }`,
         getInsights().chrome.isBeta()) }> My User Access </a>;
 
@@ -63,7 +63,7 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
             will be entitled to receiving. To do this, create behavior groups and apply them to different events.
             Users will be able to opt-in or out of receiving authorized event notifications in their
             { <a href={ localUrl(`/user-preferences/notifications/`,
-                getInsights().chrome.isBeta()) }> User Preferences </a>}.</span>;
+                getInsights().chrome.isBeta()) }> User Preferences</a>}.</span>;
         } else {
             return <span></span>;
         }

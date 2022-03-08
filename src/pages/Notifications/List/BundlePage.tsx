@@ -45,7 +45,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                         users within your organization will be entitled to receiving. To do this, create behavior groups and apply
                         them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
                         <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
-                            getInsights().chrome.isBeta()) }> User Preferences</a>. </StackItem>
+                            getInsights().chrome.isBeta()) }> User Preferences</a>.</StackItem>
                     </SplitItem>
                     <SplitItem>
                         <InsightsEnvDetector insights={ getInsights() } onEnvironment={ stagingAndProdStable }>

@@ -8,6 +8,7 @@ import format from 'date-fns/format';
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { CheckReadPermissions } from '../components/CheckReadPermissions';
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
@@ -69,19 +70,21 @@ const App: React.ComponentType = () => {
             isOrgAdmin: !!isOrgAdmin
         } }>
             <>
-                <NotificationsPortal />
-                <InsightsEnvDetector insights={ insights } onEnvironment={ staging }>
-                    <RenderIfTrue>
-                        <Switch
-                            className={ switchClassname }
-                            isChecked={ usingExperimental }
-                            onChange={ toggleExperimental }
-                            labelOff="Enable experimental features"
-                            label="Disable experimental features"
-                        />
-                    </RenderIfTrue>
-                </InsightsEnvDetector>
-                <Routes />
+                <CheckReadPermissions>
+                    <NotificationsPortal />
+                    <InsightsEnvDetector insights={ insights } onEnvironment={ staging }>
+                        <RenderIfTrue>
+                            <Switch
+                                className={ switchClassname }
+                                isChecked={ usingExperimental }
+                                onChange={ toggleExperimental }
+                                labelOff="Enable experimental features"
+                                label="Disable experimental features"
+                            />
+                        </RenderIfTrue>
+                    </InsightsEnvDetector>
+                    <Routes />
+                </CheckReadPermissions>
             </>
 
         </AppContext.Provider>
