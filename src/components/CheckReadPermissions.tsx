@@ -2,12 +2,10 @@ import React from 'react';
 
 import { useApp } from '../app/useApp';
 import Config from '../config/Config';
-import { ConnectedIntegrationsListPage } from '../pages/Integrations/List/Page';
-import { NotificationsListPage } from '../pages/Notifications/List/Page';
 import { getSubApp } from '../utils/Basename';
 import { NotAuthorizedPage } from './NotAuthorized';
 
-export const CheckReadPermissions: React.FunctionComponent = () => {
+export const CheckReadPermissions: React.FunctionComponent = (props) => {
     const { rbac } = useApp();
 
     const hasReadPermissions = React.useMemo(() => {
@@ -24,12 +22,7 @@ export const CheckReadPermissions: React.FunctionComponent = () => {
 
     return (
         <>
-            { !hasReadPermissions ?
-                (<NotAuthorizedPage />) :
-                <><NotificationsListPage />
-                    <ConnectedIntegrationsListPage /></>
-
-            }
+            { !hasReadPermissions ? <NotAuthorizedPage /> : { props } }
         </>
     );
 };
