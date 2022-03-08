@@ -1772,10 +1772,10 @@
     "@scalprum/react-core" "^0.0.16"
     sanitize-html "^2.3.2"
 
-"@redhat-cloud-services/insights-common-typescript@4.12.0":
-  version "4.12.0"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-4.12.0.tgz#e795b1220ef7006c2ff40326dbc01bd8fdfc3c0f"
-  integrity sha512-D6FlOTPM/mKtDr3KqO/vAGskREgaIYpVx+b0ahXg3qK67wKjhl25XbReNjNjRNc46s7NHEJZrGemTLv6O0ZrKw==
+"@redhat-cloud-services/insights-common-typescript@4.12.1":
+  version "4.12.1"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/insights-common-typescript/-/insights-common-typescript-4.12.1.tgz#c0c9ee9681775807e116e32795733ba80f1487bd"
+  integrity sha512-fL7yGJHagI6WlYhKffoDcorYA4ArIU3V4ld913daVmjKpaYj75WBIN5n7qsR3YumNMzomgB3Xh+2Lf5J+cxnWQ==
   dependencies:
     camelcase "5.3.1"
     react-string-format "0.1.0"
