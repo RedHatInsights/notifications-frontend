@@ -45,7 +45,7 @@ const App: React.ComponentType = () => {
         );
     }
 
-    {if (server.status === ServerStatus.MAINTENANCE) {
+    if (server.status === ServerStatus.MAINTENANCE) {
 
         const utcStartTime = format(toUtc(server.from), utcFormat);
         const utcEndTime = format(toUtc(server.to), utcFormat);
@@ -60,7 +60,7 @@ const App: React.ComponentType = () => {
             endTime={ endTime }
             timeZone={ timezone }
         />;
-    }}
+    }
 
     return (
         <AppContext.Provider value={ {
