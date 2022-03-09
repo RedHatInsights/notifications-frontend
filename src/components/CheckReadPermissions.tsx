@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLocation } from 'react-router-dom';
 
 import { useApp } from '../app/useApp';
 import Config from '../config/Config';
@@ -7,6 +8,7 @@ import { NotAuthorizedPage } from './NotAuthorized';
 
 export const CheckReadPermissions: React.FunctionComponent = (props) => {
     const { rbac } = useApp();
+    const location = useLocation();
 
     const hasReadPermissions = React.useMemo(() => {
         const appId = getSubApp(location.pathname);
@@ -18,11 +20,10 @@ export const CheckReadPermissions: React.FunctionComponent = (props) => {
         }
 
         return false;
-    }, [ rbac ]);
-
+    }, [ rbac, location ]);
     return (
         <>
-            { !hasReadPermissions ? <NotAuthorizedPage /> : { props } }
+            { !hasReadPermissions ? <NotAuthorizedPage /> : props.children }
         </>
     );
 };
