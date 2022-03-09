@@ -15,12 +15,6 @@ export const IntegrationTypeSlackForm: React.FunctionComponent<IntegrationTypeFo
                 id="integration-type-camel-url"
                 ouiaId={ ouiaIdConcat(props.ouiaId, 'endpoint-url') }
             />
-            <Checkbox
-                id="integration-type-camel-ssl-verification-enabled"
-                label="Enable SSL verification"
-                name="sslVerificationEnabled"
-                ouiaId={ ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled') }
-            />
             <FormTextInput
                 isRequired={ true }
                 label="Channel"
