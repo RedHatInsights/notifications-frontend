@@ -43,7 +43,7 @@ const pathRoutes: Path[] = [
     }
 ];
 
-type InsightsRouteProps = RouteProps;
+type InsightsRouteProps = Omit<RouteProps, 'component'> & Pick<Path, 'component'>;
 
 const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: InsightsRouteProps) => {
     const { component, ...restProps } = props;
@@ -51,7 +51,7 @@ const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: Insig
         <ErrorPage>
             <Route { ...restProps }>
                 <CheckReadPermissions>
-                    { props.component }
+                    <props.component />
                 </CheckReadPermissions>
             </Route>
         </ErrorPage>

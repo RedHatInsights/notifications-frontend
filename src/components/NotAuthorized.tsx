@@ -51,7 +51,7 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
 
     const title = React.useMemo(() => {
         if (serviceName === 'Notifications') {
-            return `${ serviceName } | ${ bundles ? bundles.displayName : <Skeleton />}`;
+            return `${ serviceName } | ${ bundles ? bundles.displayName : <Skeleton /> }`;
         } else {
             return `${ serviceName }`;
         }

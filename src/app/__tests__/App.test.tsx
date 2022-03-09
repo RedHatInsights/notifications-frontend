@@ -145,7 +145,7 @@ describe('src/app/App', () => {
             await jest.advanceTimersToNextTimer();
         });
 
-        expect(screen.getByText(/You do not have access to Notifications/i)).toBeTruthy();
+        expect(screen.getByText(/You do not have access to Notifications/i)).toBeVisible();
     });
 
     it('Shows error when RBAC does not have read access when /integrations', async () => {
@@ -182,6 +182,6 @@ describe('src/app/App', () => {
             await jest.advanceTimersToNextTimer();
         });
 
-        expect(screen.getByText(/You do not have access to Integrations/i)).toBeTruthy();
+        expect(screen.getByText(/You do not have access to Integrations/i)).toBeVisible();
     });
 });
