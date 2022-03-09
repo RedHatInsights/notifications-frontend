@@ -6,6 +6,7 @@ import { IntegrationType, isCamelType, UserIntegrationType } from '../../../type
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 import { IntegrationTypeSplunkForm } from './IntegrationTypeSplunkForm';
+import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
 
 export interface IntegrationTypeForm extends OuiaComponentProps {
     type: UserIntegrationType;
@@ -14,8 +15,11 @@ export interface IntegrationTypeForm extends OuiaComponentProps {
 export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
 
     if (isCamelType(props.type)) {
-        if (props.type === UserIntegrationType.SPLUNK) {
-            return <IntegrationTypeSplunkForm { ...props } />;
+        switch (props.type) {
+            case UserIntegrationType.SPLUNK:
+                return <IntegrationTypeSplunkForm { ...props } />;
+            case UserIntegrationType.SLACK:
+                return <IntegrationTypeSlackForm { ...props } />;
         }
 
         return <IntegrationTypeCamelForm { ...props } />;
