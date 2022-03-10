@@ -3,7 +3,8 @@ import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-types
 import * as React from 'react';
 
 import Config from '../../../config/Config';
-import { isReleased, isStable } from '../../../types/Environments';
+import { useIntegrations } from '../../../hooks/useIntegrations';
+import { isReleased } from '../../../types/Environments';
 import { UserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -67,19 +68,16 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     }, [ props.action ]);
 
     const released = isReleased();
-    const stable = isStable();
+    const integrationTypes = useIntegrations();
 
     const selectableOptions = React.useMemo(() => {
         const notificationTypes = released ?
             Config.notifications.actions.released :
             Config.notifications.actions.experimental;
-        const integrationTypes = stable ?
-            Config.integrations.actions.stable :
-            Config.integrations.actions.beta;
 
         return getSelectOptions(notificationTypes, integrationTypes, props.selectedNotifications)
         .map(o => <SelectOption key={ o.toString() } value={ o } />);
-    }, [ released, props.selectedNotifications, stable ]);
+    }, [ integrationTypes, released, props.selectedNotifications ]);
 
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >

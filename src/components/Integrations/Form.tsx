@@ -4,8 +4,8 @@ import { useFormikContext } from 'formik';
 import * as React from 'react';
 
 import Config from '../../config/Config';
+import { useIntegrations } from '../../hooks/useIntegrations';
 import { maxIntegrationNameLength } from '../../schemas/Integrations/Integration';
-import { isStable } from '../../types/Environments';
 import { NewUserIntegration } from '../../types/Integration';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
@@ -13,16 +13,12 @@ import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 export const IntegrationsForm: React.FunctionComponent<OuiaComponentProps> = (props) => {
 
     const { values } = useFormikContext<NewUserIntegration>();
-    const stable = isStable();
+    const userIntegrations = useIntegrations();
 
     const options = React.useMemo(() => {
-        const options = stable ?
-            Config.integrations.actions.stable :
-            Config.integrations.actions.beta;
-
-        return options
+        return userIntegrations
         .map(type => (<FormSelectOption key={ type } label={ Config.integrations.types[type].name } value={ type } />));
-    }, [ stable ]);
+    }, [ userIntegrations ]);
 
     return (
         <Form { ...getOuiaProps('Integrations/Form', props) }>

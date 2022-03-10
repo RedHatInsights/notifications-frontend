@@ -7,7 +7,7 @@ import { IntegrationTypeForm } from './IntegrationTypeForm';
 
 export const IntegrationTypeSplunkForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
     return (
-        <div className="pf-c-form" { ...getOuiaProps('Integrations/HttpForm', props) } >
+        <div className="pf-c-form" { ...getOuiaProps('Integrations/Camel/Splunk', props) } >
             <FormTextInput
                 isRequired={ true }
                 label="Endpoint URL"
