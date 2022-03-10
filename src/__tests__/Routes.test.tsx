@@ -41,7 +41,7 @@ describe('src/Routes', () => {
             });
 
             expect(getLocation().pathname).toBe('/');
-            expect(screen.getByDisplayValue('You do not have access')).toBeVisible();
+            expect(screen.getByRole('link', { name: 'Go to landing page' })).toBeVisible();
         });
 
         it('Should render Integrations on /integrations', async () => {
