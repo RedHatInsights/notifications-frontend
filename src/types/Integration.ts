@@ -60,6 +60,9 @@ export interface IntegrationEmailSubscription extends IntegrationBase<Integratio
 }
 
 export type Integration = IntegrationHttp | IntegrationEmailSubscription | IntegrationCamel;
+export type TypedIntegration<T extends IntegrationType> = Extract<Integration, {
+    type: T
+}>;
 
 // Integrations that the user can create in the Integrations page;
 export type UserIntegration = Extract<Integration, {

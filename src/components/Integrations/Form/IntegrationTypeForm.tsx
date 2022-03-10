@@ -5,8 +5,8 @@ import * as React from 'react';
 import { IntegrationType, isCamelType, UserIntegrationType } from '../../../types/Integration';
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
-import { IntegrationTypeSplunkForm } from './IntegrationTypeSplunkForm';
 import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
+import { IntegrationTypeSplunkForm } from './IntegrationTypeSplunkForm';
 
 export interface IntegrationTypeForm extends OuiaComponentProps {
     type: UserIntegrationType;
