@@ -7,6 +7,8 @@ Notifications frontend for Red Hat Insights
 
 ## Build app
 
+0. If needed run `yarn install` to install dependency packages
+
 1. ```yarn```
 
 2. ```yarn start```
@@ -25,13 +27,13 @@ Notifications frontend for Red Hat Insights
 You need to configure your `/etc/hosts` to have the hosts for `prod.foo` and `stage.foo`.
 Check or execute [this](https://raw.githubusercontent.com/RedHatInsights/insights-proxy/master/scripts/patch-etc-hosts.sh) script for details.
 
-Install the dependencies using `yarn``:
+Install the dependencies using `yarn`:
 
 ```shell
 yarn
 ```
 
-and run the application:
+If needed set the environment (see below) and then run the application:
 
 ```shell
 yarn start
