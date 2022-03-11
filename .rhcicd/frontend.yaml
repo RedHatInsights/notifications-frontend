@@ -30,6 +30,10 @@ objects:
             module: "./RootApp"
             routes:
               - pathname: /settings/notifications
+          - id: "integrations"
+            module: "./RootApp"
+            routes:
+              - pathname: /settings/integrations
 
 parameters:
   - name: ENV_NAME
