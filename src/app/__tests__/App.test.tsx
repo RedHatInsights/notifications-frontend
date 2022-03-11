@@ -18,10 +18,17 @@ jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
         fetchRBAC: jest.fn(real.fetchRBAC)
     };
 });
-jest.mock('../../Routes', () => {
-    const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
+jest.mock('../../pages/Integrations/List/Page', () => {
+    const MockedRoutes: React.FunctionComponent = () => <div data-testid="Integrations" />;
     return {
-        Routes: MockedRoutes
+        ConnectedIntegrationsListPage: MockedRoutes
+    };
+});
+
+jest.mock('../../pages/Notifications/List/Page', () => {
+    const MockedRoutes: React.FunctionComponent = () => <div data-testid="Notifications" />;
+    return {
+        NotificationsListPage: MockedRoutes
     };
 });
 
@@ -145,7 +152,7 @@ describe('src/app/App', () => {
             await jest.advanceTimersToNextTimer();
         });
 
-        expect(screen.getByTestId('content')).toBeTruthy();
+        expect(screen.getByText(/You do not have access to Notifications/i)).toBeTruthy();
     });
 
     it('Shows error when RBAC does not have read access when /integrations', async () => {
@@ -182,6 +189,6 @@ describe('src/app/App', () => {
             await jest.advanceTimersToNextTimer();
         });
 
-        expect(screen.getByTestId('content')).toBeTruthy();
+        expect(screen.getByText(/You do not have access to Integrations/i)).toBeTruthy();
     });
 });
