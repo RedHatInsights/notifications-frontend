@@ -18,17 +18,18 @@ jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
         fetchRBAC: jest.fn(real.fetchRBAC)
     };
 });
-jest.mock('../../pages/Integrations/List/Page', () => {
-    const MockedRoutes: React.FunctionComponent = () => <div data-testid="Integrations" />;
+
+jest.mock('../../pages/Notifications/List/Page', () => {
+    const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
     return {
-        ConnectedIntegrationsListPage: MockedRoutes
+        NotificationsListPage: MockedRoutes
     };
 });
 
-jest.mock('../../pages/Notifications/List/Page', () => {
-    const MockedRoutes: React.FunctionComponent = () => <div data-testid="Notifications" />;
+jest.mock('../../pages/Integrations/List/Page', () => {
+    const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
     return {
-        NotificationsListPage: MockedRoutes
+        ConnectedIntegrationsListPage: MockedRoutes
     };
 });
 
@@ -115,7 +116,7 @@ describe('src/app/App', () => {
 
         await waitForAsyncEvents();
 
-        expect(screen.getByTestId('content')).toBeTruthy();
+        expect(screen.queryAllByText('content')).toBeTruthy();
     });
 
     it('Shows error when RBAC does not have read access when /notifications', async () => {
@@ -133,7 +134,7 @@ describe('src/app/App', () => {
         const Wrapper = getConfiguredAppWrapper({
             route: {
                 location: {
-                    pathname: '/notifications',
+                    pathname: '/notifications/foobar',
                     search: '',
                     hash: '',
                     state: {}
