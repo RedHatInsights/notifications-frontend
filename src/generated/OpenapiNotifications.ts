@@ -205,6 +205,15 @@ export namespace Schemas {
     meta: Meta;
   };
 
+  export const PageEventType = zodSchemaPageEventType();
+  export type PageEventType = {
+    data: Array<EventType>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
+  };
+
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
@@ -471,6 +480,16 @@ export namespace Schemas {
       return z
       .object({
           data: z.array(zodSchemaEventLogEntry()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaPageEventType() {
+      return z
+      .object({
+          data: z.array(zodSchemaEventType()),
           links: z.record(z.string()),
           meta: zodSchemaMeta()
       })
@@ -750,8 +769,6 @@ export namespace Operations {
     type PageNumber = number;
     const SortBy = z.string();
     type SortBy = string;
-    const Response200 = z.array(Schemas.EventType);
-    type Response200 = Array<Schemas.EventType>;
     export interface Params {
       applicationIds?: ApplicationIds;
       bundleId?: Schemas.UUID;
@@ -762,7 +779,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'PageEventType', 200, Schemas.PageEventType>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
@@ -798,7 +815,7 @@ export namespace Operations {
         .queryParams(query)
         .config({
             rules: [
-                new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.PageEventType, 'PageEventType', 200),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]

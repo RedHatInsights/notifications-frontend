@@ -205,6 +205,15 @@ export namespace Schemas {
     meta: Meta;
   };
 
+  export const PageEventType = zodSchemaPageEventType();
+  export type PageEventType = {
+    data: Array<EventType>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
+  };
+
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
@@ -471,6 +480,16 @@ export namespace Schemas {
       return z
       .object({
           data: z.array(zodSchemaEventLogEntry()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaPageEventType() {
+      return z
+      .object({
+          data: z.array(zodSchemaEventType()),
           links: z.record(z.string()),
           meta: zodSchemaMeta()
       })

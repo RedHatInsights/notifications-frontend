@@ -1,3 +1,4 @@
+import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
     ExporterType,
@@ -10,6 +11,7 @@ import {
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
+import { PageAdapter } from '../../hooks/usePage';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { isStagingOrProd, stagingAndProd } from '../../types/Environments';
 import { Facet } from '../../types/Notification';
@@ -32,6 +34,8 @@ interface NotificationsToolbarProps extends OuiaComponentProps {
 
     groupBy?: GroupByEnum;
     onGroupBySelected?: (selected: GroupByEnum) => void;
+    pageAdapter: PageAdapter;
+    count: number;
 
     onExport: (type: ExporterType) => void;
 }
@@ -87,6 +91,37 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         useCallback(() => exportConfigInternal, [ exportConfigInternal ])
     );
 
+    const pageChanged = React.useCallback((_event: unknown, page: number) => {
+        const inner = props.pageAdapter.changePage;
+        inner(page);
+    }, [ props.pageAdapter ]);
+
+    const perPageChanged = React.useCallback((_event: unknown, perPage: number) => {
+        const inner = props.pageAdapter.changeItemsPerPage;
+        inner(perPage);
+    }, [ props.pageAdapter ]);
+
+    const topPaginationProps = React.useMemo<PaginationProps>(() => ({
+        itemCount: props.count,
+        page: props.pageAdapter.page.index,
+        perPage: props.pageAdapter.page.size,
+        isCompact: true,
+        variant: PaginationVariant.top,
+        onSetPage: pageChanged,
+        onFirstClick: pageChanged,
+        onPreviousClick: pageChanged,
+        onNextClick: pageChanged,
+        onLastClick: pageChanged,
+        onPageInput: pageChanged,
+        onPerPageSelect: perPageChanged
+    }), [ props.count, props.pageAdapter, pageChanged, perPageChanged ]);
+
+    const bottomPaginationProps = React.useMemo<PaginationProps>(() => ({
+        ...topPaginationProps,
+        isCompact: false,
+        variant: PaginationVariant.bottom
+    }), [ topPaginationProps ]);
+
     return (
         <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
             <PrimaryToolbar
@@ -96,9 +131,12 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                     <GroupBy selected={ props.groupBy } groupBy={ props.onGroupBySelected } /> :
                     undefined }
                 exportConfig={ exportConfig }
+                pagination={ topPaginationProps }
             />
             { props.children }
-            <PrimaryToolbar />
+            <PrimaryToolbar
+                pagination={ bottomPaginationProps }
+            />
         </div>
     );
 };
