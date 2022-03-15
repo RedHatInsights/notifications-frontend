@@ -43,6 +43,10 @@ const createDefaultGetMock = () => fn(async () => [ new NotificationUserRecipien
 
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
+    beforeEach(() => {
+        jest.useRealTimers();
+    });
+
     it('Renders disabled if isDisabled', async () => {
         render(<RecipientTypeahead
             selected={ SELECTED_ALL }
@@ -146,6 +150,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         }));
         await waitForAsyncEvents();
         act(() => userEvent.click(screen.getAllByRole('checkbox')[0]));
+        await act(async () => {
+            jest.runAllTimers();
+        });
         expect(onSelected).toHaveBeenCalled();
     });
 
