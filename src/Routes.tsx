@@ -3,6 +3,7 @@ import * as React from 'react';
 import { useEffect } from 'react';
 import { matchPath, Route, RouteProps, Switch, useHistory } from 'react-router';
 
+import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
 import { ConnectedIntegrationsListPage } from './pages/Integrations/List/Page';
@@ -42,12 +43,17 @@ const pathRoutes: Path[] = [
     }
 ];
 
-type InsightsRouteProps = RouteProps;
+type InsightsRouteProps = Omit<RouteProps, 'component'> & Pick<Path, 'component'>;
 
 const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: InsightsRouteProps) => {
+    const { component, ...restProps } = props;
     return (
         <ErrorPage>
-            <Route { ...props } />
+            <Route { ...restProps }>
+                <CheckReadPermissions>
+                    <props.component />
+                </CheckReadPermissions>
+            </Route>
         </ErrorPage>
     );
 };

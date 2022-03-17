@@ -36,7 +36,7 @@ export const IntegrationCamelSchema: Yup.SchemaOf<NewIntegrationTemplate<Integra
     ).required(),
     url: Yup.string().url().required('Provide a url/host for this Integration.'),
     sslVerificationEnabled: Yup.boolean().default(true),
-    secretToken: Yup.string().notRequired(),
+    secretToken: Yup.string().optional(),
     basicAuth: Yup.object().shape({
         user: Yup.string().when('pass',
             {
@@ -54,9 +54,15 @@ export const IntegrationCamelSchema: Yup.SchemaOf<NewIntegrationTemplate<Integra
     extras: Yup.mixed()
     .default({})
     .transform(s => {
+        console.log(s);
         try {
-            return JSON.parse(s);
+            if (typeof s === 'string') {
+                return JSON.parse(s);
+            }
+
+            return s;
         } catch (e) {
+            console.error(e);
             return null;
         }
     })

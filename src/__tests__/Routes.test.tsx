@@ -41,7 +41,7 @@ describe('src/Routes', () => {
             });
 
             expect(getLocation().pathname).toBe('/');
-            expect(document.body.firstChild).toBeEmptyDOMElement();
+            expect(screen.getByRole('link', { name: 'Go to landing page' })).toBeVisible();
         });
 
         it('Should render Integrations on /integrations', async () => {

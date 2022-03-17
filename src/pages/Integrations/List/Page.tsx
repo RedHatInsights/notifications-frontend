@@ -17,15 +17,14 @@ import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
-import Config from '../../../config/Config';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
+import { useIntegrations } from '../../../hooks/useIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
-import { isStable } from '../../../types/Environments';
 import { UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
@@ -49,7 +48,7 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();
 
-    const stable = isStable();
+    const userIntegrations = useIntegrations();
     const integrationFilterBuilder = React.useCallback((filters?: IntegrationFilters) => {
         const filter = new Filter();
         if (filters?.enabled?.length === 1) {
@@ -60,11 +59,9 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
         return filter.and(
             'type',
             Operator.EQUAL,
-            stable ?
-                Config.integrations.actions.stable as Array<string> :
-                Config.integrations.actions.beta as Array<string>
+            userIntegrations as Array<string>
         );
-    }, [ stable ]);
+    }, [ userIntegrations ]);
 
     const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);

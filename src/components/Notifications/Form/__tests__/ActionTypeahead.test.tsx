@@ -23,7 +23,11 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             <ActionTypeahead selectedNotifications={ [] } action={ action } onSelected={ fn() } />
         );
 
-        expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeVisible();
+        userEvent.click(screen.getByRole('button'));
+
+        expect(screen.getByText(/Send to notification drawer/i, {
+            selector: 'button'
+        })).toBeVisible();
     });
 
     it('Renders disabled if isDisabled', () => {
@@ -35,7 +39,9 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
             <ActionTypeahead selectedNotifications={ [] } action={ action } isDisabled={ true } onSelected={ fn() } />
         );
 
-        expect(screen.getByDisplayValue(/Send to notification drawer/i)).toBeDisabled();
+        userEvent.click(screen.getByRole('button'));
+
+        expect(screen.getByText(/Send to notification drawer/i).closest('button')).toBeDisabled();
     });
 
     it('Selected notification doesnt show except for Integrations', async () => {

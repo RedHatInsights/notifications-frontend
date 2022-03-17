@@ -98,14 +98,14 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
             isDeleting={ false }
         />);
 
-        expect(screen.getByText(/remove/i, { selector: 'button' })).toBeDisabled();
+        expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
         userEvent.click(screen.getByText(/this action cannot be undone/i));
-        expect(screen.getByText(/remove/i, { selector: 'button' })).toBeEnabled();
+        expect(screen.getByText(/delete/i, { selector: 'button' })).toBeEnabled();
         userEvent.click(screen.getByText(/this action cannot be undone/i));
-        expect(screen.getByText(/remove/i, { selector: 'button' })).toBeDisabled();
+        expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
     });
 
-    it('On delete with the behavior is called when clicking Remove button', () => {
+    it('On delete with the behavior is called when clicking Delete button', () => {
         const onDelete = fn<boolean, []>();
         render(<BehaviorGroupDeleteModal
             behaviorGroup={ commonBehaviorGroup }
@@ -116,7 +116,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
         />);
 
         userEvent.click(screen.getByText(/this action cannot be undone/i));
-        userEvent.click(screen.getByText(/remove/i, { selector: 'button' }));
+        userEvent.click(screen.getByText(/delete/i, { selector: 'button' }));
         expect(onDelete).toHaveBeenCalledWith(commonBehaviorGroup);
     });
 

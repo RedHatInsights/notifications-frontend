@@ -4,7 +4,7 @@ import * as React from 'react';
 
 import { Messages } from '../../properties/Messages';
 import { IntegrationSchema } from '../../schemas/Integrations/Integration';
-import { isCamelIntegrationType, NewUserIntegration, UserIntegration } from '../../types/Integration';
+import { IntegrationType, isCamelIntegrationType, NewUserIntegration, UserIntegration } from '../../types/Integration';
 import { IntegrationsForm } from './Form';
 
 type PartialIntegration = Partial<UserIntegration>;
@@ -57,8 +57,8 @@ export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalP
             ...props.initialIntegration
         } as PartialIntegration;
 
-        // patch extras to be a string for CAMEL
-        if (isCamelIntegrationType(initial) && typeof initial.extras === 'object') {
+        // patch extras to be a string for SPLUNK
+        if (isCamelIntegrationType(initial) && initial.type === IntegrationType.SPLUNK && typeof initial.extras === 'object') {
             // We are casting as any, because `extras` is an object, but we need it to be a string for the form
             initial.extras = JSON.stringify(initial.extras, undefined, 2) as any;
         }

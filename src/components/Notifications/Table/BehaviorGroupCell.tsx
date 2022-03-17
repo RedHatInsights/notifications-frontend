@@ -156,14 +156,14 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             </Split>;
         }
 
-        return join(sortedSelected.map(b => <>
+        return join(sortedSelected.map(b => <React.Fragment key={ b.id }>
             { b.isDefault && <Tooltip
                 content={ `${b.displayName} behavior is attached to this event and cannot be changed.` +
                 'Add additional behavior groups to assign different actions or recipients.' }
             >
                 <LockIcon color={ global_palette_black_400.value } className={ inlineSpacer } />
             </Tooltip>} { b.displayName }
-        </>), CommaSeparator);
+        </React.Fragment>), CommaSeparator);
     }, [ sortedSelected ]);
 
     if (!props.isEditMode) {

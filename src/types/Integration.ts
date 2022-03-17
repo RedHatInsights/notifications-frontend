@@ -6,12 +6,14 @@ import { UUID } from './Notification';
 export enum IntegrationType {
     WEBHOOK = 'webhook',
     EMAIL_SUBSCRIPTION = 'email_subscription',
-    SPLUNK = 'camel:splunk'
+    SPLUNK = 'camel:splunk',
+    SLACK = 'camel:slack'
 }
 
 export const UserIntegrationType = {
     WEBHOOK: IntegrationType.WEBHOOK,
-    SPLUNK: IntegrationType.SPLUNK
+    SPLUNK: IntegrationType.SPLUNK,
+    SLACK: IntegrationType.SLACK
 } as const;
 
 export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;
@@ -58,6 +60,9 @@ export interface IntegrationEmailSubscription extends IntegrationBase<Integratio
 }
 
 export type Integration = IntegrationHttp | IntegrationEmailSubscription | IntegrationCamel;
+export type TypedIntegration<T extends IntegrationType> = Extract<Integration, {
+    type: T
+}>;
 
 // Integrations that the user can create in the Integrations page;
 export type UserIntegration = Extract<Integration, {

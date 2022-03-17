@@ -26,12 +26,14 @@ export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
     }
 );
 
+class NotificationNotFound extends Error {}
+
 const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
     rows: T,
     notificationId: UUID): T[number] => {
     const notification = rows.find(findById(notificationId));
     if (!notification) {
-        throw new Error('Notification not found in rows');
+        throw new NotificationNotFound('Notification not found in rows');
     }
 
     return notification;
@@ -145,23 +147,31 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
                 isEditMode: false
             })));
 
-            if (notifications) {
-                limit.clearQueue();
+            limit.clearQueue();
 
+            if (notifications) {
                 notifications.map(notification => notification.id).forEach(notificationId => {
                     limit(() => query(getBehaviorGroupByNotificationAction(notificationId))).then(response => {
                         setNotificationRows(produce(draft => {
-                            const draftNotification = getNotification(draft, notificationId);
-                            if (response.payload?.status === 200) {
-                                draftNotification.loadingActionStatus = 'done';
-                                draftNotification.behaviors = response.payload.value.map(toBehaviorGroup).map(bg => ({
-                                    ...bg,
-                                    isLoading: false,
-                                    actions: castDraft(bg.actions)
-                                }));
-                            } else {
-                                draftNotification.loadingActionStatus = 'error';
-                                draftNotification.behaviors = [];
+                            try {
+                                const draftNotification = getNotification(draft, notificationId);
+                                if (response.payload?.status === 200) {
+                                    draftNotification.loadingActionStatus = 'done';
+                                    draftNotification.behaviors = response.payload.value.map(toBehaviorGroup).map(bg => ({
+                                        ...bg,
+                                        isLoading: false,
+                                        actions: castDraft(bg.actions)
+                                    }));
+                                } else {
+                                    draftNotification.loadingActionStatus = 'error';
+                                    draftNotification.behaviors = [];
+                                }
+                            } catch (e) {
+                                if (e instanceof NotificationNotFound) {
+                                    // swallow exception, we changed the page while loading
+                                } else {
+                                    throw e;
+                                }
                             }
                         }));
                     });

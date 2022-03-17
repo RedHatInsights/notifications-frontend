@@ -24,6 +24,9 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
     [IntegrationType.SPLUNK]: {
         name: 'Splunk'
     },
+    [IntegrationType.SLACK]: {
+        name: 'Slack'
+    },
     [IntegrationType.WEBHOOK]: {
         name: 'Webhook'
     },
@@ -71,6 +74,11 @@ const Config = {
             beta: [
                 UserIntegrationType.WEBHOOK,
                 UserIntegrationType.SPLUNK
+            ],
+            experimental: [
+                UserIntegrationType.WEBHOOK,
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.SLACK
             ]
         }
     },

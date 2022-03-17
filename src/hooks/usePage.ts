@@ -1,7 +1,7 @@
 import { Filter, Page, Sort } from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
-export interface UsePageReturn {
+export interface PageAdapter {
     page: Page;
     changePage: (page: number) => void;
     changeItemsPerPage: (perPage: number) => void;
@@ -9,7 +9,7 @@ export interface UsePageReturn {
 
 export type FilterBuilder<T> = (filters: T | undefined) => Filter | undefined;
 
-export const usePage = <T>(defaultPerPage: number, filterBuilder: FilterBuilder<T>, filters?: T, sort?: Sort): UsePageReturn => {
+export const usePage = <T>(defaultPerPage: number, filterBuilder: FilterBuilder<T>, filters?: T, sort?: Sort): PageAdapter => {
     const [ currentPage, setCurrentPage ] = useState(1);
     const [ itemsPerPage, setItemsPerPage ] = useState(defaultPerPage);
 
