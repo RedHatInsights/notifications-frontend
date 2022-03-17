@@ -150,4 +150,23 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
 
         expect(onSelected).toHaveBeenCalled();
     });
+
+    it('Integration recipients that have been previously used in the form are disabled', async () => {
+        // render(<IntegrationRecipientTypeahead
+        //     selected={ ref1 }
+        //     integrationType={ IntegrationType.WEBHOOK }
+        //     onSelected={ fn() }
+        // />, {
+        //     wrapper: getConfiguredWrapper(async () => [])
+        // });
+        // render(<IntegrationRecipientTypeaheadx
+        //     selected={ ref1 }
+        //     integrationType={ IntegrationType.WEBHOOK }
+        //     onSelected={ fn() }
+        // />, {
+        //     wrapper: getConfiguredWrapper(async () => [])
+        // });
+
+        // await waitForAsyncEvents();
+    })
 });

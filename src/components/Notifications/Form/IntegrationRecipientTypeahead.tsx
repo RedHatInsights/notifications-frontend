@@ -1,11 +1,12 @@
 import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
 import Config from '../../../config/Config';
 import { UserIntegrationType } from '../../../types/Integration';
-import { IntegrationRef } from '../../../types/Notification';
+import { ActionIntegration, BehaviorGroup, IntegrationRef } from '../../../types/Notification';
 import { IntegrationRecipient } from '../../../types/Recipient';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
@@ -25,7 +26,9 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
 export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationRecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
     const prevOpen = usePrevious(isOpen);
+
     const { getIntegrations } = useRecipientContext();
+    const { values } = useFormikContext<Partial<BehaviorGroup>>();
 
     const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRecipient>();
 
@@ -41,7 +44,10 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ prevOpen, isOpen, props.onOpenChange ]);
 
     React.useEffect(() => {
-        getIntegrations(props.integrationType, '').then(integrations => dispatchers.setDefaults(integrations.map(i => new IntegrationRecipient(i))));
+        getIntegrations(props.integrationType, '').then(integrations => {
+            const defaults = integrations.map(i => new IntegrationRecipient(i));
+            dispatchers.setDefaults(defaults);
+        });
     }, [ getIntegrations, props.integrationType, dispatchers ]);
 
     React.useEffect(() => {
@@ -53,7 +59,12 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         }
     }, [ getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
 
-    const options = useRecipientOptionMemo(state);
+    const getExistingIntegrations = React.useCallback(() => {
+        const integrationActions = ((values.actions ?? []) as readonly ActionIntegration[]).map(action => action?.integration.id);
+        return new Set<string>(integrationActions);
+    }, [ values ]);
+
+    const options = useRecipientOptionMemo(state, getExistingIntegrations());
 
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
         // Ignore filter calls with null event
