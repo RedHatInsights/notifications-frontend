@@ -59,12 +59,12 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         }
     }, [ getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
 
-    const getExistingIntegrations = React.useCallback(() => {
+    const existingIntegrations = React.useMemo(() => {
         const integrationActions = ((values.actions ?? []) as readonly ActionIntegration[]).map(action => action?.integration.id);
         return new Set<string>(integrationActions);
     }, [ values ]);
 
-    const options = useRecipientOptionMemo(state, getExistingIntegrations());
+    const options = useRecipientOptionMemo(state, existingIntegrations);
 
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
         // Ignore filter calls with null event

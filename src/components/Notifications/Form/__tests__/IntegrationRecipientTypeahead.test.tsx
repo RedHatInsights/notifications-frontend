@@ -1,12 +1,13 @@
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Formik } from 'formik';
 import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { IntegrationType } from '../../../../types/Integration';
-import { IntegrationRef } from '../../../../types/Notification';
+import { ActionIntegration, BehaviorGroup, IntegrationRef } from '../../../../types/Notification';
 import { GetIntegrations, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
 
@@ -24,13 +25,25 @@ const ref2: IntegrationRef = {
     name: 'ABCD'
 };
 
-const getConfiguredWrapper = (getIntegrations?: GetIntegrations) => {
+const getConfiguredWrapper = (getIntegrations?: GetIntegrations, initialFormik?: Partial<BehaviorGroup>) => {
     const context: RecipientContext = {
         getIntegrations: getIntegrations ?? fn<any, any>(async () => [ ref1, ref2 ]),
         getNotificationRecipients: fn()
     };
 
-    const Wrapper: React.FunctionComponent = props => <RecipientContextProvider value={ context }>{ props.children }</RecipientContextProvider>;
+    const Wrapper: React.FunctionComponent = props => {
+        return (
+            <RecipientContextProvider value={ context }>
+                <Formik<Partial<BehaviorGroup>>
+                    initialValues={ initialFormik ?? { } }
+                    onSubmit={ () => undefined }
+                >
+                    { props.children }
+                </Formik>
+            </RecipientContextProvider>
+        );
+    };
+
     return Wrapper;
 };
 
@@ -152,21 +165,22 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     });
 
     it('Integration recipients that have been previously used in the form are disabled', async () => {
-        // render(<IntegrationRecipientTypeahead
-        //     selected={ ref1 }
-        //     integrationType={ IntegrationType.WEBHOOK }
-        //     onSelected={ fn() }
-        // />, {
-        //     wrapper: getConfiguredWrapper(async () => [])
-        // });
-        // render(<IntegrationRecipientTypeaheadx
-        //     selected={ ref1 }
-        //     integrationType={ IntegrationType.WEBHOOK }
-        //     onSelected={ fn() }
-        // />, {
-        //     wrapper: getConfiguredWrapper(async () => [])
-        // });
+        const formikValues: Partial<BehaviorGroup> = {
+            actions: [{ integration: ref1 }] as ActionIntegration[]
+        };
 
-        // await waitForAsyncEvents();
-    })
+        render(<IntegrationRecipientTypeahead
+            selected={ undefined }
+            integrationType={ IntegrationType.WEBHOOK }
+            onSelected={ fn() }
+        />, {
+            wrapper: getConfiguredWrapper(undefined, formikValues)
+        });
+
+        await waitForAsyncEvents();
+        userEvent.click(screen.getByRole('button', { name: /Options menu/i }));
+
+        await waitForAsyncEvents();
+        expect(screen.getAllByRole('option')[0].className).toEqual('pf-c-select__menu-item pf-m-disabled');
+    });
 });
