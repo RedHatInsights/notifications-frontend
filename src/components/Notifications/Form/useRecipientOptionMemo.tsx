@@ -7,8 +7,17 @@ import { RecipientOption } from './RecipientOption';
 import { ReducerState } from './useTypeaheadReducer';
 
 const mapper = (r: Recipient, existingIntegrations?: Set<string>) => {
-    const isDisabled = r instanceof IntegrationRecipient ? existingIntegrations?.has(r.integration.id) : false;
-    const description = r instanceof NotificationRecipient ? r.description : undefined;
+    let isDisabled = false;
+    let description: string | undefined = undefined;
+
+    if (r instanceof NotificationRecipient) {
+        description = r.description;
+    }
+
+    else if (r instanceof IntegrationRecipient) {
+        isDisabled = !!existingIntegrations?.has(r.integration.id);
+        description = isDisabled ? 'This integration has already been added' : description;
+    }
 
     return <SelectOption key={ r.getKey() } value={ new RecipientOption(r) } description={ description } isDisabled={ isDisabled } />;
 };

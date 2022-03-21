@@ -181,6 +181,6 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         userEvent.click(screen.getByRole('button', { name: /Options menu/i }));
 
         await waitForAsyncEvents();
-        expect(screen.getAllByRole('option')[0].className).toEqual('pf-c-select__menu-item pf-m-disabled');
+        expect(screen.getAllByRole('option')[0].className).toEqual('pf-c-select__menu-item pf-m-disabled pf-m-description');
     });
 });
