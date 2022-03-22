@@ -1,9 +1,9 @@
-import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core/dist/js/components';
+import { EmptyState, EmptyStateBody, EmptyStateIcon, EmptyStateVariant, Title } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
 import { style } from 'typestyle';
 
-interface ParentProps {
+interface EmptyStateSearchProps {
     className?: string,
     variant?: EmptyStateVariant,
     icon?: React.ComponentClass<any>
@@ -16,7 +16,7 @@ const emptyStateClassName = style({
     backgroundColor: 'white'
 });
 
-export const EmptyStateSearch: React.FunctionComponent<ParentProps> = props => {
+export const EmptyStateSearch: React.FunctionComponent<EmptyStateSearchProps> = props => {
     return (
         <EmptyState className={ `${emptyStateClassName} ${props.className}` } variant={ props.variant }>
             <EmptyStateIcon icon={ props.icon ?? SearchIcon } />
