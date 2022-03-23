@@ -1,4 +1,4 @@
-import { Label, LabelGroup, LabelProps, Popover, Skeleton } from '@patternfly/react-core';
+import { EmptyStateVariant, Label, LabelGroup, LabelProps, Popover, Skeleton } from '@patternfly/react-core';
 import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { IExtraColumnData, SortByDirection, TableComposable, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table';
 import { c_alert_m_warning__icon_Color } from '@patternfly/react-tokens';
@@ -7,8 +7,10 @@ import * as React from 'react';
 import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
+import { Messages } from '../../../properties/Messages';
 import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
+import { EmptyStateSearch } from '../../EmptyStateSearch';
 import { UtcDate } from '../../UtcDate';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
 
@@ -123,6 +125,16 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
             ));
         }
     }, [ props.loading, props.events, props.getIntegrationRecipient ]);
+
+    if (rows.length === 0) {
+        return (
+            <EmptyStateSearch
+                variant={ EmptyStateVariant.full }
+                title={ Messages.components.eventLog.table.notFound.title }
+                description={ Messages.components.eventLog.table.notFound.description }
+            />
+        );
+    }
 
     return (
         <TableComposable

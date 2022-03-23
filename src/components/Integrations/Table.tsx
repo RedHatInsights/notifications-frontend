@@ -1,12 +1,8 @@
 import {
-    EmptyState,
-    EmptyStateBody,
-    EmptyStateIcon,
     EmptyStateVariant,
     Spinner,
     Switch,
-    Text,
-    Title
+    Text
 } from '@patternfly/react-core';
 import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
@@ -43,6 +39,7 @@ import messages from '../../properties/DefinedMessages';
 import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
 import { getOuiaProps } from '../../utils/getOuiaProps';
+import { EmptyStateSearch } from '../EmptyStateSearch';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
@@ -356,30 +353,32 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
         );
     }
 
+    if (rows.length === 0) {
+        return (
+            <EmptyStateSearch
+                variant={ EmptyStateVariant.full }
+                icon={ CubesIcon }
+                title={ intl.formatMessage(messages.integrationsEmptyStateTitle) }
+                description={ intl.formatMessage(messages.integrationsTableEmptyStateBody) }
+            />
+        );
+    }
+
     return (
         <div { ...getOuiaProps('Integrations/Table', props) }>
-            {rows.length === 0 ?  (<EmptyState variant={ EmptyStateVariant.full }>
-                <EmptyStateIcon icon={ CubesIcon } />
-                <Title headingLevel="h2" size="lg">
-                    {intl.formatMessage(messages.integrationsEmptyStateTitle)}
-                </Title>
-                <EmptyStateBody>
-                    {intl.formatMessage(messages.integrationsTableEmptyStateBody)}
-                </EmptyStateBody>
-            </EmptyState>) :
-                (<Table
-                    className={ tableClassName }
-                    aria-label={ Messages.components.integrations.table.title }
-                    rows={ rows }
-                    cells={ columns }
-                    onCollapse={ onCollapseHandler }
-                    rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
-                    actionResolver={ actionsResolverCallback }
-                    isStickyHeader={ true }
-                >
-                    <TableHeader />
-                    <TableBody />
-                </Table>)}
+            (<Table
+                className={ tableClassName }
+                aria-label={ Messages.components.integrations.table.title }
+                rows={ rows }
+                cells={ columns }
+                onCollapse={ onCollapseHandler }
+                rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
+                actionResolver={ actionsResolverCallback }
+                isStickyHeader={ true }
+            >
+                <TableHeader />
+                <TableBody />
+            </Table>)
         </div>
     );
 };
