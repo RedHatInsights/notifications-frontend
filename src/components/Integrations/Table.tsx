@@ -366,7 +366,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
 
     return (
         <div { ...getOuiaProps('Integrations/Table', props) }>
-            (<Table
+            <Table
                 className={ tableClassName }
                 aria-label={ Messages.components.integrations.table.title }
                 rows={ rows }
@@ -378,7 +378,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
             >
                 <TableHeader />
                 <TableBody />
-            </Table>)
+            </Table>
         </div>
     );
 };
