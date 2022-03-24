@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "target": "es2019",
-    "isolatedModules": true,
+    "isolatedModules": false,
     "allowJs": true,
     "checkJs": false,
     "jsx": "react",
