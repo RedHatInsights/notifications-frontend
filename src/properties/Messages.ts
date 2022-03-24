@@ -91,6 +91,14 @@ const MutableMessages = {
                     recipient: 'Recipient'
                 }
             }
+        },
+        eventLog: {
+            table: {
+                notFound: {
+                    title: 'No matching events found',
+                    description: 'This filter criteria matches no events. Try changing your filter settings.'
+                }
+            }
         }
     },
     common: {
