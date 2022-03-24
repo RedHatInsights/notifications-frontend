@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { IntegrationType } from '../../../../types/Integration';
-import { ActionIntegration, BehaviorGroup, IntegrationRef } from '../../../../types/Notification';
+import { ActionIntegration, BehaviorGroup, IntegrationRef, NotificationType } from '../../../../types/Notification';
 import { GetIntegrations, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
 
@@ -166,7 +166,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
 
     it('Integration recipients that have been previously used in the form are disabled', async () => {
         const formikValues: Partial<BehaviorGroup> = {
-            actions: [{ integration: ref1 }] as ActionIntegration[]
+            actions: [{ integration: ref1, type: NotificationType.INTEGRATION }] as ActionIntegration[]
         };
 
         render(<IntegrationRecipientTypeahead
