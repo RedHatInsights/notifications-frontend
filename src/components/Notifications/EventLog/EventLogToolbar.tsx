@@ -2,18 +2,18 @@ import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
     ColumnsMetada,
-    OuiaComponentProps,
+    OuiaComponentProps
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
-import { usePrimaryToolbarFilterConfigWrapper } from '../../../hooks/usePrimaryToolbarFilterConfigWrapper';
 
 import { EventPeriod } from '../../../types/Event';
 import { Facet } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
 import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
+import { usePrimaryToolbarFilterConfigWrapper } from './usePrimaryToolbarFilterConfigWrapper';
 
 interface EventLogToolbarProps extends OuiaComponentProps {
     filters: EventLogFilters,
@@ -39,49 +39,14 @@ interface EventLogToolbarProps extends OuiaComponentProps {
 }
 
 export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (props) => {
-    // const testRef = React.useRef<any>(<TreeDropdownFilter groups={props.bundleOptions} items={props.applicationOptions} placeholder={"Filter by Application"}/>)
     const filterMetadata = React.useMemo<ColumnsMetada<any>>(() => {
-        // const bundleOptions = props.bundleOptions;
-        // const applicationOptions = props.applicationOptions;
         return {
             [EventLogFilterColumn.EVENT]: {
                 label: 'Event',
                 placeholder: 'Filter by event'
-            },
-            // [EventLogFilterColumn.BUNDLE]: {
-            //     label: 'Bundle',
-            //     placeholder: 'Filter by bundle',
-            //     options: {
-            //         exclusive: false,
-            //         items: bundleOptions.map(b => ({
-            //             value: b.name,
-            //             chipValue: b.displayName,
-            //             label: b.displayName
-            //         }))
-            //     }
-            // },
-            // [EventLogFilterColumn.APPLICATION]: {
-            //     label: 'Application',
-            //     placeholder: 'Filter by application',
-            //     options: {
-            //         exclusive: false,
-            //         items: applicationOptions.map(a => ({
-            //             value: a.name,
-            //             chipValue: a.displayName,
-            //             label: a.displayName
-            //         }))
-            //     }
-            // }
+            }
         };
-    }, [ props.bundleOptions, props.applicationOptions ]);
-
-    // const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
-    //     EventLogFilterColumn,
-    //     props.filters,
-    //     props.setFilters,
-    //     props.clearFilter,
-    //     filterMetadata
-    // );
+    }, []);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfigWrapper(
         props.bundleOptions,
@@ -89,10 +54,9 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         props.filters,
         props.setFilters,
         props.clearFilter,
-        filterMetadata,
-        // testRef,
-    )
-    console.log(primaryToolbarFilterConfig)
+        filterMetadata
+    );
+    console.log(primaryToolbarFilterConfig);
 
     const pageChanged = React.useCallback((_event: unknown, page: number) => {
         const inner = props.pageChanged;
