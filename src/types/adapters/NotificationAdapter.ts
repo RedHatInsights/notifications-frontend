@@ -10,7 +10,7 @@ import {
     ServerNotificationResponse,
     SystemProperties
 } from '../Notification';
-import { NotificationRecipient } from '../Recipient';
+import { NotificationRbacGroupRecipient, NotificationRecipient } from '../Recipient';
 import { toIntegration } from './IntegrationAdapter';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
@@ -24,10 +24,18 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
 
     const integration = toIntegration(serverAction) as IntegrationEmailSubscription;
 
-    return {
+    const action: ActionNotify = {
         type,
-        recipient: [ new NotificationRecipient(integration.id, integration.onlyAdmin) ]
+        recipient: []
     };
+
+    if (integration.groupId) {
+        action.recipient = [ new NotificationRbacGroupRecipient(integration.id, integration.groupId, undefined) ];
+    } else {
+        action.recipient = [ new NotificationRecipient(integration.id, integration.onlyAdmin) ];
+    }
+
+    return action;
 };
 
 export const usesDefault = (endpoints: Array<Schemas.Endpoint>): boolean =>
@@ -81,13 +89,27 @@ export const toSystemProperties = (action: Action): ReadonlyArray<SystemProperti
     if (action.type === NotificationType.EMAIL_SUBSCRIPTION) {
         return action.recipient.map(r => ({
             type: NotificationType.EMAIL_SUBSCRIPTION,
-            props: {
-                onlyAdmins: r.sendToAdmin,
-                ignorePreferences: false,
-                groupId: undefined
-            }
+            props: actionRecipientToSystemPropertiesProps(r)
         }));
     } else {
         throw new Error(`No system properties for type ${action.type}`);
     }
+};
+
+const actionRecipientToSystemPropertiesProps = (recipient: ActionNotify['recipient'][number]): SystemProperties['props'] => {
+    if (recipient instanceof NotificationRbacGroupRecipient) {
+        return {
+            groupId: recipient.groupId,
+            onlyAdmins: false,
+            ignorePreferences: false
+        };
+    } else if (recipient instanceof NotificationRecipient) {
+        return {
+            groupId: undefined,
+            onlyAdmins: recipient.sendToAdmin,
+            ignorePreferences: false
+        };
+    }
+
+    throw new Error('Unexpected implementation:' + recipient);
 };
