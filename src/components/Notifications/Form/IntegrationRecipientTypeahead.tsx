@@ -74,7 +74,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
 
             return (
                 <SelectOption
-                    key={ r.getKey() + Math.random() + '' }
+                    key={ r.getKey() }
                     value={ new RecipientOption(r) }
                     description={ isDisabled ? 'This integration has already been added' : undefined }
                     isDisabled={ isDisabled }
