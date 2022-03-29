@@ -1,6 +1,6 @@
 import { Schemas } from '../generated/OpenapiNotifications';
 import { UserIntegration } from './Integration';
-import { BaseNotificationRecipient, NotificationRecipient } from './Recipient';
+import { BaseNotificationRecipient } from './Recipient';
 
 export type UUID = Schemas.UUID;
 
