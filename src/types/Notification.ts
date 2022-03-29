@@ -1,6 +1,6 @@
 import { Schemas } from '../generated/OpenapiNotifications';
 import { UserIntegration } from './Integration';
-import { NotificationRecipient } from './Recipient';
+import { BaseNotificationRecipient } from './Recipient';
 
 export type UUID = Schemas.UUID;
 
@@ -36,7 +36,7 @@ export interface ActionIntegration extends ActionBase {
 
 export interface ActionNotify extends ActionBase {
     type: NotificationType.EMAIL_SUBSCRIPTION | NotificationType.DRAWER;
-    recipient: ReadonlyArray<NotificationRecipient>;
+    recipient: ReadonlyArray<BaseNotificationRecipient>;
 }
 
 export type Action = ActionIntegration | ActionNotify;
@@ -76,7 +76,7 @@ export type EmailSystemProperties = {
     props: {
         onlyAdmins: boolean;
         ignorePreferences: false;
-        groupId: undefined;
+        groupId: undefined | UUID;
     }
 }
 export type SystemProperties = EmailSystemProperties;
