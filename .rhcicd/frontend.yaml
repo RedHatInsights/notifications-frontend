@@ -1,0 +1,48 @@
+apiVersion: v1
+kind: Template
+metadata:
+  name: notifications-frontend
+objects:
+  - apiVersion: cloud.redhat.com/v1alpha1
+    kind: Frontend
+    metadata:
+      name: notifications
+    spec:
+      envName: ${ENV_NAME}
+      title: notifications
+      deploymentRepo: https://github.com/RedHatInsights/notifications-frontend
+      API:
+        versions:
+          - v1
+      frontend:
+        paths:
+          - /apps/notifications
+      image: ${IMAGE}:${IMAGE_TAG}
+      navItems:
+        - appId: "notifications"
+          title: "notifications"
+          href: "/settings/notifications"
+          product: "Red Hat Insights"
+        - appID: "notifications"
+          title: "integrations"
+          href: "/settings/integrations"
+          product: "Red Hat Insights"
+      module:
+        manifestLocation: "/apps/notifications/fed-mods.json"
+        modules:
+          - id: "notifications"
+            module: "./RootApp"
+            routes:
+              - pathname: /settings/notifications
+          - id: "integrations"
+            module: "./RootApp"
+            routes:
+              - pathname: /settings/integrations
+
+parameters:
+  - name: ENV_NAME
+    required: true
+  - name: IMAGE_TAG
+    required: true
+  - name: IMAGE
+    value: quay.io/cloudservices/notifications-frontend
