@@ -148,7 +148,6 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         <div { ...getOuiaProps('RecipientTypeahead', props) }>
             <Select
                 variant={ SelectVariant.checkbox }
-                typeAheadAriaLabel="Select the recipients"
                 selections={ selection }
                 onSelect={ onSelect }
                 onToggle={ toggle }
