@@ -88,7 +88,6 @@ export const EventLogPage: React.FunctionComponent = () => {
     }, [ sortColumn, sortDirection ]);
 
     const eventsPage = usePage<EventLogFilters>(Config.paging.defaultPerPage, filterBuilder, eventLogFilters.filters, sort);
-
     const eventsQuery = useGetEvents(eventsPage.page);
 
     const events = React.useMemo(() => {

@@ -40,13 +40,15 @@ interface EventLogToolbarProps extends OuiaComponentProps {
 
 export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (props) => {
     const filterMetadata = React.useMemo<ColumnsMetada<any>>(() => {
-        return {
+        const metaData: ColumnsMetada<any> = {
             [EventLogFilterColumn.EVENT]: {
                 label: 'Event',
                 placeholder: 'Filter by event'
             }
-        };
-    }, []);
+        }
+        
+        return metaData
+    }, [props.bundleOptions]);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfigWrapper(
         props.bundleOptions,
