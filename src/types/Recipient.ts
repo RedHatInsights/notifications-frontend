@@ -37,7 +37,7 @@ export abstract class BaseNotificationRecipient extends Recipient {
     readonly key: string;
     readonly description: string | undefined;
 
-    protected constructor(displayName: string, description: string, integrationId: UUID | undefined, key: string) {
+    protected constructor(displayName: string, description: string | undefined, integrationId: UUID | undefined, key: string) {
         super(displayName);
 
         this.key = key;
@@ -50,17 +50,17 @@ export abstract class BaseNotificationRecipient extends Recipient {
     }
 }
 
-export class NotificationRecipient extends BaseNotificationRecipient {
+export class NotificationUserRecipient extends BaseNotificationRecipient {
     readonly sendToAdmin: boolean;
 
     public constructor(integrationId: UUID | undefined, sendToAdmin: boolean) {
-        let displayName = 'Users:';
-        let description = '';
+        let displayName;
+        let description;
         if (sendToAdmin) {
-            displayName += ' Admins';
+            displayName = ' Admins';
             description = 'Organization administrators for your account';
         } else {
-            displayName += ' All';
+            displayName = ' All';
             description = 'All users in your organization who subscribed to this email in their User Preferences';
         }
 
@@ -75,7 +75,7 @@ export class NotificationRecipient extends BaseNotificationRecipient {
     }
 
     public equals(recipient: Recipient) {
-        if (recipient instanceof NotificationRecipient) {
+        if (recipient instanceof NotificationUserRecipient) {
             return recipient.sendToAdmin === this.sendToAdmin;
         }
 
@@ -86,20 +86,33 @@ export class NotificationRecipient extends BaseNotificationRecipient {
 export class NotificationRbacGroupRecipient extends BaseNotificationRecipient {
     readonly groupId: UUID;
     readonly isLoading: boolean;
+    readonly hasError: boolean;
 
-    public constructor(integrationId: UUID | undefined, groupId: UUID, displayName: string | undefined) {
+    public constructor(integrationId: UUID | undefined, groupId: UUID, displayNameOrIsLoading: string | boolean) {
+        let displayName;
+        let isLoading;
+        let hasError;
 
-        const description = 'All users in the RBAC group';
+        if (typeof displayNameOrIsLoading === 'string') {
+            displayName = displayNameOrIsLoading;
+            isLoading = false;
+            hasError = false;
+        } else {
+            displayName = 'Loading';
+            isLoading = displayNameOrIsLoading;
+            hasError = !displayNameOrIsLoading;
+        }
 
         super(
-            displayName ?? 'Loading',
-            description,
+            displayName,
+            undefined,
             integrationId,
             `rbac-group-${groupId}`
         );
 
         this.groupId = groupId;
-        this.isLoading = displayName === undefined;
+        this.isLoading = isLoading;
+        this.hasError = hasError;
     }
 
     public equals(recipient: Recipient) {

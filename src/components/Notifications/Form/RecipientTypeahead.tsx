@@ -1,10 +1,11 @@
-import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Chip, ChipGroup, Select, SelectGroup, SelectOption, SelectOptionObject, SelectVariant, Skeleton } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
-import { BaseNotificationRecipient, NotificationRecipient } from '../../../types/Recipient';
+import { BaseNotificationRecipient, NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../../types/Recipient';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { GroupNotFound } from '../Rbac/GroupNotFound';
 import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
@@ -19,25 +20,55 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
     error?: boolean;
 }
 
-interface NotificationClass {
-    new (...args: any[]): BaseNotificationRecipient;
-}
+const rbacGroupKey = 'groups';
+const rbacGroupLabel = 'User Access Groups';
 
-const isInstanceOf = <T extends NotificationClass>(tClass: T) => (r: BaseNotificationRecipient): r is InstanceType<T> => {
-    return r instanceof tClass;
-};
+const renderSelectGroup = (key: string, label: string, options: ReadonlyArray<BaseNotificationRecipient>) => (
+    <SelectGroup key={ key } label={ label }>
+        { options.map(r => {
+            if (r instanceof NotificationRbacGroupRecipient && r.isLoading) {
+                return <SelectOption
+                    key={ r.getKey() }
+                    isNoResultsOption
+                >
+                    <Skeleton width="100%" />
+                </SelectOption>;
+            }
+
+            return <SelectOption
+                key={ r.getKey() }
+                value={ new RecipientOption(r) }
+                description={ r.description }
+            />;
+        }) }
+    </SelectGroup>
+);
 
 const recipientMapper = (recipients: ReadonlyArray<BaseNotificationRecipient>) => {
-    const users = recipients.filter(isInstanceOf(NotificationRecipient));
-
-    return users.map(r =>
-        <SelectOption
-            key={ r.getKey() }
-            value={ new RecipientOption(r) }
-            description={ r.description }
-        />
-    );
+    return [
+        renderSelectGroup(rbacGroupKey, rbacGroupLabel, recipients)
+    ];
 };
+
+const loadingMapper = () => {
+    return [
+        <SelectGroup key={ rbacGroupKey } label={ rbacGroupLabel }>
+            <SelectOption
+                key="loading-group"
+                isNoResultsOption={ true }
+            >
+                <Skeleton width="100%" />
+            </SelectOption>
+        </SelectGroup>
+    ];
+};
+
+const userOptions = [
+    renderSelectGroup('users', 'Users', [
+        new NotificationUserRecipient(undefined, false),
+        new NotificationUserRecipient(undefined, true)
+    ])
+];
 
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
@@ -46,12 +77,12 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
     const { getNotificationRecipients } = useRecipientContext();
 
     React.useEffect(() => {
-        getNotificationRecipients('').then(recipients => dispatchers.setDefaults(recipients));
+        getNotificationRecipients().then(recipients => dispatchers.setDefaults(recipients));
     }, [ getNotificationRecipients, dispatchers ]);
 
     React.useEffect(() => {
         if (state.loadingFilter) {
-            getNotificationRecipients(state.lastSearch).then(recipients => dispatchers.setFilterValue(
+            getNotificationRecipients().then(recipients => dispatchers.setFilterValue(
                 state.lastSearch,
                 recipients
             ));
@@ -69,23 +100,11 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         }
     }, [ prevOpen, isOpen, props.onOpenChange ]);
 
-    const options = useRecipientOptionMemo(state, recipientMapper);
-
-    const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
-        // Ignore filter calls with null event
-        if (e === null) {
-            return options;
-        }
-
-        const search = e.target.value?.trim();
-        if (search === '') {
-            dispatchers.useDefaults();
-        } else {
-            dispatchers.loadFilterValue(search);
-        }
-
-        return options;
-    }, [ dispatchers, options ]);
+    // We probably need to augment these.
+    // Change to use this  mapper only for the groups and prepend the Users
+    const rbacOptions = useRecipientOptionMemo(state, recipientMapper, loadingMapper);
+    // augment rbacOptions
+    const options = React.useMemo(() => [ ...userOptions, ...rbacOptions ], [ rbacOptions ]);
 
     const selection = React.useMemo(() => {
         const sel = props.selected;
@@ -93,7 +112,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
             return undefined;
         }
 
-        return (sel as ReadonlyArray<NotificationRecipient>).map(s => new RecipientOption(s));
+        return (sel as ReadonlyArray<NotificationUserRecipient>).map(s => new RecipientOption(s));
 
     }, [ props.selected ]);
 
@@ -105,20 +124,44 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
 
     }, [ props.onSelected ]);
 
+    const selectContent = React.useMemo(() => {
+        return selection?.map(value => {
+            const unselect = (element: RecipientOption) => (evt: React.MouseEvent) => {
+                evt.stopPropagation();
+                onSelect(evt, element);
+            };
+
+            if (value.recipient instanceof NotificationRbacGroupRecipient) {
+                if (value.recipient.isLoading) {
+                    return <Chip onClick={ unselect(value) }><Skeleton width="40px" /></Chip>;
+                } else if (value.recipient.hasError) {
+                    return <GroupNotFound onClose={ unselect(value) } />;
+                }
+
+            }
+
+            return <Chip onClick={ unselect(value) } key={ value.recipient.getKey() }>{ value.recipient.displayName }</Chip>;
+        });
+    }, [ selection, onSelect ]);
+
     return (
         <div { ...getOuiaProps('RecipientTypeahead', props) }>
             <Select
-                variant={ SelectVariant.typeaheadMulti }
+                variant={ SelectVariant.checkbox }
                 typeAheadAriaLabel="Select the recipients"
                 selections={ selection }
                 onSelect={ onSelect }
                 onToggle={ toggle }
                 isOpen={ isOpen }
-                onFilter={ onFilter }
                 menuAppendTo={ document.body }
                 isDisabled={ props.isDisabled }
                 onClear={ props.onClear }
                 validated={ props.error ? 'error' : undefined  }
+                isGrouped
+                isCheckboxSelectionBadgeHidden
+                // hasInlineFilter // Disabled filter. see: https://github.com/patternfly/patternfly-react/issues/7134
+                isInputValuePersisted
+                placeholderText={ <ChipGroup>{ selectContent }</ChipGroup> }
             >
                 { options }
             </Select>

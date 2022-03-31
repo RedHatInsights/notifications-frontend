@@ -5,13 +5,13 @@ import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Action, NotificationType } from '../../../../types/Notification';
-import { NotificationRecipient } from '../../../../types/Recipient';
+import { NotificationUserRecipient } from '../../../../types/Recipient';
 import { ActionTypeahead } from '../ActionTypeahead';
 
 const ALL_RECIPIENTS = [
-    new NotificationRecipient(undefined, false),
-    new NotificationRecipient(undefined, true)
-] as ReadonlyArray<NotificationRecipient>;
+    new NotificationUserRecipient(undefined, false),
+    new NotificationUserRecipient(undefined, true)
+] as ReadonlyArray<NotificationUserRecipient>;
 
 describe('src/components/Notifications/Form/ActionTypeahead', () => {
     it('Renders the passed action type', () => {

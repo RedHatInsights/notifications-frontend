@@ -1,20 +1,16 @@
-import { NotificationRecipient } from '../../types/Recipient';
+import { useCallback } from 'react';
+
+import { useRbacGroups } from '../../app/rbac/RbacGroupContext';
+import { NotificationRbacGroupRecipient } from '../../types/Recipient';
 import { GetNotificationRecipients } from './RecipientContext';
 
-const all: ReadonlyArray<NotificationRecipient> = [
-    new NotificationRecipient(undefined, false),
-    new NotificationRecipient(undefined, true)
-];
-
-const getRecipients = async (search?: string) => {
-    if (search) {
-        const lowerCaseSearch = search.toLowerCase();
-        return all.filter(r => r.displayName.toLowerCase().includes(lowerCaseSearch));
-    }
-
-    return all;
-};
-
 export const useGetRecipients = (): GetNotificationRecipients => {
-    return getRecipients;
+    const rbacGroups = useRbacGroups();
+    return useCallback(async () => {
+        return rbacGroups.groups.map(r => new NotificationRbacGroupRecipient(
+            undefined,
+            r.id,
+            r.name
+        ));
+    }, [ rbacGroups ]);
 };

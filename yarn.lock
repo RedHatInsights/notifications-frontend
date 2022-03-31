@@ -1623,9 +1623,9 @@
   integrity sha512-h1NJixtNVK+nYxLON3HOO0xguA9qXQ5rkGUo4TZJ/kRehFCJMH8PPeebdOAKgAo38NjS2/06+atNKjDRl6zYcA==
 
 "@patternfly/react-icons@^4.26.14":
-  version "4.26.14"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.26.14.tgz#c237520c5ccfde9a81f85afdd733b9e1c1890e8c"
-  integrity sha512-3eT/k94tTjckolWfqfRAWc6EAgrw84ZlHOKiFNsIY9NDDHrDxJyAnDydcDIeKEGGl3RdZBwubaQS6QdwqjwhAw==
+  version "4.49.19"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.49.19.tgz#66f426570378213f6f717d4a39fadcbf57635d1e"
+  integrity sha512-Pr6JDDKWOnWChkifXKWglKEPo3Q+1CgiUTUrvk4ZbnD7mhq5e/TFxxInB9CPzi278bvnc2YlPyTjpaAcCN0yGw==
 
 "@patternfly/react-styles@4.25.4", "@patternfly/react-styles@^4.25.4":
   version "4.25.4"
@@ -1633,9 +1633,9 @@
   integrity sha512-GHFLzsvyimymkGTTyTW8HZDlhYbGpCqw/69Se1EHCaZnbTYluiJMRI6YfNTRC5ZvYF+x4GMAG5AjwQ5LfbZ/xg==
 
 "@patternfly/react-styles@^4.25.14":
-  version "4.25.14"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.25.14.tgz#02c02ba0eb6617140d345e4d3318113a5c3b880d"
-  integrity sha512-cIuJPZLv/gADu4PrJ+fVnKcXB6nhkbu3EOoZTgbETtA6nU5eKkC/KXXXVsGIuxN5GSXIhGus393RFnseerdnMg==
+  version "4.48.19"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.48.19.tgz#23bb4521a586275ed14d89c2c60fe8765e45b3bb"
+  integrity sha512-8+t8wqYGWkmyhxLty/kQXCY44rnW0y60nUMG7QKNzF1bAFJIpR8jKuVnHArM1h+MI9D53e8OVjKORH83hUAzJw==
 
 "@patternfly/react-table@4.44.4":
   version "4.44.4"
@@ -1650,9 +1650,9 @@
     tslib "^2.0.0"
 
 "@patternfly/react-tokens@^4.27.14":
-  version "4.27.14"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.27.14.tgz#ef267ce81924b39e6410649edcaf247e5adcf06a"
-  integrity sha512-ePfDver8xlJ2mW8+IcpHzey04AyoWm9kc6HjePf96CX3wn9zmSIIMLEbqVEN9rtZSCWcCVnDlz4Zl9/N5YBg/A==
+  version "4.50.19"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.50.19.tgz#7619830e7ad70853e54819b37e196c85ed604f21"
+  integrity sha512-wbUPb8welJ8p+OjXrc0X3UYDj5JjN9xnfpYkZdAySpcFtk0BAn5Py6UEZCjKtw7XHHfCQ1zwKXpXDShcu/5KVQ==
 
 "@patternfly/react-tokens@^4.27.4":
   version "4.27.4"

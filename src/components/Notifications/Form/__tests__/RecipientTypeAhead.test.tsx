@@ -4,7 +4,7 @@ import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { NotificationRecipient } from '../../../../types/Recipient';
+import { NotificationUserRecipient } from '../../../../types/Recipient';
 import { GetNotificationRecipients, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { RecipientTypeahead } from '../RecipientTypeahead';
 
@@ -19,15 +19,15 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
 };
 
 const SELECTED_ALL = [
-    new NotificationRecipient(undefined, false),
-    new NotificationRecipient(undefined, true)
-] as ReadonlyArray<NotificationRecipient>;
+    new NotificationUserRecipient(undefined, false),
+    new NotificationUserRecipient(undefined, true)
+] as ReadonlyArray<NotificationUserRecipient>;
 
 const SELECTED_SEND_TO_ADMIN = [
-    new NotificationRecipient(undefined, true)
-] as ReadonlyArray<NotificationRecipient>;
+    new NotificationUserRecipient(undefined, true)
+] as ReadonlyArray<NotificationUserRecipient>;
 
-const createDefaultGetMock = () => fn(async () => [ new NotificationRecipient(undefined, true) ]);
+const createDefaultGetMock = () => fn(async () => [ new NotificationUserRecipient(undefined, true) ]);
 
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
