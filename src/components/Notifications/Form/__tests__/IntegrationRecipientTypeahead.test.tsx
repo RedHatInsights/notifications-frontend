@@ -60,6 +60,31 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
     });
 
+    it('Renders with existing notifications that are not Integrations', async () => {
+        const actions = [
+            {
+                recipient: {},
+                type: NotificationType.EMAIL_SUBSCRIPTION
+            },
+            {
+                integration: ref1,
+                type: NotificationType.INTEGRATION
+            }
+        ] as ActionIntegration[];
+        const formikValues: Partial<BehaviorGroup> = { actions };
+
+        render(<IntegrationRecipientTypeahead
+            selected={ undefined }
+            integrationType={ IntegrationType.WEBHOOK }
+            onSelected={ fn() }
+        />, {
+            wrapper: getConfiguredWrapper(undefined, formikValues)
+        });
+
+        await waitForAsyncEvents();
+        expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
+    });
+
     it('Renders disabled if isDisabled', async () => {
         render(<IntegrationRecipientTypeahead
             selected={ undefined }
@@ -181,6 +206,6 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         userEvent.click(screen.getByRole('button', { name: /Options menu/i }));
 
         await waitForAsyncEvents();
-        expect(screen.getAllByRole('option')[0].className).toEqual('pf-c-select__menu-item pf-m-disabled pf-m-description');
+        expect(screen.getAllByRole('option')[0].className.includes('disabled')).toBeTruthy();
     });
 });

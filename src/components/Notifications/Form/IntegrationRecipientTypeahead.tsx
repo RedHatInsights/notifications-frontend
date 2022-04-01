@@ -1,4 +1,4 @@
-import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
@@ -68,7 +68,22 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
         return new Set<string>(integrationActions);
     }, [ values ]);
 
-    const options = useRecipientOptionMemo(state, existingIntegrations);
+    const integrationsMapper = React.useCallback((recipients: ReadonlyArray<IntegrationRecipient>) => {
+        return recipients.map(r => {
+            const isDisabled = existingIntegrations?.has(r.integration.id);
+
+            return (
+                <SelectOption
+                    key={ r.getKey() }
+                    value={ new RecipientOption(r) }
+                    description={ isDisabled ? 'This integration has already been added' : undefined }
+                    isDisabled={ isDisabled }
+                />
+            );
+        });
+    }, [ existingIntegrations ]);
+
+    const options = useRecipientOptionMemo(state, integrationsMapper);
 
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
         // Ignore filter calls with null event

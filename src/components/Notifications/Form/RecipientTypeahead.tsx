@@ -1,9 +1,9 @@
-import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
-import { NotificationRecipient, Recipient } from '../../../types/Recipient';
+import { BaseNotificationRecipient, NotificationRecipient } from '../../../types/Recipient';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
@@ -11,7 +11,7 @@ import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
 
 export interface RecipientTypeaheadProps extends OuiaComponentProps {
-    selected: ReadonlyArray<NotificationRecipient>;
+    selected: ReadonlyArray<BaseNotificationRecipient>;
     onSelected: (value: RecipientOption) => void;
     isDisabled?: boolean;
     onClear: () => void;
@@ -19,9 +19,29 @@ export interface RecipientTypeaheadProps extends OuiaComponentProps {
     error?: boolean;
 }
 
+interface NotificationClass {
+    new (...args: any[]): BaseNotificationRecipient;
+}
+
+const isInstanceOf = <T extends NotificationClass>(tClass: T) => (r: BaseNotificationRecipient): r is InstanceType<T> => {
+    return r instanceof tClass;
+};
+
+const recipientMapper = (recipients: ReadonlyArray<BaseNotificationRecipient>) => {
+    const users = recipients.filter(isInstanceOf(NotificationRecipient));
+
+    return users.map(r =>
+        <SelectOption
+            key={ r.getKey() }
+            value={ new RecipientOption(r) }
+            description={ r.description }
+        />
+    );
+};
+
 export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
     const [ isOpen, setOpen ] = React.useState(false);
-    const [ state, dispatchers ] = useTypeaheadReducer<Recipient>();
+    const [ state, dispatchers ] = useTypeaheadReducer<BaseNotificationRecipient>();
     const prevOpen = usePrevious(isOpen);
     const { getNotificationRecipients } = useRecipientContext();
 
@@ -49,7 +69,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
         }
     }, [ prevOpen, isOpen, props.onOpenChange ]);
 
-    const options = useRecipientOptionMemo(state);
+    const options = useRecipientOptionMemo(state, recipientMapper);
 
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
         // Ignore filter calls with null event
