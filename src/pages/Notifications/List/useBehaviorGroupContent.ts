@@ -59,7 +59,6 @@ export const useBehaviorGroupContent = (bundleId: UUID) => {
 
     return useMemo(() => {
         if (!result.isLoading && !result.hasError) {
-            console.log('transforming');
             return produce(result, draft => {
                 const originalValues = original(draft);
                 if (originalValues) {
@@ -68,11 +67,8 @@ export const useBehaviorGroupContent = (bundleId: UUID) => {
                         if (isActionNotify(a)) {
                             a.recipient.forEach((recipient, recipientIndex) => {
                                 if (recipient instanceof NotificationRbacGroupRecipient && recipient.isLoading) {
-                                    console.log('found');
                                     const recipients = (draft.content[bgIndex].actions[aIndex] as Draft<ActionNotify>).recipient;
                                     const rbacRecipient = recipients[recipientIndex] as NotificationRbacGroupRecipient;
-                                    console.log(rbacRecipient.groupId);
-                                    console.log(groups);
                                     recipients[recipientIndex] = new NotificationRbacGroupRecipient(
                                         rbacRecipient.integrationId,
                                         rbacRecipient.groupId,

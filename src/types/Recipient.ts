@@ -57,10 +57,10 @@ export class NotificationUserRecipient extends BaseNotificationRecipient {
         let displayName;
         let description;
         if (sendToAdmin) {
-            displayName = ' Admins';
+            displayName = 'Admins';
             description = 'Organization administrators for your account';
         } else {
-            displayName = ' All';
+            displayName = 'All';
             description = 'All users in your organization who subscribed to this email in their User Preferences';
         }
 
@@ -68,7 +68,7 @@ export class NotificationUserRecipient extends BaseNotificationRecipient {
             displayName,
             description,
             integrationId,
-            sendToAdmin ? 'admin' : 'user'
+            sendToAdmin ? 'users-admin' : 'users-all'
         );
 
         this.sendToAdmin = sendToAdmin;

@@ -4,7 +4,7 @@ import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import { NotificationUserRecipient } from '../../../../types/Recipient';
+import { BaseNotificationRecipient, NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../../../types/Recipient';
 import { GetNotificationRecipients, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { RecipientTypeahead } from '../RecipientTypeahead';
 
@@ -21,11 +21,23 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
 const SELECTED_ALL = [
     new NotificationUserRecipient(undefined, false),
     new NotificationUserRecipient(undefined, true)
-] as ReadonlyArray<NotificationUserRecipient>;
+] as ReadonlyArray<BaseNotificationRecipient>;
 
 const SELECTED_SEND_TO_ADMIN = [
     new NotificationUserRecipient(undefined, true)
-] as ReadonlyArray<NotificationUserRecipient>;
+] as ReadonlyArray<BaseNotificationRecipient>;
+
+const SELECTED_LOADED_GROUP = [
+    new NotificationRbacGroupRecipient(undefined, 'valid-group', 'I am real')
+] as ReadonlyArray<BaseNotificationRecipient>;
+
+const SELECTED_LOADING_GROUP = [
+    new NotificationRbacGroupRecipient(undefined, 'loading-group', true)
+] as ReadonlyArray<BaseNotificationRecipient>;
+
+const SELECTED_NON_EXISTING_GROUP = [
+    new NotificationRbacGroupRecipient(undefined, 'does-not-exists-group', false)
+] as ReadonlyArray<BaseNotificationRecipient>;
 
 const createDefaultGetMock = () => fn(async () => [ new NotificationUserRecipient(undefined, true) ]);
 
@@ -41,7 +53,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             wrapper: getConfiguredWrapper()
         });
         await waitForAsyncEvents();
-        expect(screen.getByRole('textbox')).toBeDisabled();
+        expect(screen.getByRole('button', {
+            name: 'Options menu'
+        })).toBeDisabled();
     });
 
     it('Renders the selected even if getRecipients does not yield it', async () => {
@@ -53,7 +67,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             wrapper: getConfiguredWrapper()
         });
         await waitForAsyncEvents();
-        expect(screen.getByText('Users: Admins')).toBeVisible();
+        expect(screen.getByText('Admins')).toBeVisible();
     });
 
     it('Renders multiple selected', async () => {
@@ -65,8 +79,8 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             wrapper: getConfiguredWrapper(createDefaultGetMock())
         });
         await waitForAsyncEvents();
-        expect(screen.getByText('Users: Admins')).toBeVisible();
-        expect(screen.getByText('Users: All')).toBeVisible();
+        expect(screen.getByText('Admins')).toBeVisible();
+        expect(screen.getByText('All')).toBeVisible();
     });
 
     it('Clicking clear button will call onClear', async () => {
@@ -99,8 +113,8 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             name: /Options menu/i
         }));
         await waitForAsyncEvents();
-        screen.getAllByText('Users: Admins').map(e => expect(e).toBeVisible());
-        screen.getAllByText('Users: All').map(e => expect(e).toBeVisible());
+        screen.getAllByText('Admins').map(e => expect(e).toBeVisible());
+        screen.getAllByText('All').map(e => expect(e).toBeVisible());
     });
 
     it('getRecipients is called on init', async () => {
@@ -114,23 +128,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         });
 
         await waitForAsyncEvents();
-        expect(getRecipient).toHaveBeenCalledWith('');
-    });
-
-    it('When writing, getRecipients is called with the input', async () => {
-        const getRecipient = createDefaultGetMock();
-        render(<RecipientTypeahead
-            selected={ SELECTED_ALL }
-            onSelected={ fn() }
-            onClear={ fn() }
-        />, {
-            wrapper: getConfiguredWrapper(getRecipient)
-        });
-
-        await waitForAsyncEvents();
-        userEvent.type(screen.getByRole('textbox'), 'guy');
-        await waitForAsyncEvents();
-        expect(getRecipient).toHaveBeenCalledWith('guy');
+        expect(getRecipient).toHaveBeenCalledWith();
     });
 
     it('onSelected GetsCalled when selecting an element', async () => {
@@ -147,7 +145,47 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             name: /Options menu/i
         }));
         await waitForAsyncEvents();
-        act(() => userEvent.click(screen.getAllByRole('option')[0]));
+        act(() => userEvent.click(screen.getAllByRole('checkbox')[0]));
         expect(onSelected).toHaveBeenCalled();
+    });
+
+    it('Renders selected loaded group with its name', async () => {
+        render(<RecipientTypeahead
+            selected={ SELECTED_LOADED_GROUP }
+            onSelected={ fn() }
+            onClear={ fn() }
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
+        await waitForAsyncEvents();
+        expect(screen.getByText('I am real')).toBeVisible();
+    });
+
+    it('Renders selected loading group as a loading', async () => {
+        render(<RecipientTypeahead
+            selected={ SELECTED_LOADING_GROUP }
+            onSelected={ fn() }
+            onClear={ fn() }
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
+        await waitForAsyncEvents();
+        expect(screen.getByTestId('loading-group')).toBeVisible();
+    });
+
+    it('Renders selected non existent group as a does not exist', async () => {
+        render(<RecipientTypeahead
+            selected={ SELECTED_NON_EXISTING_GROUP }
+            onSelected={ fn() }
+            onClear={ fn() }
+        />, {
+            wrapper: getConfiguredWrapper()
+        });
+        await waitForAsyncEvents();
+        expect(screen.getByText(/group not found/i)).toBeVisible();
+
+        userEvent.hover(screen.getByText(/group not found/i));
+        await waitForAsyncEvents();
+        expect(await screen.findByText(/the group was deleted and can not be found/i)).toBeVisible();
     });
 });

@@ -131,16 +131,18 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
                 onSelect(evt, element);
             };
 
+            const key = value.recipient.getKey();
+
             if (value.recipient instanceof NotificationRbacGroupRecipient) {
                 if (value.recipient.isLoading) {
-                    return <Chip onClick={ unselect(value) }><Skeleton width="40px" /></Chip>;
+                    return <Chip key={ key } onClick={ unselect(value) }><Skeleton data-testid="loading-group" width="40px" /></Chip>;
                 } else if (value.recipient.hasError) {
-                    return <GroupNotFound onClose={ unselect(value) } />;
+                    return <GroupNotFound key={ key } onClose={ unselect(value) } />;
                 }
 
             }
 
-            return <Chip onClick={ unselect(value) } key={ value.recipient.getKey() }>{ value.recipient.displayName }</Chip>;
+            return <Chip onClick={ unselect(value) } key={ key }>{ value.recipient.displayName }</Chip>;
         });
     }, [ selection, onSelect ]);
 

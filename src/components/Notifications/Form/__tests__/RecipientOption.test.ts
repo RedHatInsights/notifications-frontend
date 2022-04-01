@@ -92,7 +92,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
         const recipient1 = new NotificationUserRecipient(undefined, true);
         const a = new RecipientOption(recipient1);
 
-        expect(a.toString()).toEqual('Users: Admins');
+        expect(a.toString()).toEqual('Admins');
     });
 
     it('toString returns the name of the integrationRef if enabled', () => {
