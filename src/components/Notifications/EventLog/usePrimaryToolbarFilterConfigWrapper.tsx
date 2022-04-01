@@ -1,9 +1,7 @@
-import { ClearFilterElement, ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
+import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
-import { filter, fromPairs } from 'lodash';
-import React, { useEffect } from 'react';
+import React from 'react';
 import { useMemo } from 'react';
-import { useMount } from 'react-use';
 
 import { Schemas } from '../../../generated/OpenapiNotifications';
 import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
@@ -13,71 +11,6 @@ export interface EventLogCustomFilter {
     bundleId: string,
     category: string,
     chips: Array<{ name: string, value: string, isRead: boolean }>
-}
-
-const initFiltersFromUrl = (
-    bundles: readonly Schemas.Facet[], 
-    applications: readonly Schemas.Facet[], 
-    filters: EventLogFilters
-): EventLogCustomFilter[] => {
-    if(!filters.bundle) {
-        return []
-    }
-
-    return (filters.bundle as []).map(filterBundle => {
-        const bundleDisplayName = bundles.filter(bundle => bundle.name === filterBundle)[0].name
-        return {
-            bundleId: filterBundle,
-            category: bundleDisplayName,
-            chips: (filters.application as []).map(filterApplication => {
-                const applicationDisplayName = applications.filter(application => application.name === filterApplication)[0].name
-                return {
-                    name: applicationDisplayName,
-                    value: filterApplication,
-                    isRead: true,
-                }
-            })
-        }
-    })
-}
-
-const onDelete = (
-    defaultDelete: (_event: any, rawFilterConfigs: any[]) => void, 
-    clearFilter: ClearEventLogFilters,
-    customFilters: EventLogCustomFilter[], 
-    setCustomFilters: React.Dispatch<React.SetStateAction<EventLogCustomFilter[]>>
-) => {
-    return (_event, rawFilterConfigs: any[]) => {
-        try {
-            defaultDelete(_event, rawFilterConfigs)
-        }
-        catch(e) {
-            const toClear: ClearFilterElement<any> = {
-                bundle: [],
-                application: [],
-            };
-            
-            // To remove a application, ensure no other bundle is using that application
-            // To remove a bundle, all the applications must be cleared for that specific bundle
-            const bundleIds: string[] = []
-            const chips: any[][] = []
-            rawFilterConfigs.forEach(filterConfig => {
-                bundleIds.push(filterConfig.bundleId)
-                chips.push(filterConfig.chips)
-            })
-            
-            customFilters.forEach(customFilter => {
-                const idx = bundleIds.findIndex(id => id === customFilter.bundleId)
-                const removeBundle = customFilter.chips.every(chip => chips[idx].includes(chip))
-                if(removeBundle) {
-                    (toClear.bundle as string[]).push(customFilter.bundleId) 
-                }
-            })
-
-            // use clearFilter and setCustomFilters
-            clearFilter(toClear)
-        }
-    }
 }
 
 // Wrapper hook that gets the PrimaryToolbarFilterConfig and adds a custom conditional filter using Dropdown/Tree components
@@ -90,7 +23,6 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     clearFilter: ClearEventLogFilters,
     metaData: ColumnsMetada<typeof EventLogFilterColumn>
 ) => {
-    //initFiltersFromUrl(bundles, applications, filters)
     const [ customFilters, setCustomFilters ] = React.useState([] as EventLogCustomFilter[]);
 
     const toolbarConfig = usePrimaryToolbarFilterConfig(
@@ -101,7 +33,77 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         metaData
     );
 
-    const applicationFilterConfig = useMemo(() => {
+    toolbarConfig.activeFiltersConfig.onDelete = React.useCallback((
+        _event: any,
+        rawFilterConfigs: any[]
+    ) => {
+        try {
+            toolbarConfig.activeFiltersConfig.onDelete(_event, rawFilterConfigs);
+        }
+        catch (e) {
+            setCustomFilters(produce(prev => {
+                const idxToRemove: number[] = [];
+                prev.forEach((activeFilter, idx) => {
+                    rawFilterConfigs.some(deleteFilter => {
+                        if (activeFilter.bundleId === deleteFilter.bundleId) {
+                            const deletedChipValues = deleteFilter.chips.map(chip => chip.value);
+                            activeFilter.chips = activeFilter.chips.filter(chip => !deletedChipValues.includes(chip.value));
+
+                            if (activeFilter.chips.length === 0) {
+                                idxToRemove.push(idx);
+                            }
+
+                            return true;
+                        }
+
+                        return false;
+                    });
+                });
+
+                idxToRemove.forEach(idx => {
+                    prev.splice(idx, 1);
+                });
+            }));
+        }
+    }, [ toolbarConfig.activeFiltersConfig, setCustomFilters ]);
+
+    const mapToEventLogCustomFilter = React.useCallback((
+        filters: EventLogFilters,
+        bundles?: readonly Schemas.Facet[],
+        applications?: readonly Schemas.Facet[]
+    ) => {
+        const applicationNames = applications?.map(application => ({
+            name: application.displayName,
+            value: application.name,
+            isRead: true
+        }));
+
+        const eventLogCustomFilters = (filters.bundle as string[])?.map(filterBundle => {
+            const bundleDisplayName = bundles?.find(bundle => bundle.name === filterBundle)?.displayName;
+            return {
+                bundleId: filterBundle,
+                category: bundleDisplayName || 'Loading...',
+                chips: (filters.application as string[])?.map(filterApplication => {
+                    const appDisplayName = applications?.find(application => application.name === filterApplication)?.displayName;
+                    return {
+                        name: appDisplayName || 'Loading...',
+                        value: filterApplication,
+                        isRead: true
+                    };
+                }) || applicationNames || []
+            };
+        }) || [];
+
+        return eventLogCustomFilters;
+    }, []);
+
+    React.useEffect(() => {
+        const bundlesList = bundles.length !== 0 ? bundles : undefined;
+        const applicationList = applications.length !== 0 ? applications : undefined;
+        setCustomFilters(mapToEventLogCustomFilter(filters, bundlesList, applicationList));
+    }, [ bundles, applications, mapToEventLogCustomFilter ]);
+
+    toolbarConfig.filterConfig.items[1] = useMemo(() => {
         return {
             label: 'Application',
             type: 'custom',
@@ -110,42 +112,45 @@ export const usePrimaryToolbarFilterConfigWrapper = (
                     groups={ bundles }
                     items={ applications }
                     placeholder={ 'Filter by Application' }
-                    filters={filters}
-                    updateFilter={ setCustomFilters }
+                    filters={ customFilters }
+                    updateFilters={ setCustomFilters }
                 />
             }
-        };
-    }, [ bundles, applications ]);
+        } as any;
+    }, [ bundles, applications, customFilters ]);
 
-    const activeFilters = React.useMemo(() => {
-        const nonCustomFilters = toolbarConfig.activeFiltersConfig.filters.filter(activeFilter => !!activeFilter && !(activeFilter as EventLogCustomFilter).bundleId)
-        return nonCustomFilters.concat(customFilters)
-    }, [customFilters])
+    toolbarConfig.activeFiltersConfig.filters = React.useMemo(() => {
+        const activeFilters = toolbarConfig.activeFiltersConfig.filters;
+        const nonCustomFilters = activeFilters.filter(activeFilter => !!activeFilter && !(activeFilter as EventLogCustomFilter).bundleId);
+        return nonCustomFilters.concat(customFilters);
+    }, [ customFilters, toolbarConfig.activeFiltersConfig.filters ]);
 
     const { activeBundles, activeApplications } = React.useMemo(() => {
-        const activeBundles: string[] = []
-        const activeApplications: string[] = []
+        // While bundles and applications are length 0, assume network request is still pending
+        if (bundles.length === 0 || applications.length === 0) {
+            return { activeBundles: filters.bundle, activeApplications: filters.application };
+        }
+
+        const activeBundles: string[] = [];
+        const activeApplications: string[] = [];
         customFilters.forEach(customFilter => {
-            activeBundles.push(customFilter.bundleId)
+            activeBundles.push(customFilter.bundleId);
 
-            customFilter.chips.forEach(chip => {
-                if(!activeApplications.includes(chip.value)) {
-                    activeApplications.push(chip.value)
-                }
-            })
-        })
+            const chipValues = customFilter.chips.map(chip => chip.value);
+            if (applications.some(application => !chipValues.includes(application.name))) {
+                chipValues.forEach(chipValue => {
+                    if (!activeApplications.includes(chipValue)) {
+                        activeApplications.push(chipValue);
+                    }
+                });
+            }
+        });
 
-        return { activeBundles, activeApplications }
-    }, [customFilters])
+        return { activeBundles, activeApplications };
+    }, [ bundles, applications, customFilters ]);
 
-    setFilters.bundle(activeBundles)
-    setFilters.application(activeApplications)
-
-    toolbarConfig.filterConfig.items[1] = applicationFilterConfig as any;
-    toolbarConfig.activeFiltersConfig.filters = activeFilters
-
-    const defaultDelete = toolbarConfig.activeFiltersConfig.onDelete
-    toolbarConfig.activeFiltersConfig.onDelete = onDelete(defaultDelete, clearFilter, customFilters, setCustomFilters)
+    setFilters.bundle(activeBundles);
+    setFilters.application(activeApplications);
 
     return toolbarConfig;
 };

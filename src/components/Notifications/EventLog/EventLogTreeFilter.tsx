@@ -2,20 +2,18 @@ import { Dropdown, DropdownToggle, TreeView, TreeViewDataItem } from '@patternfl
 import { TreeViewCheckProps } from '@patternfly/react-core/dist/esm/components/TreeView/TreeViewListItem';
 import { AngleDownIcon } from '@patternfly/react-icons';
 import produce from 'immer';
-import React, { ChangeEvent, useEffect } from 'react';
-import { useMount } from 'react-use';
+import React, { ChangeEvent } from 'react';
 
 import { Schemas } from '../../../generated/OpenapiNotifications';
 import { Modify } from '../../../types/Modify';
-import { EventLogFilters } from './EventLogFilter';
 import { EventLogCustomFilter } from './usePrimaryToolbarFilterConfigWrapper';
 
-interface ConditionalTreeFilterProps {
+interface EventLogTreeFilterProps {
     groups: readonly Schemas.Facet[]
     items: readonly Schemas.Facet[]
     placeholder: string
-    filters: EventLogFilters
-    updateFilter: React.Dispatch<React.SetStateAction<EventLogCustomFilter[]>>
+    filters: EventLogCustomFilter[]
+    updateFilters: React.Dispatch<React.SetStateAction<EventLogCustomFilter[]>>
 }
 
 type TreeNodeItem = Modify<TreeViewDataItem, {
@@ -26,35 +24,89 @@ type TreeNodeItem = Modify<TreeViewDataItem, {
 
 interface TreeNodeData { [key: string]: TreeNodeItem }
 
-export const EventLogTreeFilter: React.FunctionComponent<ConditionalTreeFilterProps> = (props) => {
+const isChecked = (treeNode: TreeNodeItem) => {
+    return !!treeNode.checkProps.checked;
+};
+
+const childChecked = (treeNode: TreeNodeItem): boolean => {
+    return treeNode.children ? treeNode.children.some(child => childChecked(child)) : isChecked(treeNode);
+};
+
+const allChildrenChecked = (treeNode: TreeNodeItem): boolean  => {
+    return treeNode.children ? treeNode.children.every(child => allChildrenChecked(child)) : isChecked(treeNode);
+};
+
+const initTreeNodeById = (groups: readonly Schemas.Facet[], items: readonly Schemas.Facet[], filters: EventLogCustomFilter[]) => {
+    const init: TreeNodeData = {};
+    groups.forEach(group => {
+        const currentFilter = filters.find(filter => filter.bundleId === group.name);
+
+        const currentFilterChipValues = currentFilter?.chips.map(chip => chip.value);
+        const checkAll = items.every(item => !!currentFilterChipValues?.includes(item.name));
+        init[group.name] = {
+            id: group.name,
+            name: group.displayName,
+            checkProps: { checked: checkAll || (!currentFilter ? false : null) },
+            children: items.map(item => ({
+                id: item.name,
+                name: item.displayName,
+                checkProps: { checked: checkAll || currentFilterChipValues?.includes(item.name) }
+            }))
+        };
+    });
+
+    return init;
+};
+
+let verify = true;
+
+export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps> = (props) => {
+    const { groups, items, placeholder, filters, updateFilters } = props;
+
     const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeData>({});
-    const [ isToggled, setIsToggled ] = React.useState(true);
+    const [ isToggled, setIsToggled ] = React.useState(false);
 
     const treeDataArray = React.useMemo(() => !!treeNodeById ? Object.values(treeNodeById) : [], [ treeNodeById ]);
 
-    useMount(() => {
-        setTreeNodeById(produce((prev) => {
-            props.groups.forEach(group => {
-                prev[group.name] = {
-                    id: group.name,
-                    name: group.displayName,
-                    checkProps: { checked: props.filters.bundle?.includes(group.name) },
-                    children: props.items.map(item => ({
-                        id: item.name,
-                        name: item.displayName,
-                        checkProps: { checked: props.filters.application?.includes(group.name) },
-                    }))
-                };
-            });
-        }));
-    });
-    
-    const flattenTree = React.useCallback(() => {
-        const flatTreeDataArray = [ ...treeDataArray ];
-        treeDataArray.forEach(treeNode => {
-            if (!!treeNode.children) {
-                flatTreeDataArray.push(...treeNode.children);
+    React.useEffect(() => {
+        if (verify && groups.length !== 0 && items.length !== 0) {
+            if (filters.length === 0 || Object.keys(treeNodeById).length === 0) {
+                setTreeNodeById(initTreeNodeById(groups, items, filters));
             }
+            else {
+                setTreeNodeById(produce((prev) => {
+                    filters.forEach(activeFilter => {
+                        const treeNode = prev[activeFilter.bundleId];
+                        const activeChips = activeFilter.chips.map(chip => chip.value);
+
+                        treeNode.children?.forEach(childNode => {
+                            childNode.checkProps.checked = activeChips.includes(childNode.id);
+                        });
+
+                        if (allChildrenChecked(treeNode)) {
+                            treeNode.checkProps.checked = true;
+                        }
+                        else if (childChecked(treeNode)) {
+                            treeNode.checkProps.checked = null;
+                        }
+                        else {
+                            treeNode.checkProps.checked = false;
+                        }
+                    });
+                }));
+            }
+        }
+
+        verify = true;
+    }, [ groups, items, filters ]);
+
+    const flattenTree = React.useCallback(() => {
+        const flatTreeDataArray = produce(treeDataArray, (prev) => {
+            prev.forEach(treeNode => {
+                if (!!treeNode.children) {
+                    prev.push(...treeNode.children);
+                }
+            });
         });
 
         return flatTreeDataArray;
@@ -62,28 +114,23 @@ export const EventLogTreeFilter: React.FunctionComponent<ConditionalTreeFilterPr
 
     React.useEffect(() => {
         const activeParentFilters = flattenTree().filter(treeNode => {
-            const isActive = treeNode.checkProps.checked
-            return (!!isActive || isActive === null) && !!treeNode.children
+            const isActive = treeNode.checkProps.checked;
+            return (!!isActive || isActive === null) && !!treeNode.children;
         });
-        props.updateFilter(activeParentFilters.map(parentFilter => ({
-            bundleId: parentFilter.id,
-            category: parentFilter.name as string,
-            chips: parentFilter.children?.filter(childNode => !!childNode.checkProps.checked).map(childFilter => ({
-                name: childFilter.name as string,
-                value: childFilter.id,
-                isRead: true
-            }))
-        } as EventLogCustomFilter)))
-    }, [ flattenTree, props, treeDataArray ]);
 
-    const isChecked = (treeNode: TreeNodeItem) => !!treeNode.checkProps.checked;
-    const areSomeDescendantsChecked = (treeNode: TreeNodeItem): boolean => {
-        return treeNode.children ? treeNode.children.some(child => areSomeDescendantsChecked(child)) : isChecked(treeNode);
-    };
+        updateFilters(
+            activeParentFilters.map(parentFilter => ({
+                bundleId: parentFilter.id,
+                category: parentFilter.name as string,
+                chips: parentFilter.children?.filter(childNode => !!childNode.checkProps.checked).map(childFilter => ({
+                    name: childFilter.name as string,
+                    value: childFilter.id,
+                    isRead: true
+                }))
+            } as EventLogCustomFilter)));
 
-    const areAllDescendantsChecked = (treeNode: TreeNodeItem): boolean  => {
-        return treeNode.children ? treeNode.children.every(child => areAllDescendantsChecked(child)) : isChecked(treeNode);
-    };
+        verify = false;
+    }, [ flattenTree, updateFilters ]);
 
     const onCheck = (event: ChangeEvent<Element>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
         const checked = (event.target as HTMLInputElement).checked;
@@ -99,14 +146,14 @@ export const EventLogTreeFilter: React.FunctionComponent<ConditionalTreeFilterPr
                     return false;
                 });
 
-                if (areAllDescendantsChecked(prev[parentNode.id])) {
+                if (allChildrenChecked(prev[parentNode.id])) {
                     prev[parentNode.id].checkProps.checked = true;
                 }
-                else if (areSomeDescendantsChecked(prev[parentNode.id])) {
+                else if (childChecked(prev[parentNode.id])) {
                     prev[parentNode.id].checkProps.checked = null;
                 }
                 else {
-                    prev[parentNode.id].checkProps.checked = checked
+                    prev[parentNode.id].checkProps.checked = checked;
                 }
             }
             else {
@@ -122,7 +169,7 @@ export const EventLogTreeFilter: React.FunctionComponent<ConditionalTreeFilterPr
                 onToggle={ () => setIsToggled(!isToggled) }
                 toggleIndicator={ AngleDownIcon }
             >
-                {props.placeholder}
+                {placeholder}
             </DropdownToggle> }
             isOpen={ isToggled }
         >

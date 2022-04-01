@@ -45,10 +45,10 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
                 label: 'Event',
                 placeholder: 'Filter by event'
             }
-        }
-        
-        return metaData
-    }, [props.bundleOptions]);
+        };
+
+        return metaData;
+    }, []);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfigWrapper(
         props.bundleOptions,
@@ -58,7 +58,6 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         props.clearFilter,
         filterMetadata
     );
-    console.log(primaryToolbarFilterConfig);
 
     const pageChanged = React.useCallback((_event: unknown, page: number) => {
         const inner = props.pageChanged;
