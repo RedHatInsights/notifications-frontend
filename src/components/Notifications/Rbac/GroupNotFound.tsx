@@ -6,7 +6,7 @@ interface GroupNotFoundProps {
 }
 
 export const GroupNotFound: React.FunctionComponent<GroupNotFoundProps> = props => {
-    return <Tooltip content="The group was not found. Someone else could have deleted it.">
+    return <Tooltip content="The group was deleted and can not be found.">
         <Label variant="outline" color="red" onClose={ props.onClose }>
             Group not found
         </Label>
