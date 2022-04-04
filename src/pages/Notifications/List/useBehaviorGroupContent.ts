@@ -83,5 +83,5 @@ export const useBehaviorGroupContent = (bundleId: UUID) => {
         }
 
         return result;
-    }, [ result, groups ]);
+    }, [ result, groups, isLoadingGroups ]);
 };
