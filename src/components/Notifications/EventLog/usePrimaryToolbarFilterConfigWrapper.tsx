@@ -24,7 +24,6 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     metaData: ColumnsMetada<typeof EventLogFilterColumn>
 ) => {
     const [ customFilters, setCustomFilters ] = React.useState([] as EventLogCustomFilter[]);
-
     const toolbarConfig = usePrimaryToolbarFilterConfig(
         EventLogFilterColumn,
         filters,
@@ -33,12 +32,13 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         metaData
     );
 
+    const defaultDelete = toolbarConfig.activeFiltersConfig.onDelete;
     toolbarConfig.activeFiltersConfig.onDelete = React.useCallback((
         _event: any,
         rawFilterConfigs: any[]
     ) => {
         try {
-            toolbarConfig.activeFiltersConfig.onDelete(_event, rawFilterConfigs);
+            defaultDelete(_event, rawFilterConfigs);
         }
         catch (e) {
             setCustomFilters(produce(prev => {
@@ -65,7 +65,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
                 });
             }));
         }
-    }, [ toolbarConfig.activeFiltersConfig, setCustomFilters ]);
+    }, [ defaultDelete, setCustomFilters ]);
 
     const mapToEventLogCustomFilter = React.useCallback((
         filters: EventLogFilters,
@@ -101,6 +101,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         const bundlesList = bundles.length !== 0 ? bundles : undefined;
         const applicationList = applications.length !== 0 ? applications : undefined;
         setCustomFilters(mapToEventLogCustomFilter(filters, bundlesList, applicationList));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ bundles, applications, mapToEventLogCustomFilter ]);
 
     toolbarConfig.filterConfig.items[1] = useMemo(() => {
@@ -147,6 +148,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         });
 
         return { activeBundles, activeApplications };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ bundles, applications, customFilters ]);
 
     setFilters.bundle(activeBundles);

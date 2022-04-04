@@ -22,7 +22,7 @@ type TreeNodeItem = Modify<TreeViewDataItem, {
     children?: TreeNodeItem[] | undefined,
 }>
 
-interface TreeNodeData { [key: string]: TreeNodeItem }
+interface TreeNodeDict { [key: string]: TreeNodeItem }
 
 const isChecked = (treeNode: TreeNodeItem) => {
     return !!treeNode.checkProps.checked;
@@ -37,7 +37,7 @@ const allChildrenChecked = (treeNode: TreeNodeItem): boolean  => {
 };
 
 const initTreeNodeById = (groups: readonly Schemas.Facet[], items: readonly Schemas.Facet[], filters: EventLogCustomFilter[]) => {
-    const init: TreeNodeData = {};
+    const init: TreeNodeDict = {};
     groups.forEach(group => {
         const currentFilter = filters.find(filter => filter.bundleId === group.name);
 
@@ -58,46 +58,50 @@ const initTreeNodeById = (groups: readonly Schemas.Facet[], items: readonly Sche
     return init;
 };
 
-let verify = true;
-
 export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps> = (props) => {
     const { groups, items, placeholder, filters, updateFilters } = props;
 
-    const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeData>({});
+    const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeDict>({});
     const [ isToggled, setIsToggled ] = React.useState(false);
 
     const treeDataArray = React.useMemo(() => !!treeNodeById ? Object.values(treeNodeById) : [], [ treeNodeById ]);
 
     React.useEffect(() => {
-        if (verify && groups.length !== 0 && items.length !== 0) {
-            if (filters.length === 0 || Object.keys(treeNodeById).length === 0) {
-                setTreeNodeById(initTreeNodeById(groups, items, filters));
-            }
-            else {
-                setTreeNodeById(produce((prev) => {
-                    filters.forEach(activeFilter => {
-                        const treeNode = prev[activeFilter.bundleId];
-                        const activeChips = activeFilter.chips.map(chip => chip.value);
+        if (groups.length !== 0 && items.length !== 0) {
+            setTreeNodeById(produce((prev) => {
+                const keys = Object.keys(prev);
+                if (keys.length === 0 && filters.length === 0 || filters.length) {
+                    return initTreeNodeById(groups, items, filters);
+                }
+                else if (filters.length === 0) {
+                    if (keys.every(key => prev[key].checkProps.checked === false)) {
+                        return prev;
+                    }
 
-                        treeNode.children?.forEach(childNode => {
-                            childNode.checkProps.checked = activeChips.includes(childNode.id);
-                        });
+                    return initTreeNodeById(groups, items, filters);
+                }
 
-                        if (allChildrenChecked(treeNode)) {
-                            treeNode.checkProps.checked = true;
-                        }
-                        else if (childChecked(treeNode)) {
-                            treeNode.checkProps.checked = null;
-                        }
-                        else {
-                            treeNode.checkProps.checked = false;
-                        }
+                filters.forEach(activeFilter => {
+                    const treeNode = prev[activeFilter.bundleId];
+                    const activeChips = activeFilter.chips.map(chip => chip.value);
+
+                    treeNode.children?.forEach(childNode => {
+                        childNode.checkProps.checked = activeChips.includes(childNode.id);
                     });
-                }));
-            }
-        }
 
-        verify = true;
+                    if (allChildrenChecked(treeNode)) {
+                        treeNode.checkProps.checked = true;
+                    }
+                    else if (childChecked(treeNode)) {
+                        treeNode.checkProps.checked = null;
+                    }
+                    else {
+                        treeNode.checkProps.checked = false;
+                    }
+                });
+            }));
+        }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ groups, items, filters ]);
 
     const flattenTree = React.useCallback(() => {
@@ -118,8 +122,16 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
             return (!!isActive || isActive === null) && !!treeNode.children;
         });
 
-        updateFilters(
-            activeParentFilters.map(parentFilter => ({
+        updateFilters(produce((prev) => {
+            if (prev.length === 0 && activeParentFilters.length === 0) {
+                return prev;
+            }
+
+            else if (prev.length !== 0 && activeParentFilters.length === 0) {
+                return [];
+            }
+
+            const newCustomFilters = activeParentFilters.map(parentFilter => ({
                 bundleId: parentFilter.id,
                 category: parentFilter.name as string,
                 chips: parentFilter.children?.filter(childNode => !!childNode.checkProps.checked).map(childFilter => ({
@@ -127,9 +139,21 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
                     value: childFilter.id,
                     isRead: true
                 }))
-            } as EventLogCustomFilter)));
+            } as EventLogCustomFilter));
 
-        verify = false;
+            const areEqual = newCustomFilters.every((entry, idx) => {
+                if (!!prev[idx]) {
+                    const prevChips = prev[idx].chips.map(chip => chip.value);
+                    if (entry.bundleId === prev[idx].bundleId && entry.chips.every(chip => prevChips.includes(chip.value))) {
+                        return true;
+                    }
+                }
+
+                return false;
+            });
+
+            return areEqual ? prev : newCustomFilters;
+        }));
     }, [ flattenTree, updateFilters ]);
 
     const onCheck = (event: ChangeEvent<Element>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
