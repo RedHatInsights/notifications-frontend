@@ -39,7 +39,7 @@ const initTreeNodeById = (groups: readonly Schemas.Facet[], filters: EventLogCus
     const init: TreeNodeDict = {};
     groups.forEach(group => {
         const currentFilter = filters.find(filter => filter.bundleId === group.name);
-        const currentFilterChipValues = currentFilter?.chips.map(chip => chip.value);
+        const currentFilterChipValues = currentFilter?.chips?.map(chip => chip.value);
 
         const items = group.children as Schemas.Facet[];
         const checkAll = items.length !== 0 ? items.every(item => !!currentFilterChipValues?.includes(item.name)) : false;
@@ -61,7 +61,9 @@ const initTreeNodeById = (groups: readonly Schemas.Facet[], filters: EventLogCus
 export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps> = (props) => {
     const { groups, placeholder, filters, updateFilters } = props;
 
-    const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeDict>({});
+    const initialize = React.useMemo(() => initTreeNodeById(groups, filters), [ groups, filters ]);
+
+    const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeDict>(initialize);
     const [ isToggled, setIsToggled ] = React.useState(false);
 
     const treeDataArray = React.useMemo(() => !!treeNodeById ? Object.values(treeNodeById) : [], [ treeNodeById ]);
@@ -69,42 +71,39 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
     React.useEffect(() => {
         if (groups.length !== 0) {
             setTreeNodeById(produce((prev) => {
-                const keys = Object.keys(prev);
-                if (keys.length === 0 && filters.length === 0 || filters.length) {
-                    return initTreeNodeById(groups, filters);
+                // In case Bundles request is pending during Tree View render
+                if (Object.keys(prev).length === 0) {
+                    return initialize;
                 }
                 else if (filters.length === 0) {
-                    if (keys.every(key => prev[key].checkProps.checked === false)) {
-                        return prev;
-                    }
-
-                    return initTreeNodeById(groups, filters);
+                    return initialize;
                 }
+                else {
+                    filters.forEach(activeFilter => {
+                        const treeNode = prev[activeFilter.bundleId];
+                        const activeChips = activeFilter.chips.map(chip => chip.value);
 
-                filters.forEach(activeFilter => {
-                    const treeNode = prev[activeFilter.bundleId];
-                    const activeChips = activeFilter.chips.map(chip => chip.value);
+                        treeNode.children?.forEach(childNode => {
+                            childNode.checkProps.checked = activeChips.includes(childNode.id);
+                        });
 
-                    treeNode.children?.forEach(childNode => {
-                        childNode.checkProps.checked = activeChips.includes(childNode.id);
+                        if (allChildrenChecked(treeNode)) {
+                            treeNode.checkProps.checked = true;
+                        }
+                        else if (childChecked(treeNode)) {
+                            treeNode.checkProps.checked = null;
+                        }
+                        else {
+                            treeNode.checkProps.checked = false;
+                        }
                     });
-
-                    if (allChildrenChecked(treeNode)) {
-                        treeNode.checkProps.checked = true;
-                    }
-                    else if (childChecked(treeNode)) {
-                        treeNode.checkProps.checked = null;
-                    }
-                    else {
-                        treeNode.checkProps.checked = false;
-                    }
-                });
+                }
             }));
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ groups, filters ]);
 
-    const flattenTree = React.useCallback(() => {
+    const flattenTree = React.useMemo(() => {
         const flatTreeDataArray = produce(treeDataArray, (prev) => {
             prev.forEach(treeNode => {
                 if (!!treeNode.children) {
@@ -117,9 +116,10 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
     }, [ treeDataArray ]);
 
     React.useEffect(() => {
-        const activeParentFilters = flattenTree().filter(treeNode => {
+        const groupNames = groups.map(group => group.name);
+        const activeParentFilters = flattenTree.filter(treeNode => {
             const isActive = treeNode.checkProps.checked;
-            return (!!isActive || isActive === null) && !!treeNode.children;
+            return (!!isActive || isActive === null) && groupNames.includes(treeNode.id);
         });
 
         updateFilters(produce((prev) => {
@@ -138,13 +138,24 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
                     name: childFilter.name as string,
                     value: childFilter.id,
                     isRead: true
-                }))
+                })) ||
+                [
+                    {
+                        name: parentFilter.name,
+                        value: parentFilter.id,
+                        isRead: true
+                    }
+                ]
             } as EventLogCustomFilter));
 
             const areEqual = newCustomFilters.every((entry, idx) => {
                 if (!!prev[idx]) {
                     const prevChips = prev[idx].chips.map(chip => chip.value);
-                    if (entry.bundleId === prev[idx].bundleId && entry.chips.every(chip => prevChips.includes(chip.value))) {
+                    const currChips = entry.chips.map(chip => chip.value);
+                    if (entry.bundleId === prev[idx].bundleId &&
+                        entry.chips.every(chip => prevChips.includes(chip.value)) &&
+                        prev[idx].chips.every(chip => currChips.includes(chip.value))
+                    ) {
                         return true;
                     }
                 }
@@ -154,7 +165,7 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
 
             return areEqual ? prev : newCustomFilters;
         }));
-    }, [ flattenTree, updateFilters ]);
+    }, [ groups, flattenTree, updateFilters ]);
 
     const onCheck = (event: ChangeEvent<Element>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
         const checked = (event.target as HTMLInputElement).checked;

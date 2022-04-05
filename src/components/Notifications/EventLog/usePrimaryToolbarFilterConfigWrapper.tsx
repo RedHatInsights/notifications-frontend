@@ -31,7 +31,8 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         metaData
     );
 
-    const defaultDelete = toolbarConfig.activeFiltersConfig.onDelete;
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const defaultDelete = React.useMemo(() => toolbarConfig.activeFiltersConfig.onDelete, []);
     toolbarConfig.activeFiltersConfig.onDelete = React.useCallback((
         _event: any,
         rawFilterConfigs: any[]
@@ -59,8 +60,8 @@ export const usePrimaryToolbarFilterConfigWrapper = (
                     });
                 });
 
-                idxToRemove.forEach(idx => {
-                    prev.splice(idx, 1);
+                idxToRemove.forEach((indexRemove, idx) => {
+                    prev.splice(indexRemove - idx, 1);
                 });
             }));
         }
@@ -75,19 +76,39 @@ export const usePrimaryToolbarFilterConfigWrapper = (
             const bundle = indexOfBundle !== -1 && indexOfBundle !== undefined ? (bundles as Schemas.Facet[])[indexOfBundle] : undefined;
 
             const bundleDisplayName = bundle?.displayName;
-            const applicationChips = bundle?.children?.map(application => ({
-                name: application.displayName,
-                value: application.name,
-                isRead: true
-            })) ?? [];
+            const applicationChips = (!bundle?.children ?
+                [
+                    {
+                        name: 'Loading',
+                        value: filterBundle,
+                        isRead: true
+                    }
+                ]
+                :
+                (bundle.children.length !== 0 ?
+                    bundle?.children?.map(application => ({
+                        name: application.displayName,
+                        value: application.name,
+                        isRead: true
+                    }))
+                    :
+                    [
+                        {
+                            name: bundle.displayName,
+                            value: bundle.name,
+                            isRead: true
+                        }
+                    ]
+                )
+            );
 
             return {
                 bundleId: filterBundle,
-                category: bundleDisplayName || 'Loading...',
+                category: bundleDisplayName || `${filterBundle} Loading...`,
                 chips: (filters.application as string[])?.map(filterApplication => {
                     const appDisplayName = bundle?.children?.find(application => application.name === filterApplication)?.displayName;
                     return {
-                        name: appDisplayName || 'Loading...',
+                        name: appDisplayName as string,
                         value: filterApplication,
                         isRead: true
                     };
@@ -122,7 +143,8 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         const activeFilters = toolbarConfig.activeFiltersConfig.filters;
         const nonCustomFilters = activeFilters.filter(activeFilter => !!activeFilter && !(activeFilter as EventLogCustomFilter).bundleId);
         return nonCustomFilters.concat(customFilters);
-    }, [ customFilters, toolbarConfig.activeFiltersConfig.filters ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [ filters, customFilters ]);
 
     const { activeBundles, activeApplications } = React.useMemo(() => {
         // While bundles are empty, assume network request is still pending
@@ -136,9 +158,9 @@ export const usePrimaryToolbarFilterConfigWrapper = (
             activeBundles.push(customFilter.bundleId);
 
             const bundle = bundles.find(bundle => bundle.name === customFilter.bundleId) as Schemas.Facet;
-            const chipValues = customFilter.chips.map(chip => chip.value);
+            const chipValues = customFilter.chips?.map(chip => chip.value) as string[] | undefined;
 
-            if (bundle.children?.some(application => !chipValues.includes(application.name))) {
+            if (chipValues && bundle.children?.some(application => !chipValues.includes(application.name))) {
                 chipValues.forEach(chipValue => {
                     if (!activeApplications.includes(chipValue)) {
                         activeApplications.push(chipValue);

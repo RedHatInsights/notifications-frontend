@@ -4,7 +4,6 @@ import { useCallback } from 'react';
 
 import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
 import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
-import { Schemas } from '../../../generated/OpenapiNotifications';
 import { EventPeriod } from '../../../types/Event';
 import { Facet } from '../../../types/Notification';
 
@@ -23,11 +22,21 @@ export const useFilterBuilder = (
         }
 
         if (filters?.application) {
-            const selectedBundleName = filters?.bundle;
-            const selectedAppNames = filters?.application;
+            const selectedBundleNames = filters.bundle as string[];
+            const selectedAppNames = filters.application as string[];
 
-            const applications = bundles.find(bundle => bundle.name === selectedBundleName)?.children as Schemas.Facet[];
-            const selectedApps = applications?.filter(application => selectedAppNames.includes(application.name)).map(app => app.id);
+            const selectedApps: string[] = [];
+            selectedBundleNames.forEach(selectedBundle => {
+                const bundle = bundles.find(bundle => bundle.name === selectedBundle);
+                if (!!bundle) {
+                    selectedAppNames.forEach(selectedApp => {
+                        const application = bundle.children?.find(application => application.name === selectedApp);
+                        if (!!application) {
+                            selectedApps.push(application.id);
+                        }
+                    });
+                }
+            });
             filter.and('appIds', Operator.EQUAL, selectedApps);
         }
 
