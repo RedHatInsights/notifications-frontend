@@ -4,19 +4,6 @@ import React from 'react';
 
 import { EventLogTreeFilter } from '../EventLogTreeFilter';
 
-const groups = [
-    {
-        id: '1',
-        name: 'rhel',
-        displayName: 'Red Hat Enterprise Linux'
-    },
-    {
-        id: '2',
-        name: 'openshift',
-        displayName: 'OpenShift'
-    }
-];
-
 const applications = [
     {
         id: '3',
@@ -30,16 +17,29 @@ const applications = [
     }
 ];
 
+const groups = [
+    {
+        id: '1',
+        name: 'rhel',
+        displayName: 'Red Hat Enterprise Linux',
+        children: applications
+    },
+    {
+        id: '2',
+        name: 'openshift',
+        displayName: 'OpenShift',
+        children: applications
+    }
+];
+
 describe('src/components/Notifications/EventLog', () => {
     it('Render and perform basic tree filtering', async () => {
         render(<EventLogTreeFilter
             groups={ groups }
-            items={ applications }
             placeholder={ 'Filter by application' }
             filters={ [] }
             updateFilters={ jest.fn() }
-        />
-        );
+        />);
 
         userEvent.click(screen.getByRole('button'));
         expect(screen.getByText(/Red Hat Enterprise Linux/i)).toBeVisible();

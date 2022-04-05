@@ -21,7 +21,6 @@ interface EventLogToolbarProps extends OuiaComponentProps {
     clearFilter: ClearEventLogFilters
 
     bundleOptions: ReadonlyArray<Facet>;
-    applicationOptions: ReadonlyArray<Facet>;
 
     pageCount: number;
     count: number;
@@ -52,7 +51,6 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfigWrapper(
         props.bundleOptions,
-        props.applicationOptions,
         props.filters,
         props.setFilters,
         props.clearFilter,

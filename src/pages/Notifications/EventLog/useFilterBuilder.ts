@@ -4,6 +4,7 @@ import { useCallback } from 'react';
 
 import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
 import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
+import { Schemas } from '../../../generated/OpenapiNotifications';
 import { EventPeriod } from '../../../types/Event';
 import { Facet } from '../../../types/Notification';
 
@@ -11,7 +12,6 @@ const DATE_FORMAT = 'yyyy-MM-dd';
 
 export const useFilterBuilder = (
     bundles: ReadonlyArray<Facet>,
-    applications: ReadonlyArray<Facet>,
     dateFilter: EventLogDateFilterValue,
     period: EventPeriod) => {
     return useCallback((filters?: EventLogFilters) => {
@@ -23,8 +23,11 @@ export const useFilterBuilder = (
         }
 
         if (filters?.application) {
+            const selectedBundleName = filters?.bundle;
             const selectedAppNames = filters?.application;
-            const selectedApps = applications.filter(a => selectedAppNames.includes(a.name)).map(a => a.id);
+
+            const applications = bundles.find(bundle => bundle.name === selectedBundleName)?.children as Schemas.Facet[];
+            const selectedApps = applications?.filter(application => selectedAppNames.includes(application.name)).map(app => app.id);
             filter.and('appIds', Operator.EQUAL, selectedApps);
         }
 
@@ -66,5 +69,5 @@ export const useFilterBuilder = (
         }
 
         return filter;
-    }, [ bundles, applications, dateFilter, period ]);
+    }, [ bundles, dateFilter, period ]);
 };

@@ -17,7 +17,6 @@ export interface EventLogCustomFilter {
 // usePrimaryToolbarFilterConfig only supports 3 filter types: checkbox, radio, and text, so this extends that
 export const usePrimaryToolbarFilterConfigWrapper = (
     bundles: readonly Schemas.Facet[],
-    applications: readonly Schemas.Facet[],
     filters: EventLogFilters,
     setFilters: SetEventLogFilters,
     clearFilter: ClearEventLogFilters,
@@ -69,28 +68,30 @@ export const usePrimaryToolbarFilterConfigWrapper = (
 
     const mapToEventLogCustomFilter = React.useCallback((
         filters: EventLogFilters,
-        bundles?: readonly Schemas.Facet[],
-        applications?: readonly Schemas.Facet[]
+        bundles?: readonly Schemas.Facet[]
     ) => {
-        const applicationNames = applications?.map(application => ({
-            name: application.displayName,
-            value: application.name,
-            isRead: true
-        }));
-
         const eventLogCustomFilters = (filters.bundle as string[])?.map(filterBundle => {
-            const bundleDisplayName = bundles?.find(bundle => bundle.name === filterBundle)?.displayName;
+            const indexOfBundle = bundles?.findIndex(bundle => bundle.name === filterBundle);
+            const bundle = indexOfBundle !== -1 && indexOfBundle !== undefined ? (bundles as Schemas.Facet[])[indexOfBundle] : undefined;
+
+            const bundleDisplayName = bundle?.displayName;
+            const applicationChips = bundle?.children?.map(application => ({
+                name: application.displayName,
+                value: application.name,
+                isRead: true
+            })) ?? [];
+
             return {
                 bundleId: filterBundle,
                 category: bundleDisplayName || 'Loading...',
                 chips: (filters.application as string[])?.map(filterApplication => {
-                    const appDisplayName = applications?.find(application => application.name === filterApplication)?.displayName;
+                    const appDisplayName = bundle?.children?.find(application => application.name === filterApplication)?.displayName;
                     return {
                         name: appDisplayName || 'Loading...',
                         value: filterApplication,
                         isRead: true
                     };
-                }) || applicationNames || []
+                }) || applicationChips
             };
         }) || [];
 
@@ -98,11 +99,9 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     }, []);
 
     React.useEffect(() => {
-        const bundlesList = bundles.length !== 0 ? bundles : undefined;
-        const applicationList = applications.length !== 0 ? applications : undefined;
-        setCustomFilters(mapToEventLogCustomFilter(filters, bundlesList, applicationList));
+        setCustomFilters(mapToEventLogCustomFilter(filters, bundles.length !== 0 ? bundles : undefined));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ bundles, applications, mapToEventLogCustomFilter ]);
+    }, [ bundles, mapToEventLogCustomFilter ]);
 
     toolbarConfig.filterConfig.items[1] = useMemo(() => {
         return {
@@ -111,14 +110,13 @@ export const usePrimaryToolbarFilterConfigWrapper = (
             filterValues: {
                 children: <EventLogTreeFilter
                     groups={ bundles }
-                    items={ applications }
                     placeholder={ 'Filter by Application' }
                     filters={ customFilters }
                     updateFilters={ setCustomFilters }
                 />
             }
         } as any;
-    }, [ bundles, applications, customFilters ]);
+    }, [ bundles, customFilters ]);
 
     toolbarConfig.activeFiltersConfig.filters = React.useMemo(() => {
         const activeFilters = toolbarConfig.activeFiltersConfig.filters;
@@ -127,8 +125,8 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     }, [ customFilters, toolbarConfig.activeFiltersConfig.filters ]);
 
     const { activeBundles, activeApplications } = React.useMemo(() => {
-        // While bundles and applications are length 0, assume network request is still pending
-        if (bundles.length === 0 || applications.length === 0) {
+        // While bundles are empty, assume network request is still pending
+        if (bundles.length === 0) {
             return { activeBundles: filters.bundle, activeApplications: filters.application };
         }
 
@@ -137,8 +135,10 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         customFilters.forEach(customFilter => {
             activeBundles.push(customFilter.bundleId);
 
+            const bundle = bundles.find(bundle => bundle.name === customFilter.bundleId) as Schemas.Facet;
             const chipValues = customFilter.chips.map(chip => chip.value);
-            if (applications.some(application => !chipValues.includes(application.name))) {
+
+            if (bundle.children?.some(application => !chipValues.includes(application.name))) {
                 chipValues.forEach(chipValue => {
                     if (!activeApplications.includes(chipValue)) {
                         activeApplications.push(chipValue);
@@ -149,7 +149,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
 
         return { activeBundles, activeApplications };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ bundles, applications, customFilters ]);
+    }, [ bundles, customFilters ]);
 
     setFilters.bundle(activeBundles);
     setFilters.application(activeApplications);
