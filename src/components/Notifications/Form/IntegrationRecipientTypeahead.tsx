@@ -1,12 +1,13 @@
-import { Select, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
+import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
+import { DeepPartial } from 'ts-essentials';
 
 import Config from '../../../config/Config';
 import { UserIntegrationType } from '../../../types/Integration';
-import { ActionIntegration, BehaviorGroup, IntegrationRef } from '../../../types/Notification';
+import { ActionIntegration, BehaviorGroup, IntegrationRef, NotificationType } from '../../../types/Notification';
 import { IntegrationRecipient } from '../../../types/Recipient';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
@@ -28,7 +29,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     const prevOpen = usePrevious(isOpen);
 
     const { getIntegrations } = useRecipientContext();
-    const { values } = useFormikContext<Partial<BehaviorGroup>>();
+    const { values } = useFormikContext<DeepPartial<BehaviorGroup>>();
 
     const [ state, dispatchers ] = useTypeaheadReducer<IntegrationRecipient>();
 
@@ -60,11 +61,29 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     }, [ getIntegrations, props.integrationType, state.loadingFilter, state.lastSearch, dispatchers ]);
 
     const existingIntegrations = React.useMemo(() => {
-        const integrationActions = ((values.actions ?? []) as readonly ActionIntegration[]).map(action => action?.integration.id);
+        const integrationActions = (values.actions ?? [])
+        .filter(action => action?.type === NotificationType.INTEGRATION)
+        .map(action => (action as ActionIntegration)?.integration.id);
+
         return new Set<string>(integrationActions);
     }, [ values ]);
 
-    const options = useRecipientOptionMemo(state, existingIntegrations);
+    const integrationsMapper = React.useCallback((recipients: ReadonlyArray<IntegrationRecipient>) => {
+        return recipients.map(r => {
+            const isDisabled = existingIntegrations?.has(r.integration.id);
+
+            return (
+                <SelectOption
+                    key={ r.getKey() }
+                    value={ new RecipientOption(r) }
+                    description={ isDisabled ? 'This integration has already been added' : undefined }
+                    isDisabled={ isDisabled }
+                />
+            );
+        });
+    }, [ existingIntegrations ]);
+
+    const options = useRecipientOptionMemo(state, integrationsMapper);
 
     const onFilter = React.useCallback((e: React.ChangeEvent<HTMLInputElement> | null) => {
         // Ignore filter calls with null event

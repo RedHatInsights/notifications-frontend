@@ -7,7 +7,7 @@ import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { IntegrationType } from '../../../../types/Integration';
-import { ActionIntegration, BehaviorGroup, IntegrationRef } from '../../../../types/Notification';
+import { ActionIntegration, BehaviorGroup, IntegrationRef, NotificationType } from '../../../../types/Notification';
 import { GetIntegrations, RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { IntegrationRecipientTypeahead } from '../IntegrationRecipientTypeahead';
 
@@ -56,6 +56,31 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         />, {
             wrapper: getConfiguredWrapper()
         });
+        await waitForAsyncEvents();
+        expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
+    });
+
+    it('Renders with existing notifications that are not Integrations', async () => {
+        const actions = [
+            {
+                recipient: {},
+                type: NotificationType.EMAIL_SUBSCRIPTION
+            },
+            {
+                integration: ref1,
+                type: NotificationType.INTEGRATION
+            }
+        ] as ActionIntegration[];
+        const formikValues: Partial<BehaviorGroup> = { actions };
+
+        render(<IntegrationRecipientTypeahead
+            selected={ undefined }
+            integrationType={ IntegrationType.WEBHOOK }
+            onSelected={ fn() }
+        />, {
+            wrapper: getConfiguredWrapper(undefined, formikValues)
+        });
+
         await waitForAsyncEvents();
         expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
     });
@@ -166,7 +191,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
 
     it('Integration recipients that have been previously used in the form are disabled', async () => {
         const formikValues: Partial<BehaviorGroup> = {
-            actions: [{ integration: ref1 }] as ActionIntegration[]
+            actions: [{ integration: ref1, type: NotificationType.INTEGRATION }] as ActionIntegration[]
         };
 
         render(<IntegrationRecipientTypeahead
@@ -181,6 +206,6 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         userEvent.click(screen.getByRole('button', { name: /Options menu/i }));
 
         await waitForAsyncEvents();
-        expect(screen.getAllByRole('option')[0].className).toEqual('pf-c-select__menu-item pf-m-disabled pf-m-description');
+        expect(screen.getAllByRole('option')[0].className.includes('disabled')).toBeTruthy();
     });
 });

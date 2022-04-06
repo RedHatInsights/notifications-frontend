@@ -1,9 +1,9 @@
-import produce from 'immer';
+import produce, { castDraft, Draft, original } from 'immer';
 import { SetStateAction, useCallback } from 'react';
 import { DeepPartial } from 'ts-essentials';
 
 import { Action, ActionIntegration, ActionNotify, NotificationType } from '../../../types/Notification';
-import { IntegrationRecipient, NotificationRecipient } from '../../../types/Recipient';
+import { BaseNotificationRecipient, IntegrationRecipient, NotificationRecipient } from '../../../types/Recipient';
 import { ActionOption } from '../Form/ActionOption';
 import { RecipientOption } from '../Form/RecipientOption';
 
@@ -29,12 +29,12 @@ export const useBehaviorGroupActionHandlers = (
             const row = prev[index];
             row.type = value.notificationType;
             if (value.integrationType) {
-                const rowAsIntegration = row as DeepPartial<ActionIntegration>;
+                const rowAsIntegration = row as Draft<DeepPartial<ActionIntegration>>;
                 rowAsIntegration.integration = {
                     type: value.integrationType
                 };
             } else {
-                const rowAsNotification = row as DeepPartial<ActionNotify>;
+                const rowAsNotification = row as Draft<ActionNotify>;
                 rowAsNotification.recipient = [];
             }
         }));
@@ -43,7 +43,7 @@ export const useBehaviorGroupActionHandlers = (
     const handleIntegrationSelected = useCallback((index: number) => (value: RecipientOption) => {
         setActions(produce(prev => {
             if (value.recipient instanceof IntegrationRecipient) {
-                const rowAsIntegration = prev[index] as DeepPartial<ActionIntegration>;
+                const rowAsIntegration = prev[index] as Draft<ActionIntegration>;
                 rowAsIntegration.integration = value.recipient.integration;
             }
         }));
@@ -53,13 +53,14 @@ export const useBehaviorGroupActionHandlers = (
         setActions(produce(prev => {
             const row = prev[index];
             if (row.type !== NotificationType.INTEGRATION) {
-                const rowAsNotification = row as DeepPartial<ActionNotify>;
-                if (rowAsNotification.recipient) {
-                    const index = rowAsNotification.recipient.findIndex(r => value.recipient.equals(r as NotificationRecipient));
+                const rowAsNotification = row as Draft<ActionNotify>;
+                const originalRecipient = original(rowAsNotification.recipient);
+                if (originalRecipient) {
+                    const index = originalRecipient.findIndex(r => value.recipient.equals(r as NotificationRecipient));
                     if (index === -1) {
-                        rowAsNotification.recipient = [ ...rowAsNotification.recipient, value.recipient ];
+                        rowAsNotification.recipient.push(castDraft(value.recipient as BaseNotificationRecipient));
                     } else {
-                        rowAsNotification.recipient = rowAsNotification.recipient.filter((_, i) => i !== index);
+                        rowAsNotification.recipient.splice(index, 1);
                     }
                 }
             }
@@ -70,7 +71,7 @@ export const useBehaviorGroupActionHandlers = (
         setActions(produce(prev => {
             const row = prev[index];
             if (row.type !== NotificationType.INTEGRATION) {
-                const rowAsNotification = row as DeepPartial<ActionNotify>;
+                const rowAsNotification = row as Draft<ActionNotify>;
                 rowAsNotification.recipient = [];
             }
         }));

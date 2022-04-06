@@ -2,48 +2,39 @@ import { SelectOption } from '@patternfly/react-core';
 import assertNever from 'assert-never';
 import * as React from 'react';
 
-import { IntegrationRecipient, NotificationRecipient, Recipient } from '../../../types/Recipient';
-import { RecipientOption } from './RecipientOption';
+import { Recipient } from '../../../types/Recipient';
 import { ReducerState } from './useTypeaheadReducer';
 
-const mapper = (r: Recipient, existingIntegrations?: Set<string>) => {
-    let isDisabled = false;
-    let description: string | undefined = undefined;
+type Mapper<R> = (recipients: ReadonlyArray<R>) => React.ReactElement[];
 
-    if (r instanceof NotificationRecipient) {
-        description = r.description;
-    } else if (r instanceof IntegrationRecipient) {
-        isDisabled = !!existingIntegrations?.has(r.integration.id);
-        description = isDisabled ? 'This integration has already been added' : description;
+const getOptions = <R extends Recipient>(values: ReadonlyArray<R>, mapper: Mapper<R>, isLoading: boolean) => {
+    if (isLoading) {
+        return [ <SelectOption
+            key="loading-option"
+            isNoResultsOption={ true }
+            value="Loading..."
+        /> ];
     }
 
-    return <SelectOption key={ r.getKey() } value={ new RecipientOption(r) } description={ description } isDisabled={ isDisabled } />;
+    return mapper(values);
 };
 
-export const useRecipientOptionMemo = (state: ReducerState<Recipient>, existingIntegrations?: Set<string>) => {
+export const useRecipientOptionMemo = <R extends Recipient>(state: ReducerState<R>, mapper: Mapper<R>) => {
     return React.useMemo(() => {
         if (state.show === 'default') {
-            if (state.loadingDefault) {
-                return [ <SelectOption
-                    key="loading-option"
-                    isNoResultsOption={ true }
-                    value="Loading..."
-                /> ];
-            } else {
-                return state.defaultValues.map(recipient => mapper(recipient, existingIntegrations));
-            }
+            return getOptions(
+                state.defaultValues,
+                mapper,
+                state.loadingDefault
+            );
         } else if (state.show === 'filter') {
-            if (state.loadingFilter) {
-                return [ <SelectOption
-                    key="loading-option"
-                    isNoResultsOption={ true }
-                    value="Loading..."
-                /> ];
-            } else {
-                return state.filterValues.map(recipient => mapper(recipient, existingIntegrations));
-            }
+            return getOptions(
+                state.filterValues,
+                mapper,
+                state.loadingFilter
+            );
         }
 
         assertNever(state.show);
-    }, [ state, existingIntegrations ]);
+    }, [ state, mapper ]);
 };
