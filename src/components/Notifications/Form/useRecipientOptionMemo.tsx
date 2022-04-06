@@ -12,9 +12,7 @@ const mapper = (r: Recipient, existingIntegrations?: Set<string>) => {
 
     if (r instanceof NotificationRecipient) {
         description = r.description;
-    }
-
-    else if (r instanceof IntegrationRecipient) {
+    } else if (r instanceof IntegrationRecipient) {
         isDisabled = !!existingIntegrations?.has(r.integration.id);
         description = isDisabled ? 'This integration has already been added' : description;
     }

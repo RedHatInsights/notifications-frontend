@@ -1,9 +1,9 @@
 import { ColumnsMetada, usePrimaryToolbarFilterConfig } from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
 import React from 'react';
-import { useMemo } from 'react';
 
 import { Schemas } from '../../../generated/OpenapiNotifications';
+import { areEqual } from '../../../utils/Arrays';
 import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
 import { EventLogTreeFilter } from './EventLogTreeFilter';
 
@@ -35,16 +35,25 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     const defaultDelete = React.useMemo(() => toolbarConfig.activeFiltersConfig.onDelete, []);
     toolbarConfig.activeFiltersConfig.onDelete = React.useCallback((
         _event: any,
-        rawFilterConfigs: any[]
+        rawFilterConfigs: EventLogCustomFilter[]
     ) => {
-        try {
-            defaultDelete(_event, rawFilterConfigs);
-        }
-        catch (e) {
+        const regularFilterConfigs: EventLogCustomFilter[] = [];
+        const customFilterConfigs: EventLogCustomFilter[] = [];
+        rawFilterConfigs.forEach(filterConfig => {
+            if (filterConfig.bundleId) {
+                customFilterConfigs.push(filterConfig);
+            } else {
+                regularFilterConfigs.push(filterConfig);
+            }
+        });
+
+        defaultDelete(_event, regularFilterConfigs);
+
+        if (customFilterConfigs.length !== 0) {
             setCustomFilters(produce(prev => {
                 const idxToRemove: number[] = [];
                 prev.forEach((activeFilter, idx) => {
-                    rawFilterConfigs.some(deleteFilter => {
+                    customFilterConfigs.some(deleteFilter => {
                         if (activeFilter.bundleId === deleteFilter.bundleId) {
                             const deletedChipValues = deleteFilter.chips.map(chip => chip.value);
                             activeFilter.chips = activeFilter.chips.filter(chip => !deletedChipValues.includes(chip.value));
@@ -60,33 +69,31 @@ export const usePrimaryToolbarFilterConfigWrapper = (
                     });
                 });
 
-                idxToRemove.forEach((indexRemove, idx) => {
-                    prev.splice(indexRemove - idx, 1);
+                idxToRemove.forEach((idx, adjusted) => {
+                    prev.splice(idx - adjusted, 1);
                 });
             }));
         }
     }, [ defaultDelete, setCustomFilters ]);
 
+    // Converts URL Query Params to Filter Obj
     const mapToEventLogCustomFilter = React.useCallback((
         filters: EventLogFilters,
         bundles?: readonly Schemas.Facet[]
     ) => {
-        const eventLogCustomFilters = (filters.bundle as string[])?.map(filterBundle => {
-            const indexOfBundle = bundles?.findIndex(bundle => bundle.name === filterBundle);
-            const bundle = indexOfBundle !== -1 && indexOfBundle !== undefined ? (bundles as Schemas.Facet[])[indexOfBundle] : undefined;
-
+        const createCustomFilterObj = (bundleName: string, bundle: Schemas.Facet | undefined, applications: Schemas.Facet[] | undefined) => {
             const bundleDisplayName = bundle?.displayName;
             const applicationChips = (!bundle?.children ?
                 [
                     {
                         name: 'Loading',
-                        value: filterBundle,
+                        value: bundleName,
                         isRead: true
                     }
                 ]
                 :
-                (bundle.children.length !== 0 ?
-                    bundle?.children?.map(application => ({
+                (applications?.length !== 0 ?
+                    applications?.map(application => ({
                         name: application.displayName,
                         value: application.name,
                         isRead: true
@@ -103,28 +110,48 @@ export const usePrimaryToolbarFilterConfigWrapper = (
             );
 
             return {
-                bundleId: filterBundle,
-                category: bundleDisplayName || `${filterBundle} Loading...`,
-                chips: (filters.application as string[])?.map(filterApplication => {
-                    const appDisplayName = bundle?.children?.find(application => application.name === filterApplication)?.displayName;
-                    return {
-                        name: appDisplayName as string,
-                        value: filterApplication,
-                        isRead: true
-                    };
-                }) || applicationChips
+                bundleId: bundleName,
+                category: bundleDisplayName || `${bundleName} Loading...`,
+                chips: applicationChips
             };
+        };
+
+        const applicationsByBundle: { [key: string]: string[] } = {};
+        (filters.application as string[])?.forEach(queryParam => {
+            const nameSplit = queryParam.split('.');
+            const bundleName = nameSplit[0];
+            const application = nameSplit[1];
+
+            if (!applicationsByBundle[bundleName]) {
+                applicationsByBundle[bundleName] = [ application ];
+            } else {
+                applicationsByBundle[bundleName].push(application);
+            }
+        });
+
+        const partialBundleFilters = Object.keys(applicationsByBundle).map(bundleName => {
+            const bundle = bundles?.find(bundle => bundle.name === bundleName);
+            const applications = bundle?.children?.filter(application => applicationsByBundle[bundleName].includes(application.name));
+            return createCustomFilterObj(bundleName, bundle, applications);
+        });
+
+        const completeBundleFilters = (filters.bundle as string[])?.map(queryParam => {
+            const bundle = bundles?.find(bundle => bundle.name === queryParam);
+            return createCustomFilterObj(queryParam, bundle, bundle?.children);
         }) || [];
 
-        return eventLogCustomFilters;
+        return completeBundleFilters.concat(partialBundleFilters) as EventLogCustomFilter[];
     }, []);
 
+    // Run ONLY twice
+    //     1st - setup loading placeholders for filters
+    //     2nd - render actual filter bundles/applications
     React.useEffect(() => {
         setCustomFilters(mapToEventLogCustomFilter(filters, bundles.length !== 0 ? bundles : undefined));
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ bundles, mapToEventLogCustomFilter ]);
 
-    toolbarConfig.filterConfig.items[1] = useMemo(() => {
+    toolbarConfig.filterConfig.items[1] = React.useMemo(() => {
         return {
             label: 'Application',
             type: 'custom',
@@ -140,41 +167,64 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     }, [ bundles, customFilters ]);
 
     toolbarConfig.activeFiltersConfig.filters = React.useMemo(() => {
-        const activeFilters = toolbarConfig.activeFiltersConfig.filters;
-        const nonCustomFilters = activeFilters.filter(activeFilter => !!activeFilter && !(activeFilter as EventLogCustomFilter).bundleId);
+        const activeFilters = toolbarConfig.activeFiltersConfig.filters as EventLogCustomFilter[];
+        const nonCustomFilters = activeFilters.filter(activeFilter => activeFilter && !activeFilter.bundleId);
         return nonCustomFilters.concat(customFilters);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ filters, customFilters ]);
+    }, [ customFilters, toolbarConfig.activeFiltersConfig.filters ]);
 
-    const { activeBundles, activeApplications } = React.useMemo(() => {
-        // While bundles are empty, assume network request is still pending
+    // Update URL Query Params for Bundles
+    setFilters.bundle(produce(prev => {
         if (bundles.length === 0) {
-            return { activeBundles: filters.bundle, activeApplications: filters.application };
+            return filters.bundle;
         }
 
-        const activeBundles: string[] = [];
-        const activeApplications: string[] = [];
-        customFilters.forEach(customFilter => {
-            activeBundles.push(customFilter.bundleId);
+        const currBundleFilters: string[] = [];
+        bundles.forEach(bundle => {
+            const addToQueryParam = customFilters.some(bundleFilter => {
+                if (bundleFilter.bundleId === bundle.name) {
+                    // Edge case: Bundle has no children (but it gets a chip for UI reasons)
+                    if (bundle.children?.length === 0 && bundleFilter.chips.length === 1) {
+                        return true;
+                    }
 
+                    return bundle.children?.length === bundleFilter.chips.length;
+                }
+
+                return false;
+            });
+
+            if (addToQueryParam) {
+                currBundleFilters.push(bundle.name);
+            }
+        });
+
+        return areEqual(prev as string[], currBundleFilters, true) ? prev : currBundleFilters;
+    }));
+
+    // Update URL Query Params for Bundles
+    setFilters.application(produce(prev => {
+        if (bundles.length === 0) {
+            return filters.application;
+        }
+
+        const currApplicationFilters: string[] = [];
+        customFilters.forEach(customFilter => {
             const bundle = bundles.find(bundle => bundle.name === customFilter.bundleId) as Schemas.Facet;
             const chipValues = customFilter.chips?.map(chip => chip.value) as string[] | undefined;
 
+            // Only add applications to Query Params under 2 conditions
+            //     1. Bundle has children
+            //     2. Every application under the Bundle is not selected
             if (chipValues && bundle.children?.some(application => !chipValues.includes(application.name))) {
                 chipValues.forEach(chipValue => {
-                    if (!activeApplications.includes(chipValue)) {
-                        activeApplications.push(chipValue);
-                    }
+                    const applicationQueryParam = `${bundle.name}.${chipValue}`;
+                    currApplicationFilters.push(applicationQueryParam);
                 });
             }
         });
 
-        return { activeBundles, activeApplications };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ bundles, customFilters ]);
-
-    setFilters.bundle(activeBundles);
-    setFilters.application(activeApplications);
+        return areEqual(prev as string[], currApplicationFilters, true) ? prev : currApplicationFilters;
+    }));
 
     return toolbarConfig;
 };

@@ -17,27 +17,29 @@ export const useFilterBuilder = (
         const filter = new Filter();
         if (filters?.bundle) {
             const selectedBundleNames = filters?.bundle;
-            const selectedBundles = bundles.filter(b => selectedBundleNames.includes(b.name)).map(b => b.id);
-            filter.and('bundleIds', Operator.EQUAL, selectedBundles);
+            const queryParams = bundles.filter(b => selectedBundleNames.includes(b.name)).map(b => b.id);
+            filter.and('bundleIds', Operator.EQUAL, queryParams);
         }
 
         if (filters?.application) {
-            const selectedBundleNames = filters.bundle as string[];
             const selectedAppNames = filters.application as string[];
 
-            const selectedApps: string[] = [];
-            selectedBundleNames.forEach(selectedBundle => {
-                const bundle = bundles.find(bundle => bundle.name === selectedBundle);
-                if (!!bundle) {
-                    selectedAppNames.forEach(selectedApp => {
-                        const application = bundle.children?.find(application => application.name === selectedApp);
-                        if (!!application) {
-                            selectedApps.push(application.id);
-                        }
-                    });
+            const queryParams: string[] = [];
+            selectedAppNames.forEach(appName => {
+                const nameSplit = appName.split('.');
+                const bundleName = nameSplit[0];
+                const applicationName = nameSplit[1];
+
+                const bundle = bundles.find(bundle => bundle.name === bundleName);
+                if (bundle) {
+                    const application = bundle.children?.find(application => application.name === applicationName);
+                    if (application) {
+                        queryParams.push(application.id);
+                    }
                 }
             });
-            filter.and('appIds', Operator.EQUAL, selectedApps);
+
+            filter.and('appIds', Operator.EQUAL, queryParams);
         }
 
         if (filters?.event) {

@@ -6,6 +6,7 @@ import React, { ChangeEvent } from 'react';
 
 import { Schemas } from '../../../generated/OpenapiNotifications';
 import { Modify } from '../../../types/Modify';
+import { areEqual } from '../../../utils/Arrays';
 import { EventLogCustomFilter } from './usePrimaryToolbarFilterConfigWrapper';
 
 interface EventLogTreeFilterProps {
@@ -42,7 +43,7 @@ const initTreeNodeById = (groups: readonly Schemas.Facet[], filters: EventLogCus
         const currentFilterChipValues = currentFilter?.chips?.map(chip => chip.value);
 
         const items = group.children as Schemas.Facet[];
-        const checkAll = items.length !== 0 ? items.every(item => !!currentFilterChipValues?.includes(item.name)) : false;
+        const checkAll = items.length !== 0 ? items.every(item => currentFilterChipValues?.includes(item.name)) : false;
         init[group.name] = {
             id: group.name,
             name: group.displayName,
@@ -66,19 +67,16 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
     const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeDict>(initialize);
     const [ isToggled, setIsToggled ] = React.useState(false);
 
-    const treeDataArray = React.useMemo(() => !!treeNodeById ? Object.values(treeNodeById) : [], [ treeNodeById ]);
+    const treeDataArray = React.useMemo(() => treeNodeById ? Object.values(treeNodeById) : [], [ treeNodeById ]);
 
     React.useEffect(() => {
         if (groups.length !== 0) {
             setTreeNodeById(produce((prev) => {
-                // In case Bundles request is pending during Tree View render
                 if (Object.keys(prev).length === 0) {
                     return initialize;
-                }
-                else if (filters.length === 0) {
+                } else if (filters.length === 0) {
                     return initialize;
-                }
-                else {
+                } else {
                     filters.forEach(activeFilter => {
                         const treeNode = prev[activeFilter.bundleId];
                         const activeChips = activeFilter.chips.map(chip => chip.value);
@@ -89,24 +87,21 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
 
                         if (allChildrenChecked(treeNode)) {
                             treeNode.checkProps.checked = true;
-                        }
-                        else if (childChecked(treeNode)) {
+                        } else if (childChecked(treeNode)) {
                             treeNode.checkProps.checked = null;
-                        }
-                        else {
+                        } else {
                             treeNode.checkProps.checked = false;
                         }
                     });
                 }
             }));
         }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [ groups, filters ]);
+    }, [ groups, filters, initialize ]);
 
     const flattenTree = React.useMemo(() => {
         const flatTreeDataArray = produce(treeDataArray, (prev) => {
             prev.forEach(treeNode => {
-                if (!!treeNode.children) {
+                if (treeNode.children) {
                     prev.push(...treeNode.children);
                 }
             });
@@ -119,58 +114,59 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
         const groupNames = groups.map(group => group.name);
         const activeParentFilters = flattenTree.filter(treeNode => {
             const isActive = treeNode.checkProps.checked;
-            return (!!isActive || isActive === null) && groupNames.includes(treeNode.id);
+            return (isActive || isActive === null) && groupNames.includes(treeNode.id);
         });
 
         updateFilters(produce((prev) => {
             if (prev.length === 0 && activeParentFilters.length === 0) {
                 return prev;
-            }
-
-            else if (prev.length !== 0 && activeParentFilters.length === 0) {
+            } else if (prev.length !== 0 && activeParentFilters.length === 0) {
                 return [];
-            }
-
-            const newCustomFilters = activeParentFilters.map(parentFilter => ({
-                bundleId: parentFilter.id,
-                category: parentFilter.name as string,
-                chips: parentFilter.children?.filter(childNode => !!childNode.checkProps.checked).map(childFilter => ({
-                    name: childFilter.name as string,
-                    value: childFilter.id,
-                    isRead: true
-                })) ||
-                [
-                    {
-                        name: parentFilter.name,
-                        value: parentFilter.id,
+            } else {
+                const newCustomFilters = activeParentFilters.map(parentFilter => ({
+                    bundleId: parentFilter.id,
+                    category: parentFilter.name as string,
+                    chips: parentFilter.children?.filter(childNode => childNode.checkProps.checked).map(childFilter => ({
+                        name: childFilter.name as string,
+                        value: childFilter.id,
                         isRead: true
+                    }))
+                ??
+                    [
+                        {
+                            name: parentFilter.name,
+                            value: parentFilter.id,
+                            isRead: true
+                        }
+                    ]
+                } as EventLogCustomFilter));
+
+                const prevBundles = prev.map(prevFilter => prevFilter.bundleId);
+                const currBundles = newCustomFilters.map(customFilter => customFilter.bundleId);
+
+                const areBundlesEqual = areEqual(prevBundles, currBundles);
+                const areApplicationsEqual = newCustomFilters.every((entry, idx) => {
+                    if (prev[idx]) {
+                        if (entry.bundleId === prev[idx].bundleId) {
+                            const prevChips = prev[idx].chips.map(chip => chip.value);
+                            const currChips = entry.chips.map(chip => chip.value);
+
+                            return areEqual(prevChips, currChips, true);
+                        }
                     }
-                ]
-            } as EventLogCustomFilter));
 
-            const areEqual = newCustomFilters.every((entry, idx) => {
-                if (!!prev[idx]) {
-                    const prevChips = prev[idx].chips.map(chip => chip.value);
-                    const currChips = entry.chips.map(chip => chip.value);
-                    if (entry.bundleId === prev[idx].bundleId &&
-                        entry.chips.every(chip => prevChips.includes(chip.value)) &&
-                        prev[idx].chips.every(chip => currChips.includes(chip.value))
-                    ) {
-                        return true;
-                    }
-                }
+                    return false;
+                });
 
-                return false;
-            });
-
-            return areEqual ? prev : newCustomFilters;
+                return areBundlesEqual && areApplicationsEqual ? prev : newCustomFilters;
+            }
         }));
     }, [ groups, flattenTree, updateFilters ]);
 
     const onCheck = (event: ChangeEvent<Element>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
         const checked = (event.target as HTMLInputElement).checked;
         setTreeNodeById(produce((prev) => {
-            if (!!parentNode) {
+            if (parentNode) {
                 const children = prev[parentNode.id].children;
                 children?.some(childNode => {
                     if (childNode.id === treeNode.id) {
@@ -183,15 +179,12 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
 
                 if (allChildrenChecked(prev[parentNode.id])) {
                     prev[parentNode.id].checkProps.checked = true;
-                }
-                else if (childChecked(prev[parentNode.id])) {
+                } else if (childChecked(prev[parentNode.id])) {
                     prev[parentNode.id].checkProps.checked = null;
-                }
-                else {
+                } else {
                     prev[parentNode.id].checkProps.checked = checked;
                 }
-            }
-            else {
+            } else {
                 prev[treeNode.id].checkProps.checked = checked;
                 prev[treeNode.id].children?.forEach(leafNode => leafNode.checkProps.checked = checked);
             }
