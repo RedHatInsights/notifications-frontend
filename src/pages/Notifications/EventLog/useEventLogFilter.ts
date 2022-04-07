@@ -15,6 +15,10 @@ export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
 
         const useApplication = () => useUrlStateMultipleOptions('application');
         const useBundle = () => useUrlStateMultipleOptions('bundle');
+
+        const useActionType = () => useUrlStateMultipleOptions('endpointTypes');
+        const useActionStatus = () => useUrlStateMultipleOptions('invocationResults');
+
         const useEvent = () => useUrlStateString('event');
 
         return (column: EventLogFilterColumn) => {
@@ -25,6 +29,10 @@ export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
                     return useBundle;
                 case EventLogFilterColumn.EVENT:
                     return useEvent;
+                case EventLogFilterColumn.ACTION_TYPE:
+                    return useActionType;
+                case EventLogFilterColumn.ACTION_STATUS:
+                    return useActionStatus;
                 default:
                     assertNever(column);
             }

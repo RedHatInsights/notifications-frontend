@@ -46,6 +46,14 @@ export const useFilterBuilder = (
             filter.and('event', Operator.EQUAL, filters.event);
         }
 
+        if (filters?.invocationResults) {
+            filter.and('invocationResults', Operator.EQUAL, filters.invocationResults);
+        }
+
+        if (filters?.endpointTypes) {
+            filter.and('endpointTypes', Operator.EQUAL, filters.endpointTypes);
+        }
+
         let filterPeriod = [ undefined, undefined ] as [ Date | undefined, Date | undefined ];
         const today = toUtc(new Date());
 
