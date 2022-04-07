@@ -145,7 +145,7 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
                 const currBundles = newCustomFilters.map(customFilter => customFilter.bundleId);
 
                 const areBundlesEqual = areEqual(prevBundles, currBundles);
-                const areApplicationsEqual = newCustomFilters.every((entry, idx) => {
+                const areFiltersEqual = areBundlesEqual && newCustomFilters.every((entry, idx) => {
                     if (prev[idx]) {
                         if (entry.bundleId === prev[idx].bundleId) {
                             const prevChips = prev[idx].chips.map(chip => chip.value);
@@ -158,7 +158,7 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
                     return false;
                 });
 
-                return areBundlesEqual && areApplicationsEqual ? prev : newCustomFilters;
+                return areFiltersEqual ? prev : newCustomFilters;
             }
         }));
     }, [ groups, flattenTree, updateFilters ]);
