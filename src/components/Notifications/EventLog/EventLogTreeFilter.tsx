@@ -163,8 +163,8 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
         }));
     }, [ groups, flattenTree, updateFilters ]);
 
-    const onCheck = (event: ChangeEvent<Element>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
-        const checked = (event.target as HTMLInputElement).checked;
+    const onCheck = (event: ChangeEvent<HTMLInputElement>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
+        const checked = event.target.checked;
         setTreeNodeById(produce((prev) => {
             if (parentNode) {
                 const children = prev[parentNode.id].children;
@@ -191,6 +191,10 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
         }));
     };
 
+    const onCheckWrapper = (event: ChangeEvent<Element>, treeNode: TreeViewDataItem, parentNode: TreeViewDataItem) => {
+        onCheck(event as ChangeEvent<HTMLInputElement>, treeNode as TreeNodeItem, parentNode as TreeNodeItem);
+    };
+
     return (
         <Dropdown
             toggle={ <DropdownToggle
@@ -201,7 +205,7 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
             </DropdownToggle> }
             isOpen={ isToggled }
         >
-            <TreeView data={ treeDataArray } hasChecks={ true } onCheck={ onCheck as any } />
+            <TreeView data={ treeDataArray } hasChecks={ true } onCheck={ onCheckWrapper } />
         </Dropdown>
     );
 };
