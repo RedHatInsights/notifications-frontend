@@ -28,6 +28,11 @@ const MutableMessages = {
                 title: 'Edit integration'
             }
         },
+        splunk: {
+            page: {
+                title: 'Splunk Setup'
+            }
+        },
         notifications: {
             list: {
                 title: 'Notifications',
