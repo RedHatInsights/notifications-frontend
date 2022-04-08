@@ -3,11 +3,17 @@ import { validatedResponse, validationResponseTransformer } from 'openapi2typesc
 import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
-import { toBehaviorGroup, toShallowBehaviorGroupRequest } from '../../types/adapters/BehaviorGroupAdapter';
-import { BehaviorGroupRequest } from '../../types/Notification';
+import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
+import { UUID } from '../../types/Notification';
 
 type Payload = Operations.NotificationServiceCreateBehaviorGroup.Payload
     | Operations.NotificationServiceUpdateBehaviorGroup.Payload;
+
+type SaveBehaviorGroupRequest = {
+    id?: UUID;
+    bundleId: UUID;
+    displayName: string;
+}
 
 const decoder = validationResponseTransformer(
     (payload: Payload) => {
@@ -24,16 +30,25 @@ const decoder = validationResponseTransformer(
     }
 );
 
-const saveBehaviorGroupActionCreator =  (behaviorGroup: BehaviorGroupRequest) => {
+type Body = Operations.NotificationServiceCreateBehaviorGroup.Params['body'] | Operations.NotificationServiceUpdateBehaviorGroup.Params['body'];
+
+const requestToBody = (behaviorGroup: SaveBehaviorGroupRequest): Body => {
+    return {
+        bundle_id: behaviorGroup.bundleId,
+        display_name: behaviorGroup.displayName
+    };
+};
+
+const saveBehaviorGroupActionCreator =  (behaviorGroup: SaveBehaviorGroupRequest) => {
     if (behaviorGroup.id === undefined) {
         return Operations.NotificationServiceCreateBehaviorGroup.actionCreator({
-            body: toShallowBehaviorGroupRequest(behaviorGroup)
+            body: requestToBody(behaviorGroup)
         });
     }
 
     return Operations.NotificationServiceUpdateBehaviorGroup.actionCreator({
         id: behaviorGroup.id,
-        body: toShallowBehaviorGroupRequest(behaviorGroup)
+        body: requestToBody(behaviorGroup)
     });
 };
 
