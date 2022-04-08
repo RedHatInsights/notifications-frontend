@@ -31,9 +31,8 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         metaData
     );
 
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    const defaultDelete = React.useMemo(() => toolbarConfig.activeFiltersConfig.onDelete, []);
-    toolbarConfig.activeFiltersConfig.onDelete = React.useCallback((
+    const defaultDelete = React.useMemo(() => toolbarConfig.activeFiltersConfig.onDelete, [ toolbarConfig.activeFiltersConfig.onDelete ]);
+    const customDelete = React.useCallback((
         _event: any,
         rawFilterConfigs: EventLogCustomFilter[]
     ) => {
@@ -151,7 +150,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ bundles, mapToEventLogCustomFilter ]);
 
-    toolbarConfig.filterConfig.items[1] = React.useMemo(() => {
+    const applicationFilter = React.useMemo(() => {
         return {
             label: 'Application',
             type: 'custom',
@@ -166,7 +165,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         } as any;
     }, [ bundles, customFilters ]);
 
-    toolbarConfig.activeFiltersConfig.filters = React.useMemo(() => {
+    const activeFiltersConfig = React.useMemo(() => {
         const activeFilters = toolbarConfig.activeFiltersConfig.filters as EventLogCustomFilter[];
         const nonCustomFilters = activeFilters.filter(activeFilter => activeFilter && !activeFilter.bundleId);
         return nonCustomFilters.concat(customFilters);
@@ -226,5 +225,10 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         return areEqual(prev as string[], currApplicationFilters, true) ? prev : currApplicationFilters;
     }));
 
-    return toolbarConfig;
+    return produce(toolbarConfig, (prev) => {
+        prev.filterConfig.items[1] = applicationFilter;
+
+        prev.activeFiltersConfig.filters = activeFiltersConfig;
+        prev.activeFiltersConfig.onDelete = customDelete;
+    });
 };
