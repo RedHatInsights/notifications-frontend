@@ -172,58 +172,69 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     }, [ customFilters, toolbarConfig.activeFiltersConfig.filters ]);
 
     // Update URL Query Params for Bundles
-    setFilters.bundle(produce(prev => {
-        if (bundles.length === 0) {
-            return filters.bundle;
-        }
-
-        const currBundleFilters: string[] = [];
-        bundles.forEach(bundle => {
-            const addToQueryParam = customFilters.some(bundleFilter => {
-                if (bundleFilter.bundleId === bundle.name) {
-                    // Edge case: Bundle has no children (but it gets a chip for UI reasons)
-                    if (bundle.children?.length === 0 && bundleFilter.chips.length === 1) {
-                        return true;
-                    }
-
-                    return bundle.children?.length === bundleFilter.chips.length;
-                }
-
-                return false;
-            });
-
-            if (addToQueryParam) {
-                currBundleFilters.push(bundle.name);
+    const bundleProducer = React.useMemo(() => {
+        return produce(filters.bundle, (prev) => {
+            if (bundles.length === 0) {
+                return;
             }
-        });
 
-        return areEqual(prev as string[], currBundleFilters, true) ? prev : currBundleFilters;
-    }));
+            const currBundleFilters: string[] = customFilters.map(bundle => bundle.bundleId);
+
+            // Code to remove unneccesary cases of Bundle name in URL Query
+            // Uncomment when BE supports searching for an application without the bundle
+            // const currBundleFilters: string[] = []
+            // bundles.forEach(bundle => {
+            //     const addToQueryParam = customFilters.some(bundleFilter => {
+            //         if (bundleFilter.bundleId === bundle.name) {
+            //             // Edge case: Bundle has no children (but it gets a chip for UI reasons)
+            //             if (bundle.children?.length === 0 && bundleFilter.chips.length === 1) {
+            //                 return true;
+            //             }
+
+            //             return bundle.children?.length === bundleFilter.chips.length;
+            //         }
+
+            //         return false;
+            //     });
+
+            //     if (addToQueryParam) {
+            //         currBundleFilters.push(bundle.name);
+            //     }
+            // });
+
+            return areEqual(prev as string[], currBundleFilters, true) ? prev : currBundleFilters;
+        });
+    }, [ bundles, filters.bundle, customFilters ]);
 
     // Update URL Query Params for Bundles
-    setFilters.application(produce(prev => {
-        if (bundles.length === 0) {
-            return filters.application;
-        }
-
-        const currApplicationFilters: string[] = [];
-        customFilters.forEach(customFilter => {
-            const bundle = bundles.find(bundle => bundle.name === customFilter.bundleId) as Schemas.Facet;
-            const chipValues = customFilter.chips?.map(chip => chip.value) as string[] | undefined;
-
-            // Only add applications to Query Params under 2 conditions
-            //     1. Bundle has children
-            //     2. Every application under the Bundle is not selected
-            if (chipValues && bundle.children?.some(application => !chipValues.includes(application.name))) {
-                chipValues.forEach(chipValue => {
-                    const applicationQueryParam = `${bundle.name}.${chipValue}`;
-                    currApplicationFilters.push(applicationQueryParam);
-                });
+    const applicationProducer = React.useMemo(() => {
+        return produce(filters.application, (prev) => {
+            if (bundles.length === 0) {
+                return;
             }
-        });
 
-        return areEqual(prev as string[], currApplicationFilters, true) ? prev : currApplicationFilters;
-    }));
+            const currApplicationFilters: string[] = [];
+            customFilters.forEach(customFilter => {
+                const bundle = bundles.find(bundle => bundle.name === customFilter.bundleId) as Schemas.Facet;
+                const chipValues = customFilter.chips?.map(chip => chip.value) as string[] | undefined;
+
+                // Only add applications to Query Params under 2 conditions
+                //     1. Bundle has children
+                //     2. Every application under the Bundle is not selected
+                if (chipValues && bundle.children?.some(application => !chipValues.includes(application.name))) {
+                    chipValues.forEach(chipValue => {
+                        const applicationQueryParam = `${bundle.name}.${chipValue}`;
+                        currApplicationFilters.push(applicationQueryParam);
+                    });
+                }
+            });
+
+            return areEqual(prev as string[], currApplicationFilters, true) ? prev : currApplicationFilters;
+        });
+    }, [ bundles, filters.application, customFilters ]);
+
+    setFilters.bundle(bundleProducer);
+    setFilters.application(applicationProducer);
 
     return produce(toolbarConfig, (prev) => {
         prev.filterConfig.items[1] = applicationFilter;
