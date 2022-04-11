@@ -178,29 +178,25 @@ export const usePrimaryToolbarFilterConfigWrapper = (
                 return;
             }
 
-            const currBundleFilters: string[] = customFilters.map(bundle => bundle.bundleId);
+            const currBundleFilters: string[] = [];
+            bundles.forEach(bundle => {
+                const addToQueryParam = customFilters.some(bundleFilter => {
+                    if (bundleFilter.bundleId === bundle.name) {
+                        // Edge case: Bundle has no children (but it gets a chip for UI reasons)
+                        if (bundle.children?.length === 0 && bundleFilter.chips.length === 1) {
+                            return true;
+                        }
 
-            // Code to remove unneccesary cases of Bundle name in URL Query
-            // Uncomment when BE supports searching for an application without the bundle
-            // const currBundleFilters: string[] = []
-            // bundles.forEach(bundle => {
-            //     const addToQueryParam = customFilters.some(bundleFilter => {
-            //         if (bundleFilter.bundleId === bundle.name) {
-            //             // Edge case: Bundle has no children (but it gets a chip for UI reasons)
-            //             if (bundle.children?.length === 0 && bundleFilter.chips.length === 1) {
-            //                 return true;
-            //             }
+                        return bundle.children?.length === bundleFilter.chips.length;
+                    }
 
-            //             return bundle.children?.length === bundleFilter.chips.length;
-            //         }
+                    return false;
+                });
 
-            //         return false;
-            //     });
-
-            //     if (addToQueryParam) {
-            //         currBundleFilters.push(bundle.name);
-            //     }
-            // });
+                if (addToQueryParam) {
+                    currBundleFilters.push(bundle.name);
+                }
+            });
 
             return areEqual(prev as string[], currBundleFilters, true) ? prev : currBundleFilters;
         });
