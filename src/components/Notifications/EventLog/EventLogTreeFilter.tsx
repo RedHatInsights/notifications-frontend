@@ -67,8 +67,38 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
     const [ treeNodeById, setTreeNodeById ] = React.useState<TreeNodeDict>(initialize);
     const [ isToggled, setIsToggled ] = React.useState(false);
 
-    const treeDataArray = React.useMemo(() => treeNodeById ? Object.values(treeNodeById) : [], [ treeNodeById ]);
+    const treeDataArray = React.useMemo(() => Object.values(treeNodeById), [ treeNodeById ]);
 
+    const [ activeFilters, activeBundleIds ] = React.useMemo(() => {
+        const bundleIds: string[] = [];
+
+        const activeParentFilters = treeDataArray.filter(treeNode => (treeNode.checkProps.checked || treeNode.checkProps.checked === null));
+        const activeFilters = activeParentFilters.map(parentFilter => {
+            bundleIds.push(parentFilter.id);
+            return {
+                bundleId: parentFilter.id,
+                category: parentFilter.name as string,
+                chips: (parentFilter.children?.filter(childNode => childNode.checkProps.checked).map(childFilter => ({
+                    name: childFilter.name as string,
+                    value: childFilter.id,
+                    isRead: true
+                }))
+                ??
+                    [
+                        {
+                            name: parentFilter.name,
+                            value: parentFilter.id,
+                            isRead: true
+                        }
+                    ]
+                )
+            } as EventLogCustomFilter;
+        });
+
+        return [ activeFilters, bundleIds ];
+    }, [ treeDataArray ]);
+
+    // Updates TreeView with changes made outside of the component (Network Requests returning && Delete/Clearing filters)
     React.useEffect(() => {
         if (groups.length !== 0) {
             setTreeNodeById(produce((prev) => {
@@ -98,54 +128,18 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
         }
     }, [ groups, filters, initialize ]);
 
-    const flattenTree = React.useMemo(() => {
-        const flatTreeDataArray = produce(treeDataArray, (prev) => {
-            prev.forEach(treeNode => {
-                if (treeNode.children) {
-                    prev.push(...treeNode.children);
-                }
-            });
-        });
-
-        return flatTreeDataArray;
-    }, [ treeDataArray ]);
-
+    // Updates custom filters based on changes made inside TreeView component
     React.useEffect(() => {
-        const groupNames = groups.map(group => group.name);
-        const activeParentFilters = flattenTree.filter(treeNode => {
-            const isActive = treeNode.checkProps.checked;
-            return (isActive || isActive === null) && groupNames.includes(treeNode.id);
-        });
-
         updateFilters(produce((prev) => {
-            if (prev.length === 0 && activeParentFilters.length === 0) {
+            if (prev.length === 0 && activeFilters.length === 0) {
                 return prev;
-            } else if (prev.length !== 0 && activeParentFilters.length === 0) {
+            } else if (prev.length !== 0 && activeFilters.length === 0) {
                 return [];
             } else {
-                const newCustomFilters = activeParentFilters.map(parentFilter => ({
-                    bundleId: parentFilter.id,
-                    category: parentFilter.name as string,
-                    chips: parentFilter.children?.filter(childNode => childNode.checkProps.checked).map(childFilter => ({
-                        name: childFilter.name as string,
-                        value: childFilter.id,
-                        isRead: true
-                    }))
-                ??
-                    [
-                        {
-                            name: parentFilter.name,
-                            value: parentFilter.id,
-                            isRead: true
-                        }
-                    ]
-                } as EventLogCustomFilter));
-
                 const prevBundles = prev.map(prevFilter => prevFilter.bundleId);
-                const currBundles = newCustomFilters.map(customFilter => customFilter.bundleId);
 
-                const areBundlesEqual = areEqual(prevBundles, currBundles);
-                const areFiltersEqual = areBundlesEqual && newCustomFilters.every((entry, idx) => {
+                const areBundlesEqual = areEqual(prevBundles, activeBundleIds);
+                const areFiltersEqual = areBundlesEqual && activeFilters.every((entry, idx) => {
                     if (prev[idx]) {
                         if (entry.bundleId === prev[idx].bundleId) {
                             const prevChips = prev[idx].chips.map(chip => chip.value);
@@ -158,13 +152,13 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
                     return false;
                 });
 
-                return areFiltersEqual ? prev : newCustomFilters;
+                return areFiltersEqual ? prev : activeFilters;
             }
         }));
-    }, [ groups, flattenTree, updateFilters ]);
+    }, [ activeFilters, activeBundleIds, updateFilters ]);
 
-    const onCheck = (event: ChangeEvent<Element>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
-        const checked = (event.target as HTMLInputElement).checked;
+    const onCheck = (event: ChangeEvent<HTMLInputElement>, treeNode: TreeNodeItem, parentNode: TreeNodeItem) => {
+        const checked = event.target.checked;
         setTreeNodeById(produce((prev) => {
             if (parentNode) {
                 const children = prev[parentNode.id].children;
@@ -191,6 +185,10 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
         }));
     };
 
+    const onCheckWrapper = (event: ChangeEvent<Element>, treeNode: TreeViewDataItem, parentNode: TreeViewDataItem) => {
+        onCheck(event as ChangeEvent<HTMLInputElement>, treeNode as TreeNodeItem, parentNode as TreeNodeItem);
+    };
+
     return (
         <Dropdown
             toggle={ <DropdownToggle
@@ -201,7 +199,7 @@ export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps
             </DropdownToggle> }
             isOpen={ isToggled }
         >
-            <TreeView data={ treeDataArray } hasChecks={ true } onCheck={ onCheck as any } />
+            <TreeView data={ treeDataArray } hasChecks={ true } onCheck={ onCheckWrapper } />
         </Dropdown>
     );
 };
