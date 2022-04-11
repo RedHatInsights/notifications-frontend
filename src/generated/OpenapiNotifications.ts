@@ -168,6 +168,7 @@ export namespace Schemas {
 
   export const Facet = zodSchemaFacet();
   export type Facet = {
+    children?: Facet[],
     displayName: string;
     id: string;
     name: string;
@@ -1118,9 +1119,9 @@ export namespace Operations {
       | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (): ActionCreator => {
+    export const actionCreator = (includeApplications: boolean): ActionCreator => {
         const path = '/api/notifications/v1.0/notifications/facets/bundles';
-        const query = {} as Record<string, any>;
+        const query = includeApplications ? { includeApplications } : {} as Record<string, any>;
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
