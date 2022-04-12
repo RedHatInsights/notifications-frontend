@@ -38,7 +38,7 @@ objects:
               title: "Console"
               href: "/settings/notifications/console"
         - appID: "notifications"
-          title: "integrations"
+          title: "Integrations"
           href: "/settings/integrations"
           product: "Red Hat Insights"
       module:
