@@ -46,10 +46,10 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
 
     return (
         <span>
-            <div>
-                Users: { join(users.map(u => u.displayName), CommaSeparator) }
-            </div>
-            <div>
+            { users.length > 0 && <div>
+                Users: {join(users.map(u => u.displayName), CommaSeparator)}
+            </div> }
+            { groups.length > 0 && <div>
                 User Access Groups: { join(groups.map(g => {
                     if (g.hasError) {
                         return <GroupNotFound />;
@@ -61,7 +61,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
 
                     return g.displayName;
                 }), CommaSeparator)}
-            </div>
+            </div> }
         </span>
     );
 };

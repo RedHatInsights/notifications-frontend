@@ -72,7 +72,7 @@ export const useBehaviorGroupContent = (bundleId: UUID) => {
                                     recipients[recipientIndex] = new NotificationRbacGroupRecipient(
                                         rbacRecipient.integrationId,
                                         rbacRecipient.groupId,
-                                        groups.find(g => g.id === rbacRecipient.groupId)?.name || !isLoadingGroups
+                                        groups.find(g => g.id === rbacRecipient.groupId)?.name || isLoadingGroups
                                     );
                                 }
                             });

@@ -24,7 +24,7 @@ const rbacGroupKey = 'groups';
 const rbacGroupLabel = 'User Access Groups';
 
 const renderSelectGroup = (key: string, label: string, options: ReadonlyArray<BaseNotificationRecipient>) => (
-    <SelectGroup key={ key } label={ label }>
+    options.length > 0 ? <SelectGroup key={ key } label={ label }>
         { options.map(r => {
             if (r instanceof NotificationRbacGroupRecipient && r.isLoading) {
                 return <SelectOption
@@ -41,7 +41,7 @@ const renderSelectGroup = (key: string, label: string, options: ReadonlyArray<Ba
                 description={ r.description }
             />;
         }) }
-    </SelectGroup>
+    </SelectGroup> : <React.Fragment />
 );
 
 const recipientMapper = (recipients: ReadonlyArray<BaseNotificationRecipient>) => {
