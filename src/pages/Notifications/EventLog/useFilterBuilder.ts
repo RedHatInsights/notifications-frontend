@@ -11,21 +11,35 @@ const DATE_FORMAT = 'yyyy-MM-dd';
 
 export const useFilterBuilder = (
     bundles: ReadonlyArray<Facet>,
-    applications: ReadonlyArray<Facet>,
     dateFilter: EventLogDateFilterValue,
     period: EventPeriod) => {
     return useCallback((filters?: EventLogFilters) => {
         const filter = new Filter();
         if (filters?.bundle) {
             const selectedBundleNames = filters?.bundle;
-            const selectedBundles = bundles.filter(b => selectedBundleNames.includes(b.name)).map(b => b.id);
-            filter.and('bundleIds', Operator.EQUAL, selectedBundles);
+            const queryParams = bundles.filter(b => selectedBundleNames.includes(b.name)).map(b => b.id);
+            filter.and('bundleIds', Operator.EQUAL, queryParams);
         }
 
         if (filters?.application) {
-            const selectedAppNames = filters?.application;
-            const selectedApps = applications.filter(a => selectedAppNames.includes(a.name)).map(a => a.id);
-            filter.and('appIds', Operator.EQUAL, selectedApps);
+            const selectedAppNames = filters.application as string[];
+
+            const queryParams: string[] = [];
+            selectedAppNames.forEach(appName => {
+                const nameSplit = appName.split('.');
+                const bundleName = nameSplit[0];
+                const applicationName = nameSplit[1];
+
+                const bundle = bundles.find(bundle => bundle.name === bundleName);
+                if (bundle) {
+                    const application = bundle.children?.find(application => application.name === applicationName);
+                    if (application) {
+                        queryParams.push(application.id);
+                    }
+                }
+            });
+
+            filter.and('appIds', Operator.EQUAL, queryParams);
         }
 
         if (filters?.event) {
@@ -66,5 +80,5 @@ export const useFilterBuilder = (
         }
 
         return filter;
-    }, [ bundles, applications, dateFilter, period ]);
+    }, [ bundles, dateFilter, period ]);
 };

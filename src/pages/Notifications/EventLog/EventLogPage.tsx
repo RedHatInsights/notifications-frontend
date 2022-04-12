@@ -24,7 +24,6 @@ import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
 import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
-import { useGetApplications } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { EventPeriod } from '../../../types/Event';
 import { UUID } from '../../../types/Notification';
@@ -39,7 +38,8 @@ const subtitleClassName = style({
 
 export const EventLogPage: React.FunctionComponent = () => {
     const getEndpoint = useParameterizedQuery(getEndpointAction);
-    const getBundles = useGetBundles();
+
+    const getBundles = useGetBundles(true);
     const bundles = React.useMemo(() => {
         const payload = getBundles.payload;
         if (payload?.status === 200) {
@@ -48,16 +48,6 @@ export const EventLogPage: React.FunctionComponent = () => {
 
         return [];
     }, [ getBundles.payload ]);
-
-    const getApplications = useGetApplications();
-    const applications = React.useMemo(() => {
-        const payload = getApplications.payload;
-        if (payload?.status === 200) {
-            return payload.value;
-        }
-
-        return [];
-    }, [ getApplications.payload ]);
 
     const [ dateFilter, setDateFilter ] = React.useState<EventLogDateFilterValue>(EventLogDateFilterValue.LAST_14);
 
@@ -73,7 +63,7 @@ export const EventLogPage: React.FunctionComponent = () => {
         setSortColumn(column);
     }, [ setSortDirection, setSortColumn ]);
 
-    const filterBuilder = useFilterBuilder(bundles, applications, dateFilter, period);
+    const filterBuilder = useFilterBuilder(bundles, dateFilter, period);
 
     const sort: Sort = React.useMemo(() => {
         const direction = sortDirection.toUpperCase() as Direction;
@@ -88,7 +78,6 @@ export const EventLogPage: React.FunctionComponent = () => {
     }, [ sortColumn, sortDirection ]);
 
     const eventsPage = usePage<EventLogFilters>(Config.paging.defaultPerPage, filterBuilder, eventLogFilters.filters, sort);
-
     const eventsQuery = useGetEvents(eventsPage.page);
 
     const events = React.useMemo(() => {
@@ -161,7 +150,6 @@ export const EventLogPage: React.FunctionComponent = () => {
                 <EventLogToolbar
                     { ...eventLogFilters }
                     bundleOptions={ bundles }
-                    applicationOptions={ applications }
                     dateFilter={ dateFilter }
                     setDateFilter={ setDateFilter }
                     count={ events.count }

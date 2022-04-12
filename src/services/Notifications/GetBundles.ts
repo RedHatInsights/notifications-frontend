@@ -2,6 +2,6 @@ import { useQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 
-export const getBundlesAction = () => Operations.NotificationServiceGetBundleFacets.actionCreator();
+const getBundlesAction = (includeApplications: boolean) => Operations.NotificationServiceGetBundleFacets.actionCreator(includeApplications);
 
-export const useGetBundles = () => useQuery(getBundlesAction());
+export const useGetBundles = (includeApplications?: boolean) => useQuery(getBundlesAction(!!includeApplications));
