@@ -182,10 +182,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
             wrapper: getConfiguredWrapper()
         });
         await waitForAsyncEvents();
-        expect(screen.getByText(/group not found/i)).toBeVisible();
+        expect(screen.getByText(/User Access group \(Not found\)/i)).toBeVisible();
 
-        userEvent.hover(screen.getByText(/group not found/i));
+        userEvent.hover(screen.getByText(/User Access group \(Not found\)/i));
         await waitForAsyncEvents();
-        expect(await screen.findByText(/the group was deleted and can not be found/i)).toBeVisible();
+        expect(await screen.findByText(/This User Access group was not found, and may have been deleted/i)).toBeVisible();
     });
 });
