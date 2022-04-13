@@ -3,7 +3,13 @@ import './App.scss';
 import { Switch } from '@patternfly/react-core';
 import { Maintenance } from '@redhat-cloud-services/frontend-components';
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
-import { AppSkeleton, getInsights, InsightsEnvDetector, RenderIfTrue, toUtc } from '@redhat-cloud-services/insights-common-typescript';
+import {
+    AppSkeleton,
+    getInsights,
+    InsightsEnvDetector,
+    RenderIfTrue,
+    toUtc
+} from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -12,6 +18,7 @@ import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
+import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 
 const utcFormat = 'HH:mm';
@@ -68,7 +75,7 @@ const App: React.ComponentType = () => {
             server,
             isOrgAdmin: !!isOrgAdmin
         } }>
-            <>
+            <RbacGroupContextProvider>
                 <NotificationsPortal />
                 <InsightsEnvDetector insights={ insights } onEnvironment={ staging }>
                     <RenderIfTrue>
@@ -82,8 +89,7 @@ const App: React.ComponentType = () => {
                     </RenderIfTrue>
                 </InsightsEnvDetector>
                 <Routes />
-            </>
-
+            </RbacGroupContextProvider>
         </AppContext.Provider>
     );
 };

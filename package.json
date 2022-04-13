@@ -27,7 +27,7 @@
     "immer": "9.0.6",
     "in-browser-download": "2.0.0",
     "lodash": "4.17.21",
-    "openapi2typescript": "0.1.5",
+    "openapi2typescript": "0.2.0",
     "p-limit": "3.1.0",
     "react": "17.0.2",
     "react-content-loader": "3.4.2",
@@ -102,7 +102,7 @@
     "karma-webpack": "5.0.0",
     "lock-dependencies": "0.0.2",
     "npm-run-all": "4.1.5",
-    "openapi2typescript-cli": "0.5.1",
+    "openapi2typescript-cli": "0.6.0",
     "postcss": "8.2.13",
     "prop-types": "15.7.2",
     "react-test-renderer": "17.0.2",
@@ -140,7 +140,9 @@
     "schema:integrations": "npm-run-all 'schema:integrations:generate -i http://localhost:8085/api/integrations/v1.0/openapi.json'",
     "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types --no-strict",
     "schema:private": "npm-run-all 'schema:private:generate -i http://localhost:8085/api/private/v1.0/openapi.json'",
-    "schema:private:generate": "openapi2typescript -o src/generated/OpenapiPrivate.ts -ed -a react-fetching-library --explicit-types --no-strict"
+    "schema:private:generate": "openapi2typescript -o src/generated/OpenapiPrivate.ts -ed -a react-fetching-library --explicit-types --no-strict",
+    "schema:rbac": "npm-run-all 'schema:rbac:generate -i https://console.redhat.com/api/rbac/v1/openapi.json'",
+    "schema:rbac:generate": "openapi2typescript -o src/generated/OpenapiRbac.ts -ed -a react-fetching-library --explicit-types --no-strict --api-base-path /api/rbac/v1"
   },
   "insights": {
     "appname": "notifications"

@@ -62,6 +62,9 @@ const tableBodyClassName = style({
         },
         '& td:last-child': {
             paddingRight: important(0)
+        },
+        '& td': {
+            verticalAlign: important('top')
         }
     }
 });

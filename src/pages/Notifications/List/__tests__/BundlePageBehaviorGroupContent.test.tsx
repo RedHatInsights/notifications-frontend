@@ -196,7 +196,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         act(() => userEvent.click(getByRole(ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'), 'button')));
         await waitForAsyncEvents();
 
-        act(() => userEvent.click(screen.getByText(/Users: All/i)));
+        act(() => userEvent.click(screen.getByText('All')));
         await waitForAsyncEvents();
 
         behaviorGroups[0].display_name = 'Foobar';
