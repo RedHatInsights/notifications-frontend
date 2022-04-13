@@ -19,12 +19,26 @@ objects:
           - /apps/notifications
       image: ${IMAGE}:${IMAGE_TAG}
       navItems:
-        - appId: "notifications"
-          title: "notifications"
-          href: "/settings/notifications"
-          product: "Red Hat Insights"
+        - title: "Notifications"
+          expandable: true
+          routes:
+            - appId: "notifications"
+              title: "Application Services"
+              href: "/settings/notifications/application-services"
+            - appId: "notifications"
+              title: "Openshift"
+              href: "/settings/notifications/openshift"
+            - appId: "notifications"
+              title: "Red Hat Enterprise Linux"
+              href: "/settings/notifications/rhel"
+            - appId: "notifications"
+              title: "Edge"
+              href: "/settings/notifications/edge"
+            - appId: "notifications"
+              title: "Console"
+              href: "/settings/notifications/console"
         - appID: "notifications"
-          title: "integrations"
+          title: "Integrations"
           href: "/settings/integrations"
           product: "Red Hat Insights"
       module:
