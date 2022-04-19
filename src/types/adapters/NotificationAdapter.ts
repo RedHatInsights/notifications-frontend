@@ -10,7 +10,7 @@ import {
     ServerNotificationResponse,
     SystemProperties
 } from '../Notification';
-import { NotificationRbacGroupRecipient, NotificationRecipient } from '../Recipient';
+import { NotificationRbacGroupRecipient, NotificationUserRecipient } from '../Recipient';
 import { toIntegration } from './IntegrationAdapter';
 
 const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
@@ -30,9 +30,9 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
     };
 
     if (integration.groupId) {
-        action.recipient = [ new NotificationRbacGroupRecipient(integration.id, integration.groupId, undefined) ];
+        action.recipient = [ new NotificationRbacGroupRecipient(integration.id, integration.groupId, true) ];
     } else {
-        action.recipient = [ new NotificationRecipient(integration.id, integration.onlyAdmin) ];
+        action.recipient = [ new NotificationUserRecipient(integration.id, integration.onlyAdmin) ];
     }
 
     return action;
@@ -103,7 +103,7 @@ const actionRecipientToSystemPropertiesProps = (recipient: ActionNotify['recipie
             onlyAdmins: false,
             ignorePreferences: false
         };
-    } else if (recipient instanceof NotificationRecipient) {
+    } else if (recipient instanceof NotificationUserRecipient) {
         return {
             groupId: undefined,
             onlyAdmins: recipient.sendToAdmin,

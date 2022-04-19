@@ -12,8 +12,28 @@ import { Action } from 'react-fetching-library';
 import * as z from 'zod';
 
 export namespace Schemas {
+  export const AddAccessRequest = zodSchemaAddAccessRequest();
+  export type AddAccessRequest = {
+    application_id?: UUID | undefined | null;
+    role?: string | undefined | null;
+  };
+
+  export const AddApplicationRequest = zodSchemaAddApplicationRequest();
+  export type AddApplicationRequest = {
+    bundle_id: UUID;
+    display_name: string;
+    name: string;
+    owner_role?: string | undefined | null;
+  };
+
   export const Application = zodSchemaApplication();
   export type Application = {
+    displayName?: string | undefined | null;
+    id?: UUID | undefined | null;
+  };
+
+  export const Application1 = zodSchemaApplication1();
+  export type Application1 = {
     bundle_id: UUID;
     created?: string | undefined | null;
     display_name: string;
@@ -93,7 +113,7 @@ export namespace Schemas {
   };
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
-  export type EmailSubscriptionType = 'DAILY' | 'INSTANT';
+  export type EmailSubscriptionType = 'INSTANT' | 'DAILY';
 
   export const Endpoint = zodSchemaEndpoint();
   export type Endpoint = {
@@ -130,6 +150,9 @@ export namespace Schemas {
     | 'default'
     | 'camel';
 
+  export const Environment = zodSchemaEnvironment();
+  export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
+
   export const EventLogEntry = zodSchemaEventLogEntry();
   export type EventLogEntry = {
     actions: Array<EventLogEntryAction>;
@@ -158,7 +181,7 @@ export namespace Schemas {
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
-    application?: Application | undefined | null;
+    application?: Application1 | undefined | null;
     application_id: UUID;
     description?: string | undefined | null;
     display_name: string;
@@ -176,6 +199,28 @@ export namespace Schemas {
 
   export const HttpType = zodSchemaHttpType();
   export type HttpType = 'GET' | 'POST' | 'PUT';
+
+  export const InternalApplicationUserPermission =
+    zodSchemaInternalApplicationUserPermission();
+  export type InternalApplicationUserPermission = {
+    application_display_name: string;
+    application_id: UUID;
+    role: string;
+  };
+
+  export const InternalRoleAccess = zodSchemaInternalRoleAccess();
+  export type InternalRoleAccess = {
+    application_id: UUID;
+    id?: UUID | undefined | null;
+    role: string;
+  };
+
+  export const InternalUserPermissions = zodSchemaInternalUserPermissions();
+  export type InternalUserPermissions = {
+    admin?: boolean | undefined | null;
+    applications?: Array<Application> | undefined | null;
+    isAdmin?: boolean | undefined | null;
+  };
 
   export const Meta = zodSchemaMeta();
   export type Meta = {
@@ -215,6 +260,71 @@ export namespace Schemas {
     meta: Meta;
   };
 
+  export const PageRbacGroup = zodSchemaPageRbacGroup();
+  export type PageRbacGroup = {
+    data: Array<RbacGroup>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
+  };
+
+  export const PageRbacUser = zodSchemaPageRbacUser();
+  export type PageRbacUser = {
+    data: Array<RbacUser>;
+    links: {
+      [x: string]: string;
+    };
+    meta: Meta;
+  };
+
+  export const RbacGroup = zodSchemaRbacGroup();
+  export type RbacGroup = {
+    created?: string | undefined | null;
+    description?: string | undefined | null;
+    modified?: string | undefined | null;
+    name?: string | undefined | null;
+    platform_default?: boolean | undefined | null;
+    principalCount?: number | undefined | null;
+    roleCount?: number | undefined | null;
+    system?: boolean | undefined | null;
+    uuid?: UUID | undefined | null;
+  };
+
+  export const RbacRaw = zodSchemaRbacRaw();
+  export type RbacRaw = {
+    data?:
+      | Array<{
+          [x: string]: unknown;
+        }>
+      | undefined
+      | null;
+    links?:
+      | {
+          [x: string]: string;
+        }
+      | undefined
+      | null;
+    meta?:
+      | {
+          [x: string]: number;
+        }
+      | undefined
+      | null;
+  };
+
+  export const RbacUser = zodSchemaRbacUser();
+  export type RbacUser = {
+    active?: boolean | undefined | null;
+    email?: string | undefined | null;
+    first_name?: string | undefined | null;
+    is_active?: boolean | undefined | null;
+    is_org_admin?: boolean | undefined | null;
+    last_name?: string | undefined | null;
+    org_admin?: boolean | undefined | null;
+    username?: string | undefined | null;
+  };
+
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
@@ -233,11 +343,17 @@ export namespace Schemas {
   export const RequestEmailSubscriptionProperties =
     zodSchemaRequestEmailSubscriptionProperties();
   export type RequestEmailSubscriptionProperties = {
+    group_id?: UUID | undefined | null;
     only_admins: boolean;
   };
 
+  export const ServerInfo = zodSchemaServerInfo();
+  export type ServerInfo = {
+    environment?: Environment | undefined | null;
+  };
+
   export const Status = zodSchemaStatus();
-  export type Status = 'MAINTENANCE' | 'UP';
+  export type Status = 'UP' | 'MAINTENANCE';
 
   export const UUID = zodSchemaUUID();
   export type UUID = string;
@@ -254,7 +370,36 @@ export namespace Schemas {
   export const __Empty = zodSchema__Empty();
   export type __Empty = string | undefined;
 
+  function zodSchemaAddAccessRequest() {
+      return z
+      .object({
+          application_id: zodSchemaUUID().optional().nullable(),
+          role: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaAddApplicationRequest() {
+      return z
+      .object({
+          bundle_id: zodSchemaUUID(),
+          display_name: z.string(),
+          name: z.string(),
+          owner_role: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaApplication() {
+      return z
+      .object({
+          displayName: z.string().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaApplication1() {
       return z
       .object({
           bundle_id: zodSchemaUUID(),
@@ -358,7 +503,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEmailSubscriptionType() {
-      return z.enum([ 'DAILY', 'INSTANT' ]);
+      return z.enum([ 'INSTANT', 'DAILY' ]);
   }
 
   function zodSchemaEndpoint() {
@@ -402,6 +547,10 @@ export namespace Schemas {
       return z.enum([ 'webhook', 'email_subscription', 'default', 'camel' ]);
   }
 
+  function zodSchemaEnvironment() {
+      return z.enum([ 'PROD', 'STAGE', 'EPHEMERAL', 'LOCAL_SERVER' ]);
+  }
+
   function zodSchemaEventLogEntry() {
       return z
       .object({
@@ -432,7 +581,7 @@ export namespace Schemas {
   function zodSchemaEventType() {
       return z
       .object({
-          application: zodSchemaApplication().optional().nullable(),
+          application: zodSchemaApplication1().optional().nullable(),
           application_id: zodSchemaUUID(),
           description: z.string().optional().nullable(),
           display_name: z.string(),
@@ -454,6 +603,36 @@ export namespace Schemas {
 
   function zodSchemaHttpType() {
       return z.enum([ 'GET', 'POST', 'PUT' ]);
+  }
+
+  function zodSchemaInternalApplicationUserPermission() {
+      return z
+      .object({
+          application_display_name: z.string(),
+          application_id: zodSchemaUUID(),
+          role: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaInternalRoleAccess() {
+      return z
+      .object({
+          application_id: zodSchemaUUID(),
+          id: zodSchemaUUID().optional().nullable(),
+          role: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaInternalUserPermissions() {
+      return z
+      .object({
+          admin: z.boolean().optional().nullable(),
+          applications: z.array(zodSchemaApplication()).optional().nullable(),
+          isAdmin: z.boolean().optional().nullable()
+      })
+      .nonstrict();
   }
 
   function zodSchemaMeta() {
@@ -497,6 +676,67 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaPageRbacGroup() {
+      return z
+      .object({
+          data: z.array(zodSchemaRbacGroup()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaPageRbacUser() {
+      return z
+      .object({
+          data: z.array(zodSchemaRbacUser()),
+          links: z.record(z.string()),
+          meta: zodSchemaMeta()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRbacGroup() {
+      return z
+      .object({
+          created: z.string().optional().nullable(),
+          description: z.string().optional().nullable(),
+          modified: z.string().optional().nullable(),
+          name: z.string().optional().nullable(),
+          platform_default: z.boolean().optional().nullable(),
+          principalCount: z.number().int().optional().nullable(),
+          roleCount: z.number().int().optional().nullable(),
+          system: z.boolean().optional().nullable(),
+          uuid: zodSchemaUUID().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRbacRaw() {
+      return z
+      .object({
+          data: z.array(z.record(z.unknown())).optional().nullable(),
+          links: z.record(z.string()).optional().nullable(),
+          meta: z.record(z.number().int()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRbacUser() {
+      return z
+      .object({
+          active: z.boolean().optional().nullable(),
+          email: z.string().optional().nullable(),
+          first_name: z.string().optional().nullable(),
+          is_active: z.boolean().optional().nullable(),
+          is_org_admin: z.boolean().optional().nullable(),
+          last_name: z.string().optional().nullable(),
+          org_admin: z.boolean().optional().nullable(),
+          username: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaRenderEmailTemplateRequest() {
       return z
       .object({
@@ -519,13 +759,22 @@ export namespace Schemas {
   function zodSchemaRequestEmailSubscriptionProperties() {
       return z
       .object({
+          group_id: zodSchemaUUID().optional().nullable(),
           only_admins: z.boolean()
       })
       .nonstrict();
   }
 
+  function zodSchemaServerInfo() {
+      return z
+      .object({
+          environment: zodSchemaEnvironment().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaStatus() {
-      return z.enum([ 'MAINTENANCE', 'UP' ]);
+      return z.enum([ 'UP', 'MAINTENANCE' ]);
   }
 
   function zodSchemaUUID() {

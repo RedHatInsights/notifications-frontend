@@ -1623,9 +1623,9 @@
   integrity sha512-h1NJixtNVK+nYxLON3HOO0xguA9qXQ5rkGUo4TZJ/kRehFCJMH8PPeebdOAKgAo38NjS2/06+atNKjDRl6zYcA==
 
 "@patternfly/react-icons@^4.26.14":
-  version "4.26.14"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.26.14.tgz#c237520c5ccfde9a81f85afdd733b9e1c1890e8c"
-  integrity sha512-3eT/k94tTjckolWfqfRAWc6EAgrw84ZlHOKiFNsIY9NDDHrDxJyAnDydcDIeKEGGl3RdZBwubaQS6QdwqjwhAw==
+  version "4.49.19"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-icons/-/react-icons-4.49.19.tgz#66f426570378213f6f717d4a39fadcbf57635d1e"
+  integrity sha512-Pr6JDDKWOnWChkifXKWglKEPo3Q+1CgiUTUrvk4ZbnD7mhq5e/TFxxInB9CPzi278bvnc2YlPyTjpaAcCN0yGw==
 
 "@patternfly/react-styles@4.25.4", "@patternfly/react-styles@^4.25.4":
   version "4.25.4"
@@ -1633,9 +1633,9 @@
   integrity sha512-GHFLzsvyimymkGTTyTW8HZDlhYbGpCqw/69Se1EHCaZnbTYluiJMRI6YfNTRC5ZvYF+x4GMAG5AjwQ5LfbZ/xg==
 
 "@patternfly/react-styles@^4.25.14":
-  version "4.25.14"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.25.14.tgz#02c02ba0eb6617140d345e4d3318113a5c3b880d"
-  integrity sha512-cIuJPZLv/gADu4PrJ+fVnKcXB6nhkbu3EOoZTgbETtA6nU5eKkC/KXXXVsGIuxN5GSXIhGus393RFnseerdnMg==
+  version "4.48.19"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-styles/-/react-styles-4.48.19.tgz#23bb4521a586275ed14d89c2c60fe8765e45b3bb"
+  integrity sha512-8+t8wqYGWkmyhxLty/kQXCY44rnW0y60nUMG7QKNzF1bAFJIpR8jKuVnHArM1h+MI9D53e8OVjKORH83hUAzJw==
 
 "@patternfly/react-table@4.44.4":
   version "4.44.4"
@@ -1650,9 +1650,9 @@
     tslib "^2.0.0"
 
 "@patternfly/react-tokens@^4.27.14":
-  version "4.27.14"
-  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.27.14.tgz#ef267ce81924b39e6410649edcaf247e5adcf06a"
-  integrity sha512-ePfDver8xlJ2mW8+IcpHzey04AyoWm9kc6HjePf96CX3wn9zmSIIMLEbqVEN9rtZSCWcCVnDlz4Zl9/N5YBg/A==
+  version "4.50.19"
+  resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.50.19.tgz#7619830e7ad70853e54819b37e196c85ed604f21"
+  integrity sha512-wbUPb8welJ8p+OjXrc0X3UYDj5JjN9xnfpYkZdAySpcFtk0BAn5Py6UEZCjKtw7XHHfCQ1zwKXpXDShcu/5KVQ==
 
 "@patternfly/react-tokens@^4.27.4":
   version "4.27.4"
@@ -8752,9 +8752,9 @@ mkdirp@^0.5.1, mkdirp@^0.5.5:
     minimist "^1.2.5"
 
 moment@^2.22.1:
-  version "2.29.1"
-  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.1.tgz#b2be769fa31940be9eeea6469c075e35006fa3d3"
-  integrity sha512-kHmoybcPV8Sqy59DwNDY3Jefr64lK/by/da0ViFcuA4DH0vQg5Q6Ze5VimxkfQNSC+Mls/Kx53s7TjP1RhFEDQ==
+  version "2.29.2"
+  resolved "https://registry.yarnpkg.com/moment/-/moment-2.29.2.tgz#00910c60b20843bcba52d37d58c628b47b1f20e4"
+  integrity sha512-UgzG4rvxYpN15jgCmVJwac49h9ly9NurikMWGPdVxm8GZD6XjkKPxDTjQQ43gtGgnV3X0cAyWDdP2Wexoquifg==
 
 ms@2.0.0:
   version "2.0.0"
@@ -9225,10 +9225,10 @@ open@^8.0.9:
     is-docker "^2.1.1"
     is-wsl "^2.2.0"
 
-openapi2typescript-cli@0.5.1:
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.5.1.tgz#7b60b4903643e72fa7a797de3e59b6e012f723d8"
-  integrity sha512-0uxD3P0RKyIXgdUjMawXAWmh5gSRvle/1/cNpofJqLK363SdzyMDUVOIDXdRoi7k/99fX3SSzBFNLg6irB2nUw==
+openapi2typescript-cli@0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/openapi2typescript-cli/-/openapi2typescript-cli-0.6.0.tgz#c9af117f071ed5f564ded4ae6c5ac19666ccb14d"
+  integrity sha512-Eim2VWSdWPJ8EYiMEdiwnYBf7id5FoAGvK4WsL3tpvhGzP5cW5sCz11Ua2UNdeKB468JcWZmAX8BQilhuVWNBg==
   dependencies:
     camelcase "5.3.1"
     commander "7.2.0"
@@ -9237,10 +9237,10 @@ openapi2typescript-cli@0.5.1:
     node-fetch "^2.6.1"
     prettier "2.3.1"
 
-openapi2typescript@0.1.5:
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/openapi2typescript/-/openapi2typescript-0.1.5.tgz#b72bf7c372d5f5575ff42cd333c1b19e4e10321f"
-  integrity sha512-y23fx38mxI0u5PUKM1fL7IFGr9Uqe4uL/NnkpMHVbxHop8JkKILR7yLflFfLyBet3QNON344RX5kL9rASNbYkg==
+openapi2typescript@0.2.0:
+  version "0.2.0"
+  resolved "https://registry.yarnpkg.com/openapi2typescript/-/openapi2typescript-0.2.0.tgz#903fa484572371c22a08da82efab97ad96225e7c"
+  integrity sha512-WhSkSBq6G6mvI3iYyKUFc6D0OgePsbRoxBvhtJC+rm4oSXUrf+Xl8Hgb1a1sHVOHdVaHdGQkmpKU9YePCxpGXw==
   optionalDependencies:
     react-fetching-library "^1.7.6"
 

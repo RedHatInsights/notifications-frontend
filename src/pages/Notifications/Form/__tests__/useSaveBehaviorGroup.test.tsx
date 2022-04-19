@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { IntegrationType } from '../../../../types/Integration';
 import { NotificationType } from '../../../../types/Notification';
-import { NotificationRecipient } from '../../../../types/Recipient';
+import { NotificationUserRecipient } from '../../../../types/Recipient';
 import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from '../useSaveBehaviorGroup';
 
 const RESPONSE_SUCCESS_UPDATED_BG = {
@@ -250,7 +250,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                     },
                     {
                         type: NotificationType.EMAIL_SUBSCRIPTION,
-                        recipient: [ new NotificationRecipient('e1', true), new NotificationRecipient('e2', false) ]
+                        recipient: [ new NotificationUserRecipient('e1', true), new NotificationUserRecipient('e2', false) ]
                     },
                     {
                         type: NotificationType.INTEGRATION,
@@ -319,7 +319,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                     },
                     {
                         type: NotificationType.EMAIL_SUBSCRIPTION,
-                        recipient: [ new NotificationRecipient(undefined, true), new NotificationRecipient('e2', false) ]
+                        recipient: [ new NotificationUserRecipient(undefined, true), new NotificationUserRecipient('e2', false) ]
                     },
                     {
                         type: NotificationType.INTEGRATION,

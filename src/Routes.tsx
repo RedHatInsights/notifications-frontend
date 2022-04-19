@@ -7,6 +7,7 @@ import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
 import { ConnectedIntegrationsListPage } from './pages/Integrations/List/Page';
+import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
 import { getBaseName } from './utils/Basename';
@@ -19,7 +20,8 @@ interface Path {
 export const linkTo = {
     integrations: () => '/integrations',
     notifications: (bundle: string) => `/notifications/${bundle}`,
-    eventLog: (bundle?: string) => `/notifications/eventlog${bundle ? `?bundle=${bundle}` : ''}`
+    eventLog: (bundle?: string) => `/notifications/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
+    splunk: () => '/integrations/splunk-setup'
 };
 
 const EmptyPage: React.FunctionComponent = () => null;
@@ -40,6 +42,10 @@ const pathRoutes: Path[] = [
     {
         path: linkTo.notifications(':bundleName'),
         component: NotificationsListPage
+    },
+    {
+        path: linkTo.splunk(),
+        component: SplunkSetupPage
     }
 ];
 

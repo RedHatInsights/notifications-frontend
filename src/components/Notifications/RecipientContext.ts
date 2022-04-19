@@ -5,7 +5,7 @@ import { IntegrationRef } from '../../types/Notification';
 import { BaseNotificationRecipient } from '../../types/Recipient';
 
 export type GetIntegrations = (type: UserIntegrationType, search?: string) => Promise<ReadonlyArray<IntegrationRef>>;
-export type GetNotificationRecipients = (filter?: string) => Promise<ReadonlyArray<BaseNotificationRecipient>>;
+export type GetNotificationRecipients = () => Promise<ReadonlyArray<BaseNotificationRecipient>>;
 
 export interface RecipientContext {
     getIntegrations: GetIntegrations,

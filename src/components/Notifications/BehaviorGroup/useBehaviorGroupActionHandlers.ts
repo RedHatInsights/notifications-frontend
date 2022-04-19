@@ -3,7 +3,7 @@ import { SetStateAction, useCallback } from 'react';
 import { DeepPartial } from 'ts-essentials';
 
 import { Action, ActionIntegration, ActionNotify, NotificationType } from '../../../types/Notification';
-import { BaseNotificationRecipient, IntegrationRecipient, NotificationRecipient } from '../../../types/Recipient';
+import { BaseNotificationRecipient, IntegrationRecipient, NotificationUserRecipient } from '../../../types/Recipient';
 import { ActionOption } from '../Form/ActionOption';
 import { RecipientOption } from '../Form/RecipientOption';
 
@@ -56,7 +56,7 @@ export const useBehaviorGroupActionHandlers = (
                 const rowAsNotification = row as Draft<ActionNotify>;
                 const originalRecipient = original(rowAsNotification.recipient);
                 if (originalRecipient) {
-                    const index = originalRecipient.findIndex(r => value.recipient.equals(r as NotificationRecipient));
+                    const index = originalRecipient.findIndex(r => value.recipient.equals(r as NotificationUserRecipient));
                     if (index === -1) {
                         rowAsNotification.recipient.push(castDraft(value.recipient as BaseNotificationRecipient));
                     } else {
