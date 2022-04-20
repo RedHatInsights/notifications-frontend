@@ -9,7 +9,7 @@ import {
     GridItem,
     Popover,
     TextInput } from '@patternfly/react-core';
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon';
+import { ExternalLinkSquareAltIcon, HelpIcon } from '@patternfly/react-icons';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import React, { useState } from 'react';
 
@@ -18,6 +18,30 @@ import { useSplunkSetup } from './useSplunkSetup';
 
 const SPLUNK_CLOUD_HEC_DOC =
     'https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/UsetheHTTPEventCollector#Send_data_to_HTTP_Event_Collector';
+
+const SplunkSetupTitle: React.FunctionComponent = () => (
+    <>
+        <PageHeaderTitle title={ <>
+            { Messages.pages.splunk.page.title }
+            <Popover
+                bodyContent={ Messages.pages.splunk.page.help }
+                footerContent={ Messages.pages.splunk.page.helpUrl &&
+                            <a target="_blank" rel="noopener noreferrer" href={ Messages.pages.splunk.page.helpUrl || '' }>
+                                Learn more <ExternalLinkSquareAltIcon />
+                            </a> }
+            >
+                <Button
+                    variant='plain'
+                    aria-label="Help description"
+                    className="title-help-label"
+                >
+                    <HelpIcon noVerticalAlign />
+                </Button>
+            </Popover>
+        </> } />
+        { Messages.pages.splunk.page.description }
+    </>
+);
 
 export const SplunkSetupPage: React.FunctionComponent = () => {
 
@@ -46,7 +70,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
     return (
         <>
             <PageHeader>
-                <PageHeaderTitle title={ Messages.pages.splunk.page.title } />
+                <SplunkSetupTitle />
             </PageHeader>
             <Main>
                 <Grid>
