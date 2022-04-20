@@ -15,6 +15,7 @@ import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/fronte
 import React, { useState } from 'react';
 
 import { Messages } from '../../../properties/Messages';
+import { SplunkSetupFinished } from './SplunkSetupFinished';
 import { SplunkSetupForm } from './SplunkSetupForm';
 
 const SplunkSetupTitle: React.FunctionComponent = () => (
@@ -85,7 +86,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                     </ProgressStep>
                                     <ProgressStep
                                         isCurrent={ step === 3 }
-                                        variant="pending"
+                                        variant={ step < 3 ? 'pending' : 'success' }
                                         description="Review"
                                         id="step3-review-step"
                                         titleId="step3-review-step"
@@ -102,6 +103,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                         hecToken, setHecToken, splunkServerHostName, setHostName,
                                         automationLogs, setAutomationLogs
                                     } } /> }
+                                { step === 3 && <SplunkSetupFinished setStep={ setStep } /> }
                             </SplitItem>
                         </Split>
                     </CardBody>
