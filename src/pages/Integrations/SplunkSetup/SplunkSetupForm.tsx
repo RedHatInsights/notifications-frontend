@@ -8,22 +8,37 @@ import {
     Grid,
     GridItem,
     Popover,
+    ProgressStepProps,
     TextInput
- } from '@patternfly/react-core';
-import { HelpIcon } from '@patternfly/react-icons';
-import React, { useState } from 'react';
+} from '@patternfly/react-core';
+import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
+import React, { Dispatch, SetStateAction } from 'react';
 
 import { useSplunkSetup } from './useSplunkSetup';
 
 const SPLUNK_CLOUD_HEC_DOC =
     'https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/UsetheHTTPEventCollector#Send_data_to_HTTP_Event_Collector';
 
-export const SplunkSetupForm: React.FunctionComponent = () => {
+interface SplunkSetupFormProps {
+    setStep: Dispatch<SetStateAction<number>>;
+    stepIsInProgress: boolean;
+    setStepIsInProgress: Dispatch<SetStateAction<boolean>>;
+    stepVariant: ProgressStepProps['variant'];
+    setStepVariant: Dispatch<SetStateAction<ProgressStepProps['variant']>>;
+    hecToken: string;
+    setHecToken: Dispatch<SetStateAction<string>>;
+    splunkServerHostName: string;
+    setHostName: Dispatch<SetStateAction<string>>;
+    automationLogs: string;
+    setAutomationLogs: Dispatch<SetStateAction<string>>;
+}
 
-    const [ hecToken, setHecToken ] = useState('');
-    const [ splunkServerHostName, setHostName ] = useState('');
-    const [ automationLogs, setAutomationLogs ] = useState(`CLICK THE BUTTON TO START THE AUTOMATION\n`);
-    const [ disableSubmit, setDisableSubmit ] = useState(false);
+export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
+    setStep, stepIsInProgress, setStepIsInProgress, stepVariant, setStepVariant,
+    hecToken, setHecToken, splunkServerHostName, setHostName,
+    automationLogs, setAutomationLogs
+}) => {
+
     const startSplunkAutomation = useSplunkSetup();
 
     const onProgress = (message) => {
@@ -31,15 +46,25 @@ export const SplunkSetupForm: React.FunctionComponent = () => {
     };
 
     const onStart = async () => {
-        setDisableSubmit(true);
+        setStepIsInProgress(true);
         setAutomationLogs('');
         try {
             await startSplunkAutomation({ hecToken, splunkServerHostName }, onProgress);
         } catch (error) {
             onProgress(`ERROR: ${error}`);
+            setStepIsInProgress(false);
+            setStepVariant('danger');
+            return;
         }
 
+        setStepIsInProgress(false);
+        setStepVariant('success');
+
         onProgress('DONE!\n');
+    };
+
+    const onFinish = () => {
+        setStep(prevStep => prevStep + 1);
     };
 
     return (
@@ -47,7 +72,7 @@ export const SplunkSetupForm: React.FunctionComponent = () => {
             <GridItem span={ 6 }>
                 <Form className='pf-u-mr-md'>
                     <FormGroup
-                        label="Server hostname/IP Address and port (hostname:port)"
+                        label="Splunk HEC URL"
                         labelIcon={ <Popover
                             headerContent={ <div>
                                 The server <b>hostname/IP Address</b> and <b>port</b> of your splunk HTTP Event Collector
@@ -84,7 +109,7 @@ export const SplunkSetupForm: React.FunctionComponent = () => {
                             name="splunk-server-hostname"
                             aria-describedby="splunk-server-hostname-helper"
                             value={ splunkServerHostName }
-                            onChange={ (value) => setHostName(value) }
+                            onChange={ (value) => !stepIsInProgress && setHostName(value) }
                         />
                     </FormGroup>
                     <FormGroup
@@ -98,15 +123,11 @@ export const SplunkSetupForm: React.FunctionComponent = () => {
                             name="splunk-hec-token"
                             aria-describedby="splunk-hec-token-helper"
                             value={ hecToken }
-                            onChange={ (value) => setHecToken(value) }
+                            onChange={ (value) => !stepIsInProgress && setHecToken(value) }
                         />
                     </FormGroup>
                     <ActionGroup>
-                        <Button variant="primary"
-                            onClick={ onStart }
-                            isDisabled={ disableSubmit }>
-                            Start Setup
-                        </Button>
+                        <SplunkAutomationButton { ...{ onStart, onFinish, stepIsInProgress, stepVariant } } />
                     </ActionGroup>
                 </Form>
             </GridItem>
@@ -118,4 +139,16 @@ export const SplunkSetupForm: React.FunctionComponent = () => {
             </GridItem>
         </Grid>
     );
+};
+
+const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVariant }) => {
+    if (stepIsInProgress) {
+        return <Button variant="primary"><InProgressIcon /> Configuration in progress</Button>;
+    } else if (stepVariant === 'success') {
+        return <Button variant="primary" onClick={ onFinish }><CheckCircleIcon /> Next: Review</Button>;
+    } else if (stepVariant === 'danger') {
+        return <Button variant="primary"><ExclamationCircleIcon /> Next: Review</Button>;
+    } else {
+        return <Button variant="primary" onClick={ onStart }>Run Configuration</Button>;
+    }
 };
