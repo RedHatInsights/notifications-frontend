@@ -18,7 +18,7 @@ const getPage = async (query: ReturnType<typeof useClient>['query'], offset: num
     if (groups.payload?.type === 'GroupPagination') {
         const page = groups.payload.value;
 
-        const hasMore =  page.data.length > 0 || (
+        const hasMore =  page.data.length > 0 && (
             page.meta?.count ? (page.meta.count > offset + LIMIT) : true
         );
 
