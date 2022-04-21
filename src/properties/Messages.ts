@@ -32,7 +32,7 @@ const MutableMessages = {
             page: {
                 title: 'Red Hat Insights application for Splunk',
                 description: 'To finish the Splunk configuration, follow the instructions to start the automation process.',
-                help: 'Red Hat Insights application for Splunk configure the integration between your Splunk instance' +
+                help: 'Configure the integration between your Splunk instance' +
                       ' and Red Hat Insights to allow you to receive events from Insights.',
                 helpUrl: null
             }
