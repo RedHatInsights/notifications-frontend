@@ -72,19 +72,20 @@ export const useSplunkSetup = () => {
         const bundleName = BUNDLE_NAME;
         const events = DEFAULT_SPLUNK_EVENTS;
 
-        onProgress('Creating Splunk Integration...');
+        onProgress(`Creating Integration ${integrationName}...`);
         const integration = await createSplunkIntegration({ integrationName, hecToken, splunkServerHostName });
-        onProgress(`  ${integrationName} integration created.`);
+        onProgress(' OK', 'pf-u-success-color-200');
 
-        onProgress('Creating Splunk Behavior Group...');
+        onProgress(`\nCreating Behavior Group ${behaviorGroupName}...`);
         const behaviorGroup = await createSplunkBehaviorGroup({ behaviorGroupName, bundleName });
-        onProgress(`  ${behaviorGroupName} behavior group created.`);
+        onProgress(' OK', 'pf-u-success-color-200');
 
-        onProgress('Adding Splunk integration as an action behavior group...');
+        onProgress('\nAssociating integration as an action for the behavior group...');
         await updateSplunkBehaviorActions(behaviorGroup, integration);
-        onProgress('  Added.');
 
-        onProgress('Adding evets to the behavior group:');
+        onProgress(' OK', 'pf-u-success-color-200');
+        onProgress('\n\nAssociating events to the behavior group:\n');
+
         await attachEvents(behaviorGroup, events, onProgress);
     };
 };
@@ -210,12 +211,12 @@ const useAttachEventsToSplunk = () => {
         });
 
         for (const eventType of selectedEventTypes) {
-            onProgress(`  ${eventType.application?.display_name} - ${eventType.display_name}`);
+            onProgress(`  ${eventType.application?.display_name} - ${eventType.display_name}...`);
             try {
                 await appendActionToNotification(eventType, behaviorGroup);
-                onProgress(`    LINKED`);
+                onProgress(' ASSOCIATED\n', 'pf-u-success-color-200');
             } catch (error) {
-                onProgress(`    ERROR!`);
+                onProgress(' ERROR!\n', 'pf-u-danger-color-200');
                 console.log(error);
             }
 
