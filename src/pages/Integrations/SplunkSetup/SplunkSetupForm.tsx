@@ -29,8 +29,8 @@ interface SplunkSetupFormProps {
     setHecToken: Dispatch<SetStateAction<string>>;
     splunkServerHostName: string;
     setHostName: Dispatch<SetStateAction<string>>;
-    automationLogs: string;
-    setAutomationLogs: Dispatch<SetStateAction<string>>;
+    automationLogs: React.ReactChild[];
+    setAutomationLogs: Dispatch<SetStateAction<React.ReactChild[]>>;
 }
 
 export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
@@ -41,17 +41,22 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
 
     const startSplunkAutomation = useSplunkSetup();
 
-    const onProgress = (message) => {
-        setAutomationLogs(prevLogs => `${prevLogs}${message}\n`);
+    const onProgress = (message, className?) => {
+        let newLog = message;
+        if (className) {
+            newLog = <span className={ className }>{ message }</span>;
+        }
+
+        setAutomationLogs(prevLogs => [ ...prevLogs, newLog ]);
     };
 
     const onStart = async () => {
         setStepIsInProgress(true);
-        setAutomationLogs('');
+        setAutomationLogs([]);
         try {
             await startSplunkAutomation({ hecToken, splunkServerHostName }, onProgress);
         } catch (error) {
-            onProgress(`ERROR: ${error}`);
+            onProgress(`\n${error}`, 'pf-u-danger-color-200');
             setStepIsInProgress(false);
             setStepVariant('danger');
             return;
@@ -60,7 +65,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
         setStepIsInProgress(false);
         setStepVariant('success');
 
-        onProgress('DONE!\n');
+        onProgress('\nDONE!', 'pf-u-success-color-200');
     };
 
     const onFinish = () => {

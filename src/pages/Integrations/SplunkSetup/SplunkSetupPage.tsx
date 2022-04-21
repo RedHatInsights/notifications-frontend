@@ -50,7 +50,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
 
     const [ hecToken, setHecToken ] = useState('');
     const [ splunkServerHostName, setHostName ] = useState('');
-    const [ automationLogs, setAutomationLogs ] = useState(`CLICK THE BUTTON TO START THE AUTOMATION\n`);
+    const [ automationLogs, setAutomationLogs ] = useState<React.ReactChild[]>([ `Logs from the automation would appear here\n` ]);
 
     return (
         <>
