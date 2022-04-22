@@ -8,7 +8,7 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
-import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
+import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
 import { EmptyStateSearch } from '../../EmptyStateSearch';
 import { UtcDate } from '../../UtcDate';
@@ -35,8 +35,8 @@ const labelClassName = style({
     cursor: 'pointer'
 });
 
-export const toLabelProps = (action: NotificationEventAction): Pick<LabelProps, 'color' | 'icon'> => {
-    switch (action.status) {
+export const toLabelProps = (actionStatus: NotificationEventStatus): Pick<LabelProps, 'color' | 'icon'> => {
+    switch (actionStatus) {
         case NotificationEventStatus.SUCCESS:
             return {
                 color: 'green',
@@ -53,7 +53,7 @@ export const toLabelProps = (action: NotificationEventAction): Pick<LabelProps, 
                 icon: <ExclamationTriangleIcon color={ c_alert_m_warning__icon_Color.value } />
             };
         default:
-            assertNever(action.status);
+            assertNever(actionStatus);
     }
 };
 
@@ -111,7 +111,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                                 >
                                     <Label
                                         className={ labelClassName }
-                                        { ...toLabelProps(a) }
+                                        { ...toLabelProps(a.status) }
                                     >
                                         { Config.integrations.types[a.endpointType].action }
                                     </Label>

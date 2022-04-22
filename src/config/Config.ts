@@ -91,7 +91,8 @@ const Config = {
                 NotificationType.EMAIL_SUBSCRIPTION
             ],
             experimental: [
-                NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER
+                NotificationType.EMAIL_SUBSCRIPTION,
+                NotificationType.DRAWER
             ]
         }
     },

@@ -1,9 +1,11 @@
 import { ClearFilters, Filters, SetFilters } from '@redhat-cloud-services/insights-common-typescript';
 
 export enum EventLogFilterColumn {
-    APPLICATION = 'application',
     EVENT = 'event',
     BUNDLE = 'bundle',
+    APPLICATION = 'application',
+    ACTION_TYPE = 'endpointTypes',
+    ACTION_STATUS = 'invocationResults',
 }
 
 export type EventLogFilters = Filters<typeof EventLogFilterColumn>;
