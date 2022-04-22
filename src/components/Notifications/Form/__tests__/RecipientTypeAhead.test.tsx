@@ -150,9 +150,6 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         }));
         await waitForAsyncEvents();
         act(() => userEvent.click(screen.getAllByRole('checkbox')[0]));
-        await act(async () => {
-            jest.runAllTimers();
-        });
         expect(onSelected).toHaveBeenCalled();
     });
 

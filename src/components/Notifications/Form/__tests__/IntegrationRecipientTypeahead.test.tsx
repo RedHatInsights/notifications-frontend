@@ -208,6 +208,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     });
 
     it('Integration recipients that have been previously used in the form are disabled', async () => {
+        jest.useFakeTimers();
         const formikValues: Partial<BehaviorGroup> = {
             actions: [{ integration: ref1, type: NotificationType.INTEGRATION }] as ActionIntegration[]
         };
@@ -224,6 +225,9 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         userEvent.click(screen.getByRole('button', { name: /Options menu/i }));
 
         await waitForAsyncEvents();
+        await act(async () => {
+            jest.runAllTimers();
+        });
         expect(screen.getAllByRole('option')[0].className.includes('disabled')).toBeTruthy();
     });
 });
