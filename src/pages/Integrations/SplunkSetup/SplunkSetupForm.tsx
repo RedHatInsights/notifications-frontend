@@ -7,18 +7,26 @@ import {
     FormGroup,
     Grid,
     GridItem,
+    List,
+    ListItem,
+    ListVariant,
     Popover,
     ProgressStepProps,
     TextInput,
     ValidatedOptions
 } from '@patternfly/react-core';
 import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
+import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
+import { Messages } from '../../../properties/Messages';
 import { useSplunkSetup } from './useSplunkSetup';
 
 const SPLUNK_CLOUD_HEC_DOC =
     'https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/UsetheHTTPEventCollector#Send_data_to_HTTP_Event_Collector';
+const OPEN_CASE_URL = 'https://access.redhat.com/support/cases/#/case/new/open-case/describe-issue'
+                    + '?intcmp=hp|a|a3|case&caseCreate=true&product=Red%20Hat%20Insights'
+                    + '&version=Red%20Hat%20Insights';
 
 interface SplunkSetupFormProps {
     setStep: Dispatch<SetStateAction<number>>;
@@ -100,6 +108,8 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
             onProgress(`\n${error}`, 'pf-u-danger-color-200');
             setStepIsInProgress(false);
             setStepVariant('danger');
+
+            addDangerNotification('Configuration failed', <SplunkSetupFailedToast />, true);
             return;
         }
 
@@ -209,3 +219,22 @@ const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVaria
         );
     }
 };
+
+const SplunkSetupFailedToast = () => (
+    <>
+        <p className='pf-u-mb-md'>
+            There was a problem processing the request. Please try again.
+            If the problem persists, contact Red Hat support by opening the ticket.
+        </p>
+        <List variant={ ListVariant.inline }>
+            <ListItem>
+                <a target="_blank" rel="noopener noreferrer" href={ OPEN_CASE_URL }>Open a Red Hat Support ticket</a>
+            </ListItem>
+            { Messages.pages.splunk.page.helpUrl &&
+                <ListItem>
+                    <a target="_blank" rel="noopener noreferrer" href={ Messages.pages.splunk.page.helpUrl || '' }>Go to documentation</a>
+                </ListItem>
+            }
+        </List>
+    </>
+);
