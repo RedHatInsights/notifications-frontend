@@ -9,7 +9,7 @@ import React from 'react';
 
 export const SplunkSetupFinished: React.FunctionComponent = () => (
     <EmptyState>
-        <EmptyStateIcon icon={ CheckCircleIcon } color='var(--pf-global--success-color--200)' />
+        <EmptyStateIcon icon={ CheckCircleIcon } color='var(--pf-global--success-color--100)' />
         <Title headingLevel="h4" size="lg">
         Splunk integration in Insights completed
         </Title>
