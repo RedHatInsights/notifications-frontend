@@ -9,10 +9,11 @@ import {
     GridItem,
     Popover,
     ProgressStepProps,
-    TextInput
+    TextInput,
+    ValidatedOptions
 } from '@patternfly/react-core';
 import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
-import React, { Dispatch, SetStateAction } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { useSplunkSetup } from './useSplunkSetup';
 
@@ -40,6 +41,45 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
 }) => {
 
     const startSplunkAutomation = useSplunkSetup();
+    const [ isDisabled, setIsDisabled ] = useState<boolean>(true);
+    const [ validatedServerHostname, setValidatedServerHostname ] = useState<ValidatedOptions>(ValidatedOptions.default);
+    const [ validatedHecToken, setValidatedHecToken ] = useState<ValidatedOptions>(ValidatedOptions.default);
+
+    const onHostnameChange = (value) => {
+        if (value === '') {
+            setValidatedServerHostname(ValidatedOptions.default);
+        } else if (/^https?:\/\/[\w\.]+(:\d+)?$/i.test(value)) {
+            setValidatedServerHostname(ValidatedOptions.success);
+        } else {
+            setValidatedServerHostname(ValidatedOptions.error);
+        }
+
+        if (!stepIsInProgress) {
+            setHostName(value);
+        }
+    };
+
+    const onHecTokenChange = (value) => {
+        if (value === '') {
+            setValidatedHecToken(ValidatedOptions.default);
+        } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
+            setValidatedHecToken(ValidatedOptions.success);
+        } else {
+            setValidatedHecToken(ValidatedOptions.error);
+        }
+
+        if (!stepIsInProgress) {
+            setHecToken(value);
+        }
+    };
+
+    useEffect(() => {
+        if ([ validatedServerHostname, validatedHecToken ].every(v => v === ValidatedOptions.success)) {
+            setIsDisabled(false);
+        } else {
+            setIsDisabled(true);
+        }
+    }, [ validatedServerHostname, validatedHecToken ]);
 
     const onProgress = (message, className?) => {
         let newLog = message;
@@ -53,6 +93,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     const onStart = async () => {
         setStepIsInProgress(true);
         setAutomationLogs([]);
+
         try {
             await startSplunkAutomation({ hecToken, splunkServerHostName }, onProgress);
         } catch (error) {
@@ -62,9 +103,9 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
             return;
         }
 
+        setIsDisabled(false);
         setStepIsInProgress(false);
         setStepVariant('success');
-
         onProgress('\nDONE!', 'pf-u-success-color-200');
     };
 
@@ -106,6 +147,8 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
                         </Popover> }
                         isRequired
                         fieldId="splunk-server-hostname"
+                        helperTextInvalid="Invalid URL. Example: https://hostname:8088"
+                        validated={ validatedServerHostname }
                     >
                         <TextInput
                             isRequired
@@ -114,12 +157,16 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
                             name="splunk-server-hostname"
                             aria-describedby="splunk-server-hostname-helper"
                             value={ splunkServerHostName }
-                            onChange={ (value) => !stepIsInProgress && setHostName(value) }
+                            validated={ validatedServerHostname }
+                            onChange={ onHostnameChange }
                         />
                     </FormGroup>
                     <FormGroup
                         label="Splunk HEC Token"
                         fieldId="splunk-hec-token"
+                        isRequired
+                        helperTextInvalid="Invalid HEC token. Example: 123e4567-e89b-12d3-a456-426614174000"
+                        validated={ validatedHecToken }
                     >
                         <TextInput
                             isRequired
@@ -127,12 +174,13 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
                             id="splunk-hec-token"
                             name="splunk-hec-token"
                             aria-describedby="splunk-hec-token-helper"
+                            validated={ validatedHecToken }
                             value={ hecToken }
-                            onChange={ (value) => !stepIsInProgress && setHecToken(value) }
+                            onChange={ onHecTokenChange }
                         />
                     </FormGroup>
                     <ActionGroup>
-                        <SplunkAutomationButton { ...{ onStart, onFinish, stepIsInProgress, stepVariant } } />
+                        <SplunkAutomationButton { ...{ onStart, onFinish, stepIsInProgress, stepVariant, isDisabled } } />
                     </ActionGroup>
                 </Form>
             </GridItem>
@@ -146,7 +194,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     );
 };
 
-const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVariant }) => {
+const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVariant, isDisabled }) => {
     if (stepIsInProgress) {
         return <Button variant="primary"><InProgressIcon /> Configuration in progress</Button>;
     } else if (stepVariant === 'success') {
@@ -154,6 +202,10 @@ const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVaria
     } else if (stepVariant === 'danger') {
         return <Button variant="primary"><ExclamationCircleIcon /> Next: Review</Button>;
     } else {
-        return <Button variant="primary" onClick={ onStart }>Run Configuration</Button>;
+        return (
+            <Button variant="primary" isDisabled={ isDisabled } onClick={ onStart }>
+                Run Configuration
+            </Button>
+        );
     }
 };
