@@ -103,7 +103,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                         hecToken, setHecToken, splunkServerHostName, setHostName,
                                         automationLogs, setAutomationLogs
                                     } } /> }
-                                { step === 3 && <SplunkSetupFinished setStep={ setStep } /> }
+                                { step === 3 && <SplunkSetupFinished /> }
                             </SplitItem>
                         </Split>
                     </CardBody>
