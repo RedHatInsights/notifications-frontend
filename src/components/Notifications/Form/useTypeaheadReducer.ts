@@ -1,5 +1,7 @@
 import assertNever from 'assert-never';
-import { Reducer, useCallback, useMemo, useReducer } from 'react';
+import produce, { castDraft } from 'immer';
+import { Reducer, useCallback, useMemo, useReducer, useState } from 'react';
+import { useDebounce } from 'react-use';
 
 export interface ReducerState<T> {
     filterValues: ReadonlyArray<T>;
@@ -32,51 +34,40 @@ type ReducerAction<T> = {
 }
 
 const reducerFunction = <T>(state: ReducerState<T>, action: ReducerAction<T>): ReducerState<T> => {
-    switch (action.type) {
-        case ReducerActionType.SET_FILTER_VALUE:
-            if (action.search === state.lastSearch) {
-                if (action.values === state.filterValues) {
-                    return state;
+    return produce(state, draft => {
+        switch (action.type) {
+            case ReducerActionType.SET_FILTER_VALUE:
+                if (action.search === state.lastSearch) {
+                    if (action.values !== draft.filterValues) {
+                        draft.loadingFilter = false;
+                        draft.filterValues = castDraft(action.values);
+                    }
                 }
 
-                return {
-                    ...state,
-                    loadingFilter: false,
-                    filterValues: action.values
-                };
-            }
+                break;
+            case ReducerActionType.LOAD_FILTER_VALUE:
+                if (action.search !== draft.lastSearch || draft.show !== 'filter') {
+                    draft.loadingFilter = true;
+                    draft.filterValues = [];
+                    draft.lastSearch = action.search;
+                    draft.show = 'filter';
+                }
 
-            return state;
-        case ReducerActionType.LOAD_FILTER_VALUE:
-            if (action.search !== state.lastSearch || state.show !== 'filter') {
-                return {
-                    ...state,
-                    loadingFilter: true,
-                    filterValues: [],
-                    lastSearch: action.search,
-                    show: 'filter'
-                };
-            }
+                break;
+            case ReducerActionType.USE_DEFAULTS:
+                if (draft.show !== 'default') {
+                    draft.show = 'default';
+                }
 
-            return state;
-        case ReducerActionType.USE_DEFAULTS:
-            if (state.show !== 'default') {
-                return {
-                    ...state,
-                    show: 'default'
-                };
-            }
-
-            return state;
-        case ReducerActionType.SET_DEFAULTS:
-            return {
-                ...state,
-                defaultValues: action.values,
-                loadingDefault: false
-            };
-        default:
-            assertNever(action);
-    }
+                break;
+            case ReducerActionType.SET_DEFAULTS:
+                draft.defaultValues = castDraft(action.values);
+                draft.loadingDefault = false;
+                break;
+            default:
+                assertNever(action);
+        }
+    });
 };
 
 export const useTypeaheadReducer = <T>() => {
@@ -88,6 +79,12 @@ export const useTypeaheadReducer = <T>() => {
         loadingDefault: true,
         lastSearch: ''
     } as ReducerState<T>);
+
+    const [ debouncedState, setDebouncedState ] = useState<ReducerState<T>>(state);
+
+    useDebounce(() => {
+        setDebouncedState(state);
+    }, 400, [ state ]);
 
     const setFilterValue = useCallback((search: string, values: ReadonlyArray<T>) => dispatch({
         type: ReducerActionType.SET_FILTER_VALUE,
@@ -116,5 +113,5 @@ export const useTypeaheadReducer = <T>() => {
         useDefaults
     }), [ setFilterValue, loadFilterValue, setDefaults, useDefaults ]);
 
-    return [ state, dispatchers ] as [ typeof state, typeof dispatchers ];
+    return [ debouncedState, dispatchers ] as [ typeof state, typeof dispatchers ];
 };
