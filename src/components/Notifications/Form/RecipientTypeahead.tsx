@@ -149,6 +149,7 @@ export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps
     return (
         <div { ...getOuiaProps('RecipientTypeahead', props) }>
             <Select
+                maxHeight={ 400 }
                 variant={ SelectVariant.checkbox }
                 selections={ selection }
                 onSelect={ onSelect }
