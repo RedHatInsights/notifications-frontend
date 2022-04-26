@@ -101,6 +101,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
     beforeEach(() => {
         appWrapperSetup();
+        jest.useRealTimers();
     });
 
     afterEach(() => {
@@ -131,6 +132,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     });
 
     it('Upon edition of a behavior group, updates the name on the notification table', async () => {
+        jest.useFakeTimers();
         const behaviorGroups = getBehaviorGroups(1);
         const notifications = getNotifications(policiesApplication, [
             behaviorGroups
@@ -195,6 +197,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
         act(() => userEvent.click(getByRole(ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'), 'button')));
         await waitForAsyncEvents();
+        await act(async () => {
+            jest.runAllTimers();
+        });
 
         act(() => userEvent.click(screen.getByText('All')));
         await waitForAsyncEvents();

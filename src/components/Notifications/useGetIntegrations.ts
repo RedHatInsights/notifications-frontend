@@ -11,13 +11,14 @@ import { GetIntegrations } from './RecipientContext';
 export const useGetIntegrations = (): GetIntegrations => {
     const { query } = useContext(ClientContext);
 
-    return React.useCallback(async (type: UserIntegrationType, _search?: string) => {
+    return React.useCallback(async (type: UserIntegrationType, search?: string) => {
         return query(listIntegrationsActionCreator(
             Page.of(
                 1,
                 20,
                 new Filter()
                 .and('type', Operator.EQUAL, [ type ])
+                .and('name', Operator.EQUAL, search ?? '')
             )
         )).then(response => {
             let integrations: ReadonlyArray<IntegrationRef> = [];

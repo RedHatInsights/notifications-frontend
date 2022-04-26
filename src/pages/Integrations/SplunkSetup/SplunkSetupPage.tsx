@@ -1,128 +1,118 @@
 import {
-    ActionGroup,
     Button,
-    CodeBlock,
-    CodeBlockCode,
-    Form,
-    FormGroup,
-    Grid,
-    GridItem,
+    Card,
+    CardBody,
+    Divider,
     Popover,
-    TextInput } from '@patternfly/react-core';
-import HelpIcon from '@patternfly/react-icons/dist/js/icons/help-icon';
+    ProgressStep,
+    ProgressStepper,
+    ProgressStepProps,
+    Split,
+    SplitItem
+} from '@patternfly/react-core';
+import { ExternalLinkSquareAltIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import React, { useState } from 'react';
 
 import { Messages } from '../../../properties/Messages';
-import { useSplunkSetup } from './useSplunkSetup';
+import { DOCUMENTATION_URL } from './Constants';
+import { SplunkSetupFinished } from './SplunkSetupFinished';
+import { SplunkSetupForm } from './SplunkSetupForm';
 
-const SPLUNK_CLOUD_HEC_DOC =
-    'https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/UsetheHTTPEventCollector#Send_data_to_HTTP_Event_Collector';
+const SplunkSetupTitle: React.FunctionComponent = () => (
+    <>
+        <PageHeaderTitle title={ <>
+            { Messages.pages.splunk.page.title }
+            <Popover
+                bodyContent={ Messages.pages.splunk.page.help }
+                footerContent={ DOCUMENTATION_URL &&
+                            <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL || '' }>
+                                Learn more <ExternalLinkSquareAltIcon />
+                            </a> }
+            >
+                <Button
+                    variant='plain'
+                    aria-label="Help description"
+                    className="title-help-label"
+                >
+                    <HelpIcon noVerticalAlign />
+                </Button>
+            </Popover>
+        </> } />
+        { Messages.pages.splunk.page.description }
+    </>
+);
 
 export const SplunkSetupPage: React.FunctionComponent = () => {
 
+    const [ step, setStep ] = useState(2);
+    const [ stepIsInProgress, setStepIsInProgress ] = useState(false);
+    const [ stepVariant, setStepVariant ] = useState<ProgressStepProps['variant']>('info');
+
     const [ hecToken, setHecToken ] = useState('');
     const [ splunkServerHostName, setHostName ] = useState('');
-    const [ automationLogs, setAutomationLogs ] = useState(`CLICK THE BUTTON TO START THE AUTOMATION\n`);
-    const [ disableSubmit, setDisableSubmit ] = useState(false);
-    const startSplunkAutomation = useSplunkSetup();
-
-    const onProgress = (message) => {
-        setAutomationLogs(prevLogs => `${prevLogs}${message}\n`);
-    };
-
-    const onStart = async () => {
-        setDisableSubmit(true);
-        setAutomationLogs('');
-        try {
-            await startSplunkAutomation({ hecToken, splunkServerHostName }, onProgress);
-        } catch (error) {
-            onProgress(`ERROR: ${error}`);
-        }
-
-        onProgress('DONE!\n');
-    };
+    const [ automationLogs, setAutomationLogs ] = useState<React.ReactChild[]>([ `Logs from the automation would appear here\n` ]);
+    const [ error, setError ] = useState<Error | undefined>();
 
     return (
         <>
             <PageHeader>
-                <PageHeaderTitle title={ Messages.pages.splunk.page.title } />
+                <SplunkSetupTitle />
             </PageHeader>
             <Main>
-                <Grid>
-                    <GridItem span={ 6 }>
-                        <Form className='pf-u-mr-md'>
-                            <FormGroup
-                                label="Server hostname/IP Address and port (hostname:port)"
-                                labelIcon={ <Popover
-                                    headerContent={ <div>
-                                        The server <b>hostname/IP Address</b> and <b>port</b> of your splunk HTTP Event Collector
-                                    </div> }
-                                    bodyContent={ <div>
-                                        For Splunk Enterprise the port is by default 8088.<br />
-                                        For Splunk Cloud Platform see
-                                        {' '}
-                                        <a
-                                            target='_blank'
-                                            rel='noreferrer'
-                                            href={ SPLUNK_CLOUD_HEC_DOC }>
-                                            documentation
-                                        </a>.
-                                    </div> }
-                                >
-                                    <button
-                                        type="button"
-                                        aria-label="More info for name field"
-                                        onClick={ e => e.preventDefault() }
-                                        aria-describedby="splunk-server-hostname"
-                                        className="pf-c-form__group-label-help"
+                <Card>
+                    <CardBody>
+                        <Split hasGutter>
+                            <SplitItem>
+                                <ProgressStepper isVertical>
+                                    <ProgressStep
+                                        isCurrent={ step === 1 }
+                                        variant="success"
+                                        description="Create HEC"
+                                        id="step1-splunk-app-step"
+                                        titleId="step1-splunk-app-step"
+                                        aria-label="completed Splunk app step (step 1)"
                                     >
-                                        <HelpIcon noVerticalAlign />
-                                    </button>
-                                </Popover> }
-                                isRequired
-                                fieldId="splunk-server-hostname"
-                            >
-                                <TextInput
-                                    isRequired
-                                    type="text"
-                                    id="splunk-server-hostname"
-                                    name="splunk-server-hostname"
-                                    aria-describedby="splunk-server-hostname-helper"
-                                    value={ splunkServerHostName }
-                                    onChange={ (value) => setHostName(value) }
-                                />
-                            </FormGroup>
-                            <FormGroup
-                                label="Splunk HEC Token"
-                                fieldId="splunk-hec-token"
-                            >
-                                <TextInput
-                                    isRequired
-                                    type="text"
-                                    id="splunk-hec-token"
-                                    name="splunk-hec-token"
-                                    aria-describedby="splunk-hec-token-helper"
-                                    value={ hecToken }
-                                    onChange={ (value) => setHecToken(value) }
-                                />
-                            </FormGroup>
-                            <ActionGroup>
-                                <Button variant="primary"
-                                    onClick={ onStart }
-                                    isDisabled={ disableSubmit }>
-                                    Start Setup
-                                </Button>
-                            </ActionGroup>
-                        </Form>
-                    </GridItem>
-
-                    <GridItem span={ 6 }>
-                        <CodeBlock>
-                            <CodeBlockCode>{automationLogs}</CodeBlockCode>
-                        </CodeBlock>
-                    </GridItem>
-                </Grid>
+                                        Step 1 (Splunk app)
+                                    </ProgressStep>
+                                    <ProgressStep
+                                        isCurrent={ step === 2 }
+                                        icon={ step === 2 && stepIsInProgress ? <InProgressIcon /> : undefined }
+                                        variant={ step < 2 ? 'info' : stepVariant }
+                                        description="Configure Splunk integration in Insights"
+                                        id="step2-setup-step"
+                                        titleId="step2-setup-step"
+                                        aria-label="setup step (step 2)"
+                                    >
+                                        Step 2
+                                    </ProgressStep>
+                                    <ProgressStep
+                                        isCurrent={ step === 3 }
+                                        variant={ step < 3 ? 'pending' : stepVariant }
+                                        description="Review"
+                                        id="step3-review-step"
+                                        titleId="step3-review-step"
+                                        aria-label="review step (step 3)"
+                                    >
+                                        Step 3
+                                    </ProgressStep>
+                                </ProgressStepper>
+                            </SplitItem>
+                            <Divider isVertical />
+                            <SplitItem isFilled>
+                                { step === 2
+                                    && <SplunkSetupForm { ...{ setStep, stepIsInProgress, setStepIsInProgress, stepVariant, setStepVariant,
+                                        hecToken, setHecToken, splunkServerHostName, setHostName,
+                                        automationLogs, setAutomationLogs, setError
+                                    } } /> }
+                                { step === 3 &&
+                                    <SplunkSetupFinished
+                                        isSuccess={ stepVariant === 'success' } error={ error } />
+                                }
+                            </SplitItem>
+                        </Split>
+                    </CardBody>
+                </Card>
             </Main>
         </>
     );
