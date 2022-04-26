@@ -34,12 +34,13 @@ interface SplunkSetupFormProps {
     setHostName: Dispatch<SetStateAction<string>>;
     automationLogs: React.ReactChild[];
     setAutomationLogs: Dispatch<SetStateAction<React.ReactChild[]>>;
+    setError: Dispatch<SetStateAction<Error | undefined>>;
 }
 
 export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     setStep, stepIsInProgress, setStepIsInProgress, stepVariant, setStepVariant,
     hecToken, setHecToken, splunkServerHostName, setHostName,
-    automationLogs, setAutomationLogs
+    automationLogs, setAutomationLogs, setError
 }) => {
 
     const startSplunkAutomation = useSplunkSetup();
@@ -104,6 +105,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
             setStepVariant('danger');
 
             addDangerNotification('Configuration failed', <SplunkSetupFailedToast />, true);
+            setError(error as Error);
             return;
         }
 
@@ -201,10 +203,14 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
 const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVariant, isDisabled }) => {
     if (stepIsInProgress) {
         return <Button variant="primary" isLoading={ true }>Configuration in progress</Button>;
-    } else if (stepVariant === 'success') {
-        return <Button variant="primary" onClick={ onFinish }><CheckCircleIcon /> Next: Review</Button>;
-    } else if (stepVariant === 'danger') {
-        return <Button variant="primary"><ExclamationCircleIcon /> Next: Review</Button>;
+    } else if (stepVariant === 'success' || stepVariant === 'danger') {
+        return (
+            <Button variant="primary" onClick={ onFinish }>
+                { stepVariant === 'success' ? <CheckCircleIcon /> : <ExclamationCircleIcon /> }
+                {' '}
+                Next: Review
+            </Button>
+        );
     } else {
         return (
             <Button variant="primary" isDisabled={ isDisabled } onClick={ onStart }>

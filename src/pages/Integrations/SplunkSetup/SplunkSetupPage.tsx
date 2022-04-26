@@ -52,6 +52,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
     const [ hecToken, setHecToken ] = useState('');
     const [ splunkServerHostName, setHostName ] = useState('');
     const [ automationLogs, setAutomationLogs ] = useState<React.ReactChild[]>([ `Logs from the automation would appear here\n` ]);
+    const [ error, setError ] = useState<Error | undefined>();
 
     return (
         <>
@@ -77,7 +78,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                     <ProgressStep
                                         isCurrent={ step === 2 }
                                         icon={ step === 2 && stepIsInProgress ? <InProgressIcon /> : undefined }
-                                        variant={ step < 2 ? 'info' : (step > 2 ? 'success' : stepVariant) }
+                                        variant={ step < 2 ? 'info' : stepVariant }
                                         description="Configure Splunk integration in Insights"
                                         id="step2-setup-step"
                                         titleId="step2-setup-step"
@@ -87,7 +88,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                     </ProgressStep>
                                     <ProgressStep
                                         isCurrent={ step === 3 }
-                                        variant={ step < 3 ? 'pending' : 'success' }
+                                        variant={ step < 3 ? 'pending' : stepVariant }
                                         description="Review"
                                         id="step3-review-step"
                                         titleId="step3-review-step"
@@ -102,9 +103,12 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                 { step === 2
                                     && <SplunkSetupForm { ...{ setStep, stepIsInProgress, setStepIsInProgress, stepVariant, setStepVariant,
                                         hecToken, setHecToken, splunkServerHostName, setHostName,
-                                        automationLogs, setAutomationLogs
+                                        automationLogs, setAutomationLogs, setError
                                     } } /> }
-                                { step === 3 && <SplunkSetupFinished /> }
+                                { step === 3 &&
+                                    <SplunkSetupFinished
+                                        isSuccess={ stepVariant === 'success' } error={ error } />
+                                }
                             </SplitItem>
                         </Split>
                     </CardBody>
