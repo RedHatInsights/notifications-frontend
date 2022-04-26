@@ -15,7 +15,7 @@ import {
     TextInput,
     ValidatedOptions
 } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
@@ -206,7 +206,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
 
 const SplunkAutomationButton = ({ onStart, onFinish, stepIsInProgress, stepVariant, isDisabled }) => {
     if (stepIsInProgress) {
-        return <Button variant="primary"><InProgressIcon /> Configuration in progress</Button>;
+        return <Button variant="primary" isLoading={ true }>Configuration in progress</Button>;
     } else if (stepVariant === 'success') {
         return <Button variant="primary" onClick={ onFinish }><CheckCircleIcon /> Next: Review</Button>;
     } else if (stepVariant === 'danger') {
