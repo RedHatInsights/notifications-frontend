@@ -124,6 +124,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<IntegrationR
     return (
         <div { ...getOuiaProps('IntegrationRecipientTypeahead', props) }>
             <Select
+                maxHeight={ 400 }
                 variant={ SelectVariant.typeahead }
                 typeAheadAriaLabel={ chooseText }
                 placeholderText={ chooseText }

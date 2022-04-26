@@ -82,6 +82,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
     return (
         <div { ...getOuiaProps('ActionTypeahead', props) } >
             <Select
+                maxHeight={ 400 }
                 variant={ SelectVariant.single }
                 aria-label="Select action"
                 placeholderText="Select action"
