@@ -19,14 +19,8 @@ import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/re
 import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
-import { Messages } from '../../../properties/Messages';
+import { DOCUMENTATION_URL, OPEN_CASE_URL, SPLUNK_CLOUD_HEC_DOC } from './Constants';
 import { useSplunkSetup } from './useSplunkSetup';
-
-const SPLUNK_CLOUD_HEC_DOC =
-    'https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/UsetheHTTPEventCollector#Send_data_to_HTTP_Event_Collector';
-const OPEN_CASE_URL = 'https://access.redhat.com/support/cases/#/case/new/open-case/describe-issue'
-                    + '?intcmp=hp|a|a3|case&caseCreate=true&product=Red%20Hat%20Insights'
-                    + '&version=Red%20Hat%20Insights';
 
 interface SplunkSetupFormProps {
     setStep: Dispatch<SetStateAction<number>>;
@@ -230,9 +224,9 @@ const SplunkSetupFailedToast = () => (
             <ListItem>
                 <a target="_blank" rel="noopener noreferrer" href={ OPEN_CASE_URL }>Open a Red Hat Support ticket</a>
             </ListItem>
-            { Messages.pages.splunk.page.helpUrl &&
+            { DOCUMENTATION_URL &&
                 <ListItem>
-                    <a target="_blank" rel="noopener noreferrer" href={ Messages.pages.splunk.page.helpUrl || '' }>Go to documentation</a>
+                    <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL || '' }>Go to documentation</a>
                 </ListItem>
             }
         </List>

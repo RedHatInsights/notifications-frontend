@@ -15,6 +15,7 @@ import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/fronte
 import React, { useState } from 'react';
 
 import { Messages } from '../../../properties/Messages';
+import { DOCUMENTATION_URL } from './Constants';
 import { SplunkSetupFinished } from './SplunkSetupFinished';
 import { SplunkSetupForm } from './SplunkSetupForm';
 
@@ -24,8 +25,8 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
             { Messages.pages.splunk.page.title }
             <Popover
                 bodyContent={ Messages.pages.splunk.page.help }
-                footerContent={ Messages.pages.splunk.page.helpUrl &&
-                            <a target="_blank" rel="noopener noreferrer" href={ Messages.pages.splunk.page.helpUrl || '' }>
+                footerContent={ DOCUMENTATION_URL &&
+                            <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL || '' }>
                                 Learn more <ExternalLinkSquareAltIcon />
                             </a> }
             >
