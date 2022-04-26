@@ -3,24 +3,61 @@ import {
     EmptyState,
     EmptyStateBody,
     EmptyStateIcon,
+    EmptyStateSecondaryActions,
     Title
 } from '@patternfly/react-core';
-import CheckCircleIcon from '@patternfly/react-icons/dist/js/icons/check-circle-icon';
-import React, { Dispatch, SetStateAction } from 'react';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import React from 'react';
+
+import { DOCUMENTATION_URL, OPEN_CASE_URL } from './Constants';
 
 interface SplunkSetupFinishedProps {
-  setStep: Dispatch<SetStateAction<number>>;
+    isSuccess: boolean;
+    error: Error | undefined
 }
 
-export const SplunkSetupFinished: React.FunctionComponent<SplunkSetupFinishedProps> = ({ setStep }) => (
+export const SplunkSetupFinished: React.FunctionComponent<SplunkSetupFinishedProps> = ({ isSuccess, error }) => (
+    isSuccess
+        ? <SplunkSetupFinishedSuccess />
+        : <SplunkSetupFinishedFailure error={ error } />
+);
+
+export const SplunkSetupFinishedSuccess: React.FunctionComponent = () => (
     <EmptyState>
-        <EmptyStateIcon icon={ CheckCircleIcon } color='var(--pf-global--success-color--200)' />
+        <EmptyStateIcon icon={ CheckCircleIcon } color='var(--pf-global--success-color--100)' />
         <Title headingLevel="h4" size="lg">
-        Splunk integration in Insights completed
+            Splunk integration in Insights completed
         </Title>
         <EmptyStateBody>
-        Splunk integration in Insights was completed. To confirm these changes, go back to Splunk application.
+            Splunk integration in Insights was completed.
+            To confirm these changes, <strong>go back to Splunk application</strong>.
         </EmptyStateBody>
-        <Button variant="primary" onClick={ () => setStep(prevStep => prevStep - 1) }>Go back to Splunk application</Button>
     </EmptyState>
 );
+
+export const SplunkSetupFinishedFailure: React.FunctionComponent<{ error: Error | undefined }> = ({ error }) =>
+    (
+        <EmptyState>
+            <EmptyStateIcon icon={ ExclamationCircleIcon } color='var(--pf-global--danger-color--100)' />
+            <Title headingLevel="h4" size="lg">
+            Configuration failed
+            </Title>
+            <EmptyStateBody>
+                <p className='pf-u-mb-md'>
+                There was a problem processing the request. Please try again. If the problem persists, contact Red Hat support by opening the ticket.
+                </p>
+                { error && <p>{ `${error}` }</p> }
+            </EmptyStateBody>
+            <Button variant="primary" component="a" href={ OPEN_CASE_URL } target="_blank" rel="noopener noreferrer">
+            Open a Red Hat Support ticket
+            </Button>
+            <EmptyStateSecondaryActions>
+                { DOCUMENTATION_URL &&
+                <Button variant="link" component="a" href={ DOCUMENTATION_URL || '' }
+                    target="_blank" rel="noopener noreferrer">
+                    Go to documentation
+                </Button>
+                }
+            </EmptyStateSecondaryActions>
+        </EmptyState>
+    );
