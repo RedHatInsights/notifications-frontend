@@ -6,8 +6,8 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
 import { UUID } from '../../types/Notification';
 
-type Payload = Operations.NotificationServiceCreateBehaviorGroup.Payload
-    | Operations.NotificationServiceUpdateBehaviorGroup.Payload;
+type Payload = Operations.NotificationResourceCreateBehaviorGroup.Payload
+    | Operations.NotificationResourceUpdateBehaviorGroup.Payload;
 
 type SaveBehaviorGroupRequest = {
     id?: UUID;
@@ -30,7 +30,7 @@ const decoder = validationResponseTransformer(
     }
 );
 
-type Body = Operations.NotificationServiceCreateBehaviorGroup.Params['body'] | Operations.NotificationServiceUpdateBehaviorGroup.Params['body'];
+type Body = Operations.NotificationResourceCreateBehaviorGroup.Params['body'] | Operations.NotificationResourceUpdateBehaviorGroup.Params['body'];
 
 const requestToBody = (behaviorGroup: SaveBehaviorGroupRequest): Body => {
     return {
@@ -41,12 +41,12 @@ const requestToBody = (behaviorGroup: SaveBehaviorGroupRequest): Body => {
 
 const saveBehaviorGroupActionCreator =  (behaviorGroup: SaveBehaviorGroupRequest) => {
     if (behaviorGroup.id === undefined) {
-        return Operations.NotificationServiceCreateBehaviorGroup.actionCreator({
+        return Operations.NotificationResourceCreateBehaviorGroup.actionCreator({
             body: requestToBody(behaviorGroup)
         });
     }
 
-    return Operations.NotificationServiceUpdateBehaviorGroup.actionCreator({
+    return Operations.NotificationResourceUpdateBehaviorGroup.actionCreator({
         id: behaviorGroup.id,
         body: requestToBody(behaviorGroup)
     });

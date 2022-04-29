@@ -4,7 +4,7 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { UUID } from '../../types/Notification';
 
 const deleteBehaviorGroupAction = (id: UUID) => {
-    return Operations.NotificationServiceDeleteBehaviorGroup.actionCreator({
+    return Operations.NotificationResourceDeleteBehaviorGroup.actionCreator({
         id
     });
 };

@@ -136,7 +136,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
 
         const completeBundleFilters = (filters.bundle as string[])?.map(queryParam => {
             const bundle = bundles?.find(bundle => bundle.name === queryParam);
-            return createCustomFilterObj(queryParam, bundle, bundle?.children);
+            return createCustomFilterObj(queryParam, bundle, bundle?.children ?? undefined);
         }) || [];
 
         return completeBundleFilters.concat(partialBundleFilters) as EventLogCustomFilter[];

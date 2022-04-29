@@ -10,7 +10,7 @@ import { IntegrationType, UserIntegration } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
     const query = (pager ?? Page.defaultPage()).toQuery();
-    return Operations.EndpointServiceGetEndpoints.actionCreator({
+    return Operations.EndpointResourceGetEndpoints.actionCreator({
         limit: +query.limit,
         offset: +query.offset,
         type: query.filterType ? (query.filterType as Array<IntegrationType>) : undefined,
@@ -19,7 +19,7 @@ export const listIntegrationsActionCreator = (pager?: Page) => {
     });
 };
 
-export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: Operations.EndpointServiceGetEndpoints.Payload) => {
+export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: Operations.EndpointResourceGetEndpoints.Payload) => {
     if (payload?.status === 200) {
         return validatedResponse(
             'IntegrationPage',
