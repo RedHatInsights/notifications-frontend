@@ -23,6 +23,9 @@ export const isCamelType = (type?: IntegrationType): type is CamelIntegrationTyp
 export const isCamelIntegrationType = (integration: Partial<Integration>): integration is IntegrationCamel =>
     !!integration.type && isCamelType(integration.type);
 
+export const isUserIntegrationType = (type?: IntegrationType): type is UserIntegrationType =>
+    !!type && Object.values(UserIntegrationType).includes(type as any);
+
 export type UserIntegrationType = (typeof UserIntegrationType)[keyof typeof UserIntegrationType];
 
 export interface IntegrationBase<T extends IntegrationType> {
