@@ -57,7 +57,8 @@ interface SplunkEventsDef {
 const DEFAULT_SPLUNK_EVENTS : SplunkEventsDef = {
     advisor: '*',
     policies: '*',
-    drift: '*'
+    drift: '*',
+    compliance: '*'
 };
 
 export const useSplunkSetup = () => {
