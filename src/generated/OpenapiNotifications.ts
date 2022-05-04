@@ -26,10 +26,24 @@ export namespace Schemas {
     owner_role?: string | undefined | null;
   };
 
+  export const AggregationEmailTemplate = zodSchemaAggregationEmailTemplate();
+  export type AggregationEmailTemplate = {
+    application?: Application1 | undefined | null;
+    application_id?: UUID | undefined | null;
+    body_template?: Template | undefined | null;
+    body_template_id: UUID;
+    created?: string | undefined | null;
+    id?: UUID | undefined | null;
+    subject_template?: Template | undefined | null;
+    subject_template_id: UUID;
+    subscription_type: EmailSubscriptionType;
+    updated?: string | undefined | null;
+  };
+
   export const Application = zodSchemaApplication();
   export type Application = {
-    displayName?: string | undefined | null;
-    id?: UUID | undefined | null;
+    display_name: string;
+    id: UUID;
   };
 
   export const Application1 = zodSchemaApplication1();
@@ -191,7 +205,7 @@ export namespace Schemas {
 
   export const Facet = zodSchemaFacet();
   export type Facet = {
-    children?: Facet[],
+    children?: Array<Facet> | undefined | null;
     displayName: string;
     id: string;
     name: string;
@@ -199,6 +213,19 @@ export namespace Schemas {
 
   export const HttpType = zodSchemaHttpType();
   export type HttpType = 'GET' | 'POST' | 'PUT';
+
+  export const InstantEmailTemplate = zodSchemaInstantEmailTemplate();
+  export type InstantEmailTemplate = {
+    body_template?: Template | undefined | null;
+    body_template_id: UUID;
+    created?: string | undefined | null;
+    event_type?: EventType | undefined | null;
+    event_type_id?: UUID | undefined | null;
+    id?: UUID | undefined | null;
+    subject_template?: Template | undefined | null;
+    subject_template_id: UUID;
+    updated?: string | undefined | null;
+  };
 
   export const InternalApplicationUserPermission =
     zodSchemaInternalApplicationUserPermission();
@@ -217,9 +244,16 @@ export namespace Schemas {
 
   export const InternalUserPermissions = zodSchemaInternalUserPermissions();
   export type InternalUserPermissions = {
-    admin?: boolean | undefined | null;
-    applications?: Array<Application> | undefined | null;
-    isAdmin?: boolean | undefined | null;
+    applications: Array<Application>;
+    is_admin: boolean;
+    roles: Array<string>;
+  };
+
+  export const MessageValidationResponse = zodSchemaMessageValidationResponse();
+  export type MessageValidationResponse = {
+    errors: {
+      [x: string]: Array<string>;
+    };
   };
 
   export const Meta = zodSchemaMeta();
@@ -237,6 +271,8 @@ export namespace Schemas {
       | undefined
       | null;
     endpointId?: UUID | undefined | null;
+    endpointSubType?: string | undefined | null;
+    endpointType?: EndpointType | undefined | null;
     id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
@@ -258,71 +294,6 @@ export namespace Schemas {
       [x: string]: string;
     };
     meta: Meta;
-  };
-
-  export const PageRbacGroup = zodSchemaPageRbacGroup();
-  export type PageRbacGroup = {
-    data: Array<RbacGroup>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
-  };
-
-  export const PageRbacUser = zodSchemaPageRbacUser();
-  export type PageRbacUser = {
-    data: Array<RbacUser>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
-  };
-
-  export const RbacGroup = zodSchemaRbacGroup();
-  export type RbacGroup = {
-    created?: string | undefined | null;
-    description?: string | undefined | null;
-    modified?: string | undefined | null;
-    name?: string | undefined | null;
-    platform_default?: boolean | undefined | null;
-    principalCount?: number | undefined | null;
-    roleCount?: number | undefined | null;
-    system?: boolean | undefined | null;
-    uuid?: UUID | undefined | null;
-  };
-
-  export const RbacRaw = zodSchemaRbacRaw();
-  export type RbacRaw = {
-    data?:
-      | Array<{
-          [x: string]: unknown;
-        }>
-      | undefined
-      | null;
-    links?:
-      | {
-          [x: string]: string;
-        }
-      | undefined
-      | null;
-    meta?:
-      | {
-          [x: string]: number;
-        }
-      | undefined
-      | null;
-  };
-
-  export const RbacUser = zodSchemaRbacUser();
-  export type RbacUser = {
-    active?: boolean | undefined | null;
-    email?: string | undefined | null;
-    first_name?: string | undefined | null;
-    is_active?: boolean | undefined | null;
-    is_org_admin?: boolean | undefined | null;
-    last_name?: string | undefined | null;
-    org_admin?: boolean | undefined | null;
-    username?: string | undefined | null;
   };
 
   export const RenderEmailTemplateRequest =
@@ -354,6 +325,16 @@ export namespace Schemas {
 
   export const Status = zodSchemaStatus();
   export type Status = 'UP' | 'MAINTENANCE';
+
+  export const Template = zodSchemaTemplate();
+  export type Template = {
+    created?: string | undefined | null;
+    data: string;
+    description: string;
+    id?: UUID | undefined | null;
+    name: string;
+    updated?: string | undefined | null;
+  };
 
   export const UUID = zodSchemaUUID();
   export type UUID = string;
@@ -390,11 +371,28 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaAggregationEmailTemplate() {
+      return z
+      .object({
+          application: zodSchemaApplication1().optional().nullable(),
+          application_id: zodSchemaUUID().optional().nullable(),
+          body_template: zodSchemaTemplate().optional().nullable(),
+          body_template_id: zodSchemaUUID(),
+          created: z.string().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable(),
+          subject_template: zodSchemaTemplate().optional().nullable(),
+          subject_template_id: zodSchemaUUID(),
+          subscription_type: zodSchemaEmailSubscriptionType(),
+          updated: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaApplication() {
       return z
       .object({
-          displayName: z.string().optional().nullable(),
-          id: zodSchemaUUID().optional().nullable()
+          display_name: z.string(),
+          id: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -594,6 +592,10 @@ export namespace Schemas {
   function zodSchemaFacet() {
       return z
       .object({
+          children: z
+          .array(z.lazy(() => zodSchemaFacet()))
+          .optional()
+          .nullable(),
           displayName: z.string(),
           id: z.string(),
           name: z.string()
@@ -603,6 +605,22 @@ export namespace Schemas {
 
   function zodSchemaHttpType() {
       return z.enum([ 'GET', 'POST', 'PUT' ]);
+  }
+
+  function zodSchemaInstantEmailTemplate() {
+      return z
+      .object({
+          body_template: zodSchemaTemplate().optional().nullable(),
+          body_template_id: zodSchemaUUID(),
+          created: z.string().optional().nullable(),
+          event_type: zodSchemaEventType().optional().nullable(),
+          event_type_id: zodSchemaUUID().optional().nullable(),
+          id: zodSchemaUUID().optional().nullable(),
+          subject_template: zodSchemaTemplate().optional().nullable(),
+          subject_template_id: zodSchemaUUID(),
+          updated: z.string().optional().nullable()
+      })
+      .nonstrict();
   }
 
   function zodSchemaInternalApplicationUserPermission() {
@@ -628,9 +646,17 @@ export namespace Schemas {
   function zodSchemaInternalUserPermissions() {
       return z
       .object({
-          admin: z.boolean().optional().nullable(),
-          applications: z.array(zodSchemaApplication()).optional().nullable(),
-          isAdmin: z.boolean().optional().nullable()
+          applications: z.array(zodSchemaApplication()),
+          is_admin: z.boolean(),
+          roles: z.array(z.string())
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaMessageValidationResponse() {
+      return z
+      .object({
+          errors: z.record(z.array(z.string()))
       })
       .nonstrict();
   }
@@ -649,6 +675,8 @@ export namespace Schemas {
           created: z.string().optional().nullable(),
           details: z.record(z.unknown()).optional().nullable(),
           endpointId: zodSchemaUUID().optional().nullable(),
+          endpointSubType: z.string().optional().nullable(),
+          endpointType: zodSchemaEndpointType().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
@@ -672,67 +700,6 @@ export namespace Schemas {
           data: z.array(zodSchemaEventType()),
           links: z.record(z.string()),
           meta: zodSchemaMeta()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaPageRbacGroup() {
-      return z
-      .object({
-          data: z.array(zodSchemaRbacGroup()),
-          links: z.record(z.string()),
-          meta: zodSchemaMeta()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaPageRbacUser() {
-      return z
-      .object({
-          data: z.array(zodSchemaRbacUser()),
-          links: z.record(z.string()),
-          meta: zodSchemaMeta()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRbacGroup() {
-      return z
-      .object({
-          created: z.string().optional().nullable(),
-          description: z.string().optional().nullable(),
-          modified: z.string().optional().nullable(),
-          name: z.string().optional().nullable(),
-          platform_default: z.boolean().optional().nullable(),
-          principalCount: z.number().int().optional().nullable(),
-          roleCount: z.number().int().optional().nullable(),
-          system: z.boolean().optional().nullable(),
-          uuid: zodSchemaUUID().optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRbacRaw() {
-      return z
-      .object({
-          data: z.array(z.record(z.unknown())).optional().nullable(),
-          links: z.record(z.string()).optional().nullable(),
-          meta: z.record(z.number().int()).optional().nullable()
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRbacUser() {
-      return z
-      .object({
-          active: z.boolean().optional().nullable(),
-          email: z.string().optional().nullable(),
-          first_name: z.string().optional().nullable(),
-          is_active: z.boolean().optional().nullable(),
-          is_org_admin: z.boolean().optional().nullable(),
-          last_name: z.string().optional().nullable(),
-          org_admin: z.boolean().optional().nullable(),
-          username: z.string().optional().nullable()
       })
       .nonstrict();
   }
@@ -777,6 +744,19 @@ export namespace Schemas {
       return z.enum([ 'UP', 'MAINTENANCE' ]);
   }
 
+  function zodSchemaTemplate() {
+      return z
+      .object({
+          created: z.string().optional().nullable(),
+          data: z.string(),
+          description: z.string(),
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: z.string().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaUUID() {
       return z.string();
   }
@@ -803,7 +783,7 @@ export namespace Schemas {
 export namespace Operations {
   // POST /notifications/behaviorGroups
   // Create a behavior group.
-  export namespace NotificationServiceCreateBehaviorGroup {
+  export namespace NotificationResourceCreateBehaviorGroup {
     export interface Params {
       body: Schemas.BehaviorGroup;
     }
@@ -832,7 +812,7 @@ export namespace Operations {
   }
   // GET /notifications/behaviorGroups/affectedByRemovalOfEndpoint/{endpointId}
   // Retrieve the behavior groups affected by the removal of an endpoint.
-  export namespace NotificationServiceGetBehaviorGroupsAffectedByRemovalOfEndpoint {
+  export namespace NotificationResourceGetBehaviorGroupsAffectedByRemovalOfEndpoint {
     const Response200 = z.array(Schemas.BehaviorGroup);
     type Response200 = Array<Schemas.BehaviorGroup>;
     export interface Params {
@@ -866,7 +846,7 @@ export namespace Operations {
   }
   // PUT /notifications/behaviorGroups/{behaviorGroupId}/actions
   // Update the list of actions of a behavior group.
-  export namespace NotificationServiceUpdateBehaviorGroupActions {
+  export namespace NotificationResourceUpdateBehaviorGroupActions {
     const Body = z.array(z.string());
     type Body = Array<string>;
     const Response200 = z.string();
@@ -904,7 +884,7 @@ export namespace Operations {
   }
   // PUT /notifications/behaviorGroups/{id}
   // Update a behavior group.
-  export namespace NotificationServiceUpdateBehaviorGroup {
+  export namespace NotificationResourceUpdateBehaviorGroup {
     const Response200 = z.boolean();
     type Response200 = boolean;
     export interface Params {
@@ -940,7 +920,7 @@ export namespace Operations {
   }
   // DELETE /notifications/behaviorGroups/{id}
   // Delete a behavior group.
-  export namespace NotificationServiceDeleteBehaviorGroup {
+  export namespace NotificationResourceDeleteBehaviorGroup {
     const Response200 = z.boolean();
     type Response200 = boolean;
     export interface Params {
@@ -974,7 +954,7 @@ export namespace Operations {
   }
   // GET /notifications/bundles/{bundleId}/behaviorGroups
   // Retrieve the behavior groups of a bundle.
-  export namespace NotificationServiceFindBehaviorGroupsByBundleId {
+  export namespace NotificationResourceFindBehaviorGroupsByBundleId {
     const Response200 = z.array(Schemas.BehaviorGroup);
     type Response200 = Array<Schemas.BehaviorGroup>;
     export interface Params {
@@ -1008,7 +988,7 @@ export namespace Operations {
   }
   // GET /notifications/eventTypes
   // Retrieve all event types. The returned list can be filtered by bundle or application.
-  export namespace NotificationServiceGetEventTypes {
+  export namespace NotificationResourceGetEventTypes {
     const ApplicationIds = z.array(z.string());
     type ApplicationIds = Array<string>;
     const Limit = z.number().int();
@@ -1075,7 +1055,7 @@ export namespace Operations {
   }
   // GET /notifications/eventTypes/affectedByRemovalOfBehaviorGroup/{behaviorGroupId}
   // Retrieve the event types affected by the removal of a behavior group.
-  export namespace NotificationServiceGetEventTypesAffectedByRemovalOfBehaviorGroup {
+  export namespace NotificationResourceGetEventTypesAffectedByRemovalOfBehaviorGroup {
     const Response200 = z.array(Schemas.EventType);
     type Response200 = Array<Schemas.EventType>;
     export interface Params {
@@ -1109,7 +1089,7 @@ export namespace Operations {
   }
   // GET /notifications/eventTypes/{eventTypeId}/behaviorGroups
   // Retrieve the behavior groups linked to an event type.
-  export namespace NotificationServiceGetLinkedBehaviorGroups {
+  export namespace NotificationResourceGetLinkedBehaviorGroups {
     const Limit = z.number().int();
     type Limit = number;
     const Offset = z.number().int();
@@ -1171,7 +1151,7 @@ export namespace Operations {
   }
   // PUT /notifications/eventTypes/{eventTypeId}/behaviorGroups
   // Update the list of behavior groups of an event type.
-  export namespace NotificationServiceUpdateEventTypeBehaviors {
+  export namespace NotificationResourceUpdateEventTypeBehaviors {
     const Body = z.array(z.string());
     type Body = Array<string>;
     const Response200 = z.string();
@@ -1209,15 +1189,15 @@ export namespace Operations {
   }
   // GET /notifications/events
   // Retrieve the event log entries.
-  export namespace EventServiceGetEvents {
+  export namespace EventResourceGetEvents {
     const AppIds = z.array(z.string());
     type AppIds = Array<string>;
     const BundleIds = z.array(z.string());
     type BundleIds = Array<string>;
     const EndDate = z.string();
     type EndDate = string;
-    const EndpointTypes = z.array(Schemas.EndpointType);
-    type EndpointTypes = Array<Schemas.EndpointType>;
+    const EndpointTypes = z.array(z.string());
+    type EndpointTypes = Array<string>;
     const EventTypeDisplayName = z.string();
     type EventTypeDisplayName = string;
     const IncludeActions = z.boolean();
@@ -1331,7 +1311,7 @@ export namespace Operations {
   }
   // GET /notifications/facets/applications
   // Return a thin list of configured applications. This can be used to configure a filter in the UI
-  export namespace NotificationServiceGetApplicationsFacets {
+  export namespace NotificationResourceGetApplicationsFacets {
     const BundleName = z.string();
     type BundleName = string;
     const Response200 = z.array(Schemas.Facet);
@@ -1361,16 +1341,26 @@ export namespace Operations {
   }
   // GET /notifications/facets/bundles
   // Return a thin list of configured bundles. This can be used to configure a filter in the UI
-  export namespace NotificationServiceGetBundleFacets {
+  export namespace NotificationResourceGetBundleFacets {
+    const IncludeApplications = z.boolean();
+    type IncludeApplications = boolean;
     const Response200 = z.array(Schemas.Facet);
     type Response200 = Array<Schemas.Facet>;
+    export interface Params {
+      includeApplications?: IncludeApplications;
+    }
+
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (includeApplications: boolean): ActionCreator => {
+    export const actionCreator = (params: Params): ActionCreator => {
         const path = '/api/notifications/v1.0/notifications/facets/bundles';
-        const query = includeApplications ? { includeApplications } : {} as Record<string, any>;
+        const query = {} as Record<string, any>;
+        if (params.includeApplications !== undefined) {
+            query.includeApplications = params.includeApplications;
+        }
+
         return actionBuilder('GET', path)
         .queryParams(query)
         .config({
@@ -1380,7 +1370,7 @@ export namespace Operations {
     };
   }
   // DELETE /notifications/{id}
-  export namespace NotificationServiceMarkRead {
+  export namespace NotificationResourceMarkRead {
     const Id = z.number().int();
     type Id = number;
     const Response204 = z.string();

@@ -5,7 +5,7 @@ import { useQuery } from 'react-fetching-library';
 import { Operations } from '../generated/OpenapiPrivate';
 import { toServer } from '../types/adapters/ServerAdapter';
 
-const adapter = validationResponseTransformer((payload: Operations.StatusServiceGetCurrentStatus.Payload) => {
+const adapter = validationResponseTransformer((payload: Operations.StatusResourceGetCurrentStatus.Payload) => {
     if (payload.status === 200) {
         return validatedResponse(
             'ServerStatus',
@@ -20,7 +20,7 @@ const adapter = validationResponseTransformer((payload: Operations.StatusService
 
 export const useGetServerStatus = () => {
     return useTransformQueryResponse(
-        useQuery(Operations.StatusServiceGetCurrentStatus.actionCreator()),
+        useQuery(Operations.StatusResourceGetCurrentStatus.actionCreator()),
         adapter
     );
 };

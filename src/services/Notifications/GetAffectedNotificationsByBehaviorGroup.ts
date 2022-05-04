@@ -7,13 +7,13 @@ import { toNotifications } from '../../types/adapters/NotificationAdapter';
 import { UUID } from '../../types/Notification';
 
 const getAffectedNotificationsByBehaviorGroupAction = (id: UUID) => {
-    return Operations.NotificationServiceGetEventTypesAffectedByRemovalOfBehaviorGroup.actionCreator({
+    return Operations.NotificationResourceGetEventTypesAffectedByRemovalOfBehaviorGroup.actionCreator({
         behaviorGroupId: id
     });
 };
 
 const defaultNotificationsDecoder = validationResponseTransformer(
-    (payload: Operations.NotificationServiceGetEventTypesAffectedByRemovalOfBehaviorGroup.Payload) => {
+    (payload: Operations.NotificationResourceGetEventTypesAffectedByRemovalOfBehaviorGroup.Payload) => {
         if (payload.status === 200) {
             return validatedResponse(
                 'Notifications',

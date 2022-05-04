@@ -9,7 +9,7 @@ type UpdateBehaviorGroupActionsParams = {
 }
 
 const updateBehaviorGroupActionsActionCreator =  (params: UpdateBehaviorGroupActionsParams) => {
-    return Operations.NotificationServiceUpdateBehaviorGroupActions.actionCreator({
+    return Operations.NotificationResourceUpdateBehaviorGroupActions.actionCreator({
         behaviorGroupId: params.behaviorGroupId,
         body: params.endpointIds
     });

@@ -5,7 +5,7 @@ import { NotificationType, SystemProperties } from '../../types/Notification';
 
 export const getDefaultSystemEndpointAction = (systemProperties: SystemProperties) => {
     if (systemProperties.type === NotificationType.EMAIL_SUBSCRIPTION) {
-        return Operations.EndpointServiceGetOrCreateEmailSubscriptionEndpoint.actionCreator({
+        return Operations.EndpointResourceGetOrCreateEmailSubscriptionEndpoint.actionCreator({
             body: {
                 only_admins: systemProperties.props.onlyAdmins,
                 group_id: systemProperties.props.groupId
