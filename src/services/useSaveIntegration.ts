@@ -6,14 +6,14 @@ import { toIntegration, toServerIntegrationRequest } from '../types/adapters/Int
 import { Integration, NewIntegration, UserIntegration } from '../types/Integration';
 
 export const createIntegrationActionCreator = (integration: NewIntegration) => {
-    return Operations.EndpointServiceCreateEndpoint.actionCreator({
+    return Operations.EndpointResourceCreateEndpoint.actionCreator({
         body: toServerIntegrationRequest(integration)
     });
 };
 
 export const saveIntegrationActionCreator = (integration: Integration | NewIntegration | UserIntegration) => {
     if (integration.id) {
-        return Operations.EndpointServiceUpdateEndpoint.actionCreator({
+        return Operations.EndpointResourceUpdateEndpoint.actionCreator({
             body: toServerIntegrationRequest(integration),
             id: integration.id
         });
@@ -22,7 +22,7 @@ export const saveIntegrationActionCreator = (integration: Integration | NewInteg
     return createIntegrationActionCreator(integration);
 };
 
-const decoder = (response: Operations.EndpointServiceCreateEndpoint.Payload | Operations.EndpointServiceUpdateEndpoint.Payload) => {
+const decoder = (response: Operations.EndpointResourceCreateEndpoint.Payload | Operations.EndpointResourceUpdateEndpoint.Payload) => {
     if (response.type === 'Endpoint') {
         return {
             ...response,

@@ -22,6 +22,7 @@ import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
+import Facet = Schemas.Facet;
 
 type RouterAndRoute = {
   router: MemoryRouterProps;
@@ -55,29 +56,35 @@ const mockEnvironment = (env: Environment) => {
 
 const defaultEventTypeId = 'my-event-type-id';
 
-const mockFacets = () => {
-    fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
-        body: [
-            {
-                displayName: 'Red Hat Enterprise Linux',
-                name: 'rhel',
-                id: 'foobar'
-            }
-        ] as Array<Schemas.Facet>
-    });
+const mockFacets = (bundles?: Array<Facet> | null | Promise<any>, applications?: Array<Facet> | null | Promise<any>) => {
+    if (bundles !== null) {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles?includeApplications=false',
+            (bundles as any)?.then ? bundles as Promise<any> : {
+                body: bundles ?? [
+                    {
+                        displayName: 'Red Hat Enterprise Linux',
+                        name: 'rhel',
+                        id: 'foobar'
+                    }
+                ] as Array<Schemas.Facet>
+            });
+    }
 
-    fetchMock.get(
-        '/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel',
-        {
-            body: [
+    if (applications !== null) {
+        fetchMock.get(
+            '/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel',
+            (applications as any)?.then ? applications as Promise<any> :
                 {
-                    displayName: 'Policies',
-                    name: 'policies',
-                    id: 'foobar-policy'
+                    body: applications ?? [
+                        {
+                            displayName: 'Policies',
+                            name: 'policies',
+                            id: 'foobar-policy'
+                        }
+                    ] as Array<Schemas.Facet>
                 }
-            ] as Array<Schemas.Facet>
-        }
-    );
+        );
+    }
 };
 
 const mockEventTypes = (eventTypeId: string = defaultEventTypeId) => {
@@ -303,29 +310,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
     it('If the bundle is not found, redirects to rhel', async () => {
         mockNoEventTypes();
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
-            body: [
-                {
-                    displayName: 'Red Hat Enterprise Linux',
-                    name: 'rhel',
-                    id: 'foobar'
-                }
-            ] as Array<Schemas.Facet>
-        });
-
-        fetchMock.get(
-            '/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel',
-            {
-                body: [
-                    {
-                        displayName: 'Policies',
-                        name: 'policies',
-                        id: 'foobar-policy'
-                    }
-                ] as Array<Schemas.Facet>
-            }
-        );
-
+        mockFacets();
         mockBehaviorGroup();
 
         const getLocation = jest.fn();
@@ -343,9 +328,7 @@ describe('src/pages/Notifications/List/Page', () => {
     it('Throws error if bundles fails o load', async () => {
         const err = jest.spyOn(console, 'error');
         err.mockImplementation(() => ({}));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
-            body: null
-        });
+        mockFacets({} as any, null);
 
         render(
             <VerboseErrorBoundary>
@@ -368,9 +351,7 @@ describe('src/pages/Notifications/List/Page', () => {
     it('Throws error if default bundle is not found', async () => {
         const err = jest.spyOn(console, 'error');
         err.mockImplementation(() => ({}));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
-            body: []
-        });
+        mockFacets([], null);
 
         render(
             <VerboseErrorBoundary>
@@ -390,25 +371,10 @@ describe('src/pages/Notifications/List/Page', () => {
         err.mockRestore();
     });
 
-    it('Throws error if applications fails o load', async () => {
+    it('Throws error if applications fails to load', async () => {
         const err = jest.spyOn(console, 'error');
         err.mockImplementation(() => ({}));
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
-            body: [
-                {
-                    displayName: 'Red Hat Enterprise Linux',
-                    name: 'rhel',
-                    id: 'foobar'
-                }
-            ] as Array<Schemas.Facet>
-        });
-
-        fetchMock.get(
-            '/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel',
-            {
-                body: null
-            }
-        );
+        mockFacets(undefined, {} as any);
 
         render(
             <VerboseErrorBoundary>
@@ -430,21 +396,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
     it('Shows loading when loading bundles', async () => {
         let resolve: any;
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
-            body: [
-                {
-                    displayName: 'Red Hat Enterprise Linux',
-                    name: 'rhel',
-                    id: 'foobar'
-                }
-            ] as Array<Schemas.Facet>
-        });
-
-        fetchMock.get(
-            '/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel',
-            new Promise((_resolve) => (resolve = _resolve))
-        );
-
+        mockFacets(new Promise((_resolve) => (resolve = _resolve)), null);
         render(
             <VerboseErrorBoundary>
                 <NotificationsListPage />
@@ -464,10 +416,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
     it('Shows loading when loading applications', async () => {
         let resolve: any;
-        fetchMock.get(
-            '/api/notifications/v1.0/notifications/facets/bundles',
-            new Promise((_resolve) => (resolve = _resolve))
-        );
+        mockFacets(undefined, new Promise((_resolve) => (resolve = _resolve)));
 
         render(
             <VerboseErrorBoundary>
