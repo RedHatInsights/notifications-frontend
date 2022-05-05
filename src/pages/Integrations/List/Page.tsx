@@ -1,11 +1,5 @@
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import {
-    addDangerNotification,
-    ExporterType,
-    Filter,
-    Operator,
-    Page
-} from '@redhat-cloud-services/insights-common-typescript';
+import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
@@ -54,6 +48,11 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
         if (filters?.enabled?.length === 1) {
             const isEnabled = filters.enabled[0].toLocaleLowerCase() === 'enabled';
             filter.and('active', Operator.EQUAL, isEnabled.toString());
+        }
+
+        if (filters?.name) {
+            const name = stringValue(filters.name);
+            filter.and('name', Operator.EQUAL, name);
         }
 
         return filter.and(
