@@ -206,7 +206,7 @@ describe('Smoketest', () => {
             ] as Array<Schemas.Endpoint>
         });
 
-        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles', {
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/bundles?includeApplications=false', {
             body: [
                 {
                     displayName: 'Red Hat Enterprise Linux',
