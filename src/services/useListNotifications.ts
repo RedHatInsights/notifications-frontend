@@ -12,6 +12,7 @@ export const listNotificationsActionCreator = (pager?: Page) => {
         limit: +query.limit,
         offset: +query.offset,
         applicationIds: query.filterApplicationId as unknown as Array<Schemas.UUID>,
+        eventTypeName: query.filterEventFilterName as unknown as string,
         bundleId: query.filterBundleId as unknown as string,
         sortBy: `${query.sortColumn}:${query.sortDirection}`
     });
