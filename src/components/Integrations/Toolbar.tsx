@@ -3,18 +3,14 @@ import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import {
     ColumnsMetada,
     ExporterType,
-    getInsights,
     OuiaComponentProps,
-    useInsightsEnvironmentFlag,
     usePrimaryToolbarFilterConfig
 } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { useCallback } from 'react';
 import { cssRaw, style } from 'typestyle';
 
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { Messages } from '../../properties/Messages';
-import { stagingAndProd } from '../../types/Environments';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
@@ -101,20 +97,6 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
 
     const exportConfig = useTableExportConfig(props.onExport);
 
-    const filterConfig = useInsightsEnvironmentFlag(
-        getInsights(),
-        stagingAndProd,
-        undefined,
-        useCallback(() => primaryToolbarFilterConfig.filterConfig, [ primaryToolbarFilterConfig ])
-    );
-
-    const activeFiltersConfig = useInsightsEnvironmentFlag(
-        getInsights(),
-        stagingAndProd,
-        undefined,
-        useCallback(() => primaryToolbarFilterConfig.activeFiltersConfig, [ primaryToolbarFilterConfig ])
-    );
-
     const pageChanged = React.useCallback((_event: unknown, page: number) => {
         const inner = props.pageChanged;
         inner(page);
@@ -151,8 +133,8 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
             <PrimaryToolbar
                 actionsConfig={ actionsConfig }
                 exportConfig={ exportConfig }
-                filterConfig={ filterConfig }
-                activeFiltersConfig={ activeFiltersConfig }
+                filterConfig={ primaryToolbarFilterConfig.filterConfig }
+                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
                 pagination={ topPaginationProps }
                 id="integrations-top-toolbar"
             />
