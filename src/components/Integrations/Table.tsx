@@ -52,7 +52,7 @@ interface IntegrationsTableProps extends OuiaComponentProps {
     onEnable?: OnEnable;
     actionResolver: (row: IntegrationRow, index: number) => IActions;
     sortBy?: Sort;
-    onSort: UseSortReturn['onSort'];
+    onSort?: UseSortReturn['onSort'];
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -337,7 +337,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     const onSort = React.useCallback((event, column: number, direction: SortByDirection) => {
         const propsOnSort = props.onSort;
         const mapping = sortMapper.find(p => p.index === column);
-        if (mapping) {
+        if (propsOnSort && mapping) {
             propsOnSort(mapping.index, mapping.name, direction === SortByDirection.asc ? Direction.ASCENDING : Direction.DESCENDING);
         }
     }, [ props.onSort ]);
