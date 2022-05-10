@@ -114,7 +114,7 @@ export const EventLogPage: React.FunctionComponent = () => {
                     return endpoint.payload.value.name;
                 case 'email_subscription':
                     const properties = endpoint.payload.value.properties as Schemas.EmailSubscriptionProperties;
-                    if (properties.only_admins) {
+                    if (properties.onlyAdmins) {
                         return 'Users: Admin';
                     }
 

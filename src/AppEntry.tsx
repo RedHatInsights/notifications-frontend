@@ -3,7 +3,7 @@ import {
     createFetchingClient,
     getInsights
 } from '@redhat-cloud-services/insights-common-typescript';
-import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript-plugin-react-fetching-library';
 import React from 'react';
 import { ClientContextProvider } from 'react-fetching-library';
 import { Provider } from 'react-redux';

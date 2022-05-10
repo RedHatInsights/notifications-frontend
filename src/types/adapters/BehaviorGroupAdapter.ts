@@ -19,10 +19,10 @@ export const toBehaviorGroup = (serverBehaviorGroup: ServerBehaviorGroup): Behav
 
     return {
         actions: reduceActions(actions),
-        bundleId: serverBehaviorGroup.bundle_id,
-        displayName: serverBehaviorGroup.display_name,
+        bundleId: serverBehaviorGroup.bundleId,
+        displayName: serverBehaviorGroup.displayName,
         id: serverBehaviorGroup.id ?? reportBehaviorGroup(serverBehaviorGroup),
-        bundleName: serverBehaviorGroup.bundle?.display_name ?? '',
-        isDefault: !!serverBehaviorGroup.default_behavior
+        bundleName: serverBehaviorGroup.bundle?.displayName ?? '',
+        isDefault: !!serverBehaviorGroup.defaultBehavior
     };
 };

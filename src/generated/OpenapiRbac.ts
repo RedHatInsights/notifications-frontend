@@ -7,7 +7,7 @@ import { ValidateRule } from 'openapi2typescript';
 import {
     actionBuilder,
     ActionValidatableConfig
-} from 'openapi2typescript/react-fetching-library';
+} from 'openapi2typescript-plugin-react-fetching-library';
 import { Action } from 'react-fetching-library';
 import * as z from 'zod';
 
@@ -33,25 +33,25 @@ export namespace Schemas {
   export const CrossAccountRequest = zodSchemaCrossAccountRequest();
   export type CrossAccountRequest = {
     created?: string | undefined | null;
-    end_date?: unknown | undefined | null;
-    request_id?: string | undefined | null;
-    start_date?: unknown | undefined | null;
+    endDate?: unknown | undefined | null;
+    requestId?: string | undefined | null;
+    startDate?: unknown | undefined | null;
     status?: string | undefined | null;
-    target_account?: string | undefined | null;
+    targetAccount?: string | undefined | null;
   };
 
   export const CrossAccountRequestByAccount =
     zodSchemaCrossAccountRequestByAccount();
   export type CrossAccountRequestByAccount = CrossAccountRequest & {
     email?: string | undefined | null;
-    first_name?: string | undefined | null;
-    last_name?: string | undefined | null;
+    firstName?: string | undefined | null;
+    lastName?: string | undefined | null;
   };
 
   export const CrossAccountRequestByUserId =
     zodSchemaCrossAccountRequestByUserId();
   export type CrossAccountRequestByUserId = CrossAccountRequest & {
-    user_id?: string | undefined | null;
+    userId?: string | undefined | null;
   };
 
   export const CrossAccountRequestDetail = zodSchemaCrossAccountRequestDetail();
@@ -64,28 +64,28 @@ export namespace Schemas {
   export type CrossAccountRequestDetailByAccount =
     CrossAccountRequestWithRoles & {
       email?: unknown | undefined | null;
-      first_name?: unknown | undefined | null;
-      last_name?: unknown | undefined | null;
+      firstName?: unknown | undefined | null;
+      lastName?: unknown | undefined | null;
     };
 
   export const CrossAccountRequestDetailByUseId =
     zodSchemaCrossAccountRequestDetailByUseId();
   export type CrossAccountRequestDetailByUseId =
     CrossAccountRequestWithRoles & {
-      user_id?: unknown | undefined | null;
+      userId?: unknown | undefined | null;
     };
 
   export const CrossAccountRequestIn = zodSchemaCrossAccountRequestIn();
   export type CrossAccountRequestIn = {
-    end_date: string;
+    endDate: string;
     roles: Array<string>;
-    start_date: string;
-    target_account: string;
+    startDate: string;
+    targetAccount: string;
   };
 
   export const CrossAccountRequestOut = zodSchemaCrossAccountRequestOut();
   export type CrossAccountRequestOut = CrossAccountRequestWithRoles & {
-    user_id?: string | undefined | null;
+    userId?: string | undefined | null;
   };
 
   export const CrossAccountRequestPagination =
@@ -96,9 +96,9 @@ export namespace Schemas {
 
   export const CrossAccountRequestPatch = zodSchemaCrossAccountRequestPatch();
   export type CrossAccountRequestPatch = {
-    end_date?: string | undefined | null;
+    endDate?: string | undefined | null;
     roles?: Array<string> | undefined | null;
-    start_date?: string | undefined | null;
+    startDate?: string | undefined | null;
     status?:
       | ('pending' | 'approved' | 'expired' | 'cancelled' | 'denied')
       | undefined
@@ -108,9 +108,9 @@ export namespace Schemas {
   export const CrossAccountRequestUpdateIn =
     zodSchemaCrossAccountRequestUpdateIn();
   export type CrossAccountRequestUpdateIn = {
-    end_date: string;
+    endDate: string;
     roles: Array<string>;
-    start_date: string;
+    startDate: string;
     status?:
       | ('pending' | 'approved' | 'expired' | 'cancelled' | 'denied')
       | undefined
@@ -121,19 +121,19 @@ export namespace Schemas {
     zodSchemaCrossAccountRequestWithRoles();
   export type CrossAccountRequestWithRoles = {
     created?: string | undefined | null;
-    end_date?: string | undefined | null;
-    request_id?: string | undefined | null;
+    endDate?: string | undefined | null;
+    requestId?: string | undefined | null;
     roles?:
       | Array<{
           description?: string | undefined | null;
-          display_name?: string | undefined | null;
+          displayName?: string | undefined | null;
           permissions?: Array<Permission> | undefined | null;
         }>
       | undefined
       | null;
-    start_date?: string | undefined | null;
+    startDate?: string | undefined | null;
     status?: string | undefined | null;
-    target_account?: string | undefined | null;
+    targetAccount?: string | undefined | null;
   };
 
   export const Error = zodSchemaError();
@@ -163,8 +163,8 @@ export namespace Schemas {
   export type GroupOut = Group &
     UUID &
     Timestamped & {
-      admin_default?: boolean | undefined | null;
-      platform_default?: boolean | undefined | null;
+      adminDefault?: boolean | undefined | null;
+      platformDefault?: boolean | undefined | null;
       principalCount?: number | undefined | null;
       roleCount?: number | undefined | null;
       system?: boolean | undefined | null;
@@ -230,7 +230,7 @@ export namespace Schemas {
     application?: string | undefined | null;
     description?: string | undefined | null;
     permission?: string | undefined | null;
-    resource_type?: string | undefined | null;
+    resourceType?: string | undefined | null;
     verb?: string | undefined | null;
   };
 
@@ -273,10 +273,10 @@ export namespace Schemas {
   export const Principal = zodSchemaPrincipal();
   export type Principal = {
     email: string;
-    first_name?: string | undefined | null;
-    is_active?: boolean | undefined | null;
-    is_org_admin?: boolean | undefined | null;
-    last_name?: string | undefined | null;
+    firstName?: string | undefined | null;
+    isActive?: boolean | undefined | null;
+    isOrgAdmin?: boolean | undefined | null;
+    lastName?: string | undefined | null;
     username: string;
   };
 
@@ -308,7 +308,7 @@ export namespace Schemas {
   export const Role = zodSchemaRole();
   export type Role = {
     description?: string | undefined | null;
-    display_name?: string | undefined | null;
+    displayName?: string | undefined | null;
     name: string;
   };
 
@@ -322,9 +322,9 @@ export namespace Schemas {
     UUID &
     Timestamped & {
       accessCount?: number | undefined | null;
-      admin_default?: boolean | undefined | null;
+      adminDefault?: boolean | undefined | null;
       applications?: Array<string> | undefined | null;
-      platform_default?: boolean | undefined | null;
+      platformDefault?: boolean | undefined | null;
       policyCount?: number | undefined | null;
       system?: boolean | undefined | null;
     };
@@ -334,11 +334,11 @@ export namespace Schemas {
     UUID &
     Timestamped & {
       accessCount: number;
-      admin_default: boolean;
+      adminDefault: boolean;
       applications: Array<string>;
-      groups_in?: Array<AdditionalGroup> | undefined | null;
-      groups_in_count?: number | undefined | null;
-      platform_default: boolean;
+      groupsIn?: Array<AdditionalGroup> | undefined | null;
+      groupsInCount?: number | undefined | null;
+      platformDefault: boolean;
       policyCount: number;
       system: boolean;
     };
@@ -356,7 +356,7 @@ export namespace Schemas {
   export const RolePatch = zodSchemaRolePatch();
   export type RolePatch = {
     description?: string | undefined | null;
-    display_name?: string | undefined | null;
+    displayName?: string | undefined | null;
     name?: string | undefined | null;
   };
 
@@ -367,7 +367,7 @@ export namespace Schemas {
 
   export const Status = zodSchemaStatus();
   export type Status = {
-    api_version: number;
+    apiVersion: number;
     commit?: string | undefined | null;
   };
 
@@ -391,7 +391,11 @@ export namespace Schemas {
           permission: z.string(),
           resourceDefinitions: z.array(zodSchemaResourceDefinition())
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          permission: o.permission,
+          resourceDefinitions: o.resourceDefinitions
+      }));
   }
 
   function zodSchemaAccessPagination() {
@@ -402,6 +406,9 @@ export namespace Schemas {
               data: z.array(zodSchemaAccess())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -412,7 +419,12 @@ export namespace Schemas {
           name: z.string().optional().nullable(),
           uuid: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          description: o.description,
+          name: o.name,
+          uuid: o.uuid
+      }));
   }
 
   function zodSchemaCrossAccountRequest() {
@@ -425,7 +437,15 @@ export namespace Schemas {
           status: z.string().optional().nullable(),
           target_account: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          endDate: o.end_date,
+          requestId: o.request_id,
+          startDate: o.start_date,
+          status: o.status,
+          targetAccount: o.target_account
+      }));
   }
 
   function zodSchemaCrossAccountRequestByAccount() {
@@ -438,6 +458,11 @@ export namespace Schemas {
               last_name: z.string().optional().nullable()
           })
           .nonstrict()
+          .transform((o) => ({
+              email: o.email,
+              firstName: o.first_name,
+              lastName: o.last_name
+          }))
       );
   }
 
@@ -449,6 +474,9 @@ export namespace Schemas {
               user_id: z.string().optional().nullable()
           })
           .nonstrict()
+          .transform((o) => ({
+              userId: o.user_id
+          }))
       );
   }
 
@@ -469,6 +497,11 @@ export namespace Schemas {
               last_name: z.unknown().optional().nullable()
           })
           .nonstrict()
+          .transform((o) => ({
+              email: o.email,
+              firstName: o.first_name,
+              lastName: o.last_name
+          }))
       );
   }
 
@@ -480,6 +513,9 @@ export namespace Schemas {
               user_id: z.unknown().optional().nullable()
           })
           .nonstrict()
+          .transform((o) => ({
+              userId: o.user_id
+          }))
       );
   }
 
@@ -491,7 +527,13 @@ export namespace Schemas {
           start_date: z.string(),
           target_account: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          endDate: o.end_date,
+          roles: o.roles,
+          startDate: o.start_date,
+          targetAccount: o.target_account
+      }));
   }
 
   function zodSchemaCrossAccountRequestOut() {
@@ -502,6 +544,9 @@ export namespace Schemas {
               user_id: z.string().optional().nullable()
           })
           .nonstrict()
+          .transform((o) => ({
+              userId: o.user_id
+          }))
       );
   }
 
@@ -518,6 +563,9 @@ export namespace Schemas {
               )
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -532,7 +580,13 @@ export namespace Schemas {
           .optional()
           .nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          endDate: o.end_date,
+          roles: o.roles,
+          startDate: o.start_date,
+          status: o.status
+      }));
   }
 
   function zodSchemaCrossAccountRequestUpdateIn() {
@@ -546,7 +600,13 @@ export namespace Schemas {
           .optional()
           .nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          endDate: o.end_date,
+          roles: o.roles,
+          startDate: o.start_date,
+          status: o.status
+      }));
   }
 
   function zodSchemaCrossAccountRequestWithRoles() {
@@ -567,6 +627,11 @@ export namespace Schemas {
                   .nullable()
               })
               .nonstrict()
+              .transform((o) => ({
+                  description: o.description,
+                  displayName: o.display_name,
+                  permissions: o.permissions
+              }))
           )
           .optional()
           .nullable(),
@@ -574,7 +639,16 @@ export namespace Schemas {
           status: z.string().optional().nullable(),
           target_account: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          endDate: o.end_date,
+          requestId: o.request_id,
+          roles: o.roles,
+          startDate: o.start_date,
+          status: o.status,
+          targetAccount: o.target_account
+      }));
   }
 
   function zodSchemaError() {
@@ -587,9 +661,16 @@ export namespace Schemas {
                   status: z.string().optional().nullable()
               })
               .nonstrict()
+              .transform((o) => ({
+                  detail: o.detail,
+                  status: o.status
+              }))
           )
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          errors: o.errors
+      }));
   }
 
   function zodSchemaError403() {
@@ -603,9 +684,17 @@ export namespace Schemas {
                   status: z.string().optional().nullable()
               })
               .nonstrict()
+              .transform((o) => ({
+                  detail: o.detail,
+                  source: o.source,
+                  status: o.status
+              }))
           )
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          errors: o.errors
+      }));
   }
 
   function zodSchemaGroup() {
@@ -614,7 +703,11 @@ export namespace Schemas {
           description: z.string().optional().nullable(),
           name: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          description: o.description,
+          name: o.name
+      }));
   }
 
   function zodSchemaGroupOut() {
@@ -633,6 +726,13 @@ export namespace Schemas {
                       system: z.boolean().optional().nullable()
                   })
                   .nonstrict()
+                  .transform((o) => ({
+                      adminDefault: o.admin_default,
+                      platformDefault: o.platform_default,
+                      principalCount: o.principalCount,
+                      roleCount: o.roleCount,
+                      system: o.system
+                  }))
               )
           )
       );
@@ -646,6 +746,9 @@ export namespace Schemas {
               data: z.array(zodSchemaGroupOut())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -654,7 +757,10 @@ export namespace Schemas {
       .object({
           principals: z.array(zodSchemaPrincipalIn())
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          principals: o.principals
+      }));
   }
 
   function zodSchemaGroupRoleIn() {
@@ -662,7 +768,10 @@ export namespace Schemas {
       .object({
           roles: z.array(z.string())
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          roles: o.roles
+      }));
   }
 
   function zodSchemaGroupRolesPagination() {
@@ -673,6 +782,9 @@ export namespace Schemas {
               data: z.array(zodSchemaRoleOut())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -688,6 +800,9 @@ export namespace Schemas {
                       principals: z.array(zodSchemaPrincipal())
                   })
                   .nonstrict()
+                  .transform((o) => ({
+                      principals: o.principals
+                  }))
               )
           )
       );
@@ -706,6 +821,10 @@ export namespace Schemas {
                       roles: z.array(zodSchemaRoleOut())
                   })
                   .nonstrict()
+                  .transform((o) => ({
+                      principals: o.principals,
+                      roles: o.roles
+                  }))
               )
           )
       );
@@ -717,7 +836,11 @@ export namespace Schemas {
           links: zodSchemaPaginationLinks().optional().nullable(),
           meta: zodSchemaPaginationMeta().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          links: o.links,
+          meta: o.meta
+      }));
   }
 
   function zodSchemaPaginationLinks() {
@@ -728,7 +851,13 @@ export namespace Schemas {
           next: z.string().optional().nullable(),
           previous: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          first: o.first,
+          last: o.last,
+          next: o.next,
+          previous: o.previous
+      }));
   }
 
   function zodSchemaPaginationMeta() {
@@ -736,7 +865,10 @@ export namespace Schemas {
       .object({
           count: z.number().int().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          count: o.count
+      }));
   }
 
   function zodSchemaPermission() {
@@ -748,7 +880,14 @@ export namespace Schemas {
           resource_type: z.string().optional().nullable(),
           verb: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          application: o.application,
+          description: o.description,
+          permission: o.permission,
+          resourceType: o.resource_type,
+          verb: o.verb
+      }));
   }
 
   function zodSchemaPermissionOptionsPagination() {
@@ -759,6 +898,9 @@ export namespace Schemas {
               data: z.array(z.string())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -770,6 +912,9 @@ export namespace Schemas {
               data: z.array(zodSchemaPermission())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -779,7 +924,11 @@ export namespace Schemas {
           description: z.string().optional().nullable(),
           name: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          description: o.description,
+          name: o.name
+      }));
   }
 
   function zodSchemaPolicyExtended() {
@@ -795,6 +944,10 @@ export namespace Schemas {
                       roles: z.array(zodSchemaRoleOut())
                   })
                   .nonstrict()
+                  .transform((o) => ({
+                      group: o.group,
+                      roles: o.roles
+                  }))
               )
           )
       );
@@ -809,6 +962,10 @@ export namespace Schemas {
               roles: z.array(z.string())
           })
           .nonstrict()
+          .transform((o) => ({
+              group: o.group,
+              roles: o.roles
+          }))
       );
   }
 
@@ -820,6 +977,9 @@ export namespace Schemas {
               data: z.array(zodSchemaPolicyExtended())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -833,7 +993,15 @@ export namespace Schemas {
           last_name: z.string().optional().nullable(),
           username: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          email: o.email,
+          firstName: o.first_name,
+          isActive: o.is_active,
+          isOrgAdmin: o.is_org_admin,
+          lastName: o.last_name,
+          username: o.username
+      }));
   }
 
   function zodSchemaPrincipalIn() {
@@ -841,7 +1009,10 @@ export namespace Schemas {
       .object({
           username: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          username: o.username
+      }));
   }
 
   function zodSchemaPrincipalOut() {
@@ -856,6 +1027,9 @@ export namespace Schemas {
               data: z.array(zodSchemaPrincipal())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -864,7 +1038,10 @@ export namespace Schemas {
       .object({
           attributeFilter: zodSchemaResourceDefinitionFilter()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          attributeFilter: o.attributeFilter
+      }));
   }
 
   function zodSchemaResourceDefinitionFilter() {
@@ -874,7 +1051,12 @@ export namespace Schemas {
           operation: z.enum([ 'equal', 'in' ]),
           value: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          key: o.key,
+          operation: o.operation,
+          value: o.value
+      }));
   }
 
   function zodSchemaRole() {
@@ -884,7 +1066,12 @@ export namespace Schemas {
           display_name: z.string().optional().nullable(),
           name: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          description: o.description,
+          displayName: o.display_name,
+          name: o.name
+      }));
   }
 
   function zodSchemaRoleIn() {
@@ -895,6 +1082,9 @@ export namespace Schemas {
               access: z.array(zodSchemaAccess())
           })
           .nonstrict()
+          .transform((o) => ({
+              access: o.access
+          }))
       );
   }
 
@@ -915,6 +1105,14 @@ export namespace Schemas {
                       system: z.boolean().optional().nullable()
                   })
                   .nonstrict()
+                  .transform((o) => ({
+                      accessCount: o.accessCount,
+                      adminDefault: o.admin_default,
+                      applications: o.applications,
+                      platformDefault: o.platform_default,
+                      policyCount: o.policyCount,
+                      system: o.system
+                  }))
               )
           )
       );
@@ -942,6 +1140,16 @@ export namespace Schemas {
                       system: z.boolean()
                   })
                   .nonstrict()
+                  .transform((o) => ({
+                      accessCount: o.accessCount,
+                      adminDefault: o.admin_default,
+                      applications: o.applications,
+                      groupsIn: o.groups_in,
+                      groupsInCount: o.groups_in_count,
+                      platformDefault: o.platform_default,
+                      policyCount: o.policyCount,
+                      system: o.system
+                  }))
               )
           )
       );
@@ -955,6 +1163,9 @@ export namespace Schemas {
               data: z.array(zodSchemaRoleOut())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -966,6 +1177,9 @@ export namespace Schemas {
               data: z.array(zodSchemaRoleOutDynamic())
           })
           .nonstrict()
+          .transform((o) => ({
+              data: o.data
+          }))
       );
   }
 
@@ -976,7 +1190,12 @@ export namespace Schemas {
           display_name: z.string().optional().nullable(),
           name: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          description: o.description,
+          displayName: o.display_name,
+          name: o.name
+      }));
   }
 
   function zodSchemaRoleWithAccess() {
@@ -987,6 +1206,9 @@ export namespace Schemas {
               access: z.array(zodSchemaAccess())
           })
           .nonstrict()
+          .transform((o) => ({
+              access: o.access
+          }))
       );
   }
 
@@ -996,7 +1218,11 @@ export namespace Schemas {
           api_version: z.number().int(),
           commit: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          apiVersion: o.api_version,
+          commit: o.commit
+      }));
   }
 
   function zodSchemaTimestamped() {
@@ -1005,7 +1231,11 @@ export namespace Schemas {
           created: z.string(),
           modified: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          modified: o.modified
+      }));
   }
 
   function zodSchemaUUID() {
@@ -1013,7 +1243,10 @@ export namespace Schemas {
       .object({
           uuid: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          uuid: o.uuid
+      }));
   }
 
   function zodSchema__Empty() {
@@ -1214,7 +1447,12 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            end_date: params.body.endDate,
+            roles: params.body.roles,
+            start_date: params.body.startDate,
+            target_account: params.body.targetAccount
+        })
         .config({
             rules: [
                 new ValidateRule(
@@ -1331,7 +1569,12 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('PUT', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            end_date: params.body.endDate,
+            roles: params.body.roles,
+            start_date: params.body.startDate,
+            status: params.body.status
+        })
         .config({
             rules: [
                 new ValidateRule(
@@ -1497,7 +1740,10 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            description: params.body.description,
+            name: params.body.name
+        })
         .config({
             rules: [
                 new ValidateRule(Schemas.GroupOut, 'GroupOut', 201),
@@ -1580,7 +1826,10 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('PUT', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            description: params.body.description,
+            name: params.body.name
+        })
         .config({
             rules: [
                 new ValidateRule(Schemas.GroupOut, 'GroupOut', 200),
@@ -1734,7 +1983,9 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            principals: params.body.principals
+        })
         .config({
             rules: [
                 new ValidateRule(
@@ -1906,7 +2157,10 @@ export namespace Operations {
     .object({
         data: z.array(Schemas.RoleOut)
     })
-    .nonstrict();
+    .nonstrict()
+    .transform((o) => ({
+        data: o.data
+    }));
     type Response200 = {
       data: Array<Schemas.RoleOut>;
     };
@@ -1932,7 +2186,9 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            roles: params.body.roles
+        })
         .config({
             rules: [
                 new ValidateRule(Response200, 'unknown', 200),

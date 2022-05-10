@@ -7,50 +7,50 @@ import { ValidateRule } from 'openapi2typescript';
 import {
     actionBuilder,
     ActionValidatableConfig
-} from 'openapi2typescript/react-fetching-library';
+} from 'openapi2typescript-plugin-react-fetching-library';
 import { Action } from 'react-fetching-library';
 import * as z from 'zod';
 
 export namespace Schemas {
   export const AddAccessRequest = zodSchemaAddAccessRequest();
   export type AddAccessRequest = {
-    application_id?: UUID | undefined | null;
+    applicationId?: UUID | undefined | null;
     role?: string | undefined | null;
   };
 
   export const AddApplicationRequest = zodSchemaAddApplicationRequest();
   export type AddApplicationRequest = {
-    bundle_id: UUID;
-    display_name: string;
+    bundleId: UUID;
+    displayName: string;
     name: string;
-    owner_role?: string | undefined | null;
+    ownerRole?: string | undefined | null;
   };
 
   export const AggregationEmailTemplate = zodSchemaAggregationEmailTemplate();
   export type AggregationEmailTemplate = {
     application?: Application1 | undefined | null;
-    application_id?: UUID | undefined | null;
-    body_template?: Template | undefined | null;
-    body_template_id: UUID;
+    applicationId?: UUID | undefined | null;
+    bodyTemplate?: Template | undefined | null;
+    bodyTemplateId: UUID;
     created?: string | undefined | null;
     id?: UUID | undefined | null;
-    subject_template?: Template | undefined | null;
-    subject_template_id: UUID;
-    subscription_type: EmailSubscriptionType;
+    subjectTemplate?: Template | undefined | null;
+    subjectTemplateId: UUID;
+    subscriptionType: EmailSubscriptionType;
     updated?: string | undefined | null;
   };
 
   export const Application = zodSchemaApplication();
   export type Application = {
-    display_name: string;
+    displayName: string;
     id: UUID;
   };
 
   export const Application1 = zodSchemaApplication1();
   export type Application1 = {
-    bundle_id: UUID;
+    bundleId: UUID;
     created?: string | undefined | null;
-    display_name: string;
+    displayName: string;
     id?: UUID | undefined | null;
     name: string;
     updated?: string | undefined | null;
@@ -66,10 +66,10 @@ export namespace Schemas {
   export type BehaviorGroup = {
     actions?: Array<BehaviorGroupAction> | undefined | null;
     bundle?: Bundle | undefined | null;
-    bundle_id: UUID;
+    bundleId: UUID;
     created?: string | undefined | null;
-    default_behavior?: boolean | undefined | null;
-    display_name: string;
+    defaultBehavior?: boolean | undefined | null;
+    displayName: string;
     id?: UUID | undefined | null;
     updated?: string | undefined | null;
   };
@@ -90,7 +90,7 @@ export namespace Schemas {
   export const Bundle = zodSchemaBundle();
   export type Bundle = {
     created?: string | undefined | null;
-    display_name: string;
+    displayName: string;
     id?: UUID | undefined | null;
     name: string;
     updated?: string | undefined | null;
@@ -98,32 +98,32 @@ export namespace Schemas {
 
   export const CamelProperties = zodSchemaCamelProperties();
   export type CamelProperties = {
-    basic_authentication?: BasicAuthentication | undefined | null;
-    disable_ssl_verification: boolean;
+    basicAuthentication?: BasicAuthentication | undefined | null;
+    disableSslVerification: boolean;
     extras?:
       | {
           [x: string]: string;
         }
       | undefined
       | null;
-    secret_token?: string | undefined | null;
-    sub_type?: string | undefined | null;
+    secretToken?: string | undefined | null;
+    subType?: string | undefined | null;
     url: string;
   };
 
   export const CurrentStatus = zodSchemaCurrentStatus();
   export type CurrentStatus = {
-    end_time?: string | undefined | null;
-    start_time?: string | undefined | null;
+    endTime?: string | undefined | null;
+    startTime?: string | undefined | null;
     status: Status;
   };
 
   export const EmailSubscriptionProperties =
     zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = {
-    group_id?: UUID | undefined | null;
-    ignore_preferences: boolean;
-    only_admins: boolean;
+    groupId?: UUID | undefined | null;
+    ignorePreferences: boolean;
+    onlyAdmins: boolean;
   };
 
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
@@ -140,7 +140,7 @@ export namespace Schemas {
       | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
-    sub_type?: string | undefined | null;
+    subType?: string | undefined | null;
     type: EndpointType;
     updated?: string | undefined | null;
   };
@@ -173,7 +173,7 @@ export namespace Schemas {
     application: string;
     bundle: string;
     created: string;
-    event_type: string;
+    eventType: string;
     id: UUID;
     payload?: string | undefined | null;
   };
@@ -186,19 +186,19 @@ export namespace Schemas {
         }
       | undefined
       | null;
-    endpoint_id?: UUID | undefined | null;
-    endpoint_sub_type?: string | undefined | null;
-    endpoint_type: EndpointType;
+    endpointId?: UUID | undefined | null;
+    endpointSubType?: string | undefined | null;
+    endpointType: EndpointType;
     id: UUID;
-    invocation_result: boolean;
+    invocationResult: boolean;
   };
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application1 | undefined | null;
-    application_id: UUID;
+    applicationId: UUID;
     description?: string | undefined | null;
-    display_name: string;
+    displayName: string;
     id?: UUID | undefined | null;
     name: string;
   };
@@ -216,28 +216,28 @@ export namespace Schemas {
 
   export const InstantEmailTemplate = zodSchemaInstantEmailTemplate();
   export type InstantEmailTemplate = {
-    body_template?: Template | undefined | null;
-    body_template_id: UUID;
+    bodyTemplate?: Template | undefined | null;
+    bodyTemplateId: UUID;
     created?: string | undefined | null;
-    event_type?: EventType | undefined | null;
-    event_type_id?: UUID | undefined | null;
+    eventType?: EventType | undefined | null;
+    eventTypeId?: UUID | undefined | null;
     id?: UUID | undefined | null;
-    subject_template?: Template | undefined | null;
-    subject_template_id: UUID;
+    subjectTemplate?: Template | undefined | null;
+    subjectTemplateId: UUID;
     updated?: string | undefined | null;
   };
 
   export const InternalApplicationUserPermission =
     zodSchemaInternalApplicationUserPermission();
   export type InternalApplicationUserPermission = {
-    application_display_name: string;
-    application_id: UUID;
+    applicationDisplayName: string;
+    applicationId: UUID;
     role: string;
   };
 
   export const InternalRoleAccess = zodSchemaInternalRoleAccess();
   export type InternalRoleAccess = {
-    application_id: UUID;
+    applicationId: UUID;
     id?: UUID | undefined | null;
     role: string;
   };
@@ -245,7 +245,7 @@ export namespace Schemas {
   export const InternalUserPermissions = zodSchemaInternalUserPermissions();
   export type InternalUserPermissions = {
     applications: Array<Application>;
-    is_admin: boolean;
+    isAdmin: boolean;
     roles: Array<string>;
   };
 
@@ -299,23 +299,23 @@ export namespace Schemas {
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
-    body_template: string;
+    bodyTemplate: string;
     payload: string;
-    subject_template: string;
+    subjectTemplate: string;
   };
 
   export const RequestDefaultBehaviorGroupPropertyList =
     zodSchemaRequestDefaultBehaviorGroupPropertyList();
   export type RequestDefaultBehaviorGroupPropertyList = {
-    ignore_preferences: boolean;
-    only_admins: boolean;
+    ignorePreferences: boolean;
+    onlyAdmins: boolean;
   };
 
   export const RequestEmailSubscriptionProperties =
     zodSchemaRequestEmailSubscriptionProperties();
   export type RequestEmailSubscriptionProperties = {
-    group_id?: UUID | undefined | null;
-    only_admins: boolean;
+    groupId?: UUID | undefined | null;
+    onlyAdmins: boolean;
   };
 
   export const ServerInfo = zodSchemaServerInfo();
@@ -341,10 +341,10 @@ export namespace Schemas {
 
   export const WebhookProperties = zodSchemaWebhookProperties();
   export type WebhookProperties = {
-    basic_authentication?: BasicAuthentication | undefined | null;
-    disable_ssl_verification: boolean;
+    basicAuthentication?: BasicAuthentication | undefined | null;
+    disableSslVerification: boolean;
     method: HttpType;
-    secret_token?: string | undefined | null;
+    secretToken?: string | undefined | null;
     url: string;
   };
 
@@ -357,7 +357,11 @@ export namespace Schemas {
           application_id: zodSchemaUUID().optional().nullable(),
           role: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          applicationId: o.application_id,
+          role: o.role
+      }));
   }
 
   function zodSchemaAddApplicationRequest() {
@@ -368,7 +372,13 @@ export namespace Schemas {
           name: z.string(),
           owner_role: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          bundleId: o.bundle_id,
+          displayName: o.display_name,
+          name: o.name,
+          ownerRole: o.owner_role
+      }));
   }
 
   function zodSchemaAggregationEmailTemplate() {
@@ -385,7 +395,19 @@ export namespace Schemas {
           subscription_type: zodSchemaEmailSubscriptionType(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          application: o.application,
+          applicationId: o.application_id,
+          bodyTemplate: o.body_template,
+          bodyTemplateId: o.body_template_id,
+          created: o.created,
+          id: o.id,
+          subjectTemplate: o.subject_template,
+          subjectTemplateId: o.subject_template_id,
+          subscriptionType: o.subscription_type,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaApplication() {
@@ -394,7 +416,11 @@ export namespace Schemas {
           display_name: z.string(),
           id: zodSchemaUUID()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          displayName: o.display_name,
+          id: o.id
+      }));
   }
 
   function zodSchemaApplication1() {
@@ -407,7 +433,15 @@ export namespace Schemas {
           name: z.string(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          bundleId: o.bundle_id,
+          created: o.created,
+          displayName: o.display_name,
+          id: o.id,
+          name: o.name,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaBasicAuthentication() {
@@ -416,7 +450,11 @@ export namespace Schemas {
           password: z.string().optional().nullable(),
           username: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          password: o.password,
+          username: o.username
+      }));
   }
 
   function zodSchemaBehaviorGroup() {
@@ -431,7 +469,17 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          actions: o.actions,
+          bundle: o.bundle,
+          bundleId: o.bundle_id,
+          created: o.created,
+          defaultBehavior: o.default_behavior,
+          displayName: o.display_name,
+          id: o.id,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaBehaviorGroupAction() {
@@ -441,7 +489,12 @@ export namespace Schemas {
           endpoint: zodSchemaEndpoint().optional().nullable(),
           id: zodSchemaBehaviorGroupActionId().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          endpoint: o.endpoint,
+          id: o.id
+      }));
   }
 
   function zodSchemaBehaviorGroupActionId() {
@@ -450,7 +503,11 @@ export namespace Schemas {
           behaviorGroupId: zodSchemaUUID(),
           endpointId: zodSchemaUUID()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          behaviorGroupId: o.behaviorGroupId,
+          endpointId: o.endpointId
+      }));
   }
 
   function zodSchemaBundle() {
@@ -462,7 +519,14 @@ export namespace Schemas {
           name: z.string(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          displayName: o.display_name,
+          id: o.id,
+          name: o.name,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaCamelProperties() {
@@ -477,7 +541,15 @@ export namespace Schemas {
           sub_type: z.string().optional().nullable(),
           url: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          basicAuthentication: o.basic_authentication,
+          disableSslVerification: o.disable_ssl_verification,
+          extras: o.extras,
+          secretToken: o.secret_token,
+          subType: o.sub_type,
+          url: o.url
+      }));
   }
 
   function zodSchemaCurrentStatus() {
@@ -487,7 +559,12 @@ export namespace Schemas {
           start_time: z.string().optional().nullable(),
           status: zodSchemaStatus()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          endTime: o.end_time,
+          startTime: o.start_time,
+          status: o.status
+      }));
   }
 
   function zodSchemaEmailSubscriptionProperties() {
@@ -497,7 +574,12 @@ export namespace Schemas {
           ignore_preferences: z.boolean(),
           only_admins: z.boolean()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          groupId: o.group_id,
+          ignorePreferences: o.ignore_preferences,
+          onlyAdmins: o.only_admins
+      }));
   }
 
   function zodSchemaEmailSubscriptionType() {
@@ -524,7 +606,18 @@ export namespace Schemas {
           type: zodSchemaEndpointType(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          description: o.description,
+          enabled: o.enabled,
+          id: o.id,
+          name: o.name,
+          properties: o.properties,
+          subType: o.sub_type,
+          type: o.type,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaEndpointPage() {
@@ -534,7 +627,12 @@ export namespace Schemas {
           links: z.record(z.string()),
           meta: zodSchemaMeta()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          data: o.data,
+          links: o.links,
+          meta: o.meta
+      }));
   }
 
   function zodSchemaEndpointProperties() {
@@ -560,7 +658,16 @@ export namespace Schemas {
           id: zodSchemaUUID(),
           payload: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          actions: o.actions,
+          application: o.application,
+          bundle: o.bundle,
+          created: o.created,
+          eventType: o.event_type,
+          id: o.id,
+          payload: o.payload
+      }));
   }
 
   function zodSchemaEventLogEntryAction() {
@@ -573,7 +680,15 @@ export namespace Schemas {
           id: zodSchemaUUID(),
           invocation_result: z.boolean()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          details: o.details,
+          endpointId: o.endpoint_id,
+          endpointSubType: o.endpoint_sub_type,
+          endpointType: o.endpoint_type,
+          id: o.id,
+          invocationResult: o.invocation_result
+      }));
   }
 
   function zodSchemaEventType() {
@@ -586,7 +701,15 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           name: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          application: o.application,
+          applicationId: o.application_id,
+          description: o.description,
+          displayName: o.display_name,
+          id: o.id,
+          name: o.name
+      }));
   }
 
   function zodSchemaFacet() {
@@ -600,7 +723,13 @@ export namespace Schemas {
           id: z.string(),
           name: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          children: o.children,
+          displayName: o.displayName,
+          id: o.id,
+          name: o.name
+      }));
   }
 
   function zodSchemaHttpType() {
@@ -620,7 +749,18 @@ export namespace Schemas {
           subject_template_id: zodSchemaUUID(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          bodyTemplate: o.body_template,
+          bodyTemplateId: o.body_template_id,
+          created: o.created,
+          eventType: o.event_type,
+          eventTypeId: o.event_type_id,
+          id: o.id,
+          subjectTemplate: o.subject_template,
+          subjectTemplateId: o.subject_template_id,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaInternalApplicationUserPermission() {
@@ -630,7 +770,12 @@ export namespace Schemas {
           application_id: zodSchemaUUID(),
           role: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          applicationDisplayName: o.application_display_name,
+          applicationId: o.application_id,
+          role: o.role
+      }));
   }
 
   function zodSchemaInternalRoleAccess() {
@@ -640,7 +785,12 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           role: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          applicationId: o.application_id,
+          id: o.id,
+          role: o.role
+      }));
   }
 
   function zodSchemaInternalUserPermissions() {
@@ -650,7 +800,12 @@ export namespace Schemas {
           is_admin: z.boolean(),
           roles: z.array(z.string())
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          applications: o.applications,
+          isAdmin: o.is_admin,
+          roles: o.roles
+      }));
   }
 
   function zodSchemaMessageValidationResponse() {
@@ -658,7 +813,10 @@ export namespace Schemas {
       .object({
           errors: z.record(z.array(z.string()))
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          errors: o.errors
+      }));
   }
 
   function zodSchemaMeta() {
@@ -666,7 +824,10 @@ export namespace Schemas {
       .object({
           count: z.number().int()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          count: o.count
+      }));
   }
 
   function zodSchemaNotificationHistory() {
@@ -681,7 +842,17 @@ export namespace Schemas {
           invocationResult: z.boolean(),
           invocationTime: z.number().int()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          details: o.details,
+          endpointId: o.endpointId,
+          endpointSubType: o.endpointSubType,
+          endpointType: o.endpointType,
+          id: o.id,
+          invocationResult: o.invocationResult,
+          invocationTime: o.invocationTime
+      }));
   }
 
   function zodSchemaPageEventLogEntry() {
@@ -691,7 +862,12 @@ export namespace Schemas {
           links: z.record(z.string()),
           meta: zodSchemaMeta()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          data: o.data,
+          links: o.links,
+          meta: o.meta
+      }));
   }
 
   function zodSchemaPageEventType() {
@@ -701,7 +877,12 @@ export namespace Schemas {
           links: z.record(z.string()),
           meta: zodSchemaMeta()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          data: o.data,
+          links: o.links,
+          meta: o.meta
+      }));
   }
 
   function zodSchemaRenderEmailTemplateRequest() {
@@ -711,7 +892,12 @@ export namespace Schemas {
           payload: z.string(),
           subject_template: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          bodyTemplate: o.body_template,
+          payload: o.payload,
+          subjectTemplate: o.subject_template
+      }));
   }
 
   function zodSchemaRequestDefaultBehaviorGroupPropertyList() {
@@ -720,7 +906,11 @@ export namespace Schemas {
           ignore_preferences: z.boolean(),
           only_admins: z.boolean()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          ignorePreferences: o.ignore_preferences,
+          onlyAdmins: o.only_admins
+      }));
   }
 
   function zodSchemaRequestEmailSubscriptionProperties() {
@@ -729,7 +919,11 @@ export namespace Schemas {
           group_id: zodSchemaUUID().optional().nullable(),
           only_admins: z.boolean()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          groupId: o.group_id,
+          onlyAdmins: o.only_admins
+      }));
   }
 
   function zodSchemaServerInfo() {
@@ -737,7 +931,10 @@ export namespace Schemas {
       .object({
           environment: zodSchemaEnvironment().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          environment: o.environment
+      }));
   }
 
   function zodSchemaStatus() {
@@ -754,7 +951,15 @@ export namespace Schemas {
           name: z.string(),
           updated: z.string().optional().nullable()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          created: o.created,
+          data: o.data,
+          description: o.description,
+          id: o.id,
+          name: o.name,
+          updated: o.updated
+      }));
   }
 
   function zodSchemaUUID() {
@@ -772,7 +977,14 @@ export namespace Schemas {
           secret_token: z.string().optional().nullable(),
           url: z.string()
       })
-      .nonstrict();
+      .nonstrict()
+      .transform((o) => ({
+          basicAuthentication: o.basic_authentication,
+          disableSslVerification: o.disable_ssl_verification,
+          method: o.method,
+          secretToken: o.secret_token,
+          url: o.url
+      }));
   }
 
   function zodSchema__Empty() {
@@ -873,7 +1085,17 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            created: params.body.created,
+            description: params.body.description,
+            enabled: params.body.enabled,
+            id: params.body.id,
+            name: params.body.name,
+            properties: params.body.properties,
+            sub_type: params.body.subType,
+            type: params.body.type,
+            updated: params.body.updated
+        })
         .config({
             rules: [
                 new ValidateRule(Schemas.Endpoint, 'Endpoint', 200),
@@ -979,7 +1201,10 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            group_id: params.body.groupId,
+            only_admins: params.body.onlyAdmins
+        })
         .config({
             rules: [
                 new ValidateRule(Schemas.Endpoint, 'Endpoint', 200),
@@ -1043,7 +1268,17 @@ export namespace Operations {
         const query = {} as Record<string, any>;
         return actionBuilder('PUT', path)
         .queryParams(query)
-        .data(params.body)
+        .data({
+            created: params.body.created,
+            description: params.body.description,
+            enabled: params.body.enabled,
+            id: params.body.id,
+            name: params.body.name,
+            properties: params.body.properties,
+            sub_type: params.body.subType,
+            type: params.body.type,
+            updated: params.body.updated
+        })
         .config({
             rules: [
                 new ValidateRule(Response200, 'unknown', 200),
