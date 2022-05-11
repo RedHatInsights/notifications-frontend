@@ -15,7 +15,8 @@ export const listIntegrationsActionCreator = (pager?: Page) => {
         offset: +query.offset,
         type: query.filterType ? (query.filterType as Array<IntegrationType>) : undefined,
         active: query.filterActive ? query.filterActive === 'true' : undefined,
-        name: query.filterName ? query.filterName.toString() : ''
+        name: query.filterName ? query.filterName.toString() : '',
+        sortBy: pager?.sort ?  `${pager.sort.column}:${pager.sort.direction}` : undefined
     });
 };
 

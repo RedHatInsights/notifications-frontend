@@ -1,5 +1,5 @@
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue } from '@redhat-cloud-services/insights-common-typescript';
+import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
@@ -62,7 +62,9 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
         );
     }, [ userIntegrations ]);
 
-    const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
+    const sort = useSort();
+
+    const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters, sort.sortBy);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
     const exportIntegrationsQuery = useListIntegrationPQuery();
 
@@ -188,6 +190,8 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                             onCollapse={ integrationRows.onCollapse }
                             onEnable={ canWriteIntegrationsEndpoints ? integrationRows.onEnable : undefined }
                             actionResolver={ actionResolver }
+                            onSort={ sort.onSort }
+                            sortBy={ sort.sortBy }
                         />
                     </IntegrationsToolbar>
                     { modalIsOpenState.isOpen && (
