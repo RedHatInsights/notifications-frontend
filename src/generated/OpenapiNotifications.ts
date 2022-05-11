@@ -991,6 +991,8 @@ export namespace Operations {
   export namespace NotificationResourceGetEventTypes {
     const ApplicationIds = z.array(z.string());
     type ApplicationIds = Array<string>;
+    const EventTypeName = z.string();
+    type EventTypeName = string;
     const Limit = z.number().int();
     type Limit = number;
     const Offset = z.number().int();
@@ -1002,6 +1004,7 @@ export namespace Operations {
     export interface Params {
       applicationIds?: ApplicationIds;
       bundleId?: Schemas.UUID;
+      eventTypeName?: EventTypeName;
       limit?: Limit;
       offset?: Offset;
       pageNumber?: PageNumber;
@@ -1023,6 +1026,10 @@ export namespace Operations {
 
         if (params.bundleId !== undefined) {
             query.bundleId = params.bundleId;
+        }
+
+        if (params.eventTypeName !== undefined) {
+            query.eventTypeName = params.eventTypeName;
         }
 
         if (params.limit !== undefined) {

@@ -1,6 +1,6 @@
 import { global_spacer_xl } from '@patternfly/react-tokens';
 import { Section } from '@redhat-cloud-services/frontend-components';
-import { arrayValue, Direction, ExporterType, Filter, Operator, Sort } from '@redhat-cloud-services/insights-common-typescript';
+import { arrayValue, Direction, ExporterType, Filter, Operator, Sort, stringValue } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useCallback } from 'react';
 import { style } from 'typestyle';
@@ -49,6 +49,12 @@ const useFilterBuilder = (bundle: Facet, appFilterOptions: Array<Facet>) => {
         }
 
         filter.and('bundleId', Operator.EQUAL, bundle.id);
+
+        const eventTypeFilter = filters && filters[NotificationFilterColumn.NAME];
+        if (eventTypeFilter) {
+            const eventTypeFilterName = stringValue(eventTypeFilter);
+            filter.and('eventFilterName', Operator.EQUAL, eventTypeFilterName);
+        }
 
         return filter;
     }, [ bundle, appFilterOptions ]);
