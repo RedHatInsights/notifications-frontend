@@ -65,28 +65,22 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     const [ validatedHecToken, setValidatedHecToken ] = useState<ValidatedOptions>(ValidatedOptions.default);
 
     const onHostnameChange = async (value) => {
+        setHostName(value);
         if (value === '') {
             setValidatedServerHostname(ValidatedOptions.default);
         } else {
             const isValid = await SplunkURLSchema.isValid(value);
             setValidatedServerHostname(isValid ? ValidatedOptions.success : ValidatedOptions.error);
         }
-
-        if (!stepIsInProgress) {
-            setHostName(value);
-        }
     };
 
     const onHecTokenChange = async (value) => {
+        setHecToken(value);
         if (value === '') {
             setValidatedHecToken(ValidatedOptions.default);
         } else {
             const isValid = await string().uuid().isValid(value);
             setValidatedHecToken(isValid ? ValidatedOptions.success : ValidatedOptions.error);
-        }
-
-        if (!stepIsInProgress) {
-            setHecToken(value);
         }
     };
 
