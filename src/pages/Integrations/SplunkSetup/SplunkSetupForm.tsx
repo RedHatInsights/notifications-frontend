@@ -77,13 +77,12 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
         }
     };
 
-    const onHecTokenChange = (value) => {
+    const onHecTokenChange = async (value) => {
         if (value === '') {
             setValidatedHecToken(ValidatedOptions.default);
-        } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
-            setValidatedHecToken(ValidatedOptions.success);
         } else {
-            setValidatedHecToken(ValidatedOptions.error);
+            const isValid = await string().uuid().isValid(value);
+            setValidatedHecToken(isValid ? ValidatedOptions.success : ValidatedOptions.error);
         }
 
         if (!stepIsInProgress) {
