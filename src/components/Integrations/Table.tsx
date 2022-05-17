@@ -1,9 +1,4 @@
-import {
-    EmptyStateVariant,
-    Spinner,
-    Switch,
-    Text
-} from '@patternfly/react-core';
+import { EmptyStateVariant, Spinner, Switch, Text } from '@patternfly/react-core';
 import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
@@ -14,7 +9,10 @@ import {
     ICell,
     IRow,
     IRowData,
+    ISortBy,
     RowWrapperProps,
+    sortable,
+    SortByDirection,
     Table,
     TableBody,
     TableHeader
@@ -27,7 +25,7 @@ import {
     global_warning_color_200
 } from '@patternfly/react-tokens';
 import { SkeletonTable } from '@redhat-cloud-services/frontend-components';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { Direction, OuiaComponentProps, Sort, UseSortReturn } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import { important } from 'csx';
 import * as React from 'react';
@@ -53,6 +51,8 @@ interface IntegrationsTableProps extends OuiaComponentProps {
     onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
     onEnable?: OnEnable;
     actionResolver: (row: IntegrationRow, index: number) => IActions;
+    sortBy?: Sort;
+    onSort?: UseSortReturn['onSort'];
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -243,11 +243,11 @@ const columns: Array<ICell> = [
     {
         title: Messages.components.integrations.table.columns.name,
         cellFormatters: [ expandable ],
-        transforms: []
+        transforms: [ sortable ]
     },
     {
         title: Messages.components.integrations.table.columns.type,
-        transforms: []
+        transforms: [ ]
     },
     {
         title: Messages.components.integrations.table.columns.lastConnectionAttempt,
@@ -255,7 +255,18 @@ const columns: Array<ICell> = [
     },
     {
         title: Messages.components.integrations.table.columns.enabled,
-        transforms: []
+        transforms: [ sortable ]
+    }
+];
+
+const sortMapper = [
+    {
+        name: 'name',
+        index: 1
+    },
+    {
+        name: 'enabled',
+        index: 4
     }
 ];
 
@@ -323,6 +334,31 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
         }
     }, [ props.integrations, props.onCollapse ]);
 
+    const onSort = React.useCallback((event, column: number, direction: SortByDirection) => {
+        const propsOnSort = props.onSort;
+        const mapping = sortMapper.find(p => p.index === column);
+        if (propsOnSort && mapping) {
+            propsOnSort(mapping.index, mapping.name, direction === SortByDirection.asc ? Direction.ASCENDING : Direction.DESCENDING);
+        }
+    }, [ props.onSort ]);
+
+    const sortBy = React.useMemo<ISortBy>(() => {
+        const propsSortBy = props.sortBy;
+        if (propsSortBy) {
+            const mapping = sortMapper.find(p => p.name === propsSortBy.column);
+            if (mapping) {
+                return {
+                    index: mapping.index,
+                    direction: propsSortBy.direction === Direction.ASCENDING ? SortByDirection.asc : SortByDirection.desc
+                };
+            }
+        }
+
+        return {
+            defaultDirection: SortByDirection.asc
+        };
+    }, [ props.sortBy ]);
+
     const rows = React.useMemo(() => {
         return toTableRows(props.integrations, props.onEnable);
     }, [ props.integrations, props.onEnable ]);
@@ -375,6 +411,8 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
                 rowWrapper={ RowWrapper as (props: RowWrapperProps) => React.ReactElement }
                 actionResolver={ actionsResolverCallback }
                 isStickyHeader={ true }
+                onSort={ onSort }
+                sortBy={ sortBy }
             >
                 <TableHeader />
                 <TableBody />

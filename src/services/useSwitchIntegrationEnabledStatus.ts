@@ -7,11 +7,11 @@ import { Integration, ServerIntegrationResponse } from '../types/Integration';
 
 export const switchIntegrationEnabledStatusActionCreator = (integration: Integration) => {
     if (integration.isEnabled) {
-        return Operations.EndpointServiceDisableEndpoint.actionCreator({
+        return Operations.EndpointResourceDisableEndpoint.actionCreator({
             id: integration.id
         });
     } else {
-        return Operations.EndpointServiceEnableEndpoint.actionCreator({
+        return Operations.EndpointResourceEnableEndpoint.actionCreator({
             id: integration.id
         });
     }

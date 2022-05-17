@@ -51,7 +51,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         }));
 
         return {
-            [NotificationFilterColumn.NAME]: isStagingOrProd(insights) ? undefined : {
+            [NotificationFilterColumn.NAME]: {
                 label: 'Event type',
                 placeholder: 'Filter by event type'
             },

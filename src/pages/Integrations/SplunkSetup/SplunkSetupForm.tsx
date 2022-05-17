@@ -18,6 +18,7 @@ import {
 import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { string } from 'yup';
 
 import { DOCUMENTATION_URL, OPEN_CASE_URL, SPLUNK_CLOUD_HEC_DOC } from './Constants';
 import { useSplunkSetup } from './useSplunkSetup';
@@ -37,6 +38,21 @@ interface SplunkSetupFormProps {
     setError: Dispatch<SetStateAction<Error | undefined>>;
 }
 
+const SplunkURLSchema = string().url().test(
+    'has-no-path',
+    'URL contains path or parameters',
+    (url) => {
+        let urlObj;
+        try {
+            urlObj = new URL(url as string);
+        } catch {
+            return false;
+        }
+
+        return (urlObj.pathname === '/' || urlObj.pathname === '') && urlObj.search === '';
+    }
+);
+
 export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     setStep, stepIsInProgress, setStepIsInProgress, stepVariant, setStepVariant,
     hecToken, setHecToken, splunkServerHostName, setHostName,
@@ -48,31 +64,23 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     const [ validatedServerHostname, setValidatedServerHostname ] = useState<ValidatedOptions>(ValidatedOptions.default);
     const [ validatedHecToken, setValidatedHecToken ] = useState<ValidatedOptions>(ValidatedOptions.default);
 
-    const onHostnameChange = (value) => {
+    const onHostnameChange = async (value) => {
+        setHostName(value);
         if (value === '') {
             setValidatedServerHostname(ValidatedOptions.default);
-        } else if (/^https?:\/\/[\w\.]+(:\d+)?$/i.test(value)) {
-            setValidatedServerHostname(ValidatedOptions.success);
         } else {
-            setValidatedServerHostname(ValidatedOptions.error);
-        }
-
-        if (!stepIsInProgress) {
-            setHostName(value);
+            const isValid = await SplunkURLSchema.isValid(value);
+            setValidatedServerHostname(isValid ? ValidatedOptions.success : ValidatedOptions.error);
         }
     };
 
-    const onHecTokenChange = (value) => {
+    const onHecTokenChange = async (value) => {
+        setHecToken(value);
         if (value === '') {
             setValidatedHecToken(ValidatedOptions.default);
-        } else if (/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(value)) {
-            setValidatedHecToken(ValidatedOptions.success);
         } else {
-            setValidatedHecToken(ValidatedOptions.error);
-        }
-
-        if (!stepIsInProgress) {
-            setHecToken(value);
+            const isValid = await string().uuid().isValid(value);
+            setValidatedHecToken(isValid ? ValidatedOptions.success : ValidatedOptions.error);
         }
     };
 

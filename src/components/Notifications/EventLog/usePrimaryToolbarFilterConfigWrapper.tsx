@@ -80,7 +80,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         filters: EventLogFilters,
         bundles?: readonly Schemas.Facet[]
     ) => {
-        const createCustomFilterObj = (bundleName: string, bundle: Schemas.Facet | undefined, applications: Schemas.Facet[] | undefined) => {
+        const createCustomFilterObj = (bundleName: string, bundle: Schemas.Facet | undefined, applications: Schemas.Facet[] | undefined | null) => {
             const bundleDisplayName = bundle?.displayName;
             const applicationChips = (!bundle?.children ?
                 [

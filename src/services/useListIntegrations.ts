@@ -10,16 +10,17 @@ import { IntegrationType, UserIntegration } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
     const query = (pager ?? Page.defaultPage()).toQuery();
-    return Operations.EndpointServiceGetEndpoints.actionCreator({
+    return Operations.EndpointResourceGetEndpoints.actionCreator({
         limit: +query.limit,
         offset: +query.offset,
         type: query.filterType ? (query.filterType as Array<IntegrationType>) : undefined,
         active: query.filterActive ? query.filterActive === 'true' : undefined,
-        name: query.filterName ? query.filterName.toString() : ''
+        name: query.filterName ? query.filterName.toString() : '',
+        sortBy: pager?.sort ?  `${pager.sort.column}:${pager.sort.direction}` : undefined
     });
 };
 
-export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: Operations.EndpointServiceGetEndpoints.Payload) => {
+export const listIntegrationIntegrationDecoder = validationResponseTransformer((payload: Operations.EndpointResourceGetEndpoints.Payload) => {
     if (payload?.status === 200) {
         return validatedResponse(
             'IntegrationPage',

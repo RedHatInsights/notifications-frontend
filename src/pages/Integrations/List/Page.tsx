@@ -1,11 +1,5 @@
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
-import {
-    addDangerNotification,
-    ExporterType,
-    Filter,
-    Operator,
-    Page
-} from '@redhat-cloud-services/insights-common-typescript';
+import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
@@ -56,6 +50,11 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
             filter.and('active', Operator.EQUAL, isEnabled.toString());
         }
 
+        if (filters?.name) {
+            const name = stringValue(filters.name);
+            filter.and('name', Operator.EQUAL, name);
+        }
+
         return filter.and(
             'type',
             Operator.EQUAL,
@@ -63,7 +62,9 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
         );
     }, [ userIntegrations ]);
 
-    const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters);
+    const sort = useSort();
+
+    const pageData = usePage<IntegrationFilters>(10, integrationFilterBuilder, integrationFilter.filters, sort.sortBy);
     const integrationsQuery = useListIntegrationsQuery(pageData.page);
     const exportIntegrationsQuery = useListIntegrationPQuery();
 
@@ -189,6 +190,8 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                             onCollapse={ integrationRows.onCollapse }
                             onEnable={ canWriteIntegrationsEndpoints ? integrationRows.onEnable : undefined }
                             actionResolver={ actionResolver }
+                            onSort={ sort.onSort }
+                            sortBy={ sort.sortBy }
                         />
                     </IntegrationsToolbar>
                     { modalIsOpenState.isOpen && (

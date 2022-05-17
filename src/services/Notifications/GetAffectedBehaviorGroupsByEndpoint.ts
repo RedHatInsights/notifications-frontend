@@ -6,13 +6,13 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
 
 const behaviorGroupsForEndpointActionCreator = (integrationId: string) => {
-    return Operations.NotificationServiceGetBehaviorGroupsAffectedByRemovalOfEndpoint.actionCreator({
+    return Operations.NotificationResourceGetBehaviorGroupsAffectedByRemovalOfEndpoint.actionCreator({
         endpointId: integrationId
     });
 };
 
 const defaultBehaviorGroupDecoder = validationResponseTransformer(
-    (payload: Operations.NotificationServiceGetBehaviorGroupsAffectedByRemovalOfEndpoint.Payload) => {
+    (payload: Operations.NotificationResourceGetBehaviorGroupsAffectedByRemovalOfEndpoint.Payload) => {
         if (payload.status === 200) {
             return validatedResponse(
                 'BehaviorGroups',
