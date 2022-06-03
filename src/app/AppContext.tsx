@@ -9,6 +9,7 @@ export interface AppContext {
         canReadIntegrationsEndpoints: boolean;
         canWriteNotifications: boolean;
         canReadNotifications: boolean;
+        canReadEvents: boolean;
     },
     isOrgAdmin: boolean,
     server: Server
@@ -19,7 +20,8 @@ export const AppContext = React.createContext<AppContext>({
         canReadIntegrationsEndpoints: false,
         canReadNotifications: false,
         canWriteIntegrationsEndpoints: false,
-        canWriteNotifications: false
+        canWriteNotifications: false,
+        canReadEvents: false
     },
     isOrgAdmin: false,
     server: {
