@@ -1,10 +1,10 @@
 import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { global_danger_color_100, global_spacer_xs, global_success_color_100 } from '@patternfly/react-tokens';
-import { toUtc } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
-import format from 'date-fns/format';
 import * as React from 'react';
 import { style } from 'typestyle';
+
+import { DateFormat } from '@redhat-cloud-services/frontend-components';
 
 export interface ConnectionAttemptProps {
     type: ConnectionAttemptType;
@@ -20,8 +20,6 @@ const dateClassName = style({
     marginLeft: global_spacer_xs.var
 });
 
-const dateFormatString = 'MMM d, HH:mm:ss';
-
 const getIcon = (type: ConnectionAttemptType) => {
     switch (type) {
         case ConnectionAttemptType.SUCCESS:
@@ -34,10 +32,12 @@ const getIcon = (type: ConnectionAttemptType) => {
 };
 
 export const ConnectionAttempt: React.FunctionComponent<ConnectionAttemptProps> = (props) => {
-    const formattedDate = format(toUtc(props.date), dateFormatString);
     return (
         <>
-            { getIcon(props.type) } <span className={ dateClassName }> { formattedDate } UTC </span>
+            { getIcon(props.type) }
+            <span className={ dateClassName }>
+                <DateFormat type="relative" date={ props.date } />
+            </span>
         </>
     );
 };

@@ -6,12 +6,12 @@ import assertNever from 'assert-never';
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { DateFormat } from '@redhat-cloud-services/frontend-components';
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
 import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
 import { EmptyStateSearch } from '../../EmptyStateSearch';
-import { UtcDate } from '../../UtcDate';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
 
 export type SortDirection = 'asc' | 'desc';
@@ -120,7 +120,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                         ) : ('No actions')}
 
                     </Td>
-                    <Td><UtcDate date={ e.date } /></Td>
+                    <Td><DateFormat type="relative" date={ e.date } /></Td>
                 </Tr>
             ));
         }
