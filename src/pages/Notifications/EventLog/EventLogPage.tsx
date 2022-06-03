@@ -1,12 +1,9 @@
-import { Split, SplitItem, Text, TextContent } from '@patternfly/react-core';
-import { global_spacer_sm } from '@patternfly/react-tokens';
-import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
+import { Main } from '@redhat-cloud-services/frontend-components';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { useParameterizedQuery } from 'react-fetching-library';
 import { Link } from 'react-router-dom';
-import { style } from 'typestyle';
 
 import { ButtonLink } from '../../../components/ButtonLink';
 import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
@@ -17,6 +14,7 @@ import {
     SortDirection
 } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
+import { PageHeader } from '../../../components/PageHeader';
 import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
@@ -31,10 +29,6 @@ import { useEventLogFilter } from './useEventLogFilter';
 import { useFilterBuilder } from './useFilterBuilder';
 
 const RETENTION_DAYS = 14;
-
-const subtitleClassName = style({
-    paddingTop: global_spacer_sm.value
-});
 
 export const EventLogPage: React.FunctionComponent = () => {
     const getEndpoint = useParameterizedQuery(getEndpointAction);
@@ -131,21 +125,13 @@ export const EventLogPage: React.FunctionComponent = () => {
 
     return (
         <>
-            <PageHeader>
-                <Split>
-                    <SplitItem isFilled>
-                        <PageHeaderTitle title={ Messages.pages.notifications.eventLog.title } />
-                        <TextContent className={ subtitleClassName }>
-                            <Text>{ Messages.pages.notifications.eventLog.subtitle }</Text>
-                        </TextContent>
-                    </SplitItem>
-                    <SplitItem>
-                        <Link component={ ButtonLink } to={ eventNotificationPageUrl } >
-                            { Messages.pages.notifications.eventLog.viewNotifications }
-                        </Link>
-                    </SplitItem>
-                </Split>
-            </PageHeader>
+            <PageHeader
+                title={ Messages.pages.notifications.eventLog.title }
+                subtitle={ Messages.pages.notifications.eventLog.subtitle }
+                action={ <Link component={ ButtonLink } to={ eventNotificationPageUrl } >
+                    { Messages.pages.notifications.eventLog.viewNotifications }
+                </Link> }
+            />
             <Main>
                 <EventLogToolbar
                     { ...eventLogFilters }
