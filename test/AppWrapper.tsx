@@ -14,6 +14,7 @@ import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
 import { createStore, resetStore } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
+import { DeepPartial } from 'ts-essentials';
 
 let setup = false;
 let client;
@@ -52,7 +53,7 @@ export const appWrapperCleanup = () => {
 type Config = {
     router?: MemoryRouterProps;
     route?: RouteProps;
-    appContext?: Partial<AppContext>;
+    appContext?: Partial<Omit<AppContext, 'rbac'>> & DeepPartial<Pick<AppContext, 'rbac'>>;
     getLocation?: jest.Mock; // Pass a jest.fn() to get back the location hook
     skipIsBetaMock?: boolean;
 }
@@ -62,7 +63,8 @@ const defaultAppContextSettings: AppContext = {
         canWriteNotifications: true,
         canWriteIntegrationsEndpoints: true,
         canReadIntegrationsEndpoints: true,
-        canReadNotifications: true
+        canReadNotifications: true,
+        canReadEvents: true
     },
     server: {
         status: ServerStatus.RUNNING
@@ -91,12 +93,21 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
         throw new Error('appWrapperSetup has not been called, you need to call it on the beforeEach');
     }
 
+    const completeAppContext = {
+        ...defaultAppContextSettings,
+        ...props.appContext,
+        rbac: {
+            ...defaultAppContextSettings.rbac,
+            ...props.appContext?.rbac
+        }
+    };
+
     return (
         <IntlProvider locale={ navigator.language } messages={ messages }>
             <Provider store={ store }>
                 <Router { ...props.router } >
                     <ClientContextProvider client={ client }>
-                        <AppContext.Provider value={ { ...defaultAppContextSettings, ...props.appContext } }>
+                        <AppContext.Provider value={ completeAppContext }>
                             <NotificationsPortal />
                             <InternalWrapper { ...props }>
                                 <Route { ...props.route } >

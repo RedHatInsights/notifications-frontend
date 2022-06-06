@@ -609,10 +609,7 @@ describe('src/pages/Notifications/List/Page', () => {
                 ...routePropsPageForBundle('rhel'),
                 appContext: {
                     rbac: {
-                        canWriteNotifications: false,
-                        canWriteIntegrationsEndpoints: true,
-                        canReadIntegrationsEndpoints: true,
-                        canReadNotifications: true
+                        canWriteNotifications: false
                     }
                 },
                 skipIsBetaMock: true
@@ -644,15 +641,7 @@ describe('src/pages/Notifications/List/Page', () => {
         mockBehaviorGroupsOfEventTypes();
         render(<NotificationsListPage />, {
             wrapper: getConfiguredAppWrapper({
-                ...routePropsPageForBundle('rhel'),
-                appContext: {
-                    rbac: {
-                        canWriteNotifications: true,
-                        canWriteIntegrationsEndpoints: true,
-                        canReadIntegrationsEndpoints: true,
-                        canReadNotifications: true
-                    }
-                }
+                ...routePropsPageForBundle('rhel')
             })
         });
 
@@ -683,15 +672,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('rhel'),
-                    appContext: {
-                        rbac: {
-                            canWriteNotifications: true,
-                            canWriteIntegrationsEndpoints: true,
-                            canReadIntegrationsEndpoints: true,
-                            canReadNotifications: true
-                        }
-                    }
+                    ...routePropsPageForBundle('rhel')
                 })
             });
 
@@ -719,15 +700,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('rhel'),
-                    appContext: {
-                        rbac: {
-                            canWriteNotifications: true,
-                            canWriteIntegrationsEndpoints: true,
-                            canReadIntegrationsEndpoints: true,
-                            canReadNotifications: true
-                        }
-                    }
+                    ...routePropsPageForBundle('rhel')
                 })
             });
 
@@ -755,15 +728,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('rhel'),
-                    appContext: {
-                        rbac: {
-                            canWriteNotifications: true,
-                            canWriteIntegrationsEndpoints: true,
-                            canReadIntegrationsEndpoints: true,
-                            canReadNotifications: true
-                        }
-                    }
+                    ...routePropsPageForBundle('rhel')
                 })
             });
 
@@ -772,6 +737,37 @@ describe('src/pages/Notifications/List/Page', () => {
             userEvent.click(screen.getByText(/create new group/i));
             await waitForAsyncEvents();
             expect(screen.getByText(/Create new behavior group/i)).toBeVisible();
+        });
+
+        it('View Event Log is disabled if canReadEvents is false', async () => {
+            fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
+                body: [] as Array<Schemas.Endpoint>
+            });
+            fetchMock.get(
+                `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
+                {
+                    body: []
+                }
+            );
+            mockEventTypes();
+            mockBehaviorGroupsOfEventTypes();
+            mockFacets();
+            mockBehaviorGroup();
+
+            render(<NotificationsListPage />, {
+                wrapper: getConfiguredAppWrapper({
+                    ...routePropsPageForBundle('rhel'),
+                    appContext: {
+                        rbac: {
+                            canReadEvents: false
+                        }
+                    }
+                })
+            });
+
+            await waitForAsyncEvents();
+
+            expect(screen.getByText(/view event log/i)).toBeDisabled();
         });
 
         it.each<[Environment, boolean]>([
@@ -805,15 +801,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
             render(<NotificationsListPage />, {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('rhel'),
-                    appContext: {
-                        rbac: {
-                            canWriteNotifications: true,
-                            canWriteIntegrationsEndpoints: true,
-                            canReadIntegrationsEndpoints: true,
-                            canReadNotifications: true
-                        }
-                    }
+                    ...routePropsPageForBundle('rhel')
                 })
             });
 

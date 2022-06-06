@@ -247,16 +247,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         mockBehaviorGroups(behaviorGroups);
 
         render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
-            wrapper: getConfiguredAppWrapper({
-                appContext: {
-                    rbac: {
-                        canWriteNotifications: true,
-                        canWriteIntegrationsEndpoints: true,
-                        canReadNotifications: true,
-                        canReadIntegrationsEndpoints: true
-                    }
-                }
-            })
+            wrapper: getConfiguredAppWrapper()
         });
 
         await waitForAsyncEvents();
@@ -283,9 +274,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
                 appContext: {
                     rbac: {
                         canWriteNotifications: false,
-                        canWriteIntegrationsEndpoints: false,
-                        canReadNotifications: true,
-                        canReadIntegrationsEndpoints: true
+                        canWriteIntegrationsEndpoints: false
                     }
                 }
             })
@@ -313,9 +302,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
                 appContext: {
                     rbac: {
                         canWriteNotifications: false,
-                        canWriteIntegrationsEndpoints: false,
-                        canReadNotifications: true,
-                        canReadIntegrationsEndpoints: true
+                        canWriteIntegrationsEndpoints: false
                     },
                     isOrgAdmin: false
                 }
@@ -348,9 +335,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
                 appContext: {
                     rbac: {
                         canWriteNotifications: false,
-                        canWriteIntegrationsEndpoints: false,
-                        canReadNotifications: true,
-                        canReadIntegrationsEndpoints: true
+                        canWriteIntegrationsEndpoints: false
                     },
                     isOrgAdmin: true
                 }
