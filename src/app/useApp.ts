@@ -52,7 +52,8 @@ export const useApp = (): Partial<AppContext> => {
             canWriteNotifications: rbac.hasPermission('notifications', 'notifications', 'write'),
             canReadNotifications: rbac.hasPermission('notifications', 'notifications', 'read'),
             canWriteIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'write'),
-            canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read')
+            canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read'),
+            canReadEvents: rbac.hasPermission('notifications', 'events', 'read')
         } : undefined,
         isOrgAdmin,
         server

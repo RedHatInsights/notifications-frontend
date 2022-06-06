@@ -1,10 +1,11 @@
+import { ButtonVariant } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { useParameterizedQuery } from 'react-fetching-library';
-import { Link } from 'react-router-dom';
 
+import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
 import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
 import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
@@ -32,6 +33,7 @@ const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
     const getEndpoint = useParameterizedQuery(getEndpointAction);
+    const { rbac } = useAppContext();
 
     const getBundles = useGetBundles(true);
     const bundles = React.useMemo(() => {
@@ -128,9 +130,9 @@ export const EventLogPage: React.FunctionComponent = () => {
             <PageHeader
                 title={ Messages.pages.notifications.eventLog.title }
                 subtitle={ Messages.pages.notifications.eventLog.subtitle }
-                action={ <Link component={ ButtonLink } to={ eventNotificationPageUrl } >
+                action={ <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventNotificationPageUrl } variant={ ButtonVariant.secondary }>
                     { Messages.pages.notifications.eventLog.viewNotifications }
-                </Link> }
+                </ButtonLink> }
             />
             <Main>
                 <EventLogToolbar

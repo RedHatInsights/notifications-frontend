@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 
 import { useAppContext } from '../app/AppContext';
 import Config from '../config/Config';
+import { linkTo } from '../Routes';
 import { getSubApp } from '../utils/Basename';
 import { NotAuthorizedPage } from './NotAuthorized';
 
@@ -16,6 +17,10 @@ export const CheckReadPermissions: React.FunctionComponent = (props) => {
             case Config.integrations.subAppId:
                 return rbac?.canReadIntegrationsEndpoints;
             case Config.notifications.subAppId:
+                if (location.pathname === linkTo.eventLog()) {
+                    return rbac?.canReadEvents;
+                }
+
                 return rbac?.canReadNotifications;
         }
 

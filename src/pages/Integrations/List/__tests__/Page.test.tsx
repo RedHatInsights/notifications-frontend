@@ -53,10 +53,7 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             rbac: {
-                                canWriteNotifications: true,
-                                canWriteIntegrationsEndpoints: false,
-                                canReadIntegrationsEndpoints: true,
-                                canReadNotifications: true
+                                canWriteIntegrationsEndpoints: false
                             }
                         }
                     })
@@ -96,16 +93,7 @@ describe('src/pages/Integrations/List/Page', () => {
             render(
                 <ConnectedIntegrationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper({
-                        appContext: {
-                            rbac: {
-                                canWriteNotifications: true,
-                                canWriteIntegrationsEndpoints: true,
-                                canReadIntegrationsEndpoints: true,
-                                canReadNotifications: true
-                            }
-                        }
-                    })
+                    wrapper: getConfiguredAppWrapper()
                 }
             );
 
@@ -145,10 +133,7 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             rbac: {
-                                canWriteNotifications: true,
-                                canWriteIntegrationsEndpoints: false,
-                                canReadIntegrationsEndpoints: true,
-                                canReadNotifications: true
+                                canWriteIntegrationsEndpoints: false
                             }
                         }
                     })
@@ -191,16 +176,7 @@ describe('src/pages/Integrations/List/Page', () => {
             render(
                 <ConnectedIntegrationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper({
-                        appContext: {
-                            rbac: {
-                                canWriteNotifications: true,
-                                canWriteIntegrationsEndpoints: true,
-                                canReadIntegrationsEndpoints: true,
-                                canReadNotifications: true
-                            }
-                        }
-                    })
+                    wrapper: getConfiguredAppWrapper()
                 }
             );
 
@@ -242,10 +218,7 @@ describe('src/pages/Integrations/List/Page', () => {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
                             rbac: {
-                                canWriteNotifications: true,
-                                canWriteIntegrationsEndpoints: false,
-                                canReadIntegrationsEndpoints: true,
-                                canReadNotifications: true
+                                canWriteIntegrationsEndpoints: false
                             }
                         }
                     })
@@ -303,16 +276,7 @@ describe('src/pages/Integrations/List/Page', () => {
             render(
                 <ConnectedIntegrationsListPage />
                 , {
-                    wrapper: getConfiguredAppWrapper({
-                        appContext: {
-                            rbac: {
-                                canWriteNotifications: true,
-                                canWriteIntegrationsEndpoints: true,
-                                canReadIntegrationsEndpoints: true,
-                                canReadNotifications: true
-                            }
-                        }
-                    })
+                    wrapper: getConfiguredAppWrapper()
                 }
             );
 

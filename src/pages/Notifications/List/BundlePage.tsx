@@ -1,11 +1,12 @@
+import { ButtonVariant } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
-import { Link } from 'react-router-dom';
 
+import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
 import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
@@ -20,6 +21,7 @@ interface NotificationListBundlePageProps {
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
 
+    const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
 
     return (
@@ -31,12 +33,9 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
                 <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
                     getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
-                action={ <Link
-                    component={ ButtonLink }
-                    to={ eventLogPageUrl }
-                >
+                action={ <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
                     { Messages.pages.notifications.list.viewHistory }
-                </Link> }
+                </ButtonLink> }
             />
             <Main>
                 <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
