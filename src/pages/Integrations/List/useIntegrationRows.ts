@@ -1,4 +1,4 @@
-import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
+import { addDangerNotification, fromUtc } from '@redhat-cloud-services/insights-common-typescript';
 import pLimit from 'p-limit';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from 'react-fetching-library';
@@ -76,7 +76,7 @@ export const useIntegrationRows = (
                         if (response.payload && response.payload.status === 200) {
                             const last5 = response.payload.value.map(p => ({
                                 isSuccess: p.invocationResult,
-                                date: new Date(p.created as string)
+                                date: fromUtc(new Date(p.created as string))
                             }));
                             setIntegrationRowById(integrationId, {
                                 isConnectionAttemptLoading: false,
