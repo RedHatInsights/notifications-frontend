@@ -2,11 +2,11 @@ import { EmptyStateVariant, Label, LabelGroup, LabelProps, Popover, Skeleton } f
 import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
 import { IExtraColumnData, SortByDirection, TableComposable, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table';
 import { c_alert_m_warning__icon_Color } from '@patternfly/react-tokens';
+import { DateFormat } from '@redhat-cloud-services/frontend-components';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { DateFormat } from '@redhat-cloud-services/frontend-components';
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
 import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
