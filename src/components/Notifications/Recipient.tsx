@@ -20,20 +20,24 @@ const disabledLabelClassName = style({
 
 });
 
+const greyColorName = style({
+    color: global_disabled_color_100.value
+});
+
 const CommaSeparator = () => <span>, </span>;
 
 export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
     if (props.action.type === NotificationType.INTEGRATION) {
         return (
             <>
-                <span>{ props.action.integration.name }</span>
-                { !props.action.integration.isEnabled && (
-                    <>
+                { !props.action.integration.isEnabled ? (
+                    <span className={ greyColorName }> { props.action.integration.name }
                         <Tooltip content="This integration has been disabled. This action wil not fire until it is enabled." position="bottom">
                             <BanIcon className={ disabledLabelClassName } />
                         </Tooltip>
-                    </>
-                )}
+                    </span>
+                ) : props.action.integration.name }
+
             </>
         );
     }
