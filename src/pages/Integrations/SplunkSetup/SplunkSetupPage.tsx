@@ -68,12 +68,12 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                                     <ProgressStep
                                         isCurrent={ step === 1 }
                                         variant="success"
-                                        description="Create HEC"
+                                        description="Create Index and HEC"
                                         id="step1-splunk-app-step"
                                         titleId="step1-splunk-app-step"
                                         aria-label="completed Splunk app step (step 1)"
                                     >
-                                        Step 1 (Splunk app)
+                                        Step 1
                                     </ProgressStep>
                                     <ProgressStep
                                         isCurrent={ step === 2 }
