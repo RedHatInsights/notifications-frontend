@@ -59,6 +59,11 @@ const buttonIconClassName = style({
     marginTop: '10px'
 });
 
+const badgeClassName = style({
+    marginTop: '10px',
+    marginLeft: '-16px'
+})
+
 const emptyAddButtonClassName = style({
     marginTop: '-0.2em'
 });
@@ -168,7 +173,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                     <SplitItem>
                         {(!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
                             props.behaviorGroupContent.content.length > 0 ?
-                                <Badge className={ buttonIconClassName } isRead>{props.behaviorGroupContent.content.length}</Badge> :
+                                <Badge className={ badgeClassName } isRead>{props.behaviorGroupContent.content.length}</Badge> :
                                 <BehaviorGroupAddButton
                                     className={ emptyAddButtonClassName }
                                     component='a'
