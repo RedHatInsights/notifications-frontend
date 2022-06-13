@@ -4,6 +4,7 @@ import {
     ButtonVariant,
     ExpandableSection,
     ExpandableSectionToggle,
+    Popover,
     SearchInput, Split,
     SplitItem,
     Stack,
@@ -52,6 +53,10 @@ const sectionTitleClassName = style(
 const titleClassName = style({
     marginTop: '-0.15em',
     color: global_palette_black_1000.var
+});
+
+const buttonIconClassName = style({
+    marginTop: '10px'
 });
 
 const emptyAddButtonClassName = style({
@@ -149,49 +154,43 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     return (
         <>
             <div className={ sectionTitleClassName }>
-                <ExpandableSectionToggle
-                    isExpanded={ isExpanded }
-                    onToggle={ setExpanded }
-                    contentId={ contentId }
-                    direction="down"
-                >
-                    <Split hasGutter>
+                <Split hasGutter>
+                    <ExpandableSectionToggle
+                        isExpanded={ isExpanded }
+                        onToggle={ setExpanded }
+                        contentId={ contentId }
+                        direction="down"
+                    >
                         <SplitItem>
                             <Title className={ titleClassName } headingLevel="h2">Behavior groups</Title>
                         </SplitItem>
-                        <SplitItem>
-                            {(!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
-                                props.behaviorGroupContent.content.length > 0 ?
-                                    <Badge isRead>{props.behaviorGroupContent.content.length}</Badge> :
-                                    <BehaviorGroupAddButton
-                                        className={ emptyAddButtonClassName }
-                                        component='a'
-                                        onClick={ createGroup }
-                                        isDisabled={ !rbac.canWriteNotifications }
-                                    />
-                            )}
-                        </SplitItem>
-                        <SplitItem>
-                            <Tooltip
-                                position='right'
-                                appendTo={ () => document.body }
-                                isContentLeftAligned
-                                content={ <>
-                                Behavior group
-                                    <br></br>
-                                    <br></br>
-                                Behavior groups are made up of action/recipient pairings that allow you to configure
-                                    which notification actions different users will be able to receive. Once you&apos;ve created a behavior group,
-                                    you can assign it to an event using the Events table below.
-                                    <br></br>
-                                    <br></br>
-                                You may also prevent users from changing assigned actions by locking action/recipient pairings
-                                    when creating or editing behavior groups.</> }>
-                                <OutlinedQuestionCircleIcon color={ 'pf-global-black' } />
-                            </Tooltip>
-                        </SplitItem>
-                    </Split>
-                </ExpandableSectionToggle>
+                    </ExpandableSectionToggle>
+                    <SplitItem>
+                        {(!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
+                            props.behaviorGroupContent.content.length > 0 ?
+                                <Badge className={ buttonIconClassName } isRead>{props.behaviorGroupContent.content.length}</Badge> :
+                                <BehaviorGroupAddButton
+                                    className={ emptyAddButtonClassName }
+                                    component='a'
+                                    onClick={ createGroup }
+                                    isDisabled={ !rbac.canWriteNotifications }
+                                />
+                        )}
+                    </SplitItem>
+                    <SplitItem>
+                        <Popover
+                            position='right'
+                            appendTo={ () => document.body }
+                            headerContent={ <div>Behavior groups</div> }
+                            bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure which
+                                    notification actions different users will be able to receive. Once you&apos;ve created a behavior group,
+                                you can assign it to an event using the Events table below. </div> }
+                            footerContent={ <div> You may also prevent users from changing assigned actions by locking action/recipient pairings
+                                    when creating or editing behavior groups.</div> }>
+                            <OutlinedQuestionCircleIcon className={ buttonIconClassName } color={ 'pf-global-black' } />
+                        </Popover>
+                    </SplitItem>
+                </Split>
             </div>
             <ExpandableSection
                 className={ sectionClassName }
