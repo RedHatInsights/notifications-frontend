@@ -22,8 +22,6 @@ import {
     NotificationFilters,
     SetNotificationFilters
 } from './Filter';
-import { GroupBy } from './Table/GroupBy';
-import { GroupByEnum } from './Types';
 
 interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
@@ -32,8 +30,6 @@ interface NotificationsToolbarProps extends OuiaComponentProps {
 
     appFilterOptions: Array<Facet>;
 
-    groupBy?: GroupByEnum;
-    onGroupBySelected?: (selected: GroupByEnum) => void;
     pageAdapter: PageAdapter;
     count: number;
 
@@ -127,9 +123,6 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
             <PrimaryToolbar
                 filterConfig={ filterConfig }
                 activeFiltersConfig={ activeFiltersConfig }
-                dedicatedAction={ (props.groupBy && props.onGroupBySelected) ?
-                    <GroupBy selected={ props.groupBy } groupBy={ props.onGroupBySelected } /> :
-                    undefined }
                 exportConfig={ exportConfig }
                 pagination={ topPaginationProps }
             />
