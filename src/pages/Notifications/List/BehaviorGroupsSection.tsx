@@ -62,7 +62,7 @@ const buttonIconClassName = style({
 const badgeClassName = style({
     marginTop: '10px',
     marginLeft: '-16px'
-})
+});
 
 const emptyAddButtonClassName = style({
     marginTop: '-0.2em'
