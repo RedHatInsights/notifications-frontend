@@ -12,7 +12,7 @@ import {
     Title, Tooltip
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { global_BackgroundColor_100, global_palette_black_1000, global_spacer_lg } from '@patternfly/react-tokens';
+import { global_BackgroundColor_100, global_Color_200, global_palette_black_1000, global_spacer_lg } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -55,8 +55,10 @@ const titleClassName = style({
     color: global_palette_black_1000.var
 });
 
-const buttonIconClassName = style({
-    marginTop: '10px'
+const defaultIconClassName = style({
+    marginTop: '2px',
+    color: global_Color_200.var,
+    marginLeft: '-16px'
 });
 
 const badgeClassName = style({
@@ -185,6 +187,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                     <SplitItem>
                         <Popover
                             position='right'
+                            hideOnOutsideClick
                             appendTo={ () => document.body }
                             headerContent={ <div>Behavior groups</div> }
                             bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure which
@@ -192,8 +195,15 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                 you can assign it to an event using the Events table below. </div> }
                             footerContent={ <div> You may also prevent users from changing assigned actions by locking action/recipient pairings
                                     when creating or editing behavior groups.</div> }>
-                            <OutlinedQuestionCircleIcon className={ buttonIconClassName } color={ 'pf-global-black' } />
+                            <Button
+                                className={ defaultIconClassName }
+                                variant="plain"
+                                aria-label="Help"
+                            >
+                                <OutlinedQuestionCircleIcon />
+                            </Button>
                         </Popover>
+
                     </SplitItem>
                 </Split>
             </div>
