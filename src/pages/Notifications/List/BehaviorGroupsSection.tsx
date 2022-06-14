@@ -12,7 +12,7 @@ import {
     Title, Tooltip
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import { global_BackgroundColor_100, global_Color_200, global_palette_black_1000, global_spacer_lg } from '@patternfly/react-tokens';
+import { global_BackgroundColor_100, global_palette_black_1000, global_spacer_lg } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -57,7 +57,6 @@ const titleClassName = style({
 
 const defaultIconClassName = style({
     marginTop: '2px',
-    color: global_Color_200.var,
     marginLeft: '-16px'
 });
 
