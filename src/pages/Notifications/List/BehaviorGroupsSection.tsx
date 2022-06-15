@@ -55,6 +55,16 @@ const titleClassName = style({
     color: global_palette_black_1000.var
 });
 
+const defaultIconClassName = style({
+    marginTop: '2px',
+    marginLeft: '-16px'
+});
+
+const badgeClassName = style({
+    marginTop: '10px',
+    marginLeft: '-16px'
+});
+
 const emptyAddButtonClassName = style({
     marginTop: '-0.2em'
 });
@@ -148,46 +158,53 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     const contentId = 'behavior-group-section-content';
 
     return (
-        <div>
+        <>
             <div className={ sectionTitleClassName }>
-                <ExpandableSectionToggle
-                    isExpanded={ isExpanded }
-                    onToggle={ setExpanded }
-                    contentId={ contentId }
-                    direction="down"
-                >
-                    <Split hasGutter>
+                <Split hasGutter>
+                    <ExpandableSectionToggle
+                        isExpanded={ isExpanded }
+                        onToggle={ setExpanded }
+                        contentId={ contentId }
+                        direction="down"
+                    >
                         <SplitItem>
                             <Title className={ titleClassName } headingLevel="h2">Behavior groups</Title>
                         </SplitItem>
-                        <SplitItem>
-                            { (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
-                                props.behaviorGroupContent.content.length > 0 ?
-                                    <Badge isRead>{ props.behaviorGroupContent.content.length }</Badge> :
-                                    <BehaviorGroupAddButton
-                                        className={ emptyAddButtonClassName }
-                                        component='a'
-                                        onClick={ createGroup }
-                                        isDisabled={ !rbac.canWriteNotifications }
-                                    />
-                            ) }
-                        </SplitItem>
-                        <SplitItem>
-                            <Popover
-                                position='right'
-                                appendTo={ () => document.body }
-                                headerContent={ <div>Behavior groups</div> }
-                                bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure
-                                    which notification actions different users will be able to receive. Once you&apos;ve created a behavior group,
-                                    you can assign it to an event using the Events table below.
-                                </div> }
-                                footerContent={ <div> You may also prevent users from changing assigned actions by locking action/recipient pairings
+                    </ExpandableSectionToggle>
+                    <SplitItem>
+                        {(!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) && (
+                            props.behaviorGroupContent.content.length > 0 ?
+                                <Badge className={ badgeClassName } isRead>{props.behaviorGroupContent.content.length}</Badge> :
+                                <BehaviorGroupAddButton
+                                    className={ emptyAddButtonClassName }
+                                    component='a'
+                                    onClick={ createGroup }
+                                    isDisabled={ !rbac.canWriteNotifications }
+                                />
+                        )}
+                    </SplitItem>
+                    <SplitItem>
+                        <Popover
+                            position='right'
+                            hideOnOutsideClick
+                            appendTo={ () => document.body }
+                            headerContent={ <div>Behavior groups</div> }
+                            bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure which
+                                    notification actions different users will be able to receive. Once you&apos;ve created a behavior group,
+                                you can assign it to an event using the Events table below. </div> }
+                            footerContent={ <div> You may also prevent users from changing assigned actions by locking action/recipient pairings
                                     when creating or editing behavior groups.</div> }>
-                                <OutlinedQuestionCircleIcon color={ 'pf-global-black' } />
-                            </Popover>
-                        </SplitItem>
-                    </Split>
-                </ExpandableSectionToggle>
+                            <Button
+                                className={ defaultIconClassName }
+                                variant="plain"
+                                aria-label="Help"
+                            >
+                                <OutlinedQuestionCircleIcon />
+                            </Button>
+                        </Popover>
+
+                    </SplitItem>
+                </Split>
             </div>
             <ExpandableSection
                 className={ sectionClassName }
@@ -197,7 +214,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                 isDetached
             >
                 <Stack hasGutter>
-                    { (props.behaviorGroupContent.isLoading ||
+                    {(props.behaviorGroupContent.isLoading ||
                         props.behaviorGroupContent.hasError ||
                         props.behaviorGroupContent.content.length > 0) && (
                         <>
@@ -211,19 +228,17 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                             type="text"
                                             aria-label="Search by name"
                                             placeholder="Search by name"
-                                            isDisabled={ props.behaviorGroupContent.isLoading }
-                                        />
+                                            isDisabled={ props.behaviorGroupContent.isLoading } />
                                     </SplitItem>
                                     <SplitItem>
                                         <BehaviorGroupAddButton
                                             isDisabled={ props.behaviorGroupContent.isLoading || !rbac.canWriteNotifications }
-                                            onClick={ createGroup }
-                                        />
+                                            onClick={ createGroup } />
                                     </SplitItem>
                                 </Split>
                             </StackItem>
                             <StackItem>
-                                { props.behaviorGroupContent.isLoading ? (
+                                {props.behaviorGroupContent.isLoading ? (
                                     <BehaviorGroupCardListSkeleton />
                                 ) : props.behaviorGroupContent.hasError ? (
                                     <div>Error loading behavior groups</div>
@@ -231,26 +246,23 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                     <BehaviorGroupCardList
                                         onEdit={ rbac.canWriteNotifications ? onEdit : undefined }
                                         onDelete={ rbac.canWriteNotifications ? onDelete : undefined }
-                                        behaviorGroups={ filteredBehaviors }
-                                    />
-                                ) }
+                                        behaviorGroups={ filteredBehaviors } />
+                                )}
                             </StackItem>
                         </>
-                    ) }
+                    )}
                 </Stack>
-                { editModalState.isOpen && (
+                {editModalState.isOpen && (
                     <EditBehaviorGroupPage
                         behaviorGroup={ editModalState.template }
-                        onClose={ onCloseModal }
-                    />
+                        onClose={ onCloseModal } />
                 )}
-                { deleteModalState.isOpen && (
+                {deleteModalState.isOpen && (
                     <DeleteBehaviorGroupPage
                         behaviorGroup={ deleteModalState.data }
-                        onClose={ onCloseDelete }
-                    />
-                ) }
+                        onClose={ onCloseDelete } />
+                )}
             </ExpandableSection>
-        </div>
+        </>
     );
 };
