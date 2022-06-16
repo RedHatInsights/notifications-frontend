@@ -10,13 +10,16 @@ import {
     Grid,
     GridItem,
     KebabToggle,
+    Popover,
     Skeleton,
+    Split,
+    SplitItem,
     Text,
     TextContent,
-    TextVariants, Tooltip
+    TextVariants
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
-import { c_form__label_FontSize, global_spacer_form_element, global_spacer_md } from '@patternfly/react-tokens';
+import { c_form__label_FontSize, global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -31,10 +34,7 @@ const cardClassName = style({
 });
 
 const lockedSpacer = style({
-    marginTop: global_spacer_form_element.value,
-    marginBottom: global_spacer_form_element.value,
-    marginLeft: global_spacer_md.value,
-    marginRight: global_spacer_md.value
+    marginRight: global_spacer_sm.value
 });
 
 const contentTitleStyle = {
@@ -66,15 +66,29 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
     return (
         <Card isFlat className={ cardClassName }>
             <CardHeader>
-                <CardHeaderMain><TextContent><Text component={ TextVariants.h4 }> { props.title } </Text></TextContent></CardHeaderMain>
+                <CardHeaderMain>
+                    <Split>
+                        <SplitItem>
+                            { props.isDefaultBehavior &&
+                            <Popover
+                                position='top'
+                                appendTo={ () => document.body }
+                                headerContent={ 'System required behavior group' }
+                                // eslint-disable-next-line max-len
+                                bodyContent={ 'This group is system generated and can not be edited, deleted, or removed from being applied to an event' }>
+                                <LockIcon className={ lockedSpacer } />
+                            </Popover>
+                            }
+                        </SplitItem>
+                        <SplitItem>
+                            <TextContent>
+                                <Text component={ TextVariants.h4 }> { props.title } </Text>
+                            </TextContent>
+                        </SplitItem>
+                    </Split>
+                </CardHeaderMain>
                 <CardActions>
-                    { props.isDefaultBehavior ? (
-                        <div className={ lockedSpacer }>
-                            <Tooltip content="This behavior group is system specified and cannot be edited.">
-                                <LockIcon />
-                            </Tooltip>
-                        </div>
-                    ) : (
+                    { !props.isDefaultBehavior &&
                         <Dropdown
                             onSelect={ switchOpen }
                             toggle={ <KebabToggle onToggle={ setOpen } isDisabled={ !props.dropdownItems } /> }
@@ -84,7 +98,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                             position={ DropdownPosition.right }
                             menuAppendTo={ () => document.body }
                         />
-                    ) }
+                    }
                 </CardActions>
             </CardHeader>
             <CardBody>

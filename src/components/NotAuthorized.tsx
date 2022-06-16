@@ -8,6 +8,7 @@ import { useLocation, useParams } from 'react-router-dom';
 
 import Config from '../config/Config';
 import messages from '../properties/DefinedMessages';
+import { linkTo } from '../Routes';
 import { useGetBundles } from '../services/Notifications/GetBundles';
 import { Facet } from '../types/Notification';
 import { getSubApp } from '../utils/Basename';
@@ -15,6 +16,8 @@ import { getSubApp } from '../utils/Basename';
 interface NotificationListPageParams {
     bundleName: string;
 }
+
+const eventLogService = 'Event Log';
 
 export const NotAuthorizedPage: React.FunctionComponent = () => {
 
@@ -39,6 +42,10 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
             case Config.integrations.subAppId:
                 return intl.formatMessage(messages.integrations);
             case Config.notifications.subAppId:
+                if (location.pathname === linkTo.eventLog()) {
+                    return eventLogService;
+                }
+
                 return intl.formatMessage(messages.notifications);
             default:
                 return '';

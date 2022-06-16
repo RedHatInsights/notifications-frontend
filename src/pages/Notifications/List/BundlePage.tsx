@@ -1,14 +1,14 @@
-import { Split, SplitItem, StackItem } from '@patternfly/react-core';
-import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
+import { ButtonVariant } from '@patternfly/react-core';
+import { Main } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
-import { Link } from 'react-router-dom';
-import { style } from 'typestyle';
 
+import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
+import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { Facet } from '../../../types/Notification';
@@ -19,36 +19,24 @@ interface NotificationListBundlePageProps {
     applications: Array<Facet>;
 }
 
-const displayInlineClassName = style({
-    display: 'inline',
-    paddingBottom: '8px'
-});
-
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
 
-    const pageHeaderTitleProps = {
-        className: displayInlineClassName,
-        title: `${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`
-    };
-
+    const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
 
     return (
         <>
-            <PageHeader>
-                <Split>
-                    <SplitItem isFilled><PageHeaderTitle { ...pageHeaderTitleProps } />
-                        <StackItem>This service allows you to configure which notifications different
-                        users within your organization will be entitled to receiving. To do this, create behavior groups and apply
-                        them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
-                        <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
-                            getInsights().chrome.isBeta()) }> User Preferences</a>.</StackItem>
-                    </SplitItem>
-                    <SplitItem>
-                        <Link component={ ButtonLink } to={ eventLogPageUrl } >{ Messages.pages.notifications.list.viewHistory }</Link>
-                    </SplitItem>
-                </Split>
-            </PageHeader>
+            <PageHeader
+                title={ `${Messages.pages.notifications.list.title} | ${props.bundle.displayName}` }
+                subtitle={ <span>This service allows you to configure which notifications different
+                    users within your organization will be entitled to receiving. To do this, create behavior groups and apply
+                    them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
+                <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
+                    getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
+                action={ <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
+                    { Messages.pages.notifications.list.viewHistory }
+                </ButtonLink> }
+            />
             <Main>
                 <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
             </Main>
