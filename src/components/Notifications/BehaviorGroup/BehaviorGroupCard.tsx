@@ -156,7 +156,7 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
             contents={ props.behaviorGroup.actions.map((action, index) => ({
                 key: `${index}-${action.type}`,
                 recipient: <Recipient action={ action } />,
-                action: <ActionComponent isDefault={ false } action={ action } />
+                action: <ActionComponent action={ action } />
             })) }
             isDefaultBehavior={ !!props.behaviorGroup.isDefault }
         />
