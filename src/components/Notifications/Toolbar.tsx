@@ -23,22 +23,41 @@ import {
     SetNotificationFilters
 } from './Filter';
 
-interface NotificationsToolbarProps extends OuiaComponentProps {
+export enum SelectionCommand {
+    NONE,
+    PAGE,
+    ALL
+}
+
+export interface NotificationsToolbarProps extends OuiaComponentProps {
     filters: NotificationFilters;
     setFilters: SetNotificationFilters;
     clearFilter: ClearNotificationFilters;
+    filterColumns?: ReadonlyArray<NotificationFilterColumn>;
 
-    appFilterOptions: Array<Facet>;
+    appFilterOptions: ReadonlyArray<Facet>;
 
     pageAdapter: PageAdapter;
     count: number;
 
-    onExport: (type: ExporterType) => void;
+    onExport?: (type: ExporterType) => void;
+
+    selectedCount?: number;
+    onSelectionChanged?: (command: SelectionCommand) => void;
 }
+
+const allFilterColumns = [
+    NotificationFilterColumn.NAME,
+    NotificationFilterColumn.APPLICATION,
+    NotificationFilterColumn.ACTION
+];
 
 export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> = (props) => {
 
     const insights = getInsights();
+
+    const filterColumns = props.filterColumns ?? allFilterColumns;
+
     const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
 
         const appFilterItems = props.appFilterOptions.map(a => ({
@@ -47,11 +66,11 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         }));
 
         return {
-            [NotificationFilterColumn.NAME]: {
+            [NotificationFilterColumn.NAME]: filterColumns.includes(NotificationFilterColumn.NAME) ? {
                 label: 'Event type',
                 placeholder: 'Filter by event type'
-            },
-            [NotificationFilterColumn.APPLICATION]: {
+            } : undefined,
+            [NotificationFilterColumn.APPLICATION]: filterColumns.includes(NotificationFilterColumn.APPLICATION) ? {
                 label: 'Application',
                 placeholder: 'Filter by application',
                 options: {
@@ -59,13 +78,47 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                     default: [] as any,
                     items: appFilterItems
                 }
-            },
-            [NotificationFilterColumn.ACTION]: isStagingOrProd(insights) ? undefined : {
+            } : undefined,
+            [NotificationFilterColumn.ACTION]: !filterColumns.includes(NotificationFilterColumn.ACTION) || isStagingOrProd(insights) ? undefined : {
                 label: 'Action',
                 placeholder: 'Filter by action'
             }
         };
-    }, [ props.appFilterOptions, insights ]);
+    }, [ props.appFilterOptions, insights, filterColumns ]);
+
+    const bulkSelectProps = React.useMemo(() => {
+        const onSelectionChanged = props.onSelectionChanged;
+        const count = props.count;
+        const pageAdapter = props.pageAdapter;
+        const selectedCount = props.selectedCount;
+        const pageSize = pageAdapter.page.size;
+        if (!onSelectionChanged) {
+            return undefined;
+        }
+
+        const selectAll = () => onSelectionChanged(SelectionCommand.ALL);
+        const selectNone = () => onSelectionChanged(SelectionCommand.NONE);
+
+        return {
+            count: selectedCount ?? 0,
+            items: [
+                {
+                    title: 'Select none (0)',
+                    onClick: selectNone
+                },
+                {
+                    title: `Select page (${pageSize})`,
+                    onClick: () => onSelectionChanged(SelectionCommand.PAGE)
+                },
+                {
+                    title: `Select all (${count})`,
+                    onClick: selectAll
+                }
+            ],
+            checked: selectedCount !== 0 && selectedCount === count,
+            onSelect: (isSelected: boolean) => isSelected ? selectAll() : selectNone()
+        };
+    }, [ props.onSelectionChanged, props.selectedCount, props.pageAdapter, props.count ]);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
         NotificationFilterColumn,
@@ -121,6 +174,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
     return (
         <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
             <PrimaryToolbar
+                bulkSelect={ bulkSelectProps }
                 filterConfig={ filterConfig }
                 activeFiltersConfig={ activeFiltersConfig }
                 exportConfig={ exportConfig }

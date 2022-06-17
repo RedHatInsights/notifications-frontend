@@ -12,6 +12,7 @@ import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { Facet } from '../../../types/Notification';
+import { BehaviorGroupWizardPage } from '../BehaviorGroupWizard/BehaviorGroupWizardPage';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
 interface NotificationListBundlePageProps {
@@ -39,6 +40,10 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             />
             <Main>
                 <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
+                <BehaviorGroupWizardPage
+                    bundle={ props.bundle }
+                    applications={ props.applications }
+                />
             </Main>
         </>
     );
