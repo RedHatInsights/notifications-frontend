@@ -22,6 +22,7 @@ import { LockIcon } from '@patternfly/react-icons';
 import { c_form__label_FontSize, global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
@@ -42,21 +43,20 @@ const contentTitleStyle = {
 };
 
 export interface BehaviorGroupProps extends OuiaComponentProps {
-    behaviorGroup: BehaviorGroup;
+    behaviorGroup?: BehaviorGroup;
     onEdit?: (behaviorGroup: BehaviorGroup) => void;
     onDelete?: (behaviorGroup: BehaviorGroup) => void;
 }
 
+type BehaviorGroupImplProps = MarkRequired<BehaviorGroupProps, 'behaviorGroup'>;
+
 export interface BehaviorGroupCardLayout {
     title: React.ReactNode;
     dropdownItems?: Array<React.ReactNode>;
-    contents: Array<{
-        key: string;
-        action: React.ReactNode;
-        recipient: React.ReactNode;
-    }>;
     isDefaultBehavior?: boolean;
 }
+
+const skeletonActions = 3;
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
     const [ isOpen, setOpen ] = React.useState(false);
@@ -113,23 +113,14 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                             <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Recipient</Text>
                         </TextContent>
                     </GridItem>
-                    { props.contents.map(content => (
-                        <React.Fragment key={ content.key }>
-                            <GridItem span={ 6 }>
-                                { content.action }
-                            </GridItem>
-                            <GridItem span={ 6 }>
-                                { content.recipient }
-                            </GridItem>
-                        </React.Fragment>
-                    )) }
+                    { props.children }
                 </Grid>
             </CardBody>
         </Card>
     );
 };
 
-export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = props => {
+const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = props => {
     const onClickEdit = React.useCallback(() => {
         const onEdit = props.onEdit;
         if (onEdit) {
@@ -153,39 +144,50 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
         <BehaviorGroupCardLayout
             title={ props.behaviorGroup.displayName }
             dropdownItems={ dropdownItems }
-            contents={ props.behaviorGroup.actions.map((action, index) => ({
-                key: `${index}-${action.type}`,
-                recipient: <Recipient action={ action } />,
-                action: <ActionComponent action={ action } />
-            })) }
-            isDefaultBehavior={ !!props.behaviorGroup.isDefault }
-        />
+            isDefaultBehavior={ props.behaviorGroup.isDefault }
+        >
+            { props.behaviorGroup.actions.map((action, index) => (
+                <React.Fragment key={ `${index}-${action.type}` }>
+                    <GridItem span={ 6 }>
+                        <ActionComponent action={ action } />
+                    </GridItem>
+                    <GridItem span={ 6 }>
+                        <Recipient action={ action } />
+                    </GridItem>
+                </React.Fragment>
+            )) }
+        </BehaviorGroupCardLayout>
     );
 };
 
-export const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
+const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
     const contentWidth = '150px';
 
     return (
         <BehaviorGroupCardLayout
             title={ <Skeleton width="300px" /> }
-            contents={ [
-                {
-                    key: 'skeleton-1',
-                    action: <Skeleton width={ contentWidth } />,
-                    recipient: <Skeleton width={ contentWidth } />
-                },
-                {
-                    key: 'skeleton-2',
-                    action: <Skeleton width={ contentWidth } />,
-                    recipient: <Skeleton width={ contentWidth } />
-                },
-                {
-                    key: 'skeleton-3',
-                    action: <Skeleton width={ contentWidth } />,
-                    recipient: <Skeleton width={ contentWidth } />
-                }
-            ] }
-        />
+        >
+            { [ ...Array(skeletonActions).values() ].map((_unused, index) => (
+                <React.Fragment key={ `skeleton-${index}` }>
+                    <GridItem span={ 6 }>
+                        <Skeleton width={ contentWidth } />
+                    </GridItem>
+                    <GridItem span={ 6 }>
+                        <Skeleton width={ contentWidth } />
+                    </GridItem>
+                </React.Fragment>
+            )) }
+        </BehaviorGroupCardLayout>
     );
+};
+
+export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = props => {
+    if (props.behaviorGroup) {
+        return <BehaviorGroupCardImpl
+            { ...props }
+            behaviorGroup={ props.behaviorGroup }
+        />;
+    }
+
+    return <BehaviorGroupCardSkeleton />;
 };

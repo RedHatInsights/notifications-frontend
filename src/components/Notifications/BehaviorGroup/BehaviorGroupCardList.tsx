@@ -2,10 +2,11 @@ import { Flex, FlexItem } from '@patternfly/react-core';
 import { global_spacer_md } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { useMeasure } from 'react-use';
+import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
-import { BehaviorGroupCard, BehaviorGroupCardSkeleton } from './BehaviorGroupCard';
+import { BehaviorGroupCard } from './BehaviorGroupCard';
 
 const cardsWrapperClassName = style({
     overflow: 'auto'
@@ -18,17 +19,14 @@ const cardWrapperClassName = style({
 interface BehaviorGroupCardListProps {
     onEdit?: (behaviorGroup: BehaviorGroup) => void;
     onDelete?: (behaviorGroup: BehaviorGroup) => void;
-    behaviorGroups: ReadonlyArray<BehaviorGroup>;
+    behaviorGroups?: ReadonlyArray<BehaviorGroup>;
 }
 
-interface BehaviorGroupCardListLayoutProps {
-    contents: Array<{
-        key: string;
-        element: React.ReactNode;
-    }>;
-}
+type BehaviorGroupCardListImplProps = MarkRequired<BehaviorGroupCardListProps, 'behaviorGroups'>
 
-const BehaviorGroupCardListLayout: React.FunctionComponent<BehaviorGroupCardListLayoutProps> = props => {
+const skeletonBehaviorGroupCount = 3;
+
+const BehaviorGroupCardListLayout: React.FunctionComponent = props => {
 
     const [ measureRef, measuredSizing ] = useMeasure<HTMLDivElement>();
     const container = React.useRef<HTMLDivElement>();
@@ -53,49 +51,47 @@ const BehaviorGroupCardListLayout: React.FunctionComponent<BehaviorGroupCardList
                 className={ cardsWrapperClassName }
                 data-testid="card-list-container"
             >
-                { props.contents.map(content => (
-                    <FlexItem key={ content.key } className={ cardWrapperClassName }>
-                        { content.element }
-                    </FlexItem>
-                ))}
+                { props.children }
             </Flex>
         </div>
     );
 };
 
-export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> = props => {
-
+const BehaviorGroupaCrdListImpl: React.FunctionComponent<BehaviorGroupCardListImplProps> = props => {
     return (
-        <BehaviorGroupCardListLayout
-            contents={ props.behaviorGroups.map(behaviorGroup => ({
-                key: behaviorGroup.id,
-                element: <BehaviorGroupCard
-                    behaviorGroup={ behaviorGroup }
-                    onEdit={ props.onEdit }
-                    onDelete={ props.onDelete }
-                />
-            })) }
-        />
+        <BehaviorGroupCardListLayout>
+            { props.behaviorGroups.map(behaviorGroup => (
+                <FlexItem key={ behaviorGroup.id } className={ cardWrapperClassName } >
+                    <BehaviorGroupCard
+                        behaviorGroup={ behaviorGroup }
+                        onEdit={ props.onEdit }
+                        onDelete={ props.onDelete }
+                    />
+                </FlexItem>
+            )) }
+        </BehaviorGroupCardListLayout>
     );
 };
 
-export const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
+const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
     return (
-        <BehaviorGroupCardListLayout
-            contents={ [
-                {
-                    key: 'skeleton-1',
-                    element: <BehaviorGroupCardSkeleton />
-                },
-                {
-                    key: 'skeleton-2',
-                    element: <BehaviorGroupCardSkeleton />
-                },
-                {
-                    key: 'skeleton-3',
-                    element: <BehaviorGroupCardSkeleton />
-                }
-            ] }
-        />
+        <BehaviorGroupCardListLayout>
+            { [ ...Array(skeletonBehaviorGroupCount).values() ].map((_unused, index) => (
+                <FlexItem key={ `behavior-group-card-skeleton-${index}` } className={ cardWrapperClassName } >
+                    <BehaviorGroupCard />
+                </FlexItem>
+            )) }
+        </BehaviorGroupCardListLayout>
     );
+};
+
+export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> = props => {
+    if (props.behaviorGroups) {
+        return <BehaviorGroupaCrdListImpl
+            { ...props }
+            behaviorGroups={ props.behaviorGroups }
+        />;
+    }
+
+    return <BehaviorGroupCardListSkeleton />;
 };
