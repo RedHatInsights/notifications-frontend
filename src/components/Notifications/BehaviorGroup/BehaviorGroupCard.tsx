@@ -7,8 +7,6 @@ import {
     Dropdown,
     DropdownItem,
     DropdownPosition,
-    Grid,
-    GridItem,
     KebabToggle,
     Popover,
     Skeleton,
@@ -19,15 +17,14 @@ import {
     TextVariants
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
-import { c_form__label_FontSize, global_spacer_sm } from '@patternfly/react-tokens';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
-import { ActionComponent } from '../ActionComponent';
-import { Recipient } from '../Recipient';
+import { BehaviorGroupActionsSummary } from './BehaviorGroupActionsSummary';
 
 const cardClassName = style({
     width: 450,
@@ -37,10 +34,6 @@ const cardClassName = style({
 const lockedSpacer = style({
     marginRight: global_spacer_sm.value
 });
-
-const contentTitleStyle = {
-    fontSize: c_form__label_FontSize.value
-};
 
 export interface BehaviorGroupProps extends OuiaComponentProps {
     behaviorGroup?: BehaviorGroup;
@@ -55,8 +48,6 @@ export interface BehaviorGroupCardLayout {
     dropdownItems?: Array<React.ReactNode>;
     isDefaultBehavior?: boolean;
 }
-
-const skeletonActions = 3;
 
 const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> = props => {
     const [ isOpen, setOpen ] = React.useState(false);
@@ -102,19 +93,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                 </CardActions>
             </CardHeader>
             <CardBody>
-                <Grid hasGutter>
-                    <GridItem span={ 6 }>
-                        <TextContent>
-                            <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Action</Text>
-                        </TextContent>
-                    </GridItem>
-                    <GridItem span={ 6 }>
-                        <TextContent>
-                            <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Recipient</Text>
-                        </TextContent>
-                    </GridItem>
-                    { props.children }
-                </Grid>
+                { props.children }
             </CardBody>
         </Card>
     );
@@ -146,37 +125,17 @@ const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = p
             dropdownItems={ dropdownItems }
             isDefaultBehavior={ props.behaviorGroup.isDefault }
         >
-            { props.behaviorGroup.actions.map((action, index) => (
-                <React.Fragment key={ `${index}-${action.type}` }>
-                    <GridItem span={ 6 }>
-                        <ActionComponent action={ action } />
-                    </GridItem>
-                    <GridItem span={ 6 }>
-                        <Recipient action={ action } />
-                    </GridItem>
-                </React.Fragment>
-            )) }
+            <BehaviorGroupActionsSummary actions={ props.behaviorGroup.actions } />
         </BehaviorGroupCardLayout>
     );
 };
 
 const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
-    const contentWidth = '150px';
-
     return (
         <BehaviorGroupCardLayout
             title={ <Skeleton width="300px" /> }
         >
-            { [ ...Array(skeletonActions).values() ].map((_unused, index) => (
-                <React.Fragment key={ `skeleton-${index}` }>
-                    <GridItem span={ 6 }>
-                        <Skeleton width={ contentWidth } />
-                    </GridItem>
-                    <GridItem span={ 6 }>
-                        <Skeleton width={ contentWidth } />
-                    </GridItem>
-                </React.Fragment>
-            )) }
+            <BehaviorGroupActionsSummary />
         </BehaviorGroupCardLayout>
     );
 };
