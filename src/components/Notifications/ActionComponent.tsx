@@ -12,8 +12,7 @@ import { Action, NotificationType } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { WebhookIcon } from '../Icons/WebhookIcon';
 
-export interface ActionComponentText extends OuiaComponentProps{
-    isDefault: boolean;
+export interface ActionComponentText extends OuiaComponentProps {
     action: Action | undefined;
     loading?: boolean;
     hasError?: boolean;
@@ -64,14 +63,6 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
         return (
             <ActionComponentWrapper { ...props }>
                 <span>Error loading actions</span>
-            </ActionComponentWrapper>
-        );
-    }
-
-    if (props.isDefault) {
-        return (
-            <ActionComponentWrapper { ...props }>
-                <span>Default behavior</span>
             </ActionComponentWrapper>
         );
     }

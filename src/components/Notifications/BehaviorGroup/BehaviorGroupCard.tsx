@@ -7,8 +7,6 @@ import {
     Dropdown,
     DropdownItem,
     DropdownPosition,
-    Grid,
-    GridItem,
     KebabToggle,
     Popover,
     Skeleton,
@@ -19,14 +17,14 @@ import {
     TextVariants
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
-import { c_form__label_FontSize, global_spacer_sm } from '@patternfly/react-tokens';
+import { global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
+import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
-import { ActionComponent } from '../ActionComponent';
-import { Recipient } from '../Recipient';
+import { BehaviorGroupActionsSummary } from './BehaviorGroupActionsSummary';
 
 const cardClassName = style({
     width: 450,
@@ -37,24 +35,17 @@ const lockedSpacer = style({
     marginRight: global_spacer_sm.value
 });
 
-const contentTitleStyle = {
-    fontSize: c_form__label_FontSize.value
-};
-
 export interface BehaviorGroupProps extends OuiaComponentProps {
-    behaviorGroup: BehaviorGroup;
+    behaviorGroup?: BehaviorGroup;
     onEdit?: (behaviorGroup: BehaviorGroup) => void;
     onDelete?: (behaviorGroup: BehaviorGroup) => void;
 }
 
+type BehaviorGroupImplProps = MarkRequired<BehaviorGroupProps, 'behaviorGroup'>;
+
 export interface BehaviorGroupCardLayout {
     title: React.ReactNode;
     dropdownItems?: Array<React.ReactNode>;
-    contents: Array<{
-        key: string;
-        action: React.ReactNode;
-        recipient: React.ReactNode;
-    }>;
     isDefaultBehavior?: boolean;
 }
 
@@ -102,34 +93,13 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                 </CardActions>
             </CardHeader>
             <CardBody>
-                <Grid hasGutter>
-                    <GridItem span={ 6 }>
-                        <TextContent>
-                            <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Action</Text>
-                        </TextContent>
-                    </GridItem>
-                    <GridItem span={ 6 }>
-                        <TextContent>
-                            <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Recipient</Text>
-                        </TextContent>
-                    </GridItem>
-                    { props.contents.map(content => (
-                        <React.Fragment key={ content.key }>
-                            <GridItem span={ 6 }>
-                                { content.action }
-                            </GridItem>
-                            <GridItem span={ 6 }>
-                                { content.recipient }
-                            </GridItem>
-                        </React.Fragment>
-                    )) }
-                </Grid>
+                { props.children }
             </CardBody>
         </Card>
     );
 };
 
-export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = props => {
+const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = props => {
     const onClickEdit = React.useCallback(() => {
         const onEdit = props.onEdit;
         if (onEdit) {
@@ -153,39 +123,30 @@ export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = pr
         <BehaviorGroupCardLayout
             title={ props.behaviorGroup.displayName }
             dropdownItems={ dropdownItems }
-            contents={ props.behaviorGroup.actions.map((action, index) => ({
-                key: `${index}-${action.type}`,
-                recipient: <Recipient action={ action } />,
-                action: <ActionComponent isDefault={ false } action={ action } />
-            })) }
-            isDefaultBehavior={ !!props.behaviorGroup.isDefault }
-        />
+            isDefaultBehavior={ props.behaviorGroup.isDefault }
+        >
+            <BehaviorGroupActionsSummary actions={ props.behaviorGroup.actions } />
+        </BehaviorGroupCardLayout>
     );
 };
 
-export const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
-    const contentWidth = '150px';
-
+const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
     return (
         <BehaviorGroupCardLayout
             title={ <Skeleton width="300px" /> }
-            contents={ [
-                {
-                    key: 'skeleton-1',
-                    action: <Skeleton width={ contentWidth } />,
-                    recipient: <Skeleton width={ contentWidth } />
-                },
-                {
-                    key: 'skeleton-2',
-                    action: <Skeleton width={ contentWidth } />,
-                    recipient: <Skeleton width={ contentWidth } />
-                },
-                {
-                    key: 'skeleton-3',
-                    action: <Skeleton width={ contentWidth } />,
-                    recipient: <Skeleton width={ contentWidth } />
-                }
-            ] }
-        />
+        >
+            <BehaviorGroupActionsSummary />
+        </BehaviorGroupCardLayout>
     );
+};
+
+export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = props => {
+    if (props.behaviorGroup) {
+        return <BehaviorGroupCardImpl
+            { ...props }
+            behaviorGroup={ props.behaviorGroup }
+        />;
+    }
+
+    return <BehaviorGroupCardSkeleton />;
 };
