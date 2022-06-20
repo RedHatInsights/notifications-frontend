@@ -199,7 +199,7 @@ const useAttachEventsToSplunk = () => {
                 return false;
             }
 
-            if (eventType.application.bundle_id !== behaviorGroup.bundleId) {
+            if (eventType.application.bundleId !== behaviorGroup.bundleId) {
                 return false;
             }
 
@@ -212,7 +212,7 @@ const useAttachEventsToSplunk = () => {
         });
 
         for (const eventType of selectedEventTypes) {
-            onProgress(`  ${eventType.application?.display_name} - ${eventType.display_name}...`);
+            onProgress(`  ${eventType.application?.displayName} - ${eventType.displayName}...`);
             try {
                 await appendActionToNotification(eventType, behaviorGroup);
                 onProgress(' ASSOCIATED\n', 'pf-u-success-color-200');

@@ -34,8 +34,8 @@ type Body = Operations.NotificationResourceCreateBehaviorGroup.Params['body'] | 
 
 const requestToBody = (behaviorGroup: SaveBehaviorGroupRequest): Body => {
     return {
-        bundle_id: behaviorGroup.bundleId,
-        display_name: behaviorGroup.displayName
+        bundleId: behaviorGroup.bundleId,
+        displayName: behaviorGroup.displayName
     };
 };
 

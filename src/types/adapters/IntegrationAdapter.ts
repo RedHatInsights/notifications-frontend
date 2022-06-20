@@ -16,13 +16,13 @@ import {
 
 interface ExternalCompositeTyped {
     type: string;
-    sub_type?: string | null;
+    subType?: string | null;
 }
 
 export const getIntegrationType = (serverIntegration: ExternalCompositeTyped): IntegrationType => {
     for (const integration of Object.values(IntegrationType)) {
-        if (serverIntegration.sub_type) {
-            if (integration === `${serverIntegration.type}:${serverIntegration.sub_type}`) {
+        if (serverIntegration.subType) {
+            if (integration === `${serverIntegration.type}:${serverIntegration.subType}`) {
                 return integration as IntegrationType;
             }
         } else if (integration === serverIntegration.type) {
@@ -30,7 +30,7 @@ export const getIntegrationType = (serverIntegration: ExternalCompositeTyped): I
         }
     }
 
-    throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${serverIntegration.sub_type}`);
+    throw new Error(`Unexpected type: ${serverIntegration.type} with subtype: ${serverIntegration.subType}`);
 };
 
 const getEndpointType = (type: IntegrationType): { type: Schemas.EndpointType, subType?: string } => {
@@ -54,8 +54,8 @@ const toIntegrationWebhook = (
     properties?: Schemas.WebhookProperties): IntegrationHttp => ({
     ...integrationBase,
     url: properties?.url ?? '',
-    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
-    secretToken: toSecretToken(properties?.secret_token),
+    sslVerificationEnabled: !properties?.disableSslVerification ?? false,
+    secretToken: toSecretToken(properties?.secretToken),
     method: properties?.method ?? Schemas.HttpType.Enum.GET
 });
 
@@ -64,14 +64,14 @@ const toIntegrationCamel = (
     properties?: Schemas.CamelProperties): IntegrationCamel => ({
     ...integrationBase,
     url: properties?.url ?? '',
-    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
-    secretToken: toSecretToken(properties?.secret_token),
-    basicAuth: properties?.basic_authentication === null ?
+    sslVerificationEnabled: !properties?.disableSslVerification ?? false,
+    secretToken: toSecretToken(properties?.secretToken),
+    basicAuth: properties?.basicAuthentication === null ?
         undefined
         :
         {
-            user: notNull(properties?.basic_authentication?.username, ''),
-            pass: notNull(properties?.basic_authentication?.password, '')
+            user: notNull(properties?.basicAuthentication?.username, ''),
+            pass: notNull(properties?.basicAuthentication?.password, '')
         },
     extras: notNull(properties?.extras)
 });
@@ -80,9 +80,9 @@ const toIntegrationEmail = (
     integrationBase: IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
     properties: Schemas.EmailSubscriptionProperties): IntegrationEmailSubscription => ({
     ...integrationBase,
-    ignorePreferences: properties.ignore_preferences,
-    groupId: properties.group_id === null ? undefined : properties.group_id,
-    onlyAdmin: properties.only_admins
+    ignorePreferences: properties.ignorePreferences,
+    groupId: properties.groupId === null ? undefined : properties.groupId,
+    onlyAdmin: properties.onlyAdmins
 });
 
 export const toIntegration = (serverIntegration: ServerIntegrationResponse): Integration => {
@@ -133,9 +133,9 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
         const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
         return {
             url: integrationCamel.url,
-            disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
-            secret_token: toSecretToken(integrationCamel.secretToken),
-            basic_authentication: integrationCamel.basicAuth ? {
+            disableSslVerification: !integrationCamel.sslVerificationEnabled,
+            secretToken: toSecretToken(integrationCamel.secretToken),
+            basicAuthentication: integrationCamel.basicAuth ? {
                 username: integrationCamel.basicAuth.user,
                 password: integrationCamel.basicAuth.pass
             } : undefined,
@@ -149,15 +149,15 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
             return {
                 url: integrationHttp.url,
                 method: integrationHttp.method,
-                disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
-                secret_token: toSecretToken(integrationHttp.secretToken)
+                disableSslVerification: !integrationHttp.sslVerificationEnabled,
+                secretToken: toSecretToken(integrationHttp.secretToken)
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;
             return {
-                only_admins: integrationEmail.onlyAdmin,
-                group_id: integrationEmail.groupId,
-                ignore_preferences: integrationEmail.ignorePreferences
+                onlyAdmins: integrationEmail.onlyAdmin,
+                groupId: integrationEmail.groupId,
+                ignorePreferences: integrationEmail.ignorePreferences
             };
         default:
             assertNever(type);
@@ -172,7 +172,7 @@ export const toServerIntegrationRequest =
             name: integration.name,
             enabled: integration.isEnabled,
             type,
-            sub_type: subType,
+            subType,
             description: '',
             properties: toIntegrationProperties(integration)
         };

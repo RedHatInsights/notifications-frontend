@@ -2,7 +2,7 @@ import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
 import fetchMock from 'fetch-mock';
-import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript-plugin-react-fetching-library';
 import * as React from 'react';
 import { ClientContextProvider, createClient } from 'react-fetching-library';
 import { Provider } from 'react-redux';

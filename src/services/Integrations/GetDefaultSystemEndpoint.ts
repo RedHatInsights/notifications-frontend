@@ -7,8 +7,8 @@ export const getDefaultSystemEndpointAction = (systemProperties: SystemPropertie
     if (systemProperties.type === NotificationType.EMAIL_SUBSCRIPTION) {
         return Operations.EndpointResourceGetOrCreateEmailSubscriptionEndpoint.actionCreator({
             body: {
-                only_admins: systemProperties.props.onlyAdmins,
-                group_id: systemProperties.props.groupId
+                onlyAdmins: systemProperties.props.onlyAdmins,
+                groupId: systemProperties.props.groupId
             }
         });
     }

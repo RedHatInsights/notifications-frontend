@@ -48,8 +48,8 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
 
     return {
         id: serverNotification.id,
-        applicationDisplayName: serverNotification.application.display_name,
-        eventTypeDisplayName: serverNotification.display_name
+        applicationDisplayName: serverNotification.application.displayName,
+        eventTypeDisplayName: serverNotification.displayName
     };
 };
 

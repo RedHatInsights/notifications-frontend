@@ -11,7 +11,7 @@ export const toNotificationEvent = (serverEvent: ServerEvent): NotificationEvent
     id: serverEvent.id,
     bundle: serverEvent.bundle,
     application: serverEvent.application,
-    event: serverEvent.event_type,
+    event: serverEvent.eventType,
     date: fromUtc(new Date(serverEvent.created)),
     actions: sortEventActions(groupActions(serverEvent.actions))
 });
@@ -27,16 +27,16 @@ const groupActions = (actions: ServerEvent['actions']): Array<NotificationEventA
     const actionsWithoutEndpoint: Array<NotificationEventAction> = [];
 
     actions.forEach(action => {
-        if (!action.endpoint_id) {
+        if (!action.endpointId) {
             actionsWithoutEndpoint.push(initAction(action));
             return;
         }
 
-        if (!actionsById[action.endpoint_id]) {
-            actionsById[action.endpoint_id] = initAction(action);
+        if (!actionsById[action.endpointId]) {
+            actionsById[action.endpointId] = initAction(action);
         } else {
             const newAction = initAction(action);
-            const current = actionsById[action.endpoint_id];
+            const current = actionsById[action.endpointId];
 
             if (newAction.status !== current.status) {
                 current.status = NotificationEventStatus.WARNING;
@@ -51,12 +51,12 @@ const groupActions = (actions: ServerEvent['actions']): Array<NotificationEventA
 };
 
 const initAction = (action: ServerEvent['actions'][number]): NotificationEventAction => ({
-    id: action.endpoint_id ?? undefined,
+    id: action.endpointId ?? undefined,
     endpointType: getIntegrationType({
-        type: action.endpoint_type,
-        sub_type: action.endpoint_sub_type
+        type: action.endpointType,
+        subType: action.endpointSubType
     }),
-    status: action.invocation_result ? NotificationEventStatus.SUCCESS : NotificationEventStatus.ERROR,
-    successCount: action.invocation_result ? 1 : 0,
-    errorCount: action.invocation_result ? 0 : 1
+    status: action.invocationResult ? NotificationEventStatus.SUCCESS : NotificationEventStatus.ERROR,
+    successCount: action.invocationResult ? 1 : 0,
+    errorCount: action.invocationResult ? 0 : 1
 });
