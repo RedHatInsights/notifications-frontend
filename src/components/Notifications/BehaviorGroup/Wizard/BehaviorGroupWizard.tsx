@@ -1,16 +1,17 @@
 import { Wizard } from '@patternfly/react-core';
-import { Form,Formik } from 'formik';
+import { Form, Formik } from 'formik';
 import * as React from 'react';
 
 import { BehaviorGroupWizardFooter } from './BehaviorGroupWizardFooter';
 import { ExtendedWizardStep } from './ExtendedWizardStep';
+import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 
 interface BehaviorGroupWizardProps {
     steps: Array<ExtendedWizardStep>;
 }
 
 export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardProps> = props => {
-    return <Formik
+    return <Formik<Partial<CreateBehaviorGroup>>
         onSubmit={ () => { console.log('onsubmit'); } }
         initialValues={ {} }
     >

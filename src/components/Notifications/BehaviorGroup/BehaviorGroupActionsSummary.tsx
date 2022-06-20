@@ -1,6 +1,7 @@
 import { Grid, GridItem, Skeleton, Text, TextContent, TextVariants } from '@patternfly/react-core';
 import { c_form__label_FontSize } from '@patternfly/react-tokens';
 import * as React from 'react';
+import { style } from 'typestyle';
 
 import { Action } from '../../../types/Notification';
 import { ActionComponent } from '../ActionComponent';
@@ -12,9 +13,9 @@ interface BehaviorGroupActionsSummaryProps {
 
 type BehaviorGroupActionSummaryImplProps = Required<BehaviorGroupActionsSummaryProps>;
 
-const contentTitleStyle = {
+const contentTitleClassName = style({
     fontSize: c_form__label_FontSize.value
-};
+});
 
 const skeletonActions = 3;
 
@@ -23,12 +24,12 @@ const BehaviorGroupActionsSummaryLayout: React.FunctionComponent = props => {
         <Grid hasGutter>
             <GridItem span={ 6 }>
                 <TextContent>
-                    <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Action</Text>
+                    <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Action</Text>
                 </TextContent>
             </GridItem>
             <GridItem span={ 6 }>
                 <TextContent>
-                    <Text component={ TextVariants.h5 } style={ contentTitleStyle }>Recipient</Text>
+                    <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Recipient</Text>
                 </TextContent>
             </GridItem>
             { props.children }

@@ -56,7 +56,7 @@ const SelectableEventTypeTableSkeleton: React.FunctionComponent = () => {
                         <Skeleton width="80%" />
                     </Td>
                     <Td>
-                        <Skeleton width="70px" />
+                        <Skeleton width="80%" />
                     </Td>
                 </Tr>
             )) }

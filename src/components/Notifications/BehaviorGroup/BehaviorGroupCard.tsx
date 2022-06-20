@@ -25,9 +25,6 @@ import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
 import { BehaviorGroupActionsSummary } from './BehaviorGroupActionsSummary';
-import { ActionComponent } from '../ActionComponent';
-import { Recipient } from '../Recipient';
-import { BehaviorGroupActions } from './BehaviorGroupActions';
 
 const cardClassName = style({
     width: 450,
@@ -96,7 +93,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                 </CardActions>
             </CardHeader>
             <CardBody>
-                <BehaviorGroupActions />
+                { props.children }
             </CardBody>
         </Card>
     );
