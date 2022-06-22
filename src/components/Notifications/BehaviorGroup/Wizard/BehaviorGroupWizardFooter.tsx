@@ -4,7 +4,7 @@ import { global_danger_color_100 } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { style } from 'typestyle';
 
-interface BehaviorGroupWizardFooterProps {
+export interface BehaviorGroupWizardFooterProps {
     isLoading: boolean;
     error?: string;
     onNext: (goNext: () => void) => void;
@@ -36,7 +36,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
             >
                 { wizardContext.activeStep.nextButtonText ?? 'Next' }
             </Button>
-            { wizardContext.activeStep.hideBackButton && (
+            { !wizardContext.activeStep.hideBackButton && (
                 <Button
                     variant={ ButtonVariant.secondary }
                     onClick={ wizardContext.onBack }
@@ -45,7 +45,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
                     Back
                 </Button>
             ) }
-            { wizardContext.activeStep.hideCancelButton && (
+            { !wizardContext.activeStep.hideCancelButton && (
                 <Button
                     variant={ ButtonVariant.link }
                     onClick={ wizardContext.onClose }

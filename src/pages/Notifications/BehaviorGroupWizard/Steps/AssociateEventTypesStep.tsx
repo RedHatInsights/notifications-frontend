@@ -11,6 +11,7 @@ import { NotificationsToolbar, SelectionCommand } from '../../../../components/N
 import { useListNotifications } from '../../../../services/useListNotifications';
 import { Facet } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
+import { useFormikContext } from 'formik';
 
 const title = 'Associate event types';
 
@@ -113,7 +114,10 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
     );
 };
 
-export const createAssociateEventTypesStep: CreateWizardStep<AssociateEventTypesStepProps> = (props: AssociateEventTypesStepProps) => ({
-    name: title,
-    component: <AssociateEventTypesStep { ...props } />
-});
+export const useAssociateEventTypesStep: CreateWizardStep<AssociateEventTypesStepProps> = (props: AssociateEventTypesStepProps) => {
+
+    return {
+        name: title,
+        component: <AssociateEventTypesStep { ...props } />
+    };
+};
