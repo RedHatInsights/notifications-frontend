@@ -13,6 +13,7 @@ export interface SelectableEventTypeRow {
 
 interface SelectableEventTypeTableBaseProps {
     onSelect?: (isSelected: boolean, eventId: string) => void;
+    selectionDisabled?: boolean;
 }
 
 interface SelectableEventTypeTableImplProps extends SelectableEventTypeTableBaseProps {
@@ -75,7 +76,8 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeT
                             isSelected,
                             event.id
                         ),
-                        isSelected: event.isSelected
+                        isSelected: event.isSelected,
+                        disable: props.selectionDisabled
                     } } />
                     <Td>{ event.eventType }</Td>
                     <Td>{ event.application }</Td>
@@ -88,8 +90,8 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeT
 export const SelectableEventTypeTable: React.FunctionComponent<SelectableEventTypeTableProps> = props => {
     if (props.events) {
         return <SelectableEventTypeTableImpl
+            { ...props }
             events={ props.events }
-            onSelect={ props.onSelect }
         />;
     }
 

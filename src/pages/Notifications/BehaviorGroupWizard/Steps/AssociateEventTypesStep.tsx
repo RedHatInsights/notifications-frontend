@@ -1,6 +1,6 @@
 import { Text, TextContent, Title } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { Form, ImmutableContainerSet, ImmutableContainerSetMode } from '@redhat-cloud-services/insights-common-typescript';
+import { Form, ImmutableContainerSet, ImmutableContainerSetMode, Page } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { Dispatch, SetStateAction } from 'react';
 import { style } from 'typestyle';
@@ -8,10 +8,11 @@ import { style } from 'typestyle';
 import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { SelectableEventTypeRow, SelectableEventTypeTable } from '../../../../components/Notifications/BehaviorGroup/Wizard/SelectableEventTypeTable';
 import { NotificationsToolbar, SelectionCommand } from '../../../../components/Notifications/Toolbar';
-import { useListNotifications } from '../../../../services/useListNotifications';
+import { useListNotifications, useParameterizedListNotifications } from '../../../../services/useListNotifications';
 import { Facet } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
 import { useFormikContext } from 'formik';
+import { useClient } from 'react-fetching-library';
 
 const title = 'Associate event types';
 
@@ -30,6 +31,8 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
 
     const eventTypePage = useEventTypesPage(props.bundle, props.applications, false);
     const eventTypesRaw = useListNotifications(eventTypePage.pageController.page);
+    const onDemandEventTypes = useParameterizedListNotifications();
+
     const count = React.useMemo(() => {
         const payload = eventTypesRaw.payload;
         if (payload?.status === 200) {
@@ -69,18 +72,56 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
     }, [ props.setSelectedEventTypes ]);
 
     const onSelectCommand = React.useCallback((command: SelectionCommand) => {
+        const currentPage = eventTypePage.pageController.page;
         const setSelectedEventTypes = props.setSelectedEventTypes;
         setSelectedEventTypes(prev => {
             switch (command) {
                 case SelectionCommand.ALL:
-                    return new ImmutableContainerSet([], ImmutableContainerSetMode.EXCLUDE);
+                    if (count === events.length) {
+                        return prev.addIterable(events.map(e => e.id));
+                    } else {
+
+                        const asyncUpdate = async () => {
+                            let pageIndex = 1;
+                            let updated = prev;
+                            const lastPage = Page.lastPageForElements(count, currentPage.size);
+                            console.log(currentPage);
+                            while (true) {
+                                const fetchingPage = currentPage.withPage(pageIndex);
+
+                                if (fetchingPage.index > lastPage.index) {
+                                    break;
+                                }
+
+                                if (currentPage.index === fetchingPage.index) {
+                                    updated = updated.addIterable(events.map(e => e.id));
+                                } else {
+                                    const events = await onDemandEventTypes.query(currentPage.withPage(pageIndex));
+                                    if (events.payload?.type === 'eventTypesArray') {
+                                        updated = updated.addIterable(events.payload.value.data.map(v => v.id));
+                                    } else {
+                                        break;
+                                    }
+                                }
+
+                                pageIndex++;
+                            }
+
+                            setSelectedEventTypes(updated);
+                        };
+
+                        asyncUpdate();
+                    }
+
+                    return prev;
+                    // return new ImmutableContainerSet([], ImmutableContainerSetMode.EXCLUDE);
                 case SelectionCommand.PAGE:
                     return prev.addIterable(events.map(e => e.id));
                 case SelectionCommand.NONE:
                     return new ImmutableContainerSet();
             }
         });
-    }, [ props.setSelectedEventTypes, events ]);
+    }, [ props.setSelectedEventTypes, events, onDemandEventTypes, eventTypePage.pageController.page, count ]);
 
     return (
         <Form>
@@ -104,10 +145,12 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
                 count={ count }
                 onSelectionChanged={ onSelectCommand }
                 selectedCount={ props.selectedEventTypes.size(count) }
+                bulkSelectionDisabled={ onDemandEventTypes.loading }
             >
                 <SelectableEventTypeTable
                     onSelect={ onSelect }
                     events={ eventTypesRaw.loading ? undefined : events }
+                    selectionDisabled={ onDemandEventTypes.loading }
                 />
             </NotificationsToolbar>
         </Form>

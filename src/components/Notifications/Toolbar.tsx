@@ -44,6 +44,7 @@ export interface NotificationsToolbarProps extends OuiaComponentProps {
 
     selectedCount?: number;
     onSelectionChanged?: (command: SelectionCommand) => void;
+    bulkSelectionDisabled?: boolean;
 }
 
 const allFilterColumns = [
@@ -55,9 +56,7 @@ const allFilterColumns = [
 export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> = (props) => {
 
     const insights = getInsights();
-
     const filterColumns = props.filterColumns ?? allFilterColumns;
-
     const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
 
         const appFilterItems = props.appFilterOptions.map(a => ({
@@ -116,9 +115,10 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                 }
             ],
             checked: selectedCount !== 0 && selectedCount === count,
-            onSelect: (isSelected: boolean) => isSelected ? selectAll() : selectNone()
+            onSelect: (isSelected: boolean) => isSelected ? selectAll() : selectNone(),
+            isDisabled: props.bulkSelectionDisabled
         };
-    }, [ props.onSelectionChanged, props.selectedCount, props.pageAdapter, props.count ]);
+    }, [ props.onSelectionChanged, props.selectedCount, props.pageAdapter, props.count, props.bulkSelectionDisabled ]);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
         NotificationFilterColumn,
