@@ -1,14 +1,13 @@
 import { Grid, GridItem, Text, TextContent, TextVariants, Title } from '@patternfly/react-core';
-import { Form, FormText } from '@redhat-cloud-services/insights-common-typescript';
-import * as React from 'react';
-import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
-import { BehaviorGroupActionsSummary } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupActionsSummary';
 import { c_form__label_FontSize } from '@patternfly/react-tokens';
-import { style } from 'typestyle';
-import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
-import { NotificationType } from '../../../../types/Notification';
-import { NotificationUserRecipient } from '../../../../types/Recipient';
+import { Form, FormText } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
+import * as React from 'react';
+import { style } from 'typestyle';
+
+import { BehaviorGroupActionsSummary } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupActionsSummary';
+import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
+import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 
 const title = 'Review';
 
@@ -21,27 +20,7 @@ const tableContainerClassName = style({
 });
 
 const ReviewStep: React.FunctionComponent = () => {
-    const x = useFormikContext<CreateBehaviorGroup>();
-    console.log(x.values);
-
-    const values: CreateBehaviorGroup = {
-        name: 'my new behavior group',
-        actions: [
-            {
-                type: NotificationType.EMAIL_SUBSCRIPTION,
-                recipient: [
-                    new NotificationUserRecipient('foo', true)
-                ]
-            }
-        ],
-        events: [
-            {
-                id: 'policy-triggered',
-                name: 'Policy triggered',
-                applicationName: 'Policies'
-            }
-        ]
-    };
+    const { values } = useFormikContext<CreateBehaviorGroup>();
 
     return (
         <Form ouiaId="review-step">

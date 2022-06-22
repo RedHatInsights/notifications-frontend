@@ -74,7 +74,11 @@ export const BehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizar
         <RecipientContextProvider value={ actionsContextValue }>
             <Formik<Partial<CreateBehaviorGroup>>
                 onSubmit={ () => { console.log('onsubmit'); } }
-                initialValues={ {} }
+                initialValues={ {
+                    actions: [],
+                    events: [],
+                    name: ''
+                } }
             >
                 <InternalBehaviorGroupWizardPage { ...props } />
             </Formik>
