@@ -1,11 +1,14 @@
 import { ImmutableContainerSet } from '@redhat-cloud-services/insights-common-typescript';
+import { Formik } from 'formik';
 import * as React from 'react';
 
 import { BehaviorGroupWizard } from '../../../components/Notifications/BehaviorGroup/Wizard/BehaviorGroupWizard';
+import { RecipientContextProvider } from '../../../components/Notifications/RecipientContext';
+import { useGetIntegrations } from '../../../components/Notifications/useGetIntegrations';
+import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
+import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 import { Facet } from '../../../types/Notification';
 import { useSteps } from './useSteps';
-import { Formik } from 'formik';
-import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 
 interface BehaviorGroupWizardProps {
     bundle: Facet;
@@ -60,12 +63,21 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
 
 // move this to an internal component wrapped in the formik context
 export const BehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizardProps> = props => {
+    const getRecipients = useGetRecipients();
+    const getIntegrations = useGetIntegrations();
+    const actionsContextValue = React.useMemo(() => ({
+        getIntegrations,
+        getNotificationRecipients: getRecipients
+    }), [ getIntegrations, getRecipients ]);
+
     return (
-        <Formik<Partial<CreateBehaviorGroup>>
-            onSubmit={ () => { console.log('onsubmit'); } }
-            initialValues={ {} }
-        >
-            <InternalBehaviorGroupWizardPage { ...props } />
-        </Formik>
+        <RecipientContextProvider value={ actionsContextValue }>
+            <Formik<Partial<CreateBehaviorGroup>>
+                onSubmit={ () => { console.log('onsubmit'); } }
+                initialValues={ {} }
+            >
+                <InternalBehaviorGroupWizardPage { ...props } />
+            </Formik>
+        </RecipientContextProvider>
     );
 };

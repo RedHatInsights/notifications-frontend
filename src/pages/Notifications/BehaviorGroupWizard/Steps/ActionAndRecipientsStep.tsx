@@ -5,6 +5,9 @@ import * as React from 'react';
 import { style } from 'typestyle';
 
 import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
+import { EditBehaviorGroupForm } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupForm';
+import { useFormikContext } from 'formik';
+import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 
 const title = 'Actions and recipients';
 
@@ -13,6 +16,8 @@ const subtitleClassName = style({
 });
 
 const ActionAndRecipientsStep: React.FunctionComponent = () => {
+    const { values } = useFormikContext<CreateBehaviorGroup>();
+
     return (
         <Form>
             <div>
@@ -25,6 +30,7 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
                 <TextContent className={ subtitleClassName }>
                     <Text>Select action and recipient pairs to assign to your notification events.</Text>
                 </TextContent>
+                <EditBehaviorGroupForm behaviorGroup={ values } showOnlyActions={ true } />
             </div>
         </Form>
     );

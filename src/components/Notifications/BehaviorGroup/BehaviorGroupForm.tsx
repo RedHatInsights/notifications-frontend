@@ -11,6 +11,8 @@ import { BehaviorGroupFormActionsTable } from './BehaviorGroupFormActionsTable';
 
 export interface EditBehaviorGroupProps extends OuiaComponentProps {
     behaviorGroup?: Partial<BehaviorGroup>;
+    // NOTIF-686 To be removed when we move to the wizard
+    showOnlyActions?: boolean;
 }
 
 const subtitleClassName = style({
@@ -21,18 +23,21 @@ export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupPro
 
     return (
         <div { ... getOuiaProps('Notifications/BehaviorGroupForm', props) }>
-            <div className={ subtitleClassName }>{`${ props.behaviorGroup?.id ?
-                'Edit your existing behavior group' : 'Enter a name and add actions for your new group.'}` } </div>
+            { !props.showOnlyActions && (<div className={ subtitleClassName }>{`${props.behaviorGroup?.id ?
+                'Edit your existing behavior group' : 'Enter a name and add actions for your new group.'}`} </div>)
+            }
             <Form>
                 <Grid hasGutter>
-                    <GridItem span={ 12 }>
-                        <FormTextInput
-                            ouiaId={ ouiaIdConcat(props.ouiaId, 'group-name') }
-                            label="Group name"
-                            name="displayName"
-                            id="group-name"
-                        />
-                    </GridItem>
+                    { !props.showOnlyActions && (
+                        <GridItem span={ 12 }>
+                            <FormTextInput
+                                ouiaId={ ouiaIdConcat(props.ouiaId, 'group-name') }
+                                label="Group name"
+                                name="displayName"
+                                id="group-name"
+                            />
+                        </GridItem>
+                    ) }
                     <FieldArray name="actions">
                         { helpers => (
                             <>
