@@ -45,6 +45,7 @@ export interface NotificationsToolbarProps extends OuiaComponentProps {
     selectedCount?: number;
     onSelectionChanged?: (command: SelectionCommand) => void;
     bulkSelectionDisabled?: boolean;
+    pageCount?: number;
 }
 
 const allFilterColumns = [
@@ -106,7 +107,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                     onClick: selectNone
                 },
                 {
-                    title: `Select page (${pageSize})`,
+                    title: `Select page (${props.pageCount ?? pageSize})`,
                     onClick: () => onSelectionChanged(SelectionCommand.PAGE)
                 },
                 {
@@ -118,7 +119,7 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
             onSelect: (isSelected: boolean) => isSelected ? selectAll() : selectNone(),
             isDisabled: props.bulkSelectionDisabled
         };
-    }, [ props.onSelectionChanged, props.selectedCount, props.pageAdapter, props.count, props.bulkSelectionDisabled ]);
+    }, [ props.onSelectionChanged, props.selectedCount, props.pageAdapter, props.count, props.bulkSelectionDisabled, props.pageCount ]);
 
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
         NotificationFilterColumn,

@@ -1,5 +1,6 @@
 import { Formik, useFormikContext } from 'formik';
 import * as React from 'react';
+import * as Yup from 'yup';
 
 import { BehaviorGroupWizard } from '../../../components/Notifications/BehaviorGroup/Wizard/BehaviorGroupWizard';
 import { RecipientContextProvider } from '../../../components/Notifications/RecipientContext';
@@ -8,7 +9,6 @@ import { useGetRecipients } from '../../../components/Notifications/useGetRecipi
 import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 import { Facet } from '../../../types/Notification';
 import { useSteps } from './useSteps';
-import * as Yup from 'yup';
 
 interface BehaviorGroupWizardProps {
     bundle: Facet;

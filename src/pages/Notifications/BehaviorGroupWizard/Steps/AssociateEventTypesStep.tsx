@@ -183,6 +183,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
                 appFilterOptions={ props.applications }
                 pageAdapter={ eventTypePage.pageController }
                 count={ count }
+                pageCount={ events.length }
                 onSelectionChanged={ onSelectCommand }
                 selectedCount={ Object.keys(selectedEventTypes).length }
                 bulkSelectionDisabled={ onDemandEventTypes.loading }

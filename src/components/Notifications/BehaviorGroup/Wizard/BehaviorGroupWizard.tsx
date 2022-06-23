@@ -1,10 +1,9 @@
-import { Wizard, WizardProps } from '@patternfly/react-core';
-import { Form, Formik } from 'formik';
+import { Wizard } from '@patternfly/react-core';
+import { Form } from 'formik';
 import * as React from 'react';
 
 import { BehaviorGroupWizardFooter, BehaviorGroupWizardFooterProps } from './BehaviorGroupWizardFooter';
 import { ExtendedWizardStep } from './ExtendedWizardStep';
-import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 
 interface BehaviorGroupWizardProps {
     steps: Array<ExtendedWizardStep>;

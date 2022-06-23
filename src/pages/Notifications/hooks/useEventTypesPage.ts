@@ -1,12 +1,13 @@
-import { useEventTypesFilterBuilder } from './useEventTypesFilterBuilder';
-import * as React from 'react';
-import { SortDirection } from '../../../types/SortDirection';
-import { NotificationsTableColumns } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
-import { usePage } from '../../../hooks/usePage';
+import * as React from 'react';
+
+import { NotificationsTableColumns } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
 import Config from '../../../config/Config';
+import { usePage } from '../../../hooks/usePage';
 import { Facet } from '../../../types/Notification';
+import { SortDirection } from '../../../types/SortDirection';
 import { useNotificationFilter } from '../List/useNotificationFilter';
+import { useEventTypesFilterBuilder } from './useEventTypesFilterBuilder';
 
 export const useEventTypesPage = (bundle: Facet, applications: ReadonlyArray<Facet>, useUrlState: boolean) => {
     const notificationsFilter = useNotificationFilter(applications.map(a => a.displayName.toString()), useUrlState);
