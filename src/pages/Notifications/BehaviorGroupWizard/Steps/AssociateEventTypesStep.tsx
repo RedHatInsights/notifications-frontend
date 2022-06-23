@@ -150,7 +150,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
                 <SelectableEventTypeTable
                     onSelect={ onSelect }
                     events={ eventTypesRaw.loading ? undefined : events }
-                    selectionDisabled={ onDemandEventTypes.loading }
+                    selectionLoading={ onDemandEventTypes.loading }
                 />
             </NotificationsToolbar>
         </Form>

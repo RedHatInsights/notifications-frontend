@@ -1,4 +1,4 @@
-import { Skeleton } from '@patternfly/react-core';
+import { Skeleton, Spinner } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import * as React from 'react';
 
@@ -13,7 +13,7 @@ export interface SelectableEventTypeRow {
 
 interface SelectableEventTypeTableBaseProps {
     onSelect?: (isSelected: boolean, eventId: string) => void;
-    selectionDisabled?: boolean;
+    selectionLoading?: boolean;
 }
 
 interface SelectableEventTypeTableImplProps extends SelectableEventTypeTableBaseProps {
@@ -70,15 +70,21 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeT
         <SelectableEventTypeTableLayout>
             { props.events.map((event, rowIndex) => (
                 <Tr key={ event.id }>
-                    <Td select={ {
-                        rowIndex,
-                        onSelect: (_event, isSelected) => props.onSelect && props.onSelect(
-                            isSelected,
-                            event.id
-                        ),
-                        isSelected: event.isSelected,
-                        disable: props.selectionDisabled
-                    } } />
+                    <Td
+                        modifier={ props.selectionLoading ? 'fitContent' : undefined }
+                        noPadding={ props.selectionLoading }
+                        select={ props.selectionLoading ? undefined : {
+                            rowIndex,
+                            onSelect: (_event, isSelected) => props.onSelect && props.onSelect(
+                                isSelected,
+                                event.id
+                            ),
+                            isSelected: event.isSelected,
+                            disable: props.selectionLoading
+                       } }
+                    >
+                        { props.selectionLoading && <Spinner size="sm" /> }
+                    </Td>
                     <Td>{ event.eventType }</Td>
                     <Td>{ event.application }</Td>
                 </Tr>
