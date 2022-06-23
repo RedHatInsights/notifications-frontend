@@ -35,7 +35,7 @@ const ReviewStep: React.FunctionComponent = () => {
                 <BehaviorGroupActionsSummary actions={ values.actions } />
             </div>
             <div className={ tableContainerClassName }>
-                <Grid hasGutter>
+                <Grid>
                     <GridItem span={ 6 }>
                         <TextContent>
                             <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Event type</Text>

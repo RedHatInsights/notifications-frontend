@@ -2,6 +2,8 @@ import { Skeleton, Spinner } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import * as React from 'react';
 
+import { NotificationBase } from '../../../../types/Notification';
+
 const skeletonRows = 10;
 
 export interface SelectableEventTypeRow {
@@ -12,7 +14,7 @@ export interface SelectableEventTypeRow {
 }
 
 interface SelectableEventTypeTableBaseProps {
-    onSelect?: (isSelected: boolean, eventId: string) => void;
+    onSelect?: (isSelected: boolean, event: NotificationBase) => void;
     selectionLoading?: boolean;
 }
 
@@ -77,11 +79,15 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeT
                             rowIndex,
                             onSelect: (_event, isSelected) => props.onSelect && props.onSelect(
                                 isSelected,
-                                event.id
+                                {
+                                    id: event.id,
+                                    eventTypeDisplayName: event.eventType,
+                                    applicationDisplayName: event.application
+                                }
                             ),
                             isSelected: event.isSelected,
                             disable: props.selectionLoading
-                       } }
+                        } }
                     >
                         { props.selectionLoading && <Spinner size="sm" /> }
                     </Td>

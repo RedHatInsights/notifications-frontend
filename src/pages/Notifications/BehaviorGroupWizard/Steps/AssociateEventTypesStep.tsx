@@ -1,15 +1,18 @@
 import { Text, TextContent, Title } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { Form, ImmutableContainerSet, ImmutableContainerSetMode, Page } from '@redhat-cloud-services/insights-common-typescript';
+import { Form, Page } from '@redhat-cloud-services/insights-common-typescript';
+import { useFormikContext } from 'formik';
+import produce from 'immer';
 import * as React from 'react';
-import { Dispatch, SetStateAction } from 'react';
+import { useEffect } from 'react';
 import { style } from 'typestyle';
 
 import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { SelectableEventTypeRow, SelectableEventTypeTable } from '../../../../components/Notifications/BehaviorGroup/Wizard/SelectableEventTypeTable';
 import { NotificationsToolbar, SelectionCommand } from '../../../../components/Notifications/Toolbar';
 import { useListNotifications, useParameterizedListNotifications } from '../../../../services/useListNotifications';
-import { Facet } from '../../../../types/Notification';
+import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
+import { Facet, NotificationBase } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
 
 const title = 'Associate event types';
@@ -21,15 +24,35 @@ const subtitleClassName = style({
 export interface AssociateEventTypesStepProps {
     applications: ReadonlyArray<Facet>;
     bundle: Facet;
-    selectedEventTypes: ImmutableContainerSet<string>;
-    setSelectedEventTypes: Dispatch<SetStateAction<ImmutableContainerSet<string>>>;
 }
 
 const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepProps> = props => {
+    const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
+    const [ selectedEventTypes, setSelectedEventTypes ] = React.useState<Record<string, NotificationBase>>(() => {
+        const selected: Record<string, NotificationBase> = {};
+        values.events.forEach(value => {
+            selected[value.id] = {
+                id: value.id,
+                applicationDisplayName: value.applicationName,
+                eventTypeDisplayName: value.name
+            };
+        });
 
+        return selected;
+    });
     const eventTypePage = useEventTypesPage(props.bundle, props.applications, false);
     const eventTypesRaw = useListNotifications(eventTypePage.pageController.page);
     const onDemandEventTypes = useParameterizedListNotifications();
+
+    useEffect(() => {
+        setValues(produce(draft => {
+            draft.events = Object.values(selectedEventTypes).map(se => ({
+                id: se.id,
+                name: se.eventTypeDisplayName,
+                applicationName: se.applicationDisplayName
+            }));
+        }));
+    }, [ setValues, selectedEventTypes ]);
 
     const count = React.useMemo(() => {
         const payload = eventTypesRaw.payload;
@@ -40,85 +63,105 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
         return 0;
     }, [ eventTypesRaw.payload ]);
 
-    React.useEffect(() => {
-        const setSelectedEventTypes = props.setSelectedEventTypes;
-        setSelectedEventTypes(new ImmutableContainerSet());
-    }, [ eventTypePage.filters, props.setSelectedEventTypes ]);
-
     const events = React.useMemo<ReadonlyArray<SelectableEventTypeRow>>(() => {
         if (eventTypesRaw.payload?.type === 'eventTypesArray') {
             return eventTypesRaw.payload.value.data.map(value => ({
                 id: value.id,
-                isSelected: props.selectedEventTypes.contains(value.id),
+                isSelected: Object.keys(selectedEventTypes).includes(value.id),
                 application: value.applicationDisplayName,
                 eventType: value.eventTypeDisplayName
             }));
         }
 
         return [];
-    }, [ eventTypesRaw.payload, props.selectedEventTypes ]);
+    }, [ eventTypesRaw.payload, selectedEventTypes ]);
 
-    const onSelect = React.useCallback((isSelected: boolean, eventTypeId: string) => {
-        const setSelectedEventTypes = props.setSelectedEventTypes;
-        setSelectedEventTypes(prev => {
+    const onSelect = React.useCallback((isSelected: boolean, eventType: NotificationBase) => {
+        setSelectedEventTypes(produce(draft => {
             if (isSelected) {
-                return prev.add(eventTypeId);
+                draft[eventType.id] = eventType;
             } else {
-                return prev.remove(eventTypeId);
+                delete draft[eventType.id];
             }
-        });
-    }, [ props.setSelectedEventTypes ]);
+        }));
+    }, [ setSelectedEventTypes ]);
 
     const onSelectCommand = React.useCallback((command: SelectionCommand) => {
         const currentPage = eventTypePage.pageController.page;
-        const setSelectedEventTypes = props.setSelectedEventTypes;
-        setSelectedEventTypes(prev => {
-            switch (command) {
-                case SelectionCommand.ALL:
-                    if (count === events.length) {
-                        return prev.addIterable(events.map(e => e.id));
-                    } else {
 
-                        const asyncUpdate = async () => {
-                            let pageIndex = 1;
-                            let updated = prev;
-                            const lastPage = Page.lastPageForElements(count, currentPage.size);
-                            while (true) {
-                                const fetchingPage = currentPage.withPage(pageIndex);
+        switch (command) {
+            case SelectionCommand.ALL:
+                if (count === events.length) {
+                    return setSelectedEventTypes(produce(draft => {
+                        events.forEach(e => {
+                            draft[e.id] = {
+                                id: e.id,
+                                applicationDisplayName: e.application,
+                                eventTypeDisplayName: e.eventType
+                            };
+                        });
+                    }));
+                } else {
+                    (async () => {
+                        let pageIndex = 1;
+                        const addedElements: Record<string, NotificationBase> = {};
+                        const lastPage = Page.lastPageForElements(count, currentPage.size);
+                        while (true) {
+                            const fetchingPage = currentPage.withPage(pageIndex);
 
-                                if (fetchingPage.index > lastPage.index) {
-                                    break;
-                                }
-
-                                if (currentPage.index === fetchingPage.index) {
-                                    updated = updated.addIterable(events.map(e => e.id));
-                                } else {
-                                    const events = await onDemandEventTypes.query(currentPage.withPage(pageIndex));
-                                    if (events.payload?.type === 'eventTypesArray') {
-                                        updated = updated.addIterable(events.payload.value.data.map(v => v.id));
-                                    } else {
-                                        break;
-                                    }
-                                }
-
-                                pageIndex++;
+                            if (fetchingPage.index > lastPage.index) {
+                                break;
                             }
 
-                            setSelectedEventTypes(updated);
+                            if (currentPage.index === fetchingPage.index) {
+                                events.forEach(e => {
+                                    addedElements[e.id] = {
+                                        id: e.id,
+                                        eventTypeDisplayName: e.eventType,
+                                        applicationDisplayName: e.application
+                                    };
+                                });
+                            } else {
+                                const events = await onDemandEventTypes.query(currentPage.withPage(pageIndex));
+                                if (events.payload?.type === 'eventTypesArray') {
+                                    events.payload.value.data.forEach(e => {
+                                        addedElements[e.id] = e;
+                                    });
+                                } else {
+                                    break;
+                                }
+                            }
+
+                            pageIndex++;
+                        }
+
+                        setSelectedEventTypes(produce(draft => {
+                            for (const event of Object.values(addedElements)) {
+                                draft[event.id] = event;
+                            }
+                        }));
+                    })();
+                }
+
+                break;
+            case SelectionCommand.PAGE:
+                setSelectedEventTypes(produce(draft => {
+                    events.forEach(e => {
+                        draft[e.id] = {
+                            id: e.id,
+                            applicationDisplayName: e.application,
+                            eventTypeDisplayName: e.eventType
                         };
+                    });
+                }));
 
-                        asyncUpdate();
-                    }
+                break;
+            case SelectionCommand.NONE:
+                setSelectedEventTypes({});
+                break;
+        }
 
-                    return prev;
-                    // return new ImmutableContainerSet([], ImmutableContainerSetMode.EXCLUDE);
-                case SelectionCommand.PAGE:
-                    return prev.addIterable(events.map(e => e.id));
-                case SelectionCommand.NONE:
-                    return new ImmutableContainerSet();
-            }
-        });
-    }, [ props.setSelectedEventTypes, events, onDemandEventTypes, eventTypePage.pageController.page, count ]);
+    }, [ setSelectedEventTypes, events, onDemandEventTypes, eventTypePage.pageController.page, count ]);
 
     return (
         <Form>
@@ -141,7 +184,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
                 pageAdapter={ eventTypePage.pageController }
                 count={ count }
                 onSelectionChanged={ onSelectCommand }
-                selectedCount={ props.selectedEventTypes.size(count) }
+                selectedCount={ Object.keys(selectedEventTypes).length }
                 bulkSelectionDisabled={ onDemandEventTypes.loading }
             >
                 <SelectableEventTypeTable

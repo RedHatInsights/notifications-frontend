@@ -7,7 +7,7 @@ import { RecipientContextProvider } from '../../../components/Notifications/Reci
 import { useGetIntegrations } from '../../../components/Notifications/useGetIntegrations';
 import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
 import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
-import { Facet } from '../../../types/Notification';
+import { Facet, NotificationBase } from '../../../types/Notification';
 import { useSteps } from './useSteps';
 
 interface BehaviorGroupWizardProps {
@@ -16,18 +16,12 @@ interface BehaviorGroupWizardProps {
 }
 
 const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizardProps> = props => {
-    const [ selectedEventTypes, setSelectedEventTypes ] = React.useState<ImmutableContainerSet<string>>(() => {
-        return new ImmutableContainerSet<string>();
-    });
-
     const [ currentStep, setCurrentStep ] = React.useState(0);
     const [ maxStep, setMaxStep ] = React.useState(0);
 
     const associateEventTypeStepProps = {
         bundle: props.bundle,
         applications: props.applications,
-        selectedEventTypes,
-        setSelectedEventTypes
     };
 
     const steps = useSteps(associateEventTypeStepProps, maxStep);
