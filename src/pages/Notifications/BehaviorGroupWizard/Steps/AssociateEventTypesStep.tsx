@@ -11,8 +11,6 @@ import { NotificationsToolbar, SelectionCommand } from '../../../../components/N
 import { useListNotifications, useParameterizedListNotifications } from '../../../../services/useListNotifications';
 import { Facet } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
-import { useFormikContext } from 'formik';
-import { useClient } from 'react-fetching-library';
 
 const title = 'Associate event types';
 
@@ -85,7 +83,6 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
                             let pageIndex = 1;
                             let updated = prev;
                             const lastPage = Page.lastPageForElements(count, currentPage.size);
-                            console.log(currentPage);
                             while (true) {
                                 const fetchingPage = currentPage.withPage(pageIndex);
 

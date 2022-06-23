@@ -29,7 +29,6 @@ const BasicInformationStep: React.FunctionComponent = () => {
 
 export const useBasicInformationStep: CreateWizardStep = () => {
     const s = useFormikContext<CreateWizardStep>();
-    console.log('formik context', s);
 
     const isValid = async () => {
         return !!s.values.name;

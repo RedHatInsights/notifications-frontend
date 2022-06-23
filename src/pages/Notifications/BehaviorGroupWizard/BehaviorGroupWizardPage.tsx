@@ -23,8 +23,6 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
     const [ currentStep, setCurrentStep ] = React.useState(0);
     const [ maxStep, setMaxStep ] = React.useState(0);
 
-    console.log('---- current step', currentStep);
-
     const associateEventTypeStepProps = {
         bundle: props.bundle,
         applications: props.applications,
@@ -35,16 +33,11 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
     const steps = useSteps(associateEventTypeStepProps, maxStep);
 
     const onNext = async (goNext) => {
-        console.log('on next');
         const currentStepModel = steps[currentStep];
-        console.log('current step id', currentStep);
-        console.log('current step model', currentStepModel);
         let shouldGoNext = true;
 
         if (currentStepModel.isValid) {
-            console.log('has valid...');
             shouldGoNext = await currentStepModel.isValid();
-            console.log('shouldGoNext', shouldGoNext);
         }
 
         if (shouldGoNext) {
