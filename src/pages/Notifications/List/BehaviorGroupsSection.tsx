@@ -18,8 +18,7 @@ import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
 import {
-    BehaviorGroupCardList,
-    BehaviorGroupCardListSkeleton
+    BehaviorGroupCardList
 } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupCardList';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import {
@@ -239,7 +238,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                             </StackItem>
                             <StackItem>
                                 {props.behaviorGroupContent.isLoading ? (
-                                    <BehaviorGroupCardListSkeleton />
+                                    <BehaviorGroupCardList />
                                 ) : props.behaviorGroupContent.hasError ? (
                                     <div>Error loading behavior groups</div>
                                 ) : (
