@@ -64,5 +64,6 @@ const ReviewStep: React.FunctionComponent = () => {
 
 export const createReviewStep: CreateWizardStep = () => ({
     name: title,
-    component: <ReviewStep />
+    component: <ReviewStep />,
+    nextButtonText: 'Finish'
 });

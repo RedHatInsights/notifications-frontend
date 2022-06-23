@@ -1,5 +1,5 @@
 import { ExtendedWizardStep } from '../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
-import { createActionAndRecipientStep } from './Steps/ActionAndRecipientsStep';
+import { useActionAndRecipientStep } from './Steps/ActionAndRecipientsStep';
 import { AssociateEventTypesStepProps, useAssociateEventTypesStep } from './Steps/AssociateEventTypesStep';
 import { useBasicInformationStep } from './Steps/BasicInformationStep';
 import { createReviewStep } from './Steps/ReviewStep';
@@ -11,7 +11,7 @@ export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, c
 
     return [
         basicInformationStep,
-        createActionAndRecipientStep(),
+        useActionAndRecipientStep(),
         associateEventTypesStep,
         createReviewStep()
     ].map((step, index) => ({

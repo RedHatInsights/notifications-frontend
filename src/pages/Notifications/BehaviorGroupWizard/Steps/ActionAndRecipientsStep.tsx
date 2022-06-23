@@ -8,6 +8,8 @@ import { CreateWizardStep } from '../../../../components/Notifications/BehaviorG
 import { EditBehaviorGroupForm } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupForm';
 import { useFormikContext } from 'formik';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
+import * as Yup from 'yup';
+import { ActionsArray } from '../../../../schemas/Integrations/Notifications';
 
 const title = 'Actions and recipients';
 
@@ -36,7 +38,14 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
     );
 };
 
-export const createActionAndRecipientStep: CreateWizardStep = () => ({
-    name: title,
-    component: <ActionAndRecipientsStep />
+const schema = Yup.object({
+    actions: ActionsArray
 });
+
+export const useActionAndRecipientStep: CreateWizardStep = () => {
+    return {
+        name: title,
+        component: <ActionAndRecipientsStep />,
+        schema
+    };
+};

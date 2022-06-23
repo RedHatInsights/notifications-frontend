@@ -2,10 +2,11 @@ import { Title } from '@patternfly/react-core';
 import { Form, FormTextInput } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import * as Yup from 'yup';
 
 import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 
-const title = 'Name and description';
+const title = 'Name';
 
 const BasicInformationStep: React.FunctionComponent = () => {
     return (
@@ -27,16 +28,21 @@ const BasicInformationStep: React.FunctionComponent = () => {
     );
 };
 
+const schema = Yup.object({
+    name: Yup.string().min(1)
+});
+
 export const useBasicInformationStep: CreateWizardStep = () => {
-    const s = useFormikContext<CreateWizardStep>();
+    const { values } = useFormikContext<CreateWizardStep>();
 
     const isValid = async () => {
-        return !!s.values.name;
+        return !!values.name;
     };
 
     return {
         name: title,
         component: <BasicInformationStep />,
-        isValid
+        isValid,
+        schema
     };
 };
