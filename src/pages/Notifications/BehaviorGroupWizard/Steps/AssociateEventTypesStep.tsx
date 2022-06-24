@@ -12,7 +12,7 @@ import { SelectableEventTypeRow, SelectableEventTypeTable } from '../../../../co
 import { NotificationsToolbar, SelectionCommand } from '../../../../components/Notifications/Toolbar';
 import { useListNotifications, useParameterizedListNotifications } from '../../../../services/useListNotifications';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
-import { Facet, NotificationBase } from '../../../../types/Notification';
+import { EventType, Facet } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
 
 const title = 'Associate event types';
@@ -25,24 +25,13 @@ export interface AssociateEventTypesStepProps {
     applications: ReadonlyArray<Facet>;
     bundle: Facet;
 }
-const toCreateBehaviorGroupEvents = (eventType: NotificationBase): CreateBehaviorGroup['events'][number] => ({
-    id: eventType.id,
-    name: eventType.eventTypeDisplayName,
-    applicationName: eventType.applicationDisplayName
-});
-
-const toNotificationBase = (eventType: CreateBehaviorGroup['events'][number]): NotificationBase => ({
-    id: eventType.id,
-    eventTypeDisplayName: eventType.name,
-    applicationDisplayName: eventType.applicationName
-});
 
 const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepProps> = props => {
     const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
-    const [ selectedEventTypes, setSelectedEventTypes ] = React.useState<Record<string, NotificationBase>>(() => {
-        const selected: Record<string, NotificationBase> = {};
+    const [ selectedEventTypes, setSelectedEventTypes ] = React.useState<Record<string, EventType>>(() => {
+        const selected: Record<string, EventType> = {};
         values.events.forEach(value => {
-            selected[value.id] = toNotificationBase(value);
+            selected[value.id] = value;
         });
 
         return selected;
@@ -53,7 +42,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
 
     useEffect(() => {
         setValues(produce(draft => {
-            draft.events = Object.values(selectedEventTypes).map(toCreateBehaviorGroupEvents);
+            draft.events = Object.values(selectedEventTypes);
         }));
     }, [ setValues, selectedEventTypes ]);
 
@@ -69,17 +58,15 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
     const events = React.useMemo<ReadonlyArray<SelectableEventTypeRow>>(() => {
         if (eventTypesRaw.payload?.type === 'eventTypesArray') {
             return eventTypesRaw.payload.value.data.map(value => ({
-                id: value.id,
-                isSelected: Object.keys(selectedEventTypes).includes(value.id),
-                application: value.applicationDisplayName,
-                eventType: value.eventTypeDisplayName
+                ...value,
+                isSelected: Object.keys(selectedEventTypes).includes(value.id)
             }));
         }
 
         return [];
     }, [ eventTypesRaw.payload, selectedEventTypes ]);
 
-    const onSelect = React.useCallback((isSelected: boolean, eventType: NotificationBase) => {
+    const onSelect = React.useCallback((isSelected: boolean, eventType: EventType) => {
         setSelectedEventTypes(produce(draft => {
             if (isSelected) {
                 draft[eventType.id] = eventType;
@@ -97,17 +84,13 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
                 if (count === events.length) {
                     return setSelectedEventTypes(produce(draft => {
                         events.forEach(e => {
-                            draft[e.id] = {
-                                id: e.id,
-                                applicationDisplayName: e.application,
-                                eventTypeDisplayName: e.eventType
-                            };
+                            draft[e.id] = e;
                         });
                     }));
                 } else {
                     (async () => {
                         let pageIndex = 1;
-                        const addedElements: Record<string, NotificationBase> = {};
+                        const addedElements: Record<string, EventType> = {};
                         const lastPage = Page.lastPageForElements(count, currentPage.size);
                         while (true) {
                             const fetchingPage = currentPage.withPage(pageIndex);
@@ -118,11 +101,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
 
                             if (currentPage.index === fetchingPage.index) {
                                 events.forEach(e => {
-                                    addedElements[e.id] = {
-                                        id: e.id,
-                                        eventTypeDisplayName: e.eventType,
-                                        applicationDisplayName: e.application
-                                    };
+                                    addedElements[e.id] = e;
                                 });
                             } else {
                                 const events = await onDemandEventTypes.query(currentPage.withPage(pageIndex));
@@ -150,11 +129,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
             case SelectionCommand.PAGE:
                 setSelectedEventTypes(produce(draft => {
                     events.forEach(e => {
-                        draft[e.id] = {
-                            id: e.id,
-                            applicationDisplayName: e.application,
-                            eventTypeDisplayName: e.eventType
-                        };
+                        draft[e.id] = e;
                     });
                 }));
 

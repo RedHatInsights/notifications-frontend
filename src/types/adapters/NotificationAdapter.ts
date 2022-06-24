@@ -5,7 +5,7 @@ import { Schemas } from '../../generated/OpenapiNotifications';
 import { IntegrationEmailSubscription, ServerIntegrationResponse, UserIntegration } from '../Integration';
 import {
     Action, ActionNotify,
-    NotificationBase,
+    EventType,
     NotificationType,
     ServerNotificationResponse,
     SystemProperties
@@ -41,7 +41,7 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
 export const usesDefault = (endpoints: Array<Schemas.Endpoint>): boolean =>
     endpoints.findIndex(e => e.type === Schemas.EndpointType.enum.default) !== -1;
 
-export const toNotification = (serverNotification: ServerNotificationResponse): NotificationBase => {
+export const toNotification = (serverNotification: ServerNotificationResponse): EventType => {
     if (!serverNotification.id || !serverNotification.application) {
         throw new Error(`Unexpected notification from server ${JSON.stringify(serverNotification)}`);
     }

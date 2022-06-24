@@ -2,19 +2,16 @@ import { Skeleton, Spinner } from '@patternfly/react-core';
 import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import * as React from 'react';
 
-import { NotificationBase } from '../../../../types/Notification';
+import { EventType } from '../../../../types/Notification';
 
 const skeletonRows = 10;
 
-export interface SelectableEventTypeRow {
-    id: string;
-    eventType: string;
-    application: string;
+export interface SelectableEventTypeRow extends EventType {
     isSelected: boolean;
 }
 
 interface SelectableEventTypeTableBaseProps {
-    onSelect?: (isSelected: boolean, event: NotificationBase) => void;
+    onSelect?: (isSelected: boolean, event: EventType) => void;
     selectionLoading?: boolean;
 }
 
@@ -79,11 +76,7 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeT
                             rowIndex,
                             onSelect: (_event, isSelected) => props.onSelect && props.onSelect(
                                 isSelected,
-                                {
-                                    id: event.id,
-                                    eventTypeDisplayName: event.eventType,
-                                    applicationDisplayName: event.application
-                                }
+                                event
                             ),
                             isSelected: event.isSelected,
                             disable: props.selectionLoading
@@ -91,8 +84,8 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeT
                     >
                         { props.selectionLoading && <Spinner size="sm" /> }
                     </Td>
-                    <Td>{ event.eventType }</Td>
-                    <Td>{ event.application }</Td>
+                    <Td>{ event.eventTypeDisplayName }</Td>
+                    <Td>{ event.applicationDisplayName }</Td>
                 </Tr>
             )) }
         </SelectableEventTypeTableLayout>

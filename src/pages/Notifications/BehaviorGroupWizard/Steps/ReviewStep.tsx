@@ -49,10 +49,10 @@ const ReviewStep: React.FunctionComponent = () => {
                     { values.events.map(event => (
                         <React.Fragment key={ event.id }>
                             <GridItem span={ 6 }>
-                                { event.name }
+                                { event.eventTypeDisplayName }
                             </GridItem>
                             <GridItem span={ 6 }>
-                                { event.applicationName }
+                                { event.applicationDisplayName }
                             </GridItem>
                         </React.Fragment>
                     )) }
