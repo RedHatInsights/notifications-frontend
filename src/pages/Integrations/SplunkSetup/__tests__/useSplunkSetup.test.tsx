@@ -1,6 +1,7 @@
-import { useSaveBehaviorGroupMutation } from '../../../../services/Notifications/SaveBehaviorGroup';
+import { act, renderHook } from '@testing-library/react-hooks';
+
 import { useGetBundleByName } from '../../../../services/Notifications/GetBundles';
-import { renderHook, act } from '@testing-library/react-hooks';
+import { useSaveBehaviorGroupMutation } from '../../../../services/Notifications/SaveBehaviorGroup';
 import { useCreateSplunkBehaviorGroup } from '../useSplunkSetup';
 
 jest.mock('../../../../services/Notifications/SaveBehaviorGroup', () => {

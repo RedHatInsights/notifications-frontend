@@ -87,7 +87,8 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
         expect(result.current.isSaving).toBe(false);
         expect(await saveResponse).toEqual({
             status: true,
-            operation: SaveBehaviorGroupResult.UPDATE
+            operation: SaveBehaviorGroupResult.UPDATE,
+            usedName: false
         });
     });
 
