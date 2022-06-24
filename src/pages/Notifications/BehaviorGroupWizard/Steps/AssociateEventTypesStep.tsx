@@ -25,17 +25,24 @@ export interface AssociateEventTypesStepProps {
     applications: ReadonlyArray<Facet>;
     bundle: Facet;
 }
+const toCreateBehaviorGroupEvents = (eventType: NotificationBase): CreateBehaviorGroup['events'][number] => ({
+    id: eventType.id,
+    name: eventType.eventTypeDisplayName,
+    applicationName: eventType.applicationDisplayName
+});
+
+const toNotificationBase = (eventType: CreateBehaviorGroup['events'][number]): NotificationBase => ({
+    id: eventType.id,
+    eventTypeDisplayName: eventType.name,
+    applicationDisplayName: eventType.applicationName
+});
 
 const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepProps> = props => {
     const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
     const [ selectedEventTypes, setSelectedEventTypes ] = React.useState<Record<string, NotificationBase>>(() => {
         const selected: Record<string, NotificationBase> = {};
         values.events.forEach(value => {
-            selected[value.id] = {
-                id: value.id,
-                applicationDisplayName: value.applicationName,
-                eventTypeDisplayName: value.name
-            };
+            selected[value.id] = toNotificationBase(value);
         });
 
         return selected;
@@ -46,11 +53,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
 
     useEffect(() => {
         setValues(produce(draft => {
-            draft.events = Object.values(selectedEventTypes).map(se => ({
-                id: se.id,
-                name: se.eventTypeDisplayName,
-                applicationName: se.applicationDisplayName
-            }));
+            draft.events = Object.values(selectedEventTypes).map(toCreateBehaviorGroupEvents);
         }));
     }, [ setValues, selectedEventTypes ]);
 
