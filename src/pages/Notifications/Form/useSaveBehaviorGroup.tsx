@@ -36,7 +36,7 @@ const saveBehaviorGroup = async (
             return updated.id;
         }
 
-        throw new Error('Behavior group wasn\'t saved');
+        throw new Error('Behavior group wasn\'t saved. reason: ' + result.payload?.value);
     } else {
         return updated.id;
     }
@@ -92,6 +92,7 @@ export enum SaveBehaviorGroupResult {
 type SaveActionsResponse = {
     operation: SaveBehaviorGroupResult,
     status: boolean;
+    usedName: boolean;
 }
 
 const saveActions = async (
@@ -145,23 +146,27 @@ const saveActions = async (
             if (behaviorGroupId === undefined) {
                 return {
                     operation: SaveBehaviorGroupResult.CREATE,
-                    status: true
+                    status: true,
+                    usedName: false
                 };
             } else {
                 return {
                     operation: SaveBehaviorGroupResult.UPDATE,
-                    status: true
+                    status: true,
+                    usedName: false
                 };
             }
         } else if (behaviorGroupId === undefined) {
             return {
                 operation: SaveBehaviorGroupResult.CREATE,
-                status: false
+                status: false,
+                usedName: false
             };
         } else {
             return {
                 operation: SaveBehaviorGroupResult.UPDATE,
-                status: false
+                status: false,
+                usedName: false
             };
         }
     }
@@ -169,13 +174,15 @@ const saveActions = async (
     if (behaviorGroupId === undefined) {
         return {
             operation: SaveBehaviorGroupResult.CREATE,
-            status: true
+            status: true,
+            usedName: false
         };
     }
 
     return {
         operation: SaveBehaviorGroupResult.UPDATE,
-        status: true
+        status: true,
+        usedName: false
     };
 };
 
@@ -200,7 +207,11 @@ export const useSaveBehaviorGroup = (behaviorGroup?: Partial<BehaviorGroup>) => 
             setFetchingIntegrations
         )).catch(err => {
             console.error('Error saving behavior groups', err);
-            throw err;
+            return {
+                operation: data.id === undefined ? SaveBehaviorGroupResult.CREATE : SaveBehaviorGroupResult.UPDATE,
+                status: false,
+                usedName: err.toString().includes('already exists')
+            };
         });
     }, [ saveBehaviorGroupMutation.mutate, updateBehaviorGroupActionsMutation.mutate, query, behaviorGroup ]);
 
