@@ -43,9 +43,9 @@ const schema = Yup.object({
 });
 
 export const useActionAndRecipientStep: CreateWizardStep = () => {
-    return {
+    return React.useMemo(() => ({
         name: title,
         component: <ActionAndRecipientsStep />,
         schema
-    };
+    }), []);
 };

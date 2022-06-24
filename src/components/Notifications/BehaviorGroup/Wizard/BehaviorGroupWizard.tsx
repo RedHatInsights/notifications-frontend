@@ -8,6 +8,7 @@ import { ExtendedWizardStep } from './ExtendedWizardStep';
 interface BehaviorGroupWizardProps {
     steps: Array<ExtendedWizardStep>;
     onNext: BehaviorGroupWizardFooterProps['onNext'];
+    onBack: BehaviorGroupWizardFooterProps['onBack'];
     onGoToStep: (stepId: number) => void;
 }
 
@@ -17,10 +18,10 @@ export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardPro
             <Wizard
                 title="Create behavior group"
                 steps={ props.steps }
-                footer={ <BehaviorGroupWizardFooter isLoading={ false } onNext={ props.onNext }  /> }
+                footer={ <BehaviorGroupWizardFooter isLoading={ false } onNext={ props.onNext } onBack={ props.onBack }  /> }
                 isOpen={ true }
                 startAtStep={ 1 }
-                onGoToStep={ step => props.onGoToStep(step.id as number ?? 0) }
+                onGoToStep={ step => props.onGoToStep(step.id as number ?? 1) }
             />
         </Form>
     );

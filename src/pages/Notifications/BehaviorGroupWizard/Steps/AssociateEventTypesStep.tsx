@@ -176,10 +176,10 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
     );
 };
 
-export const useAssociateEventTypesStep: CreateWizardStep<AssociateEventTypesStepProps> = (props: AssociateEventTypesStepProps) => {
-
-    return {
-        name: title,
-        component: <AssociateEventTypesStep { ...props } />
+export const useAssociateEventTypesStep: CreateWizardStep<AssociateEventTypesStepProps> =
+    ({ applications, bundle }: AssociateEventTypesStepProps) => {
+        return React.useMemo(() => ({
+            name: title,
+            component: <AssociateEventTypesStep applications={ applications } bundle={ bundle } />
+        }), [ applications, bundle ]);
     };
-};

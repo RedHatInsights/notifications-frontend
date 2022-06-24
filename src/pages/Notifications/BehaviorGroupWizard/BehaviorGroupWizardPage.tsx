@@ -16,38 +16,38 @@ interface BehaviorGroupWizardProps {
 }
 
 interface BehaviorGroupWizardInternalProps extends BehaviorGroupWizardProps {
+    validationSchema?: Yup.AnySchema;
     setValidationSchema: (schema?: Yup.AnySchema) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function
+const noOp = () => {};
+
 const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizardInternalProps> = props => {
     const [ currentStep, setCurrentStep ] = React.useState(0);
-    const [ maxStep, setMaxStep ] = React.useState(0);
-    const { isValid, values } = useFormikContext<CreateBehaviorGroup>();
+    const { isValid, validateForm } = useFormikContext<CreateBehaviorGroup>();
 
     const associateEventTypeStepProps = {
         bundle: props.bundle,
         applications: props.applications
     };
 
-    const steps = useSteps(associateEventTypeStepProps, maxStep).map(value => ({
-        ...value,
-        enableNext: value.id === currentStep ? isValid : value.enableNext
-    }));
+    const steps = useSteps(associateEventTypeStepProps, currentStep, isValid);
 
     const currentStepModel = steps[currentStep];
-    const validationSchema = currentStepModel.schema;
+    const stepValidationSchema = currentStepModel.schema;
 
     React.useEffect(() => {
-        props.setValidationSchema(validationSchema);
+        props.setValidationSchema(stepValidationSchema);
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [ currentStep ]);
 
+    React.useEffect(() => {
+        validateForm();
+    }, [ props.validationSchema, validateForm ]);
+
     const onNext = async (goNext) => {
         let shouldGoNext = true;
-
-        if (currentStepModel.schema) {
-            shouldGoNext = await currentStepModel.schema.validate(values);
-        }
 
         if (currentStepModel.isValid) {
             shouldGoNext = await currentStepModel.isValid();
@@ -55,14 +55,19 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
 
         if (shouldGoNext) {
             setCurrentStep(prev => prev + 1);
-            setMaxStep(prev => prev + 1);
             goNext();
         }
+    };
+
+    const onBack = async (goBack) => {
+        setCurrentStep(prev => prev - 1);
+        goBack();
     };
 
     return <BehaviorGroupWizard
         steps={ steps }
         onNext={ onNext }
+        onBack={ onBack }
         onGoToStep={ setCurrentStep }
     />;
 };
@@ -81,16 +86,17 @@ export const BehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizar
         <RecipientContextProvider value={ actionsContextValue }>
             <Formik<Partial<CreateBehaviorGroup>>
                 validateOnMount
-                onSubmit={ () => { console.log('onsubmit'); } }
+                onSubmit={ noOp }
                 initialValues={ {
                     actions: [],
                     events: [],
-                    name: ''
+                    name: undefined
                 } }
                 validationSchema={ validationSchema }
-                isInitialValid={ false }
+                validateOnBlur
+                validateOnChange
             >
-                <InternalBehaviorGroupWizardPage { ...props } setValidationSchema={ setValidationSchema } />
+                <InternalBehaviorGroupWizardPage { ...props } validationSchema={ validationSchema } setValidationSchema={ setValidationSchema } />
             </Formik>
         </RecipientContextProvider>
     );

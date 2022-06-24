@@ -28,21 +28,14 @@ const BasicInformationStep: React.FunctionComponent = () => {
     );
 };
 
-const schema = Yup.object({
-    name: Yup.string().min(1)
+export const schema = Yup.object({
+    name: Yup.string().min(1).required('Behavior group name is required')
 });
 
 export const useBasicInformationStep: CreateWizardStep = () => {
-    const { values } = useFormikContext<CreateWizardStep>();
-
-    const isValid = async () => {
-        return !!values.name;
-    };
-
-    return {
+    return React.useMemo(() => ({
         name: title,
         component: <BasicInformationStep />,
-        isValid,
         schema
-    };
+    }), [ ]);
 };

@@ -8,6 +8,7 @@ export interface BehaviorGroupWizardFooterProps {
     isLoading: boolean;
     error?: string;
     onNext: (goNext: () => void) => void;
+    onBack: (goBack: () => void) => void;
 }
 
 const contentClassName = style({
@@ -26,6 +27,10 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
         props.onNext(wizardContext.onNext);
     };
 
+    const onBack = () => {
+        props.onBack(wizardContext.onBack);
+    };
+
     return (
         <WizardFooter>
             <Button
@@ -39,7 +44,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
             { !wizardContext.activeStep.hideBackButton && (
                 <Button
                     variant={ ButtonVariant.secondary }
-                    onClick={ wizardContext.onBack }
+                    onClick={ onBack }
                     isDisabled={ wizardContext.activeStep.id === 0 || props.isLoading }
                 >
                     Back

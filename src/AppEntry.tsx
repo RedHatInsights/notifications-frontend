@@ -14,10 +14,13 @@ import messages from '../locales/data.json';
 import App from './app/App';
 import { createStore, resetStore } from './store/Store';
 import { getBaseName } from './utils/Basename';
+import { enableMapSet } from 'immer';
 
 interface AppEntryProps {
     logger?: Redux.Middleware;
 }
+
+enableMapSet();
 
 const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
 
