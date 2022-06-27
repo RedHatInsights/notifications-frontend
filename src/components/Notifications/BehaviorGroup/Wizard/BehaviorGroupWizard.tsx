@@ -2,9 +2,9 @@ import { Wizard } from '@patternfly/react-core';
 import { Form, useFormikContext } from 'formik';
 import * as React from 'react';
 
+import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { BehaviorGroupWizardFooter, BehaviorGroupWizardFooterProps } from './BehaviorGroupWizardFooter';
 import { ExtendedWizardStep } from './ExtendedWizardStep';
-import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 
 interface BehaviorGroupWizardProps {
     steps: Array<ExtendedWizardStep>;

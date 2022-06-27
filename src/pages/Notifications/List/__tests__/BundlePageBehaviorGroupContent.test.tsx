@@ -189,6 +189,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         await userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar');
         await waitForAsyncEvents();
 
+        userEvent.click(screen.getByText(/next/i));
+        await waitForAsyncEvents();
+
         act(() => userEvent.click(getByRole(ouiaSelectors.getByOuia('Notifications/ActionTypeahead'), 'button')));
         await waitForAsyncEvents();
 
@@ -206,8 +209,11 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
         behaviorGroups[0].display_name = 'Foobar';
 
-        expect(screen.getByText(/save/i)).toHaveAttribute('aria-disabled', 'false');
-        act(() => userEvent.click(screen.getByText(/save/i)));
+        userEvent.click(screen.getByText(/next/i));
+        await waitForAsyncEvents();
+
+        expect(screen.getByText(/finish/i)).toHaveAttribute('aria-disabled', 'false');
+        act(() => userEvent.click(screen.getByText(/finish/i)));
         await waitForAsyncEvents();
 
         expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument();

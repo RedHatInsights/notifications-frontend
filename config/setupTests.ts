@@ -1,3 +1,4 @@
+import { enableMapSet } from 'immer';
 import { mockInsights } from 'insights-common-typescript-dev';
 import React from 'react';
 
@@ -13,3 +14,4 @@ insights.chrome.on = jest.fn(() => {
 });
 
 mockResizeObserver();
+enableMapSet();
