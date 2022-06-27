@@ -1,6 +1,5 @@
 import { Title } from '@patternfly/react-core';
 import { Form, FormTextInput } from '@redhat-cloud-services/insights-common-typescript';
-import { useFormikContext } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
 
@@ -20,7 +19,7 @@ const BasicInformationStep: React.FunctionComponent = () => {
             <FormTextInput
                 ouiaId="name"
                 id="name"
-                name="name"
+                name="displayName"
                 label="Behavior group name"
                 isRequired
             />
@@ -29,7 +28,7 @@ const BasicInformationStep: React.FunctionComponent = () => {
 };
 
 export const schema = Yup.object({
-    name: Yup.string().min(1).required('Behavior group name is required')
+    displayName: Yup.string().min(1).required('Behavior group name is required')
 });
 
 export const useBasicInformationStep: CreateWizardStep = () => {

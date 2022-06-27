@@ -1,7 +1,7 @@
 import { Action, EventType } from './Notification';
 
 export interface CreateBehaviorGroup {
-    name: string;
+    displayName: string;
     actions: ReadonlyArray<Action>;
     events: ReadonlyArray<EventType>;
 }

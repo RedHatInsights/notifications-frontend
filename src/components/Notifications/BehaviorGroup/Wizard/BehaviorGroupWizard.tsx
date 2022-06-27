@@ -10,6 +10,7 @@ interface BehaviorGroupWizardProps {
     onNext: BehaviorGroupWizardFooterProps['onNext'];
     onBack: BehaviorGroupWizardFooterProps['onBack'];
     onGoToStep: (stepId: number) => void;
+    loading: boolean;
 }
 
 export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardProps> = props => {
@@ -18,7 +19,7 @@ export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardPro
             <Wizard
                 title="Create behavior group"
                 steps={ props.steps }
-                footer={ <BehaviorGroupWizardFooter isLoading={ false } onNext={ props.onNext } onBack={ props.onBack }  /> }
+                footer={ <BehaviorGroupWizardFooter isLoading={ props.loading } onNext={ props.onNext } onBack={ props.onBack }  /> }
                 isOpen={ true }
                 startAtStep={ 1 }
                 onGoToStep={ step => props.onGoToStep(step.id as number ?? 1) }

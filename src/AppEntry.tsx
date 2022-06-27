@@ -3,6 +3,7 @@ import {
     createFetchingClient,
     getInsights
 } from '@redhat-cloud-services/insights-common-typescript';
+import { enableMapSet } from 'immer';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import React from 'react';
 import { ClientContextProvider } from 'react-fetching-library';
@@ -14,7 +15,6 @@ import messages from '../locales/data.json';
 import App from './app/App';
 import { createStore, resetStore } from './store/Store';
 import { getBaseName } from './utils/Basename';
-import { enableMapSet } from 'immer';
 
 interface AppEntryProps {
     logger?: Redux.Middleware;
