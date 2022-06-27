@@ -9,12 +9,14 @@ import { useGetIntegrations } from '../../../components/Notifications/useGetInte
 import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
 import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 import { Facet } from '../../../types/Notification';
-import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from '../Form/useSaveBehaviorGroup';
+import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
 import { useSteps } from './useSteps';
 
 interface BehaviorGroupWizardProps {
     bundle: Facet;
     applications: ReadonlyArray<Facet>;
+    behaviorGroup?: Partial<CreateBehaviorGroup>;
+    onClose: (saved: boolean) => void;
 }
 
 interface BehaviorGroupWizardInternalProps extends BehaviorGroupWizardProps {
@@ -28,7 +30,7 @@ const noOp = () => {};
 const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizardInternalProps> = props => {
     const [ currentStep, setCurrentStep ] = React.useState(0);
     const { isValid, validateForm } = useFormikContext<CreateBehaviorGroup>();
-    const saving = useSaveBehaviorGroup(); // use the partial for the edit here
+    const saving = useSaveBehaviorGroup(props.behaviorGroup);
     const { values } = useFormikContext<CreateBehaviorGroup>();
 
     const associateEventTypeStepProps = {
@@ -50,57 +52,56 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
         validateForm();
     }, [ props.validationSchema, validateForm ]);
 
-    React.useEffect(() => {
-        if (currentStepModel === undefined) {
-            const save = saving.save;
-            (async () => {
-                const behaviorGroup = {
-                    ...values,
-                    bundleId: props.bundle.id
-                };
+    const onSave = React.useCallback(async () => {
+        const onClose = props.onClose;
+        const save = saving.save;
+        const behaviorGroup = {
+            ...values,
+            bundleId: props.bundle.id
+        };
 
-                const result = await save(behaviorGroup);
+        const result = await save(behaviorGroup);
 
-                if (result.status) {
-                    if (result.operation === SaveBehaviorGroupResult.CREATE) {
-                        addSuccessNotification(
-                            'New behavior group created',
-                            <>
-                                Group <b> { behaviorGroup.displayName } </b> created successfully.
-                            </>
-                        );
-                    } else {
-                        addSuccessNotification(
-                            'Behavior group saved',
-                            <>
-                                Group <b> { behaviorGroup.displayName } </b> was saved successfully.
-                            </>
-                        );
-                    }
-                } else {
-                    if (result.operation === SaveBehaviorGroupResult.CREATE) {
-                        addDangerNotification(
-                            'Behavior group failed to be created',
-                            <>
-                                Failed to create group <b> { behaviorGroup.displayName }</b>.
-                                <br />
-                                Please try again.
-                            </>
-                        );
-                    } else {
-                        addDangerNotification(
-                            'Behavior group failed to save',
-                            <>
-                                Failed to save group <b> { behaviorGroup.displayName }</b>.
-                                <br />
-                                Please try again.
-                            </>
-                        );
-                    }
-                }
-            })();
+        if (result.status) {
+            if (result.operation === SaveBehaviorGroupResult.CREATE) {
+                addSuccessNotification(
+                    'New behavior group created',
+                    <>
+                        Group <b> { behaviorGroup.displayName } </b> created successfully.
+                    </>
+                );
+            } else {
+                addSuccessNotification(
+                    'Behavior group saved',
+                    <>
+                        Group <b> { behaviorGroup.displayName } </b> was saved successfully.
+                    </>
+                );
+            }
+
+            onClose(true);
+        } else {
+            if (result.operation === SaveBehaviorGroupResult.CREATE) {
+                addDangerNotification(
+                    'Behavior group failed to be created',
+                    <>
+                        Failed to create group <b> { behaviorGroup.displayName }</b>.
+                        <br />
+                        Please try again.
+                    </>
+                );
+            } else {
+                addDangerNotification(
+                    'Behavior group failed to save',
+                    <>
+                        Failed to save group <b> { behaviorGroup.displayName }</b>.
+                        <br />
+                        Please try again.
+                    </>
+                );
+            }
         }
-    }, [ currentStepModel, values, saving.save, props.bundle ]);
+    }, [ values, saving.save, props.bundle, props.onClose ]);
 
     const onNext = async (goNext) => {
         let shouldGoNext = true;
@@ -110,7 +111,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
         }
 
         if (shouldGoNext) {
-            setCurrentStep(prev => prev + 1);
+            setCurrentStep(prev => Math.min(prev + 1, steps.length));
             goNext();
         }
     };
@@ -120,12 +121,18 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
         goBack();
     };
 
+    const onClose = () => {
+        props.onClose(false);
+    };
+
     return <BehaviorGroupWizard
         steps={ steps }
         onNext={ onNext }
         onBack={ onBack }
         onGoToStep={ setCurrentStep }
         loading={ saving.isSaving }
+        onClose={ onClose }
+        onSave={ onSave }
     />;
 };
 
@@ -144,7 +151,7 @@ export const BehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizar
             <Formik<Partial<CreateBehaviorGroup>>
                 validateOnMount
                 onSubmit={ noOp }
-                initialValues={ {
+                initialValues={ props.behaviorGroup ?? {
                     actions: [],
                     events: [],
                     displayName: undefined

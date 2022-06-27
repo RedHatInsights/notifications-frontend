@@ -91,7 +91,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
         <Section>
             <div className={ behaviorGroupSectionClassName }>
                 <BehaviorGroupsSection
-                    bundleId={ props.bundle.id }
+                    bundle={ props.bundle }
+                    applications={ props.applications }
                     behaviorGroupContent={ behaviorGroupContent }
                 />
             </div>

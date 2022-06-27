@@ -3,14 +3,15 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { ExtendedWizardStep } from '../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { useActionAndRecipientStep } from './Steps/ActionAndRecipientsStep';
-import { AssociateEventTypesStepProps, useAssociateEventTypesStep } from './Steps/AssociateEventTypesStep';
+import { AssociateEventTypesStepProps } from './Steps/AssociateEventTypesStep';
 import { useBasicInformationStep } from './Steps/BasicInformationStep';
 import { createReviewStep } from './Steps/ReviewStep';
 
 export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, currentStep: number, isValid: boolean): Array<ExtendedWizardStep> => {
 
     const basicInformationStep = useBasicInformationStep();
-    const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
+    // Disabled while we get the service to assign a behavior group to event types
+    // const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
     const actionAndRecipientStep = useActionAndRecipientStep();
 
     const [ maxStep, setMaxStep ] = useState<number>(0);
@@ -36,7 +37,8 @@ export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, c
         return [
             basicInformationStep,
             actionAndRecipientStep,
-            associateEventTypesStep,
+            // Disabled while we get the service to assign a behavior group to event types
+            // associateEventTypesStep,
             createReviewStep()
         ].map((step, index) => ({
             ...step,
@@ -45,5 +47,5 @@ export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, c
             hideCancelButton: false,
             enableNext: isValid
         }));
-    }, [ basicInformationStep, associateEventTypesStep, actionAndRecipientStep, isValid, lastAvailableStep ]);
+    }, [ basicInformationStep, actionAndRecipientStep, isValid, lastAvailableStep ]);
 };
