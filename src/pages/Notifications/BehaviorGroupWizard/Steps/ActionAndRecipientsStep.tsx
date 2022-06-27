@@ -32,7 +32,7 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
                 <TextContent className={ subtitleClassName }>
                     <Text>Select action and recipient pairs to assign to your notification events.</Text>
                 </TextContent>
-                <EditBehaviorGroupForm behaviorGroup={ values } showOnlyActions={ true } />
+                <EditBehaviorGroupForm behaviorGroup={ values } />
             </div>
         </Form>
     );
