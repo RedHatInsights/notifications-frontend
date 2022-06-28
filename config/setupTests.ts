@@ -13,5 +13,7 @@ insights.chrome.on = jest.fn(() => {
     return () => {};
 });
 
+jest.setTimeout(10000);
+
 mockResizeObserver();
 enableMapSet();
