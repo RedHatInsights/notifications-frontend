@@ -47,25 +47,34 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
                 );
             }
         } else {
-            if (result.operation === SaveBehaviorGroupResult.CREATE) {
-                addDangerNotification(
-                    'Behavior group failed to be created',
-                    <>
-                        Failed to create group <b> { behaviorGroup.displayName }</b>.
-                        <br />
-                        Please try again.
-                    </>
-                );
-            } else {
-                addDangerNotification(
-                    'Behavior group failed to save',
-                    <>
-                        Failed to save group <b> { behaviorGroup.displayName }</b>.
-                        <br />
-                        Please try again.
-                    </>
-                );
-            }
+            const template = result.operation === SaveBehaviorGroupResult.CREATE ? {
+                action: 'create',
+                actionPastTense: 'created'
+            } : {
+                action: 'save',
+                actionPastTense: 'saved'
+            };
+
+            const reason = result.usedName ? (
+                <>
+                    The group name already exists in this or other bundle within your account.
+                    <br />
+                    Please use a different name.
+                </>
+            ) : (
+                <>
+                    Please try again.
+                </>
+            );
+
+            addDangerNotification(
+                `Behavior group failed to be ${template.actionPastTense}`,
+                <>
+                    Failed to { template.action } group <b> { behaviorGroup.displayName }</b>.
+                    <br />
+                    { reason }
+                </>
+            );
         }
 
         return result.status;

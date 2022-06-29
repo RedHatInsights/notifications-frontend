@@ -116,7 +116,7 @@ const useCreateSplunkIntegration = () => {
     };
 };
 
-const useCreateSplunkBehaviorGroup = () => {
+export const useCreateSplunkBehaviorGroup = () => {
     const { mutate } = useSaveBehaviorGroupMutation();
     const getBundleByName = useGetBundleByName();
 
@@ -126,22 +126,33 @@ const useCreateSplunkBehaviorGroup = () => {
             throw new Error(`Unable to find bundle ${bundleName}`);
         }
 
-        const behaviorGroup : BehaviorGroupRequest = {
-            bundleId: bundle.id as UUID,
-            displayName: behaviorGroupName,
-            actions: [] // ignored
+        let nameAlreadyExistsTries = 0;
+
+        const createBehaviorGroup = async () => {
+            const behaviorGroup : BehaviorGroupRequest = {
+                bundleId: bundle.id as UUID,
+                displayName: nameAlreadyExistsTries === 0 ? behaviorGroupName : `${behaviorGroupName} (${nameAlreadyExistsTries})`,
+                actions: [] // ignored
+            };
+
+            const { payload, error, errorObject } = await mutate(behaviorGroup);
+            if (errorObject) {
+                throw errorObject;
+            }
+
+            if (error) {
+                if (payload?.value && typeof payload.value === 'string' && payload.value.includes('already exists')) {
+                    nameAlreadyExistsTries++;
+                    return await createBehaviorGroup();
+                }
+
+                throw new Error(`Error when creating behavior group ${behaviorGroup.displayName}`);
+            }
+
+            return payload?.value as BehaviorGroup;
         };
 
-        const { payload, error, errorObject } = await mutate(behaviorGroup);
-        if (errorObject) {
-            throw errorObject;
-        }
-
-        if (error) {
-            throw new Error(`Error when creating behavior group ${behaviorGroupName}`);
-        }
-
-        return payload?.value as BehaviorGroup;
+        return await createBehaviorGroup();
     };
 };
 
