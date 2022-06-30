@@ -140,6 +140,7 @@ export namespace Schemas {
       | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
+    status?: EndpointStatus | undefined | null;
     sub_type?: string | undefined | null;
     type: EndpointType;
     updated?: string | undefined | null;
@@ -156,6 +157,15 @@ export namespace Schemas {
 
   export const EndpointProperties = zodSchemaEndpointProperties();
   export type EndpointProperties = unknown;
+
+  export const EndpointStatus = zodSchemaEndpointStatus();
+  export type EndpointStatus =
+    | 'READY'
+    | 'UNKNOWN'
+    | 'NEW'
+    | 'PROVISIONING'
+    | 'DELETING'
+    | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType =
@@ -517,6 +527,7 @@ export namespace Schemas {
           ])
           .optional()
           .nullable(),
+          status: zodSchemaEndpointStatus().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           type: zodSchemaEndpointType(),
           updated: z.string().optional().nullable()
@@ -536,6 +547,17 @@ export namespace Schemas {
 
   function zodSchemaEndpointProperties() {
       return z.unknown();
+  }
+
+  function zodSchemaEndpointStatus() {
+      return z.enum([
+          'READY',
+          'UNKNOWN',
+          'NEW',
+          'PROVISIONING',
+          'DELETING',
+          'FAILED'
+      ]);
   }
 
   function zodSchemaEndpointType() {

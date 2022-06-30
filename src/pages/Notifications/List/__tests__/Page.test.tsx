@@ -708,7 +708,10 @@ describe('src/pages/Notifications/List/Page', () => {
 
             userEvent.click(screen.getByText(/create new group/i));
             await waitForAsyncEvents();
-            expect(screen.getByText(/Create new behavior group/i)).toBeVisible();
+            expect(screen.getByLabelText(/Create behavior group/i, {
+                exact: true,
+                selector: 'h2'
+            })).toBeVisible();
         });
 
         it('Create behavior group when there are behavior groups', async () => {
@@ -736,7 +739,10 @@ describe('src/pages/Notifications/List/Page', () => {
 
             userEvent.click(screen.getByText(/create new group/i));
             await waitForAsyncEvents();
-            expect(screen.getByText(/Create new behavior group/i)).toBeVisible();
+            expect(screen.getByText(/Create behavior group/i, {
+                exact: true,
+                selector: 'h2'
+            })).toBeVisible();
         });
 
         it('View Event Log is disabled if canReadEvents is false', async () => {

@@ -140,6 +140,7 @@ export namespace Schemas {
       | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
+    status?: EndpointStatus | undefined | null;
     sub_type?: string | undefined | null;
     type: EndpointType;
     updated?: string | undefined | null;
@@ -156,6 +157,15 @@ export namespace Schemas {
 
   export const EndpointProperties = zodSchemaEndpointProperties();
   export type EndpointProperties = unknown;
+
+  export const EndpointStatus = zodSchemaEndpointStatus();
+  export type EndpointStatus =
+    | 'READY'
+    | 'UNKNOWN'
+    | 'NEW'
+    | 'PROVISIONING'
+    | 'DELETING'
+    | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType =
@@ -520,6 +530,7 @@ export namespace Schemas {
           ])
           .optional()
           .nullable(),
+          status: zodSchemaEndpointStatus().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           type: zodSchemaEndpointType(),
           updated: z.string().optional().nullable()
@@ -539,6 +550,17 @@ export namespace Schemas {
 
   function zodSchemaEndpointProperties() {
       return z.unknown();
+  }
+
+  function zodSchemaEndpointStatus() {
+      return z.enum([
+          'READY',
+          'UNKNOWN',
+          'NEW',
+          'PROVISIONING',
+          'DELETING',
+          'FAILED'
+      ]);
   }
 
   function zodSchemaEndpointType() {
@@ -784,12 +806,15 @@ export namespace Operations {
   // POST /notifications/behaviorGroups
   // Create a behavior group.
   export namespace NotificationResourceCreateBehaviorGroup {
+    const Response400 = z.string();
+    type Response400 = string;
     export interface Params {
       body: Schemas.BehaviorGroup;
     }
 
     export type Payload =
       | ValidatedResponse<'BehaviorGroup', 200, Schemas.BehaviorGroup>
+      | ValidatedResponse<'unknown', 400, Response400>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
@@ -803,6 +828,7 @@ export namespace Operations {
         .config({
             rules: [
                 new ValidateRule(Schemas.BehaviorGroup, 'BehaviorGroup', 200),
+                new ValidateRule(Response400, 'unknown', 400),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]
@@ -887,6 +913,8 @@ export namespace Operations {
   export namespace NotificationResourceUpdateBehaviorGroup {
     const Response200 = z.boolean();
     type Response200 = boolean;
+    const Response400 = z.string();
+    type Response400 = string;
     export interface Params {
       id: Schemas.UUID;
       body: Schemas.BehaviorGroup;
@@ -894,6 +922,7 @@ export namespace Operations {
 
     export type Payload =
       | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', 400, Response400>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
@@ -911,6 +940,7 @@ export namespace Operations {
         .config({
             rules: [
                 new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Response400, 'unknown', 400),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]
@@ -1400,6 +1430,31 @@ export namespace Operations {
         .queryParams(query)
         .config({
             rules: [ new ValidateRule(Response204, 'unknown', 204) ]
+        })
+        .build();
+    };
+  }
+  // POST /ob/errors
+  export namespace FromObHistoryFillerHandleCallback {
+    const Body = z.string();
+    type Body = string;
+    export interface Params {
+      xRhoseOriginalEventId?: Schemas.UUID;
+      body: Body;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 200, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/notifications/v1.0/ob/errors';
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 200) ]
         })
         .build();
     };
