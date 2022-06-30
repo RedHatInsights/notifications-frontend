@@ -1,46 +1,18 @@
 import produce from 'immer';
-import isEqual from 'lodash/isEqual';
-import uniqWith from 'lodash/uniqWith';
-import { Dispatch, SetStateAction, useCallback, useContext, useMemo, useState } from 'react';
-import { ClientContext, useClient } from 'react-fetching-library';
+import { isEqual, uniqWith } from 'lodash';
+import { useCallback, useContext, useMemo, useState } from 'react';
+import { ClientContext } from 'react-fetching-library';
 
 import { getDefaultSystemEndpointAction } from '../../../services/Integrations/GetDefaultSystemEndpoint';
-import { useSaveBehaviorGroupMutation } from '../../../services/Notifications/SaveBehaviorGroup';
-import { useUpdateBehaviorGroupActionsMutation } from '../../../services/Notifications/UpdateBehaviorGroupActions';
+import { SaveBehaviorGroupRequest, useSaveBehaviorGroupMutation } from '../../../services/Notifications/SaveBehaviorGroup';
 import { toSystemProperties } from '../../../types/adapters/NotificationAdapter';
 import {
-    BehaviorGroup, BehaviorGroupRequest,
-    isActionIntegration,
-    isActionNotify,
-    NewBehaviorGroup,
-    NotificationType,
-    SystemProperties,
+    areActionsEqual,
+    BehaviorGroup,
+    BehaviorGroupRequest, isActionIntegration, isActionNotify,
+    NotificationType, SystemProperties,
     UUID
 } from '../../../types/Notification';
-
-const behaviorGroupNeedsUpdate = (original: Partial<BehaviorGroup> | undefined, updated: BehaviorGroupRequest) => {
-    return original?.id === undefined || original.displayName !== updated.displayName;
-};
-
-const saveBehaviorGroup = async (
-    original: Partial<BehaviorGroup> | undefined,
-    updated: BehaviorGroupRequest,
-    save: ReturnType<typeof useSaveBehaviorGroupMutation>['mutate']
-) => {
-    // Determine if we need to save the behavior group before updating the actions
-    if (behaviorGroupNeedsUpdate(original, updated)) {
-        const result = await save(updated);
-        if (result.payload?.type === 'BehaviorGroup') {
-            return result.payload.value.id;
-        } else if (result.payload?.status === 200) {
-            return updated.id;
-        }
-
-        throw new Error('Behavior group wasn\'t saved');
-    } else {
-        return updated.id;
-    }
-};
 
 interface ActionToIdList {
     (actions: BehaviorGroup['actions']): Array<UUID | undefined>;
@@ -77,36 +49,43 @@ const actionsToIdList: ActionToIdList = (actions: BehaviorGroup['actions'], ids?
     return endpointsToAdd as Array<UUID>;
 };
 
-const actionsNeedsUpdate = (
-    original: Partial<BehaviorGroup>['actions'] | undefined,
-    updated: (BehaviorGroup | NewBehaviorGroup)['actions']
-) => {
-    return original?.length !== updated?.length || !isEqual(actionsToIdList(original), actionsToIdList(updated));
-};
-
-export enum SaveBehaviorGroupResult {
+export enum SaveBehaviorGroupOperation {
     CREATE,
     UPDATE
 }
 
-type SaveActionsResponse = {
-    operation: SaveBehaviorGroupResult,
+export interface SaveBehaviorGroupResponse {
     status: boolean;
+    operation: SaveBehaviorGroupOperation
 }
 
-const saveActions = async (
-    behaviorGroupId: UUID | undefined,
-    original: Partial<BehaviorGroup>['actions'] | undefined,
-    updated: (BehaviorGroup | NewBehaviorGroup)['actions'],
-    save: ReturnType<typeof useUpdateBehaviorGroupActionsMutation>['mutate'],
-    query: ReturnType<typeof useClient>['query'],
-    setFetchingIntegrations: Dispatch<SetStateAction<boolean>>
-): Promise<SaveActionsResponse> => {
-    if (actionsNeedsUpdate(original, updated)) {
-        // Determine what system Integrations we need to fetch
+export const useSaveBehaviorGroup = (originalBehaviorGroup?: Partial<BehaviorGroup>) => {
+
+    const saveBehaviorGroupMutation = useSaveBehaviorGroupMutation();
+    const { query } = useContext(ClientContext);
+    const [ fetchingIntegrations, setFetchingIntegrations ] = useState<boolean>(false);
+
+    const save = useCallback(async (data: BehaviorGroupRequest): Promise<SaveBehaviorGroupResponse> => {
+        const mutate = saveBehaviorGroupMutation.mutate;
+        let needsSavingDisplayName = false;
+        let needsSavingActions = false;
+
+        if (data.id === undefined) {
+            needsSavingDisplayName = true;
+            needsSavingActions = true;
+        }
+
+        if (data.displayName !== originalBehaviorGroup?.displayName) {
+            needsSavingDisplayName = true;
+        }
+
+        if (!areActionsEqual(originalBehaviorGroup?.actions ?? [], data.actions ?? [])) {
+            needsSavingActions = true;
+        }
+
         const toFetch: ReadonlyArray<SystemProperties> = uniqWith(
             ([] as Array<SystemProperties>)
-            .concat(...updated.filter(isActionNotify)
+            .concat(...data.actions.filter(isActionNotify)
             .map(action => produce(action, draft => {
                 draft.recipient = draft.recipient.filter(r => !r.integrationId);
             }))
@@ -122,7 +101,7 @@ const saveActions = async (
             setFetchingIntegrations(true);
         }
 
-        const response = await Promise.all(
+        const enpointIds = await Promise.all(
             toFetch.map(systemProps => query(getDefaultSystemEndpointAction(systemProps))
             .then(result => result.payload?.type === 'Endpoint' ? result.payload.value.id : undefined)
             )
@@ -133,80 +112,39 @@ const saveActions = async (
 
             // We want to preserve the order
             const remainingIds = [ ... newIds ] as UUID[];
-            const endpointsToAdd = actionsToIdList(updated, remainingIds);
-
-            return save({
-                behaviorGroupId: behaviorGroupId as UUID,
-                endpointIds: endpointsToAdd
-            });
+            return actionsToIdList(data.actions, remainingIds);
         });
 
-        if (response.payload?.status === 200) {
-            if (behaviorGroupId === undefined) {
-                return {
-                    operation: SaveBehaviorGroupResult.CREATE,
-                    status: true
-                };
-            } else {
-                return {
-                    operation: SaveBehaviorGroupResult.UPDATE,
-                    status: true
-                };
-            }
-        } else if (behaviorGroupId === undefined) {
+        const request: SaveBehaviorGroupRequest = {
+            ...data,
+            // cast, but it's OK - needsSavingDisplayName is always true when creating a new bg.
+            displayName: needsSavingDisplayName ? data.displayName : undefined as unknown as string,
+            endpointIds: needsSavingActions ? enpointIds : undefined
+        };
+
+        if (!needsSavingDisplayName && !needsSavingActions) {
             return {
-                operation: SaveBehaviorGroupResult.CREATE,
-                status: false
-            };
-        } else {
-            return {
-                operation: SaveBehaviorGroupResult.UPDATE,
-                status: false
+                operation: data.id === undefined ? SaveBehaviorGroupOperation.CREATE : SaveBehaviorGroupOperation.UPDATE,
+                status: true
             };
         }
-    }
 
-    if (behaviorGroupId === undefined) {
-        return {
-            operation: SaveBehaviorGroupResult.CREATE,
-            status: true
-        };
-    }
-
-    return {
-        operation: SaveBehaviorGroupResult.UPDATE,
-        status: true
-    };
-};
-
-export const useSaveBehaviorGroup = (behaviorGroup?: Partial<BehaviorGroup>) => {
-
-    const saveBehaviorGroupMutation = useSaveBehaviorGroupMutation();
-    const updateBehaviorGroupActionsMutation = useUpdateBehaviorGroupActionsMutation();
-    const { query } = useContext(ClientContext);
-
-    const [ fetchingIntegrations, setFetchingIntegrations ] = useState<boolean>(false);
-
-    const save = useCallback(async (data: BehaviorGroupRequest) => {
-        const updateBehaviorGroupActions = updateBehaviorGroupActionsMutation.mutate;
-
-        return saveBehaviorGroup(behaviorGroup, data, saveBehaviorGroupMutation.mutate)
-        .then(behaviorGroupId => saveActions(
-            behaviorGroupId,
-            behaviorGroup?.actions,
-            data.actions,
-            updateBehaviorGroupActions,
-            query,
-            setFetchingIntegrations
-        )).catch(err => {
-            console.error('Error saving behavior groups', err);
-            throw err;
+        return mutate(request).then(value => {
+            return {
+                operation: data.id === undefined ? SaveBehaviorGroupOperation.CREATE : SaveBehaviorGroupOperation.UPDATE,
+                status: value.payload?.status === 200
+            };
+        }).catch(() => {
+            return {
+                operation: data.id === undefined ? SaveBehaviorGroupOperation.CREATE : SaveBehaviorGroupOperation.UPDATE,
+                status: false
+            };
         });
-    }, [ saveBehaviorGroupMutation.mutate, updateBehaviorGroupActionsMutation.mutate, query, behaviorGroup ]);
+    }, [ saveBehaviorGroupMutation.mutate, query, originalBehaviorGroup ]);
 
     const isSaving = useMemo(() => {
-        return fetchingIntegrations || saveBehaviorGroupMutation.loading || updateBehaviorGroupActionsMutation.loading;
-    }, [ fetchingIntegrations, saveBehaviorGroupMutation.loading, updateBehaviorGroupActionsMutation.loading ]);
+        return saveBehaviorGroupMutation.loading || fetchingIntegrations;
+    }, [ saveBehaviorGroupMutation.loading, fetchingIntegrations ]);
 
     return {
         save,

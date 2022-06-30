@@ -111,6 +111,28 @@ export namespace Schemas {
     url: string;
   };
 
+  export const CreateBehaviorGroupRequest =
+    zodSchemaCreateBehaviorGroupRequest();
+  export type CreateBehaviorGroupRequest = {
+    bundle_id: UUID;
+    display_name: string;
+    endpoint_ids?: Array<string> | undefined | null;
+    event_type_ids?: Array<string> | undefined | null;
+  };
+
+  export const CreateBehaviorGroupResponse =
+    zodSchemaCreateBehaviorGroupResponse();
+  export type CreateBehaviorGroupResponse = {
+    account_id: string;
+    bundle_id: UUID;
+    created: string;
+    display_name: string;
+    endpoints: Array<string>;
+    event_types: Array<string>;
+    id: UUID;
+    org_id?: string | undefined | null;
+  };
+
   export const CurrentStatus = zodSchemaCurrentStatus();
   export type CurrentStatus = {
     end_time?: string | undefined | null;
@@ -349,6 +371,14 @@ export namespace Schemas {
   export const UUID = zodSchemaUUID();
   export type UUID = string;
 
+  export const UpdateBehaviorGroupRequest =
+    zodSchemaUpdateBehaviorGroupRequest();
+  export type UpdateBehaviorGroupRequest = {
+    display_name?: string | undefined | null;
+    endpoint_ids?: Array<string> | undefined | null;
+    event_type_ids?: Array<string> | undefined | null;
+  };
+
   export const WebhookProperties = zodSchemaWebhookProperties();
   export type WebhookProperties = {
     basic_authentication?: BasicAuthentication | undefined | null;
@@ -486,6 +516,32 @@ export namespace Schemas {
           secret_token: z.string().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           url: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaCreateBehaviorGroupRequest() {
+      return z
+      .object({
+          bundle_id: zodSchemaUUID(),
+          display_name: z.string(),
+          endpoint_ids: z.array(z.string()).optional().nullable(),
+          event_type_ids: z.array(z.string()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaCreateBehaviorGroupResponse() {
+      return z
+      .object({
+          account_id: z.string(),
+          bundle_id: zodSchemaUUID(),
+          created: z.string(),
+          display_name: z.string(),
+          endpoints: z.array(z.string()),
+          event_types: z.array(z.string()),
+          id: zodSchemaUUID(),
+          org_id: z.string().optional().nullable()
       })
       .nonstrict();
   }
@@ -781,6 +837,16 @@ export namespace Schemas {
 
   function zodSchemaUUID() {
       return z.string();
+  }
+
+  function zodSchemaUpdateBehaviorGroupRequest() {
+      return z
+      .object({
+          display_name: z.string().optional().nullable(),
+          endpoint_ids: z.array(z.string()).optional().nullable(),
+          event_type_ids: z.array(z.string()).optional().nullable()
+      })
+      .nonstrict();
   }
 
   function zodSchemaWebhookProperties() {

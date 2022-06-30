@@ -3,25 +3,39 @@ import { validatedResponse, validationResponseTransformer } from 'openapi2typesc
 import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
-import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
-import { UUID } from '../../types/Notification';
+import { BehaviorGroup, UUID } from '../../types/Notification';
 
 type Payload = Operations.NotificationResourceCreateBehaviorGroup.Payload
     | Operations.NotificationResourceUpdateBehaviorGroup.Payload;
 
-type SaveBehaviorGroupRequest = {
-    id?: UUID;
-    bundleId: UUID;
-    displayName: string;
-}
+export type SaveBehaviorGroupRequest = {
+        eventTypesIds?: Array<UUID>;
+        endpointIds?: Array<UUID>;
+} & (
+    { // Update request
+        id: UUID;
+        displayName?: string;
+    } | { // Create request
+        bundleId: UUID;
+        displayName: string;
+    }
+);
 
 const decoder = validationResponseTransformer(
     (payload: Payload) => {
-        if (payload.type === 'BehaviorGroup') {
+        if (payload.type === 'CreateBehaviorGroupResponse') {
+            const behaviorGroup: BehaviorGroup = {
+                id: payload.value.id,
+                displayName: payload.value.display_name,
+                bundleId: payload.value.bundle_id,
+                isDefault: false,
+                bundleName: undefined,
+                actions: [] // can't get the actions from only the ids
+            };
             return validatedResponse(
                 'BehaviorGroup',
                 payload.status,
-                toBehaviorGroup(payload.value),
+                behaviorGroup,
                 payload.errors
             );
         }
@@ -30,25 +44,25 @@ const decoder = validationResponseTransformer(
     }
 );
 
-type Body = Operations.NotificationResourceCreateBehaviorGroup.Params['body'] | Operations.NotificationResourceUpdateBehaviorGroup.Params['body'];
-
-const requestToBody = (behaviorGroup: SaveBehaviorGroupRequest): Body => {
-    return {
-        bundle_id: behaviorGroup.bundleId,
-        display_name: behaviorGroup.displayName
-    };
-};
-
 const saveBehaviorGroupActionCreator =  (behaviorGroup: SaveBehaviorGroupRequest) => {
-    if (behaviorGroup.id === undefined) {
-        return Operations.NotificationResourceCreateBehaviorGroup.actionCreator({
-            body: requestToBody(behaviorGroup)
+    if ('id' in behaviorGroup) {
+        return Operations.NotificationResourceUpdateBehaviorGroup.actionCreator({
+            id: behaviorGroup.id,
+            body: {
+                display_name: behaviorGroup.displayName,
+                endpoint_ids: behaviorGroup.endpointIds,
+                event_type_ids: behaviorGroup.eventTypesIds
+            }
         });
     }
 
-    return Operations.NotificationResourceUpdateBehaviorGroup.actionCreator({
-        id: behaviorGroup.id,
-        body: requestToBody(behaviorGroup)
+    return Operations.NotificationResourceCreateBehaviorGroup.actionCreator({
+        body: {
+            bundle_id: behaviorGroup.bundleId,
+            display_name: behaviorGroup.displayName,
+            endpoint_ids: behaviorGroup.endpointIds,
+            event_type_ids: behaviorGroup.eventTypesIds
+        }
     });
 };
 
