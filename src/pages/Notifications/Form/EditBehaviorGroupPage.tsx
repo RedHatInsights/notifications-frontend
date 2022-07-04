@@ -8,7 +8,7 @@ import { useGetRecipients } from '../../../components/Notifications/useGetRecipi
 import {
     BehaviorGroup
 } from '../../../types/Notification';
-import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
+import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from '../BehaviorGroupWizard/useSaveBehaviorGroup';
 
 interface EditBehaviorGroupPageProps {
     behaviorGroup?: Partial<BehaviorGroup>;
