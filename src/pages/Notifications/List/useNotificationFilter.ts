@@ -1,12 +1,12 @@
 import { useFilters, useUrlStateMultipleOptions, useUrlStateString } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 
 import { NotificationFilterColumn } from '../../../components/Notifications/Filter';
 
 const DEBOUNCE_MS = 250;
 
-export const useNotificationFilter = (initialAppOptions: Array<string>, debounce = DEBOUNCE_MS) => {
+export const useNotificationFilter = (initialAppOptions: Array<string>, initUseUrlState: boolean, debounce = DEBOUNCE_MS) => {
     const useStateFactory = useMemo(() => {
         const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
         const useUrlStateApplication = (defaultValue?: Array<string>) => useUrlStateMultipleOptions(
@@ -16,20 +16,18 @@ export const useNotificationFilter = (initialAppOptions: Array<string>, debounce
         );
         const useUrlStateAction = (defaultValue?: string) => useUrlStateString('action', defaultValue);
 
-        const useStateFactoryInternal = (column: NotificationFilterColumn) => {
+        return (column: NotificationFilterColumn) => {
             switch (column) {
                 case NotificationFilterColumn.NAME:
-                    return useUrlStateName;
+                    return initUseUrlState ? useUrlStateName : useState;
                 case NotificationFilterColumn.ACTION:
-                    return useUrlStateAction;
+                    return initUseUrlState ? useUrlStateAction : useState;
                 case NotificationFilterColumn.APPLICATION:
-                    return useUrlStateApplication;
+                    return initUseUrlState ? useUrlStateApplication : useState;
                 default:
                     assertNever(column);
             }
         };
-
-        return useStateFactoryInternal;
         // This is an init param, so it doesn't need to recompute on change.
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);

@@ -23,10 +23,11 @@ import {
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import {
     useFormModalReducer } from '../../../hooks/useFormModalReducer';
-import { BehaviorGroup, UUID } from '../../../types/Notification';
+import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
+import { BehaviorGroup, Facet } from '../../../types/Notification';
 import { emptyImmutableArray } from '../../../utils/Immutable';
+import { BehaviorGroupWizardPage } from '../BehaviorGroupWizard/BehaviorGroupWizardPage';
 import { DeleteBehaviorGroupPage } from '../Form/DeleteBehaviorGroupPage';
-import { EditBehaviorGroupPage } from '../Form/EditBehaviorGroupPage';
 import { BehaviorGroupContent } from './useBehaviorGroupContent';
 
 const expandableSectionClassName = {
@@ -69,7 +70,8 @@ const emptyAddButtonClassName = style({
 });
 
 interface BehaviorGroupSectionProps {
-    bundleId: UUID;
+    bundle: Facet;
+    applications: ReadonlyArray<Facet>
     behaviorGroupContent: BehaviorGroupContent;
 }
 
@@ -114,15 +116,17 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
         return emptyImmutableArray;
     }, [ filter, props.behaviorGroupContent ]);
 
-    const [ editModalState, editModalActions ] = useFormModalReducer<BehaviorGroup>();
+    const [ editModalState, editModalActions ] = useFormModalReducer<CreateBehaviorGroup>();
     const [ deleteModalState, deleteModalActions ] = useDeleteModalReducer<BehaviorGroup>();
 
     const createGroup = React.useCallback((event) => {
         event.stopPropagation();
         editModalActions.create({
-            bundleId: props.bundleId
+            events: [],
+            actions: [],
+            displayName: ''
         });
-    }, [ editModalActions, props.bundleId ]);
+    }, [ editModalActions ]);
 
     const onCloseModal = React.useCallback((saved: boolean) => {
         const reload = props.behaviorGroupContent.reload;
@@ -134,7 +138,12 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     }, [ editModalActions, props.behaviorGroupContent.reload ]);
 
     const onEdit = React.useCallback((behaviorGroup: BehaviorGroup) => {
-        editModalActions.edit(behaviorGroup);
+        editModalActions.edit({
+            id: behaviorGroup.id,
+            events: [],
+            actions: behaviorGroup.actions,
+            displayName: behaviorGroup.displayName
+        });
     }, [ editModalActions ]);
 
     const onDelete = React.useCallback((behaviorGroup: BehaviorGroup) => {
@@ -252,9 +261,12 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                     )}
                 </Stack>
                 {editModalState.isOpen && (
-                    <EditBehaviorGroupPage
+                    <BehaviorGroupWizardPage
+                        bundle={ props.bundle }
+                        applications={ props.applications }
                         behaviorGroup={ editModalState.template }
-                        onClose={ onCloseModal } />
+                        onClose={ onCloseModal }
+                    />
                 )}
                 {deleteModalState.isOpen && (
                     <DeleteBehaviorGroupPage

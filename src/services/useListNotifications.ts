@@ -1,6 +1,6 @@
 import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
-import { useQuery } from 'react-fetching-library';
+import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 
 import { Schemas } from '../generated/OpenapiIntegrations';
 import { Operations } from '../generated/OpenapiNotifications';
@@ -36,5 +36,10 @@ const decoder = validationResponseTransformer((payload: Operations.NotificationR
 
 export const useListNotifications = (pager?: Page) => useTransformQueryResponse(
     useQuery(listNotificationsActionCreator(pager)),
+    decoder
+);
+
+export const useParameterizedListNotifications = () => useTransformQueryResponse(
+    useParameterizedQuery(listNotificationsActionCreator),
     decoder
 );

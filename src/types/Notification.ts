@@ -4,18 +4,18 @@ import { BaseNotificationRecipient } from './Recipient';
 
 export type UUID = Schemas.UUID;
 
-export interface NotificationBase {
+export interface EventType {
     id: UUID;
     applicationDisplayName: string;
     eventTypeDisplayName: string;
 }
 
-export interface Notification extends NotificationBase {
+export interface Notification extends EventType {
     actions?: Array<Action>;
     useDefault?: boolean;
 }
 
-export interface NotificationBehaviorGroup extends NotificationBase {
+export interface NotificationBehaviorGroup extends EventType {
     readonly behaviors: ReadonlyArray<BehaviorGroup>;
 }
 

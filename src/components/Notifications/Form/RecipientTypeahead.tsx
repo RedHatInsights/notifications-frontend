@@ -41,7 +41,7 @@ const renderSelectGroup = (key: string, label: string, options: ReadonlyArray<Ba
                 description={ r.description }
             />;
         }) }
-    </SelectGroup> : <React.Fragment />
+    </SelectGroup> : <React.Fragment key={ key } />
 );
 
 const recipientMapper = (recipients: ReadonlyArray<BaseNotificationRecipient>) => {
