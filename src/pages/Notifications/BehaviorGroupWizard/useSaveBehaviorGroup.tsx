@@ -69,6 +69,7 @@ export const useSaveBehaviorGroup = (originalBehaviorGroup?: Partial<BehaviorGro
         const mutate = saveBehaviorGroupMutation.mutate;
         let needsSavingDisplayName = false;
         let needsSavingActions = false;
+        let needsSavingEventTypes = false;
 
         if (data.id === undefined) {
             needsSavingDisplayName = true;
@@ -77,6 +78,13 @@ export const useSaveBehaviorGroup = (originalBehaviorGroup?: Partial<BehaviorGro
 
         if (data.displayName !== originalBehaviorGroup?.displayName) {
             needsSavingDisplayName = true;
+        }
+
+        const originalEvents = [ ...originalBehaviorGroup?.events ?? [] ].sort();
+        const newEvents = [ ...data.events ?? [] ].sort();
+
+        if (originalEvents.length !== newEvents.length || !originalEvents.every((value, index) => value === newEvents[index])) {
+            needsSavingEventTypes = true;
         }
 
         if (!areActionsEqual(originalBehaviorGroup?.actions ?? [], data.actions ?? [])) {
@@ -119,10 +127,11 @@ export const useSaveBehaviorGroup = (originalBehaviorGroup?: Partial<BehaviorGro
             ...data,
             // cast, but it's OK - needsSavingDisplayName is always true when creating a new bg.
             displayName: needsSavingDisplayName ? data.displayName : undefined as unknown as string,
-            endpointIds: needsSavingActions ? enpointIds : undefined
+            endpointIds: needsSavingActions ? enpointIds : undefined,
+            eventTypesIds: needsSavingEventTypes ? data.events.map(e => e.id) : undefined
         };
 
-        if (!needsSavingDisplayName && !needsSavingActions) {
+        if (!needsSavingDisplayName && !needsSavingActions && !needsSavingEventTypes) {
             return {
                 operation: data.id === undefined ? SaveBehaviorGroupOperation.CREATE : SaveBehaviorGroupOperation.UPDATE,
                 status: true

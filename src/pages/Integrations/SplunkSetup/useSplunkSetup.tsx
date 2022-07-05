@@ -129,7 +129,8 @@ const useCreateSplunkBehaviorGroup = () => {
         const behaviorGroup : BehaviorGroupRequest = {
             bundleId: bundle.id as UUID,
             displayName: behaviorGroupName,
-            actions: [] // ignored
+            actions: [], // ignored
+            events: [] // ignored
         };
 
         const { payload, error, errorObject } = await mutate(behaviorGroup);

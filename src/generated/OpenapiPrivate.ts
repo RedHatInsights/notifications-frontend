@@ -65,6 +65,7 @@ export namespace Schemas {
   export const BehaviorGroup = zodSchemaBehaviorGroup();
   export type BehaviorGroup = {
     actions?: Array<BehaviorGroupAction> | undefined | null;
+    behaviors?: Array<EventTypeBehavior> | undefined | null;
     bundle?: Bundle | undefined | null;
     bundle_id: UUID;
     created?: string | undefined | null;
@@ -233,6 +234,19 @@ export namespace Schemas {
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
+  };
+
+  export const EventTypeBehavior = zodSchemaEventTypeBehavior();
+  export type EventTypeBehavior = {
+    created?: string | undefined | null;
+    event_type?: EventType | undefined | null;
+    id?: EventTypeBehaviorId | undefined | null;
+  };
+
+  export const EventTypeBehaviorId = zodSchemaEventTypeBehaviorId();
+  export type EventTypeBehaviorId = {
+    behaviorGroupId: UUID;
+    eventTypeId: UUID;
   };
 
   export const Facet = zodSchemaFacet();
@@ -460,6 +474,7 @@ export namespace Schemas {
       return z
       .object({
           actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
+          behaviors: z.array(zodSchemaEventTypeBehavior()).optional().nullable(),
           bundle: zodSchemaBundle().optional().nullable(),
           bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
@@ -660,6 +675,25 @@ export namespace Schemas {
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventTypeBehavior() {
+      return z
+      .object({
+          created: z.string().optional().nullable(),
+          event_type: zodSchemaEventType().optional().nullable(),
+          id: zodSchemaEventTypeBehaviorId().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventTypeBehaviorId() {
+      return z
+      .object({
+          behaviorGroupId: zodSchemaUUID(),
+          eventTypeId: zodSchemaUUID()
       })
       .nonstrict();
   }

@@ -1,17 +1,12 @@
 import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import produce, { castDraft } from 'immer';
-import pLimit from 'p-limit';
 import * as React from 'react';
 import { ClientContext } from 'react-fetching-library';
 import { usePrevious } from 'react-use';
 
-import { getBehaviorGroupByNotificationAction } from '../../../services/Notifications/GetBehaviorGroupByNotificationId';
 import { linkBehaviorGroupAction } from '../../../services/Notifications/LinkBehaviorGroup';
-import { toBehaviorGroup } from '../../../types/adapters/BehaviorGroupAdapter';
 import { BehaviorGroup, Notification, NotificationBehaviorGroup, UUID } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
-
-const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
 export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
     readonly loadingActionStatus: 'loading' | 'done' | 'error';
@@ -39,11 +34,10 @@ const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
     return notification;
 };
 
-export const useBehaviorGroupNotificationRows = (notifications: Array<Notification>) => {
+export const useBehaviorGroupNotificationRows = (notifications: Array<Notification>, behaviorGroups: ReadonlyArray<BehaviorGroup> | undefined) => {
     const [ notificationRows, setNotificationRows ] = React.useState<Array<BehaviorGroupNotificationRow>>([]);
     const prevNotificationInput = usePrevious(notifications);
     const { query } = React.useContext(ClientContext);
-    const [ limit ] = React.useState<pLimit.Limit>(() => pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS));
 
     const removeBehaviorGroup = React.useCallback((notificationId: UUID, behaviorGroupId: UUID) => {
         setNotificationRows(produce(draft => {
@@ -60,7 +54,14 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
     const updateBehaviorGroups = React.useCallback((behaviorGroups: ReadonlyArray<BehaviorGroup>) => {
         setNotificationRows(produce(draft => {
             for (const content of draft) {
-                content.behaviors = castDraft(content.behaviors.map(ob => behaviorGroups.find(nb => nb.id === ob.id) || ob));
+                // content.behaviors = castDraft(content.behaviors.map(ob => behaviorGroups.find(nb => nb.id === ob.id) || ob));
+                // Find if there are new behaviors for this type.
+                content.behaviors = [];
+                behaviorGroups.forEach(behaviorGroup => {
+                    if (behaviorGroup.events.find(e => e.id === content.id)) {
+                        content.behaviors.push(castDraft(behaviorGroup));
+                    }
+                });
             }
         }));
     }, [ setNotificationRows ]);
@@ -142,44 +143,17 @@ export const useBehaviorGroupNotificationRows = (notifications: Array<Notificati
         if (notifications !== prevNotificationInput) {
             setNotificationRows(_prev => notifications.map(notification => ({
                 ...notification,
-                loadingActionStatus: 'loading',
+                loadingActionStatus: 'done',
                 behaviors: [],
                 isEditMode: false
             })));
 
-            limit.clearQueue();
-
-            if (notifications) {
-                notifications.map(notification => notification.id).forEach(notificationId => {
-                    limit(() => query(getBehaviorGroupByNotificationAction(notificationId))).then(response => {
-                        setNotificationRows(produce(draft => {
-                            try {
-                                const draftNotification = getNotification(draft, notificationId);
-                                if (response.payload?.status === 200) {
-                                    draftNotification.loadingActionStatus = 'done';
-                                    draftNotification.behaviors = response.payload.value.map(toBehaviorGroup).map(bg => ({
-                                        ...bg,
-                                        isLoading: false,
-                                        actions: castDraft(bg.actions)
-                                    }));
-                                } else {
-                                    draftNotification.loadingActionStatus = 'error';
-                                    draftNotification.behaviors = [];
-                                }
-                            } catch (e) {
-                                if (e instanceof NotificationNotFound) {
-                                    // swallow exception, we changed the page while loading
-                                } else {
-                                    throw e;
-                                }
-                            }
-                        }));
-                    });
-                });
+            if (behaviorGroups) {
+                updateBehaviorGroups(behaviorGroups);
             }
         }
 
-    }, [ notifications, limit, query, prevNotificationInput, setNotificationRows ]);
+    }, [ behaviorGroups, notifications, prevNotificationInput, setNotificationRows, updateBehaviorGroups ]);
 
     return {
         rows: notificationRows,

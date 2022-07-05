@@ -61,6 +61,7 @@ export type ServerNotificationResponse = Schemas.EventType;
 export type BehaviorGroup = {
     readonly id: UUID;
     readonly actions: ReadonlyArray<Action>;
+    readonly events: ReadonlyArray<EventType>;
     readonly bundleId: UUID,
     readonly displayName: string;
     readonly bundleName?: string;

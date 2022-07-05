@@ -30,7 +30,8 @@ const decoder = validationResponseTransformer(
                 bundleId: payload.value.bundle_id,
                 isDefault: false,
                 bundleName: undefined,
-                actions: [] // can't get the actions from only the ids
+                actions: [], // can't get the actions from only the ids,
+                events: [] // can't get the eventTypes from only the ids,
             };
             return validatedResponse(
                 'BehaviorGroup',
