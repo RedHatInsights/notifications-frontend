@@ -41,6 +41,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 behaviorGroups={ [
                     {
                         actions: [],
+                        events: [],
                         id: '1',
                         bundleId: 'bundle-id',
                         displayName: 'Foo stuff',
@@ -49,6 +50,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     },
                     {
                         actions: [],
+                        events: [],
                         id: '2',
                         bundleId: 'bundle-id',
                         displayName: 'Bar application',
@@ -57,6 +59,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     },
                     {
                         actions: [],
+                        events: [],
                         id: '3',
                         bundleId: 'other-id',
                         displayName: 'Baz peek',
@@ -65,6 +68,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     },
                     {
                         actions: [],
+                        events: [],
                         id: '4',
                         bundleId: '24446666688888888000000000',
                         displayName: 'Password',
@@ -122,6 +126,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                 behaviorGroups={ [
                     {
                         actions: [],
+                        events: [],
                         id: '1',
                         bundleId: 'bundle-id',
                         displayName: 'Foo stuff',
@@ -130,6 +135,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     },
                     {
                         actions: [],
+                        events: [],
                         id: '2',
                         bundleId: 'bundle-id',
                         displayName: 'Bar application',
@@ -138,6 +144,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     },
                     {
                         actions: [],
+                        events: [],
                         id: '3',
                         bundleId: 'other-id',
                         displayName: 'Baz peek',
@@ -146,6 +153,7 @@ describe('src/components/Integrations/DeleteModal', () => {
                     },
                     {
                         actions: [],
+                        events: [],
                         id: '4',
                         bundleId: '24446666688888888000000000',
                         displayName: 'Password',

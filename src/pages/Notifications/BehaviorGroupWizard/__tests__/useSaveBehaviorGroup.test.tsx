@@ -46,6 +46,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
         await act(async () => {
             result.current.save({
                 actions: [],
+                events: [],
                 bundleId: 'my-bundle-id',
                 id: 'bg-id',
                 bundleName: 'bundle Name',
@@ -75,6 +76,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
         await act(async () => {
             saveResponse = result.current.save({
                 actions: [],
+                events: [],
                 bundleId: 'my-bundle-id',
                 id: 'bg-id',
                 bundleName: 'bundle Name',
@@ -92,6 +94,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
     it('does query to update displayName', async () => {
         const bg = {
             actions: [],
+            events: [],
             displayName: 'My bg name old',
             id: 'bg-id'
         };
@@ -105,6 +108,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
         await act(async () => {
             result.current.save({
                 actions: [],
+                events: [],
                 bundleId: 'my-bundle-id',
                 id: 'bg-id',
                 bundleName: 'bundle Name',
@@ -159,6 +163,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                         }
                     }
                 ],
+                events: [],
                 bundleId: 'my-bundle-id',
                 bundleName: 'bundle Name',
                 displayName: 'My bg name'
@@ -216,6 +221,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                         }
                     }
                 ],
+                events: [],
                 bundleId: 'my-bundle-id',
                 bundleName: 'bundle Name',
                 displayName: 'My bg name'
@@ -280,6 +286,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                         }
                     }
                 ],
+                events: [],
                 bundleId: 'my-bundle-id',
                 bundleName: 'bundle Name',
                 displayName: 'My bg name'

@@ -10,6 +10,7 @@ const commonBehaviorGroup: Readonly<BehaviorGroup> = {
     id: 'foo',
     displayName: 'Foo',
     actions: [],
+    events: [],
     bundleId: 'bundle-id',
     bundleName: 'foobar',
     isDefault: false
