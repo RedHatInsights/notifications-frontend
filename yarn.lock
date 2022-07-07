@@ -1608,19 +1608,19 @@
   resolved "https://registry.yarnpkg.com/@patternfly/react-tokens/-/react-tokens-4.27.4.tgz#9a292a2ac24e17714456a0b6ee5b512a0850ec05"
   integrity sha512-+DVCp4edPwORQF2zH6aG8e7FhLBXKsZgxMEYBU1/3qQSp+gf6Q8M4HiqbNnR6uo99tYJ9JiEcbGZu4Mx+nDIuA==
 
-"@redhat-cloud-services/frontend-components-config-utilities@^1.5.17":
-  version "1.5.20"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config-utilities/-/frontend-components-config-utilities-1.5.20.tgz#16fc410ae2fc63e535a57506d1057fc410ef6e3c"
-  integrity sha512-u9lXLL9h8e0eP+H33y8StWFUnxAwXQ/dFOUVXU3Z2ZOmMJUJX5WN1fz13OopHS1volRb5DCt6RmGoW4vd4aJCg==
+"@redhat-cloud-services/frontend-components-config-utilities@^1.5.23":
+  version "1.5.23"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config-utilities/-/frontend-components-config-utilities-1.5.23.tgz#7af70deda2ba573f065c228b2a7c6413de022fa0"
+  integrity sha512-pYdbF9NTJ2wgYpG49cNXVCbi0Yv+xss18pPjx2RDVlV+Fe+u9l+WtxG2GzpOGxx2w4UnpMtFgQH9nbe045lYCQ==
   dependencies:
     node-fetch "2.6.7"
 
-"@redhat-cloud-services/frontend-components-config@4.6.9":
-  version "4.6.9"
-  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config/-/frontend-components-config-4.6.9.tgz#c07460bde44fca12c69f0ad3885a1b3c66303cac"
-  integrity sha512-xLgCctFSADJ8JDQykqfDCARsUgwN0bz/qDX96NzKQWd21vzddbYOlDdRBfrx/nWaIU3+qP7Unna1d8uCFaEXCw==
+"@redhat-cloud-services/frontend-components-config@4.6.15":
+  version "4.6.15"
+  resolved "https://registry.yarnpkg.com/@redhat-cloud-services/frontend-components-config/-/frontend-components-config-4.6.15.tgz#76284d669227e97aac0a7fe35c1b46a2d4115d24"
+  integrity sha512-OEzghev64v1Fcs2wRlWop/rvwwlEVHRd5seaPOnml+WUeNbVBbHGQWJ8qCLSFS1sJRz9/Ht0Pv5ZYRM/NS/PAA==
   dependencies:
-    "@redhat-cloud-services/frontend-components-config-utilities" "^1.5.17"
+    "@redhat-cloud-services/frontend-components-config-utilities" "^1.5.23"
     assert "^2.0.0"
     axios "^0.25.0"
     babel-loader "^8.2.2"
@@ -5783,9 +5783,9 @@ hosted-git-info@^2.1.4:
   integrity sha512-mxIDAb9Lsm6DoOJ7xH+5+X4y1LU/4Hi50L9C5sIswK3JzULS4bwk1FvjdBgvYR4bzT4tuUQiC15FE2f5HbLvYw==
 
 hosted-git-info@^3.0.6:
-  version "3.0.7"
-  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-3.0.7.tgz#a30727385ea85acfcee94e0aad9e368c792e036c"
-  integrity sha512-fWqc0IcuXs+BmE9orLDyVykAG9GJtGLGuZAAqgcckPgv5xad4AcXGIv8galtQvlwutxSlaMcdw7BUtq2EIvqCQ==
+  version "3.0.8"
+  resolved "https://registry.yarnpkg.com/hosted-git-info/-/hosted-git-info-3.0.8.tgz#6e35d4cc87af2c5f816e4cb9ce350ba87a3f370d"
+  integrity sha512-aXpmwoOhRBrw6X3j0h5RloK4x1OzsxMPyxqIHyNfSe2pypkVTZFpEiRoSipPEPlMrh0HW/XsjkJ5WgnCirpNUw==
   dependencies:
     lru-cache "^6.0.0"
 
