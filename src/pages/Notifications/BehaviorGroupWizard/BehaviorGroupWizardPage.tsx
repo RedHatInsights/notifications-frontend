@@ -38,7 +38,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
         applications: props.applications
     };
 
-    const steps = useSteps(associateEventTypeStepProps, currentStep, isValid);
+    const steps = useSteps(associateEventTypeStepProps, currentStep, isValid, saving.isSaving);
 
     const currentStepModel = steps[currentStep] as (typeof steps)[number] | undefined;
     const stepValidationSchema = currentStepModel?.schema;

@@ -1,4 +1,4 @@
-import { Form, Grid } from '@patternfly/react-core';
+import { Grid } from '@patternfly/react-core';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { FieldArray } from 'formik';
 import * as React from 'react';
@@ -15,19 +15,17 @@ export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupPro
 
     return (
         <div { ... getOuiaProps('Notifications/BehaviorGroupForm', props) }>
-            <Form>
-                <Grid hasGutter>
-                    <FieldArray name="actions">
-                        { helpers => (
-                            <>
-                                <BehaviorGroupFormActionsTable
-                                    { ...helpers }
-                                />
-                            </>
-                        ) }
-                    </FieldArray>
-                </Grid>
-            </Form>
+            <Grid hasGutter>
+                <FieldArray name="actions">
+                    { helpers => (
+                        <>
+                            <BehaviorGroupFormActionsTable
+                                { ...helpers }
+                            />
+                        </>
+                    ) }
+                </FieldArray>
+            </Grid>
         </div>
     );
 };
