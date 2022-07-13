@@ -36,13 +36,12 @@ const bundle: Facet = {
     name: 'rhel'
 };
 
-type NotificationWithBehaviorGroup = {
-    notification: EventType,
-    groups: Array<BehaviorGroup>
+type NotificationType = {
+    notification: EventType
 };
 
-const getNotifications = (application: Facet, behaviorGroups: Array<Array<BehaviorGroup>>): Array<NotificationWithBehaviorGroup> =>
-    [ ...Array(behaviorGroups.length).keys() ].map(i => ({
+const getNotifications = (application: Facet, count: number): Array<NotificationType> =>
+    [ ...Array(count).keys() ].map(i => ({
         notification: {
             id: `${bundle.id}.${application.id}.notif-${i}`,
             application: {
@@ -55,16 +54,18 @@ const getNotifications = (application: Facet, behaviorGroups: Array<Array<Behavi
             display_name: `${application.displayName}-notif-${i}`,
             name: `${application.displayName}-notif-${i}`,
             description: ''
-        },
-        groups: behaviorGroups[i]
+        }
     }));
 
-const getBehaviorGroups = (count: number): Array<BehaviorGroup> =>
-    [ ...Array(count).keys() ].map(i => ({
+const getBehaviorGroups = (requestedBehaviorGroups: Array<Array<NotificationType>>): Array<BehaviorGroup> =>
+    [ ...Array(requestedBehaviorGroups.length).keys() ].map(i => ({
         id: `bg-${i}`,
         display_name: `Behavior-${i}`,
         bundle_id: bundle.id,
-        actions: []
+        actions: [],
+        behaviors: requestedBehaviorGroups[i].map(b => ({
+            event_type: b.notification
+        }))
     }));
 
 const mockBehaviorGroups = (behaviorGroups: Array<BehaviorGroup>) => {
@@ -74,7 +75,7 @@ const mockBehaviorGroups = (behaviorGroups: Array<BehaviorGroup>) => {
     });
 };
 
-const mockNotifications = (notifications: Array<NotificationWithBehaviorGroup>) => {
+const mockNotifications = (notifications: Array<NotificationType>) => {
     fetchMock.get(
         `/api/notifications/v1.0/notifications/eventTypes?bundleId=${bundle.id}&limit=20&offset=0&sort_by=e.application.displayName%3ADESC`,
         {
@@ -88,14 +89,7 @@ const mockNotifications = (notifications: Array<NotificationWithBehaviorGroup>) 
             }
         }
     );
-
-    notifications.forEach(n => fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${n.notification.id}/behaviorGroups`, {
-        status: 200,
-        body: n.groups
-    }));
 };
-
-//
 
 describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
@@ -109,12 +103,15 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     });
 
     it('Loads the behavior group and event types', async() => {
-        const behaviorGroups = getBehaviorGroups(2);
-        const notifications = getNotifications(policiesApplication, [
-            [ behaviorGroups[0] ],
-            [],
+        const notifications = getNotifications(policiesApplication, 3);
+        const behaviorGroups = getBehaviorGroups([
+            [ notifications[0] ],
             []
         ]);
+
+        behaviorGroups[0].behaviors = [{
+            event_type: notifications[0].notification
+        }];
 
         mockNotifications(notifications);
         mockBehaviorGroups(behaviorGroups);
@@ -131,12 +128,17 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         expect(screen.getAllByText(/Behavior-1/).length).toBe(1);
     });
 
-    it('Upon edition of a behavior group, updates the name on the notification table', async () => {
+    it('Upon edition of a behavior group, updates the name on the notification table and the linked event types', async () => {
         jest.useFakeTimers();
-        const behaviorGroups = getBehaviorGroups(1);
-        const notifications = getNotifications(policiesApplication, [
-            behaviorGroups
+        const notifications = getNotifications(policiesApplication, 1);
+        const behaviorGroups = getBehaviorGroups([
+            [
+                notifications[0]
+            ],
+            []
         ]);
+
+        behaviorGroups[1].display_name = 'Baz';
 
         mockNotifications(notifications);
         mockBehaviorGroups(behaviorGroups);
@@ -162,9 +164,6 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
                 name: ''
             } as Endpoint
         });
-        fetchMock.put(`/api/notifications/v1.0/notifications/behaviorGroups/${behaviorGroups[0].id}/actions`, {
-            status: 200
-        });
         fetchMock.post('/api/integrations/v1.0/endpoints/system/email_subscription', {
             description: 'email',
             name: 'email',
@@ -178,8 +177,10 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
         await waitForAsyncEvents();
 
-        const pf4Card = ouiaSelectors.getByOuia('PF4/Card');
-        act(() => userEvent.click(getByRole(pf4Card, 'button')));
+        expect(screen.getAllByText('Baz').length).toBe(1); // Only once, the behavior group card
+
+        const pf4Card = ouiaSelectors.getAllByOuia('PF4/Card');
+        act(() => userEvent.click(getByRole(pf4Card[0], 'button')));
 
         const pf4CardDropdown = getByRole(document.body, 'menu');
         act(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
@@ -207,7 +208,16 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         act(() => userEvent.click(screen.getByText('All')));
         await waitForAsyncEvents();
 
+        // Changing name of behavior 1
         behaviorGroups[0].display_name = 'Foobar';
+
+        // Attaching behavior 2 to notification 0
+        behaviorGroups[1].behaviors = [{
+            event_type: notifications[0].notification
+        }];
+
+        userEvent.click(screen.getByText(/next/i));
+        await waitForAsyncEvents();
 
         userEvent.click(screen.getByText(/next/i));
         await waitForAsyncEvents();
@@ -219,13 +229,14 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument();
         // Toast, behavior group section and table
         expect(screen.getAllByText(/Foobar/i).length).toBe(3);
+        // behavior group and table
+        expect(screen.getAllByText(/Baz/i).length).toBe(2);
     });
 
     it('Add group button should appear', async () => {
-        const behaviorGroups = getBehaviorGroups(2);
-        const notifications = getNotifications(policiesApplication, [
-            [ behaviorGroups[0] ],
-            [],
+        const notifications = getNotifications(policiesApplication, 3);
+        const behaviorGroups = getBehaviorGroups([
+            [ notifications[0] ],
             []
         ]);
 
@@ -242,10 +253,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     });
 
     it('Add group button should be enabled with the write permissions', async () => {
-        const behaviorGroups = getBehaviorGroups(2);
-        const notifications = getNotifications(policiesApplication, [
-            [ behaviorGroups[0] ],
-            [],
+        const notifications = getNotifications(policiesApplication, 3);
+        const behaviorGroups = getBehaviorGroups([
+            [ notifications[0] ],
             []
         ]);
 
@@ -265,10 +275,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     });
 
     it('Add group button should be disabled with no write permissions', async () => {
-        const behaviorGroups = getBehaviorGroups(2);
-        const notifications = getNotifications(policiesApplication, [
-            [ behaviorGroups[0] ],
-            [],
+        const notifications = getNotifications(policiesApplication, 3);
+        const behaviorGroups = getBehaviorGroups([
+            [ notifications[0] ],
             []
         ]);
 
@@ -293,10 +302,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     });
 
     it('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
-        const behaviorGroups = getBehaviorGroups(2);
-        const notifications = getNotifications(policiesApplication, [
-            [ behaviorGroups[0] ],
-            [],
+        const notifications = getNotifications(policiesApplication, 3);
+        const behaviorGroups = getBehaviorGroups([
+            [ notifications[0] ],
             []
         ]);
 
@@ -326,10 +334,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     });
 
     it('Add group button should tooltip with no write permissions and user is an org_admin', async () => {
-        const behaviorGroups = getBehaviorGroups(2);
-        const notifications = getNotifications(policiesApplication, [
-            [ behaviorGroups[0] ],
-            [],
+        const notifications = getNotifications(policiesApplication, 3);
+        const behaviorGroups = getBehaviorGroups([
+            [ notifications[0] ],
             []
         ]);
 

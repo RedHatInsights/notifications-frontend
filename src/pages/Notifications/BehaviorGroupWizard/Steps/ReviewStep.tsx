@@ -24,8 +24,6 @@ interface EventTypeReviewTableProps {
     events: ReadonlyArray<EventType>;
 }
 
-// Disabled while we get the service to assign a behavior group to event types
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = props => {
     return (
         <div className={ tableContainerClassName }>
@@ -71,8 +69,7 @@ const ReviewStep: React.FunctionComponent = () => {
                 <BehaviorGroupActionsSummary actions={ values.actions } />
             </div>
             {
-                // Disabled while we get the service to assign a behavior group to event types
-                // <EventTypeTable events={ values.events } />
+                <EventTypeTable events={ values.events } />
             }
         </Form>
     );

@@ -140,7 +140,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
     const onEdit = React.useCallback((behaviorGroup: BehaviorGroup) => {
         editModalActions.edit({
             id: behaviorGroup.id,
-            events: [],
+            events: behaviorGroup.events,
             actions: behaviorGroup.actions,
             displayName: behaviorGroup.displayName
         });
