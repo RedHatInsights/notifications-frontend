@@ -7,7 +7,12 @@ import { AssociateEventTypesStepProps, useAssociateEventTypesStep } from './Step
 import { useBasicInformationStep } from './Steps/BasicInformationStep';
 import { createReviewStep } from './Steps/ReviewStep';
 
-export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, currentStep: number, isValid: boolean): Array<ExtendedWizardStep> => {
+export const useSteps = (
+    associateEventTypeStep: AssociateEventTypesStepProps,
+    currentStep: number,
+    isValid: boolean,
+    isSaving: boolean
+): Array<ExtendedWizardStep> => {
 
     const basicInformationStep = useBasicInformationStep();
     const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
@@ -41,9 +46,9 @@ export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, c
         ].map((step, index) => ({
             ...step,
             id: index,
-            canJumpTo: index <= lastAvailableStep,
+            canJumpTo: !isSaving && index <= lastAvailableStep,
             hideCancelButton: false,
             enableNext: isValid
         }));
-    }, [ basicInformationStep, actionAndRecipientStep, isValid, lastAvailableStep, associateEventTypesStep ]);
+    }, [ basicInformationStep, actionAndRecipientStep, isValid, lastAvailableStep, isSaving, associateEventTypesStep ]);
 };
