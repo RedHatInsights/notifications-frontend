@@ -124,14 +124,12 @@ export namespace Schemas {
   export const CreateBehaviorGroupResponse =
     zodSchemaCreateBehaviorGroupResponse();
   export type CreateBehaviorGroupResponse = {
-    account_id: string;
     bundle_id: UUID;
     created: string;
     display_name: string;
     endpoints: Array<string>;
     event_types: Array<string>;
     id: UUID;
-    org_id?: string | undefined | null;
   };
 
   export const CurrentStatus = zodSchemaCurrentStatus();
@@ -388,6 +386,7 @@ export namespace Schemas {
   export const UpdateBehaviorGroupRequest =
     zodSchemaUpdateBehaviorGroupRequest();
   export type UpdateBehaviorGroupRequest = {
+    bundle_id?: UUID | undefined | null;
     display_name?: string | undefined | null;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
@@ -549,14 +548,12 @@ export namespace Schemas {
   function zodSchemaCreateBehaviorGroupResponse() {
       return z
       .object({
-          account_id: z.string(),
           bundle_id: zodSchemaUUID(),
           created: z.string(),
           display_name: z.string(),
           endpoints: z.array(z.string()),
           event_types: z.array(z.string()),
-          id: zodSchemaUUID(),
-          org_id: z.string().optional().nullable()
+          id: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -876,6 +873,7 @@ export namespace Schemas {
   function zodSchemaUpdateBehaviorGroupRequest() {
       return z
       .object({
+          bundle_id: zodSchemaUUID().optional().nullable(),
           display_name: z.string().optional().nullable(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()
@@ -1023,6 +1021,8 @@ export namespace Operations {
     type Response200 = boolean;
     const Response400 = z.string();
     type Response400 = string;
+    const Response404 = z.string();
+    type Response404 = string;
     export interface Params {
       id: Schemas.UUID;
       body: Schemas.UpdateBehaviorGroupRequest;
@@ -1033,6 +1033,7 @@ export namespace Operations {
       | ValidatedResponse<'unknown', 400, Response400>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', 404, Response404>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -1050,7 +1051,8 @@ export namespace Operations {
                 new ValidateRule(Response200, 'unknown', 200),
                 new ValidateRule(Response400, 'unknown', 400),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
-                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+                new ValidateRule(Schemas.__Empty, '__Empty', 403),
+                new ValidateRule(Response404, 'unknown', 404)
             ]
         })
         .build();

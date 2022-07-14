@@ -124,14 +124,12 @@ export namespace Schemas {
   export const CreateBehaviorGroupResponse =
     zodSchemaCreateBehaviorGroupResponse();
   export type CreateBehaviorGroupResponse = {
-    account_id: string;
     bundle_id: UUID;
     created: string;
     display_name: string;
     endpoints: Array<string>;
     event_types: Array<string>;
     id: UUID;
-    org_id?: string | undefined | null;
   };
 
   export const CurrentStatus = zodSchemaCurrentStatus();
@@ -388,6 +386,7 @@ export namespace Schemas {
   export const UpdateBehaviorGroupRequest =
     zodSchemaUpdateBehaviorGroupRequest();
   export type UpdateBehaviorGroupRequest = {
+    bundle_id?: UUID | undefined | null;
     display_name?: string | undefined | null;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
@@ -549,14 +548,12 @@ export namespace Schemas {
   function zodSchemaCreateBehaviorGroupResponse() {
       return z
       .object({
-          account_id: z.string(),
           bundle_id: zodSchemaUUID(),
           created: z.string(),
           display_name: z.string(),
           endpoints: z.array(z.string()),
           event_types: z.array(z.string()),
-          id: zodSchemaUUID(),
-          org_id: z.string().optional().nullable()
+          id: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -876,6 +873,7 @@ export namespace Schemas {
   function zodSchemaUpdateBehaviorGroupRequest() {
       return z
       .object({
+          bundle_id: zodSchemaUUID().optional().nullable(),
           display_name: z.string().optional().nullable(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()
