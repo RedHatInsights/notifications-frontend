@@ -40,6 +40,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupCardList', () 
                     type: NotificationType.EMAIL_SUBSCRIPTION
                 }
             ],
+            events: [],
             displayName: 'My group',
             id: 'bar',
             bundleName: 'foobar',

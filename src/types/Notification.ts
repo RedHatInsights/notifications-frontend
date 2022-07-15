@@ -61,6 +61,7 @@ export type ServerNotificationResponse = Schemas.EventType;
 export type BehaviorGroup = {
     readonly id: UUID;
     readonly actions: ReadonlyArray<Action>;
+    readonly events: ReadonlyArray<EventType>;
     readonly bundleId: UUID,
     readonly displayName: string;
     readonly bundleName?: string;
@@ -80,3 +81,33 @@ export type EmailSystemProperties = {
     }
 }
 export type SystemProperties = EmailSystemProperties;
+
+const getIntegrationIds = (actions: ReadonlyArray<Action | undefined>): Array<UUID | undefined> => {
+    return actions.map(action => {
+        if (action === undefined) {
+            return [ undefined ];
+        }
+
+        if (action.type === NotificationType.INTEGRATION) {
+            return [ action.integration.id ];
+        } else {
+            return action.recipient.map(r => r.integrationId);
+        }
+    }).flat();
+};
+
+export const areActionsEqual = (actions1: ReadonlyArray<Action | undefined>, actions2: ReadonlyArray<Action | undefined>): boolean => {
+    if (actions1.length !== actions2.length) {
+        return false;
+    }
+
+    const integrations1 = getIntegrationIds(actions1);
+    const integrations2 = getIntegrationIds(actions2);
+
+    if (integrations1.length !== integrations2.length) {
+        return false;
+    }
+
+    // Order matters here, no sorting.
+    return integrations1.every((val, index) => val === integrations2[index]);
+};

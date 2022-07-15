@@ -151,7 +151,7 @@ const emptySpan = () => <span />;
 
 export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGroupFormTableProps> = (props) => {
 
-    const { values, setValues, isSubmitting, errors, touched, setFieldTouched } = props.form;
+    const { values, setValues, errors, touched, setFieldTouched } = props.form;
     const actions = React.useMemo<ReadonlyArray<Action | undefined>>(() => values.actions ?? [] as ReadonlyArray<Action>, [ values ]);
     const touchedActions = React.useMemo(() => touched?.actions ?? [], [ touched ]);
     const errorActions = React.useMemo(() => errors?.actions ?? [], [ errors ]);
@@ -231,7 +231,6 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
                     variant={ ButtonVariant.link }
                     icon={ <PlusCircleIcon /> }
                     onClick={ addAction }
-                    isDisabled={ isSubmitting }
                 >
                     Add action
                 </Button>
