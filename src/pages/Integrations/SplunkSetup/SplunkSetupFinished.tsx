@@ -52,12 +52,10 @@ export const SplunkSetupFinishedFailure: React.FunctionComponent<{ error: Error 
             Open a Red Hat Support ticket
             </Button>
             <EmptyStateSecondaryActions>
-                { DOCUMENTATION_URL &&
-                <Button variant="link" component="a" href={ DOCUMENTATION_URL || '' }
+                <Button variant="link" component="a" href={ DOCUMENTATION_URL }
                     target="_blank" rel="noopener noreferrer">
                     Go to documentation
                 </Button>
-                }
             </EmptyStateSecondaryActions>
         </EmptyState>
     );
