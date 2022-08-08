@@ -238,11 +238,9 @@ const SplunkSetupFailedToast = () => (
             <ListItem>
                 <a target="_blank" rel="noopener noreferrer" href={ OPEN_CASE_URL }>Open a Red Hat Support ticket</a>
             </ListItem>
-            { DOCUMENTATION_URL &&
-                <ListItem>
-                    <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL || '' }>Go to documentation</a>
-                </ListItem>
-            }
+            <ListItem>
+                <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL }>Go to documentation</a>
+            </ListItem>
         </List>
     </>
 );

@@ -25,10 +25,9 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
             { Messages.pages.splunk.page.title }
             <Popover
                 bodyContent={ Messages.pages.splunk.page.help }
-                footerContent={ DOCUMENTATION_URL &&
-                            <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL || '' }>
-                                Learn more <ExternalLinkSquareAltIcon />
-                            </a> }
+                footerContent={ <a target="_blank" rel="noopener noreferrer" href={ DOCUMENTATION_URL }>
+                        Learn more <ExternalLinkSquareAltIcon />
+                </a> }
             >
                 <Button
                     variant='plain'
