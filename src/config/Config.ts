@@ -25,7 +25,7 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
         name: 'Splunk'
     },
     [IntegrationType.SERVICE_NOW]: {
-        name: 'Service now'
+        name: 'ServiceNow'
     },
     [IntegrationType.SLACK]: {
         name: 'Slack'

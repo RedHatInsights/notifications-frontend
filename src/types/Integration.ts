@@ -8,7 +8,7 @@ export enum IntegrationType {
     EMAIL_SUBSCRIPTION = 'email_subscription',
     SPLUNK = 'camel:splunk',
     SLACK = 'camel:slack',
-    SERVICE_NOW = 'camel:service_now'
+    SERVICE_NOW = 'camel:servicenow'
 }
 
 export const UserIntegrationType = {
