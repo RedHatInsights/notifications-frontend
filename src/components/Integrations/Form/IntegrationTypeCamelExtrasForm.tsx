@@ -5,7 +5,7 @@ import * as React from 'react';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 
-export const IntegrationTypeSplunkForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
+export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
     return (
         <div className="pf-c-form" { ...getOuiaProps('Integrations/Camel/Splunk', props) } >
             <FormTextInput

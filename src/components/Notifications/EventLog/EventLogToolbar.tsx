@@ -9,10 +9,10 @@ import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
 
+import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { EventPeriod } from '../../../types/Event';
-import { IntegrationType } from '../../../types/Integration';
 import { Facet, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
@@ -53,21 +53,6 @@ const notificationTypes: Record<NotificationType, { name: string }> = {
     }
 };
 
-const integrationTypes: Record<IntegrationType, { name: string }> = {
-    [IntegrationType.SPLUNK]: {
-        name: 'Integration: Splunk'
-    },
-    [IntegrationType.SLACK]: {
-        name: 'Integration: Slack'
-    },
-    [IntegrationType.WEBHOOK]: {
-        name: 'Integration: Webhook'
-    },
-    [IntegrationType.EMAIL_SUBSCRIPTION]: {
-        name: 'Email'
-    }
-};
-
 const actionStatusMetadata = [
     {
         value: 'true',
@@ -93,8 +78,8 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         })).concat(
             integrations.map(integration => ({
                 value: integration.toUpperCase(),
-                chipValue: integrationTypes[integration].name,
-                label: integrationTypes[integration].name
+                chipValue: Config.integrations.types[integration].name,
+                label: Config.integrations.types[integration].name
             })));
     }, [ notifications, integrations ]);
 
