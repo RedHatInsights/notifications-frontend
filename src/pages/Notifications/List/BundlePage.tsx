@@ -1,10 +1,12 @@
 import { ButtonVariant } from '@patternfly/react-core';
-import { Main } from '@redhat-cloud-services/frontend-components';
+import { global_spacer_xl } from '@patternfly/react-tokens';
+import { Main, Section } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
+import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
@@ -12,12 +14,17 @@ import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { Facet } from '../../../types/Notification';
+import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
     applications: Array<Facet>;
 }
+
+const bannerSectionClassname = style({
+    marginBottom: global_spacer_xl.var
+});
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
 
@@ -38,6 +45,9 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 </ButtonLink> }
             />
             <Main>
+                <Section className={ bannerSectionClassname }>
+                    <SplunkBetaEnvironmentBanner />
+                </Section>
                 <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
             </Main>
         </>
