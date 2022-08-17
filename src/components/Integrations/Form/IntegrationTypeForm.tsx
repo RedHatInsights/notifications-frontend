@@ -3,10 +3,10 @@ import { assertNever } from 'assert-never';
 import * as React from 'react';
 
 import { IntegrationType, isCamelType, UserIntegrationType } from '../../../types/Integration';
+import { IntegrationTypeCamelExtrasForm } from './IntegrationTypeCamelExtrasForm';
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
-import { IntegrationTypeSplunkForm } from './IntegrationTypeSplunkForm';
 
 export interface IntegrationTypeForm extends OuiaComponentProps {
     type: UserIntegrationType;
@@ -17,7 +17,8 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
     if (isCamelType(props.type)) {
         switch (props.type) {
             case UserIntegrationType.SPLUNK:
-                return <IntegrationTypeSplunkForm { ...props } />;
+            case UserIntegrationType.SERVICE_NOW:
+                return <IntegrationTypeCamelExtrasForm { ...props } />;
             case UserIntegrationType.SLACK:
                 return <IntegrationTypeSlackForm { ...props } />;
         }

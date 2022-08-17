@@ -7,12 +7,14 @@ export enum IntegrationType {
     WEBHOOK = 'webhook',
     EMAIL_SUBSCRIPTION = 'email_subscription',
     SPLUNK = 'camel:splunk',
-    SLACK = 'camel:slack'
+    SLACK = 'camel:slack',
+    SERVICE_NOW = 'camel:servicenow'
 }
 
 export const UserIntegrationType = {
     WEBHOOK: IntegrationType.WEBHOOK,
     SPLUNK: IntegrationType.SPLUNK,
+    SERVICE_NOW: IntegrationType.SERVICE_NOW,
     SLACK: IntegrationType.SLACK
 } as const;
 
