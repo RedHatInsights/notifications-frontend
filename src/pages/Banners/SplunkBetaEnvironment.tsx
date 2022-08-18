@@ -27,7 +27,7 @@ export const SplunkBetaEnvironmentBanner: React.FunctionComponent = () => {
                     </> }
                 >
                     <p>
-                        Set up a Splunk integration on cloud.redhat.com/beta.
+                        Set up a Splunk integration on console.redhat.com/beta.
                         The Beta Environment allows you to interact with new features in an active development space.
                     </p>
                     <p>

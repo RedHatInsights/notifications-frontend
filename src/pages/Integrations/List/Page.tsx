@@ -1,3 +1,4 @@
+import { global_spacer_xl } from '@patternfly/react-tokens';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
@@ -6,6 +7,7 @@ import * as React from 'react';
 import { useContext } from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
+import { style } from 'typestyle';
 
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
@@ -37,6 +39,10 @@ interface IntegrationsListPageProps {
     reduxDispatch: Dispatch;
     savedNotificationScope: SavedNotificationScopeState;
 }
+
+const bannerSectionClassname = style({
+    marginBottom: global_spacer_xl.var
+});
 
 export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageProps> = props => {
 
@@ -170,7 +176,7 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                 <PageHeaderTitle title={ Messages.pages.integrations.list.title } />
             </PageHeader>
             <Main>
-                <Section>
+                <Section className={ bannerSectionClassname }>
                     <SplunkBetaEnvironmentBanner />
                 </Section>
                 <Section className='pf-c-page__main-section pf-m-light'>
