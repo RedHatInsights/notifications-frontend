@@ -12,6 +12,7 @@ import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { Facet } from '../../../types/Notification';
+import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
 interface NotificationListBundlePageProps {
@@ -38,6 +39,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 </ButtonLink> }
             />
             <Main>
+                <SplunkBetaEnvironmentBanner />
                 <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
             </Main>
         </>
