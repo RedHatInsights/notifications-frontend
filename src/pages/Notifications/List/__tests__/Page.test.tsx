@@ -284,7 +284,7 @@ const mockBehaviorGroup = () => {
 };
 
 const defaultGetEventTypesUrl =
-  '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=20&offset=0&sort_by=e.application.displayName%3ADESC';
+  '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=20&offset=0&sort_by=e.application.displayName%3AASC';
 
 const mockBehaviorGroupsOfEventTypes = (eventTypeId: string = defaultEventTypeId, returnEmpty?: boolean) => {
     fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${eventTypeId}/behaviorGroups`, {
