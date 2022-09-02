@@ -77,7 +77,7 @@ const mockBehaviorGroups = (behaviorGroups: Array<BehaviorGroup>) => {
 
 const mockNotifications = (notifications: Array<NotificationType>) => {
     fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes?bundleId=${bundle.id}&limit=20&offset=0&sort_by=e.application.displayName%3ADESC`,
+        `/api/notifications/v1.0/notifications/eventTypes?bundleId=${bundle.id}&limit=20&offset=0&sort_by=e.application.displayName%3AASC`,
         {
             status: 200,
             body: {

@@ -17,7 +17,7 @@ export const useEventTypesPage = (bundle: Facet, applications: ReadonlyArray<Fac
         sortDirection: SortDirection,
         sortBy: NotificationsTableColumns
     }>({
-        sortDirection: SortDirection.DESC,
+        sortDirection: SortDirection.ASC,
         sortBy: NotificationsTableColumns.APPLICATION
     });
 
