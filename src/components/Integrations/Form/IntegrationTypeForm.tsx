@@ -17,8 +17,15 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
     if (isCamelType(props.type)) {
         switch (props.type) {
             case UserIntegrationType.SPLUNK:
+                return <IntegrationTypeCamelExtrasForm
+                    secretTokenDescription="The defined secret token is sent as a Splunk's HTTP Event Collector token."
+                    { ...props }
+                />;
             case UserIntegrationType.SERVICE_NOW:
-                return <IntegrationTypeCamelExtrasForm { ...props } />;
+                return <IntegrationTypeCamelExtrasForm
+                    secretTokenDescription="Password of a ServiceNow integration user."
+                    { ...props }
+                />;
             case UserIntegrationType.SLACK:
                 return <IntegrationTypeSlackForm { ...props } />;
         }
