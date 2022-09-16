@@ -1433,7 +1433,7 @@ export namespace Operations {
         }
 
         if (params.sortBy !== undefined) {
-            query.sortBy = params.sortBy;
+            query.sort_by = params.sortBy;
         }
 
         if (params.startDate !== undefined) {
