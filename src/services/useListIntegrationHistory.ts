@@ -3,7 +3,7 @@ import { Operations } from '../generated/OpenapiIntegrations';
 type IntegrationHistoryParams = {
     integrationId: string;
     limit?: number;
-    sortBy?: 'nh.created:desc'
+    sortBy?: 'created:desc'
 }
 
 export const listIntegrationHistoryActionCreator = (params: IntegrationHistoryParams) => {
