@@ -36,7 +36,7 @@ export const useEventTypesPage = (bundle: Facet, applications: ReadonlyArray<Fac
                 column = 'application';
                 break;
             case NotificationsTableColumns.EVENT:
-                column = 'displayname';
+                column = 'display_name';
                 break;
             default:
                 throw new Error(`Invalid sorting index: ${sorting.sortBy}`);
