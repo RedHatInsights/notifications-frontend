@@ -58,7 +58,10 @@ const DEFAULT_SPLUNK_EVENTS : SplunkEventsDef = {
     advisor: '*',
     policies: '*',
     drift: '*',
-    compliance: '*'
+    compliance: '*',
+    'malware-detection': '*',
+    patch: '*',
+    vulnerability: '*'
 };
 
 export const useSplunkSetup = () => {
