@@ -250,10 +250,10 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        const lastConnectionAttemptText = screen.getByText('Unknown');
-
-        expect(lastConnectionAttemptText).toBeVisible();
-        expect(screen.getByTestId('off-icon')).toBeVisible();
+        const offIcon = screen.getByTestId('off-icon');
+        expect(offIcon).toBeVisible();
+        expect(offIcon.parentElement).toBeTruthy();
+        expect(getByText(offIcon.parentElement as HTMLElement, 'Unknown')).toBeVisible();
         expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
     });
 
