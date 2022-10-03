@@ -65,6 +65,7 @@ export namespace Schemas {
   export const BehaviorGroup = zodSchemaBehaviorGroup();
   export type BehaviorGroup = {
     actions?: Array<BehaviorGroupAction> | undefined | null;
+    behaviors?: Array<EventTypeBehavior> | undefined | null;
     bundle?: Bundle | undefined | null;
     bundle_id: UUID;
     created?: string | undefined | null;
@@ -109,6 +110,26 @@ export namespace Schemas {
     secret_token?: string | undefined | null;
     sub_type?: string | undefined | null;
     url: string;
+  };
+
+  export const CreateBehaviorGroupRequest =
+    zodSchemaCreateBehaviorGroupRequest();
+  export type CreateBehaviorGroupRequest = {
+    bundle_id: UUID;
+    display_name: string;
+    endpoint_ids?: Array<string> | undefined | null;
+    event_type_ids?: Array<string> | undefined | null;
+  };
+
+  export const CreateBehaviorGroupResponse =
+    zodSchemaCreateBehaviorGroupResponse();
+  export type CreateBehaviorGroupResponse = {
+    bundle_id: UUID;
+    created: string;
+    display_name: string;
+    endpoints: Array<string>;
+    event_types: Array<string>;
+    id: UUID;
   };
 
   export const CurrentStatus = zodSchemaCurrentStatus();
@@ -211,6 +232,19 @@ export namespace Schemas {
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
+  };
+
+  export const EventTypeBehavior = zodSchemaEventTypeBehavior();
+  export type EventTypeBehavior = {
+    created?: string | undefined | null;
+    event_type?: EventType | undefined | null;
+    id?: EventTypeBehaviorId | undefined | null;
+  };
+
+  export const EventTypeBehaviorId = zodSchemaEventTypeBehaviorId();
+  export type EventTypeBehaviorId = {
+    behaviorGroupId: UUID;
+    eventTypeId: UUID;
   };
 
   export const Facet = zodSchemaFacet();
@@ -349,6 +383,15 @@ export namespace Schemas {
   export const UUID = zodSchemaUUID();
   export type UUID = string;
 
+  export const UpdateBehaviorGroupRequest =
+    zodSchemaUpdateBehaviorGroupRequest();
+  export type UpdateBehaviorGroupRequest = {
+    bundle_id?: UUID | undefined | null;
+    display_name?: string | undefined | null;
+    endpoint_ids?: Array<string> | undefined | null;
+    event_type_ids?: Array<string> | undefined | null;
+  };
+
   export const WebhookProperties = zodSchemaWebhookProperties();
   export type WebhookProperties = {
     basic_authentication?: BasicAuthentication | undefined | null;
@@ -433,6 +476,7 @@ export namespace Schemas {
       return z
       .object({
           actions: z.array(zodSchemaBehaviorGroupAction()).optional().nullable(),
+          behaviors: z.array(zodSchemaEventTypeBehavior()).optional().nullable(),
           bundle: zodSchemaBundle().optional().nullable(),
           bundle_id: zodSchemaUUID(),
           created: z.string().optional().nullable(),
@@ -486,6 +530,30 @@ export namespace Schemas {
           secret_token: z.string().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           url: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaCreateBehaviorGroupRequest() {
+      return z
+      .object({
+          bundle_id: zodSchemaUUID(),
+          display_name: z.string(),
+          endpoint_ids: z.array(z.string()).optional().nullable(),
+          event_type_ids: z.array(z.string()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaCreateBehaviorGroupResponse() {
+      return z
+      .object({
+          bundle_id: zodSchemaUUID(),
+          created: z.string(),
+          display_name: z.string(),
+          endpoints: z.array(z.string()),
+          event_types: z.array(z.string()),
+          id: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -607,6 +675,25 @@ export namespace Schemas {
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventTypeBehavior() {
+      return z
+      .object({
+          created: z.string().optional().nullable(),
+          event_type: zodSchemaEventType().optional().nullable(),
+          id: zodSchemaEventTypeBehaviorId().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventTypeBehaviorId() {
+      return z
+      .object({
+          behaviorGroupId: zodSchemaUUID(),
+          eventTypeId: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -783,6 +870,17 @@ export namespace Schemas {
       return z.string();
   }
 
+  function zodSchemaUpdateBehaviorGroupRequest() {
+      return z
+      .object({
+          bundle_id: zodSchemaUUID().optional().nullable(),
+          display_name: z.string().optional().nullable(),
+          endpoint_ids: z.array(z.string()).optional().nullable(),
+          event_type_ids: z.array(z.string()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaWebhookProperties() {
       return z
       .object({
@@ -804,16 +902,20 @@ export namespace Schemas {
 
 export namespace Operations {
   // POST /notifications/behaviorGroups
-  // Create a behavior group.
+  // Create a behavior group - assigning actions and linking to event types as requested
   export namespace NotificationResourceCreateBehaviorGroup {
     const Response400 = z.string();
     type Response400 = string;
     export interface Params {
-      body: Schemas.BehaviorGroup;
+      body: Schemas.CreateBehaviorGroupRequest;
     }
 
     export type Payload =
-      | ValidatedResponse<'BehaviorGroup', 200, Schemas.BehaviorGroup>
+      | ValidatedResponse<
+          'CreateBehaviorGroupResponse',
+          200,
+          Schemas.CreateBehaviorGroupResponse
+        >
       | ValidatedResponse<'unknown', 400, Response400>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
@@ -827,7 +929,11 @@ export namespace Operations {
         .data(params.body)
         .config({
             rules: [
-                new ValidateRule(Schemas.BehaviorGroup, 'BehaviorGroup', 200),
+                new ValidateRule(
+                    Schemas.CreateBehaviorGroupResponse,
+                    'CreateBehaviorGroupResponse',
+                    200
+                ),
                 new ValidateRule(Response400, 'unknown', 400),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
@@ -915,9 +1021,11 @@ export namespace Operations {
     type Response200 = boolean;
     const Response400 = z.string();
     type Response400 = string;
+    const Response404 = z.string();
+    type Response404 = string;
     export interface Params {
       id: Schemas.UUID;
-      body: Schemas.BehaviorGroup;
+      body: Schemas.UpdateBehaviorGroupRequest;
     }
 
     export type Payload =
@@ -925,6 +1033,7 @@ export namespace Operations {
       | ValidatedResponse<'unknown', 400, Response400>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', 404, Response404>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -942,7 +1051,8 @@ export namespace Operations {
                 new ValidateRule(Response200, 'unknown', 200),
                 new ValidateRule(Response400, 'unknown', 400),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
-                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+                new ValidateRule(Schemas.__Empty, '__Empty', 403),
+                new ValidateRule(Response404, 'unknown', 404)
             ]
         })
         .build();
@@ -1323,7 +1433,7 @@ export namespace Operations {
         }
 
         if (params.sortBy !== undefined) {
-            query.sortBy = params.sortBy;
+            query.sort_by = params.sortBy;
         }
 
         if (params.startDate !== undefined) {

@@ -2,7 +2,7 @@
 
 import { Messages } from '../../../properties/Messages';
 
-export const DOCUMENTATION_URL = Messages.pages.splunk.page.helpUrl || 'https://access.redhat.com/documentation/en-us/red_hat_insights/';
+export const DOCUMENTATION_URL = Messages.pages.splunk.page.helpUrl;
 export const SPLUNK_CLOUD_HEC_DOC = 'https://docs.splunk.com/Documentation/SplunkCloud/latest/Data/'
                                    + 'UsetheHTTPEventCollector#Send_data_to_HTTP_Event_Collector';
 export const OPEN_CASE_URL = 'https://access.redhat.com/support/cases/#/case/new/open-case/describe-issue'

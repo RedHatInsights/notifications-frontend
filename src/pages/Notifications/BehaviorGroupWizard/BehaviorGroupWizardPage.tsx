@@ -9,7 +9,7 @@ import { useGetIntegrations } from '../../../components/Notifications/useGetInte
 import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
 import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 import { Facet } from '../../../types/Notification';
-import { SaveBehaviorGroupResult, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
+import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
 import { useSteps } from './useSteps';
 
 interface BehaviorGroupWizardProps {
@@ -38,7 +38,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
         applications: props.applications
     };
 
-    const steps = useSteps(associateEventTypeStepProps, currentStep, isValid);
+    const steps = useSteps(associateEventTypeStepProps, currentStep, isValid, saving.isSaving);
 
     const currentStepModel = steps[currentStep] as (typeof steps)[number] | undefined;
     const stepValidationSchema = currentStepModel?.schema;
@@ -63,7 +63,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
         const result = await save(behaviorGroup);
 
         if (result.status) {
-            if (result.operation === SaveBehaviorGroupResult.CREATE) {
+            if (result.operation === SaveBehaviorGroupOperation.CREATE) {
                 addSuccessNotification(
                     'New behavior group created',
                     <>
@@ -81,7 +81,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
 
             onClose(true);
         } else {
-            if (result.operation === SaveBehaviorGroupResult.CREATE) {
+            if (result.operation === SaveBehaviorGroupOperation.CREATE) {
                 addDangerNotification(
                     'Behavior group failed to be created',
                     <>

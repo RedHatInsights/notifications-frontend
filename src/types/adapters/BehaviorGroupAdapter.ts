@@ -19,6 +19,11 @@ export const toBehaviorGroup = (serverBehaviorGroup: ServerBehaviorGroup): Behav
 
     return {
         actions: reduceActions(actions),
+        events: serverBehaviorGroup.behaviors?.map(b => ({
+            id: b.event_type?.id ?? '',
+            applicationDisplayName: b.event_type?.application?.display_name ?? '',
+            eventTypeDisplayName: b.event_type?.display_name ?? ''
+        })) ?? [],
         bundleId: serverBehaviorGroup.bundle_id,
         displayName: serverBehaviorGroup.display_name,
         id: serverBehaviorGroup.id ?? reportBehaviorGroup(serverBehaviorGroup),

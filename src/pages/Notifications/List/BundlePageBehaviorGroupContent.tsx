@@ -47,6 +47,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
         return 0;
     }, [ useNotifications.payload ]);
 
+    const behaviorGroups = !behaviorGroupContent.isLoading && !behaviorGroupContent.hasError ? behaviorGroupContent.content : undefined;
+
     const {
         rows: notificationRows,
         updateBehaviorGroupLink,
@@ -55,10 +57,9 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
         cancelEditMode,
         updateBehaviorGroups
     } = useBehaviorGroupNotificationRows(
-        !useNotifications.loading && useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value.data : noEvents
+        !useNotifications.loading && useNotifications.payload?.type === 'eventTypesArray' ? useNotifications.payload.value.data : noEvents,
+        behaviorGroups
     );
-
-    const behaviorGroups = !behaviorGroupContent.isLoading && !behaviorGroupContent.hasError ? behaviorGroupContent.content : undefined;
 
     React.useEffect(() => {
         if (behaviorGroups) {

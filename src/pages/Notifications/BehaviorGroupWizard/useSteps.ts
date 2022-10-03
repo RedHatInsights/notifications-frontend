@@ -3,15 +3,19 @@ import { useEffect, useMemo, useState } from 'react';
 
 import { ExtendedWizardStep } from '../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { useActionAndRecipientStep } from './Steps/ActionAndRecipientsStep';
-import { AssociateEventTypesStepProps } from './Steps/AssociateEventTypesStep';
+import { AssociateEventTypesStepProps, useAssociateEventTypesStep } from './Steps/AssociateEventTypesStep';
 import { useBasicInformationStep } from './Steps/BasicInformationStep';
 import { createReviewStep } from './Steps/ReviewStep';
 
-export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, currentStep: number, isValid: boolean): Array<ExtendedWizardStep> => {
+export const useSteps = (
+    associateEventTypeStep: AssociateEventTypesStepProps,
+    currentStep: number,
+    isValid: boolean,
+    isSaving: boolean
+): Array<ExtendedWizardStep> => {
 
     const basicInformationStep = useBasicInformationStep();
-    // Disabled while we get the service to assign a behavior group to event types
-    // const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
+    const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
     const actionAndRecipientStep = useActionAndRecipientStep();
 
     const [ maxStep, setMaxStep ] = useState<number>(0);
@@ -37,15 +41,14 @@ export const useSteps = (associateEventTypeStep: AssociateEventTypesStepProps, c
         return [
             basicInformationStep,
             actionAndRecipientStep,
-            // Disabled while we get the service to assign a behavior group to event types
-            // associateEventTypesStep,
+            associateEventTypesStep,
             createReviewStep()
         ].map((step, index) => ({
             ...step,
             id: index,
-            canJumpTo: index <= lastAvailableStep,
+            canJumpTo: !isSaving && index <= lastAvailableStep,
             hideCancelButton: false,
             enableNext: isValid
         }));
-    }, [ basicInformationStep, actionAndRecipientStep, isValid, lastAvailableStep ]);
+    }, [ basicInformationStep, actionAndRecipientStep, isValid, lastAvailableStep, isSaving, associateEventTypesStep ]);
 };

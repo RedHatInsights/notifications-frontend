@@ -28,7 +28,7 @@ const BasicInformationStep: React.FunctionComponent = () => {
 };
 
 export const schema = Yup.object({
-    displayName: Yup.string().min(1).max(150).required('Behavior group name is required')
+    displayName: Yup.string().min(1).max(150, 'Must be 150 characters or less').required('Behavior group name is required')
 });
 
 export const useBasicInformationStep: CreateWizardStep = () => {

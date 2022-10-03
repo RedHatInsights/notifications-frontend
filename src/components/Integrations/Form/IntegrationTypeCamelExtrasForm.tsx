@@ -5,7 +5,11 @@ import * as React from 'react';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 
-export const IntegrationTypeSplunkForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
+interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
+    secretTokenDescription: string;
+}
+
+export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<IntegrationTypeCamelExtrasForm> = (props) => {
     return (
         <div className="pf-c-form" { ...getOuiaProps('Integrations/Camel/Splunk', props) } >
             <FormTextInput
@@ -23,7 +27,7 @@ export const IntegrationTypeSplunkForm: React.FunctionComponent<IntegrationTypeF
                 ouiaId={ ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled') }
             />
             <FormGroup fieldId='integration-type-camel-secret-token'
-                helperText="The defined secret token is sent as a Splunk's HTTP Event Collector token.">
+                helperText={ props.secretTokenDescription }>
                 <FormTextInput
                     isRequired={ false }
                     label="Secret token"
