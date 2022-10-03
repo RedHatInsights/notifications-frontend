@@ -35,6 +35,7 @@ export interface IntegrationBase<T extends IntegrationType> {
     name: string;
     type: T;
     isEnabled: boolean;
+    status?: Schemas.EndpointStatus | undefined
 }
 
 export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK> {

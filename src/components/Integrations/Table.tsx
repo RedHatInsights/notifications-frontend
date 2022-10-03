@@ -41,6 +41,7 @@ import { EmptyStateSearch } from '../EmptyStateSearch';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
+import { IntegrationStatus } from './Table/IntegrationStatus';
 
 export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -215,6 +216,9 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                             />
                         )}
                     </>
+                },
+                {
+                    title: <><IntegrationStatus status={ integration.status } /></>
                 }
             ]
         });
@@ -256,6 +260,10 @@ const columns: Array<ICell> = [
     {
         title: Messages.components.integrations.table.columns.enabled,
         transforms: [ sortable ]
+    },
+    {
+        title: Messages.components.integrations.table.columns.status,
+        transforms: []
     }
 ];
 

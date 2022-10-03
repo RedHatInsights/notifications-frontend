@@ -91,7 +91,8 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
         id: serverIntegration.id || '',
         name: serverIntegration.name || '',
         isEnabled: !!serverIntegration.enabled,
-        type: getIntegrationType(serverIntegration)
+        type: getIntegrationType(serverIntegration),
+        status: serverIntegration.status ?? 'UNKNOWN'
     };
 
     if (isCamelType(integrationBase.type)) {
