@@ -27,7 +27,7 @@ export const SplunkBetaEnvironmentBanner: React.FunctionComponent = () => {
             <BetaIfNot>
                 <Section className={ bannerSectionClassname }>
                     <Alert
-                        title="Splunk and ServiceNow integration is available in our Beta environment"
+                        title="Splunk and ServiceNow integrations are available in our Beta environment"
                         actionClose={ <AlertActionCloseButton onClose={ close } /> }
                         isInline
                         actionLinks={ <>
@@ -35,7 +35,7 @@ export const SplunkBetaEnvironmentBanner: React.FunctionComponent = () => {
                         </> }
                     >
                         <p>
-                            Set up a Splunk and ServiceNow integration on console.redhat.com/beta.
+                            Set up a Splunk or a ServiceNow integration on console.redhat.com/beta.
                             The Beta Environment allows you to interact with new features in an active development space.
                         </p>
                         <p>
