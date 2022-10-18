@@ -14,6 +14,8 @@ import { Messages } from '../../properties/Messages';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 
 cssRaw(`
     @media only screen and (max-width: 768px) {
@@ -133,8 +135,8 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
             <PrimaryToolbar
                 actionsConfig={ actionsConfig }
                 exportConfig={ exportConfig }
-                filterConfig={ primaryToolbarFilterConfig.filterConfig }
-                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                filterConfig={ primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps }
+                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps }
                 pagination={ topPaginationProps }
                 id="integrations-top-toolbar"
             />

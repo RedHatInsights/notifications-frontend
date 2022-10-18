@@ -18,6 +18,8 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
 import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
 import { usePrimaryToolbarFilterConfigWrapper } from './usePrimaryToolbarFilterConfigWrapper';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 
 interface EventLogToolbarProps extends OuiaComponentProps {
     filters: EventLogFilters,
@@ -155,6 +157,8 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         <div { ...getOuiaProps('Notifications/EventLog/DualToolbar', props) }>
             <PrimaryToolbar
                 { ...primaryToolbarFilterConfig }
+                filterConfig={ primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps }
+                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps }
                 dedicatedAction={ <EventLogDateFilter
                     value={ props.dateFilter }
                     setValue={ props.setDateFilter }

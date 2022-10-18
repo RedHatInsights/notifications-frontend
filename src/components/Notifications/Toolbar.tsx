@@ -22,6 +22,8 @@ import {
     NotificationFilters,
     SetNotificationFilters
 } from './Filter';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 
 export enum SelectionCommand {
     NONE,
@@ -176,8 +178,8 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
             <PrimaryToolbar
                 bulkSelect={ bulkSelectProps }
-                filterConfig={ filterConfig }
-                activeFiltersConfig={ activeFiltersConfig }
+                filterConfig={ filterConfig as ConditionalFilterProps}
+                activeFiltersConfig={ activeFiltersConfig as FilterChipsProps }
                 exportConfig={ exportConfig }
                 pagination={ topPaginationProps }
             />
