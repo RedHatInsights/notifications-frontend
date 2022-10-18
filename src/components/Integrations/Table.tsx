@@ -1,5 +1,5 @@
-import { EmptyStateVariant, Spinner, Switch, Text } from '@patternfly/react-core';
-import { CheckCircleIcon, CubesIcon, ExclamationCircleIcon, OffIcon } from '@patternfly/react-icons';
+import { Button, ButtonVariant, EmptyStateVariant, Spinner, Switch } from '@patternfly/react-core';
+import { CubesIcon, HelpIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
@@ -18,11 +18,7 @@ import {
     TableHeader
 } from '@patternfly/react-table';
 import {
-    global_danger_color_100,
-    global_spacer_md,
-    global_spacer_sm,
-    global_success_color_100,
-    global_warning_color_200
+    global_spacer_md
 } from '@patternfly/react-tokens';
 import { SkeletonTable } from '@redhat-cloud-services/frontend-components';
 import { Direction, OuiaComponentProps, Sort, UseSortReturn } from '@redhat-cloud-services/insights-common-typescript';
@@ -36,11 +32,15 @@ import Config from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
 import { Messages } from '../../properties/Messages';
 import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
+import { aggregateConnectionAttemptStatus, AggregatedConnectionAttemptStatus } from '../../utils/ConnectionAttemptStatus';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { EmptyStateSearch } from '../EmptyStateSearch';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
+import { IntegrationStatus } from './Table/IntegrationStatus';
+import { LastConnectionHelpPopover } from './Table/LastConnectionHelpPopover';
+import { StatusUnknown } from './Table/Status';
 
 export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -63,13 +63,6 @@ export type IntegrationRow = UserIntegration & {
     lastConnectionAttempts?: Array<IntegrationConnectionAttempt>;
 }
 
-enum LastConnectionAttemptStatus {
-    UNKNOWN,
-    SUCCESS,
-    WARNING,
-    ERROR
-}
-
 const connectionAlertClassName = style({
     paddingBottom: global_spacer_md.var
 });
@@ -83,101 +76,24 @@ const isEnabledLoadingClassName = style({
     marginLeft: 10
 });
 
-const smallMarginLeft = style({
-    marginLeft: global_spacer_sm.var
-});
-
-const degradedClassName = style({
-    fontWeight: 600,
-    color: global_warning_color_200.var,
-    fontSize: 'var(--pf-global--FontSize--sm)'
-});
-
-const getLastConnectionAttemptStatus = (attempts: Array<IntegrationConnectionAttempt>): LastConnectionAttemptStatus => {
-    if (attempts.length === 0) {
-        return LastConnectionAttemptStatus.UNKNOWN;
-    }
-
-    const failures = attempts.filter(a => !a.isSuccess).length;
-
-    if (failures === attempts.length) {
-        return LastConnectionAttemptStatus.ERROR;
-    } else if (failures > 0) {
-        return LastConnectionAttemptStatus.WARNING;
-    }
-
-    return LastConnectionAttemptStatus.SUCCESS;
-};
-
 const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
-    const status = getLastConnectionAttemptStatus(attempts);
+    const status = aggregateConnectionAttemptStatus(attempts);
     switch (status) {
-        case LastConnectionAttemptStatus.UNKNOWN:
-        case LastConnectionAttemptStatus.SUCCESS:
+        case AggregatedConnectionAttemptStatus.UNKNOWN:
+        case AggregatedConnectionAttemptStatus.SUCCESS:
             return null;
-        case LastConnectionAttemptStatus.ERROR:
+        case AggregatedConnectionAttemptStatus.ERROR:
             return (
                 <div className={ connectionAlertClassName }>
                     <ConnectionFailed attempts={ attempts } />
                 </div>
             );
-        case LastConnectionAttemptStatus.WARNING:
+        case AggregatedConnectionAttemptStatus.WARNING:
             return (
                 <div className={ connectionAlertClassName }>
                     <ConnectionDegraded attempts={ attempts } />
                 </div>
             );
-        default:
-            assertNever(status);
-    }
-};
-
-const LastConnectionAttemptSuccess: React.FunctionComponent = () => (
-    <>
-        <span>
-            <CheckCircleIcon color={ global_success_color_100.value } data-testid="success-icon" />
-            <span className={ smallMarginLeft }>Success</span>
-        </span>
-    </>
-);
-
-const LastConnectionAttemptError: React.FunctionComponent = () => (
-    <>
-        <span>
-            <ExclamationCircleIcon color={ global_danger_color_100.value } data-testid="fail-icon" />
-            <span className={ smallMarginLeft }>Failure</span>
-        </span>
-    </>
-);
-
-const getConnectionAttemptCell = (attempts: Array<IntegrationConnectionAttempt> | undefined, isLoading: boolean) => {
-    if (attempts === undefined) {
-        return 'Error fetching connection attempts';
-    }
-
-    if (isLoading) {
-        return <Spinner size="md" />;
-    }
-
-    const status = getLastConnectionAttemptStatus(attempts);
-    switch (status) {
-        case LastConnectionAttemptStatus.UNKNOWN:
-            return <>
-                <span>
-                    <OffIcon data-testid="off-icon" />
-                    <span className={ smallMarginLeft }>Unknown</span>
-                </span>
-            </>;
-        case LastConnectionAttemptStatus.SUCCESS:
-            return <><LastConnectionAttemptSuccess /></>;
-        case LastConnectionAttemptStatus.ERROR:
-            return <><LastConnectionAttemptError /></>;
-        case LastConnectionAttemptStatus.WARNING:
-            return <>
-                { attempts[0].isSuccess ? <LastConnectionAttemptSuccess /> : <LastConnectionAttemptError />}
-                <br />
-                <Text className={ degradedClassName }>Degraded connection</Text>
-            </>;
         default:
             assertNever(status);
     }
@@ -198,7 +114,12 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
                     title: Config.integrations.types[integration.type].name
                 },
                 {
-                    title: getConnectionAttemptCell(integration.lastConnectionAttempts, integration.isConnectionAttemptLoading)
+                    title: <>
+                        { integration.lastConnectionAttempts === undefined ? <StatusUnknown /> : <IntegrationStatus
+                            status={ integration.status }
+                            lastConnectionAttempts={ integration.isConnectionAttemptLoading ? undefined : integration.lastConnectionAttempts }
+                        /> }
+                    </>
                 },
                 {
                     title: <>
@@ -250,7 +171,14 @@ const columns: Array<ICell> = [
         transforms: [ ]
     },
     {
-        title: Messages.components.integrations.table.columns.lastConnectionAttempt,
+        title: <>
+            <span>{ Messages.components.integrations.table.columns.lastConnectionAttempt }</span>
+            <LastConnectionHelpPopover>
+                <Button variant={ ButtonVariant.plain }>
+                    <HelpIcon />
+                </Button>
+            </LastConnectionHelpPopover>
+        </>,
         transforms: []
     },
     {

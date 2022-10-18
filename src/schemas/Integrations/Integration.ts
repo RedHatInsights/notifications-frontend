@@ -19,7 +19,9 @@ export const IntegrationSchemaBase: Yup.SchemaOf<NewIntegrationBase> = Yup.objec
     id: Yup.string().optional(),
     name: Yup.string().required('Write a name for this Integration.').max(maxIntegrationNameLength).trim(),
     type: Yup.mixed<IntegrationType>().oneOf(Object.values(IntegrationType)).default(IntegrationType.WEBHOOK).optional(),
-    isEnabled: Yup.boolean().default(true).required()
+    isEnabled: Yup.boolean().default(true).required(),
+    status: Yup.mixed<Schemas.EndpointStatus>().oneOf(Object.values(Schemas.EndpointStatus.Enum)).default(Schemas.EndpointStatus.Enum.UNKNOWN),
+    serverErrors: Yup.number().default(0)
 });
 
 export const IntegrationHttpSchema: Yup.SchemaOf<NewIntegrationTemplate<IntegrationHttp>> = IntegrationSchemaBase.concat(Yup.object().shape({

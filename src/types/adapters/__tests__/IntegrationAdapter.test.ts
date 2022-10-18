@@ -24,7 +24,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     disable_ssl_verification: false,
                     method: Schemas.HttpType.Enum.GET,
                     secret_token: undefined
-                }
+                },
+                server_errors: 5,
+                status: 'READY'
             };
             const integration = toIntegration(serverIntegration);
             expect(integration).toEqual({
@@ -35,7 +37,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 url: 'https://my-cool-webhook.com',
                 sslVerificationEnabled: true,
                 method: 'GET',
-                secretToken: undefined
+                secretToken: undefined,
+                serverErrors: 5,
+                status: 'READY'
             });
         });
 
@@ -51,7 +55,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     disable_ssl_verification: false,
                     method: Schemas.HttpType.Enum.GET,
                     secret_token: ''
-                }
+                },
+                server_errors: 5,
+                status: 'READY'
             };
             const integration = toIntegration(serverIntegration);
             expect(integration).toEqual({
@@ -62,7 +68,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 url: 'https://foobarbaz.com',
                 sslVerificationEnabled: true,
                 method: 'GET',
-                secretToken: undefined
+                secretToken: undefined,
+                serverErrors: 5,
+                status: 'READY'
             });
         });
 
@@ -115,7 +123,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                         disable_ssl_verification: false,
                         method: Schemas.HttpType.Enum.GET,
                         secret_token: 'my-token'
-                    }
+                    },
+                    server_errors: 3,
+                    status: 'PROVISIONING'
                 },
                 {
                     id: 'meep',
@@ -128,7 +138,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                         disable_ssl_verification: false,
                         method: Schemas.HttpType.Enum.GET,
                         secret_token: ''
-                    }
+                    },
+                    server_errors: 7,
+                    status: 'FAILED'
                 }
             ] as Array<ServerIntegrationResponse>;
             expect(toIntegrations(integrations)).toEqual([
@@ -140,7 +152,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     url: 'https://my-cool-webhook.com',
                     sslVerificationEnabled: true,
                     method: 'GET',
-                    secretToken: 'my-token'
+                    secretToken: 'my-token',
+                    serverErrors: 3,
+                    status: 'PROVISIONING'
                 },
                 {
                     id: 'meep',
@@ -150,7 +164,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     url: 'https://foobarbaz.com',
                     sslVerificationEnabled: true,
                     method: 'GET',
-                    secretToken: undefined
+                    secretToken: undefined,
+                    serverErrors: 7,
+                    status: 'FAILED'
                 }
             ]);
         });
@@ -202,7 +218,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                 type: IntegrationType.WEBHOOK,
                 method: Schemas.HttpType.Enum.POST,
                 secretToken: undefined,
-                sslVerificationEnabled: true
+                sslVerificationEnabled: true,
+                serverErrors: 5,
+                status: 'READY'
             };
 
             expect(toServerIntegrationRequest(integration)).toEqual({
@@ -216,7 +234,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
                     method: 'POST',
                     disable_ssl_verification: false,
                     secret_token: undefined
-                }
+                },
+                sub_type: undefined
             });
         });
 
