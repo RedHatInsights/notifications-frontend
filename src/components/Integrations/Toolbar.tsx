@@ -1,5 +1,7 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 import {
     ColumnsMetada,
     ExporterType,
@@ -14,8 +16,6 @@ import { Messages } from '../../properties/Messages';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { ClearIntegrationFilters, IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
-import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
-import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 
 cssRaw(`
     @media only screen and (max-width: 768px) {

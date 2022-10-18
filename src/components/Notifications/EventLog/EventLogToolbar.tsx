@@ -1,6 +1,8 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 import {
     ColumnsMetada,
     OuiaComponentProps
@@ -18,8 +20,6 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
 import { ClearEventLogFilters, EventLogFilterColumn, EventLogFilters, SetEventLogFilters } from './EventLogFilter';
 import { usePrimaryToolbarFilterConfigWrapper } from './usePrimaryToolbarFilterConfigWrapper';
-import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
-import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 
 interface EventLogToolbarProps extends OuiaComponentProps {
     filters: EventLogFilters,
