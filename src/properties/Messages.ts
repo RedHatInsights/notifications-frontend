@@ -75,8 +75,7 @@ const MutableMessages = {
                     name: 'Name',
                     type: 'Type',
                     lastConnectionAttempt: 'Last connection attempt',
-                    enabled: 'Enabled',
-                    status: 'Status'
+                    enabled: 'Enabled'
                 }
             },
             enableError: {

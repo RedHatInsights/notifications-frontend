@@ -26,6 +26,8 @@ describe('components/Integrations/Table', () => {
         isSelected: false,
         isEnabledLoading: false,
         isConnectionAttemptLoading: false,
+        serverErrors: 0,
+        status: 'READY',
         lastConnectionAttempts: [
             {
                 isSuccess: true,
@@ -199,7 +201,7 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        const lastConnectionAttemptText = screen.getByText('Failure');
+        const lastConnectionAttemptText = screen.getByText(/Event failure/i);
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('fail-icon')).toBeVisible();
@@ -236,24 +238,174 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        const lastConnectionAttemptText = screen.getByText('Failure');
+        const lastConnectionAttemptText = screen.getByText(/Event failure/i);
 
         expect(lastConnectionAttemptText).toBeVisible();
         expect(screen.getByTestId('fail-icon')).toBeVisible();
         expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
     });
 
-    it('Last connection attempt show as unknown with off icon if there are no attempts', () => {
+    it('Last connection attempt show as Ready if there are no attempts and status is ready', () => {
         render(<IntlProvider locale={ navigator.language }><IntegrationsTable
             isLoading={ false }
             integrations={ [{ ...integrationTemplate, lastConnectionAttempts: []}] }
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        const offIcon = screen.getByTestId('off-icon');
-        expect(offIcon).toBeVisible();
-        expect(offIcon.parentElement).toBeTruthy();
-        expect(getByText(offIcon.parentElement as HTMLElement, 'Unknown')).toBeVisible();
+        const successIcon = screen.getByTestId('success-icon');
+        expect(successIcon).toBeVisible();
+        expect(successIcon.parentElement).toBeTruthy();
+        expect(getByText(successIcon.parentElement as HTMLElement, /Ready/i)).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
+    });
+
+    it('Last connection attempt show as Creation failure if there are no attempts and status is failed', () => {
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
+            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [], status: 'FAILED' }] }
+            actionResolver={ jest.fn(() => []) }
+        /></IntlProvider>);
+
+        const failIcon = screen.getByTestId('fail-icon');
+        expect(failIcon).toBeVisible();
+        expect(failIcon.parentElement).toBeTruthy();
+        expect(getByText(failIcon.parentElement as HTMLElement, /Creation failure/i)).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
+    });
+
+    it('Last connection attempt show as Creation failure regardless of last attempts if status is failed', () => {
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
+            integrations={ [{ ...integrationTemplate, status: 'FAILED', lastConnectionAttempts: [
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-22'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-21'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-20'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-19'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-15'))
+                }
+            ]}] }
+            actionResolver={ jest.fn(() => []) }
+        /></IntlProvider>);
+
+        const failIcon = screen.getByTestId('fail-icon');
+        expect(failIcon).toBeVisible();
+        expect(failIcon.parentElement).toBeTruthy();
+        expect(getByText(failIcon.parentElement as HTMLElement, /Creation failure/i)).toBeVisible();
+        // This status does not show the degraded connection
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
+    });
+
+    it('Last connection attempt show as Processing if there are no attempts and status is provisioning', () => {
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
+            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [], status: 'PROVISIONING' }] }
+            actionResolver={ jest.fn(() => []) }
+        /></IntlProvider>);
+
+        const inProgress = screen.getByTestId('in-progress-icon');
+        expect(inProgress).toBeVisible();
+        expect(inProgress.parentElement).toBeTruthy();
+        expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
+    });
+
+    it('Last connection attempt show as Processing regardless of last attempts if status is provisioning', () => {
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
+            integrations={ [{ ...integrationTemplate, status: 'PROVISIONING', lastConnectionAttempts: [
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-22'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-21'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-20'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-19'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-15'))
+                }
+            ]}] }
+            actionResolver={ jest.fn(() => []) }
+        /></IntlProvider>);
+
+        const inProgress = screen.getByTestId('in-progress-icon');
+        expect(inProgress).toBeVisible();
+        expect(inProgress.parentElement).toBeTruthy();
+        expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
+        // This status does not show the degraded connection
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
+    });
+
+    it('Last connection attempt show as Processing if there are no attempts and status is deleting', () => {
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
+            integrations={ [{ ...integrationTemplate, lastConnectionAttempts: [], status: 'DELETING' }] }
+            actionResolver={ jest.fn(() => []) }
+        /></IntlProvider>);
+
+        const inProgress = screen.getByTestId('in-progress-icon');
+        expect(inProgress).toBeVisible();
+        expect(inProgress.parentElement).toBeTruthy();
+        expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
+        expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
+    });
+
+    it('Last connection attempt show as Processing regardless of last attempts if status is deleting', () => {
+        render(<IntlProvider locale={ navigator.language }><IntegrationsTable
+            isLoading={ false }
+            integrations={ [{ ...integrationTemplate, status: 'DELETING', lastConnectionAttempts: [
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-22'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-21'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-20'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-19'))
+                },
+                {
+                    isSuccess: false,
+                    date: new Date(Date.parse('2020-01-15'))
+                }
+            ]}] }
+            actionResolver={ jest.fn(() => []) }
+        /></IntlProvider>);
+
+        const inProgress = screen.getByTestId('in-progress-icon');
+        expect(inProgress).toBeVisible();
+        expect(inProgress.parentElement).toBeTruthy();
+        expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
+        // This status does not show the degraded connection
         expect(screen.queryByText(/degraded connection/i)).toBeFalsy();
     });
 
@@ -264,7 +416,10 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        expect(screen.getByText('Error fetching connection attempts')).toBeVisible();
+        const unknownIcon = screen.getByTestId('unknown-icon');
+        expect(unknownIcon).toBeVisible();
+        expect(unknownIcon.parentElement).toBeTruthy();
+        expect(getByText(unknownIcon.parentElement as HTMLElement, /Error loading status/i)).toBeVisible();
     });
 
     it('Last connection attempt show as loading if isConnectionAttemptLoading is true', () => {
@@ -274,7 +429,7 @@ describe('components/Integrations/Table', () => {
             actionResolver={ jest.fn(() => []) }
         /></IntlProvider>);
 
-        expect(screen.getByRole('progressbar')).toBeVisible();
+        expect(screen.getByTestId('skeleton-loading')).toBeVisible();
     });
 
     it('If isEnabledLoading is true, shows a loading spinner', () => {

@@ -24,7 +24,9 @@ describe('src/components/Integrations/DeleteModal', () => {
                     id: '123',
                     secretToken: 'foo',
                     method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false
+                    sslVerificationEnabled: false,
+                    status: 'READY',
+                    serverErrors: 5
                 } }
             />
         );
@@ -84,7 +86,9 @@ describe('src/components/Integrations/DeleteModal', () => {
                     id: '123',
                     secretToken: 'foo',
                     method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false
+                    sslVerificationEnabled: false,
+                    status: 'READY',
+                    serverErrors: 5
                 } }
             />
         );
@@ -108,7 +112,9 @@ describe('src/components/Integrations/DeleteModal', () => {
                     id: '123',
                     secretToken: 'foo',
                     method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false
+                    sslVerificationEnabled: false,
+                    status: 'READY',
+                    serverErrors: 5
                 } }
             />
         );
@@ -169,7 +175,9 @@ describe('src/components/Integrations/DeleteModal', () => {
                     id: '123',
                     secretToken: 'foo',
                     method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false
+                    sslVerificationEnabled: false,
+                    status: 'READY',
+                    serverErrors: 5
                 } }
             />
         );
@@ -209,7 +217,9 @@ describe('src/components/Integrations/DeleteModal', () => {
                     id: '123',
                     secretToken: 'foo',
                     method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false
+                    sslVerificationEnabled: false,
+                    status: 'READY',
+                    serverErrors: 5
                 } }
             />
         );
@@ -237,7 +247,9 @@ describe('src/components/Integrations/DeleteModal', () => {
                     id: '123',
                     secretToken: 'foo',
                     method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false
+                    sslVerificationEnabled: false,
+                    status: 'READY',
+                    serverErrors: 5
                 } }
             />
         );
