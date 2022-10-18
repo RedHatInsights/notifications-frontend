@@ -1,4 +1,4 @@
-import { Button, ButtonVariant, EmptyStateVariant, Popover, Spinner, Switch } from '@patternfly/react-core';
+import { Button, ButtonVariant, EmptyStateVariant, Spinner, Switch } from '@patternfly/react-core';
 import { CubesIcon, HelpIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
