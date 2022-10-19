@@ -4452,7 +4452,7 @@ custom-event@~1.0.0:
   resolved "https://registry.yarnpkg.com/custom-event/-/custom-event-1.0.1.tgz#5d02a46850adf1b4a317946a3928fccb5bfd0425"
   integrity sha1-XQKkaFCt8bSjF5RqOSj8y1v9BCU=
 
-cypress@^10.10.0:
+cypress@10.10.0:
   version "10.10.0"
   resolved "https://registry.yarnpkg.com/cypress/-/cypress-10.10.0.tgz#fd671297b2ca3e64dfffd55fe3857c388cfbb695"
   integrity sha512-bU8r44x1NIYAUNNXt3CwJpLOVth7HUv2hUhYCxZmgZ1IugowDvuHNpevnoZRQx1KKOEisLvIJW+Xen5Pjn41pg==
@@ -8448,6 +8448,11 @@ no-case@^3.0.4:
     lower-case "^2.0.2"
     tslib "^2.0.3"
 
+node-args@~2.1.8:
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/node-args/-/node-args-2.1.8.tgz#d3d0d07cf8df56492638c56fdfed204eb434425c"
+  integrity sha512-O/XZLwlBoMT8Y71DeRSs8xXNSMQPu1y5Q8OB4V2XpLW5VFpEXkJn3TPZ5x28tyoUQhUsbtVKZ6khvQJrKvBgQw==
+
 node-fetch@2.6.7, node-fetch@^2.6.1:
   version "2.6.7"
   resolved "https://registry.yarnpkg.com/node-fetch/-/node-fetch-2.6.7.tgz#24de9fba827e3b4ae44dc8b20256a379160052ad"
@@ -8993,6 +8998,13 @@ pify@^4.0.1:
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/pify/-/pify-4.0.1.tgz#4b2cd25c50d598735c50292224fd8c6df41e3231"
   integrity sha512-uB80kBFb/tfd68bVleG9T5GGsGPjJrLAUpR5PZIrhBnIaRTQRjqdJSsIKkOP6OAIFbj7GOrcudc5pNjZ+geV2g==
+
+pin-dependencies-checker@1.0.6:
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/pin-dependencies-checker/-/pin-dependencies-checker-1.0.6.tgz#82c1384c3f451fc432ca92f17a54aff12b6c4cd8"
+  integrity sha512-7tFPwjvMR8910zikBrP8oC6gGNPznAEhvgV1CQUgh0Z/mEGoPVz/FH0MIlwIwmyT5KlqcKyukJ18kPoBZMAtDQ==
+  dependencies:
+    node-args "~2.1.8"
 
 pinkie-promise@^2.0.0:
   version "2.0.1"
