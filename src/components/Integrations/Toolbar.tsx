@@ -1,5 +1,7 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 import {
     ColumnsMetada,
     ExporterType,
@@ -133,8 +135,8 @@ export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarPro
             <PrimaryToolbar
                 actionsConfig={ actionsConfig }
                 exportConfig={ exportConfig }
-                filterConfig={ primaryToolbarFilterConfig.filterConfig }
-                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig }
+                filterConfig={ primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps }
+                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps }
                 pagination={ topPaginationProps }
                 id="integrations-top-toolbar"
             />

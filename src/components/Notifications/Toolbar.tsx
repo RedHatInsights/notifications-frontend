@@ -1,5 +1,7 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 import {
     ExporterType,
     getInsights,
@@ -176,8 +178,8 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
         <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
             <PrimaryToolbar
                 bulkSelect={ bulkSelectProps }
-                filterConfig={ filterConfig }
-                activeFiltersConfig={ activeFiltersConfig }
+                filterConfig={ filterConfig as ConditionalFilterProps }
+                activeFiltersConfig={ activeFiltersConfig as FilterChipsProps }
                 exportConfig={ exportConfig }
                 pagination={ topPaginationProps }
             />

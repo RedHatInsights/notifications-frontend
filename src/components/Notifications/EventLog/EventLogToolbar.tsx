@@ -1,6 +1,8 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
+import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
+import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
 import {
     ColumnsMetada,
     OuiaComponentProps
@@ -155,6 +157,8 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (p
         <div { ...getOuiaProps('Notifications/EventLog/DualToolbar', props) }>
             <PrimaryToolbar
                 { ...primaryToolbarFilterConfig }
+                filterConfig={ primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps }
+                activeFiltersConfig={ primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps }
                 dedicatedAction={ <EventLogDateFilter
                     value={ props.dateFilter }
                     setValue={ props.setDateFilter }
