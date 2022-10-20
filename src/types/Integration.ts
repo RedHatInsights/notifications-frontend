@@ -35,6 +35,8 @@ export interface IntegrationBase<T extends IntegrationType> {
     name: string;
     type: T;
     isEnabled: boolean;
+    status?: Schemas.EndpointStatus | undefined
+    serverErrors: number;
 }
 
 export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK> {
@@ -74,7 +76,7 @@ export type UserIntegration = Extract<Integration, {
     type: UserIntegrationType
 }>;
 
-type NewIntegrationKeys = 'id';
+type NewIntegrationKeys = 'id' | 'serverErrors';
 
 export type NewIntegrationTemplate<
     T extends IntegrationBase<IntegrationType>

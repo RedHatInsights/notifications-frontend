@@ -15,7 +15,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
         expect(result.type).toEqual('text/csv');
     });
 
-    it('has 5 columns', () => {
+    it('has 7 columns', () => {
         const result = new IntegrationExporterCsv().export([
             {
                 id: '12345',
@@ -25,7 +25,9 @@ describe('src/utils/exporters/Policy/Csv', () => {
                 url: 'http://foo.bar',
                 secretToken: 'foo',
                 method: Schemas.HttpType.Enum.GET,
-                sslVerificationEnabled: false
+                sslVerificationEnabled: false,
+                status: 'READY',
+                serverErrors: 5
             }
         ]);
 
@@ -34,7 +36,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
             reader.addEventListener('loadend', () => {
                 try {
                     const text = (reader.result as string).split('\r');
-                    expect(text[0]).toEqual('id,name,isEnabled,type,url');
+                    expect(text[0]).toEqual('id,name,isEnabled,type,url,status,serverErrors');
                     done();
                 } catch (ex) {
                     fail(ex);
