@@ -28,7 +28,7 @@ export namespace Schemas {
 
   export const AggregationEmailTemplate = zodSchemaAggregationEmailTemplate();
   export type AggregationEmailTemplate = {
-    application?: Application | undefined | null;
+    application?: Application1 | undefined | null;
     application_id?: UUID | undefined | null;
     body_template?: Template | undefined | null;
     body_template_id: UUID;
@@ -42,18 +42,18 @@ export namespace Schemas {
 
   export const Application = zodSchemaApplication();
   export type Application = {
+    display_name: string;
+    id: UUID;
+  };
+
+  export const Application1 = zodSchemaApplication1();
+  export type Application1 = {
     bundle_id: UUID;
     created?: LocalDateTime | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
     updated?: LocalDateTime | undefined | null;
-  };
-
-  export const Application1 = zodSchemaApplication1();
-  export type Application1 = {
-    display_name: string;
-    id: UUID;
   };
 
   export const BasicAuthentication = zodSchemaBasicAuthentication();
@@ -222,11 +222,20 @@ export namespace Schemas {
     endpoint_type: EndpointType;
     id: UUID;
     invocation_result: boolean;
+    status: EventLogEntryActionStatus;
   };
+
+  export const EventLogEntryActionStatus = zodSchemaEventLogEntryActionStatus();
+  export type EventLogEntryActionStatus =
+    | 'SENT'
+    | 'SUCCESS'
+    | 'PROCESSING'
+    | 'FAILED'
+    | 'UNKNOWN';
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
-    application?: Application | undefined | null;
+    application?: Application1 | undefined | null;
     application_id: UUID;
     description?: string | undefined | null;
     display_name: string;
@@ -288,7 +297,7 @@ export namespace Schemas {
 
   export const InternalUserPermissions = zodSchemaInternalUserPermissions();
   export type InternalUserPermissions = {
-    applications: Array<Application1>;
+    applications: Array<Application>;
     is_admin: boolean;
     roles: Array<string>;
   };
@@ -326,7 +335,16 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
+    status: NotificationStatus;
   };
+
+  export const NotificationStatus = zodSchemaNotificationStatus();
+  export type NotificationStatus =
+    | 'FAILED_INTERNAL'
+    | 'FAILED_EXTERNAL'
+    | 'PROCESSING'
+    | 'SENT'
+    | 'SUCCESS';
 
   export const PageEventLogEntry = zodSchemaPageEventLogEntry();
   export type PageEventLogEntry = {
@@ -432,7 +450,7 @@ export namespace Schemas {
   function zodSchemaAggregationEmailTemplate() {
       return z
       .object({
-          application: zodSchemaApplication().optional().nullable(),
+          application: zodSchemaApplication1().optional().nullable(),
           application_id: zodSchemaUUID().optional().nullable(),
           body_template: zodSchemaTemplate().optional().nullable(),
           body_template_id: zodSchemaUUID(),
@@ -449,12 +467,8 @@ export namespace Schemas {
   function zodSchemaApplication() {
       return z
       .object({
-          bundle_id: zodSchemaUUID(),
-          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
-          id: zodSchemaUUID().optional().nullable(),
-          name: z.string(),
-          updated: zodSchemaLocalDateTime().optional().nullable()
+          id: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -462,8 +476,12 @@ export namespace Schemas {
   function zodSchemaApplication1() {
       return z
       .object({
+          bundle_id: zodSchemaUUID(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
-          id: zodSchemaUUID()
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -666,15 +684,20 @@ export namespace Schemas {
           endpoint_sub_type: z.string().optional().nullable(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
-          invocation_result: z.boolean()
+          invocation_result: z.boolean(),
+          status: zodSchemaEventLogEntryActionStatus()
       })
       .nonstrict();
+  }
+
+  function zodSchemaEventLogEntryActionStatus() {
+      return z.enum([ 'SENT', 'SUCCESS', 'PROCESSING', 'FAILED', 'UNKNOWN' ]);
   }
 
   function zodSchemaEventType() {
       return z
       .object({
-          application: zodSchemaApplication().optional().nullable(),
+          application: zodSchemaApplication1().optional().nullable(),
           application_id: zodSchemaUUID(),
           description: z.string().optional().nullable(),
           display_name: z.string(),
@@ -760,7 +783,7 @@ export namespace Schemas {
   function zodSchemaInternalUserPermissions() {
       return z
       .object({
-          applications: z.array(zodSchemaApplication1()),
+          applications: z.array(zodSchemaApplication()),
           is_admin: z.boolean(),
           roles: z.array(z.string())
       })
@@ -801,9 +824,20 @@ export namespace Schemas {
           endpointType: zodSchemaEndpointType().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
-          invocationTime: z.number().int()
+          invocationTime: z.number().int(),
+          status: zodSchemaNotificationStatus()
       })
       .nonstrict();
+  }
+
+  function zodSchemaNotificationStatus() {
+      return z.enum([
+          'FAILED_INTERNAL',
+          'FAILED_EXTERNAL',
+          'PROCESSING',
+          'SENT',
+          'SUCCESS'
+      ]);
   }
 
   function zodSchemaPageEventLogEntry() {
@@ -1185,7 +1219,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Application', 200, Schemas.Application>
+      | ValidatedResponse<'Application1', 200, Schemas.Application1>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
@@ -1200,7 +1234,7 @@ export namespace Operations {
         .queryParams(query)
         .config({
             rules: [
-                new ValidateRule(Schemas.Application, 'Application', 200),
+                new ValidateRule(Schemas.Application1, 'Application1', 200),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]
@@ -1483,6 +1517,8 @@ export namespace Operations {
     type PageNumber = number;
     const SortBy = z.string();
     type SortBy = string;
+    const Status = z.array(Schemas.EventLogEntryActionStatus);
+    type Status = Array<Schemas.EventLogEntryActionStatus>;
     export interface Params {
       appIds?: AppIds;
       bundleIds?: BundleIds;
@@ -1498,6 +1534,7 @@ export namespace Operations {
       pageNumber?: PageNumber;
       sortBy?: SortBy;
       startDate?: Schemas.LocalDate;
+      status?: Status;
     }
 
     export type Payload =
@@ -1563,6 +1600,10 @@ export namespace Operations {
 
         if (params.startDate !== undefined) {
             query.startDate = params.startDate;
+        }
+
+        if (params.status !== undefined) {
+            query.status = params.status;
         }
 
         return actionBuilder('GET', path)

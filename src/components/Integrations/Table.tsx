@@ -38,9 +38,8 @@ import { EmptyStateSearch } from '../EmptyStateSearch';
 import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
-import { IntegrationStatus } from './Table/IntegrationStatus';
+import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { LastConnectionHelpPopover } from './Table/LastConnectionHelpPopover';
-import { StatusUnknown } from './Table/Status';
 
 export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 

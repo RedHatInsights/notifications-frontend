@@ -1,57 +1,19 @@
-import { Popover, Text, TextContent } from '@patternfly/react-core';
-import { TableComposable, TableVariant, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
-import { important } from 'csx';
 import * as React from 'react';
-import { style } from 'typestyle';
 
-import { StatusCreationFailure, StatusEventFailure, StatusProcessing, StatusReady, StatusSuccess } from './Status';
+import { TableHelpPopover } from '../../TableHelpPopover/TableHelpPopover';
+import { StatusCreationFailure, StatusEventFailure, StatusProcessing, StatusReady, StatusSuccess } from './IntegrationStatus';
 
-const removeBorderBottomClass = style({
-    borderBottom: important('none')
-});
+const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
+    [ <StatusSuccess key="status-success" />, 'The last connection attempt succeeded' ],
+    [ <StatusEventFailure key="status-event-failure" />, 'The last connection attempt failed' ],
+    [ <StatusCreationFailure key="status-creation-failure" />, 'Integration creation failed. Configuration error' ],
+    [ <StatusReady key="status-ready" />, 'Your integration configuration was successful' ],
+    [ <StatusProcessing key="status-processing" />, 'Integration configuration processing' ]
+];
 
-export const LastConnectionHelpPopover: React.FunctionComponent<unknown> = props => {
-    return <Popover
-        hasAutoWidth
-        headerContent={ <TextContent>
-            <Text component="h6">
-                Last connection attempt status meanings
-            </Text>
-        </TextContent> }
-        bodyContent={ <TableComposable
-            variant={ TableVariant.compact }
-            borders={ false }
-        >
-            <Thead>
-                <Tr className={ removeBorderBottomClass }>
-                    <Th>Status</Th>
-                    <Th>Meaning</Th>
-                </Tr>
-            </Thead>
-            <Tbody>
-                <Tr>
-                    <Td><StatusSuccess /></Td>
-                    <Td>The last connection attempt succeeded</Td>
-                </Tr>
-                <Tr>
-                    <Td><StatusEventFailure /></Td>
-                    <Td>The last connection attempt failed</Td>
-                </Tr>
-                <Tr>
-                    <Td><StatusCreationFailure /></Td>
-                    <Td>Integration creation failed. Configuration error</Td>
-                </Tr>
-                <Tr>
-                    <Td><StatusReady /></Td>
-                    <Td>Your integration configuration was successful</Td>
-                </Tr>
-                <Tr>
-                    <Td><StatusProcessing /></Td>
-                    <Td>Integration configuration processing</Td>
-                </Tr>
-            </Tbody>
-        </TableComposable> }
+export const LastConnectionHelpPopover: React.FunctionComponent<unknown> = props =>
+    <TableHelpPopover
+        title="Last connection attempt status meanings" tableBody={ tableData }
     >
         <>{ props.children }</>
-    </Popover>;
-};
+    </TableHelpPopover>;
