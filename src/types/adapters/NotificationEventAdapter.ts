@@ -62,8 +62,8 @@ const initAction = (action: ServerEvent['actions'][number]): NotificationEventAc
         last: action.status,
         isDegraded: isFailed(action.status)
     },
-    successCount: isFailed(action.status) ? 1 : 0,
-    errorCount: isFailed(action.status) ? 0 : 1
+    successCount: isFailed(action.status) ? 0 : 1,
+    errorCount: isFailed(action.status) ? 1 : 0
 });
 
 const isFailed = (status: ServerEvent['actions'][number]['status']): boolean =>

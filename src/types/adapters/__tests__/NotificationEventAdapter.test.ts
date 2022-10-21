@@ -1,5 +1,4 @@
 import { Schemas } from '../../../generated/OpenapiNotifications';
-import { NotificationEventStatus } from '../../Event';
 import { IntegrationType } from '../../Integration';
 import { toNotificationEvent } from '../NotificationEventAdapter';
 
@@ -20,49 +19,56 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     endpoint_id: 'id-01',
                     endpoint_type: 'email_subscription',
                     invocation_result: true,
-                    details: { }
+                    details: { },
+                    status: 'SUCCESS'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-01',
                     endpoint_type: 'email_subscription',
                     invocation_result: true,
-                    details: { }
+                    details: { },
+                    status: 'SUCCESS'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-01',
                     endpoint_type: 'email_subscription',
                     invocation_result: false,
-                    details: { }
+                    details: { },
+                    status: 'FAILED'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-02',
                     endpoint_type: 'webhook',
                     invocation_result: true,
-                    details: { }
+                    details: { },
+                    status: 'SUCCESS'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-03',
                     endpoint_type: 'webhook',
                     invocation_result: false,
-                    details: { }
+                    details: { },
+                    status: 'FAILED'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-04',
                     endpoint_type: 'email_subscription',
                     invocation_result: true,
-                    details: { }
+                    details: { },
+                    status: 'SUCCESS'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-04',
                     endpoint_type: 'email_subscription',
                     invocation_result: true,
-                    details: { }
+                    details: { },
+                    status: 'SUCCESS'
                 }
             ]
         };
@@ -76,28 +82,40 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
             actions: [
                 {
                     id: 'id-01',
-                    status: NotificationEventStatus.WARNING,
+                    status: {
+                        last: 'SUCCESS',
+                        isDegraded: true
+                    },
                     endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
                     successCount: 2,
                     errorCount: 1
                 },
                 {
                     id: 'id-04',
-                    status: NotificationEventStatus.SUCCESS,
+                    status: {
+                        last: 'SUCCESS',
+                        isDegraded: false
+                    },
                     endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
                     successCount: 2,
                     errorCount: 0
                 },
                 {
                     id: 'id-02',
-                    status: NotificationEventStatus.SUCCESS,
+                    status: {
+                        last: 'SUCCESS',
+                        isDegraded: false
+                    },
                     endpointType: IntegrationType.WEBHOOK,
                     successCount: 1,
                     errorCount: 0
                 },
                 {
                     id: 'id-03',
-                    status: NotificationEventStatus.ERROR,
+                    status: {
+                        last: 'FAILED',
+                        isDegraded: true
+                    },
                     endpointType: IntegrationType.WEBHOOK,
                     successCount: 0,
                     errorCount: 1
