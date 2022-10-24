@@ -1,7 +1,7 @@
 import { fromUtc } from '@redhat-cloud-services/insights-common-typescript';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
-import { NotificationEvent, NotificationEventAction, NotificationEventStatus } from '../Event';
+import { NotificationEvent, NotificationEventAction  } from '../Event';
 import { UUID } from '../Notification';
 import { getIntegrationType } from './IntegrationAdapter';
 
@@ -38,8 +38,10 @@ const groupActions = (actions: ServerEvent['actions']): Array<NotificationEventA
             const newAction = initAction(action);
             const current = actionsById[action.endpoint_id];
 
-            if (newAction.status !== current.status) {
-                current.status = NotificationEventStatus.WARNING;
+            if (isFailed(newAction.status.last)) {
+                current.status.isDegraded = true;
+            } else {
+                current.status.last = newAction.status.last;
             }
 
             current.errorCount += newAction.errorCount;
@@ -56,7 +58,13 @@ const initAction = (action: ServerEvent['actions'][number]): NotificationEventAc
         type: action.endpoint_type,
         sub_type: action.endpoint_sub_type
     }),
-    status: action.invocation_result ? NotificationEventStatus.SUCCESS : NotificationEventStatus.ERROR,
-    successCount: action.invocation_result ? 1 : 0,
-    errorCount: action.invocation_result ? 0 : 1
+    status: {
+        last: action.status,
+        isDegraded: isFailed(action.status)
+    },
+    successCount: isFailed(action.status) ? 0 : 1,
+    errorCount: isFailed(action.status) ? 1 : 0
 });
+
+const isFailed = (status: ServerEvent['actions'][number]['status']): boolean =>
+    status === 'FAILED';
