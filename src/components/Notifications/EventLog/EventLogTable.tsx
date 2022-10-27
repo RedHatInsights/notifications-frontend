@@ -1,7 +1,6 @@
-import { EmptyStateVariant, Label, LabelGroup, LabelProps, Popover, Skeleton } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon } from '@patternfly/react-icons';
+import { Button, ButtonVariant, EmptyStateVariant, Label, LabelGroup, LabelProps, Popover, Skeleton } from '@patternfly/react-core';
+import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon, HelpIcon, InProgressIcon, UnknownIcon } from '@patternfly/react-icons';
 import { IExtraColumnData, SortByDirection, TableComposable, Tbody, Td, Th, Thead, ThProps, Tr } from '@patternfly/react-table';
-import { c_alert_m_warning__icon_Color } from '@patternfly/react-tokens';
 import { DateFormat } from '@redhat-cloud-services/frontend-components';
 import assertNever from 'assert-never';
 import * as React from 'react';
@@ -12,6 +11,7 @@ import { Messages } from '../../../properties/Messages';
 import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
 import { EmptyStateSearch } from '../../EmptyStateSearch';
+import { ActionsHelpPopover } from './ActionsHelpPopover';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
 
 export type SortDirection = 'asc' | 'desc';
@@ -36,24 +36,37 @@ const labelClassName = style({
 });
 
 export const toLabelProps = (actionStatus: NotificationEventStatus): Pick<LabelProps, 'color' | 'icon'> => {
-    switch (actionStatus) {
-        case NotificationEventStatus.SUCCESS:
-            return {
-                color: 'green',
-                icon: <CheckCircleIcon />
-            };
-        case NotificationEventStatus.ERROR:
+    switch (actionStatus.last) {
+        case 'FAILED':
             return {
                 color: 'red',
                 icon: <ExclamationCircleIcon />
             };
-        case NotificationEventStatus.WARNING:
+        case 'SENT':
+        case 'SUCCESS':
+            if (actionStatus.isDegraded) {
+                return {
+                    color: 'orange',
+                    icon: <ExclamationTriangleIcon />
+                };
+            }
+
             return {
-                color: undefined,
-                icon: <ExclamationTriangleIcon color={ c_alert_m_warning__icon_Color.value } />
+                color: 'green',
+                icon: <CheckCircleIcon />
+            };
+        case 'PROCESSING':
+            return {
+                color: 'grey',
+                icon: <InProgressIcon />
+            };
+        case 'UNKNOWN':
+            return {
+                color: 'grey',
+                icon: <UnknownIcon />
             };
         default:
-            assertNever(actionStatus);
+            assertNever(actionStatus.last);
     }
 };
 
@@ -153,7 +166,11 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                         Application
                     </Th>
                     <Th>
-                        Actions
+                        Actions <ActionsHelpPopover>
+                            <Button variant={ ButtonVariant.plain }>
+                                <HelpIcon />
+                            </Button>
+                        </ActionsHelpPopover>
                     </Th>
                     <Th
                         sort={ sortOptions[EventLogTableColumns.DATE] }

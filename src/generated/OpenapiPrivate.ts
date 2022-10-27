@@ -32,12 +32,12 @@ export namespace Schemas {
     application_id?: UUID | undefined | null;
     body_template?: Template | undefined | null;
     body_template_id: UUID;
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     id?: UUID | undefined | null;
     subject_template?: Template | undefined | null;
     subject_template_id: UUID;
     subscription_type: EmailSubscriptionType;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const Application = zodSchemaApplication();
@@ -49,11 +49,11 @@ export namespace Schemas {
   export const Application1 = zodSchemaApplication1();
   export type Application1 = {
     bundle_id: UUID;
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const BasicAuthentication = zodSchemaBasicAuthentication();
@@ -68,16 +68,16 @@ export namespace Schemas {
     behaviors?: Array<EventTypeBehavior> | undefined | null;
     bundle?: Bundle | undefined | null;
     bundle_id: UUID;
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     default_behavior?: boolean | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const BehaviorGroupAction = zodSchemaBehaviorGroupAction();
   export type BehaviorGroupAction = {
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     endpoint?: Endpoint | undefined | null;
     id?: BehaviorGroupActionId | undefined | null;
   };
@@ -90,11 +90,11 @@ export namespace Schemas {
 
   export const Bundle = zodSchemaBundle();
   export type Bundle = {
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const CamelProperties = zodSchemaCamelProperties();
@@ -108,7 +108,6 @@ export namespace Schemas {
       | undefined
       | null;
     secret_token?: string | undefined | null;
-    sub_type?: string | undefined | null;
     url: string;
   };
 
@@ -125,7 +124,7 @@ export namespace Schemas {
     zodSchemaCreateBehaviorGroupResponse();
   export type CreateBehaviorGroupResponse = {
     bundle_id: UUID;
-    created: string;
+    created: LocalDateTime;
     display_name: string;
     endpoints: Array<string>;
     event_types: Array<string>;
@@ -134,8 +133,8 @@ export namespace Schemas {
 
   export const CurrentStatus = zodSchemaCurrentStatus();
   export type CurrentStatus = {
-    end_time?: string | undefined | null;
-    start_time?: string | undefined | null;
+    end_time?: LocalDateTime | undefined | null;
+    start_time?: LocalDateTime | undefined | null;
     status: Status;
   };
 
@@ -152,7 +151,7 @@ export namespace Schemas {
 
   export const Endpoint = zodSchemaEndpoint();
   export type Endpoint = {
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     description: string;
     enabled?: boolean | undefined | null;
     id?: UUID | undefined | null;
@@ -161,10 +160,11 @@ export namespace Schemas {
       | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
       | undefined
       | null;
+    server_errors?: number | undefined | null;
     status?: EndpointStatus | undefined | null;
     sub_type?: string | undefined | null;
     type: EndpointType;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const EndpointPage = zodSchemaEndpointPage();
@@ -203,7 +203,7 @@ export namespace Schemas {
     actions: Array<EventLogEntryAction>;
     application: string;
     bundle: string;
-    created: string;
+    created: LocalDateTime;
     event_type: string;
     id: UUID;
     payload?: string | undefined | null;
@@ -222,7 +222,16 @@ export namespace Schemas {
     endpoint_type: EndpointType;
     id: UUID;
     invocation_result: boolean;
+    status: EventLogEntryActionStatus;
   };
+
+  export const EventLogEntryActionStatus = zodSchemaEventLogEntryActionStatus();
+  export type EventLogEntryActionStatus =
+    | 'SENT'
+    | 'SUCCESS'
+    | 'PROCESSING'
+    | 'FAILED'
+    | 'UNKNOWN';
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
@@ -236,7 +245,7 @@ export namespace Schemas {
 
   export const EventTypeBehavior = zodSchemaEventTypeBehavior();
   export type EventTypeBehavior = {
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     event_type?: EventType | undefined | null;
     id?: EventTypeBehaviorId | undefined | null;
   };
@@ -262,13 +271,13 @@ export namespace Schemas {
   export type InstantEmailTemplate = {
     body_template?: Template | undefined | null;
     body_template_id: UUID;
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     event_type?: EventType | undefined | null;
     event_type_id?: UUID | undefined | null;
     id?: UUID | undefined | null;
     subject_template?: Template | undefined | null;
     subject_template_id: UUID;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const InternalApplicationUserPermission =
@@ -293,6 +302,12 @@ export namespace Schemas {
     roles: Array<string>;
   };
 
+  export const LocalDate = zodSchemaLocalDate();
+  export type LocalDate = string;
+
+  export const LocalDateTime = zodSchemaLocalDateTime();
+  export type LocalDateTime = string;
+
   export const MessageValidationResponse = zodSchemaMessageValidationResponse();
   export type MessageValidationResponse = {
     errors: {
@@ -307,7 +322,7 @@ export namespace Schemas {
 
   export const NotificationHistory = zodSchemaNotificationHistory();
   export type NotificationHistory = {
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     details?:
       | {
           [x: string]: unknown;
@@ -320,7 +335,16 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     invocationResult: boolean;
     invocationTime: number;
+    status: NotificationStatus;
   };
+
+  export const NotificationStatus = zodSchemaNotificationStatus();
+  export type NotificationStatus =
+    | 'FAILED_INTERNAL'
+    | 'FAILED_EXTERNAL'
+    | 'PROCESSING'
+    | 'SENT'
+    | 'SUCCESS';
 
   export const PageEventLogEntry = zodSchemaPageEventLogEntry();
   export type PageEventLogEntry = {
@@ -372,12 +396,12 @@ export namespace Schemas {
 
   export const Template = zodSchemaTemplate();
   export type Template = {
-    created?: string | undefined | null;
+    created?: LocalDateTime | undefined | null;
     data: string;
     description: string;
     id?: UUID | undefined | null;
     name: string;
-    updated?: string | undefined | null;
+    updated?: LocalDateTime | undefined | null;
   };
 
   export const UUID = zodSchemaUUID();
@@ -386,7 +410,6 @@ export namespace Schemas {
   export const UpdateBehaviorGroupRequest =
     zodSchemaUpdateBehaviorGroupRequest();
   export type UpdateBehaviorGroupRequest = {
-    bundle_id?: UUID | undefined | null;
     display_name?: string | undefined | null;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
@@ -428,12 +451,12 @@ export namespace Schemas {
           application_id: zodSchemaUUID().optional().nullable(),
           body_template: zodSchemaTemplate().optional().nullable(),
           body_template_id: zodSchemaUUID(),
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           subject_template: zodSchemaTemplate().optional().nullable(),
           subject_template_id: zodSchemaUUID(),
           subscription_type: zodSchemaEmailSubscriptionType(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -451,11 +474,11 @@ export namespace Schemas {
       return z
       .object({
           bundle_id: zodSchemaUUID(),
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -476,11 +499,11 @@ export namespace Schemas {
           behaviors: z.array(zodSchemaEventTypeBehavior()).optional().nullable(),
           bundle: zodSchemaBundle().optional().nullable(),
           bundle_id: zodSchemaUUID(),
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           default_behavior: z.boolean().optional().nullable(),
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -488,7 +511,7 @@ export namespace Schemas {
   function zodSchemaBehaviorGroupAction() {
       return z
       .object({
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           endpoint: zodSchemaEndpoint().optional().nullable(),
           id: zodSchemaBehaviorGroupActionId().optional().nullable()
       })
@@ -507,11 +530,11 @@ export namespace Schemas {
   function zodSchemaBundle() {
       return z
       .object({
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -525,7 +548,6 @@ export namespace Schemas {
           disable_ssl_verification: z.boolean(),
           extras: z.record(z.string()).optional().nullable(),
           secret_token: z.string().optional().nullable(),
-          sub_type: z.string().optional().nullable(),
           url: z.string()
       })
       .nonstrict();
@@ -546,7 +568,7 @@ export namespace Schemas {
       return z
       .object({
           bundle_id: zodSchemaUUID(),
-          created: z.string(),
+          created: zodSchemaLocalDateTime(),
           display_name: z.string(),
           endpoints: z.array(z.string()),
           event_types: z.array(z.string()),
@@ -558,8 +580,8 @@ export namespace Schemas {
   function zodSchemaCurrentStatus() {
       return z
       .object({
-          end_time: z.string().optional().nullable(),
-          start_time: z.string().optional().nullable(),
+          end_time: zodSchemaLocalDateTime().optional().nullable(),
+          start_time: zodSchemaLocalDateTime().optional().nullable(),
           status: zodSchemaStatus()
       })
       .nonstrict();
@@ -582,7 +604,7 @@ export namespace Schemas {
   function zodSchemaEndpoint() {
       return z
       .object({
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           description: z.string(),
           enabled: z.boolean().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
@@ -595,10 +617,11 @@ export namespace Schemas {
           ])
           .optional()
           .nullable(),
+          server_errors: z.number().int().optional().nullable(),
           status: zodSchemaEndpointStatus().optional().nullable(),
           sub_type: z.string().optional().nullable(),
           type: zodSchemaEndpointType(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -642,7 +665,7 @@ export namespace Schemas {
           actions: z.array(zodSchemaEventLogEntryAction()),
           application: z.string(),
           bundle: z.string(),
-          created: z.string(),
+          created: zodSchemaLocalDateTime(),
           event_type: z.string(),
           id: zodSchemaUUID(),
           payload: z.string().optional().nullable()
@@ -658,9 +681,14 @@ export namespace Schemas {
           endpoint_sub_type: z.string().optional().nullable(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
-          invocation_result: z.boolean()
+          invocation_result: z.boolean(),
+          status: zodSchemaEventLogEntryActionStatus()
       })
       .nonstrict();
+  }
+
+  function zodSchemaEventLogEntryActionStatus() {
+      return z.enum([ 'SENT', 'SUCCESS', 'PROCESSING', 'FAILED', 'UNKNOWN' ]);
   }
 
   function zodSchemaEventType() {
@@ -679,7 +707,7 @@ export namespace Schemas {
   function zodSchemaEventTypeBehavior() {
       return z
       .object({
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           event_type: zodSchemaEventType().optional().nullable(),
           id: zodSchemaEventTypeBehaviorId().optional().nullable()
       })
@@ -718,13 +746,13 @@ export namespace Schemas {
       .object({
           body_template: zodSchemaTemplate().optional().nullable(),
           body_template_id: zodSchemaUUID(),
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           event_type: zodSchemaEventType().optional().nullable(),
           event_type_id: zodSchemaUUID().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           subject_template: zodSchemaTemplate().optional().nullable(),
           subject_template_id: zodSchemaUUID(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -759,6 +787,14 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaLocalDate() {
+      return z.string();
+  }
+
+  function zodSchemaLocalDateTime() {
+      return z.string();
+  }
+
   function zodSchemaMessageValidationResponse() {
       return z
       .object({
@@ -778,16 +814,27 @@ export namespace Schemas {
   function zodSchemaNotificationHistory() {
       return z
       .object({
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           details: z.record(z.unknown()).optional().nullable(),
           endpointId: zodSchemaUUID().optional().nullable(),
           endpointSubType: z.string().optional().nullable(),
           endpointType: zodSchemaEndpointType().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           invocationResult: z.boolean(),
-          invocationTime: z.number().int()
+          invocationTime: z.number().int(),
+          status: zodSchemaNotificationStatus()
       })
       .nonstrict();
+  }
+
+  function zodSchemaNotificationStatus() {
+      return z.enum([
+          'FAILED_INTERNAL',
+          'FAILED_EXTERNAL',
+          'PROCESSING',
+          'SENT',
+          'SUCCESS'
+      ]);
   }
 
   function zodSchemaPageEventLogEntry() {
@@ -853,12 +900,12 @@ export namespace Schemas {
   function zodSchemaTemplate() {
       return z
       .object({
-          created: z.string().optional().nullable(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           data: z.string(),
           description: z.string(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
-          updated: z.string().optional().nullable()
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -870,7 +917,6 @@ export namespace Schemas {
   function zodSchemaUpdateBehaviorGroupRequest() {
       return z
       .object({
-          bundle_id: zodSchemaUUID().optional().nullable(),
           display_name: z.string().optional().nullable(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()

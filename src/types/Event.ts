@@ -1,10 +1,10 @@
+import { Schemas } from '../generated/OpenapiNotifications';
 import { IntegrationType } from './Integration';
 import { UUID } from './Notification';
 
-export enum NotificationEventStatus {
-    SUCCESS,
-    ERROR,
-    WARNING
+export interface NotificationEventStatus {
+    last: Schemas.EventLogEntryActionStatus;
+    isDegraded: boolean;
 }
 
 export interface NotificationEventAction {
