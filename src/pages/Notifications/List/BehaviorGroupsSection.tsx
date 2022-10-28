@@ -196,11 +196,13 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                             position='right'
                             hideOnOutsideClick
                             appendTo={ () => document.body }
-                            headerContent={ <div>Behavior groups</div> }
-                            bodyContent={ <div>Behavior groups are made up of action/recipient pairings that allow you to configure which
-                                    notification actions different users will be able to receive. Once you&apos;ve created a behavior group,
-                                you can assign it to an event using the Events table below. </div> }
-                            footerContent={ <div> You may also prevent users from changing assigned actions by locking action/recipient pairings
+                            headerContent={ <div className="pf-u-color-100">Behavior groups</div> }
+                            bodyContent={ <div className="pf-u-font-size-sm pf-u-color-100">Behavior groups are made up of action/recipient pairings
+                                    that allow you to configure which notification actions different users will be able to receive.
+                                    Once you&apos;ve created a behavior group,
+                                    you can assign it to an event using the Events table below. </div> }
+                            footerContent={ <div className="pf-u-font-size-sm pf-u-color-100"> You may also prevent users from changing assigned
+                                    actions by locking action/recipient pairings
                                     when creating or editing behavior groups.</div> }>
                             <Button
                                 className={ defaultIconClassName }
@@ -210,7 +212,6 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                                 <OutlinedQuestionCircleIcon />
                             </Button>
                         </Popover>
-
                     </SplitItem>
                 </Split>
             </div>
