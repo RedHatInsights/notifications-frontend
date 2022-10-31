@@ -77,6 +77,7 @@ const Config = {
             beta: [
                 UserIntegrationType.WEBHOOK,
                 UserIntegrationType.SPLUNK,
+                UserIntegrationType.SLACK,
                 UserIntegrationType.SERVICE_NOW
             ],
             experimental: [
