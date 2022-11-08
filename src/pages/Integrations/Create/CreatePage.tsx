@@ -1,4 +1,4 @@
-import { ActionModalError, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
+import { ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -15,6 +15,7 @@ import { NotificationAppState } from '../../../store/types/NotificationAppState'
 import { SavedNotificationScopeState, Status } from '../../../store/types/SavedNotificationScopeTypes';
 import { Integration, NewUserIntegration, UserIntegration, UserIntegrationType } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
+import { useNotification } from '../../../utils/AlertUtils';
 
 interface CreatePageProps {
     isEdit: boolean;
@@ -80,6 +81,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
 
     const saveIntegrationMutation = useSaveIntegrationMutation();
     const [ hasError, setError ] = React.useState(false);
+    const { addSuccessNotification } = useNotification();
 
     const onSaveIntegration = React.useCallback((integration: NewUserIntegration) => {
         if (!integration.id) {
@@ -110,7 +112,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = props => {
                 return false;
             }
         });
-    }, [ saveIntegrationMutation, props.isEdit ]);
+    }, [ saveIntegrationMutation, props.isEdit, addSuccessNotification ]);
 
     const error = React.useMemo<ActionModalError | undefined>(() => {
         if (hasError) {
