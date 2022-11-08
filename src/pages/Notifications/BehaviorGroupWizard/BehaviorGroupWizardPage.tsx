@@ -1,4 +1,3 @@
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import { Formik, useFormikContext } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
@@ -9,6 +8,7 @@ import { useGetIntegrations } from '../../../components/Notifications/useGetInte
 import { useGetRecipients } from '../../../components/Notifications/useGetRecipients';
 import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 import { Facet } from '../../../types/Notification';
+import { useNotification } from '../../../utils/AlertUtils';
 import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
 import { useSteps } from './useSteps';
 
@@ -32,6 +32,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
     const { isValid, validateForm } = useFormikContext<CreateBehaviorGroup>();
     const saving = useSaveBehaviorGroup(props.behaviorGroup);
     const { values } = useFormikContext<CreateBehaviorGroup>();
+    const { addDangerNotification, addSuccessNotification } = useNotification();
 
     const associateEventTypeStepProps = {
         bundle: props.bundle,
@@ -101,7 +102,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
                 );
             }
         }
-    }, [ values, saving.save, props.bundle, props.onClose ]);
+    }, [ values, saving.save, props.bundle, props.onClose, addDangerNotification, addSuccessNotification ]);
 
     const onNext = async (goNext) => {
         let shouldGoNext = true;

@@ -1,4 +1,3 @@
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useEffect } from 'react';
 
@@ -9,6 +8,7 @@ import {
 import { useDeleteBehaviorGroupMutation } from '../../../services/Notifications/DeleteBehaviorGroup';
 import { useGetAffectedNotificationsByBehaviorGroupQuery } from '../../../services/Notifications/GetAffectedNotificationsByBehaviorGroup';
 import { BehaviorGroup } from '../../../types/Notification';
+import { useNotification } from '../../../utils/AlertUtils';
 
 export interface DeleteBehaviorGroupPageProps {
     behaviorGroup: BehaviorGroup;
@@ -19,6 +19,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
 
     const deleteBehaviorGroup = useDeleteBehaviorGroupMutation();
     const affected = useGetAffectedNotificationsByBehaviorGroupQuery(props.behaviorGroup.id);
+    const { addDangerNotification, addSuccessNotification } = useNotification();
 
     const onDelete = React.useCallback(async (behaviorGroup: BehaviorGroup) => {
         const mutate = deleteBehaviorGroup.mutate;
@@ -44,7 +45,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
         );
 
         return false;
-    }, [ deleteBehaviorGroup.mutate ]);
+    }, [ deleteBehaviorGroup.mutate, addDangerNotification, addSuccessNotification ]);
 
     useEffect(() => {
         const payload = affected.payload;
@@ -61,7 +62,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
 
             onClose(false);
         }
-    }, [ affected.payload, props.behaviorGroup, props.onClose ]);
+    }, [ addDangerNotification, affected.payload, props.behaviorGroup, props.onClose ]);
 
     if (affected.loading) {
         return <BehaviorGroupDeleteModalSkeleton

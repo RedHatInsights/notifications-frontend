@@ -1,6 +1,5 @@
 import {
     ActionModalError,
-    addSuccessNotification,
     OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
@@ -8,6 +7,7 @@ import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteM
 import { useGetAffectedBehaviorGroupsByEndpoint } from '../../../services/Notifications/GetAffectedBehaviorGroupsByEndpoint';
 import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
 import { UserIntegration } from '../../../types/Integration';
+import { useNotification } from '../../../utils/AlertUtils';
 
 interface IntegrationDeleteModalPageProps extends OuiaComponentProps {
     onClose: (deleted: boolean) => void;
@@ -19,6 +19,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
     const deleteIntegrationMutation = useDeleteIntegration();
     const getBehaviorGroupsQuery = useGetAffectedBehaviorGroupsByEndpoint();
     const [ hasError, setError ] = React.useState(false);
+    const { addSuccessNotification } = useNotification();
 
     const onDelete = React.useCallback((integration: UserIntegration) => {
         const deleteIntegration = deleteIntegrationMutation.mutate;
@@ -32,7 +33,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<IntegrationDele
                 return false;
             }
         });
-    }, [ deleteIntegrationMutation.mutate, setError ]);
+    }, [ deleteIntegrationMutation.mutate, setError, addSuccessNotification ]);
 
     const error = React.useMemo<ActionModalError | undefined>(() => {
         if (hasError) {
