@@ -19,22 +19,12 @@ export const useNotification = () => {
             title: string,
             description: React.ReactNode,
             dismissable?: boolean
-        ) => {
-            console.log('adding notification');
-            console.log('dispatch', dispatch);
-            console.log(createNotificationAction({
-                variant,
-                title,
-                description,
-                dismissable
-            }));
-            dispatch(createNotificationAction({
-                variant,
-                title,
-                description,
-                dismissable
-            }));
-        };
+        ) => dispatch(createNotificationAction({
+            variant,
+            title,
+            description,
+            dismissable
+        }));
 
         const addSuccessNotification: ExplicitNotificationFunction = (...args) => addNotification('success', ...args);
         const addDangerNotification: ExplicitNotificationFunction = (...args) => addNotification('danger', ...args);
