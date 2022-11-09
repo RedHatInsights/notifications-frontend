@@ -1,18 +1,33 @@
-import { initStore, restoreStore } from '@redhat-cloud-services/insights-common-typescript';
+import { notifications } from '@redhat-cloud-services/frontend-components-notifications';
+import { PortalNotificationConfig } from '@redhat-cloud-services/frontend-components-notifications/Portal';
+import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities';
 import { Middleware } from 'redux';
+import promiseMiddleware from 'redux-promise-middleware';
 
 import { INITIAL_STATE as SNS_INITIAL_STATE, SavedNotificationScopeReducer } from './reducers/SavedNotificationScopeReducer';
-import { NotificationAppState } from './types/NotificationAppState';
+import { SavedNotificationScopeState } from './types/SavedNotificationScopeTypes';
 
-export const createStore = (...middleware: Middleware[]) => {
-    return initStore(
-        {
-            savedNotificationScope: SNS_INITIAL_STATE
-        } as NotificationAppState,
-        {
-            savedNotificationScope: SavedNotificationScopeReducer
-        },
-        ...middleware);
+type State = {
+    savedNotificationScope: SavedNotificationScopeState,
+    notifications: PortalNotificationConfig[] | undefined
 };
 
-export const resetStore = () => restoreStore();
+export const getNotificationsRegistry = (...middleware: Middleware[]) => {
+
+    const registry = getRegistry<State>({
+        savedNotificationScope: SNS_INITIAL_STATE,
+        notifications: undefined
+    }, [
+        promiseMiddleware(),
+        ... middleware
+    ]);
+
+    registry.register(
+        {
+            savedNotificationScope: SavedNotificationScopeReducer,
+            notifications: notifications as any
+        }
+    );
+
+    return registry;
+};

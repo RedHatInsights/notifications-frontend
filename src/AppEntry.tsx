@@ -13,7 +13,7 @@ import * as Redux from 'redux';
 
 import messages from '../locales/data.json';
 import App from './app/App';
-import { createStore, resetStore } from './store/Store';
+import { getNotificationsRegistry } from './store/Store';
 import { getBaseName } from './utils/Basename';
 
 interface AppEntryProps {
@@ -29,13 +29,8 @@ const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
     }), []);
 
     const store = React.useMemo(() => {
-        resetStore();
-        if (props.logger) {
-            return createStore(props.logger).store;
-        } else {
-            return createStore().store;
-        }
-
+        const registry = props.logger ? getNotificationsRegistry(props.logger) : getNotificationsRegistry();
+        return registry.getStore();
     }, [ props.logger ]);
 
     return (

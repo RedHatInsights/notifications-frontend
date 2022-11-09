@@ -9,16 +9,18 @@ import { Provider } from 'react-redux';
 import { MemoryRouterProps, useLocation } from 'react-router';
 import { Route, RouteProps } from 'react-router';
 import { MemoryRouter as Router } from 'react-router-dom';
+import { DeepPartial } from 'ts-essentials';
 
 import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
-import { createStore, resetStore } from '../src/store/Store';
+import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
-import { DeepPartial } from 'ts-essentials';
+import {
+    clearNotifications as createClearNotificationsAction
+} from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 
 let setup = false;
 let client;
-let store;
 
 export const appWrapperSetup = () => {
     if (setup) {
@@ -33,7 +35,7 @@ export const appWrapperSetup = () => {
         ]
     });
 
-    store = createStore().getStore();
+    getNotificationsRegistry().store.dispatch(createClearNotificationsAction());
 };
 
 export const appWrapperCleanup = () => {
@@ -46,7 +48,6 @@ export const appWrapperCleanup = () => {
         setup = false;
 
         fetchMock.restore();
-        resetStore();
     }
 };
 
@@ -102,6 +103,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
         }
     };
 
+    const store = getNotificationsRegistry().getStore();
     return (
         <IntlProvider locale={ navigator.language } messages={ messages }>
             <Provider store={ store }>

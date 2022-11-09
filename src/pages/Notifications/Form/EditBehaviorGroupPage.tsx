@@ -1,4 +1,3 @@
-import { addDangerNotification, addSuccessNotification } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { BehaviorGroupSaveModal } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupSaveModal';
@@ -8,6 +7,7 @@ import { useGetRecipients } from '../../../components/Notifications/useGetRecipi
 import {
     BehaviorGroup
 } from '../../../types/Notification';
+import { useNotification } from '../../../utils/AlertUtils';
 import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from '../BehaviorGroupWizard/useSaveBehaviorGroup';
 
 interface EditBehaviorGroupPageProps {
@@ -18,6 +18,7 @@ interface EditBehaviorGroupPageProps {
 export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPageProps> = props => {
     const getRecipients = useGetRecipients();
     const getIntegrations = useGetIntegrations();
+    const { addDangerNotification, addSuccessNotification } = useNotification();
 
     const actionsContextValue = React.useMemo(() => ({
         getIntegrations,
@@ -69,7 +70,7 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
         }
 
         return result.status;
-    }, [ saving.save ]);
+    }, [ saving.save, addDangerNotification, addSuccessNotification ]);
 
     return (
         <RecipientContextProvider value={ actionsContextValue }>

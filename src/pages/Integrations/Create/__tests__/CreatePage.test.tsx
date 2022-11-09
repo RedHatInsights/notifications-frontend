@@ -13,17 +13,23 @@ import { CreatePage } from '../CreatePage';
 describe('src/pages/Integrations/Create/CreatePage', () => {
 
     it('Renders when is open', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {} }
                 onClose={ fn() }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         expect(screen.getByRole('dialog')).toBeTruthy();
+        appWrapperCleanup();
     });
 
     it('Picks initial value', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -31,12 +37,17 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ fn() }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         expect(screen.getByDisplayValue(/foobar/i)).toBeTruthy();
+        appWrapperCleanup();
     });
 
     it('If no IntegrationType is specified, it picks the first', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -44,13 +55,18 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ fn() }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         const firstIntegrationTypeDisplayName = Config.integrations.types[Object.values(IntegrationType)[0]].name;
         expect(screen.getByDisplayValue(firstIntegrationTypeDisplayName)).toBeTruthy();
+        appWrapperCleanup();
     });
 
     it('Calls onClose when clicking the x', async () => {
+        appWrapperSetup();
         const onClose = fn();
         render(
             <CreatePage
@@ -59,13 +75,18 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ onClose }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         userEvent.click(screen.getByLabelText(/close/i));
         expect(onClose).toHaveBeenCalled();
+        appWrapperCleanup();
     });
 
     it('Calls onClose when clicking the cancel button', async () => {
+        appWrapperSetup();
         const onClose = fn();
         render(
             <CreatePage
@@ -74,24 +95,34 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ onClose }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         userEvent.click(screen.getByText(/cancel/i));
         expect(onClose).toHaveBeenCalled();
+        appWrapperCleanup();
     });
 
     it('Submit is disabled when there is any error', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {} }
                 onClose={ fn() }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         expect(screen.getByText(/save/i)).toBeDisabled();
+        appWrapperCleanup();
     });
 
     it('Submit is enabled when there are no errors', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -100,12 +131,17 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ fn() }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         expect(screen.getByText(/save/i)).toBeEnabled();
+        appWrapperCleanup();
     });
 
     it('When is new, it shows as Add Integration', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -114,12 +150,17 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ fn() }
                 isEdit={ false }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         expect(screen.getByText(/add integration/i)).toBeTruthy();
+        appWrapperCleanup();
     });
 
     it('When is not new, it shows as Edit Integration', async () => {
+        appWrapperSetup();
         render(
             <CreatePage
                 initialIntegration={ {
@@ -128,9 +169,13 @@ describe('src/pages/Integrations/Create/CreatePage', () => {
                 } }
                 onClose={ fn() }
                 isEdit={ true }
-            />);
+            />,
+            {
+                wrapper: getConfiguredAppWrapper()
+            });
         await waitForAsyncEvents();
         expect(screen.getByText(/edit integration/i)).toBeTruthy();
+        appWrapperCleanup();
     });
 
     it('After adding it shows a Modal with the integration name', async () => {
