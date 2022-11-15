@@ -52,7 +52,7 @@
     "@babel/plugin-transform-runtime": "7.12.1",
     "@babel/preset-env": "7.12.1",
     "@babel/preset-react": "7.12.5",
-    "@redhat-cloud-services/frontend-components-config": "4.6.22",
+    "@redhat-cloud-services/frontend-components-config": "4.6.33",
     "@redhat-cloud-services/frontend-components-testing": "0.1.0",
     "@testing-library/dom": "7.27.0",
     "@testing-library/jest-dom": "5.11.6",
@@ -112,8 +112,8 @@
     "webpack": "5.74.0"
   },
   "scripts": {
-    "build": "webpack --config config/prod.webpack.config.ts",
-    "ci:test": "yarn test --coverage --forceExit --maxWorkers=4 --detectOpenHandles && curl -s https://codecov.io/bash | bash",
+    "build": "fec build",
+    "ci:test": "npm run test --coverage --forceExit --maxWorkers=4 --detectOpenHandles && curl -s https://codecov.io/bash | bash",
     "schema-check": "bash ./.travis/schema-check.sh",
     "ci:pinned-deps": "pin-checker",
     "test": "jest --verbose",
@@ -125,10 +125,9 @@
     "lint:ts": "eslint --ext js,ts,tsx config src",
     "lint:ts:fix": "eslint --ext js,ts,tsx config src --fix",
     "lint:sass": "stylelint 'src/**/*.scss' --config .stylelintrc.json",
-    "start": "NODE_ENV=development env-cmd --silent webpack serve --config config/dev.webpack.config.ts",
-    "build:prod": "NODE_ENV=production webpack --config config/prod.webpack.config.ts",
-    "ci": "npm-run-all build:prod lint 'test --coverage --forceExit --maxWorkers=4 --detectOpenHandles'",
-    "verify": "npm-run-all build:prod lint test",
+    "start": "HOT=true fec dev",
+    "ci": "npm-run-all build lint 'test --coverage --forceExit --maxWorkers=4 --detectOpenHandles'",
+    "verify": "npm-run-all build lint test",
     "nightly": "npm run deploy",
     "schema": "npm-run-all schema:notifications schema:integrations schema:private",
     "schema:notifications": "npm-run-all 'schema:notifications:generate -i http://localhost:8085/api/notifications/v1.0/openapi.json'",
@@ -140,6 +139,9 @@
     "schema:rbac": "npm-run-all 'schema:rbac:generate -i https://console.redhat.com/api/rbac/v1/openapi.json'",
     "schema:rbac:generate": "openapi2typescript -o src/generated/OpenapiRbac.ts -ed -a react-fetching-library --explicit-types --no-strict --api-base-path /api/rbac/v1"
   },
+  "overrides": {
+    "@types/react": "17.0.39"
+},
   "insights": {
     "appname": "notifications"
   }
