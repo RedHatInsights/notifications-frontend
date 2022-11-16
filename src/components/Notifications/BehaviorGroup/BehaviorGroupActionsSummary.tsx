@@ -14,8 +14,7 @@ interface BehaviorGroupActionsSummaryProps {
 type BehaviorGroupActionSummaryImplProps = Required<BehaviorGroupActionsSummaryProps>;
 
 const contentTitleClassName = style({
-    fontSize: c_form__label_FontSize.value,
-    maxWidth: 500
+    fontSize: c_form__label_FontSize.value
 });
 
 const skeletonActions = 3;

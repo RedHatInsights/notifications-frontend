@@ -65,9 +65,6 @@ const ReviewStep: React.FunctionComponent = () => {
                     <DescriptionListDescription> { values.displayName }</DescriptionListDescription>
                 </DescriptionListGroup>
                 <DescriptionListGroup>
-                    <DescriptionListTerm>Description</DescriptionListTerm>
-                </DescriptionListGroup>
-                <DescriptionListGroup>
                     <DescriptionListTerm> Actions and recipients</DescriptionListTerm>
                     <DescriptionListDescription>
                         <BehaviorGroupActionsSummary actions={ values.actions } />
