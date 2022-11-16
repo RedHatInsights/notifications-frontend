@@ -1,3 +1,4 @@
+import { Button, Split, SplitItem } from '@patternfly/react-core';
 import { Main, PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
@@ -5,6 +6,7 @@ import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
 import { useContext } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { Dispatch } from 'redux';
 
 import { AppContext } from '../../../app/AppContext';
@@ -16,6 +18,7 @@ import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { useIntegrations } from '../../../hooks/useIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
+import { linkTo } from '../../../Routes';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
@@ -167,7 +170,15 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
     return (
         <>
             <PageHeader>
-                <PageHeaderTitle title={ Messages.pages.integrations.list.title } />
+                <Split>
+                    <SplitItem isFilled>
+                        <PageHeaderTitle title={ Messages.pages.integrations.list.title } />
+                    </SplitItem>
+                    <SplitItem>
+                        <Button variant='secondary' component={ (props: any) =>
+                            <Link { ...props } to={ linkTo.eventLog() } /> }> View event log </Button>
+                    </SplitItem>
+                </Split>
             </PageHeader>
             <Main>
                 <SplunkBetaEnvironmentBanner />
