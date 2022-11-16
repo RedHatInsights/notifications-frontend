@@ -1,6 +1,7 @@
-import { Grid, GridItem, Text, TextContent, TextVariants, Title } from '@patternfly/react-core';
+import { DescriptionList, DescriptionListDescription, DescriptionListGroup, DescriptionListTerm,
+    Grid, GridItem, Text, TextContent, TextVariants, Title } from '@patternfly/react-core';
 import { c_form__label_FontSize } from '@patternfly/react-tokens';
-import { Form, FormText } from '@redhat-cloud-services/insights-common-typescript';
+import { Form } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -16,40 +17,34 @@ const contentTitleClassName = style({
     fontSize: c_form__label_FontSize.value
 });
 
-const tableContainerClassName = style({
-    maxWidth: 500
-});
-
 interface EventTypeReviewTableProps {
     events: ReadonlyArray<EventType>;
 }
 
 const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = props => {
     return (
-        <div className={ tableContainerClassName }>
-            <Grid>
-                <GridItem span={ 6 }>
-                    <TextContent>
-                        <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Event type</Text>
-                    </TextContent>
-                </GridItem>
-                <GridItem span={ 6 }>
-                    <TextContent>
-                        <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Application</Text>
-                    </TextContent>
-                </GridItem>
-                { props.events.map(event => (
-                    <React.Fragment key={ event.id }>
-                        <GridItem span={ 6 }>
-                            { event.eventTypeDisplayName }
-                        </GridItem>
-                        <GridItem span={ 6 }>
-                            { event.applicationDisplayName }
-                        </GridItem>
-                    </React.Fragment>
-                )) }
-            </Grid>
-        </div>
+        <Grid>
+            <GridItem span={ 6 }>
+                <TextContent>
+                    <Text component={ TextVariants.h6 } className={ contentTitleClassName }>Event type</Text>
+                </TextContent>
+            </GridItem>
+            <GridItem span={ 6 }>
+                <TextContent>
+                    <Text component={ TextVariants.h6 } className={ contentTitleClassName }>Application</Text>
+                </TextContent>
+            </GridItem>
+            { props.events.map(event => (
+                <React.Fragment key={ event.id }>
+                    <GridItem span={ 6 }>
+                        { event.eventTypeDisplayName }
+                    </GridItem>
+                    <GridItem span={ 6 }>
+                        { event.applicationDisplayName }
+                    </GridItem>
+                </React.Fragment>
+            )) }
+        </Grid>
     );
 };
 
@@ -64,13 +59,27 @@ const ReviewStep: React.FunctionComponent = () => {
             >
                 { title }
             </Title>
-            <FormText id="review-name" name="displayName" label="Name" />
-            <div className={ tableContainerClassName }>
-                <BehaviorGroupActionsSummary actions={ values.actions } />
-            </div>
-            {
-                <EventTypeTable events={ values.events } />
-            }
+            <DescriptionList isHorizontal>
+                <DescriptionListGroup>
+                    <DescriptionListTerm>Name</DescriptionListTerm>
+                    <DescriptionListDescription> { values.displayName }</DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                    <DescriptionListTerm>Description</DescriptionListTerm>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                    <DescriptionListTerm> Actions and recipients</DescriptionListTerm>
+                    <DescriptionListDescription>
+                        <BehaviorGroupActionsSummary actions={ values.actions } />
+                    </DescriptionListDescription>
+                </DescriptionListGroup>
+                <DescriptionListGroup>
+                    <DescriptionListTerm>Associate event types</DescriptionListTerm>
+                    <DescriptionListDescription>
+                        <EventTypeTable events={ values.events } />
+                    </DescriptionListDescription>
+                </DescriptionListGroup>
+            </DescriptionList>
         </Form>
     );
 };
