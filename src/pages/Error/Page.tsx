@@ -1,4 +1,4 @@
-import { ErrorBoundary } from '@redhat-cloud-services/frontend-components';
+import { ErrorBoundary } from '@redhat-cloud-services/frontend-components/ErrorBoundary';
 import * as React from 'react';
 import { RouteComponentProps, withRouter } from 'react-router-dom';
 

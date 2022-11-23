@@ -4,15 +4,19 @@ import {
     PageHeaderTitle,
     Section,
     Skeleton,
-    Spinner
+    Spinner, useOuia
 } from '@redhat-cloud-services/frontend-components';
 import * as React from 'react';
 
 import { Main } from '../components/Store/Main';
 
 export const AppSkeleton: React.FunctionComponent = () => {
+    const ouia = useOuia({
+        type: 'AppSkeleton'
+    });
+
     return (
-        <div>
+        <div { ...ouia }>
             <PageHeader>
                 <div className="pf-c-content">
                     <PageHeaderTitle title={ <Skeleton size="sm" /> } />
