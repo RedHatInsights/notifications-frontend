@@ -2,9 +2,7 @@ import './App.scss';
 
 import { Switch } from '@patternfly/react-core';
 import { Maintenance } from '@redhat-cloud-services/frontend-components';
-import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
 import {
-    AppSkeleton,
     getInsights,
     InsightsEnvDetector,
     RenderIfTrue,
@@ -14,10 +12,12 @@ import format from 'date-fns/format';
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { NotificationsPortal } from '../components/Store/NotificationsPortal';
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
+import { AppSkeleton } from './AppSkeleton';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 
