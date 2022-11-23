@@ -1,5 +1,5 @@
 import { Skeleton, Split, SplitItem, StackItem } from '@patternfly/react-core';
-import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
+import { PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import { getInsights, localUrl } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React, useMemo } from 'react';
@@ -12,6 +12,7 @@ import { linkTo } from '../Routes';
 import { useGetBundles } from '../services/Notifications/GetBundles';
 import { Facet } from '../types/Notification';
 import { getSubApp } from '../utils/Basename';
+import { Main } from './Store/Main';
 
 interface NotificationListPageParams {
     bundleName: string;

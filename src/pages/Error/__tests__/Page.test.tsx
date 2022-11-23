@@ -60,8 +60,8 @@ describe('src/pages/Error/Page', () => {
             wrapper: AppWrapper
         });
 
-        userEvent.click(screen.getByRole('button', {
-            name: /back/i
+        userEvent.click(screen.getByRole('link', {
+            name: /Go to home page/i
         }));
         expect(getLocation().pathname).toEqual('/foo');
     });
