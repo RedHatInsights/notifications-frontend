@@ -11,9 +11,10 @@ import {
     SplitItem
 } from '@patternfly/react-core';
 import { ExternalLinkSquareAltIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
-import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
+import { PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import React, { useState } from 'react';
 
+import { Main } from '../../../components/Store/Main';
 import { Messages } from '../../../properties/Messages';
 import { DOCUMENTATION_URL } from './Constants';
 import { SplunkSetupFinished } from './SplunkSetupFinished';

@@ -1,8 +1,8 @@
-import { AppSkeleton } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 
+import { AppSkeleton } from '../../../app/AppSkeleton';
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
