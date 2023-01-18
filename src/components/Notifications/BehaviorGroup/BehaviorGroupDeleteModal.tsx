@@ -64,8 +64,8 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
             return (
                 <Stack hasGutter>
                     <StackItem>
-                        <b>{ props.behaviorGroup.displayName }</b> is associated to { events.length } events.
-                        Please remove the behavior group from these events in order  to continue.
+                        You will no longer be able to assign <b>{ props.behaviorGroup.displayName }</b> to events,
+                        and existing associations to events listed below will be removed.
                     </StackItem>
                     <StackItem>
                         <ExpandableSection
@@ -77,6 +77,14 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
                                 ) }
                             </List>
                         </ExpandableSection>
+                    </StackItem>
+                    <StackItem>
+                        <Checkbox
+                            id="checkbox-delete-i-acknowledge"
+                            label="I acknowledge that this action cannot be undone"
+                            onChange={ setAckDelete }
+                            isChecked={ ackDelete }
+                        />
                     </StackItem>
                 </Stack>
             );
@@ -94,7 +102,6 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDele
             error={ props.error }
             titleIconVariant="warning"
             actionButtonDisabled={ !ackDelete }
-            actionButtonHidden={ props.conflictingNotifications.length > 0 }
             cancelButtonTitle={ cancelButtonTitle }
             cancelButtonVariant={ cancelButtonVariant }
         />
