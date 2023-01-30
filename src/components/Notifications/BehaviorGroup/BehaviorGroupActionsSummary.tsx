@@ -45,7 +45,7 @@ const BehaviorGroupActionsSummaryImpl: React.FunctionComponent<BehaviorGroupActi
                     <GridItem span={ 6 }>
                         <ActionComponent action={ action } />
                     </GridItem>
-                    <GridItem span={ 6 }>
+                    <GridItem className='pf-u-text-break-word' span={ 6 }>
                         <Recipient action={ action } />
                     </GridItem>
                 </React.Fragment>
