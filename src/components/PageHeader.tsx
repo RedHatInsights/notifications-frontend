@@ -4,6 +4,8 @@ import { PageHeader as PageHeaderFC, PageHeaderTitle } from '@redhat-cloud-servi
 import * as React from 'react';
 import { style } from 'typestyle';
 
+import { TabComponent } from './Notifications/TabComponent';
+
 interface PageHeaderProps {
     title: React.ReactNode | string;
     subtitle: React.ReactNode | string;
@@ -20,20 +22,22 @@ const actionClassName = style({
 
 export const PageHeader:React.FunctionComponent<PageHeaderProps> = props => {
     return (
-        <PageHeaderFC>
+        <><PageHeaderFC className="pf-u-pb-0">
             <Split>
                 <SplitItem isFilled>
                     <PageHeaderTitle title={ props.title } />
                     <TextContent className={ subtitleClassName }>
-                        <Text>{ props.subtitle }</Text>
+                        <Text>{props.subtitle}</Text>
                     </TextContent>
                 </SplitItem>
-                { props.action && (
+                {props.action && (
                     <SplitItem className={ actionClassName }>
-                        { props.action }
+                        {props.action}
                     </SplitItem>
                 )}
             </Split>
         </PageHeaderFC>
+        <TabComponent /></>
+
     );
 };

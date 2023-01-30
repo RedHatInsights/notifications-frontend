@@ -38,10 +38,10 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     { Messages.pages.notifications.list.viewHistory }
                 </ButtonLink> }
             />
-            <Main>
+            {/* <Main>
                 <SplunkBetaEnvironmentBanner />
                 <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
-            </Main>
+            </Main> */}
         </>
     );
 };
