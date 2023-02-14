@@ -3,7 +3,6 @@ import { global_spacer_3xl, global_spacer_sm } from '@patternfly/react-tokens';
 import { PageHeader as PageHeaderFC, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import * as React from 'react';
 import { style } from 'typestyle';
-
 import { TabComponent } from './Notifications/TabComponent';
 
 interface PageHeaderProps {
@@ -22,22 +21,20 @@ const actionClassName = style({
 
 export const PageHeader:React.FunctionComponent<PageHeaderProps> = props => {
     return (
-        <><PageHeaderFC className="pf-u-pb-0">
+        <PageHeaderFC className="pf-u-pb-0">
             <Split>
                 <SplitItem isFilled>
                     <PageHeaderTitle title={ props.title } />
                     <TextContent className={ subtitleClassName }>
-                        <Text>{props.subtitle}</Text>
+                        <Text>{ props.subtitle }</Text>
                     </TextContent>
                 </SplitItem>
-                {props.action && (
+                { props.action && (
                     <SplitItem className={ actionClassName }>
-                        {props.action}
+                        { props.action }
                     </SplitItem>
                 )}
             </Split>
         </PageHeaderFC>
-        <TabComponent /></>
-
     );
 };

@@ -3,9 +3,16 @@ import React from 'react';
 
 import { SplunkBetaEnvironmentBanner } from '../../pages/Banners/SplunkBetaEnvironment';
 import { BundlePageBehaviorGroupContent } from '../../pages/Notifications/List/BundlePageBehaviorGroupContent';
+import { Facet } from '../../types/Notification';
 import { Main } from '../Store/Main';
+import { TimeConfigComponent } from './TimeConfig';
 
-export const TabComponent: React.FunctionComponent = () => {
+interface TabProps {
+    bundle: Facet;
+    applications: Array<Facet>;
+}
+
+export const TabComponent: React.FunctionComponent<TabProps> = (props) => {
 
     const [ activeTabKey, setActiveTabKey ] = React.useState(0);
 
@@ -15,15 +22,15 @@ export const TabComponent: React.FunctionComponent = () => {
 
     return (
         <div>
-            <Tabs activeKey={ activeTabKey } onSelect={ handleTabClick } className="pf-u-mt-md">
-                <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }> main
-                    {/* <Main>
+            <Tabs defaultActiveKey={ activeTabKey } role="region" onClick={ handleTabClick } className="pf-u-mt-md">
+                <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
+                    <Main>
                         <SplunkBetaEnvironmentBanner />
                         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
-                    </Main> */}
+                    </Main>
                 </Tab>
                 <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
-                    settings
+                    <TimeConfigComponent />
                 </Tab>
             </Tabs>
         </div>
