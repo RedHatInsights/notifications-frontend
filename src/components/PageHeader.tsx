@@ -3,7 +3,6 @@ import { global_spacer_3xl, global_spacer_sm } from '@patternfly/react-tokens';
 import { PageHeader as PageHeaderFC, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import * as React from 'react';
 import { style } from 'typestyle';
-import { TabComponent } from './Notifications/TabComponent';
 
 interface PageHeaderProps {
     title: React.ReactNode | string;

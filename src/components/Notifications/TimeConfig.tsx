@@ -19,10 +19,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const saveTimePreference = useUpdateTimePreference();
 
-    const [ timezone, setTimezone ] = React.useState<ITimezone>(
-        // eslint-disable-next-line new-cap
-        Intl.DateTimeFormat().resolvedOptions().timeZone
-    );
+    const [ timezone, setTimezone ] = React.useState<ITimezone>();
 
     const handleRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
@@ -73,12 +70,13 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                         <TimezoneSelect
                                             className={ timeZoneWidthClassName }
                                             placeholder='(UTC - 00:00) Universal Time'
-                                            value={ timezone }
+                                            value={ timezone ?? '' }
                                             onChange={ setTimezone } />
                                     </StackItem>
                                     <StackItem>
                                         <Text component={ TextVariants.h6 }>Time</Text>
-                                        <TimePicker onChange={ handleTimeSelect } width='450' stepMinutes={ 15 } placeholder='12:00 UTC' is24Hour />
+                                        <TimePicker value={ radioTimeSelect } onChange={ handleTimeSelect }
+                                            width='450' stepMinutes={ 15 } placeholder='12:00 UTC' is24Hour />
                                     </StackItem>
                                 </Stack>
                             </SplitItem>
