@@ -1,4 +1,5 @@
 import { ButtonVariant } from '@patternfly/react-core';
+import { Main } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
     localUrl
@@ -7,11 +8,12 @@ import { default as React } from 'react';
 
 import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
-import { TabComponent } from '../../../components/Notifications/TabComponent';
 import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { Facet } from '../../../types/Notification';
+import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
+import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
@@ -36,9 +38,10 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     { Messages.pages.notifications.list.viewHistory }
                 </ButtonLink> }
             />
-            <TabComponent
-                bundle={ props.bundle }
-                applications={ props.applications } />
+            <Main>
+                <SplunkBetaEnvironmentBanner />
+                <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
+            </Main>
         </>
     );
 };
