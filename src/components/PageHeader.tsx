@@ -36,7 +36,7 @@ export const PageHeader:React.FunctionComponent<PageHeaderProps> = props => {
                     </SplitItem>
                 )}
             </Split>
-            <TabComponent />
+            <TabComponent elements={ props.children } />
         </PageHeaderFC>
     );
 };

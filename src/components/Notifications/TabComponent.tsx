@@ -1,9 +1,11 @@
 import { Tab, Tabs, TabTitleText } from '@patternfly/react-core';
 import React from 'react';
 
-import { TimeConfigComponent } from './TimeConfig';
+interface MyTabComponentProps {
+    elements: Array<React.ReactNode>;
+  }
 
-export const TabComponent: React.FunctionComponent = () => {
+export const TabComponent: React.FunctionComponent<MyTabComponentProps> = (props) => {
     const [ activeTabKey, setActiveTabKey ] = React.useState(0);
 
     const handleTabClick = React.useCallback((tabIndex) => {
@@ -14,9 +16,10 @@ export const TabComponent: React.FunctionComponent = () => {
         <div>
             <Tabs defaultActiveKey={ activeTabKey } role="region" onClick={ handleTabClick } className="pf-u-mt-md">
                 <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
+                    { props.elements}
                 </Tab>
                 <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
-                    <TimeConfigComponent />
+                    { props.elements }
                 </Tab>
             </Tabs>
         </div>
