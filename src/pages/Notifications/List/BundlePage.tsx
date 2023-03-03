@@ -39,15 +39,15 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 {Messages.pages.notifications.list.viewHistory}
             </ButtonLink> } />
 
-        <Main>
-            <TabComponent elements={ [
-                <>
-                    <SplunkBetaEnvironmentBanner />
-                    <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />,
-                    <TimeConfigComponent />
-                </>
-            ] } />
-        </Main>
+        <TabComponent elements={ [
+            <Main key='0'>
+                <SplunkBetaEnvironmentBanner />
+                <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
+            </Main>,
+            <Main key='1'>
+                <TimeConfigComponent />
+            </Main>
+        ] } />
         </>
     );
 };

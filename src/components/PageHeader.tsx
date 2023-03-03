@@ -4,8 +4,6 @@ import { PageHeader as PageHeaderFC, PageHeaderTitle } from '@redhat-cloud-servi
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { TabComponent } from './Notifications/TabComponent';
-
 interface PageHeaderProps {
     title: React.ReactNode | string;
     subtitle: React.ReactNode | string;
@@ -36,7 +34,6 @@ export const PageHeader:React.FunctionComponent<PageHeaderProps> = props => {
                     </SplitItem>
                 )}
             </Split>
-            <TabComponent elements={ props.children } />
         </PageHeaderFC>
     );
 };
