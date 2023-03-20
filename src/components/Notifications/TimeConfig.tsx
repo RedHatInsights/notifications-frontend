@@ -1,32 +1,47 @@
-import { Card, CardBody, HelperText, HelperTextItem, PageSection, Radio, Split, SplitItem, Stack, StackItem,
+import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, PageSection, Radio, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import React from 'react';
-import type { ITimezone } from 'react-timezone-select';
-import TimezoneSelect from 'react-timezone-select';
-import { style } from 'typestyle';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 
-const timeZoneWidthClassName = style({
-    width: 210
-});
-
 export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ radioSelect, setRadioSelect ] = React.useState(false);
-    const [ radioTimeSelect, setTimeRadioSelect ] = React.useState<Partial<Schemas.LocalTime>>();
+    const [ timeSelect, setTimeSelect ] = React.useState<Partial<Schemas.LocalTime>>();
+
+    const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
 
     const saveTimePreference = useUpdateTimePreference();
 
-    const [ timezone, setTimezone ] = React.useState<ITimezone>();
-
     const handleRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
+        setShowCustomSelect(false);
+
+    }, []);
+
+    const [ isOpen, setIsOpen ] = React.useState(false);
+
+    const onToggle = () => {
+        setIsOpen(isOpen);
+    };
+
+    // leaving here for ref (UTC - 00:00) Universal Time
+    const dropdownItems = [
+        <>
+            <DropdownItem key='timezone'>
+
+            </DropdownItem>
+        </>
+    ];
+
+    const handleCustomRadioSelect = React.useCallback(() => {
+        setRadioSelect(true);
+        setShowCustomSelect(true);
     }, []);
 
     const handleTimeSelect = React.useCallback((time) => {
-        setTimeRadioSelect(time);
+        setTimeSelect(time);
         const mutate = saveTimePreference.mutate;
         mutate({
             body: time.body ?? ''
@@ -58,26 +73,41 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                             <SplitItem isFilled>
                                 <Stack hasGutter>
                                     <StackItem >
-                                        <Radio checked={ radioSelect } onChange={ handleRadioSelect } id='settings-time-config'
-                                            label='Default time' description='12:00 UTC' name='radio-select'></Radio>
+                                        <Radio
+                                            isChecked={ radioSelect && !showCustomSelect }
+                                            onChange={ handleRadioSelect }
+                                            id='settings-time-config'
+                                            label='Default time'
+                                            description='12:00 UTC'
+                                            name='radio-select'>
+                                        </Radio>
                                     </StackItem>
                                     <StackItem>
-                                        <Radio checked={ radioSelect } onChange={ handleRadioSelect } id='settings-time-config'
-                                            label='Custom time' name='radio-select'></Radio>
+                                        <Radio
+                                            isChecked={ radioSelect && showCustomSelect }
+                                            onChange={ handleCustomRadioSelect }
+                                            id='settings-time-config'
+                                            label='Custom time'
+                                            description='Choose specific time and time zone'
+                                            name='radio-select'>
+                                        </Radio>
                                     </StackItem>
-                                    <StackItem>
-                                        <Text component={ TextVariants.h6 }>Time zone</Text>
-                                        <TimezoneSelect
-                                            className={ timeZoneWidthClassName }
-                                            placeholder='(UTC - 00:00) Universal Time'
-                                            value={ timezone ?? '' }
-                                            onChange={ setTimezone } />
-                                    </StackItem>
-                                    <StackItem>
-                                        <Text component={ TextVariants.h6 }>Time</Text>
-                                        <TimePicker value={ radioTimeSelect } onChange={ handleTimeSelect }
-                                            width='450' stepMinutes={ 15 } placeholder='12:00 UTC' is24Hour />
-                                    </StackItem>
+                                    {showCustomSelect && (
+                                        <><StackItem>
+                                            <Text component={ TextVariants.h6 }>Time</Text>
+                                            <TimePicker value={ timeSelect } onChange={ handleTimeSelect }
+                                                width='270px' stepMinutes={ 15 } placeholder='12:00 UTC' is24Hour />
+                                        </StackItem><StackItem>
+                                            <Text component={ TextVariants.h6 }>Time zone</Text>
+                                            <Dropdown
+                                                toggle={ <DropdownToggle id="timezone" onToggle={ onToggle }>
+                                                    (UTC - 00:00) Universal Time
+                                                </DropdownToggle> }
+                                                isOpen={ isOpen }
+                                                onSelect={ handleTimeSelect }
+                                                dropdownItems={ dropdownItems }>
+                                            </Dropdown>
+                                        </StackItem></>)}
                                 </Stack>
                             </SplitItem>
                         </Split>

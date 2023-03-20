@@ -198,7 +198,7 @@ export namespace Schemas {
     | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType = 'webhook' | 'email_subscription' | 'camel';
+  export type EndpointType = 'webhook' | 'email_subscription' | 'camel' | 'default';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -673,7 +673,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'camel' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel', 'default' ]);
   }
 
   function zodSchemaEnvironment() {
