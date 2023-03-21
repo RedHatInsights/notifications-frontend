@@ -21,7 +21,7 @@
     "csstips": "1.2.0",
     "csx": "10.0.2",
     "date-fns": "2.22.1",
-    "date-fns-tz": "^2.0.0",
+    "date-fns-tz": "2.0.0",
     "formik": "2.2.9",
     "immer": "9.0.6",
     "in-browser-download": "2.0.0",

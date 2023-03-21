@@ -26,11 +26,14 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setIsOpen(isOpen);
     };
 
+    const timeZone = new Date().toLocaleTimeString('en-us', { timeZoneName: 'short' }).split(' ')[2];
+    console.log(timeZone);
+
     // leaving here for ref (UTC - 00:00) Universal Time
     const dropdownItems = [
         <>
             <DropdownItem key='timezone'>
-
+               ( { timeZone }  - )
             </DropdownItem>
         </>
     ];
