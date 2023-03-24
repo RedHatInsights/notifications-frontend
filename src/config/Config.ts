@@ -37,7 +37,7 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
         name: 'Email'
     },
     [IntegrationType.TEAMS]: {
-        name: 'Teams'
+        name: 'Microsoft Teams'
     }
 };
 
