@@ -7,6 +7,7 @@ import { IntegrationTypeCamelExtrasForm } from './IntegrationTypeCamelExtrasForm
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
+import { IntegrationTypeTeamsForm } from './IntegrationTypeTeamsForm';
 
 export interface IntegrationTypeForm extends OuiaComponentProps {
     type: UserIntegrationType;
@@ -28,6 +29,8 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
                 />;
             case UserIntegrationType.SLACK:
                 return <IntegrationTypeSlackForm { ...props } />;
+            case UserIntegrationType.TEAMS:
+                return <IntegrationTypeTeamsForm { ...props } />;
         }
 
         return <IntegrationTypeCamelForm { ...props } />;
