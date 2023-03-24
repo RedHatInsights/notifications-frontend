@@ -35,6 +35,9 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
     },
     [IntegrationType.EMAIL_SUBSCRIPTION]: {
         name: 'Email'
+    },
+    [IntegrationType.TEAMS]: {
+        name: 'Teams'
     }
 };
 
@@ -84,7 +87,8 @@ const Config = {
                 UserIntegrationType.WEBHOOK,
                 UserIntegrationType.SPLUNK,
                 UserIntegrationType.SLACK,
-                UserIntegrationType.SERVICE_NOW
+                UserIntegrationType.SERVICE_NOW,
+                UserIntegrationType.TEAMS
             ]
         }
     },
