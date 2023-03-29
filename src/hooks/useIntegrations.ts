@@ -1,18 +1,11 @@
-import Config from '../config/Config';
-import { isReleased, isStable } from '../types/Environments';
+import { getInsights, getInsightsEnvironment } from '@redhat-cloud-services/insights-common-typescript';
+
+import { getIntegrationActions } from '../config/Config';
 import { UserIntegrationType } from '../types/Integration';
 
 export const useIntegrations = (): ReadonlyArray<UserIntegrationType> => {
-    const released = isReleased();
-    const stable = isStable();
+    const insights = getInsights();
+    const environment = getInsightsEnvironment(insights);
 
-    if (released) {
-        if (stable) {
-            return Config.integrations.actions.stable;
-        }
-
-        return Config.integrations.actions.beta;
-    }
-
-    return Config.integrations.actions.experimental;
+    return getIntegrationActions(environment);
 };

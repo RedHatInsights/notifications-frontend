@@ -1,9 +1,10 @@
 import { Alert, AlertActionCloseButton, AlertActionLink } from '@patternfly/react-core';
 import { global_spacer_xl } from '@patternfly/react-tokens';
 import { Section } from '@redhat-cloud-services/frontend-components';
-import { BetaIfNot, getInsights, InsightsBetaDetector, localUrl } from '@redhat-cloud-services/insights-common-typescript';
+import { BetaIfNot, getInsights, getInsightsEnvironment, InsightsBetaDetector, localUrl } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
+import { stagingAndProdStable } from '../../types/Environments';
 
 const bannerSectionClassname = style({
     marginBottom: global_spacer_xl.var
@@ -18,7 +19,9 @@ export const SplunkBetaEnvironmentBanner: React.FunctionComponent = () => {
         window.location.href = localUrl('/settings/integrations', true);
     };
 
-    if (!isOpen) {
+    const isProdOrStageStable = stagingAndProdStable.includes(getInsightsEnvironment(insights));
+
+    if (!isOpen || !isProdOrStageStable) {
         return <></>;
     }
 

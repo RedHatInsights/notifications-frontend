@@ -1,5 +1,7 @@
+import { Environment } from '@redhat-cloud-services/insights-common-typescript';
 import { DeepReadonly } from 'ts-essentials';
 
+import { fedramp, stagingAndProd, stagingAndProdBeta, stagingAndProdStable } from '../types/Environments';
 import { IntegrationType, UserIntegrationType } from '../types/Integration';
 import { NotificationType } from '../types/Notification';
 
@@ -89,7 +91,8 @@ const Config = {
                 UserIntegrationType.SLACK,
                 UserIntegrationType.SERVICE_NOW,
                 UserIntegrationType.TEAMS
-            ]
+            ],
+            fedramp: []
         }
     },
     notifications: {
@@ -103,6 +106,9 @@ const Config = {
             experimental: [
                 NotificationType.EMAIL_SUBSCRIPTION,
                 NotificationType.DRAWER
+            ],
+            fedramp: [
+                NotificationType.EMAIL_SUBSCRIPTION
             ]
         }
     },
@@ -114,4 +120,27 @@ const Config = {
 };
 
 const ReadonlyConfig: DeepReadonly<typeof Config> = Config;
+
+export const getIntegrationActions = (environment: Environment): ReadonlyArray<UserIntegrationType> => {
+    if (stagingAndProdStable.includes(environment)) {
+        return ReadonlyConfig.integrations.actions.stable;
+    } else if (stagingAndProdBeta.includes(environment)) {
+        return ReadonlyConfig.integrations.actions.beta;
+    } else if (fedramp.includes(environment)) {
+        return ReadonlyConfig.integrations.actions.fedramp;
+    }
+
+    return ReadonlyConfig.integrations.actions.experimental;
+};
+
+export const getNotificationActions = (environment: Environment): ReadonlyArray<NotificationType> => {
+    if (stagingAndProd.includes(environment)) {
+        return ReadonlyConfig.notifications.actions.released;
+    } else if (fedramp.includes(environment)) {
+        return ReadonlyConfig.notifications.actions.fedramp;
+    }
+
+    return ReadonlyConfig.notifications.actions.experimental;
+};
+
 export default ReadonlyConfig;
