@@ -15,7 +15,7 @@ import { useCallback, useMemo } from 'react';
 
 import { PageAdapter } from '../../hooks/usePage';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
-import { isStagingOrProd, stagingAndProd } from '../../types/Environments';
+import { isExperimental, stagingAndProd } from '../../types/Environments';
 import { Facet } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import {
@@ -81,10 +81,10 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                     items: appFilterItems
                 }
             } : undefined,
-            [NotificationFilterColumn.ACTION]: !filterColumns.includes(NotificationFilterColumn.ACTION) || isStagingOrProd(insights) ? undefined : {
+            [NotificationFilterColumn.ACTION]: filterColumns.includes(NotificationFilterColumn.ACTION) && isExperimental(insights) ? {
                 label: 'Action',
                 placeholder: 'Filter by action'
-            }
+            } : undefined
         };
     }, [ props.appFilterOptions, insights, filterColumns ]);
 
