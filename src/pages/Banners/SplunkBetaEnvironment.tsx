@@ -4,6 +4,7 @@ import { Section } from '@redhat-cloud-services/frontend-components';
 import { BetaIfNot, getInsights, getInsightsEnvironment, InsightsBetaDetector, localUrl } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
+
 import { stagingAndProdStable } from '../../types/Environments';
 
 const bannerSectionClassname = style({
