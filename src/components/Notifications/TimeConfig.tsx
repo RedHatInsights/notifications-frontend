@@ -1,16 +1,21 @@
 import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, PageSection, Radio, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import React from 'react';
+import timezones from 'timezones.json';
+import { style } from 'typestyle';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 
+const dropDownClassName = style({
+    width: '280px'
+});
+
 export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ radioSelect, setRadioSelect ] = React.useState(false);
-    const [ timeSelect, setTimeSelect ] = React.useState<Partial<Schemas.LocalTime>>();
-
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
+    const [ timeSelect, setTimeSelect ] = React.useState<Partial<Schemas.LocalTime>>();
 
     const saveTimePreference = useUpdateTimePreference();
 
@@ -22,32 +27,20 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ isOpen, setIsOpen ] = React.useState(false);
 
-    const onToggle = () => {
-        setIsOpen(isOpen);
-    };
-
-    const timeZone = new Date().toLocaleTimeString('en-us', { timeZoneName: 'short' }).split(' ')[2];
-    console.log(timeZone);
-
-    // leaving here for ref (UTC - 00:00) Universal Time
-    const dropdownItems = [
-        <>
-            <DropdownItem key='timezone'>
-               ( { timeZone }  - )
-            </DropdownItem>
-        </>
-    ];
+    const dropdownItems = timezones.map((tz) =>
+        <DropdownItem key={ tz.value }> { tz.text }</DropdownItem>);
 
     const handleCustomRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
         setShowCustomSelect(true);
     }, []);
 
-    const handleTimeSelect = React.useCallback((time) => {
-        setTimeSelect(time);
+    const handleTimeSelect = React.useCallback((timeSelect) => {
+        setIsOpen(false);
+        setTimeSelect(timeSelect);
         const mutate = saveTimePreference.mutate;
         mutate({
-            body: time.body ?? ''
+            body: timeSelect.body ?? ''
         });
 
     }, [ saveTimePreference.mutate ]);
@@ -99,15 +92,17 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                         <><StackItem>
                                             <Text component={ TextVariants.h6 }>Time</Text>
                                             <TimePicker value={ timeSelect } onChange={ handleTimeSelect }
-                                                width='270px' stepMinutes={ 15 } placeholder='12:00 UTC' is24Hour />
+                                                width='263px' stepMinutes={ 15 } placeholder='12:00' is24Hour />
                                         </StackItem><StackItem>
                                             <Text component={ TextVariants.h6 }>Time zone</Text>
                                             <Dropdown
-                                                toggle={ <DropdownToggle id="timezone" onToggle={ onToggle }>
-                                                    (UTC - 00:00) Universal Time
+                                                className={ dropDownClassName }
+                                                toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
+                                                    (UTC-00:00) Universal Time
                                                 </DropdownToggle> }
                                                 isOpen={ isOpen }
                                                 onSelect={ handleTimeSelect }
+                                                menuAppendTo={ () => document.body }
                                                 dropdownItems={ dropdownItems }>
                                             </Dropdown>
                                         </StackItem></>)}

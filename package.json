@@ -40,6 +40,7 @@
     "redux": "4.2.0",
     "redux-logger": "3.0.6",
     "redux-promise-middleware": "5.1.1",
+    "timezones.json": "1.7.0",
     "typesafe-actions": "5.1.0",
     "typestyle": "2.1.0",
     "yup": "0.32.9",
