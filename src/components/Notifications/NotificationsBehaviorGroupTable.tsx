@@ -19,9 +19,8 @@ import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Noti
 import { SortDirection, sortDirectionFromString } from '../../types/SortDirection';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
-import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 import EmptyTableState from './EmptyTableState';
-import { notifications } from '@redhat-cloud-services/frontend-components-notifications';
+import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 
 type OnNotificationIdHandler = (notificationId: UUID) => void;
 export type OnBehaviorGroupLinkUpdated = (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, isLinked: boolean) => void;
@@ -181,14 +180,6 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
         });
     }, [ props.notifications, props.behaviorGroupContent, callbacks ]);
 
-    const isEmpty = () => {
-        if (props.notifications.length === 0) {
-            return <EmptyTableState />
-        } else {
-            return rows
-        }
-    }
-
     return (
         <TableComposable
             aria-label="Notifications"
@@ -217,7 +208,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                 </Tr>
             </Thead>
             <Tbody>
-                { isEmpty() }
+                { props.notifications.length === 0 ? <EmptyTableState /> : rows }
             </Tbody>
         </TableComposable>
     );
