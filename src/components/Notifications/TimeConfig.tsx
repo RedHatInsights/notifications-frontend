@@ -4,7 +4,6 @@ import React from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
 
-import { Schemas } from '../../generated/OpenapiNotifications';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 
 const dropDownClassName = style({
@@ -15,7 +14,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ radioSelect, setRadioSelect ] = React.useState(false);
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
-    const [ timeSelect, setTimeSelect ] = React.useState<Partial<Schemas.LocalTime>>();
+    const [ timeSelect, setTimeSelect ] = React.useState(false);
 
     const saveTimePreference = useUpdateTimePreference();
 
@@ -35,12 +34,12 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setShowCustomSelect(true);
     }, []);
 
-    const handleTimeSelect = React.useCallback((timeSelect) => {
+    const handleTimeSelect = React.useCallback((time) => {
         setIsOpen(false);
-        setTimeSelect(timeSelect);
+        setTimeSelect(true);
         const mutate = saveTimePreference.mutate;
         mutate({
-            body: timeSelect.body ?? ''
+            body: time
         });
 
     }, [ saveTimePreference.mutate ]);
@@ -91,11 +90,12 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     {showCustomSelect && (
                                         <><StackItem>
                                             <Text component={ TextVariants.h6 }>Time</Text>
-                                            <TimePicker value={ timeSelect } onChange={ handleTimeSelect }
+                                            <TimePicker onChange={ handleTimeSelect }
                                                 width='263px' stepMinutes={ 15 } placeholder='12:00' is24Hour />
                                         </StackItem><StackItem>
                                             <Text component={ TextVariants.h6 }>Time zone</Text>
                                             <Dropdown
+                                                value={ timeSelect }
                                                 className={ dropDownClassName }
                                                 toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
                                                     (UTC-00:00) Universal Time

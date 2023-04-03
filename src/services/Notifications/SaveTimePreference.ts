@@ -1,15 +1,17 @@
 import { useMutation } from 'react-fetching-library';
 
-import { Operations, Schemas } from '../../generated/OpenapiNotifications';
+import { Operations } from '../../generated/OpenapiNotifications';
 
-type SaveTimePrefActionsParams = {
-    body: Schemas.LocalTime;
+export type SaveTimePrefActionsParams = {
+    body: string;
 }
 
-const updateTimePrefActionCreator = (params: SaveTimePrefActionsParams) => {
+const actionCreator = (params: SaveTimePrefActionsParams) => {
     return Operations.OrgConfigResourceSaveDailyDigestTimePreference.actionCreator({
         body: params.body
     });
 };
 
-export const useUpdateTimePreference = () => useMutation(updateTimePrefActionCreator);
+export const useUpdateTimePreference = () => {
+    return useMutation(actionCreator);
+};
