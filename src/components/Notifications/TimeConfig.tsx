@@ -14,7 +14,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ radioSelect, setRadioSelect ] = React.useState(false);
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
-    const [ timeSelect, setTimeSelect ] = React.useState(false);
 
     const saveTimePreference = useUpdateTimePreference();
 
@@ -36,7 +35,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const handleTimeSelect = React.useCallback((time) => {
         setIsOpen(false);
-        setTimeSelect(true);
         const mutate = saveTimePreference.mutate;
         mutate({
             body: time
@@ -95,7 +93,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                         </StackItem><StackItem>
                                             <Text component={ TextVariants.h6 }>Time zone</Text>
                                             <Dropdown
-                                                value={ timeSelect }
                                                 className={ dropDownClassName }
                                                 toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
                                                     (UTC-00:00) Universal Time
