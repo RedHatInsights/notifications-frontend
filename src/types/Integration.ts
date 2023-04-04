@@ -8,14 +8,16 @@ export enum IntegrationType {
     EMAIL_SUBSCRIPTION = 'email_subscription',
     SPLUNK = 'camel:splunk',
     SLACK = 'camel:slack',
-    SERVICE_NOW = 'camel:servicenow'
+    SERVICE_NOW = 'camel:servicenow',
+    TEAMS = 'camel:teams'
 }
 
 export const UserIntegrationType = {
     WEBHOOK: IntegrationType.WEBHOOK,
     SPLUNK: IntegrationType.SPLUNK,
     SERVICE_NOW: IntegrationType.SERVICE_NOW,
-    SLACK: IntegrationType.SLACK
+    SLACK: IntegrationType.SLACK,
+    TEAMS: IntegrationType.TEAMS
 } as const;
 
 export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;

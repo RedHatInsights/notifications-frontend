@@ -6,10 +6,12 @@ describe('src/types/Integration', () => {
         expect(isCamelType(IntegrationType.EMAIL_SUBSCRIPTION)).toBe(false);
         expect(isCamelType(IntegrationType.SPLUNK)).toBe(true);
         expect(isCamelType(IntegrationType.SLACK)).toBe(true);
+        expect(isCamelType(IntegrationType.TEAMS)).toBe(true);
         expect(isCamelType(undefined)).toBe(false);
         expect(isCamelType(UserIntegrationType.WEBHOOK)).toBe(false);
         expect(isCamelType(UserIntegrationType.SPLUNK)).toBe(true);
         expect(isCamelType(UserIntegrationType.SLACK)).toBe(true);
+        expect(isCamelType(UserIntegrationType.TEAMS)).toBe(true);
     });
 
     it('isCamelIntegrationType returns true for integrations with a camel subtype', () => {
@@ -24,6 +26,9 @@ describe('src/types/Integration', () => {
             type: UserIntegrationType.SLACK
         })).toBe(true);
         expect(isCamelIntegrationType({
+            type: UserIntegrationType.TEAMS
+        })).toBe(true);
+        expect(isCamelIntegrationType({
             name: 'camel'
         })).toBe(false);
     });
@@ -33,6 +38,7 @@ describe('src/types/Integration', () => {
         expect(isUserIntegrationType(IntegrationType.EMAIL_SUBSCRIPTION)).toBe(false);
         expect(isUserIntegrationType(IntegrationType.SPLUNK)).toBe(true);
         expect(isUserIntegrationType(IntegrationType.SLACK)).toBe(true);
+        expect(isUserIntegrationType(IntegrationType.TEAMS)).toBe(true);
         expect(isUserIntegrationType(undefined)).toBe(false);
     });
 });
