@@ -88,7 +88,7 @@ const mockFacets = (bundles?: Array<Facet> | null | Promise<any>, applications?:
 };
 
 const mockEventTypes = (eventTypeId: string = defaultEventTypeId) => {
-    fetchMock.get(defaultGetEventTypesUrl, {
+    fetchMock.get(defaultGetEventTypesUrlMatcher, {
         body: {
             links: {},
             meta: {
@@ -115,7 +115,7 @@ const mockEventTypes = (eventTypeId: string = defaultEventTypeId) => {
 };
 
 const mockNoEventTypes = () => {
-    fetchMock.get(defaultGetEventTypesUrl, {
+    fetchMock.get(defaultGetEventTypesUrlMatcher, {
         body: {
             links: {},
             data: [],
@@ -283,8 +283,9 @@ const mockBehaviorGroup = () => {
     });
 };
 
-const defaultGetEventTypesUrl =
-  '/api/notifications/v1.0/notifications/eventTypes?bundleId=foobar&limit=20&offset=0&sort_by=application%3AASC';
+const defaultGetEventTypesUrlMatcher = (url: string) => {
+    return url.startsWith('/api/notifications/v1.0/notifications/eventTypes');
+};
 
 const mockBehaviorGroupsOfEventTypes = (eventTypeId: string = defaultEventTypeId, returnEmpty?: boolean) => {
     fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${eventTypeId}/behaviorGroups`, {

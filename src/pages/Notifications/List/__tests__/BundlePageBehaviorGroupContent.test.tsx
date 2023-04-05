@@ -77,7 +77,10 @@ const mockBehaviorGroups = (behaviorGroups: Array<BehaviorGroup>) => {
 
 const mockNotifications = (notifications: Array<NotificationType>) => {
     fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes?bundleId=${bundle.id}&limit=20&offset=0&sort_by=application%3AASC`,
+        (urlString: string) => {
+            const url = new URL(urlString, 'http://dummy-url.com');
+            return url.pathname === '/api/notifications/v1.0/notifications/eventTypes' && url.searchParams.get('bundleId') === bundle.id;
+        },
         {
             status: 200,
             body: {
