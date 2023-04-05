@@ -28,7 +28,7 @@ export namespace Schemas {
 
   export const AggregationEmailTemplate = zodSchemaAggregationEmailTemplate();
   export type AggregationEmailTemplate = {
-    application?: Application1 | undefined | null;
+    application?: Application | undefined | null;
     application_id?: UUID | undefined | null;
     body_template?: Template | undefined | null;
     body_template_id: UUID;
@@ -42,18 +42,18 @@ export namespace Schemas {
 
   export const Application = zodSchemaApplication();
   export type Application = {
-    display_name: string;
-    id: UUID;
-  };
-
-  export const Application1 = zodSchemaApplication1();
-  export type Application1 = {
     bundle_id: UUID;
     created?: LocalDateTime | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
     updated?: LocalDateTime | undefined | null;
+  };
+
+  export const Application1 = zodSchemaApplication1();
+  export type Application1 = {
+    display_name: string;
+    id: UUID;
   };
 
   export const BasicAuthentication = zodSchemaBasicAuthentication();
@@ -114,7 +114,9 @@ export namespace Schemas {
   export const CreateBehaviorGroupRequest =
     zodSchemaCreateBehaviorGroupRequest();
   export type CreateBehaviorGroupRequest = {
-    bundle_id: UUID;
+    bundle_id?: UUID | undefined | null;
+    bundle_name?: string | undefined | null;
+    bundle_uuid_or_bundle_name_valid?: boolean | undefined | null;
     display_name: string;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
@@ -136,6 +138,13 @@ export namespace Schemas {
     end_time?: LocalDateTime | undefined | null;
     start_time?: LocalDateTime | undefined | null;
     status: Status;
+  };
+
+  export const DuplicateNameMigrationReport =
+    zodSchemaDuplicateNameMigrationReport();
+  export type DuplicateNameMigrationReport = {
+    updatedBehaviorGroups?: number | undefined | null;
+    updatedIntegrations?: number | undefined | null;
   };
 
   export const EmailSubscriptionProperties =
@@ -189,11 +198,7 @@ export namespace Schemas {
     | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType =
-    | 'webhook'
-    | 'email_subscription'
-    | 'default'
-    | 'camel';
+  export type EndpointType = 'webhook' | 'email_subscription' | 'camel' | 'default';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -235,7 +240,7 @@ export namespace Schemas {
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
-    application?: Application1 | undefined | null;
+    application?: Application | undefined | null;
     application_id: UUID;
     description?: string | undefined | null;
     display_name: string;
@@ -297,7 +302,7 @@ export namespace Schemas {
 
   export const InternalUserPermissions = zodSchemaInternalUserPermissions();
   export type InternalUserPermissions = {
-    applications: Array<Application>;
+    applications: Array<Application1>;
     is_admin: boolean;
     roles: Array<string>;
   };
@@ -307,6 +312,9 @@ export namespace Schemas {
 
   export const LocalDateTime = zodSchemaLocalDateTime();
   export type LocalDateTime = string;
+
+  export const LocalTime = zodSchemaLocalTime();
+  export type LocalTime = string;
 
   export const MessageValidationResponse = zodSchemaMessageValidationResponse();
   export type MessageValidationResponse = {
@@ -367,9 +375,8 @@ export namespace Schemas {
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
-    body_template: string;
     payload: string;
-    subject_template: string;
+    template: Array<string>;
   };
 
   export const RequestDefaultBehaviorGroupPropertyList =
@@ -450,7 +457,7 @@ export namespace Schemas {
   function zodSchemaAggregationEmailTemplate() {
       return z
       .object({
-          application: zodSchemaApplication1().optional().nullable(),
+          application: zodSchemaApplication().optional().nullable(),
           application_id: zodSchemaUUID().optional().nullable(),
           body_template: zodSchemaTemplate().optional().nullable(),
           body_template_id: zodSchemaUUID(),
@@ -467,8 +474,12 @@ export namespace Schemas {
   function zodSchemaApplication() {
       return z
       .object({
+          bundle_id: zodSchemaUUID(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
-          id: zodSchemaUUID()
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -476,12 +487,8 @@ export namespace Schemas {
   function zodSchemaApplication1() {
       return z
       .object({
-          bundle_id: zodSchemaUUID(),
-          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
-          id: zodSchemaUUID().optional().nullable(),
-          name: z.string(),
-          updated: zodSchemaLocalDateTime().optional().nullable()
+          id: zodSchemaUUID()
       })
       .nonstrict();
   }
@@ -559,7 +566,9 @@ export namespace Schemas {
   function zodSchemaCreateBehaviorGroupRequest() {
       return z
       .object({
-          bundle_id: zodSchemaUUID(),
+          bundle_id: zodSchemaUUID().optional().nullable(),
+          bundle_name: z.string().optional().nullable(),
+          bundle_uuid_or_bundle_name_valid: z.boolean().optional().nullable(),
           display_name: z.string(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()
@@ -586,6 +595,15 @@ export namespace Schemas {
           end_time: zodSchemaLocalDateTime().optional().nullable(),
           start_time: zodSchemaLocalDateTime().optional().nullable(),
           status: zodSchemaStatus()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaDuplicateNameMigrationReport() {
+      return z
+      .object({
+          updatedBehaviorGroups: z.number().int().optional().nullable(),
+          updatedIntegrations: z.number().int().optional().nullable()
       })
       .nonstrict();
   }
@@ -655,7 +673,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'default', 'camel' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel', 'default' ]);
   }
 
   function zodSchemaEnvironment() {
@@ -697,7 +715,7 @@ export namespace Schemas {
   function zodSchemaEventType() {
       return z
       .object({
-          application: zodSchemaApplication1().optional().nullable(),
+          application: zodSchemaApplication().optional().nullable(),
           application_id: zodSchemaUUID(),
           description: z.string().optional().nullable(),
           display_name: z.string(),
@@ -783,7 +801,7 @@ export namespace Schemas {
   function zodSchemaInternalUserPermissions() {
       return z
       .object({
-          applications: z.array(zodSchemaApplication()),
+          applications: z.array(zodSchemaApplication1()),
           is_admin: z.boolean(),
           roles: z.array(z.string())
       })
@@ -795,6 +813,10 @@ export namespace Schemas {
   }
 
   function zodSchemaLocalDateTime() {
+      return z.string();
+  }
+
+  function zodSchemaLocalTime() {
       return z.string();
   }
 
@@ -863,9 +885,8 @@ export namespace Schemas {
   function zodSchemaRenderEmailTemplateRequest() {
       return z
       .object({
-          body_template: z.string(),
           payload: z.string(),
-          subject_template: z.string()
+          template: z.array(z.string())
       })
       .nonstrict();
   }
@@ -1219,7 +1240,7 @@ export namespace Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<'Application1', 200, Schemas.Application1>
+      | ValidatedResponse<'Application', 200, Schemas.Application>
       | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
       | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
       | ValidatedResponse<'unknown', undefined, unknown>;
@@ -1234,7 +1255,7 @@ export namespace Operations {
         .queryParams(query)
         .config({
             rules: [
-                new ValidateRule(Schemas.Application1, 'Application1', 200),
+                new ValidateRule(Schemas.Application, 'Application', 200),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]
@@ -1341,6 +1362,10 @@ export namespace Operations {
         }
 
         if (params.sortBy !== undefined) {
+            query.sortBy = params.sortBy;
+        }
+
+        if (params.sortBy !== undefined) {
             query.sort_by = params.sortBy;
         }
 
@@ -1434,6 +1459,10 @@ export namespace Operations {
 
         if (params.pageNumber !== undefined) {
             query.pageNumber = params.pageNumber;
+        }
+
+        if (params.sortBy !== undefined) {
+            query.sortBy = params.sortBy;
         }
 
         if (params.sortBy !== undefined) {
@@ -1595,6 +1624,10 @@ export namespace Operations {
         }
 
         if (params.sortBy !== undefined) {
+            query.sortBy = params.sortBy;
+        }
+
+        if (params.sortBy !== undefined) {
             query.sort_by = params.sortBy;
         }
 
@@ -1678,6 +1711,60 @@ export namespace Operations {
         .queryParams(query)
         .config({
             rules: [ new ValidateRule(Response200, 'unknown', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /org-config/daily-digest/time-preference
+  export namespace OrgConfigResourceGetDailyDigestTimePreference {
+    export type Payload =
+      | ValidatedResponse<'__Empty', 200, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/org-config/daily-digest/time-preference';
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
+        })
+        .build();
+    };
+  }
+  // PUT /org-config/daily-digest/time-preference
+  // Save the daily digest UTC time preference. To cover all time zones conversion to UTC, the accepted minute values are 00, 15, 30 and 45.
+  export namespace OrgConfigResourceSaveDailyDigestTimePreference {
+    export interface Params {
+      body: Schemas.LocalTime;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 200, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/org-config/daily-digest/time-preference';
+        const query = {} as Record<string, any>;
+        return actionBuilder('PUT', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
         })
         .build();
     };

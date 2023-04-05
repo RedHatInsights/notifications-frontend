@@ -20,7 +20,7 @@ const actionClassName = style({
 
 export const PageHeader:React.FunctionComponent<PageHeaderProps> = props => {
     return (
-        <PageHeaderFC>
+        <PageHeaderFC className="pf-u-pb-0">
             <Split>
                 <SplitItem isFilled>
                     <PageHeaderTitle title={ props.title } />
