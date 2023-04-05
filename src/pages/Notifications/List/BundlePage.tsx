@@ -1,4 +1,4 @@
-import { ButtonVariant } from '@patternfly/react-core';
+import { ButtonVariant, Tab, TabTitleText } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import {
     getInsights,
@@ -39,15 +39,19 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 {Messages.pages.notifications.list.viewHistory}
             </ButtonLink> } />
 
-        <TabComponent elements={ [
-            <Main key='0'>
-                <SplunkBetaEnvironmentBanner />
-                <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
-            </Main>,
-            <Main key='1'>
-                <TimeConfigComponent />
-            </Main>
-        ] } />
+        <TabComponent configuration={ props.children } settings={ props.children }>
+            <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
+                <Main>
+                    <SplunkBetaEnvironmentBanner />
+                    <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
+                </Main>
+            </Tab>
+            <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
+                <Main>
+                    <TimeConfigComponent />
+                </Main>
+            </Tab>
+        </TabComponent>
         </>
     );
 };

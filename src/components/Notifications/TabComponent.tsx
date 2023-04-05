@@ -1,10 +1,11 @@
-import { Tab, Tabs, TabTitleText } from '@patternfly/react-core';
+import { Tabs } from '@patternfly/react-core';
 import { global_BackgroundColor_100, global_spacer_lg } from '@patternfly/react-tokens';
 import React from 'react';
 import { style } from 'typestyle';
 
 interface MyTabComponentProps {
-    elements: Array<React.ReactNode>;
+    configuration: React.ReactNode;
+    settings: React.ReactNode;
   }
 
 const backgroundColorClassName = style({
@@ -26,12 +27,7 @@ export const TabComponent: React.FunctionComponent<MyTabComponentProps> = (props
         <div className={ backgroundColorClassName }>
             <Tabs className={ paddingLeftClassName }
                 defaultActiveKey={ activeTabKey } role="region" onClick={ handleTabClick }>
-                <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
-                    { props.elements[0]}
-                </Tab>
-                <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
-                    { props.elements[1] }
-                </Tab>
+                { props.children }
             </Tabs>
         </div>
     );

@@ -20,7 +20,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     const handleRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
         setShowCustomSelect(false);
-
     }, []);
 
     const [ isOpen, setIsOpen ] = React.useState(false);
@@ -39,7 +38,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         mutate({
             body: time
         });
-
     }, [ saveTimePreference.mutate ]);
 
     return (
