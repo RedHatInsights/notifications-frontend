@@ -18,23 +18,20 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     id: 'ignored',
                     endpoint_id: 'id-01',
                     endpoint_type: 'email_subscription',
-                    invocation_result: true,
                     details: { },
-                    status: 'SUCCESS'
+                    status: 'PROCESSING'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-01',
                     endpoint_type: 'email_subscription',
-                    invocation_result: true,
                     details: { },
-                    status: 'SUCCESS'
+                    status: 'SENT'
                 },
                 {
                     id: 'ignored',
                     endpoint_id: 'id-01',
                     endpoint_type: 'email_subscription',
-                    invocation_result: false,
                     details: { },
                     status: 'FAILED'
                 },
@@ -42,7 +39,6 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     id: 'ignored',
                     endpoint_id: 'id-02',
                     endpoint_type: 'webhook',
-                    invocation_result: true,
                     details: { },
                     status: 'SUCCESS'
                 },
@@ -50,7 +46,6 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     id: 'ignored',
                     endpoint_id: 'id-03',
                     endpoint_type: 'webhook',
-                    invocation_result: false,
                     details: { },
                     status: 'FAILED'
                 },
@@ -58,7 +53,6 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     id: 'ignored',
                     endpoint_id: 'id-04',
                     endpoint_type: 'email_subscription',
-                    invocation_result: true,
                     details: { },
                     status: 'SUCCESS'
                 },
@@ -66,7 +60,6 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                     id: 'ignored',
                     endpoint_id: 'id-04',
                     endpoint_type: 'email_subscription',
-                    invocation_result: true,
                     details: { },
                     status: 'SUCCESS'
                 }
@@ -83,7 +76,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
                 {
                     id: 'id-01',
                     status: {
-                        last: 'SUCCESS',
+                        last: 'SENT',
                         isDegraded: true
                     },
                     endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
