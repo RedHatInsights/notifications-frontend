@@ -1,11 +1,11 @@
 import { Skeleton, Tooltip } from '@patternfly/react-core';
-import { BanIcon } from '@patternfly/react-icons';
+import { BanIcon, LockIcon } from '@patternfly/react-icons';
 import { global_disabled_color_100, global_spacer_sm } from '@patternfly/react-tokens';
 import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
-import { Action, NotificationType } from '../../types/Notification';
+import { Action, EmailSystemProperties, NotificationType } from '../../types/Notification';
 import { NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../types/Recipient';
 import { GroupNotFound } from './Rbac/GroupNotFound';
 
@@ -27,6 +27,9 @@ const greyColorName = style({
 const CommaSeparator = () => <span>, </span>;
 
 export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
+
+    const [ ignorePref ] = React.useState<EmailSystemProperties>();
+
     if (props.action.type === NotificationType.INTEGRATION) {
         return (
             <>
@@ -50,9 +53,16 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
 
     return (
         <span>
-            { users.length > 0 && <div>
+            { ignorePref ? users.length > 0 && <div>
                 Users: {join(users.map(u => u.displayName), CommaSeparator)}
-            </div> }
+                <Tooltip content="You may still receive forced notifications for this service" position="bottom">
+                    <LockIcon className={ disabledLabelClassName } />
+                </Tooltip>
+            </div> :
+                <div>
+                Users: {join(users.map(u => u.displayName), CommaSeparator)}
+                </div>
+            }
             { groups.length > 0 && <div>
                 User Access Groups: { join(groups.map(g => {
                     if (g.hasError) {
