@@ -121,7 +121,6 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
 
 export const toIntegrations = (serverIntegrations: Array<ServerIntegrationResponse>): Array<Integration> => {
     return serverIntegrations
-    .filter(filterOutDefaultAction)
     .map(toIntegration);
 };
 
@@ -179,6 +178,3 @@ export const toServerIntegrationRequest =
             properties: toIntegrationProperties(integration)
         };
     };
-
-export const filterOutDefaultAction = (serverNotification: ServerIntegrationResponse) =>
-    serverNotification.type !== Schemas.EndpointType.enum.default;

@@ -115,8 +115,6 @@ export const EventLogPage: React.FunctionComponent = () => {
                     }
 
                     return 'Users: All';
-                case 'default':
-                    throw new Error('Invalid integration type');
                 default:
                     assertNever(type);
             }

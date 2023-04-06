@@ -56,6 +56,17 @@ export namespace Schemas {
     id: UUID;
   };
 
+  export const ApplicationSettingsValue = zodSchemaApplicationSettingsValue();
+  export type ApplicationSettingsValue = {
+    hasForcedEmail?: boolean | undefined | null;
+    notifications?:
+      | {
+          [x: string]: boolean;
+        }
+      | undefined
+      | null;
+  };
+
   export const BasicAuthentication = zodSchemaBasicAuthentication();
   export type BasicAuthentication = {
     password?: string | undefined | null;
@@ -95,6 +106,16 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     updated?: LocalDateTime | undefined | null;
+  };
+
+  export const BundleSettingsValue = zodSchemaBundleSettingsValue();
+  export type BundleSettingsValue = {
+    applications?:
+      | {
+          [x: string]: ApplicationSettingsValue;
+        }
+      | undefined
+      | null;
   };
 
   export const CamelProperties = zodSchemaCamelProperties();
@@ -198,7 +219,7 @@ export namespace Schemas {
     | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType = 'webhook' | 'email_subscription' | 'camel' | 'default';
+  export type EndpointType = 'webhook' | 'email_subscription' | 'camel';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -226,7 +247,6 @@ export namespace Schemas {
     endpoint_sub_type?: string | undefined | null;
     endpoint_type: EndpointType;
     id: UUID;
-    invocation_result: boolean;
     status: EventLogEntryActionStatus;
   };
 
@@ -341,7 +361,6 @@ export namespace Schemas {
     endpointSubType?: string | undefined | null;
     endpointType?: EndpointType | undefined | null;
     id?: UUID | undefined | null;
-    invocationResult: boolean;
     invocationTime: number;
     status: NotificationStatus;
   };
@@ -398,6 +417,16 @@ export namespace Schemas {
     environment?: Environment | undefined | null;
   };
 
+  export const SettingsValues = zodSchemaSettingsValues();
+  export type SettingsValues = {
+    bundles?:
+      | {
+          [x: string]: BundleSettingsValue;
+        }
+      | undefined
+      | null;
+  };
+
   export const Status = zodSchemaStatus();
   export type Status = 'UP' | 'MAINTENANCE';
 
@@ -411,6 +440,15 @@ export namespace Schemas {
     updated?: LocalDateTime | undefined | null;
   };
 
+  export const TriggerDailyDigestRequest = zodSchemaTriggerDailyDigestRequest();
+  export type TriggerDailyDigestRequest = {
+    application_name: string;
+    bundle_name: string;
+    end?: LocalDateTime | undefined | null;
+    org_id: string;
+    start?: LocalDateTime | undefined | null;
+  };
+
   export const UUID = zodSchemaUUID();
   export type UUID = string;
 
@@ -418,8 +456,15 @@ export namespace Schemas {
     zodSchemaUpdateBehaviorGroupRequest();
   export type UpdateBehaviorGroupRequest = {
     display_name?: string | undefined | null;
+    display_name_not_null_and_blank?: boolean | undefined | null;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
+  };
+
+  export const UserConfigPreferences = zodSchemaUserConfigPreferences();
+  export type UserConfigPreferences = {
+    daily_email?: boolean | undefined | null;
+    instant_email?: boolean | undefined | null;
   };
 
   export const WebhookProperties = zodSchemaWebhookProperties();
@@ -493,6 +538,15 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaApplicationSettingsValue() {
+      return z
+      .object({
+          hasForcedEmail: z.boolean().optional().nullable(),
+          notifications: z.record(z.boolean()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaBasicAuthentication() {
       return z
       .object({
@@ -545,6 +599,17 @@ export namespace Schemas {
           id: zodSchemaUUID().optional().nullable(),
           name: z.string(),
           updated: zodSchemaLocalDateTime().optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBundleSettingsValue() {
+      return z
+      .object({
+          applications: z
+          .record(zodSchemaApplicationSettingsValue())
+          .optional()
+          .nullable()
       })
       .nonstrict();
   }
@@ -673,7 +738,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'camel', 'default' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel' ]);
   }
 
   function zodSchemaEnvironment() {
@@ -702,7 +767,6 @@ export namespace Schemas {
           endpoint_sub_type: z.string().optional().nullable(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
-          invocation_result: z.boolean(),
           status: zodSchemaEventLogEntryActionStatus()
       })
       .nonstrict();
@@ -845,7 +909,6 @@ export namespace Schemas {
           endpointSubType: z.string().optional().nullable(),
           endpointType: zodSchemaEndpointType().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
-          invocationResult: z.boolean(),
           invocationTime: z.number().int(),
           status: zodSchemaNotificationStatus()
       })
@@ -917,6 +980,14 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaSettingsValues() {
+      return z
+      .object({
+          bundles: z.record(zodSchemaBundleSettingsValue()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaStatus() {
       return z.enum([ 'UP', 'MAINTENANCE' ]);
   }
@@ -934,6 +1005,18 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaTriggerDailyDigestRequest() {
+      return z
+      .object({
+          application_name: z.string(),
+          bundle_name: z.string(),
+          end: zodSchemaLocalDateTime().optional().nullable(),
+          org_id: z.string(),
+          start: zodSchemaLocalDateTime().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaUUID() {
       return z.string();
   }
@@ -942,8 +1025,18 @@ export namespace Schemas {
       return z
       .object({
           display_name: z.string().optional().nullable(),
+          display_name_not_null_and_blank: z.boolean().optional().nullable(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaUserConfigPreferences() {
+      return z
+      .object({
+          daily_email: z.boolean().optional().nullable(),
+          instant_email: z.boolean().optional().nullable()
       })
       .nonstrict();
   }
@@ -1362,10 +1455,6 @@ export namespace Operations {
         }
 
         if (params.sortBy !== undefined) {
-            query.sortBy = params.sortBy;
-        }
-
-        if (params.sortBy !== undefined) {
             query.sort_by = params.sortBy;
         }
 
@@ -1462,10 +1551,6 @@ export namespace Operations {
         }
 
         if (params.sortBy !== undefined) {
-            query.sortBy = params.sortBy;
-        }
-
-        if (params.sortBy !== undefined) {
             query.sort_by = params.sortBy;
         }
 
@@ -1512,6 +1597,73 @@ export namespace Operations {
         .config({
             rules: [
                 new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
+        })
+        .build();
+    };
+  }
+  // DELETE /notifications/eventTypes/{eventTypeId}/behaviorGroups/{behaviorGroupId}
+  // Delete a behavior group from the given event type.
+  export namespace NotificationResourceDeleteBehaviorGroupFromEventType {
+    export interface Params {
+      behaviorGroupId: Schemas.UUID;
+      eventTypeId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/behaviorGroups/{behaviorGroupId}'
+        .replace('{behaviorGroupId}', params.behaviorGroupId.toString())
+        .replace('{eventTypeId}', params.eventTypeId.toString());
+        const query = {} as Record<string, any>;
+        return actionBuilder('DELETE', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 204),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
+        })
+        .build();
+    };
+  }
+  // PUT /notifications/eventTypes/{eventTypeUuid}/behaviorGroups/{behaviorGroupUuid}
+  // Add a behavior group to the given event type.
+  export namespace NotificationResourceAppendBehaviorGroupToEventType {
+    export interface Params {
+      behaviorGroupUuid: Schemas.UUID;
+      eventTypeUuid: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/notifications/eventTypes/{eventTypeUuid}/behaviorGroups/{behaviorGroupUuid}'
+        .replace(
+            '{behaviorGroupUuid}',
+            params.behaviorGroupUuid.toString()
+        )
+        .replace('{eventTypeUuid}', params.eventTypeUuid.toString());
+        const query = {} as Record<string, any>;
+        return actionBuilder('PUT', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 204),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]
@@ -1621,10 +1773,6 @@ export namespace Operations {
 
         if (params.pageNumber !== undefined) {
             query.pageNumber = params.pageNumber;
-        }
-
-        if (params.sortBy !== undefined) {
-            query.sortBy = params.sortBy;
         }
 
         if (params.sortBy !== undefined) {
@@ -1764,6 +1912,96 @@ export namespace Operations {
                 new ValidateRule(Schemas.__Empty, '__Empty', 200),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
+        })
+        .build();
+    };
+  }
+  // GET /user-config/notification-preference
+  export namespace UserConfigResourceGetSettingsSchema {
+    const BundleName = z.string();
+    type BundleName = string;
+    export interface Params {
+      bundleName?: BundleName;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 200, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/user-config/notification-preference';
+        const query = {} as Record<string, any>;
+        if (params.bundleName !== undefined) {
+            query.bundleName = params.bundleName;
+        }
+
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 200) ]
+        })
+        .build();
+    };
+  }
+  // POST /user-config/notification-preference
+  export namespace UserConfigResourceSaveSettings {
+    export interface Params {
+      body: Schemas.SettingsValues;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 200, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/user-config/notification-preference';
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [ new ValidateRule(Schemas.__Empty, '__Empty', 200) ]
+        })
+        .build();
+    };
+  }
+  // GET /user-config/notification-preference/{bundleName}/{applicationName}
+  export namespace UserConfigResourceGetPreferences {
+    const ApplicationName = z.string();
+    type ApplicationName = string;
+    const BundleName = z.string();
+    type BundleName = string;
+    export interface Params {
+      applicationName: ApplicationName;
+      bundleName: BundleName;
+    }
+
+    export type Payload =
+      | ValidatedResponse<
+          'UserConfigPreferences',
+          200,
+          Schemas.UserConfigPreferences
+        >
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path =
+        '/api/notifications/v1.0/user-config/notification-preference/{bundleName}/{applicationName}'
+        .replace('{applicationName}', params.applicationName.toString())
+        .replace('{bundleName}', params.bundleName.toString());
+        const query = {} as Record<string, any>;
+        return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(
+                    Schemas.UserConfigPreferences,
+                    'UserConfigPreferences',
+                    200
+                )
             ]
         })
         .build();
