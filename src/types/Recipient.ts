@@ -52,10 +52,12 @@ export abstract class BaseNotificationRecipient extends Recipient {
 
 export class NotificationUserRecipient extends BaseNotificationRecipient {
     readonly sendToAdmin: boolean;
+    readonly ignorePreferences: boolean;
 
-    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean) {
+    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean, ignorePreferences: boolean) {
         let displayName;
         let description;
+
         if (sendToAdmin) {
             displayName = 'Admins';
             description = 'Organization administrators for your account';
@@ -72,6 +74,7 @@ export class NotificationUserRecipient extends BaseNotificationRecipient {
         );
 
         this.sendToAdmin = sendToAdmin;
+        this.ignorePreferences = ignorePreferences;
     }
 
     public equals(recipient: Recipient) {

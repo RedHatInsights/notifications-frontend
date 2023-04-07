@@ -209,7 +209,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                     },
                     {
                         type: NotificationType.EMAIL_SUBSCRIPTION,
-                        recipient: [ new NotificationUserRecipient('e1', true), new NotificationUserRecipient('e2', false) ]
+                        recipient: [ new NotificationUserRecipient('e1', true, false), new NotificationUserRecipient('e2', false, false) ]
                     },
                     {
                         type: NotificationType.INTEGRATION,
@@ -274,7 +274,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
                     },
                     {
                         type: NotificationType.EMAIL_SUBSCRIPTION,
-                        recipient: [ new NotificationUserRecipient(undefined, true), new NotificationUserRecipient('e2', false) ]
+                        recipient: [ new NotificationUserRecipient(undefined, true, false), new NotificationUserRecipient('e2', false, false) ]
                     },
                     {
                         type: NotificationType.INTEGRATION,

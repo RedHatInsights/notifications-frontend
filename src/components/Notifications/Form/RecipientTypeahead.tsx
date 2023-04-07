@@ -65,8 +65,8 @@ const loadingMapper = () => {
 
 const userOptions = [
     renderSelectGroup('users', 'Users', [
-        new NotificationUserRecipient(undefined, false),
-        new NotificationUserRecipient(undefined, true)
+        new NotificationUserRecipient(undefined, false, false),
+        new NotificationUserRecipient(undefined, true, false)
     ])
 ];
 
