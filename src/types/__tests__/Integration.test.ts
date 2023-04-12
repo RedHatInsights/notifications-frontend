@@ -12,6 +12,7 @@ describe('src/types/Integration', () => {
         expect(isCamelType(UserIntegrationType.SPLUNK)).toBe(true);
         expect(isCamelType(UserIntegrationType.SLACK)).toBe(true);
         expect(isCamelType(UserIntegrationType.TEAMS)).toBe(true);
+        expect(isCamelType(UserIntegrationType.GOOGLE_CHAT)).toBe(true);
     });
 
     it('isCamelIntegrationType returns true for integrations with a camel subtype', () => {
@@ -29,6 +30,9 @@ describe('src/types/Integration', () => {
             type: UserIntegrationType.TEAMS
         })).toBe(true);
         expect(isCamelIntegrationType({
+            type: UserIntegrationType.GOOGLE_CHAT
+        })).toBe(true);
+        expect(isCamelIntegrationType({
             name: 'camel'
         })).toBe(false);
     });
@@ -39,6 +43,7 @@ describe('src/types/Integration', () => {
         expect(isUserIntegrationType(IntegrationType.SPLUNK)).toBe(true);
         expect(isUserIntegrationType(IntegrationType.SLACK)).toBe(true);
         expect(isUserIntegrationType(IntegrationType.TEAMS)).toBe(true);
+        expect(isUserIntegrationType(IntegrationType.GOOGLE_CHAT)).toBe(true);
         expect(isUserIntegrationType(undefined)).toBe(false);
     });
 });

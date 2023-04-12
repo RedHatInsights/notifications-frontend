@@ -9,7 +9,8 @@ export enum IntegrationType {
     SPLUNK = 'camel:splunk',
     SLACK = 'camel:slack',
     SERVICE_NOW = 'camel:servicenow',
-    TEAMS = 'camel:teams'
+    TEAMS = 'camel:teams',
+    GOOGLE_CHAT = 'camel:google_chat'
 }
 
 export const UserIntegrationType = {
@@ -17,7 +18,8 @@ export const UserIntegrationType = {
     SPLUNK: IntegrationType.SPLUNK,
     SERVICE_NOW: IntegrationType.SERVICE_NOW,
     SLACK: IntegrationType.SLACK,
-    TEAMS: IntegrationType.TEAMS
+    TEAMS: IntegrationType.TEAMS,
+    GOOGLE_CHAT: IntegrationType.GOOGLE_CHAT
 } as const;
 
 export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;
