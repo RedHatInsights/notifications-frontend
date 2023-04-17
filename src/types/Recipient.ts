@@ -79,7 +79,8 @@ export class NotificationUserRecipient extends BaseNotificationRecipient {
 
     public equals(recipient: Recipient) {
         if (recipient instanceof NotificationUserRecipient) {
-            return recipient.sendToAdmin === this.sendToAdmin;
+            return recipient.sendToAdmin === this.sendToAdmin
+            && recipient.ignorePreferences === this.ignorePreferences;
         }
 
         return false;
