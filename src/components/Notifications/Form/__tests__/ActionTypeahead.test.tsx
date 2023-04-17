@@ -12,8 +12,8 @@ import { RecipientContext, RecipientContextProvider } from '../../RecipientConte
 import { ActionTypeahead } from '../ActionTypeahead';
 
 const ALL_RECIPIENTS = [
-    new NotificationUserRecipient(undefined, false),
-    new NotificationUserRecipient(undefined, true)
+    new NotificationUserRecipient(undefined, false, false),
+    new NotificationUserRecipient(undefined, true, false)
 ] as ReadonlyArray<NotificationUserRecipient>;
 
 const defaultRecipientContext = (): RecipientContext => ({

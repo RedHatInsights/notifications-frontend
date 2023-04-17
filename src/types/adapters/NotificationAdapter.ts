@@ -32,7 +32,7 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
     if (integration.groupId) {
         action.recipient = [ new NotificationRbacGroupRecipient(integration.id, integration.groupId, true) ];
     } else {
-        action.recipient = [ new NotificationUserRecipient(integration.id, integration.onlyAdmin) ];
+        action.recipient = [ new NotificationUserRecipient(integration.id, integration.onlyAdmin, integration.ignorePreferences) ];
     }
 
     return action;
