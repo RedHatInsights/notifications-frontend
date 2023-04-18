@@ -1,7 +1,7 @@
 import { ButtonVariant, Tab, TabTitleText } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import {
-    getInsights,
+    getInsights, getInsightsEnvironment,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React } from 'react';
@@ -13,6 +13,7 @@ import { TimeConfigComponent } from '../../../components/Notifications/TimeConfi
 import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
+import { stagingAndProdBeta } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
 import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
@@ -26,6 +27,13 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
+    const insights = getInsights();
+    const isProdOrStageBeta = stagingAndProdBeta.includes(getInsightsEnvironment(insights));
+
+    const mainPage = <Main>
+        <SplunkBetaEnvironmentBanner />
+        <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
+    </Main>;
 
     return (
         <><PageHeader
@@ -39,19 +47,18 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 {Messages.pages.notifications.list.viewHistory}
             </ButtonLink> } />
 
-        <TabComponent configuration={ props.children } settings={ props.children }>
-            <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
-                <Main>
-                    <SplunkBetaEnvironmentBanner />
-                    <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
-                </Main>
-            </Tab>
-            <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
-                <Main>
-                    <TimeConfigComponent />
-                </Main>
-            </Tab>
-        </TabComponent>
+        { isProdOrStageBeta ? (
+            <TabComponent configuration={ props.children } settings={ props.children }>
+                <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
+                    {mainPage}
+                </Tab>
+                <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
+                    <Main>
+                        <TimeConfigComponent />
+                    </Main>
+                </Tab>
+            </TabComponent>
+        ) : mainPage }
         </>
     );
 };
