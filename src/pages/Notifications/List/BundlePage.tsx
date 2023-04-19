@@ -15,7 +15,6 @@ import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { stagingAndProdBeta } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
-import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
 interface NotificationListBundlePageProps {
@@ -31,7 +30,6 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     const isProdOrStageBeta = stagingAndProdBeta.includes(getInsightsEnvironment(insights));
 
     const mainPage = <Main>
-        <SplunkBetaEnvironmentBanner />
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
     </Main>;
 
