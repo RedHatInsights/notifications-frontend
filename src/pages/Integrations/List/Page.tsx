@@ -25,7 +25,6 @@ import { NotificationAppState } from '../../../store/types/NotificationAppState'
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
 import { UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
-import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
@@ -182,7 +181,6 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                 </Split>
             </PageHeader>
             <Main>
-                <SplunkBetaEnvironmentBanner />
                 <Section className='pf-c-page__main-section pf-m-light'>
                     <IntegrationsToolbar
                         onAddIntegration={ canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined }
