@@ -80,7 +80,10 @@ const Config = {
         types: computeIntegrationConfig(integrationTypes),
         actions: {
             stable: [
-                UserIntegrationType.WEBHOOK
+                UserIntegrationType.WEBHOOK,
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.SLACK,
+                UserIntegrationType.SERVICE_NOW
             ],
             beta: [
                 UserIntegrationType.WEBHOOK,
