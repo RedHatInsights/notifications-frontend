@@ -21,15 +21,15 @@ const skeletonActions = 3;
 
 const BehaviorGroupActionsSummaryLayout: React.FunctionComponent = props => {
     return (
-        <Grid hasGutter>
+        <Grid>
             <GridItem span={ 6 }>
                 <TextContent>
-                    <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Action</Text>
+                    <Text component={ TextVariants.h6 } className={ contentTitleClassName }>Action</Text>
                 </TextContent>
             </GridItem>
             <GridItem span={ 6 }>
                 <TextContent>
-                    <Text component={ TextVariants.h5 } className={ contentTitleClassName }>Recipient</Text>
+                    <Text component={ TextVariants.h6 } className={ contentTitleClassName }>Recipient</Text>
                 </TextContent>
             </GridItem>
             { props.children }
@@ -45,7 +45,7 @@ const BehaviorGroupActionsSummaryImpl: React.FunctionComponent<BehaviorGroupActi
                     <GridItem span={ 6 }>
                         <ActionComponent action={ action } />
                     </GridItem>
-                    <GridItem span={ 6 }>
+                    <GridItem className='pf-u-text-break-word' span={ 6 }>
                         <Recipient action={ action } />
                     </GridItem>
                 </React.Fragment>

@@ -1,4 +1,4 @@
-import { Environment, getInsights, getInsightsEnvironment, InsightsType } from '@redhat-cloud-services/insights-common-typescript';
+import { Environment, getInsightsEnvironment, InsightsType } from '@redhat-cloud-services/insights-common-typescript';
 
 export const stagingAndProd: Array<Environment> = [
     'stage-beta',
@@ -7,15 +7,21 @@ export const stagingAndProd: Array<Environment> = [
     'prod'
 ];
 
+export const fedramp: Array<Environment> = [
+    'gov',
+    'govStage',
+    'gov-beta',
+    'govStage-beta'
+];
+
 export const stagingAndProdStable: Array<Environment> = [
     'stage',
     'prod'
 ];
 
-export const stagingStableAndAnyProd: Array<Environment> = [
-    'stage',
-    'prod-beta',
-    'prod'
+export const stagingAndProdBeta: Array<Environment> = [
+    'stage-beta',
+    'prod-beta'
 ];
 
 export const staging: Array<Environment> = [
@@ -23,20 +29,8 @@ export const staging: Array<Environment> = [
     'stage-beta'
 ];
 
-export const isStagingOrProd = (insights: InsightsType) => {
-    return stagingAndProd.includes(getInsightsEnvironment(insights));
-};
+export const isExperimental = (insights: InsightsType) => {
+    const environment = getInsightsEnvironment(insights);
 
-export const isStagingStableOrAnyProd = (insights: InsightsType) => {
-    return stagingStableAndAnyProd.includes(getInsightsEnvironment(insights));
-};
-
-export const isReleased = () => {
-    const insights = getInsights();
-    return isStagingOrProd(insights);
-};
-
-export const isStable = () => {
-    const insights = getInsights();
-    return stagingAndProdStable.includes(getInsightsEnvironment(insights));
+    return !stagingAndProd.includes(environment) && !fedramp.includes(environment);
 };

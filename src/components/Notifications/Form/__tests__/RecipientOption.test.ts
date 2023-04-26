@@ -4,7 +4,7 @@ import { RecipientOption } from '../RecipientOption';
 
 describe('src/components/Notifications/Form/RecipientOption', () => {
     it('CompareTo returns equal for the same object', () => {
-        const recipient1 = new NotificationUserRecipient(undefined, true);
+        const recipient1 = new NotificationUserRecipient(undefined, true, false);
         const recipient2 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
@@ -20,8 +20,8 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
     });
 
     it('CompareTo returns true for objects with same values', () => {
-        const recipient1 = new NotificationUserRecipient(undefined, true);
-        const recipient2 = new NotificationUserRecipient(undefined, true);
+        const recipient1 = new NotificationUserRecipient(undefined, true, false);
+        const recipient2 = new NotificationUserRecipient(undefined, true, false);
         const a = new RecipientOption(recipient1);
         const b = new RecipientOption(recipient2);
 
@@ -48,8 +48,8 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
     });
 
     it('CompareTo returns false for objects with different values', () => {
-        const recipient1 = new NotificationUserRecipient(undefined, true);
-        const recipient2 = new NotificationUserRecipient(undefined, false);
+        const recipient1 = new NotificationUserRecipient(undefined, true, false);
+        const recipient2 = new NotificationUserRecipient(undefined, false, false);
         const a = new RecipientOption(recipient1);
         const b = new RecipientOption(recipient2);
         expect(a.compareTo(b)).toBe(false);
@@ -75,7 +75,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
     });
 
     it('CompareTo returns false when mixing notification and integration', () => {
-        const recipient1 = new NotificationUserRecipient(undefined, true);
+        const recipient1 = new NotificationUserRecipient(undefined, true, false);
         const recipient2 = new IntegrationRecipient({
             name: 'bar',
             isEnabled: false,
@@ -89,7 +89,7 @@ describe('src/components/Notifications/Form/RecipientOption', () => {
     });
 
     it('toString returns the description', () => {
-        const recipient1 = new NotificationUserRecipient(undefined, true);
+        const recipient1 = new NotificationUserRecipient(undefined, true, false);
         const a = new RecipientOption(recipient1);
 
         expect(a.toString()).toEqual('Admins');

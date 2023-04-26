@@ -19,6 +19,7 @@ import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Noti
 import { SortDirection, sortDirectionFromString } from '../../types/SortDirection';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
+import EmptyTableState from './EmptyTableState';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 
 type OnNotificationIdHandler = (notificationId: UUID) => void;
@@ -207,7 +208,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
                 </Tr>
             </Thead>
             <Tbody>
-                { rows }
+                { props.notifications.length === 0 ? <EmptyTableState /> : rows }
             </Tbody>
         </TableComposable>
     );

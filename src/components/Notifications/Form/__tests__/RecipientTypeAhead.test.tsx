@@ -19,12 +19,12 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
 };
 
 const SELECTED_ALL = [
-    new NotificationUserRecipient(undefined, false),
-    new NotificationUserRecipient(undefined, true)
+    new NotificationUserRecipient(undefined, false, false),
+    new NotificationUserRecipient(undefined, true, false)
 ] as ReadonlyArray<BaseNotificationRecipient>;
 
 const SELECTED_SEND_TO_ADMIN = [
-    new NotificationUserRecipient(undefined, true)
+    new NotificationUserRecipient(undefined, true, false)
 ] as ReadonlyArray<BaseNotificationRecipient>;
 
 const SELECTED_LOADED_GROUP = [
@@ -39,7 +39,7 @@ const SELECTED_NON_EXISTING_GROUP = [
     new NotificationRbacGroupRecipient(undefined, 'does-not-exists-group', false)
 ] as ReadonlyArray<BaseNotificationRecipient>;
 
-const createDefaultGetMock = () => fn(async () => [ new NotificationUserRecipient(undefined, true) ]);
+const createDefaultGetMock = () => fn(async () => [ new NotificationUserRecipient(undefined, true, false) ]);
 
 describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 

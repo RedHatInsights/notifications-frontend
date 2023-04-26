@@ -1,3 +1,4 @@
+import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { fetchRBAC, Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { act, render, screen } from '@testing-library/react';
@@ -11,10 +12,8 @@ import App from '../App';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
     const real = jest.requireActual('@redhat-cloud-services/insights-common-typescript');
-    const MockedAppSkeleton: React.FunctionComponent = () => <div data-testid="loading"><real.AppSkeleton /></div>;
     return {
         ...real,
-        AppSkeleton: MockedAppSkeleton,
         fetchRBAC: jest.fn(real.fetchRBAC)
     };
 });
@@ -76,7 +75,8 @@ describe('src/app/App', () => {
             await jest.advanceTimersToNextTimer();
         });
 
-        expect(screen.getByTestId('loading')).toBeTruthy();
+        expect(ouiaSelectors.getByOuia('AppSkeleton')).toBeTruthy();
+
         jest.restoreAllMocks();
     });
 

@@ -1,5 +1,4 @@
 import { ButtonVariant } from '@patternfly/react-core';
-import { Main } from '@redhat-cloud-services/frontend-components';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
 import assertNever from 'assert-never';
 import * as React from 'react';
@@ -16,6 +15,7 @@ import {
 } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
 import { PageHeader } from '../../../components/PageHeader';
+import { Main } from '../../../components/Store/Main';
 import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
@@ -115,8 +115,6 @@ export const EventLogPage: React.FunctionComponent = () => {
                     }
 
                     return 'Users: All';
-                case 'default':
-                    throw new Error('Invalid integration type');
                 default:
                     assertNever(type);
             }

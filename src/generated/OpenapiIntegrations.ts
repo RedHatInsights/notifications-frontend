@@ -28,7 +28,7 @@ export namespace Schemas {
 
   export const AggregationEmailTemplate = zodSchemaAggregationEmailTemplate();
   export type AggregationEmailTemplate = {
-    application?: Application1 | undefined | null;
+    application?: Application | undefined | null;
     application_id?: UUID | undefined | null;
     body_template?: Template | undefined | null;
     body_template_id: UUID;
@@ -42,18 +42,29 @@ export namespace Schemas {
 
   export const Application = zodSchemaApplication();
   export type Application = {
-    display_name: string;
-    id: UUID;
-  };
-
-  export const Application1 = zodSchemaApplication1();
-  export type Application1 = {
     bundle_id: UUID;
     created?: LocalDateTime | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
     name: string;
     updated?: LocalDateTime | undefined | null;
+  };
+
+  export const Application1 = zodSchemaApplication1();
+  export type Application1 = {
+    display_name: string;
+    id: UUID;
+  };
+
+  export const ApplicationSettingsValue = zodSchemaApplicationSettingsValue();
+  export type ApplicationSettingsValue = {
+    hasForcedEmail?: boolean | undefined | null;
+    notifications?:
+      | {
+          [x: string]: boolean;
+        }
+      | undefined
+      | null;
   };
 
   export const BasicAuthentication = zodSchemaBasicAuthentication();
@@ -97,6 +108,16 @@ export namespace Schemas {
     updated?: LocalDateTime | undefined | null;
   };
 
+  export const BundleSettingsValue = zodSchemaBundleSettingsValue();
+  export type BundleSettingsValue = {
+    applications?:
+      | {
+          [x: string]: ApplicationSettingsValue;
+        }
+      | undefined
+      | null;
+  };
+
   export const CamelProperties = zodSchemaCamelProperties();
   export type CamelProperties = {
     basic_authentication?: BasicAuthentication | undefined | null;
@@ -114,7 +135,9 @@ export namespace Schemas {
   export const CreateBehaviorGroupRequest =
     zodSchemaCreateBehaviorGroupRequest();
   export type CreateBehaviorGroupRequest = {
-    bundle_id: UUID;
+    bundle_id?: UUID | undefined | null;
+    bundle_name?: string | undefined | null;
+    bundle_uuid_or_bundle_name_valid?: boolean | undefined | null;
     display_name: string;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
@@ -136,6 +159,13 @@ export namespace Schemas {
     end_time?: LocalDateTime | undefined | null;
     start_time?: LocalDateTime | undefined | null;
     status: Status;
+  };
+
+  export const DuplicateNameMigrationReport =
+    zodSchemaDuplicateNameMigrationReport();
+  export type DuplicateNameMigrationReport = {
+    updatedBehaviorGroups?: number | undefined | null;
+    updatedIntegrations?: number | undefined | null;
   };
 
   export const EmailSubscriptionProperties =
@@ -189,11 +219,7 @@ export namespace Schemas {
     | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType =
-    | 'webhook'
-    | 'email_subscription'
-    | 'default'
-    | 'camel';
+  export type EndpointType = 'webhook' | 'email_subscription' | 'camel';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -221,7 +247,6 @@ export namespace Schemas {
     endpoint_sub_type?: string | undefined | null;
     endpoint_type: EndpointType;
     id: UUID;
-    invocation_result: boolean;
     status: EventLogEntryActionStatus;
   };
 
@@ -235,7 +260,7 @@ export namespace Schemas {
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
-    application?: Application1 | undefined | null;
+    application?: Application | undefined | null;
     application_id: UUID;
     description?: string | undefined | null;
     display_name: string;
@@ -297,7 +322,7 @@ export namespace Schemas {
 
   export const InternalUserPermissions = zodSchemaInternalUserPermissions();
   export type InternalUserPermissions = {
-    applications: Array<Application>;
+    applications: Array<Application1>;
     is_admin: boolean;
     roles: Array<string>;
   };
@@ -307,6 +332,9 @@ export namespace Schemas {
 
   export const LocalDateTime = zodSchemaLocalDateTime();
   export type LocalDateTime = string;
+
+  export const LocalTime = zodSchemaLocalTime();
+  export type LocalTime = string;
 
   export const MessageValidationResponse = zodSchemaMessageValidationResponse();
   export type MessageValidationResponse = {
@@ -333,7 +361,6 @@ export namespace Schemas {
     endpointSubType?: string | undefined | null;
     endpointType?: EndpointType | undefined | null;
     id?: UUID | undefined | null;
-    invocationResult: boolean;
     invocationTime: number;
     status: NotificationStatus;
   };
@@ -367,9 +394,8 @@ export namespace Schemas {
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
   export type RenderEmailTemplateRequest = {
-    body_template: string;
     payload: string;
-    subject_template: string;
+    template: Array<string>;
   };
 
   export const RequestDefaultBehaviorGroupPropertyList =
@@ -391,6 +417,16 @@ export namespace Schemas {
     environment?: Environment | undefined | null;
   };
 
+  export const SettingsValues = zodSchemaSettingsValues();
+  export type SettingsValues = {
+    bundles?:
+      | {
+          [x: string]: BundleSettingsValue;
+        }
+      | undefined
+      | null;
+  };
+
   export const Status = zodSchemaStatus();
   export type Status = 'UP' | 'MAINTENANCE';
 
@@ -404,6 +440,15 @@ export namespace Schemas {
     updated?: LocalDateTime | undefined | null;
   };
 
+  export const TriggerDailyDigestRequest = zodSchemaTriggerDailyDigestRequest();
+  export type TriggerDailyDigestRequest = {
+    application_name: string;
+    bundle_name: string;
+    end?: LocalDateTime | undefined | null;
+    org_id: string;
+    start?: LocalDateTime | undefined | null;
+  };
+
   export const UUID = zodSchemaUUID();
   export type UUID = string;
 
@@ -411,8 +456,15 @@ export namespace Schemas {
     zodSchemaUpdateBehaviorGroupRequest();
   export type UpdateBehaviorGroupRequest = {
     display_name?: string | undefined | null;
+    display_name_not_null_and_blank?: boolean | undefined | null;
     endpoint_ids?: Array<string> | undefined | null;
     event_type_ids?: Array<string> | undefined | null;
+  };
+
+  export const UserConfigPreferences = zodSchemaUserConfigPreferences();
+  export type UserConfigPreferences = {
+    daily_email?: boolean | undefined | null;
+    instant_email?: boolean | undefined | null;
   };
 
   export const WebhookProperties = zodSchemaWebhookProperties();
@@ -450,7 +502,7 @@ export namespace Schemas {
   function zodSchemaAggregationEmailTemplate() {
       return z
       .object({
-          application: zodSchemaApplication1().optional().nullable(),
+          application: zodSchemaApplication().optional().nullable(),
           application_id: zodSchemaUUID().optional().nullable(),
           body_template: zodSchemaTemplate().optional().nullable(),
           body_template_id: zodSchemaUUID(),
@@ -467,8 +519,12 @@ export namespace Schemas {
   function zodSchemaApplication() {
       return z
       .object({
+          bundle_id: zodSchemaUUID(),
+          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
-          id: zodSchemaUUID()
+          id: zodSchemaUUID().optional().nullable(),
+          name: z.string(),
+          updated: zodSchemaLocalDateTime().optional().nullable()
       })
       .nonstrict();
   }
@@ -476,12 +532,17 @@ export namespace Schemas {
   function zodSchemaApplication1() {
       return z
       .object({
-          bundle_id: zodSchemaUUID(),
-          created: zodSchemaLocalDateTime().optional().nullable(),
           display_name: z.string(),
-          id: zodSchemaUUID().optional().nullable(),
-          name: z.string(),
-          updated: zodSchemaLocalDateTime().optional().nullable()
+          id: zodSchemaUUID()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaApplicationSettingsValue() {
+      return z
+      .object({
+          hasForcedEmail: z.boolean().optional().nullable(),
+          notifications: z.record(z.boolean()).optional().nullable()
       })
       .nonstrict();
   }
@@ -542,6 +603,17 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaBundleSettingsValue() {
+      return z
+      .object({
+          applications: z
+          .record(zodSchemaApplicationSettingsValue())
+          .optional()
+          .nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaCamelProperties() {
       return z
       .object({
@@ -559,7 +631,9 @@ export namespace Schemas {
   function zodSchemaCreateBehaviorGroupRequest() {
       return z
       .object({
-          bundle_id: zodSchemaUUID(),
+          bundle_id: zodSchemaUUID().optional().nullable(),
+          bundle_name: z.string().optional().nullable(),
+          bundle_uuid_or_bundle_name_valid: z.boolean().optional().nullable(),
           display_name: z.string(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()
@@ -586,6 +660,15 @@ export namespace Schemas {
           end_time: zodSchemaLocalDateTime().optional().nullable(),
           start_time: zodSchemaLocalDateTime().optional().nullable(),
           status: zodSchemaStatus()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaDuplicateNameMigrationReport() {
+      return z
+      .object({
+          updatedBehaviorGroups: z.number().int().optional().nullable(),
+          updatedIntegrations: z.number().int().optional().nullable()
       })
       .nonstrict();
   }
@@ -655,7 +738,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'default', 'camel' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel' ]);
   }
 
   function zodSchemaEnvironment() {
@@ -684,7 +767,6 @@ export namespace Schemas {
           endpoint_sub_type: z.string().optional().nullable(),
           endpoint_type: zodSchemaEndpointType(),
           id: zodSchemaUUID(),
-          invocation_result: z.boolean(),
           status: zodSchemaEventLogEntryActionStatus()
       })
       .nonstrict();
@@ -697,7 +779,7 @@ export namespace Schemas {
   function zodSchemaEventType() {
       return z
       .object({
-          application: zodSchemaApplication1().optional().nullable(),
+          application: zodSchemaApplication().optional().nullable(),
           application_id: zodSchemaUUID(),
           description: z.string().optional().nullable(),
           display_name: z.string(),
@@ -783,7 +865,7 @@ export namespace Schemas {
   function zodSchemaInternalUserPermissions() {
       return z
       .object({
-          applications: z.array(zodSchemaApplication()),
+          applications: z.array(zodSchemaApplication1()),
           is_admin: z.boolean(),
           roles: z.array(z.string())
       })
@@ -795,6 +877,10 @@ export namespace Schemas {
   }
 
   function zodSchemaLocalDateTime() {
+      return z.string();
+  }
+
+  function zodSchemaLocalTime() {
       return z.string();
   }
 
@@ -823,7 +909,6 @@ export namespace Schemas {
           endpointSubType: z.string().optional().nullable(),
           endpointType: zodSchemaEndpointType().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
-          invocationResult: z.boolean(),
           invocationTime: z.number().int(),
           status: zodSchemaNotificationStatus()
       })
@@ -863,9 +948,8 @@ export namespace Schemas {
   function zodSchemaRenderEmailTemplateRequest() {
       return z
       .object({
-          body_template: z.string(),
           payload: z.string(),
-          subject_template: z.string()
+          template: z.array(z.string())
       })
       .nonstrict();
   }
@@ -896,6 +980,14 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaSettingsValues() {
+      return z
+      .object({
+          bundles: z.record(zodSchemaBundleSettingsValue()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaStatus() {
       return z.enum([ 'UP', 'MAINTENANCE' ]);
   }
@@ -913,6 +1005,18 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaTriggerDailyDigestRequest() {
+      return z
+      .object({
+          application_name: z.string(),
+          bundle_name: z.string(),
+          end: zodSchemaLocalDateTime().optional().nullable(),
+          org_id: z.string(),
+          start: zodSchemaLocalDateTime().optional().nullable()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaUUID() {
       return z.string();
   }
@@ -921,8 +1025,18 @@ export namespace Schemas {
       return z
       .object({
           display_name: z.string().optional().nullable(),
+          display_name_not_null_and_blank: z.boolean().optional().nullable(),
           endpoint_ids: z.array(z.string()).optional().nullable(),
           event_type_ids: z.array(z.string()).optional().nullable()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaUserConfigPreferences() {
+      return z
+      .object({
+          daily_email: z.boolean().optional().nullable(),
+          instant_email: z.boolean().optional().nullable()
       })
       .nonstrict();
   }
@@ -950,26 +1064,26 @@ export namespace Operations {
   // GET /endpoints
   // List endpoints
   export namespace EndpointResourceGetEndpoints {
-    const Active = z.boolean();
-    type Active = boolean;
     const Limit = z.number().int();
     type Limit = number;
+    const PageNumber = z.number().int();
+    type PageNumber = number;
+    const Active = z.boolean();
+    type Active = boolean;
     const Name = z.string();
     type Name = string;
     const Offset = z.number().int();
     type Offset = number;
-    const PageNumber = z.number().int();
-    type PageNumber = number;
     const SortBy = z.string();
     type SortBy = string;
     const Type = z.array(z.string());
     type Type = Array<string>;
     export interface Params {
-      active?: Active;
       limit?: Limit;
+      pageNumber?: PageNumber;
+      active?: Active;
       name?: Name;
       offset?: Offset;
-      pageNumber?: PageNumber;
       sortBy?: SortBy;
       type?: Type;
     }
@@ -983,12 +1097,16 @@ export namespace Operations {
     export const actionCreator = (params: Params): ActionCreator => {
         const path = '/api/integrations/v1.0/endpoints';
         const query = {} as Record<string, any>;
-        if (params.active !== undefined) {
-            query.active = params.active;
-        }
-
         if (params.limit !== undefined) {
             query.limit = params.limit;
+        }
+
+        if (params.pageNumber !== undefined) {
+            query.pageNumber = params.pageNumber;
+        }
+
+        if (params.active !== undefined) {
+            query.active = params.active;
         }
 
         if (params.name !== undefined) {
@@ -997,10 +1115,6 @@ export namespace Operations {
 
         if (params.offset !== undefined) {
             query.offset = params.offset;
-        }
-
-        if (params.pageNumber !== undefined) {
-            query.pageNumber = params.pageNumber;
         }
 
         if (params.sortBy !== undefined) {
@@ -1318,24 +1432,24 @@ export namespace Operations {
   }
   // GET /endpoints/{id}/history
   export namespace EndpointResourceGetEndpointHistory {
-    const IncludeDetail = z.boolean();
-    type IncludeDetail = boolean;
     const Limit = z.number().int();
     type Limit = number;
-    const Offset = z.number().int();
-    type Offset = number;
     const PageNumber = z.number().int();
     type PageNumber = number;
+    const IncludeDetail = z.boolean();
+    type IncludeDetail = boolean;
+    const Offset = z.number().int();
+    type Offset = number;
     const SortBy = z.string();
     type SortBy = string;
     const Response200 = z.array(Schemas.NotificationHistory);
     type Response200 = Array<Schemas.NotificationHistory>;
     export interface Params {
-      id: Schemas.UUID;
-      includeDetail?: IncludeDetail;
       limit?: Limit;
-      offset?: Offset;
       pageNumber?: PageNumber;
+      includeDetail?: IncludeDetail;
+      id: Schemas.UUID;
+      offset?: Offset;
       sortBy?: SortBy;
     }
 
@@ -1351,20 +1465,20 @@ export namespace Operations {
             params.id.toString()
         );
         const query = {} as Record<string, any>;
-        if (params.includeDetail !== undefined) {
-            query.includeDetail = params.includeDetail;
-        }
-
         if (params.limit !== undefined) {
             query.limit = params.limit;
         }
 
-        if (params.offset !== undefined) {
-            query.offset = params.offset;
-        }
-
         if (params.pageNumber !== undefined) {
             query.pageNumber = params.pageNumber;
+        }
+
+        if (params.includeDetail !== undefined) {
+            query.includeDetail = params.includeDetail;
+        }
+
+        if (params.offset !== undefined) {
+            query.offset = params.offset;
         }
 
         if (params.sortBy !== undefined) {
@@ -1409,6 +1523,38 @@ export namespace Operations {
         .config({
             rules: [
                 new ValidateRule(Response200, 'unknown', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
+        })
+        .build();
+    };
+  }
+  // POST /endpoints/{uuid}/test
+  export namespace EndpointResourceTestEndpoint {
+    const Uuid = z.string();
+    type Uuid = string;
+    export interface Params {
+      uuid: Uuid;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'__Empty', 204, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/integrations/v1.0/endpoints/{uuid}/test'.replace(
+            '{uuid}',
+            params.uuid.toString()
+        );
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.__Empty, '__Empty', 204),
                 new ValidateRule(Schemas.__Empty, '__Empty', 401),
                 new ValidateRule(Schemas.__Empty, '__Empty', 403)
             ]

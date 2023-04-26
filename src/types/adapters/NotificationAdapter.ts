@@ -32,14 +32,11 @@ const _toAction = (type: NotificationType, serverAction: ServerIntegrationRespon
     if (integration.groupId) {
         action.recipient = [ new NotificationRbacGroupRecipient(integration.id, integration.groupId, true) ];
     } else {
-        action.recipient = [ new NotificationUserRecipient(integration.id, integration.onlyAdmin) ];
+        action.recipient = [ new NotificationUserRecipient(integration.id, integration.onlyAdmin, integration.ignorePreferences) ];
     }
 
     return action;
 };
-
-export const usesDefault = (endpoints: Array<Schemas.Endpoint>): boolean =>
-    endpoints.findIndex(e => e.type === Schemas.EndpointType.enum.default) !== -1;
 
 export const toNotification = (serverNotification: ServerNotificationResponse): EventType => {
     if (!serverNotification.id || !serverNotification.application) {
@@ -61,8 +58,6 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
             return _toAction(NotificationType.INTEGRATION, serverAction);
         case Schemas.EndpointType.enum.email_subscription:
             return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);
-        case Schemas.EndpointType.enum.default:
-            throw new Error('EndpointType.default should not reach this point');
         default:
             assertNever(serverAction.type);
     }

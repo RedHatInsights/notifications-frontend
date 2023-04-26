@@ -8,13 +8,13 @@ import {
     DropdownItem,
     DropdownPosition,
     KebabToggle,
-    Popover,
     Skeleton,
     Split,
     SplitItem,
     Text,
     TextContent,
-    TextVariants
+    TextVariants,
+    Tooltip
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
 import { global_spacer_sm } from '@patternfly/react-tokens';
@@ -61,14 +61,17 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                     <Split>
                         <SplitItem>
                             { props.isDefaultBehavior &&
-                            <Popover
+                            <Tooltip
                                 position='top'
                                 appendTo={ () => document.body }
-                                headerContent={ 'System required behavior group' }
                                 // eslint-disable-next-line max-len
-                                bodyContent={ 'This group is system generated and can not be edited, deleted, or removed from being applied to an event' }>
+                                content={ <div>System required behavior group
+                                    <br></br>
+                                    <br></br>
+                                This group is system generated and can not be edited, deleted, or removed from being applied to an event
+                                </div> }>
                                 <LockIcon className={ lockedSpacer } />
-                            </Popover>
+                            </Tooltip>
                             }
                         </SplitItem>
                         <SplitItem>

@@ -21,6 +21,7 @@
     "csstips": "1.2.0",
     "csx": "10.0.2",
     "date-fns": "2.22.1",
+    "date-fns-tz": "2.0.0",
     "formik": "2.2.9",
     "immer": "9.0.6",
     "in-browser-download": "2.0.0",
@@ -39,6 +40,7 @@
     "redux": "4.2.0",
     "redux-logger": "3.0.6",
     "redux-promise-middleware": "5.1.1",
+    "timezones.json": "1.7.0",
     "typesafe-actions": "5.1.0",
     "typestyle": "2.1.0",
     "yup": "0.32.9",
@@ -90,13 +92,13 @@
     "jest": "27.0.4",
     "jest-mock": "27.0.3",
     "jest-transform-stub": "2.0.0",
-    "karma": "6.3.16",
+    "karma": "6.4.1",
     "karma-chrome-launcher": "3.1.0",
     "karma-firefox-launcher": "2.1.2",
     "karma-jasmine": "4.0.1",
     "karma-webpack": "5.0.0",
     "npm-run-all": "4.1.5",
-    "openapi2typescript-cli": "0.6.0",
+    "openapi2typescript-cli": "0.7.0",
     "pin-dependencies-checker": "1.0.6",
     "postcss": "8.3.3",
     "prop-types": "15.7.2",
@@ -109,7 +111,8 @@
     "ts-jest": "27.0.3",
     "ts-node": "10.0.0",
     "typescript": "4.3.2",
-    "webpack": "5.74.0"
+    "webpack": "5.74.0",
+    "webpack-bundle-analyzer": "^4.8.0"
   },
   "scripts": {
     "build": "fec build",
@@ -129,11 +132,11 @@
     "ci": "npm-run-all build lint 'test --coverage --forceExit --maxWorkers=4 --detectOpenHandles'",
     "verify": "npm-run-all build lint test",
     "nightly": "npm run deploy",
-    "schema": "npm-run-all schema:notifications schema:integrations schema:private",
-    "schema:notifications": "npm-run-all 'schema:notifications:generate -i http://localhost:8085/api/notifications/v1.0/openapi.json'",
-    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types --no-strict",
-    "schema:integrations": "npm-run-all 'schema:integrations:generate -i http://localhost:8085/api/integrations/v1.0/openapi.json'",
-    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types --no-strict",
+    "schema": "npm-run-all schema:notifications schema:integrations",
+    "schema:notifications": "npm-run-all 'schema:notifications:generate -i https://console.redhat.com/api/notifications/v1.0/openapi.json'",
+    "schema:notifications:generate": "openapi2typescript -o src/generated/OpenapiNotifications.ts -ed -a react-fetching-library --explicit-types --no-strict --skip-deprecated",
+    "schema:integrations": "npm-run-all 'schema:integrations:generate -i https://console.redhat.com/api/integrations/v1.0/openapi.json'",
+    "schema:integrations:generate": "openapi2typescript -o src/generated/OpenapiIntegrations.ts -ed -a react-fetching-library --explicit-types --no-strict --skip-deprecated",
     "schema:private": "npm-run-all 'schema:private:generate -i http://localhost:8085/api/private/v1.0/openapi.json'",
     "schema:private:generate": "openapi2typescript -o src/generated/OpenapiPrivate.ts -ed -a react-fetching-library --explicit-types --no-strict",
     "schema:rbac": "npm-run-all 'schema:rbac:generate -i https://console.redhat.com/api/rbac/v1/openapi.json'",
@@ -141,7 +144,7 @@
   },
   "overrides": {
     "@types/react": "17.0.39"
-},
+  },
   "insights": {
     "appname": "notifications"
   }
