@@ -5,6 +5,7 @@ import * as React from 'react';
 import { IntegrationType, isCamelType, UserIntegrationType } from '../../../types/Integration';
 import { IntegrationTypeCamelExtrasForm } from './IntegrationTypeCamelExtrasForm';
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
+import { IntegrationTypeGoogleChatForm } from './IntegrationTypeGoogleChatForm';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
 import { IntegrationTypeTeamsForm } from './IntegrationTypeTeamsForm';
@@ -31,6 +32,8 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
                 return <IntegrationTypeSlackForm { ...props } />;
             case UserIntegrationType.TEAMS:
                 return <IntegrationTypeTeamsForm { ...props } />;
+            case UserIntegrationType.GOOGLE_CHAT:
+                return <IntegrationTypeGoogleChatForm { ...props } />;
         }
 
         return <IntegrationTypeCamelForm { ...props } />;

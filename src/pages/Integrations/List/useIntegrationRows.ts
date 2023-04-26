@@ -7,6 +7,7 @@ import { usePrevious } from 'react-use';
 import { Dispatch } from 'redux';
 
 import { IntegrationRow } from '../../../components/Integrations/Table';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { Messages } from '../../../properties/Messages';
 import { listIntegrationHistoryActionCreator } from '../../../services/useListIntegrationHistory';
 import {
@@ -17,6 +18,10 @@ import { SavedNotificationScopeState, Status } from '../../../store/types/SavedN
 import { UserIntegration } from '../../../types/Integration';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
+
+const SUCCESS_STATUS: Array<Schemas.NotificationStatus> = [
+    'PROCESSING', 'SENT', 'SUCCESS'
+];
 
 export const useIntegrationRows = (
     integrations: Array<UserIntegration>,
@@ -75,7 +80,7 @@ export const useIntegrationRows = (
 
                         if (response.payload && response.payload.status === 200) {
                             const last5 = response.payload.value.map(p => ({
-                                isSuccess: p.invocationResult,
+                                isSuccess: SUCCESS_STATUS.includes(p.status),
                                 date: fromUtc(new Date(p.created as string))
                             }));
                             setIntegrationRowById(integrationId, {

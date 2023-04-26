@@ -40,6 +40,9 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
     },
     [IntegrationType.TEAMS]: {
         name: 'Microsoft Teams'
+    },
+    [IntegrationType.GOOGLE_CHAT]: {
+        name: 'Google Chat'
     }
 };
 
@@ -93,7 +96,8 @@ const Config = {
                 UserIntegrationType.SPLUNK,
                 UserIntegrationType.SLACK,
                 UserIntegrationType.SERVICE_NOW,
-                UserIntegrationType.TEAMS
+                UserIntegrationType.TEAMS,
+                UserIntegrationType.GOOGLE_CHAT
             ],
             fedramp: []
         }
