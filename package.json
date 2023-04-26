@@ -3,18 +3,18 @@
   "version": "1.1.0",
   "private": false,
   "dependencies": {
-    "@babel/runtime": "7.11.2",
+    "@babel/runtime": "7.21.0",
     "@patternfly/patternfly": "4.217.1",
     "@patternfly/react-core": "4.250.1",
     "@patternfly/react-icons": "4.92.6",
     "@patternfly/react-styles": "4.91.6",
     "@patternfly/react-table": "4.111.4",
-    "@redhat-cloud-services/frontend-components": "3.9.23",
-    "@redhat-cloud-services/frontend-components-notifications": "3.2.12",
-    "@redhat-cloud-services/frontend-components-translations": "3.2.5",
-    "@redhat-cloud-services/frontend-components-utilities": "3.3.5",
-    "@redhat-cloud-services/insights-common-typescript": "4.12.1",
-    "@redhat-cloud-services/rbac-client": "1.0.114",
+    "@redhat-cloud-services/frontend-components": "3.9.34",
+    "@redhat-cloud-services/frontend-components-notifications": "3.2.14",
+    "@redhat-cloud-services/frontend-components-translations": "3.2.6",
+    "@redhat-cloud-services/frontend-components-utilities": "3.5.0",
+    "@redhat-cloud-services/insights-common-typescript": "4.12.3",
+    "@redhat-cloud-services/rbac-client": "1.2.2",
     "axios": "0.21.3",
     "camelcase": "5.3.1",
     "classnames": "2.2.6",
@@ -37,7 +37,6 @@
     "react-router-dom": "5.3.4",
     "react-string-format": "0.1.0",
     "react-use": "17.2.4",
-    "redux": "4.2.0",
     "redux-logger": "3.0.6",
     "redux-promise-middleware": "5.1.1",
     "timezones.json": "1.7.0",
@@ -64,7 +63,6 @@
     "@types/jest": "26.0.15",
     "@types/node": "14.14.8",
     "@types/react": "17.0.39",
-    "@types/react-dom": "17.0.17",
     "@types/react-redux": "7.1.11",
     "@types/react-router-dom": "5.3.0",
     "@typescript-eslint/eslint-plugin": "5.0.0",
@@ -141,9 +139,6 @@
     "schema:private:generate": "openapi2typescript -o src/generated/OpenapiPrivate.ts -ed -a react-fetching-library --explicit-types --no-strict",
     "schema:rbac": "npm-run-all 'schema:rbac:generate -i https://console.redhat.com/api/rbac/v1/openapi.json'",
     "schema:rbac:generate": "openapi2typescript -o src/generated/OpenapiRbac.ts -ed -a react-fetching-library --explicit-types --no-strict --api-base-path /api/rbac/v1"
-  },
-  "overrides": {
-    "@types/react": "17.0.39"
   },
   "insights": {
     "appname": "notifications"
