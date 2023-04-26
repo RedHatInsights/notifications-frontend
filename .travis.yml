@@ -13,7 +13,7 @@ notifications:
 dist: xenial
 os: linux
 node_js:
-- '14'
+- '16'
 env:
   global:
     - REPO="git@github.com:RedHatInsights/notifications-frontend-build"
