@@ -33,15 +33,12 @@ Install the dependencies using `npm install`:
 npm install
 ```
 
-If needed set the environment (see below) and then run the application:
+Then run the application:
 
 ```shell
 npm start
 ```
 
-After that, you can head to the page show (stage by default).
-You can set the environment and if you want to use your local development server by copying the file [env.sample](./env.sample) to `.env`
-and starting again by calling `npm start`.
 
 For more info refer to [Insights Frontend Starter App README](https://github.com/RedHatInsights/insights-frontend-starter-app/blob/master/README.md)
 
