@@ -1,4 +1,4 @@
 #!/bin/bash
 
-yarn install --immutable
-yarn build:prod
+npm install --immutable
+npm run build

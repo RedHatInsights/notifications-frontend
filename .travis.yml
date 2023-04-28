@@ -13,9 +13,7 @@ notifications:
 dist: xenial
 os: linux
 node_js:
-- '14'
-cache:
-  yarn: true
+- '16'
 env:
   global:
     - REPO="git@github.com:RedHatInsights/notifications-frontend-build"
@@ -28,9 +26,9 @@ env:
     - ACTION=build
     - ACTION=smoketest
     - ACTION=ci:pinned-deps
-script: yarn $ACTION
+script: npm run $ACTION
 jobs:
   include:
     - stage: Build & Deploy
       if: type = push
-      script: yarn build:prod && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s
+      script: npm run build && curl -sSL https://raw.githubusercontent.com/RedHatInsights/insights-frontend-builder-common/master/src/bootstrap.sh | bash -s

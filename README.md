@@ -7,16 +7,16 @@ Notifications frontend for Red Hat Insights
 
 ## Build app
 
-0. If needed run `yarn install` to install dependency packages
+0. If needed run `npm install` to install dependency packages
 
-1. ```yarn```
+1. ```npm install```
 
-2. ```yarn start```
+2. ```npm start```
     - starts webpack bundler and serves the files with webpack dev server
 
 ### Testing
 
-- `yarn verify` will run linters and tests
+- `npm run verify` will run linters and tests
 - Travis is used to test the build for this code.
   - You are always notified on failed builds
   - You are only notified on successful builds if the build before it failed
@@ -27,21 +27,18 @@ Notifications frontend for Red Hat Insights
 You need to configure your `/etc/hosts` to have the hosts for `prod.foo` and `stage.foo`.
 Check or execute [this](https://raw.githubusercontent.com/RedHatInsights/insights-proxy/master/scripts/patch-etc-hosts.sh) script for details.
 
-Install the dependencies using `yarn`:
+Install the dependencies using `npm install`:
 
 ```shell
-yarn
+npm install
 ```
 
-If needed set the environment (see below) and then run the application:
+Then run the application:
 
 ```shell
-yarn start
+npm start
 ```
 
-After that, you can head to the page show (stage by default).
-You can set the environment and if you want to use your local development server by copying the file [env.sample](./env.sample) to `.env`
-and starting again by calling `yarn start`.
 
 For more info refer to [Insights Frontend Starter App README](https://github.com/RedHatInsights/insights-frontend-starter-app/blob/master/README.md)
 
@@ -61,7 +58,7 @@ To deploy to prod, delete the `prod` branch and create it again from the wanted 
 
 ### Testing if generated files (openapi) are in sync
 
-One can manually verify if the files are in sync by running `yarn schema-check`. This will, by default, compare with prod.
+One can manually verify if the files are in sync by running `npm run schema-check`. This will, by default, compare with prod.
 It is possible to specify the path the server by passing is as the first argument, e.g. `yarn schema-check http://localhost:8085.
 
 ### Testing - jest
@@ -70,5 +67,5 @@ When you want to test your code with unit tests please use `jest` which is preco
 
 ## Generating types from Openapi file
 
-The ui-frontend depends on types from the ui-backend, these are generated from the Openapi spec file, run `yarn schema` to reload the types.
+The ui-frontend depends on types from the ui-backend, these are generated from the Openapi spec file, run `npm run schema` to reload the types.
 Generate types can be found in: `src/generated/`, check `package.json` for more info.
