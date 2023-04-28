@@ -1,5 +1,6 @@
 import { Button, Split, SplitItem } from '@patternfly/react-core';
 import { PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
@@ -42,6 +43,10 @@ interface IntegrationsListPageProps {
 }
 
 export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageProps> = props => {
+
+    const { updateDocumentTitle } = useChrome();
+
+    updateDocumentTitle?.('Integrations');
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();

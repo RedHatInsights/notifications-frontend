@@ -2,6 +2,7 @@ import './App.scss';
 
 import { Switch } from '@patternfly/react-core';
 import { Maintenance } from '@redhat-cloud-services/frontend-components';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
     getInsights,
     InsightsEnvDetector,
@@ -30,7 +31,9 @@ const switchClassname = style({
 });
 
 const App: React.ComponentType = () => {
+    const { updateDocumentTitle } = useChrome();
 
+    updateDocumentTitle?.('Notifications');
     const { rbac, server, isOrgAdmin } = useApp();
     const insights = getInsights();
     const [ usingExperimental, setUsingExperimental ] = React.useState<boolean>(false);

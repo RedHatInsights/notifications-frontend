@@ -1,5 +1,6 @@
 import { ButtonVariant, Tab, TabTitleText } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
     getInsights, getInsightsEnvironment,
     localUrl
@@ -23,6 +24,10 @@ interface NotificationListBundlePageProps {
 }
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
+
+    const { updateDocumentTitle } = useChrome();
+
+    updateDocumentTitle?.(`${props.bundle.displayName} - Notifications`);
 
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);

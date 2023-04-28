@@ -2,14 +2,16 @@
 // The reason is that this 'app' is in 2 menus (integrations and notifications), so is easier to just add that into our
 // paths for easier navigation.
 export const getBaseName = (pathname: string) => {
+    const previewFragment = pathname.split('/')[1];
+    const isPreview = [ 'beta', 'preview' ].includes(previewFragment);
     let release = '/';
-    const pathName = pathname.split('/');
+    const pathName = pathname.replace(/(#|\?).*/, '').split('/');
 
     pathName.shift();
 
-    if (pathName[0] === 'beta') {
+    if (isPreview) {
         pathName.shift();
-        release = `/beta/`;
+        release = `/${previewFragment}/`;
     }
 
     return `${release}${pathName[0]}`;
