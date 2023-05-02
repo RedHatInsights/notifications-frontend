@@ -11,6 +11,9 @@ notifications:
     if: branch = prod AND type = push
     on_failure: always
 dist: jammy
+addons:
+  firefox: latest-esr
+  chrome: stable
 os: linux
 node_js:
 - '16'
