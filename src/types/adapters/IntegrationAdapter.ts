@@ -65,7 +65,8 @@ const toIntegrationAnsible = (
     properties?: Schemas.WebhookProperties): IntegrationAnsible => ({
     ...integrationBase,
     url: properties?.url ?? '',
-    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false
+    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
+    method: properties?.method ?? Schemas.HttpType.Enum.POST
 });
 
 const toIntegrationCamel = (
@@ -171,7 +172,8 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
             const integrationAnsible = integration as IntegrationAnsible;
             return {
                 url: integrationAnsible.url,
-                disable_ssl_verification: !integrationAnsible.sslVerificationEnabled
+                disable_ssl_verification: !integrationAnsible.sslVerificationEnabled,
+                method: integrationAnsible.method
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;

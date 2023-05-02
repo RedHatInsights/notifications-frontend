@@ -56,6 +56,7 @@ export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK
 export interface IntegrationAnsible extends IntegrationBase<IntegrationType.ANSIBLE> {
     url: string;
     sslVerificationEnabled: boolean;
+    method: Schemas.HttpType;
 }
 
 export interface IntegrationCamel extends IntegrationBase<CamelIntegrationType> {

@@ -21,13 +21,15 @@ export const IntegrationExpandedContent: React.FunctionComponent<ExpandedContent
                 <TextListItem component={ TextListItemVariants.dd }>
                     { props.integration.sslVerificationEnabled ? 'Enabled' : 'Disabled' }
                 </TextListItem>
-                <TextListItem className={ expandedContentTitleClass } component={ TextListItemVariants.dt }>
-                    Authentication type
-                </TextListItem>
                 { 'secretToken' in props.integration &&
-                    <TextListItem component={ TextListItemVariants.dd }>
-                        { props.integration.secretToken !== undefined ? 'Secret token' : 'None' }
-                    </TextListItem>
+                    <>
+                        <TextListItem className={ expandedContentTitleClass } component={ TextListItemVariants.dt }>
+                            Authentication type
+                        </TextListItem>
+                        <TextListItem component={ TextListItemVariants.dd }>
+                            { props.integration.secretToken !== undefined ? 'Secret token' : 'None' }
+                        </TextListItem>
+                    </>
                 }
             </TextList>
         </TextContent>
