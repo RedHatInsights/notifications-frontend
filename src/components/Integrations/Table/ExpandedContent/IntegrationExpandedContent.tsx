@@ -24,9 +24,11 @@ export const IntegrationExpandedContent: React.FunctionComponent<ExpandedContent
                 <TextListItem className={ expandedContentTitleClass } component={ TextListItemVariants.dt }>
                     Authentication type
                 </TextListItem>
-                <TextListItem component={ TextListItemVariants.dd }>
-                    { props.integration.secretToken !== undefined ? 'Secret token' : 'None' }
-                </TextListItem>
+                { 'secretToken' in props.integration &&
+                    <TextListItem component={ TextListItemVariants.dd }>
+                        { props.integration.secretToken !== undefined ? 'Secret token' : 'None' }
+                    </TextListItem>
+                }
             </TextList>
         </TextContent>
     );
