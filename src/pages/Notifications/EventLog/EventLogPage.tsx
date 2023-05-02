@@ -107,6 +107,7 @@ export const EventLogPage: React.FunctionComponent = () => {
             switch (type) {
                 case 'camel':
                 case 'webhook':
+                case 'ansible':
                     return endpoint.payload.value.name;
                 case 'email_subscription':
                     const properties = endpoint.payload.value.properties as Schemas.EmailSubscriptionProperties;
