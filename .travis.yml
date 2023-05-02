@@ -1,5 +1,4 @@
 language: node_js
-cache: false
 notifications:
   email: false
   slack:
@@ -11,7 +10,7 @@ notifications:
       - secure: V3sFRmrXT6GpX6/vn98w/AAwaBi/+e8HDPVw3ZeT2CpmYCEWDDYZNMUMwjidsV90cDNez3lHf1unXnX0DENg3a2qhCk0o54xYXwVHXe8Y7GjiOLNtuXt4PEi5ABZmm0tBX7ZCDD787jgZZKn72BNy1kvNXEyrKLBNPnHpimq/IeA1RXAM0ym/iHFL7zwWig5AQwKkQDgzyy6SXJs5QYbyYVXL4XMB+Om27ZOtdGcm6BBH/ylWOow03Wn9bTy00syBGD0VopnhAyG+cvBOM3gZTFZYXHZ8fWfSbke2/L786ak55uXFb2j++CGQ+0QCKcG6YghYbFDvyAa8FSnQkMm9vaomH8tqAuvh4OE9+LVWKSUNLvNZPQi4fs84CRmAoxSEpFn0DJdTS3cwjJBPWJ8FsKXq/LOnJPiSR6Fs87K26bEDZymrEC9WmC5ffFHYu2Qr+HeU8sPWRMz4oWSMOHRMR/bSbhs9T2uGRFRJP3VKLJntvC9QHVBBVKrWm3ACMem3Xej7YuVZSJSSuS989mLBVCty5G/QQik3z72v7J9vtu732u2jnUzwWiEmshmvpgMcMZJYpOQWx1X85OzhHIvv4BIwwaXrv25GJ+qf8SfaU1Ieu4GgRFffLHX9Eh1YaULCCsuGmpFvXf6pnwrYj5KXwHVZDTG8tpsiOOYeX/FwI4=
     if: branch = prod AND type = push
     on_failure: always
-dist: xenial
+dist: jammy
 os: linux
 node_js:
 - '16'
