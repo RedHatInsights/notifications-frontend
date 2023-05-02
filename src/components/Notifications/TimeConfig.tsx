@@ -1,5 +1,5 @@
-import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, PageSection, Radio, Split, SplitItem, Stack, StackItem,
-    Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
+import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, PageSection,
+    Radio, Skeleton, Split, SplitItem, Stack, StackItem, Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import React, { useMemo } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
@@ -10,6 +10,8 @@ import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePr
 const dropDownClassName = style({
     width: '280px'
 });
+
+const timePrefSkeleton = <Skeleton />;
 
 export const TimeConfigComponent: React.FunctionComponent = () => {
 
@@ -24,7 +26,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
             return getTimePreference.payload.value;
         }
 
-        return undefined;
+        if (getTimePreference.payload?.status === undefined) {
+            return timePrefSkeleton && undefined;
+        }
     }, [ getTimePreference.payload?.status, getTimePreference.payload?.value ]);
 
     const handleRadioSelect = React.useCallback(() => {
