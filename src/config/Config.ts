@@ -35,6 +35,9 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
     [IntegrationType.WEBHOOK]: {
         name: 'Webhook'
     },
+    [IntegrationType.ANSIBLE]: {
+        name: 'Event-Driven Ansible'
+    },
     [IntegrationType.EMAIL_SUBSCRIPTION]: {
         name: 'Email'
     },
@@ -80,7 +83,10 @@ const Config = {
         types: computeIntegrationConfig(integrationTypes),
         actions: {
             stable: [
-                UserIntegrationType.WEBHOOK
+                UserIntegrationType.WEBHOOK,
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.SLACK,
+                UserIntegrationType.SERVICE_NOW
             ],
             beta: [
                 UserIntegrationType.WEBHOOK,
@@ -94,7 +100,8 @@ const Config = {
                 UserIntegrationType.SLACK,
                 UserIntegrationType.SERVICE_NOW,
                 UserIntegrationType.TEAMS,
-                UserIntegrationType.GOOGLE_CHAT
+                UserIntegrationType.GOOGLE_CHAT,
+                UserIntegrationType.ANSIBLE
             ],
             fedramp: []
         }

@@ -41,6 +41,7 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
 
     switch (props.type) {
         case IntegrationType.WEBHOOK:
+        case IntegrationType.ANSIBLE:
             return <IntegrationTypeHttpForm { ...props } />;
         default:
             assertNever(props.type);

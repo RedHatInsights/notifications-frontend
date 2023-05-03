@@ -1,5 +1,6 @@
 import { Button, Split, SplitItem } from '@patternfly/react-core';
 import { PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
@@ -25,7 +26,6 @@ import { NotificationAppState } from '../../../store/types/NotificationAppState'
 import { SavedNotificationScopeState } from '../../../store/types/SavedNotificationScopeTypes';
 import { UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
-import { SplunkBetaEnvironmentBanner } from '../../Banners/SplunkBetaEnvironment';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
@@ -43,6 +43,10 @@ interface IntegrationsListPageProps {
 }
 
 export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageProps> = props => {
+
+    const { updateDocumentTitle } = useChrome();
+
+    updateDocumentTitle?.('Integrations');
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();
@@ -182,7 +186,6 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                 </Split>
             </PageHeader>
             <Main>
-                <SplunkBetaEnvironmentBanner />
                 <Section className='pf-c-page__main-section pf-m-light'>
                     <IntegrationsToolbar
                         onAddIntegration={ canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined }

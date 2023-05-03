@@ -4,6 +4,7 @@ import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
     CamelIntegrationType,
     Integration,
+    IntegrationAnsible,
     IntegrationBase,
     IntegrationCamel,
     IntegrationEmailSubscription,
@@ -59,6 +60,15 @@ const toIntegrationWebhook = (
     method: properties?.method ?? Schemas.HttpType.Enum.GET
 });
 
+const toIntegrationAnsible = (
+    integrationBase: IntegrationBase<IntegrationType.ANSIBLE>,
+    properties?: Schemas.WebhookProperties): IntegrationAnsible => ({
+    ...integrationBase,
+    url: properties?.url ?? '',
+    sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
+    method: properties?.method ?? Schemas.HttpType.Enum.POST
+});
+
 const toIntegrationCamel = (
     integrationBase: IntegrationBase<CamelIntegrationType>,
     properties?: Schemas.CamelProperties): IntegrationCamel => ({
@@ -109,6 +119,11 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 integrationBase as IntegrationBase<IntegrationType.WEBHOOK>,
                 serverIntegration.properties as Schemas.WebhookProperties
             );
+        case IntegrationType.ANSIBLE:
+            return toIntegrationAnsible(
+                integrationBase as IntegrationBase<IntegrationType.ANSIBLE>,
+                serverIntegration.properties as Schemas.WebhookProperties
+            );
         case IntegrationType.EMAIL_SUBSCRIPTION:
             return toIntegrationEmail(
                 integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
@@ -152,6 +167,13 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 method: integrationHttp.method,
                 disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
                 secret_token: toSecretToken(integrationHttp.secretToken)
+            };
+        case IntegrationType.ANSIBLE:
+            const integrationAnsible = integration as IntegrationAnsible;
+            return {
+                url: integrationAnsible.url,
+                disable_ssl_verification: !integrationAnsible.sslVerificationEnabled,
+                method: integrationAnsible.method
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
             const integrationEmail: IntegrationEmailSubscription = integration as IntegrationEmailSubscription;

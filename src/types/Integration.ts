@@ -10,11 +10,13 @@ export enum IntegrationType {
     SLACK = 'camel:slack',
     SERVICE_NOW = 'camel:servicenow',
     TEAMS = 'camel:teams',
-    GOOGLE_CHAT = 'camel:google_chat'
+    GOOGLE_CHAT = 'camel:google_chat',
+    ANSIBLE = 'ansible' // Event-Driven Ansible
 }
 
 export const UserIntegrationType = {
     WEBHOOK: IntegrationType.WEBHOOK,
+    ANSIBLE: IntegrationType.ANSIBLE,
     SPLUNK: IntegrationType.SPLUNK,
     SERVICE_NOW: IntegrationType.SERVICE_NOW,
     SLACK: IntegrationType.SLACK,
@@ -51,6 +53,12 @@ export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK
     method: Schemas.HttpType;
 }
 
+export interface IntegrationAnsible extends IntegrationBase<IntegrationType.ANSIBLE> {
+    url: string;
+    sslVerificationEnabled: boolean;
+    method: Schemas.HttpType;
+}
+
 export interface IntegrationCamel extends IntegrationBase<CamelIntegrationType> {
     type: CamelIntegrationType;
     url: string;
@@ -70,7 +78,7 @@ export interface IntegrationEmailSubscription extends IntegrationBase<Integratio
     groupId?: UUID
 }
 
-export type Integration = IntegrationHttp | IntegrationEmailSubscription | IntegrationCamel;
+export type Integration = IntegrationHttp | IntegrationAnsible | IntegrationEmailSubscription | IntegrationCamel;
 export type TypedIntegration<T extends IntegrationType> = Extract<Integration, {
     type: T
 }>;
