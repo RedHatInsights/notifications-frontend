@@ -1,4 +1,4 @@
-import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, Radio, Stack, StackItem,
+import { Alert, Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, Radio, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import React from 'react';
 import timezones from 'timezones.json';
@@ -27,6 +27,18 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     const dropdownItems = timezones.map((tz) =>
         <DropdownItem key={ tz.value }> { tz.text }</DropdownItem>);
 
+    const saveAlerts = React.useMemo(() => {
+        if (saveTimePreference.payload?.status === 200) {
+            return (
+                <Alert title='Action settings saved' variant='success' />
+            );
+        } else {
+            return (
+                <Alert title='Failed to save action settings' variant='danger' />
+            );
+        }
+    }, [ saveTimePreference.payload?.status ]);
+
     const handleCustomRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
         setShowCustomSelect(true);
@@ -37,11 +49,12 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     }, []);
 
     const handleButtonSave = React.useCallback((time) => {
+        saveAlerts;
         const mutate = saveTimePreference.mutate;
         mutate({
             body: time
         });
-    }, [ saveTimePreference.mutate ]);
+    }, [ saveAlerts, saveTimePreference.mutate ]);
 
     return (
         <React.Fragment>
