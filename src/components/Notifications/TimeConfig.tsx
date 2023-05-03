@@ -11,8 +11,6 @@ const dropDownClassName = style({
     width: '280px'
 });
 
-const timePrefSkeleton = <Skeleton />;
-
 export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ radioSelect, setRadioSelect ] = React.useState(false);
@@ -26,9 +24,8 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
             return getTimePreference.payload.value;
         }
 
-        if (getTimePreference.payload?.status === undefined) {
-            return timePrefSkeleton && undefined;
-        }
+        return undefined;
+
     }, [ getTimePreference.payload?.status, getTimePreference.payload?.value ]);
 
     const handleRadioSelect = React.useCallback(() => {
@@ -76,49 +73,51 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                 </Stack>
                             </SplitItem>
                             <SplitItem isFilled>
-                                <Stack hasGutter>
-                                    <StackItem >
-                                        <Radio
-                                            isChecked={ radioSelect && !showCustomSelect }
-                                            onChange={ handleRadioSelect }
-                                            value={ timePref }
-                                            id='settings-time-config'
-                                            label='Default time'
-                                            description='12:00 UTC'
-                                            name='radio-select'>
-                                        </Radio>
-                                    </StackItem>
-                                    <StackItem>
-                                        <Radio
-                                            isChecked={ radioSelect && showCustomSelect }
-                                            value={ timePref }
-                                            onChange={ handleCustomRadioSelect }
-                                            id='settings-time-config'
-                                            label='Custom time'
-                                            description='Choose specific time and time zone'
-                                            name='radio-select'>
-                                        </Radio>
-                                    </StackItem>
-                                    {showCustomSelect && (
-                                        <><StackItem>
-                                            <Text component={ TextVariants.h6 }>Time</Text>
-                                            <TimePicker onChange={ handleTimeSelect } value={ timePref }
-                                                width='263px' stepMinutes={ 15 } placeholder='12:00' is24Hour />
-                                        </StackItem><StackItem>
-                                            <Text component={ TextVariants.h6 }>Time zone</Text>
-                                            <Dropdown
+                                {timePref ?
+                                    <Stack hasGutter>
+                                        <StackItem >
+                                            <Radio
+                                                isChecked={ radioSelect && !showCustomSelect }
+                                                onChange={ handleRadioSelect }
                                                 value={ timePref }
-                                                className={ dropDownClassName }
-                                                toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
+                                                id='settings-time-config'
+                                                label='Default time'
+                                                description='12:00 UTC'
+                                                name='radio-select'>
+                                            </Radio>
+                                        </StackItem>
+                                        <StackItem>
+                                            <Radio
+                                                isChecked={ radioSelect && showCustomSelect }
+                                                value={ timePref }
+                                                onChange={ handleCustomRadioSelect }
+                                                id='settings-time-config'
+                                                label='Custom time'
+                                                description='Choose specific time and time zone'
+                                                name='radio-select'>
+                                            </Radio>
+                                        </StackItem>
+                                        {showCustomSelect && (
+                                            <><StackItem>
+                                                <Text component={ TextVariants.h6 }>Time</Text>
+                                                <TimePicker onChange={ handleTimeSelect } value={ timePref }
+                                                    width='263px' stepMinutes={ 15 } placeholder='12:00' is24Hour />
+                                            </StackItem><StackItem>
+                                                <Text component={ TextVariants.h6 }>Time zone</Text>
+                                                <Dropdown
+                                                    value={ timePref }
+                                                    className={ dropDownClassName }
+                                                    toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
                                                     (UTC-00:00) Universal Time
-                                                </DropdownToggle> }
-                                                isOpen={ isOpen }
-                                                onSelect={ handleTimeSelect }
-                                                menuAppendTo={ () => document.body }
-                                                dropdownItems={ dropdownItems }>
-                                            </Dropdown>
-                                        </StackItem></>)}
-                                </Stack>
+                                                    </DropdownToggle> }
+                                                    isOpen={ isOpen }
+                                                    onSelect={ handleTimeSelect }
+                                                    menuAppendTo={ () => document.body }
+                                                    dropdownItems={ dropdownItems }>
+                                                </Dropdown>
+                                            </StackItem></>)}
+                                    </Stack>
+                                    : <Skeleton /> }
                             </SplitItem>
                         </Split>
                     </CardBody>
