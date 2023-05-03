@@ -27,18 +27,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     const dropdownItems = timezones.map((tz) =>
         <DropdownItem key={ tz.value }> { tz.text }</DropdownItem>);
 
-    const saveAlerts = React.useMemo(() => {
-        if (saveTimePreference.payload?.status === 200) {
-            return (
-                <Alert title='Action settings saved' variant='success' />
-            );
-        } else {
-            return (
-                <Alert title='Failed to save action settings' variant='danger' />
-            );
-        }
-    }, [ saveTimePreference.payload?.status ]);
-
     const handleCustomRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
         setShowCustomSelect(true);
@@ -49,12 +37,21 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     }, []);
 
     const handleButtonSave = React.useCallback((time) => {
-        saveAlerts;
         const mutate = saveTimePreference.mutate;
         mutate({
             body: time
+        }).then((response) => {
+            if (response.status === 200) {
+                return (
+                    <Alert title='Action settings saved' variant='success' />
+                );
+            } else {
+                return (
+                    <Alert title='Failed to save action settings' variant='danger' />
+                );
+            }
         });
-    }, [ saveAlerts, saveTimePreference.mutate ]);
+    }, [ saveTimePreference.mutate ]);
 
     return (
         <React.Fragment>
