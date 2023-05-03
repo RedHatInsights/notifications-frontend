@@ -84,6 +84,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                 </HelperText>
                             </StackItem>
                         </Stack>
+                        <br></br>
                         <Split>
                             <SplitItem isFilled>
                                 {timePref ?
