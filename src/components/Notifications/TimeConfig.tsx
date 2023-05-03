@@ -1,7 +1,8 @@
 
-import { Alert, Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, Radio, Stack, StackItem,
+import { Alert, Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem,
+    Radio, Skeleton, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
-import React from 'react';
+import React, { useMemo } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
 
@@ -66,27 +67,28 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     }, [ saveTimePreference.mutate ]);
 
     return (
-        <React.Fragment>
-            <Card>
-                <CardBody>
-                    <Stack hasGutter>
-                        <StackItem>
-                            <Title headingLevel='h2'>Action Settings</Title>
-                        </StackItem>
-                        <StackItem>
-                            <Text component={ TextVariants.p }>Daily digest email reciept</Text>
-                            <HelperText>
-                                <HelperTextItem variant="indeterminate">
-                                                Schedule the time at which to send your accounts daily digest email
-                                </HelperTextItem>
-                                        </HelperText>
-                                    </StackItem>
-                                </Stack>
-                            </SplitItem>
+        <>
+            <React.Fragment>
+                <Card>
+                    <CardBody>
+                        <Stack hasGutter>
+                            <StackItem>
+                                <Title headingLevel='h2'>Action Settings</Title>
+                            </StackItem>
+                            <StackItem>
+                                <Text component={ TextVariants.p }>Daily digest email reciept</Text>
+                                <HelperText>
+                                    <HelperTextItem variant="indeterminate">
+                                    Schedule the time at which to send your accounts daily digest email
+                                    </HelperTextItem>
+                                </HelperText>
+                            </StackItem>
+                        </Stack>
+                        <Split>
                             <SplitItem isFilled>
                                 {timePref ?
                                     <Stack hasGutter>
-                                        <StackItem >
+                                        <StackItem>
                                             <Radio
                                                 isChecked={ radioSelect && !showCustomSelect }
                                                 onChange={ handleRadioSelect }
@@ -119,7 +121,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                                     value={ timePref }
                                                     className={ dropDownClassName }
                                                     toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
-                                                    (UTC-00:00) Universal Time
+                                                (UTC-00:00) Universal Time
                                                     </DropdownToggle> }
                                                     isOpen={ isOpen }
                                                     onSelect={ handleTimeSelect }
@@ -128,18 +130,19 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                                 </Dropdown>
                                             </StackItem></>)}
                                     </Stack>
-                                    : <Skeleton /> }
+                                    : <Skeleton />}
                             </SplitItem>
                         </Split>
                     </CardBody>
                     <CardFooter>
-                    <Button variant='primary' onClick={ handleButtonSave }>
-                        Save
-                    </Button>
-                </CardFooter>
+                        <Button variant='primary' onClick={ handleButtonSave }>
+                    Save
+                        </Button>
+                    </CardFooter>
                 </Card>
-            </PageSection>
-        </React.Fragment>
+            </React.Fragment>
+        </>
+
     );
 };
 
