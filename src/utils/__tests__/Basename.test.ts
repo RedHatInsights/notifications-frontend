@@ -10,7 +10,7 @@ describe('src/utils/Basename', () => {
     });
 
     it('gets the subapp', () => {
-        expect(getSubApp('/preview/bar/baz')).toEqual('foo');
+        expect(getSubApp('/foo/bar/baz')).toEqual('foo');
     });
 
     it('Considers beta in path', () => {
