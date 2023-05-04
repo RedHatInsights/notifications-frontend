@@ -37,6 +37,7 @@ export const IntegrationAnsibleSchema: Yup.SchemaOf<NewIntegrationTemplate<Integ
     type: Yup.mixed<IntegrationType.ANSIBLE>().oneOf([ IntegrationType.ANSIBLE ]).required(),
     url: Yup.string().url().required('Write a valid url for this Integration.'),
     sslVerificationEnabled: Yup.boolean().default(true),
+    secretToken: Yup.string().notRequired(),
     method: Yup.mixed<Schemas.HttpType>().oneOf(Object.values([ Schemas.HttpType.Enum.POST ])).default(Schemas.HttpType.Enum.POST)
 }));
 

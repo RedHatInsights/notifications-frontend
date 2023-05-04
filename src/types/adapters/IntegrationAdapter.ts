@@ -66,6 +66,7 @@ const toIntegrationAnsible = (
     ...integrationBase,
     url: properties?.url ?? '',
     sslVerificationEnabled: !properties?.disable_ssl_verification ?? false,
+    secretToken: toSecretToken(properties?.secret_token),
     method: properties?.method ?? Schemas.HttpType.Enum.POST
 });
 
@@ -173,6 +174,7 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
             return {
                 url: integrationAnsible.url,
                 disable_ssl_verification: !integrationAnsible.sslVerificationEnabled,
+                secret_token: toSecretToken(integrationAnsible.secretToken),
                 method: integrationAnsible.method
             };
         case IntegrationType.EMAIL_SUBSCRIPTION:
