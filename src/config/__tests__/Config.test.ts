@@ -9,7 +9,7 @@ describe('src/config/Config', () => {
     });
 
     it('localUrl does prepend beta to path if running on beta', () => {
-        expect(localUrl('/foo/bar', true)).toBe('/beta/foo/bar');
+        expect(localUrl('/foo/bar', true)).toBe('/preview/foo/bar');
     });
 
     it('localUrl does not prepend beta to path when not in beta', () => {

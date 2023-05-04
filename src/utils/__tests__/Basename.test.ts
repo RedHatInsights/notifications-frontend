@@ -6,14 +6,14 @@ describe('src/utils/Basename', () => {
     });
 
     it('If first is beta, also get the next', () => {
-        expect(getBaseName('/beta/foo/bar/baz')).toEqual('/beta/foo');
+        expect(getBaseName('/preview/foo/bar/baz')).toEqual('/preview/foo');
     });
 
     it('gets the subapp', () => {
-        expect(getSubApp('/foo/bar/baz')).toEqual('foo');
+        expect(getSubApp('/preview/bar/baz')).toEqual('foo');
     });
 
     it('Considers beta in path', () => {
-        expect(getSubApp('/beta/foo/bar/baz')).toEqual('foo');
+        expect(getSubApp('/preview/foo/bar/baz')).toEqual('foo');
     });
 });
