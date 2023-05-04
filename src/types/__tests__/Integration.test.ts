@@ -3,6 +3,7 @@ import { IntegrationType, isCamelIntegrationType, isCamelType, isUserIntegration
 describe('src/types/Integration', () => {
     it('isCamelType returns true for camel subtypes', () => {
         expect(isCamelType(IntegrationType.WEBHOOK)).toBe(false);
+        expect(isCamelType(IntegrationType.ANSIBLE)).toBe(false);
         expect(isCamelType(IntegrationType.EMAIL_SUBSCRIPTION)).toBe(false);
         expect(isCamelType(IntegrationType.SPLUNK)).toBe(true);
         expect(isCamelType(IntegrationType.SLACK)).toBe(true);
@@ -19,6 +20,9 @@ describe('src/types/Integration', () => {
         expect(isCamelIntegrationType({})).toBe(false);
         expect(isCamelIntegrationType({
             type: IntegrationType.WEBHOOK
+        })).toBe(false);
+        expect(isCamelIntegrationType({
+            type: IntegrationType.ANSIBLE
         })).toBe(false);
         expect(isCamelIntegrationType({
             type: IntegrationType.SPLUNK
@@ -39,6 +43,7 @@ describe('src/types/Integration', () => {
 
     it('isUserIntegrationType returns true for UserIntegrationType', () => {
         expect(isUserIntegrationType(IntegrationType.WEBHOOK)).toBe(true);
+        expect(isUserIntegrationType(IntegrationType.ANSIBLE)).toBe(true);
         expect(isUserIntegrationType(IntegrationType.EMAIL_SUBSCRIPTION)).toBe(false);
         expect(isUserIntegrationType(IntegrationType.SPLUNK)).toBe(true);
         expect(isUserIntegrationType(IntegrationType.SLACK)).toBe(true);

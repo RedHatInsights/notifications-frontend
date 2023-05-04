@@ -219,7 +219,11 @@ export namespace Schemas {
     | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
-  export type EndpointType = 'webhook' | 'email_subscription' | 'camel';
+  export type EndpointType =
+    | 'webhook'
+    | 'email_subscription'
+    | 'camel'
+    | 'ansible';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -264,6 +268,7 @@ export namespace Schemas {
     application_id: UUID;
     description?: string | undefined | null;
     display_name: string;
+    fully_qualified_name?: string | undefined | null;
     id?: UUID | undefined | null;
     name: string;
   };
@@ -738,7 +743,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'camel' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel', 'ansible' ]);
   }
 
   function zodSchemaEnvironment() {
@@ -783,6 +788,7 @@ export namespace Schemas {
           application_id: zodSchemaUUID(),
           description: z.string().optional().nullable(),
           display_name: z.string(),
+          fully_qualified_name: z.string().optional().nullable(),
           id: zodSchemaUUID().optional().nullable(),
           name: z.string()
       })

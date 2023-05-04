@@ -4,6 +4,7 @@ import Lazy from 'yup/lib/Lazy';
 import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
     CamelIntegrationType,
+    IntegrationAnsible,
     IntegrationCamel,
     IntegrationHttp,
     IntegrationType,
@@ -30,6 +31,14 @@ export const IntegrationHttpSchema: Yup.SchemaOf<NewIntegrationTemplate<Integrat
     sslVerificationEnabled: Yup.boolean().default(true),
     secretToken: Yup.string().notRequired(),
     method: Yup.mixed<Schemas.HttpType>().oneOf(Object.values(Schemas.HttpType.Enum)).default(Schemas.HttpType.Enum.POST)
+}));
+
+export const IntegrationAnsibleSchema: Yup.SchemaOf<NewIntegrationTemplate<IntegrationAnsible>> = IntegrationSchemaBase.concat(Yup.object().shape({
+    type: Yup.mixed<IntegrationType.ANSIBLE>().oneOf([ IntegrationType.ANSIBLE ]).required(),
+    url: Yup.string().url().required('Write a valid url for this Integration.'),
+    sslVerificationEnabled: Yup.boolean().default(true),
+    secretToken: Yup.string().notRequired(),
+    method: Yup.mixed<Schemas.HttpType>().oneOf(Object.values([ Schemas.HttpType.Enum.POST ])).default(Schemas.HttpType.Enum.POST)
 }));
 
 export const IntegrationCamelSchema: Yup.SchemaOf<NewIntegrationTemplate<IntegrationCamel>> = IntegrationSchemaBase.concat(Yup.object().shape({
@@ -75,6 +84,8 @@ export const IntegrationSchema: Lazy<Yup.SchemaOf<NewIntegration | NewIntegratio
     if (value) {
         if (value.type === IntegrationType.WEBHOOK) {
             return IntegrationHttpSchema;
+        } else if (value.type === IntegrationType.ANSIBLE) {
+            return IntegrationAnsibleSchema;
         }
 
         if (isCamelType(value.type)) {
