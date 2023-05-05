@@ -1,6 +1,7 @@
 import { localUrl } from '@redhat-cloud-services/insights-common-typescript';
 
-import { withBaseUrl } from '../Config';
+import { sortedIntegrationList, withBaseUrl } from '../Config';
+import { IntegrationType } from '../../types/Integration';
 
 describe('src/config/Config', () => {
 
@@ -14,5 +15,18 @@ describe('src/config/Config', () => {
 
     it('localUrl does not prepend beta to path when not in beta', () => {
         expect(localUrl('/baz/bar', false)).toBe('/baz/bar');
+    });
+    it('sortedIntegrationList sorts the integrations in alphabetical order', () => {
+        expect(sortedIntegrationList([
+            IntegrationType.SLACK,
+            IntegrationType.ANSIBLE,
+            IntegrationType.WEBHOOK,
+            IntegrationType.SPLUNK
+        ])).toEqual([
+            IntegrationType.ANSIBLE,
+            IntegrationType.SLACK,
+            IntegrationType.SPLUNK,
+            IntegrationType.WEBHOOK
+        ]);
     });
 });

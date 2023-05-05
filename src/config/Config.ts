@@ -76,27 +76,42 @@ const computeIntegrationConfig = (base: Record<IntegrationType, IntegrationTypeC
     return complete;
 };
 
+export const sortedIntegrationList = (integrations: Array<UserIntegrationType>): Array<UserIntegrationType> => {
+    return [ ...integrations ].sort((first: UserIntegrationType, second: UserIntegrationType) => {
+        const firstName = integrationTypes[first].name;
+        const secondName = integrationTypes[second].name;
+
+        if (firstName < secondName) {
+            return -1;
+        } else if (firstName > secondName) {
+            return 1;
+        }
+
+        return 0;
+    });
+};
+
 const Config = {
     integrations: {
         subAppId: 'integrations',
         title: 'Integrations | Settings',
         types: computeIntegrationConfig(integrationTypes),
         actions: {
-            stable: [
+            stable: sortedIntegrationList([
                 UserIntegrationType.SERVICE_NOW,
                 UserIntegrationType.SLACK,
                 UserIntegrationType.SPLUNK,
                 UserIntegrationType.WEBHOOK
-            ],
-            beta: [
+            ]),
+            beta: sortedIntegrationList([
                 UserIntegrationType.GOOGLE_CHAT,
                 UserIntegrationType.TEAMS,
                 UserIntegrationType.SERVICE_NOW,
                 UserIntegrationType.SLACK,
                 UserIntegrationType.SPLUNK,
                 UserIntegrationType.WEBHOOK
-            ],
-            experimental: [
+            ]),
+            experimental: sortedIntegrationList([
                 UserIntegrationType.ANSIBLE,
                 UserIntegrationType.GOOGLE_CHAT,
                 UserIntegrationType.TEAMS,
@@ -104,8 +119,8 @@ const Config = {
                 UserIntegrationType.SLACK,
                 UserIntegrationType.SPLUNK,
                 UserIntegrationType.WEBHOOK
-            ],
-            fedramp: []
+            ]),
+            fedramp: sortedIntegrationList([])
         }
     },
     notifications: {
