@@ -45,7 +45,7 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
         name: 'Microsoft Teams'
     },
     [IntegrationType.GOOGLE_CHAT]: {
-        name: 'Google Chat'
+        name: 'Google Spaces'
     }
 };
 
@@ -92,7 +92,9 @@ const Config = {
                 UserIntegrationType.WEBHOOK,
                 UserIntegrationType.SPLUNK,
                 UserIntegrationType.SLACK,
-                UserIntegrationType.SERVICE_NOW
+                UserIntegrationType.SERVICE_NOW,
+                UserIntegrationType.TEAMS,
+                UserIntegrationType.GOOGLE_CHAT
             ],
             experimental: [
                 UserIntegrationType.WEBHOOK,
