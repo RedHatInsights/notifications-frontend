@@ -45,7 +45,7 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
         name: 'Microsoft Teams'
     },
     [IntegrationType.GOOGLE_CHAT]: {
-        name: 'Google Spaces'
+        name: 'Google Chat'
     }
 };
 
