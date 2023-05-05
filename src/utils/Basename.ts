@@ -20,7 +20,7 @@ export const getBaseName = (pathname: string) => {
 export const getSubApp = (pathname: string) => {
     const pathName = pathname.split('/');
     pathName.shift();
-    if (pathName[0] === 'beta') {
+    if ([ 'beta', 'preview' ].includes(pathName[0])) {
         return pathName[1];
     }
 

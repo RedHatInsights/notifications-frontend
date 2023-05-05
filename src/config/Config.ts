@@ -83,25 +83,27 @@ const Config = {
         types: computeIntegrationConfig(integrationTypes),
         actions: {
             stable: [
-                UserIntegrationType.WEBHOOK,
-                UserIntegrationType.SPLUNK,
+                UserIntegrationType.SERVICE_NOW,
                 UserIntegrationType.SLACK,
-                UserIntegrationType.SERVICE_NOW
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.WEBHOOK
             ],
             beta: [
-                UserIntegrationType.WEBHOOK,
-                UserIntegrationType.SPLUNK,
+                UserIntegrationType.GOOGLE_CHAT,
+                UserIntegrationType.TEAMS,
+                UserIntegrationType.SERVICE_NOW,
                 UserIntegrationType.SLACK,
-                UserIntegrationType.SERVICE_NOW
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.WEBHOOK
             ],
             experimental: [
-                UserIntegrationType.WEBHOOK,
-                UserIntegrationType.SPLUNK,
-                UserIntegrationType.SLACK,
-                UserIntegrationType.SERVICE_NOW,
-                UserIntegrationType.TEAMS,
+                UserIntegrationType.ANSIBLE,
                 UserIntegrationType.GOOGLE_CHAT,
-                UserIntegrationType.ANSIBLE
+                UserIntegrationType.TEAMS,
+                UserIntegrationType.SERVICE_NOW,
+                UserIntegrationType.SLACK,
+                UserIntegrationType.SPLUNK,
+                UserIntegrationType.WEBHOOK
             ],
             fedramp: []
         }
