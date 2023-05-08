@@ -1,5 +1,7 @@
-import { Card, CardBody, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem, PageSection,
-    Radio, Skeleton, Split, SplitItem, Stack, StackItem, Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
+
+import { Alert, Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem,
+    Radio, Skeleton, Split, SplitItem, Stack, StackItem,
+    Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import React, { useMemo } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
@@ -43,39 +45,51 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setShowCustomSelect(true);
     }, []);
 
-    const handleTimeSelect = React.useCallback((time) => {
+    const handleTimeSelect = React.useCallback(() => {
         setIsOpen(false);
+    }, []);
+
+    const handleButtonSave = React.useCallback((time) => {
         const mutate = saveTimePreference.mutate;
         mutate({
             body: time
+        }).then((response) => {
+            if (response.status === 200) {
+                return (
+                    <Alert title='Action settings saved' variant='success' />
+                );
+            } else {
+                return (
+                    <Alert title='Failed to save action settings' variant='danger' />
+                );
+            }
         });
     }, [ saveTimePreference.mutate ]);
 
     return (
-        <React.Fragment>
-            <PageSection>
+        <>
+            <React.Fragment>
                 <Card>
                     <CardBody>
+                        <Stack hasGutter>
+                            <StackItem>
+                                <Title headingLevel='h2'>Action Settings</Title>
+                            </StackItem>
+                            <StackItem>
+                                <Text component={ TextVariants.p }>Daily digest email reciept</Text>
+                                <HelperText>
+                                    <HelperTextItem variant="indeterminate">
+                                    Schedule the time at which to send your accounts daily digest email
+                                    </HelperTextItem>
+                                </HelperText>
+                            </StackItem>
+                        </Stack>
+                        <br></br>
                         <Split>
-                            <SplitItem isFilled>
-                                <Stack hasGutter>
-                                    <StackItem>
-                                        <Title headingLevel='h2'>Action Settings</Title>
-                                    </StackItem>
-                                    <StackItem>
-                                        <Text component={ TextVariants.p }>Daily digest email reciept</Text>
-                                        <HelperText>
-                                            <HelperTextItem variant="indeterminate">
-                                                Schedule the time at which to send your accounts daily digest email
-                                            </HelperTextItem>
-                                        </HelperText>
-                                    </StackItem>
-                                </Stack>
-                            </SplitItem>
                             <SplitItem isFilled>
                                 {timePref ?
                                     <Stack hasGutter>
-                                        <StackItem >
+                                        <StackItem>
                                             <Radio
                                                 isChecked={ radioSelect && !showCustomSelect }
                                                 onChange={ handleRadioSelect }
@@ -108,7 +122,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                                     value={ timePref }
                                                     className={ dropDownClassName }
                                                     toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
-                                                    (UTC-00:00) Universal Time
+                                                (UTC-00:00) Universal Time
                                                     </DropdownToggle> }
                                                     isOpen={ isOpen }
                                                     onSelect={ handleTimeSelect }
@@ -117,13 +131,19 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                                 </Dropdown>
                                             </StackItem></>)}
                                     </Stack>
-                                    : <Skeleton /> }
+                                    : <Skeleton />}
                             </SplitItem>
                         </Split>
                     </CardBody>
+                    <CardFooter>
+                        <Button variant='primary' onClick={ handleButtonSave }>
+                    Save
+                        </Button>
+                    </CardFooter>
                 </Card>
-            </PageSection>
-        </React.Fragment>
+            </React.Fragment>
+        </>
+
     );
 };
 
