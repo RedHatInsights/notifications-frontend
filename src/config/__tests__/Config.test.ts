@@ -1,7 +1,7 @@
 import { localUrl } from '@redhat-cloud-services/insights-common-typescript';
 
-import { sortedIntegrationList, withBaseUrl } from '../Config';
 import { IntegrationType } from '../../types/Integration';
+import { sortedIntegrationList, withBaseUrl } from '../Config';
 
 describe('src/config/Config', () => {
 
