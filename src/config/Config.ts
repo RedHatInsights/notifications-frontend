@@ -104,6 +104,7 @@ const Config = {
                 UserIntegrationType.WEBHOOK
             ]),
             beta: sortedIntegrationList([
+                UserIntegrationType.ANSIBLE,
                 UserIntegrationType.GOOGLE_CHAT,
                 UserIntegrationType.TEAMS,
                 UserIntegrationType.SERVICE_NOW,
