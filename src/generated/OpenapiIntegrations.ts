@@ -176,6 +176,13 @@ export namespace Schemas {
     only_admins: boolean;
   };
 
+  export const DrawerProperties = zodSchemaDrawerProperties();
+  export type DrawerProperties = {
+    only_admins: boolean;
+    ignore_preferences: boolean;
+    group_id?: UUID | undefined | null;
+  }
+
   export const EmailSubscriptionType = zodSchemaEmailSubscriptionType();
   export type EmailSubscriptionType = 'INSTANT' | 'DAILY';
 
@@ -187,7 +194,7 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     properties?:
-      | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
+      | (WebhookProperties | EmailSubscriptionProperties | CamelProperties | DrawerProperties)
       | undefined
       | null;
     server_errors?: number | undefined | null;
@@ -223,7 +230,8 @@ export namespace Schemas {
     | 'webhook'
     | 'email_subscription'
     | 'camel'
-    | 'ansible';
+    | 'ansible'
+    | 'drawer';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -409,6 +417,12 @@ export namespace Schemas {
     ignore_preferences: boolean;
     only_admins: boolean;
   };
+
+  export const RequestDrawerSubscriptionProperties = zodSchemaRequestDrawerSubscriptionProperties();
+  export type RequestDrawerSubscriptionProperties = {
+    group_id?: UUID | undefined | null;
+    only_admins: boolean;
+  }
 
   export const RequestEmailSubscriptionProperties =
     zodSchemaRequestEmailSubscriptionProperties();
@@ -688,6 +702,16 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaDrawerProperties() {
+    return z
+      .object({
+          group_id: zodSchemaUUID().optional().nullable(),
+          ignore_preferences: z.boolean(),
+          only_admins: z.boolean()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEmailSubscriptionType() {
       return z.enum([ 'INSTANT', 'DAILY' ]);
   }
@@ -704,7 +728,8 @@ export namespace Schemas {
           .union([
               zodSchemaWebhookProperties(),
               zodSchemaEmailSubscriptionProperties(),
-              zodSchemaCamelProperties()
+              zodSchemaCamelProperties(),
+              zodSchemaDrawerProperties()
           ])
           .optional()
           .nullable(),
@@ -743,7 +768,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'camel', 'ansible' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel', 'ansible', 'drawer' ]);
   }
 
   function zodSchemaEnvironment() {
@@ -964,6 +989,15 @@ export namespace Schemas {
       return z
       .object({
           ignore_preferences: z.boolean(),
+          only_admins: z.boolean()
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaRequestDrawerSubscriptionProperties() {
+    return z
+      .object({
+          group_id: zodSchemaUUID().optional().nullable(),
           only_admins: z.boolean()
       })
       .nonstrict();
@@ -1266,6 +1300,35 @@ export namespace Operations {
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
         const path = '/api/integrations/v1.0/endpoints/system/email_subscription';
+        const query = {} as Record<string, any>;
+        return actionBuilder('POST', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+            rules: [
+                new ValidateRule(Schemas.Endpoint, 'Endpoint', 200),
+                new ValidateRule(Schemas.__Empty, '__Empty', 401),
+                new ValidateRule(Schemas.__Empty, '__Empty', 403)
+            ]
+        })
+        .build();
+    };
+  }
+
+  // POST /endpoints/system/drawer_subscription
+  export namespace EndpointResourceGetOrCreateDrawerSubscriptionEndpoint {
+    export interface Params {
+      body: Schemas.RequestDrawerSubscriptionProperties;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'Endpoint', 200, Schemas.Endpoint>
+      | ValidatedResponse<'__Empty', 401, Schemas.__Empty>
+      | ValidatedResponse<'__Empty', 403, Schemas.__Empty>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+        const path = '/api/integrations/v1.0/endpoints/system/drawer_subscription';
         const query = {} as Record<string, any>;
         return actionBuilder('POST', path)
         .queryParams(query)

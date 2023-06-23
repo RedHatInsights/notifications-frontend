@@ -11,7 +11,7 @@ const ActionIntegration = Yup.object({
 });
 
 const ActionNotify = Yup.object({
-    type: Yup.mixed().oneOf([ NotificationType.EMAIL_SUBSCRIPTION /*, NotificationType.DRAWER */ ]).required(),
+    type: Yup.mixed().oneOf([ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER ]).required(),
     recipient: Yup.array(Yup.object()).min(1),
     integrationId: Yup.string().min(0)
 });
