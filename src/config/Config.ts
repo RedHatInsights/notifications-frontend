@@ -46,6 +46,9 @@ const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
     },
     [IntegrationType.GOOGLE_CHAT]: {
         name: 'Google Chat'
+    },
+    [IntegrationType.DRAWER]: {
+        name: 'Drawer'
     }
 };
 
@@ -66,7 +69,7 @@ const computeIntegrationConfig = (base: Record<IntegrationType, IntegrationTypeC
 
     const transform = (type: IntegrationType, element: IntegrationTypeConfigBase): IntegrationTypeConfig => ({
         ...element,
-        action: type === IntegrationType.EMAIL_SUBSCRIPTION ? element.name : `Integration: ${element.name}`
+        action: [ IntegrationType.EMAIL_SUBSCRIPTION, IntegrationType.DRAWER ].includes(type) ? element.name : `Integration: ${element.name}`
     });
 
     Object.keys(base).forEach((key) => {

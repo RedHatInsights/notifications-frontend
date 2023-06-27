@@ -80,7 +80,24 @@ export type EmailSystemProperties = {
         groupId: undefined | UUID;
     }
 }
-export type SystemProperties = EmailSystemProperties;
+export type DrawerSystemProperties = {
+  type: NotificationType.DRAWER;
+    props: {
+        onlyAdmins: boolean;
+        groupId: undefined | UUID;
+        ignorePreferences: false;
+    }
+}
+
+export type SystemProperties = EmailSystemProperties | DrawerSystemProperties;
+
+export function isEmailSystemProperties(properties: SystemProperties): properties is EmailSystemProperties {
+    return properties.type === NotificationType.EMAIL_SUBSCRIPTION;
+}
+
+export function isDrawerSystemProperties(properties: SystemProperties): properties is DrawerSystemProperties {
+    return properties.type === NotificationType.DRAWER;
+}
 
 const getIntegrationIds = (actions: ReadonlyArray<Action | undefined>): Array<UUID | undefined> => {
     return actions.map(action => {

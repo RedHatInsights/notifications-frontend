@@ -168,6 +168,13 @@ export namespace Schemas {
     updatedIntegrations?: number | undefined | null;
   };
 
+  export const DrawerSubscriptionProperties = zodSchemaDrawerSubscriptionProperties();
+  export type DrawerSubscriptionProperties = {
+    group_id?: UUID | undefined | null;
+    only_admins: boolean;
+    ignore_preferences: boolean;
+  }
+
   export const EmailSubscriptionProperties =
     zodSchemaEmailSubscriptionProperties();
   export type EmailSubscriptionProperties = {
@@ -187,7 +194,7 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
     properties?:
-      | (WebhookProperties | EmailSubscriptionProperties | CamelProperties)
+      | (WebhookProperties | EmailSubscriptionProperties | CamelProperties | DrawerSubscriptionProperties)
       | undefined
       | null;
     server_errors?: number | undefined | null;
@@ -223,7 +230,8 @@ export namespace Schemas {
     | 'webhook'
     | 'email_subscription'
     | 'camel'
-    | 'ansible';
+    | 'ansible'
+    | 'drawer';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -678,6 +686,15 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaDrawerSubscriptionProperties() {
+    return z
+      .object({
+          group_id: zodSchemaUUID().optional().nullable(),
+          only_admins: z.boolean()
+      })
+      .nonstrict();
+  }
+
   function zodSchemaEmailSubscriptionProperties() {
       return z
       .object({
@@ -743,7 +760,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-      return z.enum([ 'webhook', 'email_subscription', 'camel', 'ansible' ]);
+      return z.enum([ 'webhook', 'email_subscription', 'camel', 'ansible', 'drawer' ]);
   }
 
   function zodSchemaEnvironment() {

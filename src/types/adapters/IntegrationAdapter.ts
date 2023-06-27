@@ -7,6 +7,7 @@ import {
     IntegrationAnsible,
     IntegrationBase,
     IntegrationCamel,
+    IntegrationDrawer,
     IntegrationEmailSubscription,
     IntegrationHttp,
     IntegrationType, isCamelType,
@@ -96,6 +97,14 @@ const toIntegrationEmail = (
     onlyAdmin: properties.only_admins
 });
 
+const toIntegrationDrawer = (
+    integrationBase: IntegrationBase<IntegrationType.DRAWER>, properties: Schemas.DrawerProperties): IntegrationDrawer => ({
+    ...integrationBase,
+    ignorePreferences: properties.ignore_preferences,
+    groupId: properties.group_id === null ? undefined : properties.group_id,
+    onlyAdmin: properties.only_admins
+});
+
 export const toIntegration = (serverIntegration: ServerIntegrationResponse): Integration => {
 
     const integrationBase: IntegrationBase<IntegrationType> = {
@@ -130,6 +139,11 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
                 integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
                 serverIntegration.properties as Schemas.EmailSubscriptionProperties
             );
+        case IntegrationType.DRAWER:
+            return toIntegrationDrawer(
+                  integrationBase as IntegrationBase<IntegrationType.DRAWER>,
+                  serverIntegration.properties as Schemas.DrawerProperties
+            );
         default:
             assertNever(integrationBase.type);
     }
@@ -140,7 +154,11 @@ export const toIntegrations = (serverIntegrations: Array<ServerIntegrationRespon
     .map(toIntegration);
 };
 
-type ServerIntegrationProperties = Schemas.EmailSubscriptionProperties | Schemas.WebhookProperties | Schemas.CamelProperties
+type ServerIntegrationProperties =
+  Schemas.EmailSubscriptionProperties |
+  Schemas.WebhookProperties |
+  Schemas.CamelProperties |
+  Schemas.DrawerProperties;
 
 export const toIntegrationProperties = (integration: Integration | NewIntegration): ServerIntegrationProperties => {
 
@@ -183,6 +201,13 @@ export const toIntegrationProperties = (integration: Integration | NewIntegratio
                 only_admins: integrationEmail.onlyAdmin,
                 group_id: integrationEmail.groupId,
                 ignore_preferences: integrationEmail.ignorePreferences
+            };
+        case IntegrationType.DRAWER:
+            const integrationDrawer: IntegrationDrawer = integration as IntegrationDrawer;
+            return {
+                only_admins: integrationDrawer.onlyAdmin,
+                group_id: integrationDrawer.groupId,
+                ignore_preferences: integrationDrawer.ignorePreferences
             };
         default:
             assertNever(type);

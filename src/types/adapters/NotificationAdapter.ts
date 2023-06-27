@@ -5,6 +5,8 @@ import { Schemas } from '../../generated/OpenapiNotifications';
 import { IntegrationEmailSubscription, ServerIntegrationResponse, UserIntegration } from '../Integration';
 import {
     Action, ActionNotify,
+    DrawerSystemProperties,
+    EmailSystemProperties,
     EventType,
     NotificationType,
     ServerNotificationResponse,
@@ -58,6 +60,8 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
             return _toAction(NotificationType.INTEGRATION, serverAction);
         case Schemas.EndpointType.enum.email_subscription:
             return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);
+        case Schemas.EndpointType.enum.drawer:
+            return _toAction(NotificationType.DRAWER, serverAction);
         default:
             assertNever(serverAction.type);
     }
@@ -82,16 +86,39 @@ export const toNotifications = (serverNotifications: Array<ServerNotificationRes
 
 export const toSystemProperties = (action: Action): ReadonlyArray<SystemProperties> => {
     if (action.type === NotificationType.EMAIL_SUBSCRIPTION) {
-        return action.recipient.map(r => ({
+        return action.recipient.map<EmailSystemProperties>(r => ({
             type: NotificationType.EMAIL_SUBSCRIPTION,
             props: actionRecipientToSystemPropertiesProps(r)
+        }));
+    } else if (action.type === NotificationType.DRAWER) {
+        return action.recipient.map(r => ({
+            type: NotificationType.DRAWER,
+            props: actionRecipientToDrawerPropertiesProps(r)
         }));
     } else {
         throw new Error(`No system properties for type ${action.type}`);
     }
 };
 
-const actionRecipientToSystemPropertiesProps = (recipient: ActionNotify['recipient'][number]): SystemProperties['props'] => {
+const actionRecipientToSystemPropertiesProps = (recipient: ActionNotify['recipient'][number]): EmailSystemProperties['props'] => {
+    if (recipient instanceof NotificationRbacGroupRecipient) {
+        return {
+            groupId: recipient.groupId,
+            onlyAdmins: false,
+            ignorePreferences: false
+        };
+    } else if (recipient instanceof NotificationUserRecipient) {
+        return {
+            groupId: undefined,
+            onlyAdmins: recipient.sendToAdmin,
+            ignorePreferences: false
+        };
+    }
+
+    throw new Error('Unexpected implementation:' + recipient);
+};
+
+const actionRecipientToDrawerPropertiesProps = (recipient: ActionNotify['recipient'][number]): DrawerSystemProperties['props'] => {
     if (recipient instanceof NotificationRbacGroupRecipient) {
         return {
             groupId: recipient.groupId,
