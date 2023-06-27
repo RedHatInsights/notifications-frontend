@@ -101,6 +101,7 @@ const Config = {
         types: computeIntegrationConfig(integrationTypes),
         actions: {
             stable: sortedIntegrationList([
+                UserIntegrationType.ANSIBLE,
                 UserIntegrationType.GOOGLE_CHAT,
                 UserIntegrationType.TEAMS,
                 UserIntegrationType.SERVICE_NOW,
