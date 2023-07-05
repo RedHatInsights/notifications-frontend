@@ -53,10 +53,10 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setIsOpen(false);
     }, []);
 
-    const handleButtonSave = React.useCallback((time) => {
+    const handleButtonSave = React.useCallback((timePref) => {
         const mutate = saveTimePreference.mutate;
         mutate({
-            body: time
+            body: timePref.body
         }).then((response) => {
             if (response.status === 200) {
                 return (
@@ -135,7 +135,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                             </Dropdown>
                                         </StackItem></>)}
                                 </Stack>
-                                {/* : <Skeleton />} */}
                             </SplitItem>
                         </Split>
                     </CardBody>
