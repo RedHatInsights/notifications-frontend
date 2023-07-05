@@ -91,7 +91,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                         <br></br>
                         <Split>
                             <SplitItem isFilled>
-                                {/* {timePref ? */}
                                 <Stack hasGutter>
                                     <StackItem>
                                         <Radio
