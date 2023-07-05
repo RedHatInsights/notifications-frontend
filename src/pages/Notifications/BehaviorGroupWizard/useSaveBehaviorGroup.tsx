@@ -101,8 +101,8 @@ export const useSaveBehaviorGroup = (originalBehaviorGroup?: Partial<BehaviorGro
             isEqual
         );
 
-        if (toFetch.find(props => props.type !== NotificationType.EMAIL_SUBSCRIPTION)) {
-            throw new Error('Only email subscriptions are created when assigning behavior groups');
+        if (toFetch.find(props => ![ NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER ].includes(props.type))) {
+            throw new Error('Only email and drawer subscriptions are created when assigning behavior groups');
         }
 
         if (toFetch.length > 0) {

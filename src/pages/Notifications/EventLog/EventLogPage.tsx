@@ -110,6 +110,7 @@ export const EventLogPage: React.FunctionComponent = () => {
                 case 'ansible':
                     return endpoint.payload.value.name;
                 case 'email_subscription':
+                case 'drawer':
                     const properties = endpoint.payload.value.properties as Schemas.EmailSubscriptionProperties;
                     if (properties.only_admins) {
                         return 'Users: Admin';

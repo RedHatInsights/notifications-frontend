@@ -11,7 +11,8 @@ export enum IntegrationType {
     SERVICE_NOW = 'camel:servicenow',
     TEAMS = 'camel:teams',
     GOOGLE_CHAT = 'camel:google_chat',
-    ANSIBLE = 'ansible' // Event-Driven Ansible
+    ANSIBLE = 'ansible', // Event-Driven Ansible
+    DRAWER = 'drawer'
 }
 
 export const UserIntegrationType = {
@@ -60,6 +61,13 @@ export interface IntegrationAnsible extends IntegrationBase<IntegrationType.ANSI
     method: Schemas.HttpType;
 }
 
+export interface IntegrationDrawer extends IntegrationBase<IntegrationType.DRAWER> {
+  type: IntegrationType.DRAWER;
+  ignorePreferences: boolean;
+  onlyAdmin: boolean;
+  groupId?: UUID
+}
+
 export interface IntegrationCamel extends IntegrationBase<CamelIntegrationType> {
     type: CamelIntegrationType;
     url: string;
@@ -79,7 +87,7 @@ export interface IntegrationEmailSubscription extends IntegrationBase<Integratio
     groupId?: UUID
 }
 
-export type Integration = IntegrationHttp | IntegrationAnsible | IntegrationEmailSubscription | IntegrationCamel;
+export type Integration = IntegrationHttp | IntegrationAnsible | IntegrationEmailSubscription | IntegrationCamel | IntegrationDrawer;
 export type TypedIntegration<T extends IntegrationType> = Extract<Integration, {
     type: T
 }>;
