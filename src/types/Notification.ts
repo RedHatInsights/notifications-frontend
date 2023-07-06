@@ -55,6 +55,8 @@ export enum NotificationType {
 
 export type Facet = Schemas.Facet;
 
+export type LocalTime = Schemas.LocalTime
+
 export type ServerNotificationRequest = Schemas.EventType;
 export type ServerNotificationResponse = Schemas.EventType;
 
@@ -111,3 +113,4 @@ export const areActionsEqual = (actions1: ReadonlyArray<Action | undefined>, act
     // Order matters here, no sorting.
     return integrations1.every((val, index) => val === integrations2[index]);
 };
+

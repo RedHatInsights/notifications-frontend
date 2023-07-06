@@ -8,6 +8,7 @@ import { style } from 'typestyle';
 
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
+import { LocalTime } from '../../types/Notification';
 
 const dropDownClassName = style({
     width: '280px'
@@ -21,6 +22,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ radioSelect, setRadioSelect ] = React.useState(true);
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
+    const [ timeSelect, setTimeSelect ] = React.useState<Partial<LocalTime>>();
 
     const getTimePreference = useGetTimePreference();
     const saveTimePreference = useUpdateTimePreference();
@@ -49,14 +51,15 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setShowCustomSelect(true);
     }, []);
 
-    const handleTimeSelect = React.useCallback(() => {
+    const handleTimePrefSelect = React.useCallback(() => {
+        setTimeSelect(timeSelect);
         setIsOpen(false);
-    }, []);
+    }, [ timeSelect ]);
 
-    const handleButtonSave = React.useCallback((timePref) => {
+    const handleButtonSave = React.useCallback((timeSelect) => {
         const mutate = saveTimePreference.mutate;
         mutate({
-            body: timePref.body
+            body: timeSelect.body
         }).then((response) => {
             if (response.status === 200) {
                 return (
@@ -116,7 +119,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     {showCustomSelect && (
                                         <><StackItem className={ dropDownPaddingClassName }>
                                             <Text component={ TextVariants.h6 }>Time</Text>
-                                            <TimePicker onChange={ handleTimeSelect } value={ timePref }
+                                            <TimePicker onChange={ handleTimePrefSelect } value={ timePref }
                                                 width='263px' stepMinutes={ 15 } placeholder='00:00' is24Hour />
                                         </StackItem>
                                         <StackItem className={ dropDownPaddingClassName }>
@@ -128,7 +131,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                                 (UTC-00:00) Universal Time
                                                 </DropdownToggle> }
                                                 isOpen={ isOpen }
-                                                onSelect={ handleTimeSelect }
+                                                onSelect={ handleTimePrefSelect }
                                                 menuAppendTo={ () => document.body }
                                                 dropdownItems={ dropdownItems }>
                                             </Dropdown>
