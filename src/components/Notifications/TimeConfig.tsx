@@ -2,13 +2,14 @@ import { Alert, Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, Drop
     Radio, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import { global_spacer_lg } from '@patternfly/react-tokens';
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
 
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 import { LocalTime } from '../../types/Notification';
+import { useNotification } from '../../utils/AlertUtils';
 
 const dropDownClassName = style({
     width: '280px'
@@ -26,16 +27,23 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const getTimePreference = useGetTimePreference();
     const saveTimePreference = useUpdateTimePreference();
+    const { addSuccessNotification, addDangerNotification } = useNotification();
 
     const timePref = useMemo(() => {
-        if (getTimePreference.payload?.status === 200) {
-            return getTimePreference.payload.value;
+        if (getTimePreference.status === 200) {
+            return getTimePreference.payload?.value as string;
         }
 
         return undefined;
 
     }, [ getTimePreference.payload?.status, getTimePreference.payload?.value ]);
-    console.log(getTimePreference);
+
+    // Set the time preference value once we load it from the server
+    useEffect(() => {
+        if (timePref) {
+            setTimeSelect(timePref);
+        }
+    }, [ timePref ]);
 
     const handleRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
@@ -52,27 +60,25 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setShowCustomSelect(true);
     }, []);
 
-    const handleTimePrefSelect = React.useCallback(() => {
-        setTimeSelect(timeSelect);
+    const handleTimePrefSelect = React.useCallback((time) => {
+        setTimeSelect(time);
         setIsOpen(false);
-    }, [ timeSelect ]);
+    }, [ ]);
 
     const handleButtonSave = React.useCallback(() => {
-        const mutate = saveTimePreference.mutate;
-        mutate({
-            body
-        }).then((response) => {
-            if (response.status === 200) {
-                return (
-                    <Alert title='Action settings saved' variant='success' />
-                );
-            } else {
-                return (
-                    <Alert title='Failed to save action settings' variant='danger' />
-                );
-            }
-        });
-    }, [ saveTimePreference.mutate ]);
+        if (timeSelect) {
+            const mutate = saveTimePreference.mutate;
+            mutate({
+                body: timeSelect
+            }).then((response) => {
+                if (response.status === 200) {
+                    addSuccessNotification('Action settings saved', '');
+                } else {
+                    addDangerNotification('Failed to save action settings', '');
+                }
+            });
+        }
+    }, [ saveTimePreference.mutate, timeSelect ]);
 
     return (
         <>
@@ -100,7 +106,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                         <Radio
                                             isChecked={ radioSelect && !showCustomSelect }
                                             onChange={ handleRadioSelect }
-                                            value={ timePref }
                                             id='settings-time-config'
                                             label='Default time'
                                             description='00:00 UTC'
@@ -110,7 +115,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     <StackItem>
                                         <Radio
                                             isChecked={ radioSelect && showCustomSelect }
-                                            value={ timePref }
                                             onChange={ handleCustomRadioSelect }
                                             id='settings-time-config'
                                             label='Custom time'
@@ -120,13 +124,12 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     {showCustomSelect && (
                                         <><StackItem className={ dropDownPaddingClassName }>
                                             <Text component={ TextVariants.h6 }>Time</Text>
-                                            <TimePicker onChange={ handleTimePrefSelect } value={ timePref }
+                                            <TimePicker onChange={ handleTimePrefSelect } time={ timeSelect }
                                                 width='263px' stepMinutes={ 15 } placeholder='00:00' is24Hour />
                                         </StackItem>
                                         <StackItem className={ dropDownPaddingClassName }>
                                             <Text component={ TextVariants.h6 }>Time zone</Text>
                                             <Dropdown
-                                                value={ timePref }
                                                 className={ dropDownClassName }
                                                 toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
                                                 (UTC-00:00) Universal Time
