@@ -35,6 +35,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         return undefined;
 
     }, [ getTimePreference.payload?.status, getTimePreference.payload?.value ]);
+    console.log(getTimePreference);
 
     const handleRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
@@ -56,10 +57,10 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         setIsOpen(false);
     }, [ timeSelect ]);
 
-    const handleButtonSave = React.useCallback((timeSelect) => {
+    const handleButtonSave = React.useCallback(() => {
         const mutate = saveTimePreference.mutate;
         mutate({
-            body: timeSelect.body
+            body
         }).then((response) => {
             if (response.status === 200) {
                 return (
