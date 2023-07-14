@@ -1,4 +1,4 @@
-import { Alert, Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem,
+import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem,
     Radio, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import { global_spacer_lg } from '@patternfly/react-tokens';
@@ -36,7 +36,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
         return undefined;
 
-    }, [ getTimePreference.payload?.status, getTimePreference.payload?.value ]);
+    }, [ getTimePreference.payload?.value, getTimePreference.status ]);
 
     // Set the time preference value once we load it from the server
     useEffect(() => {
@@ -45,7 +45,8 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         }
     }, [ timePref ]);
 
-    const handleRadioSelect = React.useCallback(() => {
+    const handleRadioSelect = React.useCallback((time) => {
+        setTimeSelect(time);
         setRadioSelect(true);
         setShowCustomSelect(false);
     }, []);
@@ -78,7 +79,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                 }
             });
         }
-    }, [ saveTimePreference.mutate, timeSelect ]);
+    }, [ addDangerNotification, addSuccessNotification, saveTimePreference.mutate, timeSelect ]);
+
+    const isLoading = saveTimePreference.loading || getTimePreference.loading;
 
     return (
         <>
@@ -145,8 +148,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                         </Split>
                     </CardBody>
                     <CardFooter>
-                        <Button variant='primary' onClick={ handleButtonSave }>
-                    Save
+                        <Button variant='primary' type='submit' isLoading={ isLoading }
+                            isDisabled={ isLoading } onClick={ handleButtonSave }>
+                            { isLoading ? 'Loading' : 'Save' }
                         </Button>
                     </CardFooter>
                 </Card>
