@@ -45,8 +45,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         }
     }, [ timePref ]);
 
-    const handleRadioSelect = React.useCallback((time) => {
-        setTimeSelect(time);
+    const handleRadioSelect = React.useCallback(() => {
         setRadioSelect(true);
         setShowCustomSelect(false);
     }, []);
@@ -119,7 +118,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                         <Radio
                                             isChecked={ radioSelect && showCustomSelect }
                                             onChange={ handleCustomRadioSelect }
-                                            id='settings-time-config'
+                                            id='settings-time-config-custom'
                                             label='Custom time'
                                             name='radio-select'>
                                         </Radio>
