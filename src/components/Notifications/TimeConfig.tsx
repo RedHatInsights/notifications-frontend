@@ -71,7 +71,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
             mutate({
                 body: timeSelect
             }).then((response) => {
-                if (response.status === 200) {
+                if (response.status === 204) {
                     addSuccessNotification('Action settings saved', '');
                 } else {
                     addDangerNotification('Failed to save action settings', '');
