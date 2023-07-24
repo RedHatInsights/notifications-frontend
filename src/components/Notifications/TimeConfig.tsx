@@ -21,7 +21,7 @@ const dropDownPaddingClassName = style({
 
 export const TimeConfigComponent: React.FunctionComponent = () => {
 
-    const [ radioSelect, setRadioSelect ] = React.useState(true);
+    const [ radioSelect, setRadioSelect ] = React.useState(false);
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
     const [ timeSelect, setTimeSelect ] = React.useState<Partial<LocalTime>>();
 
@@ -42,6 +42,8 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     useEffect(() => {
         if (timePref) {
             setTimeSelect(timePref);
+            setRadioSelect(true);
+            setShowCustomSelect(true);
         }
     }, [ timePref ]);
 
@@ -106,7 +108,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                 <Stack hasGutter>
                                     <StackItem>
                                         <Radio
-                                            isChecked={ radioSelect && !showCustomSelect }
+                                            checked={ radioSelect && !showCustomSelect }
                                             onChange={ handleRadioSelect }
                                             id='settings-time-config'
                                             label='Default time'
@@ -116,7 +118,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     </StackItem>
                                     <StackItem>
                                         <Radio
-                                            isChecked={ radioSelect && showCustomSelect }
+                                            checked={ radioSelect && showCustomSelect }
                                             onChange={ handleCustomRadioSelect }
                                             id='settings-time-config-custom'
                                             label='Custom time'
