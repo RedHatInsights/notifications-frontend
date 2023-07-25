@@ -1,5 +1,5 @@
 import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem,
-    Radio, Split, SplitItem, Stack, StackItem,
+    Radio, Skeleton, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import React, { useEffect, useMemo } from 'react';
@@ -21,7 +21,6 @@ const dropDownPaddingClassName = style({
 
 export const TimeConfigComponent: React.FunctionComponent = () => {
 
-    const [ radioSelect, setRadioSelect ] = React.useState(false);
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
     const [ timeSelect, setTimeSelect ] = React.useState<Partial<LocalTime>>();
 
@@ -42,13 +41,11 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     useEffect(() => {
         if (timePref) {
             setTimeSelect(timePref);
-            setRadioSelect(true);
             setShowCustomSelect(true);
         }
     }, [ timePref ]);
 
     const handleRadioSelect = React.useCallback(() => {
-        setRadioSelect(true);
         setShowCustomSelect(false);
     }, []);
 
@@ -58,14 +55,13 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         <DropdownItem key={ tz.value }> { tz.text }</DropdownItem>);
 
     const handleCustomRadioSelect = React.useCallback(() => {
-        setRadioSelect(true);
         setShowCustomSelect(true);
     }, []);
 
     const handleTimePrefSelect = React.useCallback((time) => {
         setTimeSelect(time);
         setIsOpen(false);
-    }, [ ]);
+    }, []);
 
     const handleButtonSave = React.useCallback(() => {
         if (timeSelect) {
@@ -107,23 +103,27 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                             <SplitItem isFilled>
                                 <Stack hasGutter>
                                     <StackItem>
-                                        <Radio
-                                            checked={ radioSelect && !showCustomSelect }
-                                            onChange={ handleRadioSelect }
-                                            id='settings-time-config'
-                                            label='Default time'
-                                            description='00:00 UTC'
-                                            name='radio-select'>
-                                        </Radio>
+                                        { getTimePreference.loading ? <Skeleton /> :
+                                            <Radio
+                                                checked={ !showCustomSelect }
+                                                onChange={ handleRadioSelect }
+                                                id='settings-time-config'
+                                                label='Default time'
+                                                description='00:00 UTC'
+                                                name='radio-select'>
+                                            </Radio>
+                                        }
                                     </StackItem>
                                     <StackItem>
-                                        <Radio
-                                            checked={ radioSelect && showCustomSelect }
-                                            onChange={ handleCustomRadioSelect }
-                                            id='settings-time-config-custom'
-                                            label='Custom time'
-                                            name='radio-select'>
-                                        </Radio>
+                                        { getTimePreference.loading ? <Skeleton /> :
+                                            <Radio
+                                                checked={ showCustomSelect }
+                                                onChange={ handleCustomRadioSelect }
+                                                id='settings-time-config-custom'
+                                                label='Custom time'
+                                                name='radio-select'>
+                                            </Radio>
+                                        }
                                     </StackItem>
                                     {showCustomSelect && (
                                         <><StackItem className={ dropDownPaddingClassName }>
