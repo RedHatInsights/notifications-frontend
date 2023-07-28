@@ -4,7 +4,6 @@
 
 Notifications frontend for Red Hat Insights
 
-
 ## Build app
 
 0. If needed run `npm install` to install dependency packages
