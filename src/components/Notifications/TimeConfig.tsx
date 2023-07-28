@@ -105,6 +105,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     <StackItem>
                                         { getTimePreference.loading ? <Skeleton /> :
                                             <Radio
+                                                value="00:00"
                                                 checked={ !showCustomSelect }
                                                 onChange={ handleRadioSelect }
                                                 id='settings-time-config'
@@ -117,6 +118,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                     <StackItem>
                                         { getTimePreference.loading ? <Skeleton /> :
                                             <Radio
+                                                value={ timeSelect }
                                                 checked={ showCustomSelect }
                                                 onChange={ handleCustomRadioSelect }
                                                 id='settings-time-config-custom'
