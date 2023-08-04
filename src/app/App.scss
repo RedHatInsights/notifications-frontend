@@ -9,3 +9,12 @@
 .page__notifications#root {
   --pf-c-page__main-section--BackgroundColor: var(--pf-global--Color--light-100);
 }
+
+.pf-c-card__cover-image {
+  position: relative;
+  background-image: url('../assets/images/notifications-image.svg');
+  background-size: contain;
+  background-repeat: no-repeat;
+  background-position: right bottom;
+  border: var(--pf-global--spacer--lg) solid transparent;
+}
