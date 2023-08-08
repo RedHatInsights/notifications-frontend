@@ -1,6 +1,10 @@
 import { NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications';
+import {
+    clearNotifications as createClearNotificationsAction
+} from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
+import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import fetchMock from 'fetch-mock';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
@@ -15,9 +19,6 @@ import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
-import {
-    clearNotifications as createClearNotificationsAction
-} from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 
 let setup = false;
 let client;
@@ -103,23 +104,37 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
         }
     };
 
+    const unleashClient = React.useMemo(() => new UnleashClient({
+        url: `${document.location.origin}/api/featureflags/v0`,
+        clientKey: 'proxy-123',
+        appName: 'web',
+        fetch: () => Promise.resolve({
+            status: 200,
+            body: {
+                toggles: []
+            }
+        })
+    }), []);
+
     const store = getNotificationsRegistry().getStore();
     return (
         <IntlProvider locale={ navigator.language } messages={ messages }>
-            <Provider store={ store }>
-                <Router { ...props.router } >
-                    <ClientContextProvider client={ client }>
-                        <AppContext.Provider value={ completeAppContext }>
-                            <NotificationsPortal />
-                            <InternalWrapper { ...props }>
-                                <Route { ...props.route } >
-                                    { props.children }
-                                </Route>
-                            </InternalWrapper>
-                        </AppContext.Provider>
-                    </ClientContextProvider>
-                </Router>
-            </Provider>
+            <FlagProvider unleashClient={ unleashClient }>
+                <Provider store={ store }>
+                    <Router { ...props.router } >
+                        <ClientContextProvider client={ client }>
+                            <AppContext.Provider value={ completeAppContext }>
+                                <NotificationsPortal />
+                                <InternalWrapper { ...props }>
+                                    <Route { ...props.route } >
+                                        { props.children }
+                                    </Route>
+                                </InternalWrapper>
+                            </AppContext.Provider>
+                        </ClientContextProvider>
+                    </Router>
+                </Provider>
+            </FlagProvider>
         </IntlProvider>
     );
 };

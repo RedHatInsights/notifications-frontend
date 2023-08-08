@@ -1,5 +1,6 @@
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
 import { render, screen } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
 import messages from '../../locales/data.json';
@@ -21,6 +22,11 @@ describe('src/Routes', () => {
 
         beforeEach(() => {
             appWrapperSetup();
+            fetchMock.get(`/api/featureflags/v0`, {
+                body: {
+                    toggles: []
+                }
+            });
         });
 
         afterEach(() => {

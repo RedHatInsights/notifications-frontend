@@ -303,6 +303,11 @@ const mockBehaviorGroupsOfEventTypes = (eventTypeId: string = defaultEventTypeId
 describe('src/pages/Notifications/List/Page', () => {
     beforeEach(() => {
         appWrapperSetup();
+        fetchMock.get(`/api/featureflags/v0`, {
+            body: {
+                toggles: []
+            }
+        });
     });
 
     afterEach(() => {
