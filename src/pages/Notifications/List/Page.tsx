@@ -1,3 +1,4 @@
+import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -22,21 +23,23 @@ enum BundleStatus {
 const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus => typeof bundle === 'number';
 
 export const NotificationsListPage: React.FunctionComponent = () => {
-
     const params = useParams<NotificationListPageParams>();
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+
+    const bundleName = useMemo(() => notificationsOverhaul ? defaultBundleName : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
 
     const getBundles = useGetBundles();
     const getApplications = useGetApplicationsLazy();
 
     const bundle: Facet | BundleStatus = useMemo(() => {
         if (getBundles.payload?.status === 200) {
-            return getBundles.payload.value.find(b => b.name === params.bundleName) ?? BundleStatus.NOT_FOUND;
+            return getBundles.payload.value.find(b => b.name === bundleName) ?? BundleStatus.NOT_FOUND;
         } else if (getBundles.payload) {
             return BundleStatus.FAILED_TO_LOAD;
         }
 
         return BundleStatus.LOADING;
-    }, [ getBundles.payload, params.bundleName ]);
+    }, [ getBundles.payload, bundleName ]);
 
     React.useEffect(() => {
         const query = getApplications.query;
@@ -57,7 +60,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     );
 
     if (bundle === BundleStatus.NOT_FOUND) {
-        if (params.bundleName === defaultBundleName) {
+        if (bundleName === defaultBundleName) {
             throw new Error('Default bundle information not found');
         }
 

@@ -51,6 +51,11 @@ describe('src/app/App', () => {
 
     beforeEach(() => {
         appWrapperSetup();
+        fetchMock.get(`/api/featureflags/v0`, {
+            body: {
+                toggles: []
+            }
+        });
     });
 
     afterEach(() => {
