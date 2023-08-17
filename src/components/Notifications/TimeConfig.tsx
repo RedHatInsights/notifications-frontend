@@ -144,6 +144,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                                 <HelperText>
                                     <HelperTextItem variant="indeterminate">
                                     Schedule the time at which to send your account&apos;s daily digest email.
+                                    All times will be converted to UTC after saving.
                                     </HelperTextItem>
                                 </HelperText>
                             </StackItem>
