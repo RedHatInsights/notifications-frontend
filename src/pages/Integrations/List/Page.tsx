@@ -2,6 +2,7 @@ import { Button, Split, SplitItem } from '@patternfly/react-core';
 import { PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { addDangerNotification, ExporterType, Filter, Operator, Page, stringValue, useSort } from '@redhat-cloud-services/insights-common-typescript';
+import { useFlag } from '@unleash/proxy-client-react';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
@@ -50,7 +51,7 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
     const integrationFilter = useIntegrationFilter();
-
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
     const userIntegrations = useIntegrations();
     const integrationFilterBuilder = React.useCallback((filters?: IntegrationFilters) => {
         const filter = new Filter();
@@ -179,10 +180,10 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                     <SplitItem isFilled>
                         <PageHeaderTitle title={ Messages.pages.integrations.list.title } />
                     </SplitItem>
-                    <SplitItem>
+                    { notificationsOverhaul &&<SplitItem>
                         <Button variant='secondary' component={ (props: any) =>
                             <Link { ...props } to={ linkTo.eventLog() } /> }> View event log </Button>
-                    </SplitItem>
+                    </SplitItem> }
                 </Split>
             </PageHeader>
             <Main>

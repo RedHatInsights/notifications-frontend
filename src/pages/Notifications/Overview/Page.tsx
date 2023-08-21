@@ -21,6 +21,7 @@ import {
 import { ArrowRightIcon, ExternalLinkAltIcon, RunningIcon, UserIcon } from '@patternfly/react-icons';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
+import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
@@ -29,6 +30,7 @@ import CustomDataListItem, { IconName } from './CustomDataListItem';
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
     const [ isOrgAdmin, setIsOrgAdmin ] = React.useState(null);
     const { auth } = useChrome();
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
     React.useEffect(() => {
         const getUser = async () => {
             const { identity: { user }}: any = await auth.getUser();
@@ -143,9 +145,9 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                     </p>
                                 </CardBody>
                                 <CardFooter>
-                                    <Button variant="secondary" isLarge>
+                                    { notificationsOverhaul && <Button variant="secondary" isLarge>
                                         View Event log
-                                    </Button>
+                                    </Button> }
                                 </CardFooter>
                             </Card>
                         </GridItem>

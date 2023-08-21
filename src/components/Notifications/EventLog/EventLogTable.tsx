@@ -27,7 +27,7 @@ export interface EventLogTableProps {
 
 export enum EventLogTableColumns {
     EVENT,
-    APPLICATION,
+    SERVICE,
     DATE
 }
 
@@ -82,7 +82,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
 
     const sortOptions: Record<EventLogTableColumns, undefined | ThProps['sort']> = React.useMemo(() => ({
         [EventLogTableColumns.EVENT]: undefined,
-        [EventLogTableColumns.APPLICATION]: undefined,
+        [EventLogTableColumns.SERVICE]: undefined,
         [EventLogTableColumns.DATE]: {
             sortBy: {
                 direction: props.sortDirection,
@@ -133,7 +133,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                         ) : ('No actions')}
 
                     </Td>
-                    <Td><DateFormat type="relative" date={ e.date } /></Td>
+                    <Td><DateFormat type="exact" date={ e.date } /></Td>
                 </Tr>
             ));
         }
@@ -158,15 +158,15 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = props 
                     <Th
                         sort={ sortOptions[EventLogTableColumns.EVENT] }
                     >
-                        Event
+                        Event type
                     </Th>
                     <Th
-                        sort={ sortOptions[EventLogTableColumns.APPLICATION] }
+                        sort={ sortOptions[EventLogTableColumns.SERVICE] }
                     >
-                        Application
+                        Service
                     </Th>
                     <Th>
-                        Actions <ActionsHelpPopover>
+                        Action taken <ActionsHelpPopover>
                             <Button variant={ ButtonVariant.plain }>
                                 <HelpIcon />
                             </Button>
