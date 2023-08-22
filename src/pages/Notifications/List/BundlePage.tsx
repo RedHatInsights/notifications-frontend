@@ -39,14 +39,15 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     </Main>;
 
     const eventLogButton = () => {
-        return notificationsOverhaul ? null : <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
-            {Messages.pages.notifications.list.viewHistory}
-        </ButtonLink>
-    }
+        return notificationsOverhaul ? null :
+            <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
+                {Messages.pages.notifications.list.viewHistory}
+            </ButtonLink>;
+    };
+
     const timeConfigPage = <Main>
         <TimeConfigComponent />
     </Main>;
-
 
     return (
         <><PageHeader
@@ -56,8 +57,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
             <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
                 getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
-            action={ eventLogButton() } 
-            />
+            action={ eventLogButton() }
+        />
 
         <TabComponent configuration={ props.children } settings={ props.children }>
             <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>

@@ -180,7 +180,7 @@ export const IntegrationsListPage: React.FunctionComponent<IntegrationsListPageP
                     <SplitItem isFilled>
                         <PageHeaderTitle title={ Messages.pages.integrations.list.title } />
                     </SplitItem>
-                    { notificationsOverhaul &&<SplitItem>
+                    { notificationsOverhaul && <SplitItem>
                         <Button variant='secondary' component={ (props: any) =>
                             <Link { ...props } to={ linkTo.eventLog() } /> }> View event log </Button>
                     </SplitItem> }

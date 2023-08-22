@@ -132,9 +132,10 @@ export const EventLogPage: React.FunctionComponent = () => {
             <PageHeader
                 title={ Messages.pages.notifications.eventLog.title }
                 subtitle={ Messages.pages.notifications.eventLog.subtitle }
-                action={ !notificationsOverhaul && <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventNotificationPageUrl } variant={ ButtonVariant.secondary }>
-                    { Messages.pages.notifications.eventLog.viewNotifications }
-                </ButtonLink> }
+                action={ !notificationsOverhaul &&
+                    <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventNotificationPageUrl } variant={ ButtonVariant.secondary }>
+                        { Messages.pages.notifications.eventLog.viewNotifications }
+                    </ButtonLink> }
             />
             <Main>
                 <EventLogToolbar
