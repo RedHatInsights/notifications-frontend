@@ -2,7 +2,7 @@ import { ButtonVariant, Tab, TabTitleText } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
-    getInsights, getInsightsEnvironment,
+    getInsights,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { useFlag } from '@unleash/proxy-client-react';
@@ -15,7 +15,6 @@ import { TimeConfigComponent } from '../../../components/Notifications/TimeConfi
 import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
-import { stagingAndProdBeta } from '../../../types/Environments';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 
@@ -34,19 +33,20 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
-    const insights = getInsights();
-    const isProdOrStageBeta = stagingAndProdBeta.includes(getInsightsEnvironment(insights));
 
     const mainPage = <Main>
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
     </Main>;
 
     const eventLogButton = () => {
-        console.log(notificationsOverhaul)
         return notificationsOverhaul ? null : <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
             {Messages.pages.notifications.list.viewHistory}
         </ButtonLink>
     }
+    const timeConfigPage = <Main>
+        <TimeConfigComponent />
+    </Main>;
+
 
     return (
         <><PageHeader
@@ -59,18 +59,14 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             action={ eventLogButton() } 
             />
 
-        { isProdOrStageBeta ? (
-            <TabComponent configuration={ props.children } settings={ props.children }>
-                <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
-                    {mainPage}
-                </Tab>
-                <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
-                    <Main>
-                        <TimeConfigComponent />
-                    </Main>
-                </Tab>
-            </TabComponent>
-        ) : mainPage }
+        <TabComponent configuration={ props.children } settings={ props.children }>
+            <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
+                {mainPage}
+            </Tab>
+            <Tab eventKey={ 1 } title={ <TabTitleText>Settings</TabTitleText> }>
+                {timeConfigPage}
+            </Tab>
+        </TabComponent>
         </>
     );
 };
