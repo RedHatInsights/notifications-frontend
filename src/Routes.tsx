@@ -1,6 +1,8 @@
+import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { Route, RouteProps, Switch } from 'react-router';
+import { matchPath, useHistory } from 'react-router-dom';
 
 import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
@@ -81,9 +83,30 @@ const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: Insig
 };
 
 export const Routes: React.FunctionComponent = () => {
+    const chrome = useChrome();
+    const history = useHistory();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
     const pathRoutes = React.useMemo(() => notificationsOverhaul ? routesOverhaul : legacyRoutes, [ notificationsOverhaul ]);
+
+    React.useEffect(() => {
+        const on = chrome.on;
+        if (on) {
+            return on('APP_NAVIGATION', event => {
+                const pathname = event.domEvent.href;
+                const relative = pathname.substr(pathname.indexOf('/notifications'));
+                pathRoutes.some(({ path }) => {
+                    if (matchPath(relative, {
+                        path,
+                        exact: true
+                    })) {
+                        history.replace(relative);
+                        return true;
+                    }}
+                );
+            });
+        }
+    }, [ chrome.on, history, pathRoutes ]);
 
     return (
         <Switch>
