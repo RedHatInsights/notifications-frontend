@@ -5,6 +5,7 @@ import {
     getInsights,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
+import { useFlag } from '@unleash/proxy-client-react';
 import { default as React } from 'react';
 
 import { useAppContext } from '../../../app/AppContext';
@@ -28,12 +29,21 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     updateDocumentTitle?.(`${props.bundle.displayName} - Notifications`);
 
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
 
     const mainPage = <Main>
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
     </Main>;
+
+    const eventLogButton = () => {
+        return notificationsOverhaul ? null :
+            <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
+                {Messages.pages.notifications.list.viewHistory}
+            </ButtonLink>;
+    };
 
     const timeConfigPage = <Main>
         <TimeConfigComponent />
@@ -47,9 +57,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
             <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
                 getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
-            action={ <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventLogPageUrl } variant={ ButtonVariant.secondary }>
-                {Messages.pages.notifications.list.viewHistory}
-            </ButtonLink> } />
+            action={ eventLogButton() }
+        />
 
         <TabComponent configuration={ props.children } settings={ props.children }>
             <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>

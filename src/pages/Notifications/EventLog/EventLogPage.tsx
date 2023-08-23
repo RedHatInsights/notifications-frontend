@@ -1,5 +1,6 @@
 import { ButtonVariant } from '@patternfly/react-core';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
+import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { useParameterizedQuery } from 'react-fetching-library';
@@ -32,6 +33,7 @@ import { useFilterBuilder } from './useFilterBuilder';
 const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
     const getEndpoint = useParameterizedQuery(getEndpointAction);
     const { rbac } = useAppContext();
 
@@ -130,9 +132,10 @@ export const EventLogPage: React.FunctionComponent = () => {
             <PageHeader
                 title={ Messages.pages.notifications.eventLog.title }
                 subtitle={ Messages.pages.notifications.eventLog.subtitle }
-                action={ <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventNotificationPageUrl } variant={ ButtonVariant.secondary }>
-                    { Messages.pages.notifications.eventLog.viewNotifications }
-                </ButtonLink> }
+                action={ !notificationsOverhaul &&
+                    <ButtonLink isDisabled={ !rbac.canReadEvents } to={ eventNotificationPageUrl } variant={ ButtonVariant.secondary }>
+                        { Messages.pages.notifications.eventLog.viewNotifications }
+                    </ButtonLink> }
             />
             <Main>
                 <EventLogToolbar
