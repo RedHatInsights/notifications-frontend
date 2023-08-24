@@ -1,5 +1,5 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon, InProgressIcon } from '@patternfly/react-icons';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
@@ -60,6 +60,22 @@ const actionStatusMetadata = [
         value: 'true',
         chipValue: 'Success',
         label: <span><CheckCircleIcon color='green' /> Success</span>
+    },
+    {
+        value: 'false',
+        chipValue: 'Sent',
+        label: <span><CheckCircleIcon color='green' /> Sent</span>
+    },
+    {
+        value: 'false',
+        chipValue: 'Warning',
+        label: <span><ExclamationTriangleIcon color='#F0AB00' /> Warning </span>
+    },
+    {
+        value: 'false',
+        chipValue: 'Processing',
+        label: <span><InProgressIcon /> Processing </span>
+
     },
     {
         value: 'false',
