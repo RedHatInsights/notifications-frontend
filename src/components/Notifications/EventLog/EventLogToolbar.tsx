@@ -1,5 +1,6 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
-import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, ExclamationTriangleIcon, InProgressIcon } from '@patternfly/react-icons';
+import { global_warning_color_100 } from '@patternfly/react-tokens';
 import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
@@ -10,6 +11,7 @@ import {
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
+import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -55,11 +57,31 @@ const notificationTypes: Record<NotificationType, { name: string }> = {
     }
 };
 
+const warningIconColorClassName = style({
+    color: global_warning_color_100.value
+});
+
 const actionStatusMetadata = [
     {
         value: 'true',
         chipValue: 'Success',
         label: <span><CheckCircleIcon color='green' /> Success</span>
+    },
+    {
+        value: 'false',
+        chipValue: 'Sent',
+        label: <span><CheckCircleIcon color='green' /> Sent</span>
+    },
+    {
+        value: 'false',
+        chipValue: 'Warning',
+        label: <span><ExclamationTriangleIcon className={ warningIconColorClassName } /> Warning </span>
+    },
+    {
+        value: 'false',
+        chipValue: 'Processing',
+        label: <span><InProgressIcon /> Processing </span>
+
     },
     {
         value: 'false',
