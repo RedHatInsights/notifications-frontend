@@ -1,4 +1,5 @@
 import { useFlag } from '@unleash/proxy-client-react';
+import _ from 'lodash';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -6,9 +7,14 @@ import { useParams } from 'react-router-dom';
 import { AppSkeleton } from '../../../app/AppSkeleton';
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
-import { useGetBundles } from '../../../services/Notifications/GetBundles';
+import { useGetBundles, useGetBundleByName } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
+
+interface BundleData {
+    bundle: Facet;
+    applications: Facet[];
+}
 
 interface NotificationListPageParams {
     bundleName: string;
@@ -25,14 +31,27 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 export const NotificationsListPage: React.FunctionComponent = () => {
     const params = useParams<NotificationListPageParams>();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+    const bundleList = ['rhel', 'console', 'openshift'];
 
     const bundleName = useMemo(() => notificationsOverhaul ? defaultBundleName : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
 
     const getBundles = useGetBundles();
     const getApplications = useGetApplicationsLazy();
 
+
+    // TODO: filter bundles to just the three. Change the props to accept bundle array and pass it in. 
+    // const getBundleTabs = () => {
+    //     bundleList.forEach(b => {
+    //         bundleTabs.concat(getBundleByName(b));
+    //     })
+
+    //     console.log(bundleTabs)
+    // }
+
     const bundle: Facet | BundleStatus = useMemo(() => {
         if (getBundles.payload?.status === 200) {
+            console.log(bundleName)
+            console.log(getBundles.payload.value);
             return getBundles.payload.value.find(b => b.name === bundleName) ?? BundleStatus.NOT_FOUND;
         } else if (getBundles.payload) {
             return BundleStatus.FAILED_TO_LOAD;
@@ -40,6 +59,48 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
         return BundleStatus.LOADING;
     }, [ getBundles.payload, bundleName ]);
+
+    const bundleTabs: Facet[] | BundleStatus = [];
+
+    const getbundleTabs = () => {
+        if (getBundles.payload?.status === 200) {
+            console.log(bundleName)
+            console.log(getBundles.payload.value);
+            bundleList.forEach(bundle => {
+                if(getBundles.payload?.value) {
+                    bundleTabs.push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
+                }
+            })
+        } else if (getBundles.payload) {
+            throw new Error('Unable to load bundle information');
+        } else {
+            return (
+                <AppSkeleton />
+            );
+        }
+    }
+
+    // const bundleTabData: BundleData[] | undefined | BundleStatus = useMemo(() => {
+    //     if (getBundles.payload?.status === 200) {
+    //         console.log(bundleName)
+    //         console.log(getBundles.payload.value);
+    //         bundleList.forEach(bundle => {
+    //             if(getBundles.payload?.value) {
+    //                 (bundleTabData as BundleData[]).push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
+    //             }
+    //         })
+    //     } else if (getBundles.payload) {
+    //         return BundleStatus.FAILED_TO_LOAD;
+    //     } else {
+    //         return BundleStatus.LOADING;
+    //     }
+
+    // }, [getBundles.payload])
+
+
+    if(notificationsOverhaul) {
+        getbundleTabs();
+    }
 
     React.useEffect(() => {
         const query = getApplications.query;
@@ -83,6 +144,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
     return (
         <NotificationListBundlePage
+            bundleTabs={ bundleTabs }
             bundle={ bundle }
             applications={ applications }
         />

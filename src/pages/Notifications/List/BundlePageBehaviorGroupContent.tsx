@@ -1,3 +1,4 @@
+import { Tab, TabTitleText } from '@patternfly/react-core';
 import { global_spacer_xl } from '@patternfly/react-tokens';
 import { Section } from '@redhat-cloud-services/frontend-components';
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
@@ -6,6 +7,7 @@ import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
+import { TabComponent } from '../../../components/Notifications/TabComponent';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useListNotifications } from '../../../services/useListNotifications';
 import { BehaviorGroup, Facet, NotificationBehaviorGroup, UUID } from '../../../types/Notification';
@@ -89,35 +91,39 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
     }, [ cancelEditMode ]);
 
     return (
-        <Section>
-            <div className={ behaviorGroupSectionClassName }>
-                <BehaviorGroupsSection
-                    bundle={ props.bundle }
-                    applications={ props.applications }
-                    behaviorGroupContent={ behaviorGroupContent }
-                />
-            </div>
-            <NotificationsToolbar
-                filters={ eventTypePage.filters }
-                setFilters={ eventTypePage.setFilters }
-                clearFilter={ eventTypePage.clearFilters }
-                appFilterOptions={ props.applications }
-                onExport={ onExport }
-                count={ count }
-                pageAdapter={ eventTypePage.pageController }
-            >
-                <NotificationsBehaviorGroupTable
-                    notifications={ notificationRows }
-                    behaviorGroupContent={ behaviorGroupContent }
-                    onBehaviorGroupLinkUpdated={ onBehaviorGroupLinkUpdated }
-                    onStartEditing={ rbac.canWriteNotifications ? onStartEditing : undefined }
-                    onFinishEditing={ rbac.canWriteNotifications ? onFinishEditing : undefined }
-                    onCancelEditing={ rbac.canWriteNotifications ? onCancelEditing : undefined }
-                    onSort={ eventTypePage.onSort }
-                    sortBy={ eventTypePage.sortBy }
-                    sortDirection={ eventTypePage.sortDirection }
-                />
-            </NotificationsToolbar>
-        </Section>
+        <TabComponent configuration={ props.children } settings={ props.children }>
+            <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
+                <NotificationsToolbar
+                    filters={ eventTypePage.filters }
+                    setFilters={ eventTypePage.setFilters }
+                    clearFilter={ eventTypePage.clearFilters }
+                    appFilterOptions={ props.applications }
+                    onExport={ onExport }
+                    count={ count }
+                    pageAdapter={ eventTypePage.pageController }
+                >
+                    <NotificationsBehaviorGroupTable
+                        notifications={ notificationRows }
+                        behaviorGroupContent={ behaviorGroupContent }
+                        onBehaviorGroupLinkUpdated={ onBehaviorGroupLinkUpdated }
+                        onStartEditing={ rbac.canWriteNotifications ? onStartEditing : undefined }
+                        onFinishEditing={ rbac.canWriteNotifications ? onFinishEditing : undefined }
+                        onCancelEditing={ rbac.canWriteNotifications ? onCancelEditing : undefined }
+                        onSort={ eventTypePage.onSort }
+                        sortBy={ eventTypePage.sortBy }
+                        sortDirection={ eventTypePage.sortDirection }
+                    />
+                </NotificationsToolbar>
+            </Tab>
+            <Tab eventKey={ 1 } title={ <TabTitleText>Behavior Groups</TabTitleText> }>
+                <div className={ behaviorGroupSectionClassName }>
+                    <BehaviorGroupsSection
+                        bundle={ props.bundle }
+                        applications={ props.applications }
+                        behaviorGroupContent={ behaviorGroupContent }
+                    />
+                </div>
+            </Tab>
+        </TabComponent>
     );
 };
