@@ -68,33 +68,17 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     if (notificationsOverhaul) {
 
-        useEffect(() => {
-            const query = getApplications.query;
-            query(bundle.name);
-            console.log(`bundle changes to ${bundle.name}`)
-            //FIGURE OUT WHY THIS IS NOT RERENDER
-        }, [bundle, getApplications.query]);
-
-
-        const getBundleApplications = () => {
-            if (getApplications.payload) {
-                console.log(getApplications.payload.value)
-                return getApplications.payload.value as Facet[];
-            } else {
-                return [];
-            }
-        }
-
         const handleTabClick = (event, tabIndex) => {
+            console.log(props.bundleTabs.forEach(b => console.log(b)))
             setActiveTabKey(tabIndex);
-            setBundle(props.bundleTabs[tabIndex])
-            console.log("hello there")
-            setBundle(bundle)
+            console.log(activeTabKey)
+            setBundle(props.bundleTabs[activeTabKey])
+            console.log(`bundle name: ${bundle.name}`);
             const query = getApplications.query;
             query(bundle.name);
-            console.log(`bundle name: ${bundle.name}`);
             if (getApplications.payload) {
                 console.log(getApplications.payload.value)
+                setApplications([])
                 setApplications( getApplications.payload.value as Facet[]);
                 console.log(applications);
             } else {
@@ -115,7 +99,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 <TabComponent configuration={ props.children } settings={ props.children }>
                     <Flex direction={{default: 'column'}}>
                         <FlexItem>
-                            <Tabs activeKey={activeTabKey} onSelect={() => handleTabClick}>
+                            <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
                                 <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
                                     <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[0] } /></Main>
                                 </Tab>
