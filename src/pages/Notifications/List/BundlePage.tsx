@@ -9,7 +9,6 @@ import { useFlag } from '@unleash/proxy-client-react';
 import { default as React, useEffect, useMemo, useState } from 'react';
 
 import { useAppContext } from '../../../app/AppContext';
-import { AppSkeleton } from '../../../app/AppSkeleton';
 import { ButtonLink } from '../../../components/ButtonLink';
 import { TabComponent } from '../../../components/Notifications/TabComponent';
 import { TimeConfigComponent } from '../../../components/Notifications/TimeConfig';
@@ -36,10 +35,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
-    const getApplications = useGetApplicationsLazy(); 
-    const [activeTabKey, setActiveTabKey] = useState(0);
-
-   
+    const getApplications = useGetApplicationsLazy();
+    const [ activeTabKey, setActiveTabKey ] = useState(0);
 
     const mainPage = <Main>
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
@@ -58,33 +55,32 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
         } else {
             return `${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`;
         }
-    }
+    };
 
     const timeConfigPage = <Main>
         <TimeConfigComponent />
     </Main>;
 
-    if (notificationsOverhaul) {
-        React.useEffect(() => {
-            const query = getApplications.query;
-            query(props.bundleTabs[activeTabKey].name);
-        }, [ activeTabKey, getApplications.query ]);
+    useEffect(() => {
+        const query = getApplications.query;
+        query(props.bundleTabs[activeTabKey].name);
+    }, [ activeTabKey, getApplications.query, props.bundleTabs ]);
 
-        const getInitialApplications = useMemo(
-            () => {
-                if (getApplications.payload) {
-                    console.log(getApplications.payload.value)
-                    return getApplications.payload.value as Facet[];
-                } else {
-                    return [];
-                }
-            }, [getApplications.payload])
+    const getInitialApplications = useMemo(
+        () => {
+            if (getApplications.payload) {
+                return getApplications.payload.value as Facet[];
+            } else {
+                return [];
+            }
+        }, [ getApplications.payload ]);
+
+    if (notificationsOverhaul) {
 
         const handleTabClick = (event, tabIndex) => {
             setActiveTabKey(tabIndex);
-        }
+        };
 
-        
         return (
             <><PageHeader
                 title={ pageTitle() }
@@ -94,21 +90,21 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
                 action={ eventLogButton() }
             />
-                <Flex direction={{default: 'column'}}>
-                    <FlexItem>
-                        <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
-                            <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
-                                <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[0] } /></Main>
-                            </Tab>
-                            <Tab eventKey={ 1 } title={ <TabTitleText>Console</TabTitleText> }>
-                                <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[1] } /></Main>
-                            </Tab>
-                            <Tab eventKey={ 2 } title={ <TabTitleText>Openshift</TabTitleText> }>
-                                <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[2] } /></Main>
-                            </Tab>
-                        </Tabs>
-                    </FlexItem>
-                </Flex>
+            <Flex direction={ { default: 'column' } }>
+                <FlexItem>
+                    <Tabs activeKey={ activeTabKey } onSelect={ handleTabClick }>
+                        <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
+                            <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[0] } /></Main>
+                        </Tab>
+                        <Tab eventKey={ 1 } title={ <TabTitleText>Console</TabTitleText> }>
+                            <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[1] } /></Main>
+                        </Tab>
+                        <Tab eventKey={ 2 } title={ <TabTitleText>Openshift</TabTitleText> }>
+                            <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[2] } /></Main>
+                        </Tab>
+                    </Tabs>
+                </FlexItem>
+            </Flex>
             </>
         );
     } else {
@@ -122,7 +118,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
                 action={ eventLogButton() }
             />
-    
+
             <TabComponent configuration={ props.children } settings={ props.children }>
                 <Tab eventKey={ 0 } title={ <TabTitleText>Configuration</TabTitleText> }>
                     {mainPage}
@@ -134,6 +130,4 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             </>
         );
     }
-
-    
 };

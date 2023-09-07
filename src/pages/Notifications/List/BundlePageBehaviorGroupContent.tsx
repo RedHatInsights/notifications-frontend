@@ -1,6 +1,5 @@
 import { Tab, TabTitleText } from '@patternfly/react-core';
 import { global_spacer_xl } from '@patternfly/react-tokens';
-import { Section } from '@redhat-cloud-services/frontend-components';
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';

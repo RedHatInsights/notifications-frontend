@@ -1,5 +1,4 @@
 import { useFlag } from '@unleash/proxy-client-react';
-import _ from 'lodash';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
@@ -7,14 +6,9 @@ import { useParams } from 'react-router-dom';
 import { AppSkeleton } from '../../../app/AppSkeleton';
 import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
-import { useGetBundles, useGetBundleByName } from '../../../services/Notifications/GetBundles';
+import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
-
-interface BundleData {
-    bundle: Facet;
-    applications: Facet[];
-}
 
 interface NotificationListPageParams {
     bundleName: string;
@@ -31,7 +25,7 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 export const NotificationsListPage: React.FunctionComponent = () => {
     const params = useParams<NotificationListPageParams>();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-    const bundleList = ['rhel', 'console', 'openshift'];
+    const bundleList = [ 'rhel', 'console', 'openshift' ];
 
     const bundleName = useMemo(() => notificationsOverhaul ? defaultBundleName : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
 
@@ -53,10 +47,10 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     const getbundleTabs = () => {
         if (getBundles.payload?.status === 200) {
             bundleList.forEach(bundle => {
-                if(getBundles.payload?.value) {
+                if (getBundles.payload?.value) {
                     bundleTabs.push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
                 }
-            })
+            });
         } else if (getBundles.payload) {
             throw new Error('Unable to load bundle information');
         } else {
@@ -64,10 +58,9 @@ export const NotificationsListPage: React.FunctionComponent = () => {
                 <AppSkeleton />
             );
         }
-    }
+    };
 
-
-    if(notificationsOverhaul) {
+    if (notificationsOverhaul) {
         getbundleTabs();
     }
 
