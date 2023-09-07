@@ -37,11 +37,9 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
     const getApplications = useGetApplicationsLazy(); 
-
-    const [bundle, setBundle] = useState<Facet>(props.bundleTabs[0]);
-    const [applications, setApplications] = useState<Facet[]>([]);
     const [activeTabKey, setActiveTabKey] = useState(0);
-    const bundleTabNames = ["Red Hat Enterprise Linux", "Console", "Openshift"]
+
+   
 
     const mainPage = <Main>
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
@@ -67,25 +65,26 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     </Main>;
 
     if (notificationsOverhaul) {
+        React.useEffect(() => {
+            const query = getApplications.query;
+            query(props.bundleTabs[activeTabKey].name);
+        }, [ activeTabKey, getApplications.query ]);
+
+        const getInitialApplications = useMemo(
+            () => {
+                if (getApplications.payload) {
+                    console.log(getApplications.payload.value)
+                    return getApplications.payload.value as Facet[];
+                } else {
+                    return [];
+                }
+            }, [getApplications.payload])
 
         const handleTabClick = (event, tabIndex) => {
-            console.log(props.bundleTabs.forEach(b => console.log(b)))
             setActiveTabKey(tabIndex);
-            console.log(activeTabKey)
-            setBundle(props.bundleTabs[activeTabKey])
-            console.log(`bundle name: ${bundle.name}`);
-            const query = getApplications.query;
-            query(bundle.name);
-            if (getApplications.payload) {
-                console.log(getApplications.payload.value)
-                setApplications([])
-                setApplications( getApplications.payload.value as Facet[]);
-                console.log(applications);
-            } else {
-                setApplications([]);
-            }
         }
 
+        
         return (
             <><PageHeader
                 title={ pageTitle() }
@@ -95,24 +94,21 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
                 action={ eventLogButton() }
             />
-
-                <TabComponent configuration={ props.children } settings={ props.children }>
-                    <Flex direction={{default: 'column'}}>
-                        <FlexItem>
-                            <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
-                                <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
-                                    <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[0] } /></Main>
-                                </Tab>
-                                <Tab eventKey={ 1 } title={ <TabTitleText>Console</TabTitleText> }>
-                                    <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[1] } /></Main>
-                                </Tab>
-                                <Tab eventKey={ 2 } title={ <TabTitleText>Openshift</TabTitleText> }>
-                                    <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[2] } /></Main>
-                                </Tab>
-                            </Tabs>
-                        </FlexItem>
-                    </Flex>
-                </TabComponent>
+                <Flex direction={{default: 'column'}}>
+                    <FlexItem>
+                        <Tabs activeKey={activeTabKey} onSelect={handleTabClick}>
+                            <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
+                                <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[0] } /></Main>
+                            </Tab>
+                            <Tab eventKey={ 1 } title={ <TabTitleText>Console</TabTitleText> }>
+                                <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[1] } /></Main>
+                            </Tab>
+                            <Tab eventKey={ 2 } title={ <TabTitleText>Openshift</TabTitleText> }>
+                                <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[2] } /></Main>
+                            </Tab>
+                        </Tabs>
+                    </FlexItem>
+                </Flex>
             </>
         );
     } else {
