@@ -38,20 +38,8 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     const getBundles = useGetBundles();
     const getApplications = useGetApplicationsLazy();
 
-
-    // TODO: filter bundles to just the three. Change the props to accept bundle array and pass it in. 
-    // const getBundleTabs = () => {
-    //     bundleList.forEach(b => {
-    //         bundleTabs.concat(getBundleByName(b));
-    //     })
-
-    //     console.log(bundleTabs)
-    // }
-
     const bundle: Facet | BundleStatus = useMemo(() => {
         if (getBundles.payload?.status === 200) {
-            console.log(bundleName)
-            console.log(getBundles.payload.value);
             return getBundles.payload.value.find(b => b.name === bundleName) ?? BundleStatus.NOT_FOUND;
         } else if (getBundles.payload) {
             return BundleStatus.FAILED_TO_LOAD;
@@ -64,8 +52,6 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
     const getbundleTabs = () => {
         if (getBundles.payload?.status === 200) {
-            console.log(bundleName)
-            console.log(getBundles.payload.value);
             bundleList.forEach(bundle => {
                 if(getBundles.payload?.value) {
                     bundleTabs.push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
@@ -79,23 +65,6 @@ export const NotificationsListPage: React.FunctionComponent = () => {
             );
         }
     }
-
-    // const bundleTabData: BundleData[] | undefined | BundleStatus = useMemo(() => {
-    //     if (getBundles.payload?.status === 200) {
-    //         console.log(bundleName)
-    //         console.log(getBundles.payload.value);
-    //         bundleList.forEach(bundle => {
-    //             if(getBundles.payload?.value) {
-    //                 (bundleTabData as BundleData[]).push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
-    //             }
-    //         })
-    //     } else if (getBundles.payload) {
-    //         return BundleStatus.FAILED_TO_LOAD;
-    //     } else {
-    //         return BundleStatus.LOADING;
-    //     }
-
-    // }, [getBundles.payload])
 
 
     if(notificationsOverhaul) {

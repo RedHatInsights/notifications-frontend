@@ -1,4 +1,4 @@
-import { ButtonVariant, Tab, TabTitleText } from '@patternfly/react-core';
+import { ButtonVariant, Flex, FlexItem, Tab, Tabs, TabTitleText } from '@patternfly/react-core';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
@@ -6,7 +6,7 @@ import {
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
 import { useFlag } from '@unleash/proxy-client-react';
-import { default as React, useMemo } from 'react';
+import { default as React, useEffect, useMemo, useState } from 'react';
 
 import { useAppContext } from '../../../app/AppContext';
 import { AppSkeleton } from '../../../app/AppSkeleton';
@@ -38,7 +38,10 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
     const getApplications = useGetApplicationsLazy(); 
 
-    const bundleApplications: Map<string, Array<Facet> | null | undefined > = new Map();
+    const [bundle, setBundle] = useState<Facet>(props.bundleTabs[0]);
+    const [applications, setApplications] = useState<Facet[]>([]);
+    const [activeTabKey, setActiveTabKey] = useState(0);
+    const bundleTabNames = ["Red Hat Enterprise Linux", "Console", "Openshift"]
 
     const mainPage = <Main>
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
@@ -52,8 +55,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     };
 
     const pageTitle = () => {
-        if(notificationsOverhaul) {
-            console.log(props.bundle)
+        if (notificationsOverhaul) {
             return `Configure Events`;
         } else {
             return `${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`;
@@ -66,24 +68,39 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     if (notificationsOverhaul) {
 
-        // const getBundleApplications = (bundleName) => {
-        //     getApplications.query(bundleName)
-        //     if (getApplications.payload) {
-        //         if(getApplications.payload.status === 200) {
-        //             return (getApplications.payload.value as Array<Facet>)
-        //         } else {
-        //             return [];
-        //         }
-        //     } else {
-        //         return [];
-        //     }
-        // }
+        useEffect(() => {
+            const query = getApplications.query;
+            query(bundle.name);
+            console.log(`bundle changes to ${bundle.name}`)
+            //FIGURE OUT WHY THIS IS NOT RERENDER
+        }, [bundle, getApplications.query]);
 
-        // if(!getBundleApplications) {
-        //     return (
-        //         <AppSkeleton />
-        //     );
-        // }
+
+        const getBundleApplications = () => {
+            if (getApplications.payload) {
+                console.log(getApplications.payload.value)
+                return getApplications.payload.value as Facet[];
+            } else {
+                return [];
+            }
+        }
+
+        const handleTabClick = (event, tabIndex) => {
+            setActiveTabKey(tabIndex);
+            setBundle(props.bundleTabs[tabIndex])
+            console.log("hello there")
+            setBundle(bundle)
+            const query = getApplications.query;
+            query(bundle.name);
+            console.log(`bundle name: ${bundle.name}`);
+            if (getApplications.payload) {
+                console.log(getApplications.payload.value)
+                setApplications( getApplications.payload.value as Facet[]);
+                console.log(applications);
+            } else {
+                setApplications([]);
+            }
+        }
 
         return (
             <><PageHeader
@@ -95,23 +112,23 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 action={ eventLogButton() }
             />
 
-            <TabComponent configuration={ props.children } settings={ props.children }>
-                <Tab eventKey={ 0 } title={ <TabTitleText>Openshift</TabTitleText> }>
-                    <Main>
-                        <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundleTabs[0] } />
-                    </Main>;
-                </Tab>
-                <Tab eventKey={ 1 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
-                    <Main>
-                        <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundleTabs[1] } />
-                    </Main>;
-                </Tab>
-                <Tab eventKey={ 2 } title={ <TabTitleText>Console</TabTitleText> }>
-                    <Main>
-                        <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundleTabs[2] } />
-                    </Main>;
-                </Tab>
-            </TabComponent>
+                <TabComponent configuration={ props.children } settings={ props.children }>
+                    <Flex direction={{default: 'column'}}>
+                        <FlexItem>
+                            <Tabs activeKey={activeTabKey} onSelect={() => handleTabClick}>
+                                <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
+                                    <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[0] } /></Main>
+                                </Tab>
+                                <Tab eventKey={ 1 } title={ <TabTitleText>Console</TabTitleText> }>
+                                    <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[1] } /></Main>
+                                </Tab>
+                                <Tab eventKey={ 2 } title={ <TabTitleText>Openshift</TabTitleText> }>
+                                    <Main><BundlePageBehaviorGroupContent applications={ applications } bundle={ props.bundleTabs[2] } /></Main>
+                                </Tab>
+                            </Tabs>
+                        </FlexItem>
+                    </Flex>
+                </TabComponent>
             </>
         );
     } else {
