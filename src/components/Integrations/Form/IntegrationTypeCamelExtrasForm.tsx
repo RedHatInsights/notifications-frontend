@@ -1,5 +1,5 @@
 import { FormGroup } from '@patternfly/react-core';
-import { Checkbox, FormTextArea, FormTextInput, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
+import { Checkbox, FormTextInput, ouiaIdConcat } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -36,7 +36,6 @@ export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<Integration
                     ouiaId={ ouiaIdConcat(props.ouiaId, 'secret-token') }
                 />
             </FormGroup>
-            <FormTextArea id="form-extras" name="extras" label="Extras" ouiaId={ ouiaIdConcat(props.ouiaId, 'extras') } />
         </div>
     );
 };
