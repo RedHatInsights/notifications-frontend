@@ -58,6 +58,10 @@ const routesOverhaul: Path[] = [
         component: NotificationsOverviewPage
     },
     {
+        path: linkTo.integrations(),
+        component: ConnectedIntegrationsListPage
+    },
+    {
         path: linkTo.configureEvents(),
         component: NotificationsListPage
     },
