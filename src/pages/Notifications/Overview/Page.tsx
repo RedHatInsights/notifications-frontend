@@ -145,7 +145,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                     </p>
                                 </CardBody>
                                 <CardFooter>
-                                    { notificationsOverhaul && <Button variant="secondary" isLarge>
+                                    { !notificationsOverhaul && <Button variant="secondary" isLarge>
                                         View Event log
                                     </Button> }
                                 </CardFooter>
