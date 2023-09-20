@@ -7,7 +7,7 @@ import { matchPath, useHistory } from 'react-router-dom';
 import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
 import { ErrorPage } from './pages/Error/Page';
-import { ConnectedIntegrationsListPage } from './pages/Integrations/List/Page';
+import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
@@ -36,7 +36,7 @@ const legacyRoutes: Path[] = [
     },
     {
         path: linkTo.integrations(),
-        component: ConnectedIntegrationsListPage
+        component: IntegrationsListPage
     },
     {
         path: linkTo.eventLog(),
@@ -59,7 +59,7 @@ const routesOverhaul: Path[] = [
     },
     {
         path: linkTo.integrations(),
-        component: ConnectedIntegrationsListPage
+        component: IntegrationsListPage
     },
     {
         path: linkTo.configureEvents(),

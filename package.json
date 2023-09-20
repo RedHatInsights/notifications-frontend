@@ -108,6 +108,7 @@
   },
   "scripts": {
     "build": "fec build",
+    "static": "fec static",
     "ci:test": "npm run test --coverage --forceExit --maxWorkers=4 --detectOpenHandles && curl -s https://codecov.io/bash | bash",
     "schema-check": "bash ./.travis/schema-check.sh",
     "ci:pinned-deps": "pin-checker",
