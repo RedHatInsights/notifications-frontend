@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, getAllByRole, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
@@ -13,6 +13,7 @@ import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testin
 import { getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
+import { useFlag } from '@unleash/proxy-client-react';
 
 const policiesApplication: Facet = {
     id: 'app-1',
@@ -131,7 +132,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         expect(screen.getAllByText(/Behavior-1/).length).toBe(1);
     });
 
-    it('Upon edition of a behavior group, updates the name on the notification table and the linked event types', async () => {
+    it('Upon addition of a behavior group, updates the name on the notification table and the linked event types', async () => {
         jest.useFakeTimers();
         const notifications = getNotifications(policiesApplication, 1);
         const behaviorGroups = getBehaviorGroups([
@@ -181,6 +182,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         await waitForAsyncEvents();
 
         expect(screen.getAllByText('Baz').length).toBe(1); // Only once, the behavior group card
+
+        const behaviorGroupsTab = getAllByRole(document.body, 'tab');
+        act(() => userEvent.click(getByText(behaviorGroupsTab[1], 'Behavior Groups')));
 
         const pf4Card = ouiaSelectors.getAllByOuia('PF4/Card');
         act(() => userEvent.click(getByRole(pf4Card[0], 'button')));
