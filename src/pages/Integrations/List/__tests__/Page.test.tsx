@@ -5,7 +5,7 @@ import * as React from 'react';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
-import { ConnectedIntegrationsListPage } from '../Page';
+import { IntegrationsListPage } from '../Page';
 import Endpoint = Schemas.Endpoint;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import { getByLabelText, getByRole, getByText } from '@testing-library/react';
@@ -48,7 +48,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <ConnectedIntegrationsListPage />
+                <IntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -91,7 +91,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <ConnectedIntegrationsListPage />
+                <IntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -128,7 +128,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <ConnectedIntegrationsListPage />
+                <IntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -174,7 +174,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <ConnectedIntegrationsListPage />
+                <IntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }
@@ -213,7 +213,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <ConnectedIntegrationsListPage />
+                <IntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper({
                         appContext: {
@@ -274,7 +274,7 @@ describe('src/pages/Integrations/List/Page', () => {
             fetchMock.getOnce('/api/integrations/v1.0/endpoints/2432/history', []);
 
             render(
-                <ConnectedIntegrationsListPage />
+                <IntegrationsListPage />
                 , {
                     wrapper: getConfiguredAppWrapper()
                 }

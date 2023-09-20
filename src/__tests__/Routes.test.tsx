@@ -13,7 +13,7 @@ jest.mock('../pages/Notifications/List/Page', () => ({
 }));
 
 jest.mock('../pages/Integrations/List/Page', () => ({
-    ConnectedIntegrationsListPage: () => 'Integrations'
+    IntegrationsListPage: () => 'Integrations'
 }));
 
 describe('src/Routes', () => {
