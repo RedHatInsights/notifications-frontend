@@ -14,7 +14,6 @@ import { useEventTypesPage } from '../hooks/useEventTypesPage';
 import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import { useBehaviorGroupContent } from './useBehaviorGroupContent';
 import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotificationRows';
-import { useFlag } from '@unleash/proxy-client-react';
 
 interface BundlePageBehaviorGroupContentProps {
     applications: Array<Facet>;
@@ -29,8 +28,6 @@ const noEvents = [];
 
 export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageBehaviorGroupContentProps> = props => {
     const behaviorGroupContent = useBehaviorGroupContent(props.bundle.id);
-
-    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
     const { rbac } = useAppContext();
 

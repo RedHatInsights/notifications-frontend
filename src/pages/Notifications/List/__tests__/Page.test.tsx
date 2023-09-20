@@ -5,7 +5,7 @@ import {
     InsightsType
 } from '@redhat-cloud-services/insights-common-typescript';
 import { getAllByLabelText, getAllByRole, getAllByText, getByLabelText, queryAllByLabelText } from '@testing-library/react';
-import { render, screen, getByText } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { mockInsights } from 'insights-common-typescript-dev';
@@ -24,7 +24,6 @@ import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
 import Facet = Schemas.Facet;
 import EventType = Schemas.EventType;
-import BehaviorGroup = Schemas.BehaviorGroup;
 import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupContent';
 
 type RouterAndRoute = {
@@ -32,7 +31,7 @@ type RouterAndRoute = {
   route: RouteProps;
 };
 
-const routePropsPageForBundle = (bundle: string): RouterAndRoute => ({
+const routePropsPageForBundle = (): RouterAndRoute => ({
     router: {
         initialEntries: [ `/notifications/` ]
     },
@@ -67,9 +66,6 @@ const bundle: Facet = {
     name: 'rhel'
 };
 
-const bundle2: Facet = {id: 'bundle-2', displayName: 'Console', name: 'console'}
-
-
 const getNotifications = (application: Facet, count: number): Array<NotificationType> =>
     [ ...Array(count).keys() ].map(i => ({
         notification: {
@@ -87,24 +83,24 @@ const getNotifications = (application: Facet, count: number): Array<Notification
         }
     }));
 
-    const mockNotifications = (notifications: Array<NotificationType>) => {
-        fetchMock.get(
-            (urlString: string) => {
-                const url = new URL(urlString, 'http://dummy-url.com');
-                return url.pathname === '/api/notifications/v1.0/notifications/eventTypes' && url.searchParams.get('bundleId') === bundle.id;
-            },
-            {
-                status: 200,
-                body: {
-                    data: notifications.map(n => n.notification),
-                    meta: {
-                        count: notifications.length
-                    },
-                    links: {}
-                }
+const mockNotifications = (notifications: Array<NotificationType>) => {
+    fetchMock.get(
+        (urlString: string) => {
+            const url = new URL(urlString, 'http://dummy-url.com');
+            return url.pathname === '/api/notifications/v1.0/notifications/eventTypes' && url.searchParams.get('bundleId') === bundle.id;
+        },
+        {
+            status: 200,
+            body: {
+                data: notifications.map(n => n.notification),
+                meta: {
+                    count: notifications.length
+                },
+                links: {}
             }
-        );
-    };
+        }
+    );
+};
 
 const mockEnvironment = (env: Environment) => {
 
@@ -381,7 +377,7 @@ describe('src/pages/Notifications/List/Page', () => {
             </VerboseErrorBoundary>,
             {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('i-dont-exist')
+                    ...routePropsPageForBundle()
                 })
             }
         );
@@ -402,7 +398,7 @@ describe('src/pages/Notifications/List/Page', () => {
             </VerboseErrorBoundary>,
             {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('rhel')
+                    ...routePropsPageForBundle()
                 })
             }
         );
@@ -423,7 +419,7 @@ describe('src/pages/Notifications/List/Page', () => {
             </VerboseErrorBoundary>,
             {
                 wrapper: getConfiguredAppWrapper({
-                    ...routePropsPageForBundle('rhel')
+                    ...routePropsPageForBundle()
                 })
             }
         );
@@ -592,14 +588,13 @@ describe('src/pages/Notifications/List/Page', () => {
 
     it('With write and read permissions edit notification is enabled', async () => {
         const notifications = getNotifications(policiesApplication, 3);
-            mockNotifications(notifications);
+        mockNotifications(notifications);
 
-            render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
-                wrapper: getConfiguredAppWrapper()
-            });
-            await waitForAsyncEvents();
-
+        render(<BundlePageBehaviorGroupContent applications={ applications } bundle={ bundle } />, {
+            wrapper: getConfiguredAppWrapper()
+        });
         await waitForAsyncEvents();
+
         expect(
             getAllByLabelText(
                 ouiaSelectors.getByOuia('Notifications/Notifications/Table'),

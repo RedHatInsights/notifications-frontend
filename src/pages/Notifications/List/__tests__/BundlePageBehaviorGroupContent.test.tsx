@@ -13,7 +13,6 @@ import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testin
 import { getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
-import { useFlag } from '@unleash/proxy-client-react';
 
 const policiesApplication: Facet = {
     id: 'app-1',
