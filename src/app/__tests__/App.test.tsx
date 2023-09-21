@@ -28,7 +28,7 @@ jest.mock('../../pages/Notifications/List/Page', () => {
 jest.mock('../../pages/Integrations/List/Page', () => {
     const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
     return {
-        ConnectedIntegrationsListPage: MockedRoutes
+        IntegrationsListPage: MockedRoutes
     };
 });
 

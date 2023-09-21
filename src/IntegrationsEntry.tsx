@@ -8,21 +8,15 @@ import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetc
 import React from 'react';
 import { ClientContextProvider } from 'react-fetching-library';
 import { Provider } from 'react-redux';
-import { BrowserRouter as Router } from 'react-router-dom';
-import * as Redux from 'redux';
 
 import messages from '../locales/data.json';
-import App from './app/App';
+import IntegrationsApp from './app/IntegrationsApp';
+import { AppEntryProps } from './AppEntry';
 import { getNotificationsRegistry } from './store/Store';
-import { getBaseName } from './utils/Basename';
-
-export interface AppEntryProps {
-    logger?: Redux.Middleware;
-}
 
 enableMapSet();
 
-const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
+const IntegrationsEntry: React.FunctionComponent<AppEntryProps> = (props) => {
 
     const client = React.useMemo(() => createFetchingClient(getInsights, {
         responseInterceptors: [ validateSchemaResponseInterceptor ]
@@ -36,14 +30,12 @@ const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
     return (
         <IntlProvider locale={ navigator.language.slice(0, 2) } messages={ messages } onError={ console.log }>
             <Provider store={ store }>
-                <Router basename={ getBaseName(window.location.pathname) }>
-                    <ClientContextProvider client={ client }>
-                        <App />
-                    </ClientContextProvider>
-                </Router>
+                <ClientContextProvider client={ client }>
+                    <IntegrationsApp />
+                </ClientContextProvider>
             </Provider>
         </IntlProvider>
     );
 };
 
-export default AppEntry;
+export default IntegrationsEntry;
