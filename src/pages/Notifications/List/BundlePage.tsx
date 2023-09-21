@@ -18,6 +18,10 @@ import { linkTo } from '../../../Routes';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
+import { style } from 'typestyle';
+import { global_spacer_lg } from '@patternfly/react-tokens';
+
+
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
@@ -41,6 +45,10 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     const mainPage = <Main>
         <BundlePageBehaviorGroupContent applications={ props.applications } bundle={ props.bundle } />
     </Main>;
+
+    const paddingLeftClassName = style({
+        paddingLeft: global_spacer_lg.value
+    });
 
     const eventLogButton = () => {
         return notificationsOverhaul ? null :
@@ -92,7 +100,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             />
             <Flex direction={ { default: 'column' } }>
                 <FlexItem>
-                    <Tabs activeKey={ activeTabKey } onSelect={ handleTabClick }>
+                    <Tabs activeKey={ activeTabKey } onSelect={ handleTabClick } className={ paddingLeftClassName }>
                         <Tab eventKey={ 0 } title={ <TabTitleText>Red Hat Enterprise Linux</TabTitleText> }>
                             <Main><BundlePageBehaviorGroupContent applications={ getInitialApplications } bundle={ props.bundleTabs[0] } /></Main>
                         </Tab>
