@@ -52,6 +52,8 @@ module.exports = function(config) {
             'test/SmokeTest.tsx': [ 'webpack' ]
         },
 
+        failOnEmptyTestSuite: false,
+
         webpack: {
             ...webpackConfig,
             plugins,

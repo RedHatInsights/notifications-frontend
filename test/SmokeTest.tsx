@@ -42,102 +42,95 @@ const mockInsights = () => {
 
 describe('Smoketest', () => {
     xit('Opens the main integrations page in multiple browsers', async () => {
-        const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-
-        if (!notificationsOverhaul) {
-            mockInsights();
-            mockMaintenance(true);
-            appWrapperSetup();
-            const rbacUrl = '/api/rbac/v1/access/?application=notifications%2Cintegrations';
-            const dataRbac = {
-                data: [
-                    {
-                        permission: 'notifications:*:*',
-                        resourceDefinitions: []
-                    },
-                    {
-                        permission: 'integrations:*:*',
-                        resourceDefinitions: []
-                    }
-                ]
-            };
-            fetchMock.get(rbacUrl, {
-                status: 200,
-                body: {
-                    meta: {
-                        count: 1, limit: 1000, offset: 0
-                    },
-                    links: {
-                        first: '/api/rbac/v1/access/?application=notifications,integrations&limit=1000&offset=0',
-                        next: null,
-                        previous: null,
-                        last: '/api/rbac/v1/access/?application=notifications,integrations&limit=1000&offset=0'
-                    },
-                    data: dataRbac
+    
+        mockInsights();
+        mockMaintenance(true);
+        appWrapperSetup();
+        const rbacUrl = '/api/rbac/v1/access/?application=notifications%2Cintegrations';
+        const dataRbac = {
+            data: [
+                {
+                    permission: 'notifications:*:*',
+                    resourceDefinitions: []
+                },
+                {
+                    permission: 'integrations:*:*',
+                    resourceDefinitions: []
                 }
-            });
-    
-            const mock = new MockAdapter(axios);
-            mock.onGet(rbacUrl).reply(200,
-                dataRbac
-            );
-    
-            fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
-                body: [
-                    {
-                        label: 'fobar',
-                        value: 'baz'
+            ]
+        };
+        fetchMock.get(rbacUrl, {
+            status: 200,
+            body: {
+                meta: {
+                    count: 1, limit: 1000, offset: 0
+                },
+                links: {
+                    first: '/api/rbac/v1/access/?application=notifications,integrations&limit=1000&offset=0',
+                    next: null,
+                    previous: null,
+                    last: '/api/rbac/v1/access/?application=notifications,integrations&limit=1000&offset=0'
+                },
+                data: dataRbac
+            }
+        });
+
+        const mock = new MockAdapter(axios);
+        mock.onGet(rbacUrl).reply(200,
+            dataRbac
+        );
+
+        fetchMock.get('/api/notifications/v1.0/notifications/facets/applications?bundleName=rhel', {
+            body: [
+                {
+                    label: 'fobar',
+                    value: 'baz'
+                }
+            ]
+        });
+
+        fetchMock.get('/api/integrations/v1.0/endpoints/2432/history', {
+            body: [],
+            status: 200
+        });
+
+        fetchMock.get('/api/integrations/v1.0/endpoints?limit=10&offset=0&type=webhook', {
+            data: [
+                {
+                    id: '2432',
+                    type: 'webhook',
+                    created: Date.now().toString(),
+                    description: 'My integration desc',
+                    enabled: true,
+                    name: 'my integration name',
+                    properties: {},
+                    updated: Date.now().toString()
+                } as Endpoint
+            ],
+            meta: { count: 1 },
+            links: {}
+        });
+
+        render(<div id="root"><App /></div>, {
+            wrapper: getConfiguredAppWrapper({
+                route: {
+                    location: {
+                        pathname: '/integrations',
+                        search: '',
+                        hash: '',
+                        state: {}
                     }
-                ]
+                }
+            })
             });
     
-            fetchMock.get('/api/integrations/v1.0/endpoints/2432/history', {
-                body: [],
-                status: 200
-            });
-    
-            fetchMock.get('/api/integrations/v1.0/endpoints?limit=10&offset=0&type=webhook', {
-                data: [
-                    {
-                        id: '2432',
-                        type: 'webhook',
-                        created: Date.now().toString(),
-                        description: 'My integration desc',
-                        enabled: true,
-                        name: 'my integration name',
-                        properties: {},
-                        updated: Date.now().toString()
-                    } as Endpoint
-                ],
-                meta: { count: 1 },
-                links: {}
-            });
-    
-            render(<div id="root"><App /></div>, {
-                wrapper: getConfiguredAppWrapper({
-                    route: {
-                        location: {
-                            pathname: '/integrations',
-                            search: '',
-                            hash: '',
-                            state: {}
-                        }
-                    }
-                })
-            });
-    
-            await waitForAsyncEvents();
-            return screen.findByText('Integrations').then(value => expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
-        }
+        await waitForAsyncEvents();
+        return screen.findByText('Integrations').then(value => expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
         
     });
 
     xit('Opens the main notifications page in multiple browsers', async () => {
-
-        const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-
-        if (!notificationsOverhaul) {
-            mockInsights();
+        mockInsights();
         appWrapperSetup();
         mockMaintenance(true);
 
@@ -254,8 +247,7 @@ describe('Smoketest', () => {
         await waitForAsyncEvents();
 
         return screen.findByText('Notifications | Red Hat Enterprise Linux').then(value =>
-            expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
-        }
+        expect(value).toBeTruthy()).finally(() => appWrapperCleanup());
         
     });
 });
