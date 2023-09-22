@@ -1,4 +1,5 @@
 import { ButtonVariant, Flex, FlexItem, Tab, Tabs, TabTitleText } from '@patternfly/react-core';
+import { global_spacer_lg } from '@patternfly/react-tokens';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
@@ -7,6 +8,7 @@ import {
 } from '@redhat-cloud-services/insights-common-typescript';
 import { useFlag } from '@unleash/proxy-client-react';
 import { default as React, useEffect, useMemo, useState } from 'react';
+import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
@@ -18,10 +20,6 @@ import { linkTo } from '../../../Routes';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
-import { style } from 'typestyle';
-import { global_spacer_lg } from '@patternfly/react-tokens';
-
-
 
 interface NotificationListBundlePageProps {
     bundle: Facet;
