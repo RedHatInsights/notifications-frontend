@@ -25,6 +25,7 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 export const NotificationsListPage: React.FunctionComponent = () => {
     const params = useParams<NotificationListPageParams>();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+    const bundleList = [ 'rhel', 'console', 'openshift' ];
 
     const bundleName = useMemo(() => notificationsOverhaul ? defaultBundleName : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
 
@@ -40,6 +41,28 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
         return BundleStatus.LOADING;
     }, [ getBundles.payload, bundleName ]);
+
+    const bundleTabs: Facet[] | BundleStatus = [];
+
+    const getbundleTabs = () => {
+        if (getBundles.payload?.status === 200) {
+            bundleList.forEach(bundle => {
+                if (getBundles.payload?.value) {
+                    bundleTabs.push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
+                }
+            });
+        } else if (getBundles.payload) {
+            throw new Error('Unable to load bundle information');
+        } else {
+            return (
+                <AppSkeleton />
+            );
+        }
+    };
+
+    if (notificationsOverhaul) {
+        getbundleTabs();
+    }
 
     React.useEffect(() => {
         const query = getApplications.query;
@@ -83,6 +106,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
     return (
         <NotificationListBundlePage
+            bundleTabs={ bundleTabs }
             bundle={ bundle }
             applications={ applications }
         />

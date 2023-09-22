@@ -185,6 +185,7 @@ export const NotificationsBehaviorGroupTable = ouia<NotificationsBehaviorGroupTa
             aria-label="Notifications"
             isStickyHeader={ true }
             variant={ TableVariant.compact }
+            id="configure-events-table"
         >
             <Thead>
                 <Tr>
