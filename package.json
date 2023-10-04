@@ -43,7 +43,7 @@
     "typesafe-actions": "5.1.0",
     "typestyle": "2.1.0",
     "yup": "0.32.9",
-    "zod": "3.2.0"
+    "zod": "3.22.3"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "7.12.1",
