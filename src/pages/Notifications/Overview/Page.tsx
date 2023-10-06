@@ -23,13 +23,15 @@ import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/fronte
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
+import { useHistory } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
+    const history = useHistory();
     const [ isOrgAdmin, setIsOrgAdmin ] = React.useState(null);
-    const { auth } = useChrome();
+    const { auth, isBeta, getBundle } = useChrome();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
     React.useEffect(() => {
         const getUser = async () => {
@@ -79,7 +81,15 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                     </p>
                                 </CardBody>
                                 <CardFooter>
-                                    <Button variant="primary" isLarge>
+                                    <Button
+                                        variant="primary"
+                                        component="a"
+                                        href={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/configure-events` }
+                                        isLarge
+                                        onClick={ (e) => {
+                                            e.preventDefault();
+                                            history.push('/notifications/configure-events');
+                                        } }>
                                 Configure events
                                     </Button>
                                 </CardFooter>
