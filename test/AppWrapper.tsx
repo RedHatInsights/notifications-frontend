@@ -3,7 +3,6 @@ import {
     clearNotifications as createClearNotificationsAction
 } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 import { IntlProvider } from '@redhat-cloud-services/frontend-components-translations';
-import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import fetchMock from 'fetch-mock';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
@@ -76,9 +75,10 @@ const defaultAppContextSettings: AppContext = {
 
 const InternalWrapper: React.FunctionComponent<Config> = (props) => {
     const location = useLocation();
+    const { isBeta } = useChrome();
 
     if (props.skipIsBetaMock) {
-        (getInsights().chrome.isBeta as jest.Mock).mockImplementation(() => {
+        (isBeta as jest.Mock).mockImplementation(() => {
             return location.pathname.startsWith('/beta/');
         });
     }
@@ -148,3 +148,7 @@ export const getConfiguredAppWrapper = (config?: Partial<Config>) => {
 
     return ConfiguredAppWrapper;
 };
+function useChrome(): { isBeta: any; } {
+  throw new Error('Function not implemented.');
+}
+

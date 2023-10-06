@@ -1,9 +1,9 @@
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useQuery } from 'react-fetching-library';
 
 import { Operations } from '../generated/OpenapiPrivate';
 import { toServer } from '../types/adapters/ServerAdapter';
+import { useTransformQueryResponse } from '../utils/ApiUtils';
 
 const adapter = validationResponseTransformer((payload: Operations.StatusResourceGetCurrentStatus.Payload) => {
     if (payload.status === 200) {

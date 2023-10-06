@@ -1,10 +1,11 @@
-import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
+import { Page } from '@redhat-cloud-services/insights-common-typescript';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 
 import { Schemas } from '../generated/OpenapiIntegrations';
 import { Operations } from '../generated/OpenapiNotifications';
 import { toNotifications } from '../types/adapters/NotificationAdapter';
+import { useTransformQueryResponse } from '../utils/ApiUtils';
 
 export const listNotificationsActionCreator = (pager?: Page) => {
     const query = (pager ?? Page.defaultPage()).toQuery();

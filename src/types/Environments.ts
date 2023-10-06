@@ -1,36 +1,37 @@
-import { Environment, getInsightsEnvironment, InsightsType } from '@redhat-cloud-services/insights-common-typescript';
+import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 
-export const stagingAndProd: Array<Environment> = [
+export const stagingAndProd: Array<string> = [
     'stage-beta',
     'prod-beta',
     'stage',
     'prod'
 ];
 
-export const fedramp: Array<Environment> = [
+export const fedramp: Array<string> = [
     'gov',
     'govStage',
     'gov-beta',
     'govStage-beta'
 ];
 
-export const stagingAndProdStable: Array<Environment> = [
+export const stagingAndProdStable: Array<string> = [
     'stage',
     'prod'
 ];
 
-export const stagingAndProdBeta: Array<Environment> = [
+export const stagingAndProdBeta: Array<string> = [
     'stage-beta',
     'prod-beta'
 ];
 
-export const staging: Array<Environment> = [
+export const staging: Array<string> = [
     'stage',
     'stage-beta'
 ];
 
-export const isExperimental = (insights: InsightsType) => {
-    const environment = getInsightsEnvironment(insights);
+export const useIsExperimental = () => {
+    const { getEnvironment, isBeta } = useChrome();
+    const environment = `${getEnvironment()}-${isBeta() ? 'beta' : 'stable'}`;
 
     return !stagingAndProd.includes(environment) && !fedramp.includes(environment);
 };

@@ -2,14 +2,13 @@ import { Spinner } from '@patternfly/react-core';
 import { EnvelopeIcon } from '@patternfly/react-icons';
 import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
 import { style } from 'typestyle';
 
 import Config from '../../config/Config';
 import { Action, NotificationType } from '../../types/Notification';
-import { getOuiaProps } from '../../utils/getOuiaProps';
+import { getOuiaProps, OuiaComponentProps } from '../../utils/getOuiaProps';
 import { WebhookIcon } from '../Icons/WebhookIcon';
 
 export interface ActionComponentText extends OuiaComponentProps {

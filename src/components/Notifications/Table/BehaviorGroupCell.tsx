@@ -9,7 +9,6 @@ import {
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
 import { global_palette_black_400, global_palette_black_700, global_spacer_sm, global_spacer_xs } from '@patternfly/react-tokens';
-import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -17,6 +16,7 @@ import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehav
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
+import { join } from '../../../utils/ComponentUtils';
 
 const grayFontClassName = style({
     color: global_palette_black_700.value

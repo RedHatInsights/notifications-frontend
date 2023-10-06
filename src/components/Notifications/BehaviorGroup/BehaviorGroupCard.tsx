@@ -18,12 +18,12 @@ import {
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
 
 import { BehaviorGroup } from '../../../types/Notification';
+import { OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { BehaviorGroupActionsSummary } from './BehaviorGroupActionsSummary';
 
 const cardClassName = style({

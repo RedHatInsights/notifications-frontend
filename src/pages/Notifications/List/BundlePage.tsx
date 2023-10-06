@@ -2,10 +2,6 @@ import { ButtonVariant, Flex, FlexItem, Tab, Tabs, TabTitleText } from '@pattern
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import { Main } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import {
-    getInsights,
-    localUrl
-} from '@redhat-cloud-services/insights-common-typescript';
 import { useFlag } from '@unleash/proxy-client-react';
 import { default as React, useEffect, useMemo, useState } from 'react';
 import { style } from 'typestyle';
@@ -29,7 +25,7 @@ interface NotificationListBundlePageProps {
 
 export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> = (props) => {
 
-    const { updateDocumentTitle } = useChrome();
+    const { updateDocumentTitle, isBeta } = useChrome();
 
     updateDocumentTitle?.(`${props.bundle.displayName} - Notifications`);
 
@@ -92,8 +88,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 title={ pageTitle() }
                 subtitle={ <span>This service allows you to configure which notifications different
                     users within your organization will be entitled to receiving. To do this, create behavior groups and apply
-                <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
-                    getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
+                <a href={ `${isBeta() ? '/preview' : ''}/user-preferences/notifications/${props.bundle.name}` }> User Preferences</a>.</span> }
                 action={ eventLogButton() }
             />
             <Flex direction={ { default: 'column' } }>
@@ -120,8 +115,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 subtitle={ <span>This service allows you to configure which notifications different
                     users within your organization will be entitled to receiving. To do this, create behavior groups and apply
                     them to different events. Users will be able to opt-in or out of receiving authorized event notifications in their
-                <a href={ localUrl(`/user-preferences/notifications/${props.bundle.name}`,
-                    getInsights().chrome.isBeta()) }> User Preferences</a>.</span> }
+                <a href={ `${isBeta() ? '/preview' : ''}/user-preferences/notifications/${props.bundle.name}` }> User Preferences</a>.</span> }
                 action={ eventLogButton() }
             />
 

@@ -1,5 +1,4 @@
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +8,7 @@ import { useNotifications } from '../../../hooks/useNotifications';
 import { linkTo } from '../../../Routes';
 import { isUserIntegrationType, UserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { getOuiaProps, OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { ActionOption } from './ActionOption';
 

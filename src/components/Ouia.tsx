@@ -1,7 +1,6 @@
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { getOuiaProps } from '../utils/getOuiaProps';
+import { getOuiaProps, OuiaComponentProps } from '../utils/getOuiaProps';
 
 export const ouia = <P, >(Component: React.FunctionComponent<P>, type: string): React.FunctionComponent<OuiaComponentProps & P> => {
 

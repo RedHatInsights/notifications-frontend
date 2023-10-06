@@ -1,9 +1,10 @@
-import { Page, useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
+import { Page } from '@redhat-cloud-services/insights-common-typescript';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { toNotificationEvent } from '../../types/adapters/NotificationEventAdapter';
+import { useTransformQueryResponse } from '../../utils/ApiUtils';
 
 const eventDecoder = validationResponseTransformer(
     (payload: Operations.EventResourceGetEvents.Payload) => {

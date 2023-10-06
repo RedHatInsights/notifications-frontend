@@ -1,6 +1,7 @@
-import { toUtc } from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import * as React from 'react';
+
+import { toUtc } from '../utils';
 
 export interface UtcDateProps {
     date: Date;

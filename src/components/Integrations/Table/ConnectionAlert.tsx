@@ -1,11 +1,10 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import { global_spacer_sm } from '@patternfly/react-tokens';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
 import { IntegrationConnectionAttempt } from '../../../types/Integration';
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { getOuiaProps, OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { ConnectionAttempt, ConnectionAttemptType } from './ConnectionAttempt';
 
 interface ConnectionAlertProps extends OuiaComponentProps {

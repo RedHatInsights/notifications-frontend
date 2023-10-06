@@ -1,4 +1,3 @@
-import { Environment } from '@redhat-cloud-services/insights-common-typescript';
 import { DeepReadonly } from 'ts-essentials';
 
 import { fedramp, stagingAndProd, stagingAndProdBeta, stagingAndProdStable } from '../types/Environments';
@@ -156,7 +155,7 @@ const Config = {
 
 const ReadonlyConfig: DeepReadonly<typeof Config> = Config;
 
-export const getIntegrationActions = (environment: Environment): ReadonlyArray<UserIntegrationType> => {
+export const getIntegrationActions = (environment: string): ReadonlyArray<UserIntegrationType> => {
     if (stagingAndProdStable.includes(environment)) {
         return ReadonlyConfig.integrations.actions.stable;
     } else if (stagingAndProdBeta.includes(environment)) {
@@ -168,7 +167,7 @@ export const getIntegrationActions = (environment: Environment): ReadonlyArray<U
     return ReadonlyConfig.integrations.actions.experimental;
 };
 
-export const getNotificationActions = (environment: Environment): ReadonlyArray<NotificationType> => {
+export const getNotificationActions = (environment: string): ReadonlyArray<NotificationType> => {
     if (stagingAndProd.includes(environment)) {
         return ReadonlyConfig.notifications.actions.released;
     } else if (fedramp.includes(environment)) {

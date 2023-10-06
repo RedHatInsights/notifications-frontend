@@ -1,9 +1,9 @@
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useClient, useQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { UUID } from '../../types/Notification';
+import { useTransformQueryResponse } from '../../utils/ApiUtils';
 
 export const getBehaviorGroupByNotificationDecoder = validationResponseTransformer(
     (payload: Operations.NotificationResourceGetLinkedBehaviorGroups.Payload) => {

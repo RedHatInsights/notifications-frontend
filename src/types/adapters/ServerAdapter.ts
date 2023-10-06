@@ -1,6 +1,5 @@
-import { fromUtc } from '@redhat-cloud-services/insights-common-typescript';
-
 import { Schemas } from '../../generated/OpenapiNotifications';
+import { fromUtc } from '../../utils';
 import { Server, ServerStatus } from '../Server';
 
 export const toServer = (currentStatus: Schemas.CurrentStatus): Server => {

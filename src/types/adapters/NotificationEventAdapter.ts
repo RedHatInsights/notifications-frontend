@@ -1,6 +1,5 @@
-import { fromUtc } from '@redhat-cloud-services/insights-common-typescript';
-
 import { Schemas } from '../../generated/OpenapiNotifications';
+import { fromUtc } from '../../utils';
 import { NotificationEvent, NotificationEventAction  } from '../Event';
 import { UUID } from '../Notification';
 import { getIntegrationType } from './IntegrationAdapter';

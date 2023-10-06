@@ -1,10 +1,9 @@
 import { Chip, ChipGroup, Select, SelectGroup, SelectOption, SelectOptionObject, SelectVariant, Skeleton } from '@patternfly/react-core';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
 import { BaseNotificationRecipient, NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../../types/Recipient';
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { getOuiaProps, OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { GroupNotFound } from '../Rbac/GroupNotFound';
 import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';

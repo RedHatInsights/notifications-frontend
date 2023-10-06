@@ -1,11 +1,11 @@
-import { getInsights, getInsightsEnvironment } from '@redhat-cloud-services/insights-common-typescript';
+import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 
 import { getIntegrationActions } from '../config/Config';
 import { UserIntegrationType } from '../types/Integration';
 
 export const useIntegrations = (): ReadonlyArray<UserIntegrationType> => {
-    const insights = getInsights();
-    const environment = getInsightsEnvironment(insights);
+    const { getEnvironment, isBeta } = useChrome();
+    const environment = `${getEnvironment()}-${isBeta() ? 'beta' : 'stable'}`;
 
     return getIntegrationActions(environment);
 };

@@ -1,8 +1,8 @@
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
 
 import { IntegrationType, isCamelType, UserIntegrationType } from '../../../types/Integration';
+import { OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { IntegrationTypeCamelExtrasForm } from './IntegrationTypeCamelExtrasForm';
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
 import { IntegrationTypeGoogleChatForm } from './IntegrationTypeGoogleChatForm';

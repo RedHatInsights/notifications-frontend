@@ -1,8 +1,8 @@
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
 import { IntegrationCamel, IntegrationType, TypedIntegration, UserIntegrationType } from '../../../types/Integration';
+import { OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { GoogleChatExpandedContent } from './ExpandedContent/GoogleChatExpandedContent';
 import { IntegrationExpandedContent } from './ExpandedContent/IntegrationExpandedContent';
 import { SlackExpandedContent } from './ExpandedContent/SlackExpandedContent';

@@ -1,13 +1,13 @@
 import { Skeleton, Tooltip } from '@patternfly/react-core';
 import { BanIcon, LockIcon } from '@patternfly/react-icons';
 import { global_disabled_color_100, global_spacer_sm } from '@patternfly/react-tokens';
-import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
 import { Action, NotificationType } from '../../types/Notification';
 import { NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../types/Recipient';
 import { GroupNotFound } from './Rbac/GroupNotFound';
+import { join } from '../../utils/ComponentUtils';
 
 interface RecipientProps {
     action: Action;

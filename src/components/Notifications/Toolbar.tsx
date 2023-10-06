@@ -15,7 +15,7 @@ import { useCallback, useMemo } from 'react';
 
 import { PageAdapter } from '../../hooks/usePage';
 import { useTableExportConfig } from '../../hooks/useTableExportConfig';
-import { isExperimental, stagingAndProd } from '../../types/Environments';
+import { stagingAndProd, useIsExperimental } from '../../types/Environments';
 import { Facet } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import {
@@ -58,7 +58,7 @@ const allFilterColumns = [
 
 export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> = (props) => {
 
-    const insights = getInsights();
+    const isExperimental = useIsExperimental();
     const filterColumns = props.filterColumns ?? allFilterColumns;
     const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
 
@@ -81,12 +81,12 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
                     items: appFilterItems
                 }
             } : undefined,
-            [NotificationFilterColumn.ACTION]: filterColumns.includes(NotificationFilterColumn.ACTION) && isExperimental(insights) ? {
+            [NotificationFilterColumn.ACTION]: filterColumns.includes(NotificationFilterColumn.ACTION) && isExperimental ? {
                 label: 'Action',
                 placeholder: 'Filter by action'
             } : undefined
         };
-    }, [ props.appFilterOptions, insights, filterColumns ]);
+    }, [ props.appFilterOptions, filterColumns, isExperimental ]);
 
     const bulkSelectProps = React.useMemo(() => {
         const onSelectionChanged = props.onSelectionChanged;

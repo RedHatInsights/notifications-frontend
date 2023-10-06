@@ -1,5 +1,4 @@
 import { Select, SelectOption, SelectOptionObject, SelectVariant } from '@patternfly/react-core';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
@@ -9,7 +8,7 @@ import Config from '../../../config/Config';
 import { UserIntegrationType } from '../../../types/Integration';
 import { ActionIntegration, BehaviorGroup, IntegrationRef, NotificationType } from '../../../types/Notification';
 import { IntegrationRecipient } from '../../../types/Recipient';
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { getOuiaProps, OuiaComponentProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
