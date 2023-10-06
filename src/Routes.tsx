@@ -1,3 +1,4 @@
+import { Spinner } from '@patternfly/react-core';
 import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
@@ -17,6 +18,8 @@ interface Path {
     path: string;
     component: React.ComponentType;
 }
+
+const orgAdminRoutes = [ '/notifications/configure-events', '/integrations', '/notifications/eventlog' ];
 
 export const linkTo = {
     overview: () => '/notifications',
@@ -86,12 +89,22 @@ const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: Insig
     );
 };
 
-export const Routes: React.FunctionComponent = () => {
+export const ShieldedRoutes: React.FunctionComponent<{ isOrgAdmin: boolean }> = ({ isOrgAdmin }) => {
     const chrome = useChrome();
     const history = useHistory();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
-    const pathRoutes = React.useMemo(() => notificationsOverhaul ? routesOverhaul : legacyRoutes, [ notificationsOverhaul ]);
+    const pathRoutes = React.useMemo(() => {
+        if (!notificationsOverhaul) {
+            return legacyRoutes;
+        }
+
+        if (!isOrgAdmin) {
+            return routesOverhaul.map((item) => orgAdminRoutes.includes(item.path) ? { ...item, component: NotificationsOverviewPage } : item);
+        }
+
+        return routesOverhaul;
+    }, [ notificationsOverhaul, isOrgAdmin ]);
 
     React.useEffect(() => {
         const on = chrome.on;
@@ -125,4 +138,23 @@ export const Routes: React.FunctionComponent = () => {
             {!notificationsOverhaul && <RedirectToDefaultBundle />}
         </Switch>
     );
+};
+
+export const Routes = () => {
+    const { auth } = useChrome();
+    const [ isOrgAdmin, setIsOrgAdmin ] = React.useState<boolean | null>(null);
+    React.useEffect(() => {
+        const onUserLoaded = async () => {
+            const user = await auth.getUser();
+            setIsOrgAdmin(user?.identity?.user?.is_org_admin || false);
+        };
+
+        onUserLoaded();
+    }, [ auth, setIsOrgAdmin ]);
+
+    if (isOrgAdmin === null) {
+        return <Spinner />;
+    }
+
+    return <ShieldedRoutes isOrgAdmin={ isOrgAdmin } />;
 };
