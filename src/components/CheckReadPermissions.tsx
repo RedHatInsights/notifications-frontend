@@ -1,18 +1,19 @@
+import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { useAppContext } from '../app/AppContext';
 import Config from '../config/Config';
 import { linkTo } from '../Routes';
-import { getSubApp } from '../utils/Basename';
 import { NotAuthorizedPage } from './NotAuthorized';
 
 export const CheckReadPermissions: React.FunctionComponent = (props) => {
+    const chrome = useChrome();
     const { rbac } = useAppContext();
     const location = useLocation();
 
     const hasReadPermissions = React.useMemo(() => {
-        const appId = getSubApp(location.pathname);
+        const appId = chrome.getApp();
         switch (appId) {
             case Config.integrations.subAppId:
                 return rbac?.canReadIntegrationsEndpoints;
@@ -25,7 +26,7 @@ export const CheckReadPermissions: React.FunctionComponent = (props) => {
         }
 
         return false;
-    }, [ rbac, location ]);
+    }, [ rbac, location, chrome ]);
     return (
         <>
             { !hasReadPermissions ? <NotAuthorizedPage /> : props.children }

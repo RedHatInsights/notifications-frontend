@@ -68,9 +68,11 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
     </Main>;
 
     useEffect(() => {
-        const query = getApplications.query;
-        query(props.bundleTabs[activeTabKey].name);
-    }, [ activeTabKey, getApplications.query, props.bundleTabs ]);
+        if (notificationsOverhaul) {
+            const query = getApplications.query;
+            query(props.bundleTabs[activeTabKey].name);
+        }
+    }, [ activeTabKey, getApplications.query, props.bundleTabs, notificationsOverhaul ]);
 
     const getInitialApplications = useMemo(
         () => {

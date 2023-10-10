@@ -12,7 +12,7 @@ import IntegrationsList from './List';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
 
-    const { updateDocumentTitle } = useChrome();
+    const { updateDocumentTitle, getBundle } = useChrome();
 
     updateDocumentTitle?.('Integrations');
 
@@ -27,7 +27,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                     </SplitItem>
                     { !notificationsOverhaul && <SplitItem>
                         <Button variant='secondary' component={ () =>
-                            <Link to={ linkTo.eventLog() } /> }> View event log </Button>
+                            <Link to={ `/${getBundle()}/notifications${linkTo.eventLog()}` } /> }> View event log </Button>
                     </SplitItem> }
                 </Split>
             </PageHeader>

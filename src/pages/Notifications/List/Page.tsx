@@ -1,18 +1,13 @@
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { useMemo } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSkeleton } from '../../../app/AppSkeleton';
-import { defaultBundleName, RedirectToDefaultBundle } from '../../../components/RedirectToDefaultBundle';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
-
-interface NotificationListPageParams {
-    bundleName: string;
-}
 
 enum BundleStatus {
     LOADING,
@@ -23,11 +18,12 @@ enum BundleStatus {
 const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus => typeof bundle === 'number';
 
 export const NotificationsListPage: React.FunctionComponent = () => {
-    const params = useParams<NotificationListPageParams>();
+    const navigate = useNavigate();
+    const params = useParams<Record<string, string | undefined>>();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
     const bundleList = [ 'rhel', 'console', 'openshift' ];
 
-    const bundleName = useMemo(() => notificationsOverhaul ? defaultBundleName : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
+    const bundleName = useMemo(() => notificationsOverhaul ? 'rhel' : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
 
     const getBundles = useGetBundles();
     const getApplications = useGetApplicationsLazy();
@@ -83,11 +79,12 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     );
 
     if (bundle === BundleStatus.NOT_FOUND) {
-        if (bundleName === defaultBundleName) {
+        if (bundleName === '/rhel') {
             throw new Error('Default bundle information not found');
         }
 
-        return <RedirectToDefaultBundle />;
+        navigate('/notifications/rhel');
+        return <React.Fragment />;
     }
 
     if (bundle === BundleStatus.FAILED_TO_LOAD) {

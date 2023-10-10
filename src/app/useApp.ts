@@ -1,6 +1,5 @@
 import { fetchRBAC, Rbac, waitForInsights } from '@redhat-cloud-services/insights-common-typescript';
 import { useEffect, useState } from 'react';
-import { useHistory } from 'react-router-dom';
 
 import Config from '../config/Config';
 import { useGetServerStatus } from '../services/GetServerStatus';
@@ -9,7 +8,6 @@ import { AppContext } from './AppContext';
 
 export const useApp = (): Partial<AppContext> => {
 
-    const history = useHistory();
     const serverStatus = useGetServerStatus();
     const [ rbac, setRbac ] = useState<Rbac>();
     const [ server, setServer ] = useState<Server>();
@@ -30,7 +28,7 @@ export const useApp = (): Partial<AppContext> => {
 
             insights.chrome.identifyApp(appId);
         });
-    }, [ history ]);
+    }, []);
 
     useEffect(() => {
         if (serverStatus.payload?.type === 'ServerStatus') {
