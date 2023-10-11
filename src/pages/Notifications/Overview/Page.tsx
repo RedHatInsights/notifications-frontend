@@ -20,7 +20,7 @@ import {
 } from '@patternfly/react-core';
 import { ArrowRightIcon, ExternalLinkAltIcon, RunningIcon, UserIcon } from '@patternfly/react-icons';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
-import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';

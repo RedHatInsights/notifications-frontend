@@ -11,8 +11,7 @@ import * as React from 'react';
 import { ClientContextProvider, createClient } from 'react-fetching-library';
 import { Provider } from 'react-redux';
 import { MemoryRouterProps, useLocation } from 'react-router';
-import { Route, RouteProps } from 'react-router';
-import { MemoryRouter as Router } from 'react-router-dom';
+import { MemoryRouter as Router, Route, RouteProps, Routes as DomRoutes } from 'react-router-dom';
 import { DeepPartial } from 'ts-essentials';
 
 import messages from '../locales/data.json';
@@ -126,9 +125,13 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
                             <AppContext.Provider value={ completeAppContext }>
                                 <NotificationsPortal />
                                 <InternalWrapper { ...props }>
-                                    <Route { ...props.route } >
-                                        { props.children }
-                                    </Route>
+                                    <DomRoutes>
+                                        {(props.router?.initialEntries?.length || 0) > 0 ? props.router?.initialEntries?.map((item) => <Route
+                                            key={ item as string }
+                                            path={ item as string  }
+                                            { ...props.route }
+                                        />) : <Route path="/" { ...props.route } />}
+                                    </DomRoutes>
                                 </InternalWrapper>
                             </AppContext.Provider>
                         </ClientContextProvider>
@@ -142,7 +145,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
 export const getConfiguredAppWrapper = (config?: Partial<Config>) => {
     const ConfiguredAppWrapper: React.FunctionComponent = (props) => {
         return (
-            <AppWrapper { ...config }>{ props.children }</AppWrapper>
+            <AppWrapper { ...config } route={ { element: <React.Fragment>{props.children}</React.Fragment>, ...config?.route } } ></AppWrapper>
         );
     };
 

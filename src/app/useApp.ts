@@ -1,4 +1,5 @@
-import { fetchRBAC, Rbac, waitForInsights } from '@redhat-cloud-services/insights-common-typescript';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { fetchRBAC, Rbac } from '@redhat-cloud-services/insights-common-typescript';
 import { useEffect, useState } from 'react';
 
 import Config from '../config/Config';
@@ -7,28 +8,23 @@ import { Server } from '../types/Server';
 import { AppContext } from './AppContext';
 
 export const useApp = (): Partial<AppContext> => {
-
+    const chrome = useChrome();
     const serverStatus = useGetServerStatus();
     const [ rbac, setRbac ] = useState<Rbac>();
     const [ server, setServer ] = useState<Server>();
     const [ isOrgAdmin, setOrgAdmin ] = useState<boolean>(false);
 
     useEffect(() => {
-        waitForInsights().then((insights) => {
-            insights.chrome.init();
-            const appId = insights.chrome.getApp();
-            switch (appId) {
-                case Config.notifications.subAppId:
-                    document.title = Config.notifications.title;
-                    break;
-                case Config.integrations.subAppId:
-                    document.title = Config.integrations.title;
-                    break;
-            }
-
-            insights.chrome.identifyApp(appId);
-        });
-    }, []);
+        const appId = chrome.getApp();
+        switch (appId) {
+            case Config.notifications.subAppId:
+                document.title = Config.notifications.title;
+                break;
+            case Config.integrations.subAppId:
+                document.title = Config.integrations.title;
+                break;
+        }
+    }, [ chrome ]);
 
     useEffect(() => {
         if (serverStatus.payload?.type === 'ServerStatus') {
@@ -37,13 +33,11 @@ export const useApp = (): Partial<AppContext> => {
     }, [ serverStatus.payload ]);
 
     useEffect(() => {
-        waitForInsights().then(insights => {
-            insights.chrome.auth.getUser().then(user => {
-                setOrgAdmin(user.identity.user.is_org_admin);
-                fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
-            });
+        chrome.auth.getUser().then(user => {
+            setOrgAdmin((user as any).identity.user.is_org_admin);
+            fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
         });
-    }, []);
+    }, [ chrome ]);
 
     return {
         rbac: rbac ? {

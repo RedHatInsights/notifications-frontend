@@ -11,6 +11,10 @@ import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testin
 import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
+    return () => ({ getBundle: () => 'foo' });
+});
+
 describe('src/pages/Integrations/List/Page', () => {
     beforeEach(() => {
         appWrapperSetup();

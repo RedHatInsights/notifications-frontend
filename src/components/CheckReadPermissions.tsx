@@ -1,4 +1,4 @@
-import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 
