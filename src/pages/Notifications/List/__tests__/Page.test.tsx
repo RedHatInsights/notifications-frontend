@@ -33,7 +33,7 @@ type RouterAndRoute = {
 
 const routePropsPageForBundle = (): RouterAndRoute => ({
     router: {
-        initialEntries: [ `/notifications/` ]
+        initialEntries: [ `/` ]
     },
     route: {
         path: linkTo.notifications('')

@@ -18,6 +18,11 @@ module.exports = {
         exposes: {
             './RootApp': path.resolve(__dirname, './src/AppEntry.tsx'),
             './IntegrationsTable': path.resolve(__dirname, './src/IntegrationsEntry.tsx')
-        }
+        },
+        shared: [
+            {
+                'react-router-dom': { singleton: true, requiredVersion: '*' }
+            }
+        ]
     }
 };

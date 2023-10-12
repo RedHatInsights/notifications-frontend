@@ -20,16 +20,17 @@ import {
 } from '@patternfly/react-core';
 import { ArrowRightIcon, ExternalLinkAltIcon, RunningIcon, UserIcon } from '@patternfly/react-icons';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
-import { useChrome } from '@redhat-cloud-services/frontend-components/useChrome';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
-    const history = useHistory();
+    const navigate = useNavigate();
+    const isSourcesIntegrations = useFlag('platform.sources.integrations');
     const [ isOrgAdmin, setIsOrgAdmin ] = React.useState(null);
     const { auth, isBeta, getBundle } = useChrome();
     const notificationsOverhaul = useFlag('platform.notifications.overhaul');
@@ -88,7 +89,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                         isLarge
                                         onClick={ (e) => {
                                             e.preventDefault();
-                                            history.push('/notifications/configure-events');
+                                            navigate(`/${getBundle()}/notifications/configure-events`);
                                         } }>
                                 Configure events
                                     </Button>
@@ -126,8 +127,17 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                     </p>
                                 </CardBody>
                                 <CardFooter>
-                                    <Button variant="primary" isLarge>
-                                        Go to My User Preferences
+                                    <Button
+                                        variant="primary"
+                                        isLarge
+                                        component="a"
+                                        href={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/user-preferences` }
+                                        onClick={ (e) => {
+                                            e.preventDefault();
+                                            navigate(`/${getBundle()}/notifications/user-preferences`);
+                                        } }
+                                    >
+                                        Go to My User Preferencesss
                                     </Button>
                                 </CardFooter>
                             </Card>
@@ -155,7 +165,16 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                     </p>
                                 </CardBody>
                                 <CardFooter>
-                                    { !notificationsOverhaul && <Button variant="secondary" isLarge>
+                                    { !notificationsOverhaul && <Button
+                                        variant="secondary"
+                                        isLarge
+                                        component="a"
+                                        href={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/user-preferences` }
+                                        onClick={ (e) => {
+                                            e.preventDefault();
+                                            navigate(`/${getBundle()}/notifications/eventlog`);
+                                        } }
+                                    >
                                         View Event log
                                     </Button> }
                                 </CardFooter>
@@ -173,7 +192,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                             icon={ IconName.USER }
                             heading="Manage your own notifications with My User Preferences"
                             linkTitle="Go to My User Preferences"
-                            linkTarget="#"
+                            linkTarget={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/user-preferences` }
                             expandableContent="This service allows you to opt-in and out of receiving notifications. Your Organization
                             Administrator has configured which notifications you can or can not receive in their Settings."
                         />
@@ -181,14 +200,17 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                             icon={ IconName.RUNNING }
                             heading="Monitor all fired events with the Event log"
                             linkTitle="View Event log"
-                            linkTarget="#"
+                            linkTarget={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/eventlog ` }
                             expandableContent="See all the events affecting your organization and view details around the events fired."
                         />
                         <CustomDataListItem
                             icon={ IconName.INTEGRATION }
                             heading="Set up Integrations to customize your notifications"
                             linkTitle="Set up Integrations"
-                            linkTarget="#"
+                            { ...isSourcesIntegrations && { isRedirect: true } }
+                            linkTarget={ isSourcesIntegrations ?
+                                `${isBeta() ? '/preview' : ''}/settings/sources?category=Integrations` :
+                                `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/integrations` }
                             expandableContent="Notifications and integrations services work together to transmit messages to third-party application
                     endpoints, such as instant messaging platforms and external ticketing systems, when triggering events occur. Integrations
                     include Splunk, Slack, ServiceNow, and more."
@@ -197,7 +219,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                             icon={ IconName.USERS }
                             heading="Create behavior groups to easily notify the right users"
                             linkTitle="Create new behavior group"
-                            linkTarget="#"
+                            linkTarget={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/configure-events` }
                             expandableContent="Behavior groups are made up of action/recipient pairings that allow you to configure which notification
                     actions different users will be able to receive. Once you've created a behavior group, you can assign it to an event. You
                     may also prevent users from changing assigned actions by locking action/recipient pairings when creating or editing behavior

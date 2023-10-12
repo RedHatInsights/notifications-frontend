@@ -15,6 +15,7 @@ import {
 } from '@patternfly/react-core';
 import { BellIcon, IntegrationIcon, RunningIcon, UserIcon, UsersIcon } from '@patternfly/react-icons';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 export enum IconName {
   USER = 'user',
@@ -30,9 +31,11 @@ interface CustomDataListItemProps {
   linkTitle?: string;
   linkTarget?: string;
   expandableContent: string;
+  isRedirect?: boolean
 }
 
-const CustomDataListItem: React.FC<CustomDataListItemProps> = ({ icon, heading, linkTitle, linkTarget, expandableContent }) => {
+const CustomDataListItem: React.FC<CustomDataListItemProps> = ({ icon, heading, linkTitle, linkTarget, expandableContent, isRedirect }) => {
+    const navigate = useNavigate();
     let iconElement: React.ReactNode = null;
     const [ expanded, setExpanded ] = React.useState(false);
 
@@ -96,7 +99,17 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({ icon, heading, 
                             aria-label="Actions"
                             isPlainButtonAction
                         >
-                            <Button component="a" href={ linkTarget } variant="link">
+                            <Button
+                                component="a"
+                                href={ linkTarget }
+                                variant="link"
+                                onClick={ (e) => {
+                                    if (!isRedirect) {
+                                        e.preventDefault();
+                                        navigate(linkTarget.replace('/preview', ''));
+                                    }
+                                } }
+                            >
                                 {linkTitle}
                             </Button>
                         </DataListAction>

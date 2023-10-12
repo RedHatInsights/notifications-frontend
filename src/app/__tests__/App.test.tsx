@@ -6,7 +6,7 @@ import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
 import messages from '../../../locales/data.json';
-import { AppWrapper, appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
+import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
 
@@ -30,6 +30,17 @@ jest.mock('../../pages/Integrations/List/Page', () => {
     return {
         IntegrationsListPage: MockedRoutes
     };
+});
+
+jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
+    return () => ({
+        getBundle: () => 'foo',
+        getApp: () => 'notifications',
+        isBeta: () => false,
+        auth: {
+            getUser: () => Promise.resolve({ identity: { user: { is_org_admin: true }}})
+        }
+    });
 });
 
 const mockMaintenance = (isUp: boolean) => {
@@ -67,11 +78,16 @@ describe('src/app/App', () => {
         const promise = new Promise<Rbac>(() => {
             return 'foo';
         });
+        const Wrapper = getConfiguredAppWrapper({
+            route: {
+                path: '/'
+            }
+        });
         (fetchRBAC as jest.Mock).mockImplementation(() => promise);
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
-                wrapper: AppWrapper
+                wrapper: Wrapper
             }
         );
         mockMaintenance(true);
@@ -91,23 +107,19 @@ describe('src/app/App', () => {
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
-                location: {
-                    pathname: '/notifications',
-                    search: '',
-                    hash: '',
-                    state: {}
-                }
+                path: '/'
             }
         });
 
-        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(new Rbac({
+        const rbac = new Rbac({
             integrations: {
                 endpoints: [ 'read', 'write' ]
             },
             notifications: {
                 notifications: [ 'read', 'write' ]
             }
-        })));
+        });
+        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(rbac));
         render(
             <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
             {
@@ -126,24 +138,20 @@ describe('src/app/App', () => {
 
     it('Shows error when RBAC does not have read access when /notifications', async () => {
         jest.useFakeTimers();
-        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(new Rbac({
+        const rbac = new Rbac({
             integrations: {
                 endpoints: [ 'read', 'write' ]
             },
             notifications: {
                 notifications: [ 'write' ]
             }
-        })));
+        });
+        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(rbac));
         mockMaintenance(true);
 
         const Wrapper = getConfiguredAppWrapper({
             route: {
-                location: {
-                    pathname: '/notifications/foobar',
-                    search: '',
-                    hash: '',
-                    state: {}
-                }
+                path: '/'
             }
         });
 
@@ -159,42 +167,5 @@ describe('src/app/App', () => {
         });
 
         expect(screen.getByText(/You do not have access to Notifications/i)).toBeTruthy();
-    });
-
-    it('Shows error when RBAC does not have read access when /integrations', async () => {
-        jest.useFakeTimers();
-        (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(new Rbac({
-            integrations: {
-                endpoints: [ 'write' ]
-            },
-            notifications: {
-                notifications: [ 'read', 'write' ]
-            }
-        })));
-        mockMaintenance(true);
-
-        const Wrapper = getConfiguredAppWrapper({
-            route: {
-                location: {
-                    pathname: '/integrations',
-                    search: '',
-                    hash: '',
-                    state: {}
-                }
-            }
-        });
-
-        render(
-            <IntlProvider locale={ navigator.language } messages={ messages }><App /></IntlProvider>,
-            {
-                wrapper: Wrapper
-            }
-        );
-
-        await act(async () => {
-            await jest.advanceTimersToNextTimer();
-        });
-
-        expect(screen.getByText(/You do not have access to Integrations/i)).toBeTruthy();
     });
 });

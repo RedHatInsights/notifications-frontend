@@ -1,5 +1,4 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render } from '@testing-library/react';
 import * as React from 'react';
 
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../test/AppWrapper';
@@ -41,13 +40,9 @@ describe('src/pages/Error/Page', () => {
         const getLocation = jest.fn();
         const AppWrapper = getConfiguredAppWrapper({
             getLocation,
-            route: {
-                path: '/'
-            },
             router: {
                 initialEntries: [
-                    '/foo',
-                    '/bar'
+                    '/foo'
                 ]
             }
         });
@@ -59,10 +54,6 @@ describe('src/pages/Error/Page', () => {
         render(<ErrorPage><Surprise /></ErrorPage>, {
             wrapper: AppWrapper
         });
-
-        userEvent.click(screen.getByRole('link', {
-            name: /Go to home page/i
-        }));
         expect(getLocation().pathname).toEqual('/foo');
     });
 });

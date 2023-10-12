@@ -1,7 +1,8 @@
 import { Skeleton, Split, SplitItem, StackItem } from '@patternfly/react-core';
 import { PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
-import { getInsights, localUrl } from '@redhat-cloud-services/insights-common-typescript';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { localUrl } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useLocation, useParams } from 'react-router-dom';
@@ -11,18 +12,13 @@ import messages from '../properties/DefinedMessages';
 import { linkTo } from '../Routes';
 import { useGetBundles } from '../services/Notifications/GetBundles';
 import { Facet } from '../types/Notification';
-import { getSubApp } from '../utils/Basename';
 import { Main } from './Store/Main';
-
-interface NotificationListPageParams {
-    bundleName: string;
-}
 
 const eventLogService = 'Event Log';
 
 export const NotAuthorizedPage: React.FunctionComponent = () => {
-
-    const { bundleName } = useParams<NotificationListPageParams>();
+    const chrome = useChrome();
+    const { bundleName } = useParams<Record<string, string | undefined>>();
     const getBundles = useGetBundles();
     const bundles: Facet | undefined = useMemo (() => {
         if (getBundles.payload?.status === 200) {
@@ -34,12 +30,12 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
     const intl = useIntl();
 
     const userPreferences = <a href={ localUrl(`/user-preferences/notifications/`,
-        getInsights().chrome.isBeta()) }> User Preferences</a>;
+        chrome.isBeta()) }> User Preferences</a>;
     const myUserAccess = <a href={ localUrl(`/settings/my-user-access?bundle=rhel }`,
-        getInsights().chrome.isBeta()) }> My User Access </a>;
+        chrome.isBeta()) }> My User Access </a>;
 
     const serviceName = React.useMemo(() => {
-        switch (getSubApp(location.pathname)) {
+        switch (chrome.getApp()) {
             case Config.integrations.subAppId:
                 return intl.formatMessage(messages.integrations);
             case Config.notifications.subAppId:
@@ -51,7 +47,7 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
             default:
                 return '';
         }
-    }, [ intl, location.pathname ]);
+    }, [ intl, location.pathname, chrome ]);
 
     const pageHeaderTitleProps = {
         paddingBottom: '8px'
@@ -71,11 +67,11 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
             will be entitled to receiving. To do this, create behavior groups and apply them to different events.
             Users will be able to opt-in or out of receiving authorized event notifications in their
             { <a href={ localUrl(`/user-preferences/notifications/`,
-                getInsights().chrome.isBeta()) }> User Preferences</a>}.</span>;
+                chrome.isBeta()) }> User Preferences</a>}.</span>;
         } else {
             return <span></span>;
         }
-    }, [ serviceName ]);
+    }, [ serviceName, chrome ]);
 
     return (
         <>
