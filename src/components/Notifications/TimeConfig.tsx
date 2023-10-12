@@ -3,10 +3,9 @@ import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownTog
     ModalVariant,
     Radio, Skeleton, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
-import { global_spacer_lg } from '@patternfly/react-tokens';
 import { OutlinedClockIcon } from '@patternfly/react-icons';
+import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFlag } from '@unleash/proxy-client-react';
-
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import timezones from 'timezones.json';
