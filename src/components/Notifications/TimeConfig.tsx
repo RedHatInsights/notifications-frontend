@@ -4,17 +4,17 @@ import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownTog
     Radio, Skeleton, Split, SplitItem, Stack, StackItem,
     Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
 import { global_spacer_lg } from '@patternfly/react-tokens';
+import { OutlinedClockIcon } from '@patternfly/react-icons';
+import { useFlag } from '@unleash/proxy-client-react';
+
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
-import { useFlag } from '@unleash/proxy-client-react';
-
 
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 import { useNotification } from '../../utils/AlertUtils';
-import { OutlinedClockIcon } from '@patternfly/react-icons';
 
 const dropDownClassName = style({
     width: '280px'
@@ -34,7 +34,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const [ showCustomSelect, setShowCustomSelect ] = React.useState(false);
     const [ timeSelect, setTimeSelect ] = React.useState<TimeConfigState>();
-    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [ isModalOpen, setIsModalOpen ] = useState(false);
 
     const getTimePreference = useGetTimePreference();
     const saveTimePreference = useUpdateTimePreference();
@@ -134,43 +134,45 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                 }
             });
         }
-        if(notificationsOverhaul) {
+
+        if (notificationsOverhaul) {
             setIsModalOpen(false);
         }
-    }, [ addDangerNotification, addSuccessNotification, saveTimePreference.mutate, timeSelect ]);
+    }, [ addDangerNotification, addSuccessNotification, saveTimePreference.mutate, timeSelect, notificationsOverhaul ]);
 
     const isLoading = saveTimePreference.loading || getTimePreference.loading;
 
-    if( notificationsOverhaul ) {
+    if (notificationsOverhaul) {
         const handleModalToggle = (_event: KeyboardEvent | React.MouseEvent) => {
             setIsModalOpen(!isModalOpen);
         };
+
         return (
             <>
-            <p>
-                <OutlinedClockIcon color='var(--pf-v5-global--palette--cyan-200)'/> 
-                &nbsp;Any daily digest emails you've opted into will be sent at {timePref ? timePref : "00:00"} UTC
-            </p>
-            <Button variant="link" onClick={handleModalToggle} ouiaId="TimeConfigModal">
-                Edit time settings
-            </Button>
-            <Modal
-                variant={ModalVariant.small}
-                isOpen={isModalOpen}
-                onClose={() => handleModalToggle}
-                actions={[
-                    <Button variant='primary' type='submit' isLoading={ isLoading }
-                        isDisabled={ isLoading } onClick={ handleButtonSave }>
-                        { isLoading ? 'Loading' : 'Save' }
-                    </Button>,
-                    <Button
-                    key="cancel" variant="link" onClick={handleModalToggle}>
+                <p>
+                    <OutlinedClockIcon color='var(--pf-v5-global--palette--cyan-200)' />
+                    &nbsp;{`Any daily digest emails you've opted into will be sent at ${timePref ? timePref : '00:00'} UTC`}
+                </p>
+                <Button variant="link" onClick={ handleModalToggle } ouiaId="TimeConfigModal">
+                    Edit time settings
+                </Button>
+                <Modal
+                    variant={ ModalVariant.small }
+                    isOpen={ isModalOpen }
+                    onClose={ () => handleModalToggle }
+                    actions={ [
+                        <Button key="save" variant='primary' type='submit' isLoading={ isLoading }
+                            isDisabled={ isLoading } onClick={ handleButtonSave }>
+                            { isLoading ? 'Loading' : 'Save' }
+                        </Button>,
+                        <Button
+                            key="cancel" variant="link" onClick={ handleModalToggle }>
                     Cancel
-                    </Button>
-                ]}
-                ouiaId="TimeConfigModal"
+                        </Button>
+                    ] }
+                    ouiaId="TimeConfigModal"
                 >
-                <Stack hasGutter>
+                    <Stack hasGutter>
                         <StackItem>
                             <Title headingLevel='h2'>Action settings</Title>
                         </StackItem>
@@ -236,8 +238,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                     </Split>
                 </Modal>
             </>
-        )
+        );
     }
+
     return (
         <>
             <React.Fragment>
