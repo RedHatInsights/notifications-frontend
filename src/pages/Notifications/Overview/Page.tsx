@@ -21,19 +21,19 @@ import {
 import { ArrowRightIcon, ExternalLinkAltIcon, RunningIcon, UserIcon } from '@patternfly/react-icons';
 import { Main, PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
+import { useNonProdFlag } from '../../../hooks/useNonProdFlag';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
     const navigate = useNavigate();
-    const isSourcesIntegrations = useFlag('platform.sources.integrations');
+    const isSourcesIntegrations = useNonProdFlag('platform.sources.integrations');
     const [ isOrgAdmin, setIsOrgAdmin ] = React.useState(null);
     const { auth, isBeta, getBundle } = useChrome();
-    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+    const notificationsOverhaul = useNonProdFlag('platform.notifications.overhaul');
     React.useEffect(() => {
         const getUser = async () => {
             const { identity: { user }}: any = await auth.getUser();

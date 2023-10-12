@@ -37,6 +37,7 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
         getBundle: () => 'foo',
         getApp: () => 'notifications',
         isBeta: () => false,
+        getEnvironment: () => 'bar',
         auth: {
             getUser: () => Promise.resolve({ identity: { user: { is_org_admin: true }}})
         }

@@ -14,7 +14,7 @@ jest.mock('../pages/Integrations/List/Page', () => ({
 }));
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
-    return () => ({ getApp: () => 'foo', isBeta: () => false });
+    return () => ({ getApp: () => 'foo', isBeta: () => false, getEnvironment: () => 'bar' });
 });
 
 describe('src/Routes', () => {

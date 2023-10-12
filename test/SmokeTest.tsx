@@ -11,9 +11,6 @@ import { Schemas } from '../src/generated/OpenapiIntegrations';
 import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from './AppWrapper';
 import { waitForAsyncEvents } from './TestUtils';
 import Endpoint = Schemas.Endpoint;
-import { useFlag } from '@unleash/proxy-client-react';
-
-
 
 const mockMaintenance = (isUp: boolean) => {
     const response = isUp ? {
