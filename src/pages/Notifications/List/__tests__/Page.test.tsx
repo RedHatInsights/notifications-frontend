@@ -352,6 +352,10 @@ const mockBehaviorGroupsOfEventTypes = (eventTypeId: string = defaultEventTypeId
     });
 };
 
+jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
+    return () => ({ getEnvironment: () => 'bar' });
+});
+
 describe('src/pages/Notifications/List/Page', () => {
     beforeEach(() => {
         appWrapperSetup();

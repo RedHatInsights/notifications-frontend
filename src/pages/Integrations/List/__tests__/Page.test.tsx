@@ -12,7 +12,7 @@ import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
-    return () => ({ getBundle: () => 'foo' });
+    return () => ({ getBundle: () => 'foo', getEnvironment: () => 'bar' });
 });
 
 describe('src/pages/Integrations/List/Page', () => {

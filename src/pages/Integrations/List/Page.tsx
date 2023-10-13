@@ -1,11 +1,11 @@
 import { Button, Split, SplitItem } from '@patternfly/react-core';
 import { PageHeader, PageHeaderTitle, Section } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
 import { Main } from '../../../components/Store/Main';
+import { useNonProdFlag } from '../../../hooks/useNonProdFlag';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import IntegrationsList from './List';
@@ -16,7 +16,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
 
     updateDocumentTitle?.('Integrations');
 
-    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+    const notificationsOverhaul = useNonProdFlag('platform.notifications.overhaul');
 
     return (
         <Section className='pf-c-page__main-section pf-m-light'>

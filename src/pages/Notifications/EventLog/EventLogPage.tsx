@@ -1,6 +1,5 @@
 import { ButtonVariant } from '@patternfly/react-core';
 import { Direction, Sort } from '@redhat-cloud-services/insights-common-typescript';
-import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { useParameterizedQuery } from 'react-fetching-library';
@@ -19,6 +18,7 @@ import { PageHeader } from '../../../components/PageHeader';
 import { Main } from '../../../components/Store/Main';
 import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
+import { useNonProdFlag } from '../../../hooks/useNonProdFlag';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
@@ -33,7 +33,7 @@ import { useFilterBuilder } from './useFilterBuilder';
 const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
-    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+    const notificationsOverhaul = useNonProdFlag('platform.notifications.overhaul');
     const getEndpoint = useParameterizedQuery(getEndpointAction);
     const { rbac } = useAppContext();
 
