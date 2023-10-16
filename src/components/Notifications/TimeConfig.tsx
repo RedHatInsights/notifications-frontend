@@ -14,6 +14,7 @@ import { style } from 'typestyle';
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 import { useNotification } from '../../utils/AlertUtils';
+import { margin } from 'csx';
 
 const dropDownClassName = style({
     width: '280px'
@@ -141,7 +142,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const isLoading = saveTimePreference.loading || getTimePreference.loading;
 
-    const handleModalToggle = (_event: KeyboardEvent | React.MouseEvent) => {
+    const handleModalToggle = () => {
         setIsModalOpen(!isModalOpen);
     };
 
