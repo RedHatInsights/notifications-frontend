@@ -141,185 +141,102 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
     const isLoading = saveTimePreference.loading || getTimePreference.loading;
 
-    if (notificationsOverhaul) {
-        const handleModalToggle = (_event: KeyboardEvent | React.MouseEvent) => {
-            setIsModalOpen(!isModalOpen);
-        };
-
-        return (
-            <>
-                <p>
-                    <OutlinedClockIcon color='var(--pf-v5-global--palette--cyan-200)' />
-                    &nbsp;{`Any daily digest emails you've opted into will be sent at ${timePref ? timePref : '00:00'} UTC`}
-                </p>
-                <Button variant="link" onClick={ handleModalToggle } ouiaId="TimeConfigModal">
-                    Edit time settings
-                </Button>
-                <Modal
-                    variant={ ModalVariant.small }
-                    isOpen={ isModalOpen }
-                    onClose={ () => handleModalToggle }
-                    actions={ [
-                        <Button key="save" variant='primary' type='submit' isLoading={ isLoading }
-                            isDisabled={ isLoading } onClick={ handleButtonSave }>
-                            { isLoading ? 'Loading' : 'Save' }
-                        </Button>,
-                        <Button
-                            key="cancel" variant="link" onClick={ handleModalToggle }>
-                    Cancel
-                        </Button>
-                    ] }
-                    ouiaId="TimeConfigModal"
-                >
-                    <Stack hasGutter>
-                        <StackItem>
-                            <Title headingLevel='h2'>Action settings</Title>
-                        </StackItem>
-                        <StackItem>
-                            <Text component={ TextVariants.p }>Daily digest email receipt</Text>
-                            <HelperText>
-                                <HelperTextItem variant="indeterminate">
-                                Schedule the time at which to send your account&apos;s daily digest email.
-                                All times will be converted to UTC after saving.
-                                </HelperTextItem>
-                            </HelperText>
-                        </StackItem>
-                    </Stack>
-                    <br></br>
-                    <Split>
-                        <SplitItem isFilled>
-                            <Stack hasGutter>
-                                <StackItem>
-                                    { getTimePreference.loading ? <Skeleton /> :
-                                        <Radio
-                                            isChecked={ !showCustomSelect }
-                                            onChange={ handleRadioSelect }
-                                            id='settings-time-config'
-                                            label='Default time'
-                                            value="Default"
-                                            description='00:00 UTC'
-                                            name='radio-select'>
-                                        </Radio>
-                                    }
-                                </StackItem>
-                                <StackItem>
-                                    { getTimePreference.loading ? <Skeleton /> :
-                                        <Radio
-                                            isChecked={ showCustomSelect }
-                                            onChange={ handleCustomRadioSelect }
-                                            id='settings-time-config-custom'
-                                            label='Custom time'
-                                            name='radio-select'>
-                                        </Radio>
-                                    }
-                                </StackItem>
-                                {showCustomSelect && (
-                                    <><StackItem className={ dropDownPaddingClassName }>
-                                        <Text component={ TextVariants.h6 }>Time</Text>
-                                        <TimePicker onChange={ handleTimePrefSelect } time={ timeSelect?.baseCustomTime }
-                                            width='263px' stepMinutes={ 15 } placeholder='00:00' is24Hour />
-                                    </StackItem>
-                                    <StackItem className={ dropDownPaddingClassName }>
-                                        <Text component={ TextVariants.h6 }>Time zone</Text>
-                                        <Dropdown
-                                            className={ dropDownClassName }
-                                            toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
-                                                { timeSelect?.timezoneText ?? '(UTC-00:00) Universal Time' }
-                                            </DropdownToggle> }
-                                            isOpen={ isOpen }
-                                            onSelect={ handleTimezoneChange }
-                                            menuAppendTo={ () => document.body }
-                                            dropdownItems={ dropdownItems }>
-                                        </Dropdown>
-                                    </StackItem></>)}
-                            </Stack>
-                        </SplitItem>
-                    </Split>
-                </Modal>
-            </>
-        );
-    }
+    const handleModalToggle = (_event: KeyboardEvent | React.MouseEvent) => {
+        setIsModalOpen(!isModalOpen);
+    };
 
     return (
         <>
-            <React.Fragment>
-                <Card>
-                    <CardBody>
+            <p>
+                <OutlinedClockIcon color='var(--pf-v5-global--palette--cyan-200)' />
+                &nbsp;{`Any daily digest emails you've opted into will be sent at ${timePref ? timePref : '00:00'} UTC`}
+            </p>
+            <Button variant="link" onClick={ handleModalToggle } ouiaId="TimeConfigModal">
+                Edit time settings
+            </Button>
+            <Modal
+                variant={ ModalVariant.small }
+                isOpen={ isModalOpen }
+                onClose={ handleModalToggle }
+                actions={ [
+                    <Button key="save" variant='primary' type='submit' isLoading={ isLoading }
+                        isDisabled={ isLoading } onClick={ handleButtonSave }>
+                        { isLoading ? 'Loading' : 'Save' }
+                    </Button>,
+                    <Button
+                        key="cancel" variant="link" onClick={ handleModalToggle }>
+                Cancel
+                    </Button>
+                ] }
+                ouiaId="TimeConfigModal"
+            >
+                <Stack hasGutter>
+                    <StackItem>
+                        <Title headingLevel='h2'>Action settings</Title>
+                    </StackItem>
+                    <StackItem>
+                        <Text component={ TextVariants.p }>Daily digest email receipt</Text>
+                        <HelperText>
+                            <HelperTextItem variant="indeterminate">
+                            Schedule the time at which to send your account&apos;s daily digest email.
+                            All times will be converted to UTC after saving.
+                            </HelperTextItem>
+                        </HelperText>
+                    </StackItem>
+                </Stack>
+                <br></br>
+                <Split>
+                    <SplitItem isFilled>
                         <Stack hasGutter>
                             <StackItem>
-                                <Title headingLevel='h2'>Action settings</Title>
+                                { getTimePreference.loading ? <Skeleton /> :
+                                    <Radio
+                                        isChecked={ !showCustomSelect }
+                                        onChange={ handleRadioSelect }
+                                        id='settings-time-config'
+                                        label='Default time'
+                                        value="Default"
+                                        description='00:00 UTC'
+                                        name='radio-select'>
+                                    </Radio>
+                                }
                             </StackItem>
                             <StackItem>
-                                <Text component={ TextVariants.p }>Daily digest email receipt</Text>
-                                <HelperText>
-                                    <HelperTextItem variant="indeterminate">
-                                    Schedule the time at which to send your account&apos;s daily digest email.
-                                    All times will be converted to UTC after saving.
-                                    </HelperTextItem>
-                                </HelperText>
+                                { getTimePreference.loading ? <Skeleton /> :
+                                    <Radio
+                                        isChecked={ showCustomSelect }
+                                        onChange={ handleCustomRadioSelect }
+                                        id='settings-time-config-custom'
+                                        label='Custom time'
+                                        name='radio-select'>
+                                    </Radio>
+                                }
                             </StackItem>
+                            {showCustomSelect && (
+                                <><StackItem className={ dropDownPaddingClassName }>
+                                    <Text component={ TextVariants.h6 }>Time</Text>
+                                    <TimePicker onChange={ handleTimePrefSelect } time={ timeSelect?.baseCustomTime }
+                                        width='263px' stepMinutes={ 15 } placeholder='00:00' is24Hour />
+                                </StackItem>
+                                <StackItem className={ dropDownPaddingClassName }>
+                                    <Text component={ TextVariants.h6 }>Time zone</Text>
+                                    <Dropdown
+                                        className={ dropDownClassName }
+                                        toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
+                                            { timeSelect?.timezoneText ?? '(UTC-00:00) Universal Time' }
+                                        </DropdownToggle> }
+                                        isOpen={ isOpen }
+                                        onSelect={ handleTimezoneChange }
+                                        menuAppendTo={ () => document.body }
+                                        dropdownItems={ dropdownItems }>
+                                    </Dropdown>
+                                </StackItem></>)}
                         </Stack>
-                        <br></br>
-                        <Split>
-                            <SplitItem isFilled>
-                                <Stack hasGutter>
-                                    <StackItem>
-                                        { getTimePreference.loading ? <Skeleton /> :
-                                            <Radio
-                                                isChecked={ !showCustomSelect }
-                                                onChange={ handleRadioSelect }
-                                                id='settings-time-config'
-                                                label='Default time'
-                                                value="Default"
-                                                description='00:00 UTC'
-                                                name='radio-select'>
-                                            </Radio>
-                                        }
-                                    </StackItem>
-                                    <StackItem>
-                                        { getTimePreference.loading ? <Skeleton /> :
-                                            <Radio
-                                                isChecked={ showCustomSelect }
-                                                onChange={ handleCustomRadioSelect }
-                                                id='settings-time-config-custom'
-                                                label='Custom time'
-                                                name='radio-select'>
-                                            </Radio>
-                                        }
-                                    </StackItem>
-                                    {showCustomSelect && (
-                                        <><StackItem className={ dropDownPaddingClassName }>
-                                            <Text component={ TextVariants.h6 }>Time</Text>
-                                            <TimePicker onChange={ handleTimePrefSelect } time={ timeSelect?.baseCustomTime }
-                                                width='263px' stepMinutes={ 15 } placeholder='00:00' is24Hour />
-                                        </StackItem>
-                                        <StackItem className={ dropDownPaddingClassName }>
-                                            <Text component={ TextVariants.h6 }>Time zone</Text>
-                                            <Dropdown
-                                                className={ dropDownClassName }
-                                                toggle={ <DropdownToggle isOpen={ isOpen } id="timezone" onToggle={ () => setIsOpen(!isOpen) }>
-                                                    { timeSelect?.timezoneText ?? '(UTC-00:00) Universal Time' }
-                                                </DropdownToggle> }
-                                                isOpen={ isOpen }
-                                                onSelect={ handleTimezoneChange }
-                                                menuAppendTo={ () => document.body }
-                                                dropdownItems={ dropdownItems }>
-                                            </Dropdown>
-                                        </StackItem></>)}
-                                </Stack>
-                            </SplitItem>
-                        </Split>
-                    </CardBody>
-                    <CardFooter>
-                        <Button variant='primary' type='submit' isLoading={ isLoading }
-                            isDisabled={ isLoading } onClick={ handleButtonSave }>
-                            { isLoading ? 'Loading' : 'Save' }
-                        </Button>
-                    </CardFooter>
-                </Card>
-            </React.Fragment>
+                    </SplitItem>
+                </Split>
+            </Modal>
         </>
-
     );
+
 };
 
