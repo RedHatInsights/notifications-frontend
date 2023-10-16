@@ -1,8 +1,23 @@
-import { Button, Card, CardBody, CardFooter, Dropdown, DropdownItem, DropdownToggle, HelperText, HelperTextItem,
+import {
+    Button,
+    Dropdown,
+    DropdownItem,
+    DropdownToggle,
+    HelperText,
+    HelperTextItem,
     Modal,
     ModalVariant,
-    Radio, Skeleton, Split, SplitItem, Stack, StackItem,
-    Text, TextVariants, TimePicker, Title } from '@patternfly/react-core';
+    Radio,
+    Skeleton,
+    Split,
+    SplitItem,
+    Stack,
+    StackItem,
+    Text,
+    TextVariants,
+    TimePicker,
+    Title
+} from '@patternfly/react-core';
 import { OutlinedClockIcon } from '@patternfly/react-icons';
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import { useFlag } from '@unleash/proxy-client-react';
@@ -14,7 +29,6 @@ import { style } from 'typestyle';
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 import { useNotification } from '../../utils/AlertUtils';
-import { margin } from 'csx';
 
 const dropDownClassName = style({
     width: '280px'
