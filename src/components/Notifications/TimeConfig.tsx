@@ -36,6 +36,11 @@ const dropDownClassName = style({
 const dropDownPaddingClassName = style({
     paddingLeft: global_spacer_lg.value
 });
+
+const modalClass = style({
+    paddingLeft: '36px'
+})
+
 interface TimeConfigState {
     utcTime: string;
     baseCustomTime: string;
@@ -165,7 +170,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                 Edit time settings
             </Button>
             <Modal
-                className='modalClassName'
+                className={modalClass}
                 variant={ ModalVariant.small }
                 isOpen={ isModalOpen }
                 onClose={ handleModalToggle }
