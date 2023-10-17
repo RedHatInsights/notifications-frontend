@@ -1,4 +1,4 @@
-import { Skeleton, Split, SplitItem, StackItem } from '@patternfly/react-core';
+import { Split, SplitItem, StackItem } from '@patternfly/react-core';
 import { PageHeader, PageHeaderTitle } from '@redhat-cloud-services/frontend-components';
 import { NotAuthorized } from '@redhat-cloud-services/frontend-components';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
@@ -54,8 +54,8 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
     };
 
     const title = React.useMemo(() => {
-        if (serviceName === 'Notifications') {
-            return `${ serviceName } | ${ bundles ? bundles.displayName : <Skeleton /> }`;
+        if (serviceName === 'Notifications' && bundles) {
+            return `${ serviceName } | ${ bundles?.displayName }`;
         } else {
             return `${ serviceName }`;
         }
