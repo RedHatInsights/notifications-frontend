@@ -24,7 +24,9 @@ export const useApp = (): Partial<AppContext> => {
                 document.title = Config.integrations.title;
                 break;
         }
-    }, [ chrome ]);
+    // Chrome object is changed when the user is changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     useEffect(() => {
         if (serverStatus.payload?.type === 'ServerStatus') {
@@ -37,7 +39,9 @@ export const useApp = (): Partial<AppContext> => {
             setOrgAdmin((user as any).identity.user.is_org_admin);
             fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
         });
-    }, [ chrome ]);
+    // Chrome object is changed when the user is changed
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
     return {
         rbac: rbac ? {
