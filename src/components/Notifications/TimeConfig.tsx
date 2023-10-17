@@ -20,7 +20,6 @@ import {
 } from '@patternfly/react-core';
 import { OutlinedClockIcon } from '@patternfly/react-icons';
 import { global_spacer_lg } from '@patternfly/react-tokens';
-import { useFlag } from '@unleash/proxy-client-react';
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import timezones from 'timezones.json';
@@ -37,7 +36,6 @@ const dropDownClassName = style({
 const dropDownPaddingClassName = style({
     paddingLeft: global_spacer_lg.value
 });
-
 interface TimeConfigState {
     utcTime: string;
     baseCustomTime: string;
@@ -53,8 +51,6 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     const getTimePreference = useGetTimePreference();
     const saveTimePreference = useUpdateTimePreference();
     const { addSuccessNotification, addDangerNotification } = useNotification();
-
-    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
     const timePref = useMemo(() => {
         if (getTimePreference.status === 200) {
@@ -149,10 +145,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
             });
         }
 
-        if (notificationsOverhaul) {
-            setIsModalOpen(false);
-        }
-    }, [ addDangerNotification, addSuccessNotification, saveTimePreference.mutate, timeSelect, notificationsOverhaul ]);
+        setIsModalOpen(false);
+
+    }, [ addDangerNotification, addSuccessNotification, saveTimePreference.mutate, timeSelect ]);
 
     const isLoading = saveTimePreference.loading || getTimePreference.loading;
 
@@ -170,6 +165,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                 Edit time settings
             </Button>
             <Modal
+                className='modalClassName'
                 variant={ ModalVariant.small }
                 isOpen={ isModalOpen }
                 onClose={ handleModalToggle }
