@@ -1,3 +1,4 @@
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import * as React from 'react';
 import { Navigate, Route, Routes as DomRoutes } from 'react-router-dom';
 
@@ -23,7 +24,14 @@ export const linkTo = {
     splunk: () => '/integrations/splunk-setup'
 };
 
-const EmptyPage: React.FunctionComponent = () => null;
+const EmptyPage: React.FunctionComponent = () => {
+    const { getApp } = useChrome();
+    if (getApp() === 'integrations') {
+        return <IntegrationsListPage />;
+    }
+
+    return null;
+};
 
 const legacyRoutes: Path[] = [
     {
