@@ -14,6 +14,13 @@ module.exports = {
      */
     plugins: [],
     _unstableHotReload: process.env.HOT === 'true',
+    routes: {
+        ...(process.env.CONFIG_PORT && {
+            '/api/chrome-service/v1/static': {
+                host: `http://localhost:${process.env.CONFIG_PORT}`
+            }
+        })
+    },
     moduleFederation: {
         exposes: {
             './RootApp': path.resolve(__dirname, './src/AppEntry.tsx'),
