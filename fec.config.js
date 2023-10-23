@@ -24,7 +24,8 @@ module.exports = {
     moduleFederation: {
         exposes: {
             './RootApp': path.resolve(__dirname, './src/AppEntry.tsx'),
-            './IntegrationsTable': path.resolve(__dirname, './src/IntegrationsEntry.tsx')
+            './IntegrationsTable': path.resolve(__dirname, './src/IntegrationsEntry.tsx'),
+            './TimeConfig': path.resolve(__dirname, './src/components/Notifications/TimeConfig.tsx')
         },
         shared: [
             {

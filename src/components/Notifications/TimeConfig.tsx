@@ -256,3 +256,4 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
 };
 
+export default TimeConfigComponent;
