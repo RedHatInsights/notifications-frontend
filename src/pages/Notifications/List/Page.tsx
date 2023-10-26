@@ -1,9 +1,9 @@
+import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { useMemo } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 
 import { AppSkeleton } from '../../../app/AppSkeleton';
-import { useNonProdFlag } from '../../../hooks/useNonProdFlag';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
@@ -20,7 +20,7 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 export const NotificationsListPage: React.FunctionComponent = () => {
     const navigate = useNavigate();
     const params = useParams<Record<string, string | undefined>>();
-    const notificationsOverhaul = useNonProdFlag('platform.notifications.overhaul');
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
     const bundleList = [ 'rhel', 'console', 'openshift' ];
 
     const bundleName = useMemo(() => notificationsOverhaul ? 'rhel' : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
