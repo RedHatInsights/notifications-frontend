@@ -231,7 +231,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
 
         expect(getLocation().pathname).toEqual('/');
         userEvent.click(link);
-        expect(getLocation().pathname).toEqual('/integrations');
+        expect(getLocation().pathname).toEqual('/settings/integrations');
     });
 
 });

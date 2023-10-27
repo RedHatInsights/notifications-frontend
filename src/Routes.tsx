@@ -18,7 +18,7 @@ interface Path {
 export const linkTo = {
     overview: () => '/',
     configureEvents: () => '/configure-events',
-    integrations: () => '/integrations',
+    integrations: () => '/settings/integrations',
     notifications: (bundle: string) => `/${bundle}`,
     eventLog: (bundle?: string) => `/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
     splunk: () => '/integrations/splunk-setup'
