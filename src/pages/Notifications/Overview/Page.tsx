@@ -28,6 +28,13 @@ import { useNavigate } from 'react-router-dom';
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 
+// eslint-disable-next-line max-len
+const LEARN_MORE = 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
+// eslint-disable-next-line max-len
+const CONFIGURE_INTEGRATIONS = 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/assembly-intro_notifications';
+// eslint-disable-next-line max-len
+const CONFIGURE_SOURCES = 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_sources_for_red_hat_services/index';
+
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
     const navigate = useNavigate();
     const isSourcesIntegrations = useFlag('platform.sources.integrations');
@@ -62,7 +69,6 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         <p className='pf-u-mb-sm'>
                             A standardized way of notifying users of events for supported services on the Hybrid Cloud Console.
                         </p>
-                        {isOrgAdmin && <a href="#">Learn more <ExternalLinkAltIcon /></a>}
                     </FlexItem>
                 </Flex>
             </PageHeader>
@@ -78,7 +84,13 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                     <p>
                     This service allows you to configure which notifications different users within your organization will be
                     entitled to receiving. To do this, create behavior groups and apply them to different events. Users will
-                    be able to opt-in or out of receiving authorized event notifications in their <a href="#">User Preferences</a>.
+                    be able to opt-in or out of receiving authorized event notifications in their <a
+                                            href={ `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/user-preferences` }
+                                            onClick={ (e) => {
+                                                e.preventDefault();
+                                                navigate(`/${getBundle()}/notifications/user-preferences`);
+                                            } }
+                                        >User Preferences</a>.
                                     </p>
                                 </CardBody>
                                 <CardFooter>
@@ -254,7 +266,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                             <Label color="orange">Documentation</Label>
                                         </DataListCell>,
                                         <DataListCell alignRight isFilled={ false } key="row1-col3">
-                                            <a href="#">View documentation <ExternalLinkAltIcon /></a>
+                                            <a href={ LEARN_MORE } onClick={ (e) => {
+                                                e.preventDefault();
+                                                window.open(LEARN_MORE, '_blank');
+                                            } }>View documentation <ExternalLinkAltIcon /></a>
                                         </DataListCell>
                                     ] }
                                 />
@@ -271,7 +286,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                             <Label color="orange">Documentation</Label>
                                         </DataListCell>,
                                         <DataListCell alignRight isFilled={ false } key="row2-col3">
-                                            <a href="#">View documentation <ExternalLinkAltIcon /></a>
+                                            <a href={ CONFIGURE_INTEGRATIONS } onClick={ (e) => {
+                                                e.preventDefault();
+                                                window.open(CONFIGURE_INTEGRATIONS, '_blank');
+                                            } }>View documentation <ExternalLinkAltIcon /></a>
                                         </DataListCell>
                                     ] }
                                 />
@@ -288,7 +306,11 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                             <Label color="green">Quick start</Label>
                                         </DataListCell>,
                                         <DataListCell alignRight isFilled={ false } key="row3-col3">
-                                            <a href="#">Begin Quick start <ArrowRightIcon /></a>
+                                            <a
+                                                href={ `${
+                                                    isBeta() ? '/preview' : ''
+                                                }/iam/my-user-access?bundle=rhel&quickstart=rbac-admin-vuln-permissions` }
+                                            >Begin Quick start <ArrowRightIcon /></a>
                                         </DataListCell>
                                     ] }
                                 />
@@ -308,7 +330,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                             <Label color="orange">Documentation</Label>
                                         </DataListCell>,
                                         <DataListCell alignRight isFilled={ false } key="row1-col3">
-                                            <a href="#">View documentation <ExternalLinkAltIcon /></a>
+                                            <a href={ CONFIGURE_INTEGRATIONS } onClick={ (e) => {
+                                                e.preventDefault();
+                                                window.open(CONFIGURE_INTEGRATIONS, '_blank');
+                                            } }>View documentation <ExternalLinkAltIcon /></a>
                                         </DataListCell>
                                     ] }
                                 />
@@ -319,13 +344,16 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                                 <DataListItemCells
                                     dataListCells={ [
                                         <DataListCell key="row2-col1">
-                                            <span>Configuring sources for Red Hat services</span>
+                                            <span>Configuring integrations for Red Hat services</span>
                                         </DataListCell>,
                                         <DataListCell key="row2-col2">
                                             <Label color="orange">Documentation</Label>
                                         </DataListCell>,
                                         <DataListCell alignRight isFilled={ false } key="row2-col3">
-                                            <a href="#">View documentation <ExternalLinkAltIcon /></a>
+                                            <a href={ CONFIGURE_SOURCES } onClick={ (e) => {
+                                                e.preventDefault();
+                                                window.open(CONFIGURE_SOURCES, '_blank');
+                                            } }>View documentation <ExternalLinkAltIcon /></a>
                                         </DataListCell>
                                     ] }
                                 />
@@ -334,7 +362,12 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                     </DataList>
                 </React.Fragment>
                 }
-                <a href="#" className='pf-u-mb-lg'>View all Settings Learning Resources</a>
+                <a
+                    href={ `${isBeta() ? '/preview' : ''}/settings/learning-resources` }
+                    className='pf-u-mb-lg'
+                >
+                  View all Settings Learning Resources
+                </a>
             </Main>
         </React.Fragment>
     );
