@@ -1,9 +1,9 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { Navigate, Route, Routes as DomRoutes } from 'react-router-dom';
 
 import { CheckReadPermissions } from './components/CheckReadPermissions';
-import { useNonProdFlag } from './hooks/useNonProdFlag';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
@@ -76,7 +76,7 @@ const routesOverhaul: Path[] = [
 ];
 
 export const Routes: React.FunctionComponent = () => {
-    const notificationsOverhaul = useNonProdFlag('platform.notifications.overhaul');
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
     const pathRoutes = React.useMemo(() => notificationsOverhaul ? routesOverhaul : legacyRoutes, [ notificationsOverhaul ]);
 

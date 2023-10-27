@@ -6,6 +6,7 @@ import {
     getInsights,
     localUrl
 } from '@redhat-cloud-services/insights-common-typescript';
+import { useFlag } from '@unleash/proxy-client-react';
 import { default as React, useEffect, useMemo, useState } from 'react';
 import { style } from 'typestyle';
 
@@ -14,7 +15,6 @@ import { ButtonLink } from '../../../components/ButtonLink';
 import { TabComponent } from '../../../components/Notifications/TabComponent';
 import { TimeConfigComponent } from '../../../components/Notifications/TimeConfig';
 import { PageHeader } from '../../../components/PageHeader';
-import { useNonProdFlag } from '../../../hooks/useNonProdFlag';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
@@ -33,7 +33,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
 
     updateDocumentTitle?.(`${props.bundle.displayName} - Notifications`);
 
-    const notificationsOverhaul = useNonProdFlag('platform.notifications.overhaul');
+    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
     const { rbac } = useAppContext();
     const eventLogPageUrl = React.useMemo(() => linkTo.eventLog(props.bundle.name), [ props.bundle.name ]);
