@@ -2,7 +2,7 @@ import { Environment } from '@redhat-cloud-services/insights-common-typescript';
 import { DeepReadonly } from 'ts-essentials';
 
 import { fedramp, stagingAndProd, stagingAndProdBeta, stagingAndProdStable } from '../types/Environments';
-import { IntegrationType, UserIntegrationType } from '../types/Integration';
+import { IntegrationCategory, IntegrationType, UserIntegrationType } from '../types/Integration';
 import { NotificationType } from '../types/Notification';
 
 const apiVersion = 'v1.0';
@@ -94,40 +94,43 @@ export const sortedIntegrationList = (integrations: Array<UserIntegrationType>):
     });
 };
 
+const defaultIntegrationList = {
+    [IntegrationCategory.COMMUNICATIONS]: sortedIntegrationList([
+        UserIntegrationType.GOOGLE_CHAT,
+        UserIntegrationType.TEAMS,
+        UserIntegrationType.SLACK
+    ]),
+    [IntegrationCategory.REPORTING]: sortedIntegrationList([
+        UserIntegrationType.SERVICE_NOW,
+        UserIntegrationType.SPLUNK
+    ]),
+    [IntegrationCategory.WEBHOOKS]: sortedIntegrationList([ UserIntegrationType.WEBHOOK ]),
+    all: sortedIntegrationList([
+        UserIntegrationType.ANSIBLE,
+        UserIntegrationType.GOOGLE_CHAT,
+        UserIntegrationType.TEAMS,
+        UserIntegrationType.SERVICE_NOW,
+        UserIntegrationType.SLACK,
+        UserIntegrationType.SPLUNK,
+        UserIntegrationType.WEBHOOK
+    ])
+};
+
 const Config = {
     integrations: {
         subAppId: 'integrations',
         title: 'Integrations | Settings',
         types: computeIntegrationConfig(integrationTypes),
         actions: {
-            stable: sortedIntegrationList([
-                UserIntegrationType.ANSIBLE,
-                UserIntegrationType.GOOGLE_CHAT,
-                UserIntegrationType.TEAMS,
-                UserIntegrationType.SERVICE_NOW,
-                UserIntegrationType.SLACK,
-                UserIntegrationType.SPLUNK,
-                UserIntegrationType.WEBHOOK
-            ]),
-            beta: sortedIntegrationList([
-                UserIntegrationType.ANSIBLE,
-                UserIntegrationType.GOOGLE_CHAT,
-                UserIntegrationType.TEAMS,
-                UserIntegrationType.SERVICE_NOW,
-                UserIntegrationType.SLACK,
-                UserIntegrationType.SPLUNK,
-                UserIntegrationType.WEBHOOK
-            ]),
-            experimental: sortedIntegrationList([
-                UserIntegrationType.ANSIBLE,
-                UserIntegrationType.GOOGLE_CHAT,
-                UserIntegrationType.TEAMS,
-                UserIntegrationType.SERVICE_NOW,
-                UserIntegrationType.SLACK,
-                UserIntegrationType.SPLUNK,
-                UserIntegrationType.WEBHOOK
-            ]),
-            fedramp: sortedIntegrationList([])
+            stable: defaultIntegrationList,
+            beta: defaultIntegrationList,
+            experimental: defaultIntegrationList,
+            fedramp: {
+                [IntegrationCategory.COMMUNICATIONS]: [],
+                [IntegrationCategory.REPORTING]: [],
+                [IntegrationCategory.WEBHOOKS]: [],
+                all: []
+            }
         }
     },
     notifications: {
@@ -156,16 +159,17 @@ const Config = {
 
 const ReadonlyConfig: DeepReadonly<typeof Config> = Config;
 
-export const getIntegrationActions = (environment: Environment): ReadonlyArray<UserIntegrationType> => {
+export const getIntegrationActions = (environment: Environment, category?: IntegrationCategory): ReadonlyArray<UserIntegrationType> => {
+    const selectedCategory = category ?? 'all';
     if (stagingAndProdStable.includes(environment)) {
-        return ReadonlyConfig.integrations.actions.stable;
+        return ReadonlyConfig.integrations.actions.stable[selectedCategory];
     } else if (stagingAndProdBeta.includes(environment)) {
-        return ReadonlyConfig.integrations.actions.beta;
+        return ReadonlyConfig.integrations.actions.beta[selectedCategory];
     } else if (fedramp.includes(environment)) {
-        return ReadonlyConfig.integrations.actions.fedramp;
+        return ReadonlyConfig.integrations.actions.fedramp[selectedCategory];
     }
 
-    return ReadonlyConfig.integrations.actions.experimental;
+    return ReadonlyConfig.integrations.actions.experimental[selectedCategory];
 };
 
 export const getNotificationActions = (environment: Environment): ReadonlyArray<NotificationType> => {
