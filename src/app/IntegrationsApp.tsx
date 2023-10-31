@@ -6,13 +6,22 @@ import * as React from 'react';
 
 import { NotificationsPortal } from '../components/Store/NotificationsPortal';
 import IntegrationsList from '../pages/Integrations/List/List';
+import { IntegrationCategory } from '../types/Integration';
 import { AppContext } from './AppContext';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 
-const IntegrationsApp: React.ComponentType = () => {
+interface IntegrationsAppProps {
+    activeCategory?: string
+}
+
+const IntegrationsApp: React.ComponentType<IntegrationsAppProps> = ({ activeCategory, ...props }: IntegrationsAppProps) => {
 
     const { rbac, server, isOrgAdmin } = useApp();
+
+    const category = (activeCategory && Object.values(IntegrationCategory).includes(activeCategory as unknown as IntegrationCategory))
+        ? activeCategory as IntegrationCategory
+        : undefined;
 
     return (rbac && server) ?
         <AppContext.Provider value={ {
@@ -22,7 +31,7 @@ const IntegrationsApp: React.ComponentType = () => {
         } }>
             <RbacGroupContextProvider>
                 <NotificationsPortal />
-                <IntegrationsList />
+                <IntegrationsList category={ category } { ...props } />
             </RbacGroupContextProvider>
         </AppContext.Provider>
         :

@@ -15,7 +15,7 @@ import { useIntegrations } from '../../../hooks/useIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../services/useListIntegrations';
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
-import { UserIntegration } from '../../../types/Integration';
+import { IntegrationCategory, UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
@@ -32,15 +32,18 @@ const selector = (state: NotificationAppState) => ({
     savedNotificationScope: state.savedNotificationScope
 });
 
-const IntegrationsList: React.FunctionComponent = () => {
+interface IntegrationListProps {
+    category?: IntegrationCategory
+}
 
+const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({ category }: IntegrationListProps) => {
     const dispatch = useDispatch();
     const { savedNotificationScope } = useSelector(selector);
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
 
     const integrationFilter = useIntegrationFilter();
-    const userIntegrations = useIntegrations();
+    const userIntegrations = useIntegrations(category);
     const integrationFilterBuilder = React.useCallback((filters?: IntegrationFilters) => {
         const filter = new Filter();
         if (filters?.enabled?.length === 1) {

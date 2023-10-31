@@ -31,7 +31,7 @@ const IntegrationsEntry: React.FunctionComponent<AppEntryProps> = (props) => {
         <IntlProvider locale={ navigator.language.slice(0, 2) } messages={ messages } onError={ console.log }>
             <Provider store={ store }>
                 <ClientContextProvider client={ client }>
-                    <IntegrationsApp />
+                    <IntegrationsApp { ...props } />
                 </ClientContextProvider>
             </Provider>
         </IntlProvider>

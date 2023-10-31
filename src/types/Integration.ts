@@ -25,6 +25,12 @@ export const UserIntegrationType = {
     GOOGLE_CHAT: IntegrationType.GOOGLE_CHAT
 } as const;
 
+export enum IntegrationCategory {
+    COMMUNICATIONS = 'Communications',
+    REPORTING = 'Reporting',
+    WEBHOOKS = 'Webhooks',
+}
+
 export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;
 export type CamelIntegrationType = Subtypes<IntegrationType, 'camel'>;
 
