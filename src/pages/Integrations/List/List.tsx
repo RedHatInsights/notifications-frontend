@@ -42,8 +42,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({ categ
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
 
-    console.log('category', category);
-
     const integrationFilter = useIntegrationFilter();
     const userIntegrations = useIntegrations(category);
     const integrationFilterBuilder = React.useCallback((filters?: IntegrationFilters) => {
