@@ -4,7 +4,7 @@ import { Store } from 'redux';
 
 import { TimeConfigComponent } from './TimeConfig';
 
-export const ConnectedTimeConfig = (store: Store) => {
+export const ConnectedTimeConfig = ({store}: {store: Store}) => {
 
     return (
         <Provider store={ store }>
