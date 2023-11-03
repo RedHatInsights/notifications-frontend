@@ -13,3 +13,5 @@ export const ConnectedTimeConfig = (store: Store) => {
     );
 
 };
+
+export default ConnectedTimeConfig;
