@@ -57,6 +57,11 @@ const MutableMessages = {
         subtitle: 'View all the events affecting your organization',
         viewNotifications: 'View notification settings',
       },
+      notificationsLog: {
+        title: 'Notifications log',
+        subtitle:
+          'View details for all notifications delivered to my notification drawer.',
+      },
     },
     error: {
       title: 'Notifications',
