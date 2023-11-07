@@ -17,7 +17,9 @@ import { useListIntegrationPQuery, useListIntegrationsQuery } from '../../../ser
 import { NotificationAppState } from '../../../store/types/NotificationAppState';
 import { IntegrationCategory, UserIntegration } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
+import { usePreviewFlag } from '../../../utils/usePreviewFlag';
 import { CreatePage } from '../Create/CreatePage';
+import { CreateWizard } from '../Create/CreateWizard';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
@@ -38,6 +40,7 @@ interface IntegrationListProps {
 
 const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({ category }: IntegrationListProps) => {
     const dispatch = useDispatch();
+    const wizardEnabled = usePreviewFlag('insights.integrations.wizard');
     const { savedNotificationScope } = useSelector(selector);
 
     const { rbac: { canWriteIntegrationsEndpoints }} = useContext(AppContext);
@@ -190,13 +193,19 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({ categ
                     sortBy={ sort.sortBy }
                 />
             </IntegrationsToolbar>
-            { modalIsOpenState.isOpen && (
+            { modalIsOpenState.isOpen && !wizardEnabled && (
                 <CreatePage
                     isEdit={ modalIsOpenState.isEdit }
                     initialIntegration={ modalIsOpenState.template || {} }
                     onClose={ closeFormModal }
                 />
             ) }
+            {wizardEnabled && (
+                <CreateWizard
+                    isOpen={ modalIsOpenState.isOpen }
+                    closeModal={ () => modalIsOpenActions.reset() }
+                    category={ category } />
+            )}
             { deleteModalState.data && (
                 <IntegrationDeleteModalPage
                     onClose={ closeDeleteModal }
