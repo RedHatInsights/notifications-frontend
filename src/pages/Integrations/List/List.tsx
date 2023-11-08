@@ -6,6 +6,7 @@ import { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { AppContext } from '../../../app/AppContext';
+import { IntegrationsEmptyState } from '../../../components/Integrations/EmptyState';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
@@ -166,6 +167,25 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({ categ
     // This is an estimate of how many rows are in the next page (Won't be always correct because a new row could be added while we are browsing)
     // Is used for the skeleton loading
     const loadingCount = Math.min(pageData.page.size, integrations.count - (pageData.page.index - 1) * pageData.page.size)  || 10;
+
+    if (integrations.count < 1) {
+        return <>
+            <IntegrationsEmptyState onAddIntegration={ canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined } />;
+            { modalIsOpenState.isOpen && !wizardEnabled && (
+                <CreatePage
+                    isEdit={ modalIsOpenState.isEdit }
+                    initialIntegration={ modalIsOpenState.template || {} }
+                    onClose={ closeFormModal }
+                />
+            ) }
+            {wizardEnabled && (
+                <CreateWizard
+                    isOpen={ modalIsOpenState.isOpen }
+                    closeModal={ () => modalIsOpenActions.reset() }
+                    category={ category } />
+            )}
+        </>;
+    }
 
     return (
         <>
