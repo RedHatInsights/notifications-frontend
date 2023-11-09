@@ -7,7 +7,7 @@ const communicationsIcons = {
   slack: '',
 };
 
-export const CommunicationsStep = () => ({
+export const communicationsStep = () => ({
   title: 'Select Integration type',
   name: 'integrationType',
   nextStep: 'details',
