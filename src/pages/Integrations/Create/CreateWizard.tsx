@@ -4,6 +4,7 @@ import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 import * as React from 'react';
 
 import Review from './Review';
+import CardSelect from './CardSelect';
 import { schema } from './schema';
 
 export interface CreateWizardProps {
@@ -15,7 +16,8 @@ export interface CreateWizardProps {
 export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({ isOpen, closeModal, category }: CreateWizardProps) => {
 
     const mapperExtension = {
-        'summary-content': Review
+        'summary-content': Review,
+        'card-select': CardSelect
     };
 
     React.useEffect(() => {

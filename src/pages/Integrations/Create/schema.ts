@@ -1,4 +1,5 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
+import { CommunicationsStep } from './CommunicationsWizard';
 
 export const schema = {
     fields: [
@@ -9,6 +10,7 @@ export const schema = {
             description: 'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
             name: 'add-integration-wizard',
             fields: [
+                CommunicationsStep(),
                 {
                     title: 'Enter details',
                     name: 'details',
