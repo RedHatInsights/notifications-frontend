@@ -7,30 +7,34 @@ import Review from './Review';
 import { schema } from './schema';
 
 export interface CreateWizardProps {
-    category?: string;
-    isOpen: boolean;
-    closeModal: () => void;
+  category?: string;
+  isOpen: boolean;
+  closeModal: () => void;
 }
 
-export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({ isOpen, closeModal, category }: CreateWizardProps) => {
+export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
+  isOpen,
+  closeModal,
+  category,
+}: CreateWizardProps) => {
+  const mapperExtension = {
+    'summary-content': Review,
+  };
 
-    const mapperExtension = {
-        'summary-content': Review
-    };
+  React.useEffect(() => {
+    console.log(`Active category: ${category}`);
+  }, [category]);
 
-    React.useEffect(() => {
-        console.log(`Active category: ${category}`);
-    }, [ category ]);
-
-    return isOpen ? (
-        <FormRenderer
-            schema={ schema }
-            FormTemplate={ Pf4FormTemplate }
-            componentMapper={ { ...componentMapper, ...mapperExtension } }
-            onSubmit={ (props) => {
-                console.log(props);
-                closeModal();
-            } }
-            onCancel={ () => closeModal() }
-        />) : null;
+  return isOpen ? (
+    <FormRenderer
+      schema={schema}
+      FormTemplate={Pf4FormTemplate}
+      componentMapper={{ ...componentMapper, ...mapperExtension }}
+      onSubmit={(props) => {
+        console.log(props);
+        closeModal();
+      }}
+      onCancel={() => closeModal()}
+    />
+  ) : null;
 };

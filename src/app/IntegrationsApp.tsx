@@ -1,4 +1,3 @@
-
 import './App.scss';
 
 import { Bullseye, Spinner } from '@patternfly/react-core';
@@ -12,33 +11,41 @@ import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 
 interface IntegrationsAppProps {
-    activeCategory?: string
+  activeCategory?: string;
 }
 
-const IntegrationsApp: React.ComponentType<IntegrationsAppProps> = ({ activeCategory, ...props }: IntegrationsAppProps) => {
+const IntegrationsApp: React.ComponentType<IntegrationsAppProps> = ({
+  activeCategory,
+  ...props
+}: IntegrationsAppProps) => {
+  const { rbac, server, isOrgAdmin } = useApp();
 
-    const { rbac, server, isOrgAdmin } = useApp();
+  const category =
+    activeCategory &&
+    Object.values(IntegrationCategory).includes(
+      activeCategory as unknown as IntegrationCategory
+    )
+      ? (activeCategory as IntegrationCategory)
+      : undefined;
 
-    const category = (activeCategory && Object.values(IntegrationCategory).includes(activeCategory as unknown as IntegrationCategory))
-        ? activeCategory as IntegrationCategory
-        : undefined;
-
-    return (rbac && server) ?
-        <AppContext.Provider value={ {
-            rbac,
-            server,
-            isOrgAdmin: !!isOrgAdmin
-        } }>
-            <RbacGroupContextProvider>
-                <NotificationsPortal />
-                <IntegrationsList category={ category } { ...props } />
-            </RbacGroupContextProvider>
-        </AppContext.Provider>
-        :
-        <Bullseye>
-            <Spinner size='xl' />
-        </Bullseye>
-    ;
+  return rbac && server ? (
+    <AppContext.Provider
+      value={{
+        rbac,
+        server,
+        isOrgAdmin: !!isOrgAdmin,
+      }}
+    >
+      <RbacGroupContextProvider>
+        <NotificationsPortal />
+        <IntegrationsList category={category} {...props} />
+      </RbacGroupContextProvider>
+    </AppContext.Provider>
+  ) : (
+    <Bullseye>
+      <Spinner size="xl" />
+    </Bullseye>
+  );
 };
 
 export default IntegrationsApp;
