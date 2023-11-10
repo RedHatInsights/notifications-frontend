@@ -102,7 +102,8 @@ const defaultIntegrationList = {
     ]),
     [IntegrationCategory.REPORTING]: sortedIntegrationList([
         UserIntegrationType.SERVICE_NOW,
-        UserIntegrationType.SPLUNK
+        UserIntegrationType.SPLUNK,
+        UserIntegrationType.ANSIBLE
     ]),
     [IntegrationCategory.WEBHOOKS]: sortedIntegrationList([ UserIntegrationType.WEBHOOK ]),
     all: sortedIntegrationList([
