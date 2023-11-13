@@ -42,8 +42,17 @@ import { linkBehaviorGroupAction } from '../../../services/Notifications/LinkBeh
 import { useSaveBehaviorGroupMutation } from '../../../services/Notifications/SaveBehaviorGroup';
 import { useUpdateBehaviorGroupActionsMutation } from '../../../services/Notifications/UpdateBehaviorGroupActions';
 import { useSaveIntegrationMutation } from '../../../services/useSaveIntegration';
-import { Integration, IntegrationCamel, IntegrationType, NewIntegrationTemplate } from '../../../types/Integration';
-import { BehaviorGroup, BehaviorGroupRequest, UUID } from '../../../types/Notification';
+import {
+  Integration,
+  IntegrationCamel,
+  IntegrationType,
+  NewIntegrationTemplate,
+} from '../../../types/Integration';
+import {
+  BehaviorGroup,
+  BehaviorGroupRequest,
+  UUID,
+} from '../../../types/Notification';
 
 export const SPLUNK_GROUP_NAME = 'SPLUNK_INTEGRATION';
 export const SPLUNK_INTEGRATION_NAME = 'SPLUNK_AUTOMATION';
@@ -51,180 +60,206 @@ export const SPLUNK_BEHAVIOR_GROUP_NAME = 'SPLUNK_AUTOMATION_GROUP';
 export const BUNDLE_NAME = 'rhel';
 
 interface SplunkEventsDef {
-    [Identifier: string]: string | string[]
+  [Identifier: string]: string | string[];
 }
 
-const DEFAULT_SPLUNK_EVENTS : SplunkEventsDef = {
-    advisor: '*',
-    policies: '*',
-    drift: '*',
-    compliance: '*',
-    'malware-detection': '*',
-    patch: '*',
-    vulnerability: '*'
+const DEFAULT_SPLUNK_EVENTS: SplunkEventsDef = {
+  advisor: '*',
+  policies: '*',
+  drift: '*',
+  compliance: '*',
+  'malware-detection': '*',
+  patch: '*',
+  vulnerability: '*',
 };
 
 export const useSplunkSetup = () => {
-    const createSplunkIntegration = useCreateSplunkIntegration();
-    const createSplunkBehaviorGroup = useCreateSplunkBehaviorGroup();
-    const updateSplunkBehaviorActions = useUpdateSplunkBehaviorActions();
-    const attachEvents = useAttachEventsToSplunk();
+  const createSplunkIntegration = useCreateSplunkIntegration();
+  const createSplunkBehaviorGroup = useCreateSplunkBehaviorGroup();
+  const updateSplunkBehaviorActions = useUpdateSplunkBehaviorActions();
+  const attachEvents = useAttachEventsToSplunk();
 
-    return async ({ hecToken, splunkServerHostName }, onProgress) => {
-        const integrationName = SPLUNK_INTEGRATION_NAME;
-        const behaviorGroupName = SPLUNK_BEHAVIOR_GROUP_NAME;
-        const bundleName = BUNDLE_NAME;
-        const events = DEFAULT_SPLUNK_EVENTS;
+  return async ({ hecToken, splunkServerHostName }, onProgress) => {
+    const integrationName = SPLUNK_INTEGRATION_NAME;
+    const behaviorGroupName = SPLUNK_BEHAVIOR_GROUP_NAME;
+    const bundleName = BUNDLE_NAME;
+    const events = DEFAULT_SPLUNK_EVENTS;
 
-        onProgress(`Creating Integration ${integrationName}...`);
-        const integration = await createSplunkIntegration({ integrationName, hecToken, splunkServerHostName });
-        onProgress(' OK', 'pf-u-success-color-200');
+    onProgress(`Creating Integration ${integrationName}...`);
+    const integration = await createSplunkIntegration({
+      integrationName,
+      hecToken,
+      splunkServerHostName,
+    });
+    onProgress(' OK', 'pf-u-success-color-200');
 
-        onProgress(`\nCreating Behavior Group ${behaviorGroupName}...`);
-        const behaviorGroup = await createSplunkBehaviorGroup({ behaviorGroupName, bundleName });
-        onProgress(' OK', 'pf-u-success-color-200');
+    onProgress(`\nCreating Behavior Group ${behaviorGroupName}...`);
+    const behaviorGroup = await createSplunkBehaviorGroup({
+      behaviorGroupName,
+      bundleName,
+    });
+    onProgress(' OK', 'pf-u-success-color-200');
 
-        onProgress('\nAssociating integration as an action for the behavior group...');
-        await updateSplunkBehaviorActions(behaviorGroup, integration);
+    onProgress(
+      '\nAssociating integration as an action for the behavior group...'
+    );
+    await updateSplunkBehaviorActions(behaviorGroup, integration);
 
-        onProgress(' OK', 'pf-u-success-color-200');
-        onProgress('\n\nAssociating events to the behavior group:\n');
+    onProgress(' OK', 'pf-u-success-color-200');
+    onProgress('\n\nAssociating events to the behavior group:\n');
 
-        await attachEvents(behaviorGroup, events, onProgress);
-    };
+    await attachEvents(behaviorGroup, events, onProgress);
+  };
 };
 
 const useCreateSplunkIntegration = () => {
-    const { mutate } = useSaveIntegrationMutation();
-    return async ({ integrationName, splunkServerHostName, hecToken }) : Promise<Integration | undefined> => {
-        const newIntegration : NewIntegrationTemplate<IntegrationCamel> = {
-            type: IntegrationType.SPLUNK,
-            name: integrationName,
-            url: splunkServerHostName,
-            secretToken: hecToken,
-            isEnabled: true,
-            sslVerificationEnabled: true
-        };
-
-        const { payload, error, errorObject } = await mutate(newIntegration);
-        if (errorObject) {
-            throw errorObject;
-        }
-
-        if (error) {
-            throw new Error(`Error when creating integration ${integrationName}`);
-        }
-
-        return payload?.value as Integration;
+  const { mutate } = useSaveIntegrationMutation();
+  return async ({
+    integrationName,
+    splunkServerHostName,
+    hecToken,
+  }): Promise<Integration | undefined> => {
+    const newIntegration: NewIntegrationTemplate<IntegrationCamel> = {
+      type: IntegrationType.SPLUNK,
+      name: integrationName,
+      url: splunkServerHostName,
+      secretToken: hecToken,
+      isEnabled: true,
+      sslVerificationEnabled: true,
     };
+
+    const { payload, error, errorObject } = await mutate(newIntegration);
+    if (errorObject) {
+      throw errorObject;
+    }
+
+    if (error) {
+      throw new Error(`Error when creating integration ${integrationName}`);
+    }
+
+    return payload?.value as Integration;
+  };
 };
 
 const useCreateSplunkBehaviorGroup = () => {
-    const { mutate } = useSaveBehaviorGroupMutation();
-    const getBundleByName = useGetBundleByName();
+  const { mutate } = useSaveBehaviorGroupMutation();
+  const getBundleByName = useGetBundleByName();
 
-    return async ({ behaviorGroupName, bundleName }) : Promise<BehaviorGroup> => {
-        const bundle = await getBundleByName(bundleName);
-        if (!bundle) {
-            throw new Error(`Unable to find bundle ${bundleName}`);
-        }
+  return async ({ behaviorGroupName, bundleName }): Promise<BehaviorGroup> => {
+    const bundle = await getBundleByName(bundleName);
+    if (!bundle) {
+      throw new Error(`Unable to find bundle ${bundleName}`);
+    }
 
-        const behaviorGroup : BehaviorGroupRequest = {
-            bundleId: bundle.id as UUID,
-            displayName: behaviorGroupName,
-            actions: [], // ignored
-            events: [] // ignored
-        };
-
-        const { payload, error, errorObject } = await mutate(behaviorGroup);
-        if (errorObject) {
-            throw errorObject;
-        }
-
-        if (error) {
-            throw new Error(`Error when creating behavior group ${behaviorGroupName}`);
-        }
-
-        return payload?.value as BehaviorGroup;
+    const behaviorGroup: BehaviorGroupRequest = {
+      bundleId: bundle.id as UUID,
+      displayName: behaviorGroupName,
+      actions: [], // ignored
+      events: [], // ignored
     };
+
+    const { payload, error, errorObject } = await mutate(behaviorGroup);
+    if (errorObject) {
+      throw errorObject;
+    }
+
+    if (error) {
+      throw new Error(
+        `Error when creating behavior group ${behaviorGroupName}`
+      );
+    }
+
+    return payload?.value as BehaviorGroup;
+  };
 };
 
 const useUpdateSplunkBehaviorActions = () => {
-    const { mutate } = useUpdateBehaviorGroupActionsMutation();
-    return async (behaviorGroup, integration) => {
-        const endpointIds = behaviorGroup.actions || [];
-        endpointIds.push(integration.id);
+  const { mutate } = useUpdateBehaviorGroupActionsMutation();
+  return async (behaviorGroup, integration) => {
+    const endpointIds = behaviorGroup.actions || [];
+    endpointIds.push(integration.id);
 
-        const params = {
-            behaviorGroupId: behaviorGroup.id,
-            endpointIds
-        };
-        const { payload, error, errorObject } = await mutate(params);
-        if (errorObject) {
-            throw errorObject;
-        }
-
-        if (error) {
-            throw new Error(`Error when linking behavior group ${behaviorGroup.id}`
-                            + ` with integration ${integration.id}`);
-        }
-
-        return payload?.value;
+    const params = {
+      behaviorGroupId: behaviorGroup.id,
+      endpointIds,
     };
+    const { payload, error, errorObject } = await mutate(params);
+    if (errorObject) {
+      throw errorObject;
+    }
+
+    if (error) {
+      throw new Error(
+        `Error when linking behavior group ${behaviorGroup.id}` +
+          ` with integration ${integration.id}`
+      );
+    }
+
+    return payload?.value;
+  };
 };
 
 const useAttachEventsToSplunk = () => {
-    const getAllEventTypes = useGetAllEventTypes();
-    const client = useClient();
-    const getAnyBehaviorGroupByNotification = useGetAnyBehaviorGroupByNotification();
+  const getAllEventTypes = useGetAllEventTypes();
+  const client = useClient();
+  const getAnyBehaviorGroupByNotification =
+    useGetAnyBehaviorGroupByNotification();
 
-    const appendActionToNotification = async (eventType, behaviorGroup) => {
-        const existingActions = await getAnyBehaviorGroupByNotification(eventType.id as UUID);
-        const existingActionIds = existingActions.value as UUID[];
-        const newActionIds = [ ...existingActionIds, behaviorGroup.id ];
+  const appendActionToNotification = async (eventType, behaviorGroup) => {
+    const existingActions = await getAnyBehaviorGroupByNotification(
+      eventType.id as UUID
+    );
+    const existingActionIds = existingActions.value as UUID[];
+    const newActionIds = [...existingActionIds, behaviorGroup.id];
 
-        const { payload, errorObject, error } = await client.query(linkBehaviorGroupAction(eventType.id, newActionIds));
-        if (errorObject) {
-            throw errorObject;
-        }
+    const { payload, errorObject, error } = await client.query(
+      linkBehaviorGroupAction(eventType.id, newActionIds)
+    );
+    if (errorObject) {
+      throw errorObject;
+    }
 
-        if (error) {
-            throw new Error(`Unsuccessful linking of event type ${eventType.id}`);
-        }
+    if (error) {
+      throw new Error(`Unsuccessful linking of event type ${eventType.id}`);
+    }
 
-        return payload;
-    };
+    return payload;
+  };
 
-    return async (behaviorGroup, events, onProgress) => {
-        const eventTypes = await getAllEventTypes();
+  return async (behaviorGroup, events, onProgress) => {
+    const eventTypes = await getAllEventTypes();
 
-        const selectedEventTypes = eventTypes.filter(eventType => {
-            if (!eventType?.application) {
-                return false;
-            }
+    const selectedEventTypes = eventTypes.filter((eventType) => {
+      if (!eventType?.application) {
+        return false;
+      }
 
-            if (eventType.application.bundle_id !== behaviorGroup.bundleId) {
-                return false;
-            }
+      if (eventType.application.bundle_id !== behaviorGroup.bundleId) {
+        return false;
+      }
 
-            const expectEvents = events[eventType.application.name];
-            if (!expectEvents || (expectEvents !== '*' && !expectEvents.includes(eventType.name))) {
-                return false;
-            }
+      const expectEvents = events[eventType.application.name];
+      if (
+        !expectEvents ||
+        (expectEvents !== '*' && !expectEvents.includes(eventType.name))
+      ) {
+        return false;
+      }
 
-            return true;
-        });
+      return true;
+    });
 
-        for (const eventType of selectedEventTypes) {
-            onProgress(`  ${eventType.application?.display_name} - ${eventType.display_name}...`);
-            try {
-                await appendActionToNotification(eventType, behaviorGroup);
-                onProgress(' ASSOCIATED\n', 'pf-u-success-color-200');
-            } catch (error) {
-                onProgress(' ERROR!\n', 'pf-u-danger-color-200');
-                console.log(error);
-            }
-
-        }
-    };
+    for (const eventType of selectedEventTypes) {
+      onProgress(
+        `  ${eventType.application?.display_name} - ${eventType.display_name}...`
+      );
+      try {
+        await appendActionToNotification(eventType, behaviorGroup);
+        onProgress(' ASSOCIATED\n', 'pf-u-success-color-200');
+      } catch (error) {
+        onProgress(' ERROR!\n', 'pf-u-danger-color-200');
+        console.log(error);
+      }
+    }
+  };
 };

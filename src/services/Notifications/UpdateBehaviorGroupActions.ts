@@ -4,15 +4,20 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { UUID } from '../../types/Notification';
 
 type UpdateBehaviorGroupActionsParams = {
-    behaviorGroupId: UUID;
-    endpointIds: Array<UUID>;
-}
-
-const updateBehaviorGroupActionsActionCreator =  (params: UpdateBehaviorGroupActionsParams) => {
-    return Operations.NotificationResourceUpdateBehaviorGroupActions.actionCreator({
-        behaviorGroupId: params.behaviorGroupId,
-        body: params.endpointIds
-    });
+  behaviorGroupId: UUID;
+  endpointIds: Array<UUID>;
 };
 
-export const useUpdateBehaviorGroupActionsMutation = () => useMutation(updateBehaviorGroupActionsActionCreator);
+const updateBehaviorGroupActionsActionCreator = (
+  params: UpdateBehaviorGroupActionsParams
+) => {
+  return Operations.NotificationResourceUpdateBehaviorGroupActions.actionCreator(
+    {
+      behaviorGroupId: params.behaviorGroupId,
+      body: params.endpointIds,
+    }
+  );
+};
+
+export const useUpdateBehaviorGroupActionsMutation = () =>
+  useMutation(updateBehaviorGroupActionsActionCreator);

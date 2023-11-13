@@ -1,7 +1,7 @@
 import {
-    useFilters,
-    useUrlStateMultipleOptions,
-    useUrlStateString
+  useFilters,
+  useUrlStateMultipleOptions,
+  useUrlStateString,
 } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 
@@ -9,20 +9,23 @@ import { IntegrationFilterColumn } from '../../../components/Integrations/Filter
 
 const DEBOUNCE_MS = 250;
 
-const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
-const useUrlStateEnabled = (_defaultValue?: string) => useUrlStateMultipleOptions('enabled', [ 'Enabled', 'Disabled' ]);
+const useUrlStateName = (defaultValue?: string) =>
+  useUrlStateString('name', defaultValue);
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const useUrlStateEnabled = (_defaultValue?: string) =>
+  useUrlStateMultipleOptions('enabled', ['Enabled', 'Disabled']);
 
 const useStateFactory = (column: IntegrationFilterColumn) => {
-    switch (column) {
-        case IntegrationFilterColumn.NAME:
-            return useUrlStateName;
-        case IntegrationFilterColumn.ENABLED:
-            return useUrlStateEnabled;
-        default:
-            assertNever(column);
-    }
+  switch (column) {
+    case IntegrationFilterColumn.NAME:
+      return useUrlStateName;
+    case IntegrationFilterColumn.ENABLED:
+      return useUrlStateEnabled;
+    default:
+      assertNever(column);
+  }
 };
 
 export const useIntegrationFilter = (debounce = DEBOUNCE_MS) => {
-    return useFilters(IntegrationFilterColumn, debounce, useStateFactory);
+  return useFilters(IntegrationFilterColumn, debounce, useStateFactory);
 };

@@ -10,102 +10,108 @@ import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
 
 enum BundleStatus {
-    LOADING,
-    NOT_FOUND,
-    FAILED_TO_LOAD
+  LOADING,
+  NOT_FOUND,
+  FAILED_TO_LOAD,
 }
 
-const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus => typeof bundle === 'number';
+const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
+  typeof bundle === 'number';
 
 export const NotificationsListPage: React.FunctionComponent = () => {
-    const navigate = useNavigate();
-    const params = useParams<Record<string, string | undefined>>();
-    const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-    const bundleList = [ 'rhel', 'console', 'openshift' ];
+  const navigate = useNavigate();
+  const params = useParams<Record<string, string | undefined>>();
+  const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+  const bundleList = ['rhel', 'console', 'openshift'];
 
-    const bundleName = useMemo(() => notificationsOverhaul ? 'rhel' : params.bundleName, [ notificationsOverhaul, params.bundleName ]);
+  const bundleName = useMemo(
+    () => (notificationsOverhaul ? 'rhel' : params.bundleName),
+    [notificationsOverhaul, params.bundleName]
+  );
 
-    const getBundles = useGetBundles();
-    const getApplications = useGetApplicationsLazy();
+  const getBundles = useGetBundles();
+  const getApplications = useGetApplicationsLazy();
 
-    const bundle: Facet | BundleStatus = useMemo(() => {
-        if (getBundles.payload?.status === 200) {
-            return getBundles.payload.value.find(b => b.name === bundleName) ?? BundleStatus.NOT_FOUND;
-        } else if (getBundles.payload) {
-            return BundleStatus.FAILED_TO_LOAD;
+  const bundle: Facet | BundleStatus = useMemo(() => {
+    if (getBundles.payload?.status === 200) {
+      return (
+        getBundles.payload.value.find((b) => b.name === bundleName) ??
+        BundleStatus.NOT_FOUND
+      );
+    } else if (getBundles.payload) {
+      return BundleStatus.FAILED_TO_LOAD;
+    }
+
+    return BundleStatus.LOADING;
+  }, [getBundles.payload, bundleName]);
+
+  const bundleTabs: Facet[] | BundleStatus = [];
+
+  const getbundleTabs = () => {
+    if (getBundles.payload?.status === 200) {
+      bundleList.forEach((bundle) => {
+        if (getBundles.payload?.value) {
+          bundleTabs.push(
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            (getBundles.payload.value as any).find((b) => b.name === bundle) ??
+              BundleStatus.NOT_FOUND
+          );
         }
+      });
+    } else if (getBundles.payload) {
+      throw new Error('Unable to load bundle information');
+    } else {
+      return <AppSkeleton />;
+    }
+  };
 
-        return BundleStatus.LOADING;
-    }, [ getBundles.payload, bundleName ]);
+  if (notificationsOverhaul) {
+    getbundleTabs();
+  }
 
-    const bundleTabs: Facet[] | BundleStatus = [];
+  React.useEffect(() => {
+    const query = getApplications.query;
+    if (!isBundleStatus(bundle)) {
+      query(bundle.name);
+    }
+  }, [bundle, getApplications.query]);
 
-    const getbundleTabs = () => {
-        if (getBundles.payload?.status === 200) {
-            bundleList.forEach(bundle => {
-                if (getBundles.payload?.value) {
-                    bundleTabs.push((getBundles.payload.value as any).find(b => b.name === bundle) ?? BundleStatus.NOT_FOUND);
-                }
-            });
-        } else if (getBundles.payload) {
-            throw new Error('Unable to load bundle information');
-        } else {
-            return (
-                <AppSkeleton />
-            );
-        }
-    };
-
-    if (notificationsOverhaul) {
-        getbundleTabs();
+  const applications: Array<Facet> | null | undefined = useMemo(() => {
+    if (getApplications.payload) {
+      return getApplications.payload.status === 200
+        ? getApplications.payload.value
+        : null;
     }
 
-    React.useEffect(() => {
-        const query = getApplications.query;
-        if (!isBundleStatus(bundle)) {
-            query(bundle.name);
-        }
-    }, [ bundle, getApplications.query ]);
+    return undefined;
+  }, [getApplications.payload]);
 
-    const applications: Array<Facet> | null | undefined = useMemo(
-        () => {
-            if (getApplications.payload) {
-                return getApplications.payload.status === 200 ? getApplications.payload.value : null;
-            }
-
-            return undefined;
-        },
-        [ getApplications.payload ]
-    );
-
-    if (bundle === BundleStatus.NOT_FOUND) {
-        if (bundleName === '/rhel') {
-            throw new Error('Default bundle information not found');
-        }
-
-        navigate('/notifications/rhel');
-        return <React.Fragment />;
+  if (bundle === BundleStatus.NOT_FOUND) {
+    if (bundleName === '/rhel') {
+      throw new Error('Default bundle information not found');
     }
 
-    if (bundle === BundleStatus.FAILED_TO_LOAD) {
-        throw new Error('Unable to load bundle information');
-    }
+    navigate('/notifications/rhel');
+    return <React.Fragment />;
+  }
 
-    if (applications === null) {
-        throw new Error('Unable to load application facets');
-    }
+  if (bundle === BundleStatus.FAILED_TO_LOAD) {
+    throw new Error('Unable to load bundle information');
+  }
 
-    if (bundle === BundleStatus.LOADING || !applications) {
-        return (
-            <AppSkeleton />
-        );
-    }
+  if (applications === null) {
+    throw new Error('Unable to load application facets');
+  }
 
-    return (
-        <NotificationListBundlePage
-            bundleTabs={ bundleTabs }
-            bundle={ bundle }
-            applications={ applications }
-        />
-    );
+  if (bundle === BundleStatus.LOADING || !applications) {
+    return <AppSkeleton />;
+  }
+
+  return (
+    <NotificationListBundlePage
+      bundleTabs={bundleTabs}
+      bundle={bundle}
+      applications={applications}
+    />
+  );
 };
