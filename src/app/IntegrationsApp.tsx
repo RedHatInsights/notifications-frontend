@@ -1,6 +1,8 @@
 import './App.scss';
+
 import { Bullseye, Spinner } from '@patternfly/react-core';
 import * as React from 'react';
+
 import { NotificationsPortal } from '../components/Store/NotificationsPortal';
 import IntegrationsList from '../pages/Integrations/List/List';
 import { IntegrationCategory } from '../types/Integration';

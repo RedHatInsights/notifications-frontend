@@ -7,7 +7,7 @@
 }
 
 .page__notifications#root {
-  --pf-c-page__main-section--BackgroundColor: var(--pf-global--Color--light-100);
+  --pf-c-page__main-section--BackgroundColor: var(--pf-v5-global--Color--light-100);
 }
 
 .pf-c-card__cover-image {
@@ -28,11 +28,10 @@
     }
     &__toggle-icon {
       padding-top: var(--pf-v5-global--spacer--xs);
-
     }
     &__toggle-text {
       color: var(--pf-v5-global--Color--100);
-      font-size: var(--pf-global--FontSize--xl);
+      font-size: var(--pf-v5-global--FontSize--xl);
     }
     &__content {
       margin-top: 0;
@@ -43,7 +42,6 @@
   }
 }
 
-.int-c-card-configure {
+.noti-c-card-configure {
   border-left: 1px solid var(--pf-v5-global--disabled-color--200);
-
 }
