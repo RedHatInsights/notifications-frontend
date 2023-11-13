@@ -10,254 +10,258 @@ import { IntegrationType } from '../../../types/Integration';
 import { IntegrationDeleteModal } from '../DeleteModal';
 
 describe('src/components/Integrations/DeleteModal', () => {
-    it('Has Delete integration title', () => {
-        render(
-            <IntegrationDeleteModal
-                onDelete={ fn() }
-                isDeleting={ false }
-                onClose={ fn() }
-                integration={ {
-                    name: 'foobar',
-                    type: IntegrationType.WEBHOOK,
-                    isEnabled: true,
-                    url: 'url',
-                    id: '123',
-                    secretToken: 'foo',
-                    method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false,
-                    status: 'READY',
-                    serverErrors: 5
-                } }
-            />
-        );
+  it('Has Delete integration title', () => {
+    render(
+      <IntegrationDeleteModal
+        onDelete={fn()}
+        isDeleting={false}
+        onClose={fn()}
+        integration={{
+          name: 'foobar',
+          type: IntegrationType.WEBHOOK,
+          isEnabled: true,
+          url: 'url',
+          id: '123',
+          secretToken: 'foo',
+          method: Schemas.HttpType.Enum.GET,
+          sslVerificationEnabled: false,
+          status: 'READY',
+          serverErrors: 5,
+        }}
+      />
+    );
 
-        expect(screen.getByText('Delete integration')).toBeTruthy();
-    });
+    expect(screen.getByText('Delete integration')).toBeInTheDocument();
+  });
 
-    it('Passing notifications renders the expanded content with the number of elements', () => {
-        render(
-            <IntegrationDeleteModal
-                onDelete={ fn() }
-                isDeleting={ false }
-                onClose={ fn() }
-                behaviorGroups={ [
-                    {
-                        actions: [],
-                        events: [],
-                        id: '1',
-                        bundleId: 'bundle-id',
-                        displayName: 'Foo stuff',
-                        bundleName: 'b1',
-                        isDefault: false
-                    },
-                    {
-                        actions: [],
-                        events: [],
-                        id: '2',
-                        bundleId: 'bundle-id',
-                        displayName: 'Bar application',
-                        bundleName: 'b1',
-                        isDefault: false
-                    },
-                    {
-                        actions: [],
-                        events: [],
-                        id: '3',
-                        bundleId: 'other-id',
-                        displayName: 'Baz peek',
-                        bundleName: 'ABC',
-                        isDefault: false
-                    },
-                    {
-                        actions: [],
-                        events: [],
-                        id: '4',
-                        bundleId: '24446666688888888000000000',
-                        displayName: 'Password',
-                        bundleName: 'Fake',
-                        isDefault: false
-                    }
-                ] }
-                integration={ {
-                    name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
-                    isEnabled: true,
-                    url: 'url',
-                    id: '123',
-                    secretToken: 'foo',
-                    method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false,
-                    status: 'READY',
-                    serverErrors: 5
-                } }
-            />
-        );
+  it('Passing notifications renders the expanded content with the number of elements', () => {
+    render(
+      <IntegrationDeleteModal
+        onDelete={fn()}
+        isDeleting={false}
+        onClose={fn()}
+        behaviorGroups={[
+          {
+            actions: [],
+            events: [],
+            id: '1',
+            bundleId: 'bundle-id',
+            displayName: 'Foo stuff',
+            bundleName: 'b1',
+            isDefault: false,
+          },
+          {
+            actions: [],
+            events: [],
+            id: '2',
+            bundleId: 'bundle-id',
+            displayName: 'Bar application',
+            bundleName: 'b1',
+            isDefault: false,
+          },
+          {
+            actions: [],
+            events: [],
+            id: '3',
+            bundleId: 'other-id',
+            displayName: 'Baz peek',
+            bundleName: 'ABC',
+            isDefault: false,
+          },
+          {
+            actions: [],
+            events: [],
+            id: '4',
+            bundleId: '24446666688888888000000000',
+            displayName: 'Password',
+            bundleName: 'Fake',
+            isDefault: false,
+          },
+        ]}
+        integration={{
+          name: 'sdiofgjiofdsjgoifjso',
+          type: IntegrationType.WEBHOOK,
+          isEnabled: true,
+          url: 'url',
+          id: '123',
+          secretToken: 'foo',
+          method: Schemas.HttpType.Enum.GET,
+          sslVerificationEnabled: false,
+          status: 'READY',
+          serverErrors: 5,
+        }}
+      />
+    );
 
-        expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeTruthy();
-        expect(screen.getByTestId(/removing-integration-with-notifications-4/)).toBeTruthy();
-    });
+    expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(/removing-integration-with-notifications-4/)
+    ).toBeInTheDocument();
+  });
 
-    it('Passing empty notifications renders a different message', () => {
-        render(
-            <IntegrationDeleteModal
-                onDelete={ fn() }
-                isDeleting={ false }
-                onClose={ fn() }
-                behaviorGroups={ [] }
-                integration={ {
-                    name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
-                    isEnabled: true,
-                    url: 'url',
-                    id: '123',
-                    secretToken: 'foo',
-                    method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false,
-                    status: 'READY',
-                    serverErrors: 5
-                } }
-            />
-        );
+  it('Passing empty notifications renders a different message', () => {
+    render(
+      <IntegrationDeleteModal
+        onDelete={fn()}
+        isDeleting={false}
+        onClose={fn()}
+        behaviorGroups={[]}
+        integration={{
+          name: 'sdiofgjiofdsjgoifjso',
+          type: IntegrationType.WEBHOOK,
+          isEnabled: true,
+          url: 'url',
+          id: '123',
+          secretToken: 'foo',
+          method: Schemas.HttpType.Enum.GET,
+          sslVerificationEnabled: false,
+          status: 'READY',
+          serverErrors: 5,
+        }}
+      />
+    );
 
-        expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeTruthy();
-        expect(screen.getByTestId(/removing-integration-without-notifications/)).toBeTruthy();
-    });
+    expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeInTheDocument();
+    expect(
+      screen.getByTestId(/removing-integration-without-notifications/)
+    ).toBeInTheDocument();
+  });
 
-    it('Opening the expandable reveals the notifications', () => {
-        render(
-            <IntegrationDeleteModal
-                onDelete={ fn() }
-                isDeleting={ false }
-                onClose={ fn() }
-                behaviorGroups={ [
-                    {
-                        actions: [],
-                        events: [],
-                        id: '1',
-                        bundleId: 'bundle-id',
-                        displayName: 'Foo stuff',
-                        bundleName: 'b1',
-                        isDefault: false
-                    },
-                    {
-                        actions: [],
-                        events: [],
-                        id: '2',
-                        bundleId: 'bundle-id',
-                        displayName: 'Bar application',
-                        bundleName: 'b1',
-                        isDefault: false
-                    },
-                    {
-                        actions: [],
-                        events: [],
-                        id: '3',
-                        bundleId: 'other-id',
-                        displayName: 'Baz peek',
-                        bundleName: 'ABC',
-                        isDefault: false
-                    },
-                    {
-                        actions: [],
-                        events: [],
-                        id: '4',
-                        bundleId: '24446666688888888000000000',
-                        displayName: 'Password',
-                        bundleName: 'Fake',
-                        isDefault: false
-                    }
-                ] }
-                integration={ {
-                    name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
-                    isEnabled: true,
-                    url: 'url',
-                    id: '123',
-                    secretToken: 'foo',
-                    method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false,
-                    status: 'READY',
-                    serverErrors: 5
-                } }
-            />
-        );
+  it('Opening the expandable reveals the notifications', async () => {
+    render(
+      <IntegrationDeleteModal
+        onDelete={fn()}
+        isDeleting={false}
+        onClose={fn()}
+        behaviorGroups={[
+          {
+            actions: [],
+            events: [],
+            id: '1',
+            bundleId: 'bundle-id',
+            displayName: 'Foo stuff',
+            bundleName: 'b1',
+            isDefault: false,
+          },
+          {
+            actions: [],
+            events: [],
+            id: '2',
+            bundleId: 'bundle-id',
+            displayName: 'Bar application',
+            bundleName: 'b1',
+            isDefault: false,
+          },
+          {
+            actions: [],
+            events: [],
+            id: '3',
+            bundleId: 'other-id',
+            displayName: 'Baz peek',
+            bundleName: 'ABC',
+            isDefault: false,
+          },
+          {
+            actions: [],
+            events: [],
+            id: '4',
+            bundleId: '24446666688888888000000000',
+            displayName: 'Password',
+            bundleName: 'Fake',
+            isDefault: false,
+          },
+        ]}
+        integration={{
+          name: 'sdiofgjiofdsjgoifjso',
+          type: IntegrationType.WEBHOOK,
+          isEnabled: true,
+          url: 'url',
+          id: '123',
+          secretToken: 'foo',
+          method: Schemas.HttpType.Enum.GET,
+          sslVerificationEnabled: false,
+          status: 'READY',
+          serverErrors: 5,
+        }}
+      />
+    );
 
-        userEvent.click(screen.getByText(/View 4 behavior groups/i));
-        expect(screen.getByText('b1: Foo stuff')).toBeVisible();
-        expect(screen.getByText('b1: Bar application')).toBeVisible();
-        expect(screen.getByText('ABC: Baz peek')).toBeVisible();
-        expect(screen.getByText('Fake: Password')).toBeVisible();
-    });
+    await userEvent.click(screen.getByText(/View 4 behavior groups/i));
+    expect(screen.getByText('b1: Foo stuff')).toBeVisible();
+    expect(screen.getByText('b1: Bar application')).toBeVisible();
+    expect(screen.getByText('ABC: Baz peek')).toBeVisible();
+    expect(screen.getByText('Fake: Password')).toBeVisible();
+  });
 
-    it('Does not render if integration is undefined', () => {
-        render(
-            <IntegrationDeleteModal
-                onDelete={ fn() }
-                isDeleting={ false }
-                onClose={ fn() }
-            />
-        );
+  it('Does not render if integration is undefined', () => {
+    render(
+      <IntegrationDeleteModal
+        onDelete={fn()}
+        isDeleting={false}
+        onClose={fn()}
+      />
+    );
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(document.body.lastChild).toBeEmptyDOMElement();
+  });
 
-        expect(document.body.lastChild).toBeEmptyDOMElement();
-    });
+  it('Clicking delete calls onDelete, if returns true calls onClose', async () => {
+    const onDelete = fn(() => true);
+    const onClose = fn();
+    render(
+      <IntegrationDeleteModal
+        onDelete={onDelete}
+        isDeleting={false}
+        onClose={onClose}
+        integration={{
+          name: 'sdiofgjiofdsjgoifjso',
+          type: IntegrationType.WEBHOOK,
+          isEnabled: true,
+          url: 'url',
+          id: '123',
+          secretToken: 'foo',
+          method: Schemas.HttpType.Enum.GET,
+          sslVerificationEnabled: false,
+          status: 'READY',
+          serverErrors: 5,
+        }}
+      />
+    );
 
-    it('Clicking delete calls onDelete, if returns true calls onClose', async () => {
-        const onDelete = fn(() => true);
-        const onClose = fn();
-        render(
-            <IntegrationDeleteModal
-                onDelete={ onDelete }
-                isDeleting={ false }
-                onClose={ onClose }
-                integration={ {
-                    name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
-                    isEnabled: true,
-                    url: 'url',
-                    id: '123',
-                    secretToken: 'foo',
-                    method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false,
-                    status: 'READY',
-                    serverErrors: 5
-                } }
-            />
-        );
+    await userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
 
-        userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
+    await waitForAsyncEvents();
+    expect(onDelete).toHaveBeenCalled();
+    expect(onClose).toHaveBeenCalled();
+  });
 
-        await waitForAsyncEvents();
-        expect(onDelete).toHaveBeenCalled();
-        expect(onClose).toHaveBeenCalled();
-    });
+  it('Clicking delete calls onDelete, if returns false it does not call onClose', async () => {
+    const onDelete = fn(() => false);
+    const onClose = fn();
+    render(
+      <IntegrationDeleteModal
+        onDelete={onDelete}
+        isDeleting={false}
+        onClose={onClose}
+        integration={{
+          name: 'sdiofgjiofdsjgoifjso',
+          type: IntegrationType.WEBHOOK,
+          isEnabled: true,
+          url: 'url',
+          id: '123',
+          secretToken: 'foo',
+          method: Schemas.HttpType.Enum.GET,
+          sslVerificationEnabled: false,
+          status: 'READY',
+          serverErrors: 5,
+        }}
+      />
+    );
 
-    it('Clicking delete calls onDelete, if returns false it does not call onClose', async () => {
-        const onDelete = fn(() => false);
-        const onClose = fn();
-        render(
-            <IntegrationDeleteModal
-                onDelete={ onDelete }
-                isDeleting={ false }
-                onClose={ onClose }
-                integration={ {
-                    name: 'sdiofgjiofdsjgoifjso',
-                    type: IntegrationType.WEBHOOK,
-                    isEnabled: true,
-                    url: 'url',
-                    id: '123',
-                    secretToken: 'foo',
-                    method: Schemas.HttpType.Enum.GET,
-                    sslVerificationEnabled: false,
-                    status: 'READY',
-                    serverErrors: 5
-                } }
-            />
-        );
+    await userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
 
-        userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
-
-        await waitForAsyncEvents();
-        expect(onDelete).toHaveBeenCalled();
-        expect(onClose).not.toHaveBeenCalled();
-    });
+    await waitForAsyncEvents();
+    expect(onDelete).toHaveBeenCalled();
+    expect(onClose).not.toHaveBeenCalled();
+  });
 });

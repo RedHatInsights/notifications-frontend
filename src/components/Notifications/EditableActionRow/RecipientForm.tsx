@@ -8,51 +8,71 @@ import { IntegrationRecipientTypeahead } from '../Form/IntegrationRecipientTypea
 import { RecipientTypeahead } from '../Form/RecipientTypeahead';
 
 interface RecipientFormProps {
-    action?: Action;
-    integrationSelected: ReturnType<UseBehaviorGroupActionHandlers['handleIntegrationSelected']>;
-    recipientSelected: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientSelected']>;
-    recipientOnClear: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientOnClear']>;
-    onOpenChange?: (isOpen: boolean) => void;
-    error?: string;
+  action?: Action;
+  integrationSelected: ReturnType<
+    UseBehaviorGroupActionHandlers['handleIntegrationSelected']
+  >;
+  recipientSelected: ReturnType<
+    UseBehaviorGroupActionHandlers['handleRecipientSelected']
+  >;
+  recipientOnClear: ReturnType<
+    UseBehaviorGroupActionHandlers['handleRecipientOnClear']
+  >;
+  onOpenChange?: (isOpen: boolean) => void;
+  error?: string;
 }
 
 const dummyOnToggle = () => false;
 
-export const RecipientForm: React.FunctionComponent<RecipientFormProps> = props => {
-    let recipient: React.ReactNode;
+export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
+  props
+) => {
+  let recipient: React.ReactNode;
 
-    if (!props.action) {
-        recipient = (
-            <div><Select variant={ SelectVariant.typeahead } isDisabled onToggle={ dummyOnToggle } isOpen={ false } /></div>
-        );
-    } else if (props.action.type === NotificationType.INTEGRATION) {
-        recipient = (
-            <IntegrationRecipientTypeahead
-                onSelected={ props.integrationSelected }
-                integrationType={ props.action.integration?.type ?? IntegrationType.WEBHOOK }
-                selected={ props.action.integration }
-                onOpenChange={ props.onOpenChange }
-                error={ !!props.error }
-            />
-        );
-    } else {
-        recipient = (
-            <RecipientTypeahead
-                onSelected={ props.recipientSelected }
-                selected={ props.action.recipient }
-                onClear={ props.recipientOnClear }
-                onOpenChange={ props.onOpenChange }
-                error={ !!props.error }
-            />
-        );
-    }
-
-    return (
-        <> { recipient }
-            { props.error && (
-                <FormHelperText isError isHidden={ !props.error }>{ props.error }
-                </FormHelperText>
-            ) }
-        </>
+  if (!props.action) {
+    recipient = (
+      <div>
+        <Select
+          variant={SelectVariant.typeahead}
+          isDisabled
+          onToggle={dummyOnToggle}
+          isOpen={false}
+        />
+      </div>
     );
+  } else if (props.action.type === NotificationType.INTEGRATION) {
+    recipient = (
+      <IntegrationRecipientTypeahead
+        onSelected={props.integrationSelected}
+        integrationType={
+          props.action.integration?.type ?? IntegrationType.WEBHOOK
+        }
+        selected={props.action.integration}
+        onOpenChange={props.onOpenChange}
+        error={!!props.error}
+      />
+    );
+  } else {
+    recipient = (
+      <RecipientTypeahead
+        onSelected={props.recipientSelected}
+        selected={props.action.recipient}
+        onClear={props.recipientOnClear}
+        onOpenChange={props.onOpenChange}
+        error={!!props.error}
+      />
+    );
+  }
+
+  return (
+    <>
+      {' '}
+      {recipient}
+      {props.error && (
+        <FormHelperText isError isHidden={!props.error}>
+          {props.error}
+        </FormHelperText>
+      )}
+    </>
+  );
 };

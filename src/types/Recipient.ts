@@ -1,130 +1,140 @@
 import { IntegrationRef, UUID } from './Notification';
 
 export abstract class Recipient {
-    readonly displayName: string;
+  readonly displayName: string;
 
-    protected constructor(displayName: string) {
-        this.displayName = displayName;
-    }
+  protected constructor(displayName: string) {
+    this.displayName = displayName;
+  }
 
-    public abstract getKey();
-    public abstract equals(recipient: Recipient);
+  public abstract getKey();
+  public abstract equals(recipient: Recipient);
 }
 
 export class IntegrationRecipient extends Recipient {
-    readonly integration: IntegrationRef;
+  readonly integration: IntegrationRef;
 
-    public constructor(integration: IntegrationRef) {
-        super(integration.name + (integration.isEnabled ? '' : ' - Disabled'));
-        this.integration = integration;
+  public constructor(integration: IntegrationRef) {
+    super(integration.name + (integration.isEnabled ? '' : ' - Disabled'));
+    this.integration = integration;
+  }
+
+  public getKey() {
+    return this.integration.id;
+  }
+
+  public equals(recipient: Recipient) {
+    if (recipient instanceof IntegrationRecipient) {
+      return recipient.integration.id === this.integration.id;
     }
 
-    public getKey() {
-        return this.integration.id;
-    }
-
-    public equals(recipient: Recipient) {
-        if (recipient instanceof IntegrationRecipient) {
-            return recipient.integration.id === this.integration.id;
-        }
-
-        return false;
-    }
+    return false;
+  }
 }
 
 export abstract class BaseNotificationRecipient extends Recipient {
-    readonly integrationId: UUID | undefined;
-    readonly key: string;
-    readonly description: string | undefined;
+  readonly integrationId: UUID | undefined;
+  readonly key: string;
+  readonly description: string | undefined;
 
-    protected constructor(displayName: string, description: string | undefined, integrationId: UUID | undefined, key: string) {
-        super(displayName);
+  protected constructor(
+    displayName: string,
+    description: string | undefined,
+    integrationId: UUID | undefined,
+    key: string
+  ) {
+    super(displayName);
 
-        this.key = key;
-        this.description = description;
-        this.integrationId = integrationId;
-    }
+    this.key = key;
+    this.description = description;
+    this.integrationId = integrationId;
+  }
 
-    public getKey() {
-        return this.key;
-    }
+  public getKey() {
+    return this.key;
+  }
 }
 
 export class NotificationUserRecipient extends BaseNotificationRecipient {
-    readonly sendToAdmin: boolean;
-    readonly ignorePreferences: boolean;
+  readonly sendToAdmin: boolean;
+  readonly ignorePreferences: boolean;
 
-    public constructor(integrationId: UUID | undefined, sendToAdmin: boolean, ignorePreferences: boolean) {
-        let displayName;
-        let description;
+  public constructor(
+    integrationId: UUID | undefined,
+    sendToAdmin: boolean,
+    ignorePreferences: boolean
+  ) {
+    let displayName;
+    let description;
 
-        if (sendToAdmin) {
-            displayName = 'Admins';
-            description = 'Organization administrators for your account';
-        } else {
-            displayName = 'All';
-            description = 'All users in your organization who subscribed to this email in their User Preferences';
-        }
-
-        super(
-            displayName,
-            description,
-            integrationId,
-            sendToAdmin ? 'users-admin' : 'users-all'
-        );
-
-        this.sendToAdmin = sendToAdmin;
-        this.ignorePreferences = ignorePreferences;
+    if (sendToAdmin) {
+      displayName = 'Admins';
+      description = 'Organization administrators for your account';
+    } else {
+      displayName = 'All';
+      description =
+        'All users in your organization who subscribed to this email in their User Preferences';
     }
 
-    public equals(recipient: Recipient) {
-        if (recipient instanceof NotificationUserRecipient) {
-            return recipient.sendToAdmin === this.sendToAdmin
-            && recipient.ignorePreferences === this.ignorePreferences;
-        }
+    super(
+      displayName,
+      description,
+      integrationId,
+      sendToAdmin ? 'users-admin' : 'users-all'
+    );
 
-        return false;
+    this.sendToAdmin = sendToAdmin;
+    this.ignorePreferences = ignorePreferences;
+  }
+
+  public equals(recipient: Recipient) {
+    if (recipient instanceof NotificationUserRecipient) {
+      return (
+        recipient.sendToAdmin === this.sendToAdmin &&
+        recipient.ignorePreferences === this.ignorePreferences
+      );
     }
+
+    return false;
+  }
 }
 
 export class NotificationRbacGroupRecipient extends BaseNotificationRecipient {
-    readonly groupId: UUID;
-    readonly isLoading: boolean;
-    readonly hasError: boolean;
+  readonly groupId: UUID;
+  readonly isLoading: boolean;
+  readonly hasError: boolean;
 
-    public constructor(integrationId: UUID | undefined, groupId: UUID, displayNameOrIsLoading: string | boolean) {
-        let displayName;
-        let isLoading;
-        let hasError;
+  public constructor(
+    integrationId: UUID | undefined,
+    groupId: UUID,
+    displayNameOrIsLoading: string | boolean
+  ) {
+    let displayName;
+    let isLoading;
+    let hasError;
 
-        if (typeof displayNameOrIsLoading === 'string') {
-            displayName = displayNameOrIsLoading;
-            isLoading = false;
-            hasError = false;
-        } else {
-            displayName = 'Loading';
-            isLoading = displayNameOrIsLoading;
-            hasError = !displayNameOrIsLoading;
-        }
-
-        super(
-            displayName,
-            undefined,
-            integrationId,
-            `rbac-group-${groupId}`
-        );
-
-        this.groupId = groupId;
-        this.isLoading = isLoading;
-        this.hasError = hasError;
+    if (typeof displayNameOrIsLoading === 'string') {
+      displayName = displayNameOrIsLoading;
+      isLoading = false;
+      hasError = false;
+    } else {
+      displayName = 'Loading';
+      isLoading = displayNameOrIsLoading;
+      hasError = !displayNameOrIsLoading;
     }
 
-    public equals(recipient: Recipient) {
-        if (recipient instanceof NotificationRbacGroupRecipient) {
-            return recipient.groupId === this.groupId;
-        }
+    super(displayName, undefined, integrationId, `rbac-group-${groupId}`);
 
-        return false;
+    this.groupId = groupId;
+    this.isLoading = isLoading;
+    this.hasError = hasError;
+  }
+
+  public equals(recipient: Recipient) {
+    if (recipient instanceof NotificationRbacGroupRecipient) {
+      return recipient.groupId === this.groupId;
     }
+
+    return false;
+  }
 }
-

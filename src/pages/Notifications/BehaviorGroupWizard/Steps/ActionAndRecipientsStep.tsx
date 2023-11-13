@@ -14,38 +14,41 @@ import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 const title = 'Actions and recipients';
 
 const subtitleClassName = style({
-    paddingTop: global_spacer_sm.value
+  paddingTop: global_spacer_sm.value,
 });
 
 const ActionAndRecipientsStep: React.FunctionComponent = () => {
-    const { values } = useFormikContext<CreateBehaviorGroup>();
+  const { values } = useFormikContext<CreateBehaviorGroup>();
 
-    return (
-        <Form>
-            <div>
-                <Title
-                    headingLevel="h4"
-                    size="xl"
-                >
-                    { title }
-                </Title>
-                <TextContent className={ subtitleClassName }>
-                    <Text>Select action and recipient pairs to assign to your notification events.</Text>
-                </TextContent>
-                <EditBehaviorGroupForm behaviorGroup={ values } />
-            </div>
-        </Form>
-    );
+  return (
+    <Form>
+      <div>
+        <Title headingLevel="h4" size="xl">
+          {title}
+        </Title>
+        <TextContent className={subtitleClassName}>
+          <Text>
+            Select action and recipient pairs to assign to your notification
+            events.
+          </Text>
+        </TextContent>
+        <EditBehaviorGroupForm behaviorGroup={values} />
+      </div>
+    </Form>
+  );
 };
 
 const schema = Yup.object({
-    actions: ActionsArray
+  actions: ActionsArray,
 });
 
 export const useActionAndRecipientStep: CreateWizardStep = () => {
-    return React.useMemo(() => ({
-        name: title,
-        component: <ActionAndRecipientsStep />,
-        schema
-    }), []);
+  return React.useMemo(
+    () => ({
+      name: title,
+      component: <ActionAndRecipientsStep />,
+      schema,
+    }),
+    []
+  );
 };
