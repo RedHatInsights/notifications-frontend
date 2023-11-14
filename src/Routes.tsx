@@ -8,6 +8,7 @@ import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
+import { NotificationsLogPage } from './pages/Notifications/NotificationsLog/Page';
 import { NotificationsOverviewPage } from './pages/Notifications/Overview/Page';
 
 interface Path {
@@ -22,6 +23,7 @@ export const linkTo = {
   notifications: (bundle: string) => `/${bundle}`,
   eventLog: (bundle?: string) =>
     `/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
+  notificationsLog: () => '/notificationslog',
   splunk: () => '/integrations/splunk-setup',
 };
 
@@ -55,6 +57,10 @@ const legacyRoutes: Path[] = [
     path: linkTo.splunk(),
     component: SplunkSetupPage,
   },
+  {
+    path: linkTo.notificationsLog(),
+    component: NotificationsLogPage,
+  },
 ];
 
 const routesOverhaul: Path[] = [
@@ -73,6 +79,10 @@ const routesOverhaul: Path[] = [
   {
     path: linkTo.eventLog(),
     component: EventLogPage,
+  },
+  {
+    path: linkTo.notificationsLog(),
+    component: NotificationsLogPage,
   },
 ];
 
