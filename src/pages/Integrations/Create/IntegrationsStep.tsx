@@ -24,7 +24,11 @@ export const integrationsStep = (category: string) => ({
       name: 'communication-type',
       isRequired: true,
       label: 'Select integration type',
-      iconMapper: category === 'Communications' ? iconMapper(communicationsIntegrations) : iconMapper(reportingIntegrations),
+      iconMapper(
+        category === 'Communications'
+          ? communicationsIntegrations
+          : reportingIntegrations
+      )
       validate: [
         {
           type: validatorTypes.REQUIRED,
