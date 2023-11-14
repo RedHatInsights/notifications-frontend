@@ -16,7 +16,7 @@ export const integrationsStep = (category: string) => ({
   fields: [
     {
         component: componentTypes.PLAIN_TEXT,
-        name: 'plain-text-component',
+        name: 'plain-text',
         label: ("Select a communications integration to add to your Red Hat account.")
     },
     {
