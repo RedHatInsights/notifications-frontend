@@ -8,7 +8,7 @@ export const iconMapper = (integrationTypes) => (name) => {
       <img
           src={integrationType.icon_url}
           alt={integrationType.product_name}
-          className={ `src-c-wizard__icon 'pf-u-mb-sm'}` }
+          className="src-c-wizard__icon pf-u-mb-sm"
         />
   );
 
