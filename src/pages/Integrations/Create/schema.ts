@@ -1,6 +1,5 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
-
 export const schema = (category) => ({
     fields: [
         {
@@ -12,34 +11,33 @@ export const schema = (category) => ({
             fields: [
                 integrationsStep(category),
                 {
-                    title: 'Enter details',
-                    name: 'details',
-                    nextStep: 'review',
-                    fields: [
+                  title: 'Enter details',
+                  name: 'details',
+                  nextStep: 'review',
+                  fields: [
+                    {
+                      component: componentTypes.TEXT_FIELD,
+                      name: 'integration-name',
+                      type: 'text',
+                      label: 'Integration name',
+                      isRequired: true,
+                      validate: [
                         {
-                            component: componentTypes.TEXT_FIELD,
-                            name: 'integration-name',
-                            type: 'text',
-                            label: 'Integration name',
-                            isRequired: true,
-                            validate: [
-                                {
-                                    type: 'required'
-                                }
-                            ]
-                        }
-                    ]
+                          type: 'required',
+                        },
+                      ]
+                    }]
                 },
-                {
-                    title: 'Review',
-                    name: 'review',
-                    fields: [
-                        {
-                            component: 'summary-content',
-                            name: 'summary-content'
-                        }
-                    ]
-                }
+              {
+                title: 'Review',
+                name: 'review',
+                fields: [
+                  {
+                    component: 'summary-content',
+                    name: 'summary-content',
+                  },
+              ],
+              },
             ]
         }
     ]

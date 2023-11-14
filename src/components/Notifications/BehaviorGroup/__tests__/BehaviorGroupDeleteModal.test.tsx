@@ -7,131 +7,153 @@ import { BehaviorGroup } from '../../../../types/Notification';
 import { BehaviorGroupDeleteModal } from '../BehaviorGroupDeleteModal';
 
 const commonBehaviorGroup: Readonly<BehaviorGroup> = {
-    id: 'foo',
-    displayName: 'Foo',
-    actions: [],
-    events: [],
-    bundleId: 'bundle-id',
-    bundleName: 'foobar',
-    isDefault: false
+  id: 'foo',
+  displayName: 'Foo',
+  actions: [],
+  events: [],
+  bundleId: 'bundle-id',
+  bundleName: 'foobar',
+  isDefault: false,
 };
 
 describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', () => {
-    it('Renders the behavior display name if there are conflicts', () => {
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ fn() }
-            conflictingNotifications={ [{
-                id: 'conflict-1',
-                eventTypeDisplayName: 'EventBar',
-                applicationDisplayName: 'ApplicationBaz',
-                actions: [],
-                useDefault: false
-            }] }
-            isDeleting={ false }
-        />);
+  it('Renders the behavior display name if there are conflicts', () => {
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={fn()}
+        conflictingNotifications={[
+          {
+            id: 'conflict-1',
+            eventTypeDisplayName: 'EventBar',
+            applicationDisplayName: 'ApplicationBaz',
+            actions: [],
+            useDefault: false,
+          },
+        ]}
+        isDeleting={false}
+      />
+    );
 
-        expect(screen.getByText('Foo')).toBeVisible();
-    });
+    expect(screen.getByText('Foo')).toBeVisible();
+  });
 
-    it('Renders the behavior display name if there are no conflicts', () => {
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ fn() }
-            conflictingNotifications={ [] }
-            isDeleting={ false }
-        />);
+  it('Renders the behavior display name if there are no conflicts', () => {
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={fn()}
+        conflictingNotifications={[]}
+        isDeleting={false}
+      />
+    );
 
-        expect(screen.getByText('Foo')).toBeVisible();
-    });
+    expect(screen.getByText('Foo')).toBeVisible();
+  });
 
-    it('Secondary button is called Close and remove does not exist if there are conflicts', () => {
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ fn() }
-            conflictingNotifications={ [{
-                id: 'conflict-1',
-                eventTypeDisplayName: 'EventBar',
-                applicationDisplayName: 'ApplicationBaz',
-                actions: [],
-                useDefault: false
-            }] }
-            isDeleting={ false }
-        />);
+  it('Secondary button is called Close and remove does not exist if there are conflicts', () => {
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={fn()}
+        conflictingNotifications={[
+          {
+            id: 'conflict-1',
+            eventTypeDisplayName: 'EventBar',
+            applicationDisplayName: 'ApplicationBaz',
+            actions: [],
+            useDefault: false,
+          },
+        ]}
+        isDeleting={false}
+      />
+    );
 
-        expect(screen.queryByText(/remove/i, { selector: 'button' })).toBeFalsy();
-        expect(screen.getByText(/close/i)).toBeVisible();
-    });
+    expect(
+      screen.queryByText(/remove/i, { selector: 'button' })
+    ).not.toBeInTheDocument();
+    expect(screen.getByText(/close/i)).toBeVisible();
+  });
 
-    it('Secondary button is called cancel if there are no conflicts', () => {
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ fn() }
-            conflictingNotifications={ [] }
-            isDeleting={ false }
-        />);
+  it('Secondary button is called cancel if there are no conflicts', () => {
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={fn()}
+        conflictingNotifications={[]}
+        isDeleting={false}
+      />
+    );
 
-        expect(screen.getByText(/cancel/i)).toBeVisible();
-    });
+    expect(screen.getByText(/cancel/i)).toBeVisible();
+  });
 
-    it('Shows disclaimer if there are no conflicts', () => {
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ fn() }
-            conflictingNotifications={ [] }
-            isDeleting={ false }
-        />);
+  it('Shows disclaimer if there are no conflicts', () => {
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={fn()}
+        conflictingNotifications={[]}
+        isDeleting={false}
+      />
+    );
 
-        expect(screen.getByText(/this action cannot be undone/i)).toBeVisible();
-    });
+    expect(screen.getByText(/this action cannot be undone/i)).toBeVisible();
+  });
 
-    it('When no conflicts, the delete is disabled until the disclaimer is accepted', () => {
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ fn() }
-            conflictingNotifications={ [] }
-            isDeleting={ false }
-        />);
+  it('When no conflicts, the delete is disabled until the disclaimer is accepted', async () => {
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={fn()}
+        conflictingNotifications={[]}
+        isDeleting={false}
+      />
+    );
 
-        expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
-        userEvent.click(screen.getByText(/this action cannot be undone/i));
-        expect(screen.getByText(/delete/i, { selector: 'button' })).toBeEnabled();
-        userEvent.click(screen.getByText(/this action cannot be undone/i));
-        expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
-    });
+    expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
+    await userEvent.click(screen.getByText(/this action cannot be undone/i));
+    expect(screen.getByText(/delete/i, { selector: 'button' })).toBeEnabled();
+    await userEvent.click(screen.getByText(/this action cannot be undone/i));
+    expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
+  });
 
-    it('On delete with the behavior is called when clicking Delete button', () => {
-        const onDelete = fn<boolean, []>();
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ onDelete }
-            onClose={ fn() }
-            conflictingNotifications={ [] }
-            isDeleting={ false }
-        />);
+  it('On delete with the behavior is called when clicking Delete button', async () => {
+    const onDelete = fn<boolean, []>();
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={onDelete}
+        onClose={fn()}
+        conflictingNotifications={[]}
+        isDeleting={false}
+      />
+    );
 
-        userEvent.click(screen.getByText(/this action cannot be undone/i));
-        userEvent.click(screen.getByText(/delete/i, { selector: 'button' }));
-        expect(onDelete).toHaveBeenCalledWith(commonBehaviorGroup);
-    });
+    await userEvent.click(screen.getByText(/this action cannot be undone/i));
+    await userEvent.click(screen.getByText(/delete/i, { selector: 'button' }));
+    expect(onDelete).toHaveBeenCalledWith(commonBehaviorGroup);
+  });
 
-    it('On close is called when clicking cancel button', () => {
-        const onClose = fn();
-        render(<BehaviorGroupDeleteModal
-            behaviorGroup={ commonBehaviorGroup }
-            onDelete={ fn() }
-            onClose={ onClose }
-            conflictingNotifications={ [] }
-            isDeleting={ false }
-        />);
+  it('On close is called when clicking cancel button', async () => {
+    const onClose = fn();
+    render(
+      <BehaviorGroupDeleteModal
+        behaviorGroup={commonBehaviorGroup}
+        onDelete={fn()}
+        onClose={onClose}
+        conflictingNotifications={[]}
+        isDeleting={false}
+      />
+    );
 
-        userEvent.click(screen.getByText(/cancel/i, { selector: 'button' }));
-        expect(onClose).toHaveBeenCalled();
-    });
+    await userEvent.click(screen.getByText(/cancel/i, { selector: 'button' }));
+    expect(onClose).toHaveBeenCalled();
+  });
 });

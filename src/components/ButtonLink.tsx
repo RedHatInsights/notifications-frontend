@@ -5,11 +5,14 @@ import { Link, LinkProps } from 'react-router-dom';
 
 type ButtonLinkProps = ButtonProps & Omit<LinkProps, 'component'>;
 
-export const ButtonLink: React.FunctionComponent<ButtonLinkProps> = ({ to, ...props }) => {
-    const { getBundle } = useChrome();
-    return <Link to={ `/${getBundle()}/notifications${to}` }>
-        <Button { ...props } >
-            { props.children }
-        </Button>
-    </Link>;
+export const ButtonLink: React.FunctionComponent<ButtonLinkProps> = ({
+  to,
+  ...props
+}) => {
+  const { getBundle } = useChrome();
+  return (
+    <Link to={`/${getBundle()}/notifications${to}`}>
+      <Button {...props}>{props.children}</Button>
+    </Link>
+  );
 };

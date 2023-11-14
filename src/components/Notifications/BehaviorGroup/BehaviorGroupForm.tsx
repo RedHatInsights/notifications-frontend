@@ -8,24 +8,22 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { BehaviorGroupFormActionsTable } from './BehaviorGroupFormActionsTable';
 
 export interface EditBehaviorGroupProps extends OuiaComponentProps {
-    behaviorGroup?: Partial<BehaviorGroup>;
+  behaviorGroup?: Partial<BehaviorGroup>;
 }
 
-export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupProps> = props => {
-
+export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupProps> =
+  (props) => {
     return (
-        <div { ... getOuiaProps('Notifications/BehaviorGroupForm', props) }>
-            <Grid hasGutter>
-                <FieldArray name="actions">
-                    { helpers => (
-                        <>
-                            <BehaviorGroupFormActionsTable
-                                { ...helpers }
-                            />
-                        </>
-                    ) }
-                </FieldArray>
-            </Grid>
-        </div>
+      <div {...getOuiaProps('Notifications/BehaviorGroupForm', props)}>
+        <Grid hasGutter>
+          <FieldArray name="actions">
+            {(helpers) => (
+              <>
+                <BehaviorGroupFormActionsTable {...helpers} />
+              </>
+            )}
+          </FieldArray>
+        </Grid>
+      </div>
     );
-};
+  };
