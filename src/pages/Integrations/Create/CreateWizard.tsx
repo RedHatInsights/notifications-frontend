@@ -19,8 +19,8 @@ export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
   category,
 }: CreateWizardProps) => {
   const mapperExtension = {
-    'summary-content': Review,
-    'card-select': CardSelect
+    [SUMMARY]: Review,
+    [CARD_SELECT]: CardSelect
   };
   React.useEffect(() => {
     console.log(`Active category: ${category}`);
