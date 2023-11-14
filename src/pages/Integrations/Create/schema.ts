@@ -23,7 +23,7 @@ export const schema = (category) => ({
                       isRequired: true,
                       validate: [
                         {
-                          type: 'required',
+type: validatorTypes.REQUIRED,
                         },
                       ]
                     }]
