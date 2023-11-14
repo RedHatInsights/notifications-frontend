@@ -1,11 +1,9 @@
 import { Text, TextContent, Title } from '@patternfly/react-core';
-import { global_spacer_sm } from '@patternfly/react-tokens';
 import { Form, Page } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import produce from 'immer';
 import * as React from 'react';
 import { useEffect } from 'react';
-import { style } from 'typestyle';
 
 import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import {
@@ -25,10 +23,6 @@ import { EventType, Facet } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
 
 const title = 'Associate event types';
-
-const subtitleClassName = style({
-  paddingTop: global_spacer_sm.value,
-});
 
 export interface AssociateEventTypesStepProps {
   applications: ReadonlyArray<Facet>;
@@ -192,7 +186,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
           <Title headingLevel="h4" size="xl">
             {title}
           </Title>
-          <TextContent className={subtitleClassName}>
+          <TextContent className="pf-v5-u-pt-sm">
             <Text>
               Select event types you would like to assign this behavior group
               to.

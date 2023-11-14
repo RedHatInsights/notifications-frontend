@@ -1,5 +1,4 @@
 import {
-  Bullseye,
   DatePicker,
   DatePickerRef,
   Select,
@@ -10,11 +9,6 @@ import {
   SplitItem,
   TextInputProps,
 } from '@patternfly/react-core';
-import {
-  global_active_color_100,
-  global_palette_black_600,
-  global_spacer_sm,
-} from '@patternfly/react-tokens';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
@@ -41,12 +35,6 @@ const labels: Record<EventLogDateFilterValue, string> = {
   [EventLogDateFilterValue.CUSTOM]: 'Custom',
 };
 
-const toClassName = style({
-  paddingLeft: global_spacer_sm.value,
-  paddingRight: global_spacer_sm.value,
-  color: global_palette_black_600.value,
-});
-
 const datePickerClassName = style({
   backgroundColor: important('white'),
   cursor: 'pointer',
@@ -55,7 +43,7 @@ const datePickerClassName = style({
       color: important('black'),
     },
     '&:hover': {
-      borderBottomColor: global_active_color_100.value,
+      borderBottomColor: 'var(--pf-v5-global--active-color--100)',
     },
   },
 });
@@ -213,10 +201,8 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (
           ref={startDateRef}
         />
       </SplitItem>
-      <SplitItem>
-        <Bullseye>
-          <span className={toClassName}>to</span>
-        </Bullseye>
+      <SplitItem className="pf-v5-u-align-self-center pf-v5-u-px-sm pf-v5-u-color-300">
+        to
       </SplitItem>
       <SplitItem>
         <DatePicker

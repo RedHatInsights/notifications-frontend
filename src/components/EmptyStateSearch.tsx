@@ -7,7 +7,6 @@ import {
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
-import { style } from 'typestyle';
 
 interface EmptyStateSearchProps {
   className?: string;
@@ -19,15 +18,11 @@ interface EmptyStateSearchProps {
   description: string;
 }
 
-const emptyStateClassName = style({
-  backgroundColor: 'white',
-});
-
 export const EmptyStateSearch: React.FunctionComponent<EmptyStateSearchProps> =
   (props) => {
     return (
       <EmptyState
-        className={`${emptyStateClassName} ${props.className}`}
+        className={`pf-v5-u-background-color-100 ${props.className}`}
         variant={props.variant}
       >
         <EmptyStateIcon icon={props.icon ?? SearchIcon} />

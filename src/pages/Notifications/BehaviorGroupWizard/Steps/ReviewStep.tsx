@@ -10,11 +10,9 @@ import {
   TextVariants,
   Title,
 } from '@patternfly/react-core';
-import { c_form__label_FontSize } from '@patternfly/react-tokens';
 import { Form } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { BehaviorGroupActionsSummary } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupActionsSummary';
 import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
@@ -22,10 +20,6 @@ import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType } from '../../../../types/Notification';
 
 const title = 'Review';
-
-const contentTitleClassName = style({
-  fontSize: c_form__label_FontSize.value,
-});
 
 interface EventTypeReviewTableProps {
   events: ReadonlyArray<EventType>;
@@ -38,16 +32,12 @@ const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = (
     <Grid>
       <GridItem span={6}>
         <TextContent>
-          <Text component={TextVariants.h6} className={contentTitleClassName}>
-            Event type
-          </Text>
+          <Text component={TextVariants.h6}>Event type</Text>
         </TextContent>
       </GridItem>
       <GridItem span={6}>
         <TextContent>
-          <Text component={TextVariants.h6} className={contentTitleClassName}>
-            Application
-          </Text>
+          <Text component={TextVariants.h6}>Application</Text>
         </TextContent>
       </GridItem>
       {props.events.map((event) => (
