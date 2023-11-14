@@ -28,7 +28,7 @@ export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
 
   return isOpen ? (
     <FormRenderer
-      schema={schema}
+      schema={schema(category)}
       FormTemplate={Pf4FormTemplate}
       componentMapper={{ ...componentMapper, ...mapperExtension }}
       onSubmit={(props) => {
