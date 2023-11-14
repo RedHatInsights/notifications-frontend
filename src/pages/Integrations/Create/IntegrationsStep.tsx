@@ -4,27 +4,7 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import { compileAllIntegrationComboOptions, iconMapper } from './helpers';
 import { CARD_SELECT } from './CreateWizard';
-
-const communicationsIntegrations = [
-  {
-    name: 'microsoft-office-teams',
-    product_name: 'Microsoft Office Teams',
-    icon_url:
-      '/apps/frontend-assets/sources-integrations/microsoft-office-teams.svg',
-  },
-  {
-    name: 'gchat',
-    product_name: 'Google Chat',
-    icon_url: '/apps/frontend-assets/sources-integrations/google-chat.svg',
-  },
-  {
-    name: 'slack',
-    product_name: 'Slack',
-    icon_url: '/apps/frontend-assets/sources-integrations/slack.svg',
-  },
-];
-
-const reportingIntegrations = [];
+import { defaultIconList } from '../../../config/Config';
 
 export const integrationsStep = (category: string) => ({
   title: 'Select Integration type',
@@ -42,16 +22,13 @@ export const integrationsStep = (category: string) => ({
       name: 'communication-type',
       isRequired: true,
       label: 'Select integration type',
-      iconMapper:
-        category === 'Communications'
-          ? iconMapper(communicationsIntegrations)
-          : iconMapper(reportingIntegrations),
+      iconMapper: iconMapper(defaultIconList[category]),
       validate: [
         {
           type: validatorTypes.REQUIRED,
         },
       ],
-      options: [compileAllIntegrationComboOptions(communicationsIntegrations)],
+      options: compileAllIntegrationComboOptions(defaultIconList[category]),
     },
   ],
 });

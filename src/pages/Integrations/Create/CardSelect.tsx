@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
 import React, { useState } from 'react';
 import {
   FormGroup,
@@ -10,8 +9,13 @@ import {
   Tile,
 } from '@patternfly/react-core';
 
-import useFieldApi from '@data-driven-forms/react-form-renderer/use-field-api';
+import useFieldApi, {
+  UseFieldApiProps,
+} from '@data-driven-forms/react-form-renderer/use-field-api';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
+import { FormOptions } from '@data-driven-forms/react-form-renderer';
+
+import './styling/cardselect.scss';
 
 /**Temporarily copied from sources-ui
  * This component will soon be imported to component-groups
@@ -25,7 +29,16 @@ const handleKeyPress = (event, value, onClick) => {
   }
 };
 
-export interface CardSelectProps {
+export type CardSelectOption = {
+  value: string;
+  label: string;
+  isDisabled: boolean;
+};
+
+export type CardSelectIcon = Node | React.FunctionComponent | Element;
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export interface CardSelectProps extends UseFieldApiProps<any> {
   multi: boolean;
   isMulti: boolean;
   label: Node;
@@ -34,11 +47,13 @@ export interface CardSelectProps {
   description: Node;
   hideLabel: boolean;
   name: string;
-  mutator: Function;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  options: Array<any>;
-  DefaultIcon: Node | Function | Element;
-  iconMapper: Function;
+  mutator: (
+    option: CardSelectOption,
+    formOptions: FormOptions
+  ) => CardSelectOption;
+  options: Array<CardSelectOption>;
+  DefaultIcon: CardSelectIcon;
+  iconMapper: (value: string, DefaultIcon: CardSelectIcon) => CardSelectIcon;
   isDisabled: boolean;
   isReadOnly: boolean;
 }
@@ -58,7 +73,7 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
     DefaultIcon,
     iconMapper,
     ...props
-  } = useFieldApi(originalProps);
+  } = useFieldApi(originalProps) as CardSelectProps;
   const formOptions = useFormApi();
   const [icons] = useState(() => {
     const components = {};

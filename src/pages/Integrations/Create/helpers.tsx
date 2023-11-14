@@ -1,23 +1,43 @@
 import React from 'react';
+import type {
+  IntegrationIcon,
+  IntegrationIconTypes,
+} from '../../../types/Integration';
 
-// eslint-disable-next-line react/display-name
-export const iconMapper = (integrationTypes) => (name) => {
-  const integrationType = integrationTypes.find((type) => type.name === name);
+export const iconMapper =
+  (integrationTypes: IntegrationIconTypes | undefined) =>
+  (name: string): React.FunctionComponent | null => {
+    if (!integrationTypes) {
+      return null;
+    }
 
-  const Icon = () => (
-    <img
-      src={integrationType.icon_url}
-      alt={integrationType.product_name}
-      className="src-c-wizard__icon pf-u-mb-sm"
-    />
-  );
+    const integrationType: IntegrationIcon | undefined = Object.values(
+      integrationTypes
+    ).find((type: IntegrationIcon) => type.name === name);
 
-  return Icon;
-};
+    if (!integrationType) {
+      return null;
+    }
 
-export const compileAllIntegrationComboOptions = (integrationTypes) => [
-  ...integrationTypes
-    .map((type) => ({
+    const Icon = () => (
+      <img
+        src={integrationType.icon_url}
+        alt={integrationType.product_name}
+        className="src-c-wizard__icon pf-u-mb-sm"
+      />
+    );
+
+    return Icon;
+  };
+
+export const compileAllIntegrationComboOptions = (
+  integrationTypes: IntegrationIconTypes | undefined
+): Array<{ value: string; label: string }> | null => {
+  if (!integrationTypes) {
+    return null;
+  }
+  return Object.values(integrationTypes)
+    .map((type: IntegrationIcon) => ({
       ...type,
       product_name: type.product_name,
     }))
@@ -25,5 +45,5 @@ export const compileAllIntegrationComboOptions = (integrationTypes) => [
     .map((t) => ({
       value: t.name,
       label: t.product_name,
-    })),
-];
+    }));
+};

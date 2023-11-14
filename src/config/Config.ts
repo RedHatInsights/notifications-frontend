@@ -9,6 +9,8 @@ import {
 } from '../types/Environments';
 import {
   IntegrationCategory,
+  IntegrationIcon,
+  IntegrationIconTypes,
   IntegrationType,
   UserIntegrationType,
 } from '../types/Integration';
@@ -115,6 +117,27 @@ export const sortedIntegrationList = (
       return 0;
     }
   );
+};
+
+export const defaultIconList = {
+  [IntegrationCategory.COMMUNICATIONS]: <IntegrationIconTypes>{
+    [UserIntegrationType.GOOGLE_CHAT]: <IntegrationIcon>{
+      name: 'gchat',
+      product_name: 'Google Chat',
+      icon_url: '/apps/frontend-assets/sources-integrations/google-chat.svg',
+    },
+    [UserIntegrationType.TEAMS]: <IntegrationIcon>{
+      name: 'microsoft-office-teams',
+      product_name: 'Microsoft Office Teams',
+      icon_url:
+        '/apps/frontend-assets/sources-integrations/microsoft-office-teams.svg',
+    },
+    [UserIntegrationType.SLACK]: <IntegrationIcon>{
+      name: 'slack',
+      product_name: 'Slack',
+      icon_url: '/apps/frontend-assets/sources-integrations/slack.svg',
+    },
+  },
 };
 
 const defaultIntegrationList = {
