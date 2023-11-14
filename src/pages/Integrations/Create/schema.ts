@@ -1,44 +1,51 @@
-import { componentTypes } from '@data-driven-forms/react-form-renderer';
+import {
+  componentTypes,
+  validatorTypes,
+} from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
+import { SUMMARY } from './CreateWizard';
 export const schema = (category) => ({
-    fields: [
+  fields: [
+    {
+      component: componentTypes.WIZARD,
+      inModal: true,
+      className: 'notifications',
+      title: 'Add integration',
+      description:
+        'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
+      name: 'add-integration-wizard',
+      fields: [
+        integrationsStep(category),
         {
-            component: componentTypes.WIZARD,
-            inModal: true,
-            title: 'Add integration',
-            description: 'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
-            name: 'add-integration-wizard',
-            fields: [
-                integrationsStep(category),
+          title: 'Enter details',
+          name: 'details',
+          nextStep: 'review',
+          fields: [
+            {
+              component: componentTypes.TEXT_FIELD,
+              name: 'integration-name',
+              type: 'text',
+              label: 'Integration name',
+              isRequired: true,
+              validate: [
                 {
-                  title: 'Enter details',
-                  name: 'details',
-                  nextStep: 'review',
-                  fields: [
-                    {
-                      component: componentTypes.TEXT_FIELD,
-                      name: 'integration-name',
-                      type: 'text',
-                      label: 'Integration name',
-                      isRequired: true,
-                      validate: [
-                        {
-type: validatorTypes.REQUIRED,
-                        },
-                      ]
-                    }]
+                  type: validatorTypes.REQUIRED,
                 },
-              {
-                title: 'Review',
-                name: 'review',
-                fields: [
-                  {
-                    component: 'summary-content',
-                    name: 'summary-content',
-                  },
               ],
-              },
-            ]
-        }
-    ]
+            },
+          ],
+        },
+        {
+          title: 'Review',
+          name: 'review',
+          fields: [
+            {
+              component: [SUMMARY],
+              name: [SUMMARY],
+            },
+          ],
+        },
+      ],
+    },
+  ],
 });

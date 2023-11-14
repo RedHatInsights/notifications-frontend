@@ -1,14 +1,21 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import React, { useState } from 'react';
-import PropTypes from 'prop-types';
-
-import { FormGroup, FormHelperText, Grid, GridItem, HelperText, HelperTextItem, Tile } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  Grid,
+  GridItem,
+  HelperText,
+  HelperTextItem,
+  Tile,
+} from '@patternfly/react-core';
 
 import useFieldApi from '@data-driven-forms/react-form-renderer/use-field-api';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 
 /**Temporarily copied from sources-ui
  * This component will soon be imported to component-groups
-*/
+ */
 
 const handleKeyPress = (event, value, onClick) => {
   const spaceBar = 32;
@@ -18,14 +25,47 @@ const handleKeyPress = (event, value, onClick) => {
   }
 };
 
-const CardSelect = (originalProps) => {
-  const { isRequired, label, helperText, hideLabel, meta, input, options, mutator, DefaultIcon, iconMapper, ...props } =
-    useFieldApi(originalProps);
+export interface CardSelectProps {
+  multi: boolean;
+  isMulti: boolean;
+  label: Node;
+  isRequired: boolean;
+  helperText: Node;
+  description: Node;
+  hideLabel: boolean;
+  name: string;
+  mutator: Function;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  options: Array<any>;
+  DefaultIcon: Node | Function | Element;
+  iconMapper: Function;
+  isDisabled: boolean;
+  isReadOnly: boolean;
+}
+
+const CardSelect: React.FunctionComponent<CardSelectProps> = (
+  originalProps
+) => {
+  const {
+    isRequired,
+    label,
+    helperText,
+    hideLabel,
+    meta,
+    input,
+    options,
+    mutator,
+    DefaultIcon,
+    iconMapper,
+    ...props
+  } = useFieldApi(originalProps);
   const formOptions = useFormApi();
   const [icons] = useState(() => {
     const components = {};
 
-    options.forEach(({ value }) => (components[value] = iconMapper(value, DefaultIcon)));
+    options.forEach(
+      ({ value }) => (components[value] = iconMapper(value, DefaultIcon))
+    );
 
     return components;
   });
@@ -36,12 +76,16 @@ const CardSelect = (originalProps) => {
 
   const handleMulti = (value) =>
     input.onChange(
-      inputValue.includes(value) ? inputValue.filter((valueSelect) => valueSelect !== value) : [...inputValue, value]
+      inputValue.includes(value)
+        ? inputValue.filter((valueSelect) => valueSelect !== value)
+        : [...inputValue, value]
     );
 
-  const handleSingle = (value) => input.onChange(inputValue === value ? undefined : value);
+  const handleSingle = (value) =>
+    input.onChange(inputValue === value ? undefined : value);
 
-  const handleClick = (value) => (isMulti ? handleMulti(value) : handleSingle(value));
+  const handleClick = (value) =>
+    isMulti ? handleMulti(value) : handleSingle(value);
 
   const onClick = (value) => {
     if (isDisabled) {
@@ -98,28 +142,13 @@ const CardSelect = (originalProps) => {
       </Grid>
       <FormHelperText>
         <HelperText>
-          <HelperTextItem variant={showError ? 'error' : 'default'}>{showError ? error : helperText}</HelperTextItem>
+          <HelperTextItem variant={showError ? 'error' : 'default'}>
+            {showError ? error : helperText}
+          </HelperTextItem>
         </HelperText>
       </FormHelperText>
     </FormGroup>
   );
-};
-
-CardSelect.propTypes = {
-  multi: PropTypes.bool,
-  isMulti: PropTypes.bool,
-  label: PropTypes.node,
-  isRequired: PropTypes.bool,
-  helperText: PropTypes.node,
-  description: PropTypes.node,
-  hideLabel: PropTypes.bool,
-  name: PropTypes.string.isRequired,
-  mutator: PropTypes.func,
-  options: PropTypes.array,
-  DefaultIcon: PropTypes.oneOfType([PropTypes.node, PropTypes.func, PropTypes.element]),
-  iconMapper: PropTypes.func,
-  isDisabled: PropTypes.bool,
-  isReadOnly: PropTypes.bool,
 };
 
 CardSelect.defaultProps = {

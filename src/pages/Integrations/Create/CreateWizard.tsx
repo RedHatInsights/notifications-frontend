@@ -7,6 +7,8 @@ import Review from './Review';
 import CardSelect from './CardSelect';
 import { schema } from './schema';
 
+export const SUMMARY = 'summary-content';
+export const CARD_SELECT = 'card-select';
 export interface CreateWizardProps {
   category?: string;
   isOpen: boolean;
@@ -20,7 +22,7 @@ export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
 }: CreateWizardProps) => {
   const mapperExtension = {
     [SUMMARY]: Review,
-    [CARD_SELECT]: CardSelect
+    [CARD_SELECT]: CardSelect,
   };
   React.useEffect(() => {
     console.log(`Active category: ${category}`);
