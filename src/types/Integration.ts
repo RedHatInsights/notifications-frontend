@@ -151,3 +151,13 @@ export interface IntegrationConnectionAttempt {
 export type GetIntegrationRecipient = (
   integrationId: UUID
 ) => Promise<string> | string;
+
+export type IntegrationIcon = {
+  icon_url: string;
+  name: string;
+  product_name: string;
+};
+
+export type IntegrationIconTypes = {
+  [Property in UserIntegrationType]: IntegrationIcon;
+};

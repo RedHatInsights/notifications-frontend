@@ -4,8 +4,11 @@ import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 import * as React from 'react';
 
 import Review from './Review';
+import CardSelect from './CardSelect';
 import { schema } from './schema';
 
+export const SUMMARY = 'summary-content';
+export const CARD_SELECT = 'card-select';
 export interface CreateWizardProps {
   category?: string;
   isOpen: boolean;
@@ -18,16 +21,16 @@ export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
   category,
 }: CreateWizardProps) => {
   const mapperExtension = {
-    'summary-content': Review,
+    [SUMMARY]: Review,
+    [CARD_SELECT]: CardSelect,
   };
-
   React.useEffect(() => {
     console.log(`Active category: ${category}`);
   }, [category]);
 
   return isOpen ? (
     <FormRenderer
-      schema={schema}
+      schema={schema(category)}
       FormTemplate={Pf4FormTemplate}
       componentMapper={{ ...componentMapper, ...mapperExtension }}
       onSubmit={(props) => {

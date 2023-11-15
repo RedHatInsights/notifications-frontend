@@ -1,15 +1,21 @@
-import { componentTypes } from '@data-driven-forms/react-form-renderer';
-
-export const schema = {
+import {
+  componentTypes,
+  validatorTypes,
+} from '@data-driven-forms/react-form-renderer';
+import { integrationsStep } from './IntegrationsStep';
+import { SUMMARY } from './CreateWizard';
+export const schema = (category) => ({
   fields: [
     {
       component: componentTypes.WIZARD,
       inModal: true,
+      className: 'notifications',
       title: 'Add integration',
       description:
         'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
       name: 'add-integration-wizard',
       fields: [
+        integrationsStep(category),
         {
           title: 'Enter details',
           name: 'details',
@@ -23,7 +29,7 @@ export const schema = {
               isRequired: true,
               validate: [
                 {
-                  type: 'required',
+                  type: validatorTypes.REQUIRED,
                 },
               ],
             },
@@ -34,12 +40,12 @@ export const schema = {
           name: 'review',
           fields: [
             {
-              component: 'summary-content',
-              name: 'summary-content',
+              component: [SUMMARY],
+              name: [SUMMARY],
             },
           ],
         },
       ],
     },
   ],
-};
+});
