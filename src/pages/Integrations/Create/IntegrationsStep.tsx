@@ -14,12 +14,11 @@ export const integrationsStep = (category: string) => ({
     {
       component: componentTypes.PLAIN_TEXT,
       name: 'plain-text',
-      label:
-        'Select a communications integration to add to your Red Hat account.',
+      label: `Select a ${category.toLowerCase()} integration to add to your Red Hat account.`,
     },
     {
       component: CARD_SELECT,
-      name: 'communication-type',
+      name: 'category-type',
       isRequired: true,
       label: 'Select integration type',
       iconMapper: iconMapper(defaultIconList[category]),

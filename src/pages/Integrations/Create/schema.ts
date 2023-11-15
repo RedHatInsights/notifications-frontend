@@ -21,6 +21,7 @@ export const schema = (category) => ({
           : []),
         {
           title: 'Enter details',
+          label: 'Enter the details for your integration.',
           name: 'details',
           nextStep: 'review',
           fields: [
