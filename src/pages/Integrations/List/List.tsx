@@ -17,6 +17,7 @@ import { AppContext } from '../../../app/AppContext';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
+import IntegrationsDopeBox from '../../../components/Integrations/DopeBox';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -174,7 +175,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
         page = page.nextPage();
         exportedIntegrations.push(...data.payload.value.data);
       }
-
       if (exportedIntegrations) {
         inBrowserDownload(
           exporter.export(exportedIntegrations),
@@ -227,6 +227,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 
   return (
     <>
+      <IntegrationsDopeBox />
       <IntegrationsToolbar
         onAddIntegration={
           canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
