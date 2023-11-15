@@ -1,12 +1,8 @@
 import { Skeleton, Tooltip } from '@patternfly/react-core';
 import { BanIcon, LockIcon } from '@patternfly/react-icons';
-import {
-  global_disabled_color_100,
-  global_spacer_sm,
-} from '@patternfly/react-tokens';
+
 import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { Action, NotificationType } from '../../types/Notification';
 import {
@@ -20,15 +16,6 @@ interface RecipientProps {
   hasOutline?: boolean;
 }
 
-const disabledLabelClassName = style({
-  marginLeft: global_spacer_sm.var,
-  color: global_disabled_color_100.value,
-});
-
-const greyColorName = style({
-  color: global_disabled_color_100.value,
-});
-
 const CommaSeparator = () => <span>, </span>;
 
 export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
@@ -36,14 +23,14 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
     return (
       <>
         {!props.action.integration.isEnabled ? (
-          <span className={greyColorName}>
+          <span className="pf-v5-u-color-300">
             {' '}
             {props.action.integration.name}
             <Tooltip
               content="This integration has been disabled. This action wil not fire until it is enabled."
               position="bottom"
             >
-              <BanIcon className={disabledLabelClassName} />
+              <BanIcon className="pf-v5-u-color-300" />
             </Tooltip>
           </span>
         ) : (
@@ -76,7 +63,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
                       content="You may still receive forced notifications for this service"
                       position="bottom"
                     >
-                      <LockIcon className={disabledLabelClassName} />
+                      <LockIcon className="pf-v5-u-ml-sm pf-v5-u-color-300" />
                     </Tooltip>
                   </span>
                 )}{' '}

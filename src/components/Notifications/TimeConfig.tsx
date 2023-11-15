@@ -19,7 +19,6 @@ import {
   Title,
 } from '@patternfly/react-core';
 import { OutlinedClockIcon } from '@patternfly/react-icons';
-import { global_spacer_lg } from '@patternfly/react-tokens';
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import timezones from 'timezones.json';
@@ -31,14 +30,6 @@ import { useNotification } from '../../utils/AlertUtils';
 
 const dropDownClassName = style({
   width: '280px',
-});
-
-const dropDownPaddingClassName = style({
-  paddingLeft: global_spacer_lg.value,
-});
-
-const modalClass = style({
-  paddingLeft: '36px',
 });
 
 interface TimeConfigState {
@@ -191,7 +182,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         Edit time settings
       </Button>
       <Modal
-        className={modalClass}
+        className="pf-v5-u-pl-xl"
         variant={ModalVariant.small}
         isOpen={isModalOpen}
         onClose={handleModalToggle}
@@ -260,7 +251,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
               </StackItem>
               {showCustomSelect && (
                 <>
-                  <StackItem className={dropDownPaddingClassName}>
+                  <StackItem className="pf-v5-u-pl-lg">
                     <Text component={TextVariants.h6}>Time</Text>
                     <TimePicker
                       onChange={handleTimePrefSelect}
@@ -271,7 +262,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                       is24Hour
                     />
                   </StackItem>
-                  <StackItem className={dropDownPaddingClassName}>
+                  <StackItem className="pf-v5-u-pl-lg">
                     <Text component={TextVariants.h6}>Time zone</Text>
                     <Dropdown
                       className={dropDownClassName}

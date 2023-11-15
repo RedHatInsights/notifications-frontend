@@ -17,7 +17,6 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
-import { global_spacer_sm } from '@patternfly/react-tokens';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { MarkRequired } from 'ts-essentials';
@@ -29,10 +28,6 @@ import { BehaviorGroupActionsSummary } from './BehaviorGroupActionsSummary';
 const cardClassName = style({
   width: 450,
   height: '100%',
-});
-
-const lockedSpacer = style({
-  marginRight: global_spacer_sm.value,
 });
 
 export interface BehaviorGroupProps extends OuiaComponentProps {
@@ -79,7 +74,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> 
                       </div>
                     }
                   >
-                    <LockIcon className={lockedSpacer} />
+                    <LockIcon className="pf-v5-u-mr-sm" />
                   </Tooltip>
                 )}
               </SplitItem>

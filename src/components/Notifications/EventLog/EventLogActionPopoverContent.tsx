@@ -8,7 +8,6 @@ import {
   Thead,
   Tr,
 } from '@patternfly/react-table';
-import { global_palette_black_700 } from '@patternfly/react-tokens';
 import assertNever from 'assert-never';
 import { important } from 'csx';
 import * as React from 'react';
@@ -35,10 +34,6 @@ import {
 
 const headerClass = style({
   minWidth: important('90px'),
-});
-
-const grayFontClassName = style({
-  color: global_palette_black_700.value,
 });
 
 interface EventLogActionPopoverContentProps {
@@ -128,12 +123,12 @@ export const EventLogActionPopoverContent: React.FunctionComponent<EventLogActio
             <Td>
               <div>{toDisplayStatus(props.action.status)}</div>
               {props.action.successCount > 1 && (
-                <div className={grayFontClassName}>
+                <div className="pf-v5-u-color-300">
                   {props.action.successCount} {succeeded(props.action)}{' '}
                 </div>
               )}
               {props.action.errorCount > 1 && (
-                <div className={grayFontClassName}>
+                <div className="pf-v5-u-color-300">
                   {props.action.errorCount} {failed(props.action)}{' '}
                 </div>
               )}
