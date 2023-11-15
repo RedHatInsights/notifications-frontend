@@ -68,10 +68,10 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
     hideLabel,
     meta,
     input,
-    options,
-    mutator,
+    options = [],
+    mutator = (x) => x,
     DefaultIcon,
-    iconMapper,
+    iconMapper = (_value, DefaultIcon) => DefaultIcon,
     ...props
   } = useFieldApi(originalProps) as CardSelectProps;
   const formOptions = useFormApi();
@@ -164,12 +164,6 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
       </FormHelperText>
     </FormGroup>
   );
-};
-
-CardSelect.defaultProps = {
-  options: [],
-  iconMapper: (_value, DefaultIcon) => DefaultIcon,
-  mutator: (x) => x,
 };
 
 export default CardSelect;
