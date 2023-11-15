@@ -122,18 +122,18 @@ export const sortedIntegrationList = (
 export const defaultIconList = {
   [IntegrationCategory.COMMUNICATIONS]: <IntegrationIconTypes>{
     [UserIntegrationType.GOOGLE_CHAT]: <IntegrationIcon>{
-      name: 'gchat',
+      name: IntegrationType.GOOGLE_CHAT,
       product_name: 'Google Chat',
       icon_url: '/apps/frontend-assets/sources-integrations/google-chat.svg',
     },
     [UserIntegrationType.TEAMS]: <IntegrationIcon>{
-      name: 'microsoft-office-teams',
+      name: IntegrationType.TEAMS,
       product_name: 'Microsoft Office Teams',
       icon_url:
         '/apps/frontend-assets/sources-integrations/microsoft-office-teams.svg',
     },
     [UserIntegrationType.SLACK]: <IntegrationIcon>{
-      name: 'slack',
+      name: IntegrationType.SLACK,
       product_name: 'Slack',
       icon_url: '/apps/frontend-assets/sources-integrations/slack.svg',
     },

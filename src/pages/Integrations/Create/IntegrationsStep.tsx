@@ -18,7 +18,7 @@ export const integrationsStep = (category: string) => ({
         'Select a communications integration to add to your Red Hat account.',
     },
     {
-      component: [CARD_SELECT],
+      component: CARD_SELECT,
       name: 'communication-type',
       isRequired: true,
       label: 'Select integration type',
