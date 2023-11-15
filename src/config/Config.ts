@@ -138,6 +138,23 @@ export const defaultIconList = {
       icon_url: '/apps/frontend-assets/sources-integrations/slack.svg',
     },
   },
+  [IntegrationCategory.REPORTING]: <IntegrationIconTypes>{
+    [UserIntegrationType.SERVICE_NOW]: <IntegrationIcon>{
+      name: IntegrationType.SERVICE_NOW,
+      product_name: 'ServiceNow',
+      icon_url: '/apps/frontend-assets/sources-integrations/service-now.svg',
+    },
+    [UserIntegrationType.SPLUNK]: <IntegrationIcon>{
+      name: IntegrationType.SPLUNK,
+      product_name: 'Splunk',
+      icon_url: '/apps/frontend-assets/sources-integrations/splunk.svg',
+    },
+    [UserIntegrationType.ANSIBLE]: <IntegrationIcon>{
+      name: IntegrationType.ANSIBLE,
+      product_name: 'Event-Driven Ansible',
+      icon_url: '/apps/frontend-assets/sources-integrations/ansible.svg',
+    },
+  },
 };
 
 const defaultIntegrationList = {
