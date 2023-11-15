@@ -2,6 +2,10 @@ import {
   componentTypes,
   validatorTypes,
 } from '@data-driven-forms/react-form-renderer';
+<<<<<<< HEAD
+=======
+import { IntegrationType } from '../../../types/Integration';
+>>>>>>> 7cdd143 (change type)
 
 const reportingIcons = {
   splunk: '/apps/frontend-assets/sources-integrations/splunk.svg',
@@ -31,9 +35,15 @@ export const reportingStep = () => ({
         },
       ],
       options: [
+<<<<<<< HEAD
         { value: 'splunk', label: 'Splunk' },
         { value: 'snow', label: 'ServiceNow' },
         { value: 'eda', label: 'Event-Driven Ansible' },
+=======
+        { value: IntegrationType.SPLUNK, label: 'Splunk' },
+        { value: IntegrationType.SERVICE_NOW, label: 'ServiceNow' },
+        { value: IntegrationType.ANSIBLE, label: 'Event-Driven Ansible' },
+>>>>>>> 7cdd143 (change type)
       ],
     },
   ],
