@@ -1,7 +1,4 @@
-import {
-  componentTypes,
-  validatorTypes,
-} from '@data-driven-forms/react-form-renderer';
+import { componentTypes } from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
 import { IntegrationCategory } from '../../../types/Integration';
