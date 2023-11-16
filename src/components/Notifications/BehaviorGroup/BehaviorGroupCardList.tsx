@@ -1,5 +1,4 @@
 import { Flex, FlexItem } from '@patternfly/react-core';
-import { global_spacer_md } from '@patternfly/react-tokens';
 import * as React from 'react';
 import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
@@ -9,10 +8,6 @@ import { BehaviorGroupCard } from './BehaviorGroupCard';
 
 const cardsWrapperClassName = style({
   overflow: 'auto',
-});
-
-const cardWrapperClassName = style({
-  paddingBottom: global_spacer_md.var,
 });
 
 interface BehaviorGroupCardListProps {
@@ -49,7 +44,7 @@ const BehaviorGroupaCrdListImpl: React.FunctionComponent<BehaviorGroupCardListIm
     return (
       <BehaviorGroupCardListLayout>
         {props.behaviorGroups.map((behaviorGroup) => (
-          <FlexItem key={behaviorGroup.id} className={cardWrapperClassName}>
+          <FlexItem key={behaviorGroup.id} className="pf-v5-u-pb-md">
             <BehaviorGroupCard
               behaviorGroup={behaviorGroup}
               onEdit={props.onEdit}
@@ -67,7 +62,7 @@ const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
       {[...Array(skeletonBehaviorGroupCount).values()].map((_unused, index) => (
         <FlexItem
           key={`behavior-group-card-skeleton-${index}`}
-          className={cardWrapperClassName}
+          className="pf-v5-u-pb-md"
         >
           <BehaviorGroupCard />
         </FlexItem>

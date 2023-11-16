@@ -1,6 +1,7 @@
 import {
   Button,
   ButtonVariant,
+  Icon,
   Spinner,
   Split,
   SplitItem,
@@ -8,25 +9,13 @@ import {
   WizardFooter,
 } from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_100 } from '@patternfly/react-tokens';
 import * as React from 'react';
-import { style } from 'typestyle';
-
 export interface BehaviorGroupWizardFooterProps {
   isLoading: boolean;
   error?: string;
   onNext: (goNext: () => void) => void;
   onBack: (goBack: () => void) => void;
 }
-
-const contentClassName = style({
-  marginTop: 'auto',
-  marginBottom: 14,
-});
-
-const exclamationClassName = style({
-  marginRight: 5,
-});
 
 export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWizardFooterProps> =
   (props) => {
@@ -69,17 +58,16 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
           </Button>
         )}
         {props.isLoading ? (
-          <div className={contentClassName}>
+          <div className="pf-v5-u-mt-auto pf-v5-u-mb-md">
             <Spinner size="md" />
           </div>
         ) : (
           props.error && (
             <Split>
               <SplitItem>
-                <ExclamationCircleIcon
-                  className={exclamationClassName}
-                  color={global_danger_color_100.value}
-                />
+                <Icon status="danger" className="pf-v5-u-mr-xs">
+                  <ExclamationCircleIcon />
+                </Icon>
               </SplitItem>
               <SplitItem>{props.error}</SplitItem>
             </Split>

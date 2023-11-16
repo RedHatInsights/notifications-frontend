@@ -1,23 +1,10 @@
 import { Tabs } from '@patternfly/react-core';
-import {
-  global_BackgroundColor_100,
-  global_spacer_lg,
-} from '@patternfly/react-tokens';
 import React from 'react';
-import { style } from 'typestyle';
 
 interface MyTabComponentProps {
   configuration: React.ReactNode;
   settings: React.ReactNode;
 }
-
-const backgroundColorClassName = style({
-  backgroundColor: global_BackgroundColor_100.var,
-});
-
-const paddingLeftClassName = style({
-  paddingLeft: global_spacer_lg.value,
-});
 
 export const TabComponent: React.FunctionComponent<MyTabComponentProps> = (
   props
@@ -29,9 +16,9 @@ export const TabComponent: React.FunctionComponent<MyTabComponentProps> = (
   }, []);
 
   return (
-    <div className={backgroundColorClassName}>
+    <div className="pf-v5-u-background-color-100">
       <Tabs
-        className={paddingLeftClassName}
+        className="pf-v5-u-pl-lg"
         defaultActiveKey={activeTabKey}
         role="region"
         onClick={handleTabClick}

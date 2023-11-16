@@ -5,7 +5,6 @@ import {
   ExclamationTriangleIcon,
   InProgressIcon,
 } from '@patternfly/react-icons';
-import { global_warning_color_100 } from '@patternfly/react-tokens';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
@@ -16,7 +15,6 @@ import {
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
-import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -70,10 +68,6 @@ const notificationTypes: Record<NotificationType, { name: string }> = {
   },
 };
 
-const warningIconColorClassName = style({
-  color: global_warning_color_100.value,
-});
-
 const actionStatusMetadata = [
   {
     value: 'true',
@@ -98,7 +92,7 @@ const actionStatusMetadata = [
     chipValue: 'Warning',
     label: (
       <span>
-        <ExclamationTriangleIcon className={warningIconColorClassName} />{' '}
+        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100" />{' '}
         Warning{' '}
       </span>
     ),

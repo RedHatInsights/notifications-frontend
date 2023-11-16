@@ -1,24 +1,16 @@
 import {
   Chip,
   ChipGroup,
+  Icon,
   OptionsMenu,
   OptionsMenuItem,
   OptionsMenuToggle,
-  Split,
-  SplitItem,
   Tooltip,
 } from '@patternfly/react-core';
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
-import {
-  global_palette_black_400,
-  global_palette_black_700,
-  global_spacer_sm,
-  global_spacer_xs,
-} from '@patternfly/react-tokens';
 import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
 import {
@@ -27,22 +19,6 @@ import {
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
-
-const grayFontClassName = style({
-  color: global_palette_black_700.value,
-});
-
-const noBehaviorGroupsClassName = style({
-  textAlign: 'left',
-});
-
-const rightSpacerSm = style({
-  marginRight: global_spacer_sm.value,
-});
-
-const inlineSpacer = style({
-  marginRight: global_spacer_xs.value,
-});
 
 interface BehaviorGroupCellProps {
   id: string;
@@ -133,7 +109,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
       if (props.behaviorGroupContent.content.length === 0) {
         return [
           <OptionsMenuItem key="empty" isDisabled>
-            <span className={noBehaviorGroupsClassName}>
+            <span className="pf-v5-u-text-align-left">
               You have no behavior groups. <br />
               Create a new group by clicking on the <br />
               &apos;Create new group&apos; button above.
@@ -158,7 +134,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             isSelected={selected}
             isDisabled={bg.isDefault}
           >
-            {bg.isDefault && <LockIcon className={rightSpacerSm} />}{' '}
+            {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
             {bg.displayName}
           </OptionsMenuItem>
         );
@@ -179,7 +155,9 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           onToggle={setOpen}
           toggleTemplate={
             sortedSelected.length === 0 ? (
-              <span className={grayFontClassName}>Select behavior group</span>
+              <span className="pf-v5-u-disabled-color-100">
+                Select behavior group
+              </span>
             ) : (
               <ChipGroup>
                 {sortedSelected.map((value) => (
@@ -200,12 +178,12 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     const readonlyText = React.useMemo(() => {
       if (sortedSelected.length === 0) {
         return (
-          <Split>
-            <SplitItem className={rightSpacerSm}>
-              <BellSlashIcon color={global_palette_black_400.value} />
-            </SplitItem>
-            <SplitItem>Mute</SplitItem>
-          </Split>
+          <span>
+            <Icon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" isInline>
+              <BellSlashIcon />
+            </Icon>
+            Mute
+          </span>
         );
       }
 
@@ -217,10 +195,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                 content={`${b.displayName} behavior is attached to this event and cannot be changed.
                 Add additional behavior groups to assign different actions or recipients.`}
               >
-                <LockIcon
-                  color={global_palette_black_400.value}
-                  className={inlineSpacer}
-                />
+                <LockIcon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" />
               </Tooltip>
             )}{' '}
             {b.displayName}
