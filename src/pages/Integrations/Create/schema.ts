@@ -1,7 +1,14 @@
-import { componentTypes } from '@data-driven-forms/react-form-renderer';
+import {
+  componentTypes,
+  validatorTypes,
+} from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
-import { IntegrationCategory } from '../../../types/Integration';
+import {
+  IntegrationCategory,
+  UserIntegrationType,
+} from '../../../types/Integration';
+
 export const schema = (category) => ({
   fields: [
     {
@@ -13,7 +20,10 @@ export const schema = (category) => ({
         'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
       name: 'add-integration-wizard',
       fields: [
-        ...([IntegrationCategory.COMMUNICATIONS].includes(category)
+        ...([
+          IntegrationCategory.COMMUNICATIONS,
+          IntegrationCategory.REPORTING,
+        ].includes(category)
           ? [integrationsStep(category)]
           : []),
         {
@@ -22,7 +32,10 @@ export const schema = (category) => ({
           name: 'details',
           nextStep: 'review',
           fields: [
-            ...([IntegrationCategory.WEBHOOKS].includes(category)
+            ...([
+              IntegrationCategory.WEBHOOKS,
+              IntegrationCategory.REPORTING,
+            ].includes(category)
               ? [
                   {
                     component: componentTypes.PLAIN_TEXT,
@@ -70,8 +83,11 @@ export const schema = (category) => ({
                     name: 'secret-token',
                     type: 'text',
                     label: 'Secret token',
-                    helperText:
-                      'The defined secret token is sent as a "X-Insight-Token" header on the request.',
+                    helperText: UserIntegrationType.SERVICE_NOW
+                      ? 'Password of a ServiceNow integration user.'
+                      : UserIntegrationType.SPLUNK
+                      ? "The defined secret token is sent as a Splunk's HTTP Event Collector token."
+                      : 'The defined secret token is sent as a "X-Insight-Token" header on the request.',
                     isRequired: false,
                   },
                   {
