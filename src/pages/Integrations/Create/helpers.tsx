@@ -3,6 +3,7 @@ import type {
   IntegrationIcon,
   IntegrationIconTypes,
 } from '../../../types/Integration';
+import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>
@@ -47,3 +48,10 @@ export const compileAllIntegrationComboOptions = (
       label: t.product_name,
     }));
 };
+
+export const getIntegration = () => {
+  const formOptions = useFormApi();
+  const integration = formOptions.getState().values['communication-type'];
+  console.log(integration);
+  return integration;
+}

@@ -4,6 +4,7 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
+import { detailsStep } from './detailsStep';
 export const schema = (category) => ({
   fields: [
     {
@@ -16,25 +17,7 @@ export const schema = (category) => ({
       name: 'add-integration-wizard',
       fields: [
         integrationsStep(category),
-        {
-          title: 'Enter details',
-          name: 'details',
-          nextStep: 'review',
-          fields: [
-            {
-              component: componentTypes.TEXT_FIELD,
-              name: 'integration-name',
-              type: 'text',
-              label: 'Integration name',
-              isRequired: true,
-              validate: [
-                {
-                  type: validatorTypes.REQUIRED,
-                },
-              ],
-            },
-          ],
-        },
+        detailsStep(category),
         {
           title: 'Review',
           name: 'review',
