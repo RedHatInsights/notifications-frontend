@@ -36,6 +36,8 @@ import { integrationExporterFactory } from '../../../utils/exporters/Integration
 import { usePreviewFlag } from '../../../utils/usePreviewFlag';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationWizard } from '../Create/IntegrationWizard';
+import { CreateWizard } from '../Create/CreateWizard';
+import IntegrationTestModal from '../../../components/Integrations/Table/IntegrationTest';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
@@ -133,12 +135,13 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     [modalIsOpenActions]
   );
 
-  const onDelete = React.useCallback(
-    (integration: UserIntegration) => {
-      deleteModalActions.delete(integration);
-    },
-    [deleteModalActions]
-  );
+    const onTest = React.useCallback((integration: UserIntegration) => {
+        modalIsOpenActions.test(integration);
+    }, [ modalIsOpenActions ]);
+
+    const onDelete = React.useCallback((integration: UserIntegration) => {
+        deleteModalActions.delete(integration);
+    }, [ deleteModalActions ]);
 
   const onExport = React.useCallback(
     async (type: ExporterType) => {
@@ -187,10 +190,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     },
     [exportIntegrationsQuery]
   );
-
+  
   const actionResolver = useActionResolver({
     canWrite: canWriteIntegrationsEndpoints,
     onEdit,
+    onTest,
     onDelete,
     onEnable: integrationRows.onEnable,
   });
