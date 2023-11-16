@@ -18,7 +18,7 @@ export const integrationsStep = (category: string) => ({
     },
     {
       component: CARD_SELECT,
-      name: 'category-type',
+      name: 'integration-type',
       isRequired: true,
       label: 'Select integration type',
       iconMapper: iconMapper(defaultIconList[category]),
