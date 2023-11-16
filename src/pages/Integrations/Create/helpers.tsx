@@ -23,7 +23,7 @@ export const iconMapper =
       <img
         src={integrationType.icon_url}
         alt={integrationType.product_name}
-        className="src-c-wizard__icon pf-u-mb-sm"
+        className="src-c-wizard__icon pf-v5-u-mb-sm"
       />
     );
 

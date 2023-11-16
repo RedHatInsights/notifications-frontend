@@ -1,6 +1,5 @@
 import { Button, ButtonVariant, Spinner } from '@patternfly/react-core';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { IntegrationRef } from '../../types/Notification';
 
@@ -9,10 +8,6 @@ interface AddNotificationBodyProps {
   isLoading: boolean;
   switchEnabled: () => void;
 }
-
-const buttonClassname = style({
-  paddingLeft: 0,
-});
 
 export const AddNotificationBody: React.FunctionComponent<AddNotificationBodyProps> =
   (props) => {
@@ -27,7 +22,7 @@ export const AddNotificationBody: React.FunctionComponent<AddNotificationBodyPro
       <>
         <div>{text}</div>
         <Button
-          className={buttonClassname}
+          className="pf-v5-u-pl-0"
           isDisabled={props.isLoading}
           variant={ButtonVariant.link}
           onClick={props.switchEnabled}
