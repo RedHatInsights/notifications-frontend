@@ -5,10 +5,12 @@ import * as React from 'react';
 
 import Review from './Review';
 import CardSelect from './CardSelect';
+import InlineAlert from './CustomComponents/InlineAlert';
 import { schema } from './schema';
 
 export const SUMMARY = 'summary-content';
 export const CARD_SELECT = 'card-select';
+export const INLINE_ALERT = 'inline-alert';
 export interface CreateWizardProps {
   category?: string;
   isOpen: boolean;
@@ -23,6 +25,7 @@ export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
   const mapperExtension = {
     [SUMMARY]: Review,
     [CARD_SELECT]: CardSelect,
+    [INLINE_ALERT]: InlineAlert,
   };
   React.useEffect(() => {
     console.log(`Active category: ${category}`);
