@@ -6,7 +6,7 @@ import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
 import {
   IntegrationCategory,
-  UserIntegrationType,
+  IntegrationType,
 } from '../../../types/Integration';
 
 export const schema = (category) => ({
@@ -83,11 +83,12 @@ export const schema = (category) => ({
                     name: 'secret-token',
                     type: 'text',
                     label: 'Secret token',
-                    helperText: UserIntegrationType.SERVICE_NOW
+                    helperText: IntegrationType.SERVICE_NOW
                       ? 'Password of a ServiceNow integration user.'
-                      : UserIntegrationType.SPLUNK
+                      : IntegrationType.SPLUNK
                       ? "The defined secret token is sent as a Splunk's HTTP Event Collector token."
                       : 'The defined secret token is sent as a "X-Insight-Token" header on the request.',
+
                     isRequired: false,
                   },
                   {
