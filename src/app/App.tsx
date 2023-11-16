@@ -11,7 +11,6 @@ import {
 } from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { NotificationsPortal } from '../components/Store/NotificationsPortal';
 import { Routes } from '../Routes';
@@ -25,10 +24,6 @@ import { useApp } from './useApp';
 const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';
 const timezoneFormat = 'O';
-
-const switchClassname = style({
-  padding: 8,
-});
 
 const App: React.ComponentType = () => {
   const { updateDocumentTitle } = useChrome();
@@ -92,7 +87,7 @@ const App: React.ComponentType = () => {
         <InsightsEnvDetector insights={insights} onEnvironment={staging}>
           <RenderIfTrue>
             <Switch
-              className={switchClassname}
+              className="pf-v5-u-p-sm"
               isChecked={usingExperimental}
               onChange={toggleExperimental}
               labelOff="Enable experimental features"

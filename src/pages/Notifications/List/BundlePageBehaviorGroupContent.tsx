@@ -1,8 +1,6 @@
 import { Tab, TabTitleText } from '@patternfly/react-core';
-import { global_spacer_xl } from '@patternfly/react-tokens';
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
@@ -24,10 +22,6 @@ interface BundlePageBehaviorGroupContentProps {
   applications: Array<Facet>;
   bundle: Facet;
 }
-
-const behaviorGroupSectionClassName = style({
-  marginBottom: global_spacer_xl.var,
-});
 
 const noEvents = [];
 
@@ -152,7 +146,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageB
           </NotificationsToolbar>
         </Tab>
         <Tab eventKey={1} title={<TabTitleText>Behavior Groups</TabTitleText>}>
-          <div className={behaviorGroupSectionClassName}>
+          <div className="pf-v5-u-mb-xl">
             <BehaviorGroupsSection
               bundle={props.bundle}
               applications={props.applications}

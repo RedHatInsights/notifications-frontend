@@ -23,7 +23,6 @@ import {
   expandable,
   sortable,
 } from '@patternfly/react-table';
-import { global_spacer_md } from '@patternfly/react-tokens';
 import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTable';
 import {
   Direction,
@@ -85,19 +84,6 @@ export type IntegrationRow = UserIntegration & {
   lastConnectionAttempts?: Array<IntegrationConnectionAttempt>;
 };
 
-const connectionAlertClassName = style({
-  paddingBottom: global_spacer_md.var,
-});
-
-const expandedContentClassName = style({
-  paddingLeft: 0,
-  paddingBottom: 0,
-});
-
-const isEnabledLoadingClassName = style({
-  marginLeft: 10,
-});
-
 const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
   const status = aggregateConnectionAttemptStatus(attempts);
   switch (status) {
@@ -106,13 +92,13 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
       return null;
     case AggregatedConnectionAttemptStatus.ERROR:
       return (
-        <div className={connectionAlertClassName}>
+        <div className="pf-v5-u-pb-md">
           <ConnectionFailed attempts={attempts} />
         </div>
       );
     case AggregatedConnectionAttemptStatus.WARNING:
       return (
-        <div className={connectionAlertClassName}>
+        <div className="pf-v5-u-pb-md">
           <ConnectionDegraded attempts={attempts} />
         </div>
       );
@@ -160,7 +146,7 @@ const toTableRows = (
           title: (
             <>
               {integration.isEnabledLoading ? (
-                <Spinner className={isEnabledLoadingClassName} size="md" />
+                <Spinner className="pf-v5-u-ml-sm" size="md" />
               ) : (
                 <Switch
                   id={`table-row-switch-id-${integration.id}`}
@@ -187,7 +173,7 @@ const toTableRows = (
             <>
               {integration.lastConnectionAttempts !== undefined &&
                 getConnectionAlert(integration.lastConnectionAttempts)}
-              <div className={expandedContentClassName}>
+              <div className="pf-v5-u-pl-0 pf-v5-u-pb-0">
                 <ExpandedContent
                   integration={integration}
                   ouiaId={integration.id}
