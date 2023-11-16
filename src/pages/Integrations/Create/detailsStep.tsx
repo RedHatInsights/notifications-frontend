@@ -59,7 +59,7 @@ export const slackDetails = () => ({
         { type: validatorTypes.REQUIRED },
         {
           type: validatorTypes.URL,
-        }
+        },
       ],
     },
     {
@@ -68,14 +68,10 @@ export const slackDetails = () => ({
       type: 'text',
       label: 'Channel',
       isRequired: true,
-      validate: [
-        {type: validatorTypes.REQUIRED },
-      ],
-    }
-  ]
+      validate: [{ type: validatorTypes.REQUIRED }],
+    },
+  ],
 });
-
-
 
 export const gchatAndTeamsDetails = () => ({
   title: 'Enter details',
@@ -121,5 +117,5 @@ export const gchatAndTeamsDetails = () => ({
         },
       ],
     },
-  ]
+  ],
 });

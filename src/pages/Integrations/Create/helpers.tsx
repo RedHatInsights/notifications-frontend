@@ -1,10 +1,9 @@
 import React from 'react';
 import {
+  IntegrationIcon,
+  IntegrationIconTypes,
   IntegrationType,
-  type IntegrationIcon,
-  type IntegrationIconTypes,
 } from '../../../types/Integration';
-import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>
@@ -51,11 +50,14 @@ export const compileAllIntegrationComboOptions = (
 };
 
 export const nextDetailsStep = (values) => {
-  if( values['integration-type'] === IntegrationType.SLACK) {
-    return 'slack-details'
-  } else if( values['integration-type'] === IntegrationType.TEAMS || IntegrationType.GOOGLE_CHAT) {
-    return 'teams-gchat-details'
+  if (values['integration-type'] === IntegrationType.SLACK) {
+    return 'slack-details';
+  } else if (
+    values['integration-type'] === IntegrationType.TEAMS ||
+    IntegrationType.GOOGLE_CHAT
+  ) {
+    return 'teams-gchat-details';
   } else {
     return 'details';
   }
-}
+};

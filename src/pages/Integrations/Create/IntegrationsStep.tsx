@@ -2,16 +2,19 @@ import {
   componentTypes,
   validatorTypes,
 } from '@data-driven-forms/react-form-renderer';
-import { compileAllIntegrationComboOptions, iconMapper, nextDetailsStep } from './helpers';
+import {
+  compileAllIntegrationComboOptions,
+  iconMapper,
+  nextDetailsStep,
+} from './helpers';
 import { CARD_SELECT } from './CreateWizard';
 import { defaultIconList } from '../../../config/Config';
-import { IntegrationType } from '../../../types/Integration';
 
 export const integrationsStep = (category: string) => ({
   title: 'Select Integration type',
   name: 'integrationType',
   // nextStep: 'details',
-  nextStep: ({values}) => nextDetailsStep(values),
+  nextStep: ({ values }) => nextDetailsStep(values),
   fields: [
     {
       component: componentTypes.PLAIN_TEXT,
