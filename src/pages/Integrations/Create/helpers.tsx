@@ -1,7 +1,8 @@
 import React from 'react';
-import type {
-  IntegrationIcon,
-  IntegrationIconTypes,
+import {
+  IntegrationType,
+  type IntegrationIcon,
+  type IntegrationIconTypes,
 } from '../../../types/Integration';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 
@@ -49,9 +50,12 @@ export const compileAllIntegrationComboOptions = (
     }));
 };
 
-export const getIntegration = () => {
-  const formOptions = useFormApi();
-  const integration = formOptions.getState().values['communication-type'];
-  console.log(integration);
-  return integration;
+export const nextDetailsStep = (values) => {
+  if( values['integration-type'] === IntegrationType.SLACK) {
+    return 'slack-details'
+  } else if( values['integration-type'] === IntegrationType.TEAMS || IntegrationType.GOOGLE_CHAT) {
+    return 'teams-gchat-details'
+  } else {
+    return 'details';
+  }
 }
