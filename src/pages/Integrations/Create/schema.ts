@@ -80,15 +80,38 @@ export const schema = (category) => ({
                   },
                   {
                     component: componentTypes.TEXT_FIELD,
-                    name: 'secret-token',
+                    name: 'service_now-secret-token',
                     type: 'text',
                     label: 'Secret token',
-                    helperText: IntegrationType.SERVICE_NOW
-                      ? 'Password of a ServiceNow integration user.'
-                      : IntegrationType.SPLUNK
-                      ? "The defined secret token is sent as a Splunk's HTTP Event Collector token."
-                      : 'The defined secret token is sent as a "X-Insight-Token" header on the request.',
-
+                    condition: {
+                      when: 'integration-type',
+                      is: IntegrationType.SERVICE_NOW,
+                      then: { visible: true },
+                    },
+                    helperText: 'Password of a ServiceNow integration user.',
+                    isRequired: false,
+                  },
+                  {
+                    component: componentTypes.TEXT_FIELD,
+                    name: 'service_now-secret-token',
+                    type: 'text',
+                    label: 'Secret token',
+                    condition: {
+                      when: 'integration-type',
+                      is: IntegrationType.SPLUNK,
+                      then: { visible: true },
+                    },
+                    helperText:
+                      "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
+                    isRequired: false,
+                  },
+                  {
+                    component: componentTypes.TEXT_FIELD,
+                    name: 'service_now-secret-token',
+                    type: 'text',
+                    label: 'Secret token',
+                    helperText:
+                      'The defined secret token is sent as a "X-Insight-Token" header on the request.',
                     isRequired: false,
                   },
                   {
