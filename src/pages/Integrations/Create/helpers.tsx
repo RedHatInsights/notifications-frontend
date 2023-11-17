@@ -1,7 +1,8 @@
 import React from 'react';
-import type {
+import {
   IntegrationIcon,
   IntegrationIconTypes,
+  IntegrationType,
 } from '../../../types/Integration';
 
 export const iconMapper =
@@ -46,4 +47,17 @@ export const compileAllIntegrationComboOptions = (
       value: t.name,
       label: t.product_name,
     }));
+};
+
+export const nextDetailsStep = (values) => {
+  if (values['integration-type'] === IntegrationType.SLACK) {
+    return 'slack-details';
+  } else if (
+    values['integration-type'] === IntegrationType.TEAMS ||
+    IntegrationType.GOOGLE_CHAT
+  ) {
+    return 'teams-gchat-details';
+  } else {
+    return 'details';
+  }
 };

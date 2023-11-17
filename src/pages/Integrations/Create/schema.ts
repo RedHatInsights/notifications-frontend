@@ -4,6 +4,7 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
+import { gchatAndTeamsDetails, slackDetails } from './detailsStep';
 import { IntegrationCategory } from '../../../types/Integration';
 export const schema = (category) => ({
   fields: [
@@ -15,6 +16,7 @@ export const schema = (category) => ({
       description:
         'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
       name: 'add-integration-wizard',
+      crossroads: ['integration-type', 'integration-name'],
       fields: [
         ...([IntegrationCategory.COMMUNICATIONS].includes(category)
           ? [integrationsStep(category)]
@@ -83,22 +85,11 @@ export const schema = (category) => ({
                     variant: 'info',
                   },
                 ]
-              : [
-                  {
-                    component: componentTypes.TEXT_FIELD,
-                    name: 'integration-name',
-                    type: 'text',
-                    label: 'Integration name',
-                    isRequired: true,
-                    validate: [
-                      {
-                        type: validatorTypes.REQUIRED,
-                      },
-                    ],
-                  },
-                ]),
+              : []),
           ],
         },
+        gchatAndTeamsDetails(),
+        slackDetails(),
         {
           title: 'Review',
           name: 'review',
