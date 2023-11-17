@@ -15,13 +15,8 @@ import {
   Tooltip,
 } from '@patternfly/react-core';
 import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
-import {
-  global_BackgroundColor_100,
-  global_palette_black_1000,
-  global_spacer_lg,
-} from '@patternfly/react-tokens';
+
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
 import { BehaviorGroupCardList } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupCardList';
@@ -33,39 +28,6 @@ import { emptyImmutableArray } from '../../../utils/Immutable';
 import { BehaviorGroupWizardPage } from '../BehaviorGroupWizard/BehaviorGroupWizardPage';
 import { DeleteBehaviorGroupPage } from '../Form/DeleteBehaviorGroupPage';
 import { BehaviorGroupContent } from './useBehaviorGroupContent';
-
-const expandableSectionClassName = {
-  backgroundColor: global_BackgroundColor_100.var,
-  paddingLeft: global_spacer_lg.var,
-  paddingRight: global_spacer_lg.var,
-};
-
-const sectionClassName = style(expandableSectionClassName, {
-  paddingBottom: global_spacer_lg.var,
-});
-
-const sectionTitleClassName = style(expandableSectionClassName, {
-  paddingTop: global_spacer_lg.var,
-});
-
-const titleClassName = style({
-  marginTop: '-0.15em',
-  color: global_palette_black_1000.var,
-});
-
-const defaultIconClassName = style({
-  marginTop: '2px',
-  marginLeft: '-16px',
-});
-
-const badgeClassName = style({
-  marginTop: '10px',
-  marginLeft: '-16px',
-});
-
-const emptyAddButtonClassName = style({
-  marginTop: '-0.2em',
-});
 
 interface BehaviorGroupSectionProps {
   bundle: Facet;
@@ -191,8 +153,8 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
 
     return (
       <>
-        <div className={sectionTitleClassName}>
-          <Split hasGutter>
+        <div className="pf-v5-u-background-color-100 pf-v5-u-pt-lg pf-v5-u-px-lg">
+          <Split className="pf-v5-u-mb-md" hasGutter>
             <ExpandableSectionToggle
               isExpanded={isExpanded}
               onToggle={setExpanded}
@@ -200,28 +162,30 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
               direction="down"
             >
               <SplitItem>
-                <Title className={titleClassName} headingLevel="h2">
+                <Title
+                  className="pf-v5-u-pt-xs pf-v5-u-color-100"
+                  headingLevel="h2"
+                >
                   Behavior groups
                 </Title>
               </SplitItem>
             </ExpandableSectionToggle>
-            <SplitItem>
+            <SplitItem className="pf-v5-u-align-self-flex-end pf-v5-u-pb-sm">
               {!props.behaviorGroupContent.isLoading &&
                 !props.behaviorGroupContent.hasError &&
                 (props.behaviorGroupContent.content.length > 0 ? (
-                  <Badge className={badgeClassName} isRead>
+                  <Badge isRead>
                     {props.behaviorGroupContent.content.length}
                   </Badge>
                 ) : (
                   <BehaviorGroupAddButton
-                    className={emptyAddButtonClassName}
                     component="a"
                     onClick={createGroup}
                     isDisabled={!rbac.canWriteNotifications}
                   />
                 ))}
             </SplitItem>
-            <SplitItem>
+            <SplitItem className="pf-v5-u-pt-sm">
               <Popover
                 position="right"
                 hideOnOutsideClick
@@ -248,7 +212,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                 }
               >
                 <Button
-                  className={defaultIconClassName}
+                  className="pf-v5-u-align-self-flex-end"
                   variant="plain"
                   aria-label="Help"
                 >
@@ -259,7 +223,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
           </Split>
         </div>
         <ExpandableSection
-          className={sectionClassName}
+          className="pf-v5-u-background-color-100 pf-v5-u-pb-lg pf-v5-u-px-lg"
           contentId={contentId}
           isExpanded={isExpanded}
           onToggle={setExpanded}

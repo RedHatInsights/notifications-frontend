@@ -152,7 +152,7 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
       helperTextInvalid={error}
       validated={showError ? 'error' : 'default'}
     >
-      <Grid hasGutter className="pf-u-mb-md">
+      <Grid hasGutter className="pf-v5-u-mb-md">
         {prepareCards()}
       </Grid>
       <FormHelperText>
