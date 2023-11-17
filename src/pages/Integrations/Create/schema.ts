@@ -4,8 +4,12 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
+import {
+  IntegrationCategory,
+  IntegrationType,
+} from '../../../types/Integration';
 import { gchatAndTeamsDetails, slackDetails } from './detailsStep';
-import { IntegrationCategory } from '../../../types/Integration';
+
 export const schema = (category) => ({
   fields: [
     {
@@ -18,15 +22,22 @@ export const schema = (category) => ({
       name: 'add-integration-wizard',
       crossroads: ['integration-type', 'integration-name'],
       fields: [
-        ...([IntegrationCategory.COMMUNICATIONS].includes(category)
+        ...([
+          IntegrationCategory.COMMUNICATIONS,
+          IntegrationCategory.REPORTING,
+        ].includes(category)
           ? [integrationsStep(category)]
           : []),
         {
           title: 'Enter details',
+          label: 'Enter the details for your integration.',
           name: 'details',
           nextStep: 'review',
           fields: [
-            ...([IntegrationCategory.WEBHOOKS].includes(category)
+            ...([
+              IntegrationCategory.WEBHOOKS,
+              IntegrationCategory.REPORTING,
+            ].includes(category)
               ? [
                   {
                     component: componentTypes.PLAIN_TEXT,
@@ -71,7 +82,34 @@ export const schema = (category) => ({
                   },
                   {
                     component: componentTypes.TEXT_FIELD,
-                    name: 'secret-token',
+                    name: 'service_now-secret-token',
+                    type: 'text',
+                    label: 'Secret token',
+                    condition: {
+                      when: 'integration-type',
+                      is: IntegrationType.SERVICE_NOW,
+                      then: { visible: true },
+                    },
+                    helperText: 'Password of a ServiceNow integration user.',
+                    isRequired: false,
+                  },
+                  {
+                    component: componentTypes.TEXT_FIELD,
+                    name: 'service_now-secret-token',
+                    type: 'text',
+                    label: 'Secret token',
+                    condition: {
+                      when: 'integration-type',
+                      is: IntegrationType.SPLUNK,
+                      then: { visible: true },
+                    },
+                    helperText:
+                      "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
+                    isRequired: false,
+                  },
+                  {
+                    component: componentTypes.TEXT_FIELD,
+                    name: 'service_now-secret-token',
                     type: 'text',
                     label: 'Secret token',
                     helperText:

@@ -1,4 +1,4 @@
-// Constatns, like link to docs and cases
+// Constants, like link to docs and cases
 
 import { Messages } from '../../../properties/Messages';
 
