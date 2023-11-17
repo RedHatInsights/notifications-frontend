@@ -3,22 +3,6 @@ import {
   validatorTypes,
 } from '@data-driven-forms/react-form-renderer';
 
-export const googleAndTeamsField = {
-  component: componentTypes.TEXT_FIELD,
-  name: 'endpoint-url',
-  type: 'text',
-  label: 'Endpoint Url',
-  helperText: 'URL must include "http://"',
-  isRequired: true,
-  validate: [
-    { type: validatorTypes.REQUIRED },
-    {
-      type: validatorTypes.URL,
-      message: 'URL must include "http://"',
-    },
-  ],
-};
-
 export const slackDetails = () => ({
   title: 'Enter details',
   name: 'slack-details',
