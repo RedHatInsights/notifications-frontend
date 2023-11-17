@@ -8,6 +8,7 @@ import {
   IntegrationCategory,
   IntegrationType,
 } from '../../../types/Integration';
+import { gchatAndTeamsDetails, slackDetails } from './detailsStep';
 
 export const schema = (category) => ({
   fields: [
@@ -19,6 +20,7 @@ export const schema = (category) => ({
       description:
         'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
       name: 'add-integration-wizard',
+      crossroads: ['integration-type', 'integration-name'],
       fields: [
         ...([
           IntegrationCategory.COMMUNICATIONS,
@@ -121,22 +123,11 @@ export const schema = (category) => ({
                     variant: 'info',
                   },
                 ]
-              : [
-                  {
-                    component: componentTypes.TEXT_FIELD,
-                    name: 'integration-name',
-                    type: 'text',
-                    label: 'Integration name',
-                    isRequired: true,
-                    validate: [
-                      {
-                        type: validatorTypes.REQUIRED,
-                      },
-                    ],
-                  },
-                ]),
+              : []),
           ],
         },
+        gchatAndTeamsDetails(),
+        slackDetails(),
         {
           title: 'Review',
           name: 'review',

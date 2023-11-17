@@ -15,7 +15,7 @@ import useFieldApi, {
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 import { FormOptions } from '@data-driven-forms/react-form-renderer';
 
-import './styling/cardselect.scss';
+import '../styling/cardselect.scss';
 
 /**Temporarily copied from sources-ui
  * This component will soon be imported to component-groups
@@ -152,7 +152,7 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
       helperTextInvalid={error}
       validated={showError ? 'error' : 'default'}
     >
-      <Grid hasGutter className="pf-u-mb-md">
+      <Grid hasGutter className="pf-v5-u-mb-md">
         {prepareCards()}
       </Grid>
       <FormHelperText>
