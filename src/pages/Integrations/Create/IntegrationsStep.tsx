@@ -13,7 +13,6 @@ import { defaultIconList } from '../../../config/Config';
 export const integrationsStep = (category: string) => ({
   title: 'Select Integration type',
   name: 'integrationType',
-  // nextStep: 'details',
   nextStep: ({ values }) => nextDetailsStep(values),
   fields: [
     {

@@ -4,7 +4,7 @@ import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 import * as React from 'react';
 
 import Review from './Review';
-import CardSelect from './CardSelect';
+import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
 import { schema } from './schema';
 
