@@ -57,6 +57,10 @@ export const nextDetailsStep = (values) => {
     values['integration-type'] === IntegrationType.GOOGLE_CHAT
   ) {
     return 'teams-gchat-details';
+  } else if (values['integration-type'] === IntegrationType.SPLUNK) {
+    return 'splunk-details';
+  } else if (values['integration-type'] === IntegrationType.SERVICE_NOW) {
+    return 'service-now-details';
   } else {
     return 'details';
   }

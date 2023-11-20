@@ -4,11 +4,13 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import { integrationsStep } from './IntegrationsStep';
 import { SUMMARY } from './CreateWizard';
+import { IntegrationCategory } from '../../../types/Integration';
 import {
-  IntegrationCategory,
-  IntegrationType,
-} from '../../../types/Integration';
-import { gchatAndTeamsDetails, slackDetails } from './detailsStep';
+  gchatAndTeamsDetails,
+  serviceNowDetails,
+  slackDetails,
+  splunkDetails,
+} from './detailsStep';
 
 export const schema = (category) => ({
   fields: [
@@ -81,41 +83,9 @@ export const schema = (category) => ({
                   },
                   {
                     component: componentTypes.TEXT_FIELD,
-                    name: 'service_now-secret-token',
+                    name: 'secret-token',
                     type: 'text',
                     label: 'Secret token',
-                    condition: {
-                      when: 'integration-type',
-                      is: IntegrationType.SERVICE_NOW,
-                      then: { visible: true },
-                    },
-                    helperText: 'Password of a ServiceNow integration user.',
-                    isRequired: false,
-                  },
-                  {
-                    component: componentTypes.TEXT_FIELD,
-                    name: 'splunk-secret-token',
-                    type: 'text',
-                    label: 'Secret token',
-                    condition: {
-                      when: 'integration-type',
-                      is: IntegrationType.SPLUNK,
-                      then: { visible: true },
-                    },
-                    helperText:
-                      "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
-                    isRequired: false,
-                  },
-                  {
-                    component: componentTypes.TEXT_FIELD,
-                    name: 'other-secret-token',
-                    type: 'text',
-                    label: 'Secret token',
-                    condition: {
-                      when: 'integration-type',
-                      is: IntegrationType.ANSIBLE || IntegrationType.WEBHOOK,
-                      then: { visible: true },
-                    },
                     helperText:
                       'The defined secret token is sent as a "X-Insight-Token" header on the request.',
                     isRequired: false,
@@ -130,6 +100,8 @@ export const schema = (category) => ({
               : []),
           ],
         },
+        splunkDetails(),
+        serviceNowDetails(),
         gchatAndTeamsDetails(),
         slackDetails(),
         {
