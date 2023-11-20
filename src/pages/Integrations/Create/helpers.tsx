@@ -1,5 +1,6 @@
 import React from 'react';
 import {
+  IntegrationCategory,
   IntegrationIcon,
   IntegrationIconTypes,
   IntegrationType,
@@ -49,11 +50,15 @@ export const compileAllIntegrationComboOptions = (
     }));
 };
 
-export const nextDetailsStep = (values) => {
-  if (values['integration-type'] === IntegrationType.SLACK) {
+export const nextDetailsStep = (category) => {
+  if (
+    category === IntegrationCategory.COMMUNICATIONS &&
+    IntegrationType.SLACK
+  ) {
     return 'slack-details';
   } else if (
-    values['integration-type'] === IntegrationType.TEAMS ||
+    (category === IntegrationCategory.COMMUNICATIONS &&
+      IntegrationType.TEAMS) ||
     IntegrationType.GOOGLE_CHAT
   ) {
     return 'teams-gchat-details';

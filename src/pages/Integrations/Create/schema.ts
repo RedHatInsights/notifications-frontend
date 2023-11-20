@@ -20,7 +20,6 @@ export const schema = (category) => ({
       description:
         'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
       name: 'add-integration-wizard',
-      crossroads: ['integration-type', 'integration-name'],
       fields: [
         ...([
           IntegrationCategory.COMMUNICATIONS,
@@ -95,7 +94,7 @@ export const schema = (category) => ({
                   },
                   {
                     component: componentTypes.TEXT_FIELD,
-                    name: 'service_now-secret-token',
+                    name: 'splunk-secret-token',
                     type: 'text',
                     label: 'Secret token',
                     condition: {
@@ -109,7 +108,7 @@ export const schema = (category) => ({
                   },
                   {
                     component: componentTypes.TEXT_FIELD,
-                    name: 'service_now-secret-token',
+                    name: 'secret-token',
                     type: 'text',
                     label: 'Secret token',
                     helperText:
