@@ -2,6 +2,7 @@ import {
   Chip,
   ChipGroup,
   Icon,
+  Label,
   OptionsMenu,
   OptionsMenuItem,
   OptionsMenuToggle,
@@ -198,7 +199,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
                 <LockIcon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" />
               </Tooltip>
             )}{' '}
-            {b.displayName}
+            <Label isCompact>{b.displayName}</Label>
           </React.Fragment>
         )),
         CommaSeparator
