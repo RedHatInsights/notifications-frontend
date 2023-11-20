@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  IntegrationCategory,
   IntegrationIcon,
   IntegrationIconTypes,
   IntegrationType,
@@ -50,16 +49,12 @@ export const compileAllIntegrationComboOptions = (
     }));
 };
 
-export const nextDetailsStep = (category) => {
-  if (
-    category === IntegrationCategory.COMMUNICATIONS &&
-    IntegrationType.SLACK
-  ) {
+export const nextDetailsStep = (values) => {
+  if (values['integration-type'] === IntegrationType.SLACK) {
     return 'slack-details';
   } else if (
-    (category === IntegrationCategory.COMMUNICATIONS &&
-      IntegrationType.TEAMS) ||
-    IntegrationType.GOOGLE_CHAT
+    values['integration-type'] === IntegrationType.TEAMS ||
+    values['integration-type'] === IntegrationType.GOOGLE_CHAT
   ) {
     return 'teams-gchat-details';
   } else {
