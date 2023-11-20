@@ -108,13 +108,27 @@ export const schema = (category) => ({
                   },
                   {
                     component: componentTypes.TEXT_FIELD,
-                    name: 'secret-token',
+                    name: 'other-secret-token',
                     type: 'text',
                     label: 'Secret token',
+                    condition: {
+                      when: 'integration-type',
+                      is: IntegrationType.ANSIBLE || IntegrationType.WEBHOOK,
+                      then: { visible: true },
+                    },
                     helperText:
                       'The defined secret token is sent as a "X-Insight-Token" header on the request.',
                     isRequired: false,
                   },
+                  // {
+                  //   component: componentTypes.TEXT_FIELD,
+                  //   name: 'secret-token',
+                  //   type: 'text',
+                  //   label: 'Secret token',
+                  //   helperText:
+                  //     'The defined secret token is sent as a "X-Insight-Token" header on the request.',
+                  //   isRequired: false,
+                  // },
                   {
                     name: 'inline-info-alert',
                     component: 'inline-alert',
