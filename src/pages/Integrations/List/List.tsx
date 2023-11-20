@@ -227,7 +227,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 
   return (
     <>
-      <IntegrationsDopeBox />
+      <IntegrationsDopeBox category={category} />
       <IntegrationsToolbar
         onAddIntegration={
           canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined

@@ -18,9 +18,14 @@ import { CogIcon } from '@patternfly/react-icons';
 import { LockIcon } from '@patternfly/react-icons';
 import { BellIcon } from '@patternfly/react-icons';
 import { ArrowRightIcon } from '@patternfly/react-icons';
+import { IntegrationCategory } from '../../types/Integration';
 import '../../app/App.scss';
 
-const DopeBox = () => {
+interface DopeBoxProps {
+  category?: IntegrationCategory;
+}
+
+const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
   const [isExpanded, setIsExpanded] = React.useState(true);
   const onToggle = React.useCallback(
     (isExpanded: boolean) => {
@@ -67,72 +72,75 @@ const DopeBox = () => {
                     you must configure incoming webhooks in your third-party
                     applications.
                   </Text>
-                  (Communications tab)
-                  <TextList className="pf-u-ml-0">
-                    <TextListItem>
+                  {category === IntegrationCategory.COMMUNICATIONS && (
+                    <TextList className="pf-u-ml-0">
+                      <TextListItem>
+                        <Link
+                          to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-insights-integration-with-slack_integrations"
+                          target="_blank"
+                        >
+                          Configure Slack
+                        </Link>
+                      </TextListItem>
+                      <TextListItem>
+                        <Link
+                          to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-gchat_integrations"
+                          target="_blank"
+                        >
+                          Configure Google Chat
+                        </Link>
+                      </TextListItem>
+                      <TextListItem>
+                        <Link
+                          to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-teams_integrations"
+                          target="_blank"
+                        >
+                          Configure Microsoft Teams
+                        </Link>
+                      </TextListItem>
+                    </TextList>
+                  )}
+                  {category === IntegrationCategory.REPORTING && (
+                    <TextList className="pf-u-ml-0">
+                      <TextListItem>
+                        <Link
+                          to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-splunk_integrations"
+                          target="_blank"
+                        >
+                          Configure Splunk
+                        </Link>
+                      </TextListItem>
+                      <TextListItem>
+                        <Link
+                          to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-snow_integrations"
+                          target="_blank"
+                        >
+                          Configure ServiceNow
+                        </Link>
+                      </TextListItem>
+                      <TextListItem>
+                        <Link
+                          to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-eda_integrations"
+                          target="_blank"
+                        >
+                          Configure Event-Driven Ansible
+                        </Link>
+                      </TextListItem>
+                    </TextList>
+                  )}
+                  {category === IntegrationCategory.WEBHOOKS && (
+                    <Text component="p">
                       <Link
-                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-insights-integration-with-slack_integrations"
+                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index"
                         target="_blank"
                       >
-                        Configure Slack
+                        Learn more
+                        <Icon className="pf-u-ml-sm" isInline>
+                          <ArrowRightIcon />
+                        </Icon>
                       </Link>
-                    </TextListItem>
-                    <TextListItem>
-                      <Link
-                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-gchat_integrations"
-                        target="_blank"
-                      >
-                        Configure Google Chat
-                      </Link>
-                    </TextListItem>
-                    <TextListItem>
-                      <Link
-                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-teams_integrations"
-                        target="_blank"
-                      >
-                        Configure Microsoft Teams
-                      </Link>
-                    </TextListItem>
-                  </TextList>
-                  (Reporting tab)
-                  <TextList className="pf-u-ml-0">
-                    <TextListItem>
-                      <Link
-                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-splunk_integrations"
-                        target="_blank"
-                      >
-                        Configure Splunk
-                      </Link>
-                    </TextListItem>
-                    <TextListItem>
-                      <Link
-                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-snow_integrations"
-                        target="_blank"
-                      >
-                        Configure ServiceNow
-                      </Link>
-                    </TextListItem>
-                    <TextListItem>
-                      <Link
-                        to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-eda_integrations"
-                        target="_blank"
-                      >
-                        Configure Event-Driven Ansible
-                      </Link>
-                    </TextListItem>
-                  </TextList>
-                  (Webhooks tab)
-                  <Text component="p">
-                    <Link
-                      to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index"
-                      target="_blank"
-                    >
-                      Learn more
-                      <Icon className="pf-u-ml-sm" isInline>
-                        <ArrowRightIcon />
-                      </Icon>
-                    </Link>
-                  </Text>
+                    </Text>
+                  )}
                 </TextContent>
               </CardBody>
             </Card>
