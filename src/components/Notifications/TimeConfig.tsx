@@ -1,4 +1,5 @@
 import {
+  AlertActionLink,
   Button,
   Dropdown,
   DropdownItem,
@@ -18,11 +19,11 @@ import {
   TimePicker,
   Title,
 } from '@patternfly/react-core';
-import { OutlinedClockIcon } from '@patternfly/react-icons';
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
+import { Alert } from '@patternfly/react-core';
 
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
@@ -30,6 +31,10 @@ import { useNotification } from '../../utils/AlertUtils';
 
 const dropDownClassName = style({
   width: '280px',
+});
+
+const alertClassName = style({
+  marginTop: '12px',
 });
 
 interface TimeConfigState {
@@ -165,22 +170,24 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     setIsModalOpen(!isModalOpen);
   };
 
+  const timeconfigTitle = () => {
+    return `Any daily digest emails you've opted into will be sent at ${
+      timePref ? timePref : '00:00'
+    } UTC`;
+  };
+
   return (
     <>
-      <p>
-        <OutlinedClockIcon color="var(--pf-v5-global--palette--cyan-200)" />
-        &nbsp;
-        {`Any daily digest emails you've opted into will be sent at ${
-          timePref ? timePref : '00:00'
-        } UTC`}
-      </p>
-      <Button
-        variant="link"
-        onClick={handleModalToggle}
-        ouiaId="TimeConfigModal"
-      >
-        Edit time settings
-      </Button>
+      <Alert
+        className={alertClassName}
+        isInline
+        title={timeconfigTitle()}
+        actionLinks={
+          <AlertActionLink onClick={handleModalToggle} ouiaId="TimeConfigModal">
+            Edit time settings
+          </AlertActionLink>
+        }
+      />
       <Modal
         className="pf-v5-u-pl-xl"
         variant={ModalVariant.small}
