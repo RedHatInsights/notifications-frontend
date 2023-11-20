@@ -120,15 +120,6 @@ export const schema = (category) => ({
                       'The defined secret token is sent as a "X-Insight-Token" header on the request.',
                     isRequired: false,
                   },
-                  // {
-                  //   component: componentTypes.TEXT_FIELD,
-                  //   name: 'secret-token',
-                  //   type: 'text',
-                  //   label: 'Secret token',
-                  //   helperText:
-                  //     'The defined secret token is sent as a "X-Insight-Token" header on the request.',
-                  //   isRequired: false,
-                  // },
                   {
                     name: 'inline-info-alert',
                     component: 'inline-alert',
