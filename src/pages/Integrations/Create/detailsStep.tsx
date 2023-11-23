@@ -6,7 +6,7 @@ import {
 export const slackDetails = () => ({
   title: 'Enter details',
   name: 'slack-details',
-  nextStep: 'summary',
+  nextStep: 'review',
   fields: [
     {
       component: componentTypes.PLAIN_TEXT,
@@ -34,7 +34,7 @@ export const slackDetails = () => ({
     },
     {
       component: componentTypes.TEXT_FIELD,
-      name: 'workspace-url',
+      name: 'endpoint-url',
       type: 'text',
       label: 'Workspace Url',
       helperText: 'URL must include "http://"',
@@ -60,7 +60,7 @@ export const slackDetails = () => ({
 export const gchatAndTeamsDetails = () => ({
   title: 'Enter details',
   name: 'teams-gchat-details',
-  nextStep: 'summary',
+  nextStep: 'review',
   fields: [
     {
       component: componentTypes.PLAIN_TEXT,

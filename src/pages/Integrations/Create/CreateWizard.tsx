@@ -36,8 +36,38 @@ export const CreateWizard: React.FunctionComponent<CreateWizardProps> = ({
       schema={schema(category)}
       FormTemplate={Pf4FormTemplate}
       componentMapper={{ ...componentMapper, ...mapperExtension }}
-      onSubmit={(props) => {
-        console.log(props);
+      onSubmit={({
+        'endpoint-url': url,
+        'integration-type': intType,
+        'integration-name': name,
+        'service_now-secret-token': secret_token,
+        channel,
+      }) => {
+        const [type, sub_type] = intType?.split(':') || ['webhook'];
+        fetch('/api/integrations/v1.0/endpoints', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+          },
+          body: JSON.stringify({
+            name,
+            enabled: true,
+            type,
+            ...(sub_type && { sub_type }),
+            description: '',
+            properties: {
+              method: 'POST',
+              url,
+              disable_ssl_verification: false,
+              secret_token,
+              ...(channel && {
+                extras: {
+                  channel,
+                },
+              }),
+            },
+          }),
+        });
         closeModal();
       }}
       onCancel={() => closeModal()}
