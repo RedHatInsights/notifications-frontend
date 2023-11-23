@@ -9,6 +9,7 @@ import {
   Tr,
 } from '@patternfly/react-table';
 import React from 'react';
+import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 
 import NotificationsLogEmptyState from './NotificationsLogEmptyState';
 
@@ -88,7 +89,9 @@ const NotificationsLogTable = ({
                 <Tr key={data.id}>
                   <Td>{data.title}</Td>
                   <Td>{data.source}</Td>
-                  <Td>{data.created}</Td>
+                  <Td>
+                    <DateFormat date={data.created} />
+                  </Td>
                 </Tr>
               ))}
             </React.Fragment>

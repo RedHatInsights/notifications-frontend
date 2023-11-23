@@ -21,7 +21,7 @@ export type NotificationsPeriod = [Date | undefined, Date | undefined];
 
 const sortMapper = {
   0: 'title',
-  2: 'time',
+  2: 'created',
 };
 
 const RETENTION_DAYS = 14;
