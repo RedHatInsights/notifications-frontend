@@ -1,35 +1,52 @@
-import { arrayValue, Filter, Operator, stringValue } from '@redhat-cloud-services/insights-common-typescript';
+import {
+  Filter,
+  Operator,
+  arrayValue,
+  stringValue,
+} from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback } from 'react';
 
-import { NotificationFilterColumn, NotificationFilters } from '../../../components/Notifications/Filter';
+import {
+  NotificationFilterColumn,
+  NotificationFilters,
+} from '../../../components/Notifications/Filter';
 import { Facet } from '../../../types/Notification';
 
-export const useEventTypesFilterBuilder = (bundle: Facet, appFilterOptions: ReadonlyArray<Facet>) => {
-    return useCallback((filters?: NotificationFilters) => {
-        const filter = new Filter();
+export const useEventTypesFilterBuilder = (
+  bundle: Facet,
+  appFilterOptions: ReadonlyArray<Facet>
+) => {
+  return useCallback(
+    (filters?: NotificationFilters) => {
+      const filter = new Filter();
 
-        const appFilter = filters && filters[NotificationFilterColumn.APPLICATION];
+      const appFilter =
+        filters && filters[NotificationFilterColumn.APPLICATION];
 
-        if (appFilter) {
-            const appIds: Array<string> = [];
-            for (const appName of arrayValue(appFilter)) {
-                const filterOption = appFilterOptions.find(a => a.displayName === appName);
-                if (filterOption) {
-                    appIds.push(filterOption.id);
-                }
-            }
-
-            filter.and('applicationId', Operator.EQUAL, appIds);
+      if (appFilter) {
+        const appIds: Array<string> = [];
+        for (const appName of arrayValue(appFilter)) {
+          const filterOption = appFilterOptions.find(
+            (a) => a.displayName === appName
+          );
+          if (filterOption) {
+            appIds.push(filterOption.id);
+          }
         }
 
-        filter.and('bundleId', Operator.EQUAL, bundle.id);
+        filter.and('applicationId', Operator.EQUAL, appIds);
+      }
 
-        const eventTypeFilter = filters && filters[NotificationFilterColumn.NAME];
-        if (eventTypeFilter) {
-            const eventTypeFilterName = stringValue(eventTypeFilter);
-            filter.and('eventFilterName', Operator.EQUAL, eventTypeFilterName);
-        }
+      filter.and('bundleId', Operator.EQUAL, bundle.id);
 
-        return filter;
-    }, [ bundle, appFilterOptions ]);
+      const eventTypeFilter = filters && filters[NotificationFilterColumn.NAME];
+      if (eventTypeFilter) {
+        const eventTypeFilterName = stringValue(eventTypeFilter);
+        filter.and('eventFilterName', Operator.EQUAL, eventTypeFilterName);
+      }
+
+      return filter;
+    },
+    [bundle, appFilterOptions]
+  );
 };

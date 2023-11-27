@@ -7,7 +7,7 @@
 }
 
 .page__notifications#root {
-  --pf-c-page__main-section--BackgroundColor: var(--pf-global--Color--light-100);
+  --pf-c-page__main-section--BackgroundColor: var(--pf-v5-global--Color--light-100);
 }
 
 .pf-c-card__cover-image {
@@ -16,5 +16,32 @@
   background-size: contain;
   background-repeat: no-repeat;
   background-position: right bottom;
-  border: var(--pf-global--spacer--lg) solid transparent;
+  border: var(--pf-v5-global--spacer--lg) solid transparent;
+}
+
+.noti-c-card-getting-started {
+  .pf-c-expandable-section {
+    &__toggle {
+      border-bottom: 1px solid var(--pf-v5-global--disabled-color--200);
+      padding: var(--pf-v5-global--spacer--md) 0 var(--pf-v5-global--spacer--lg) var(--pf-v5-global--spacer--md);
+      width: 100%;
+    }
+    &__toggle-icon {
+      padding-top: var(--pf-v5-global--spacer--xs);
+    }
+    &__toggle-text {
+      color: var(--pf-v5-global--Color--100);
+      font-size: var(--pf-v5-global--FontSize--xl);
+    }
+    &__content {
+      margin-top: 0;
+      .pf-c-icon__content {
+        --pf-c-icon__content--Color: var(--pf-v5-global--primary-color--100);
+      }
+    }
+  }
+}
+
+.noti-c-card-configure {
+  border-left: 1px solid var(--pf-v5-global--disabled-color--200);
 }

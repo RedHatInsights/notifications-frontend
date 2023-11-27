@@ -1,76 +1,78 @@
-import { Button, ButtonVariant, Spinner, Split, SplitItem, WizardContext, WizardFooter } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Icon,
+  Spinner,
+  Split,
+  SplitItem,
+  WizardContext,
+  WizardFooter,
+} from '@patternfly/react-core';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
-import { global_danger_color_100 } from '@patternfly/react-tokens';
 import * as React from 'react';
-import { style } from 'typestyle';
-
 export interface BehaviorGroupWizardFooterProps {
-    isLoading: boolean;
-    error?: string;
-    onNext: (goNext: () => void) => void;
-    onBack: (goBack: () => void) => void;
+  isLoading: boolean;
+  error?: string;
+  onNext: (goNext: () => void) => void;
+  onBack: (goBack: () => void) => void;
 }
 
-const contentClassName = style({
-    marginTop: 'auto',
-    marginBottom: 14
-});
-
-const exclamationClassName = style({
-    marginRight: 5
-});
-
-export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWizardFooterProps> = props => {
+export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWizardFooterProps> =
+  (props) => {
     const wizardContext = React.useContext(WizardContext);
 
     const onNext = () => {
-        props.onNext(wizardContext.onNext);
+      props.onNext(wizardContext.onNext);
     };
 
     const onBack = () => {
-        props.onBack(wizardContext.onBack);
+      props.onBack(wizardContext.onBack);
     };
 
     return (
-        <WizardFooter>
-            <Button
-                variant={ ButtonVariant.primary }
-                type="submit"
-                onClick={ onNext }
-                isDisabled={ props.isLoading || !wizardContext.activeStep.enableNext }
-            >
-                { wizardContext.activeStep.nextButtonText ?? 'Next' }
-            </Button>
-            { !wizardContext.activeStep.hideBackButton && (
-                <Button
-                    variant={ ButtonVariant.secondary }
-                    onClick={ onBack }
-                    isDisabled={ wizardContext.activeStep.id === 0 || props.isLoading }
-                >
-                    Back
-                </Button>
-            ) }
-            { !wizardContext.activeStep.hideCancelButton && (
-                <Button
-                    variant={ ButtonVariant.link }
-                    onClick={ wizardContext.onClose }
-                    isDisabled={ props.isLoading }
-                >
-                    Cancel
-                </Button>
-            )}
-            { props.isLoading ? (
-                <div className={ contentClassName }>
-                    <Spinner size="md" />
-                </div>
-            ) : props.error && (
-                <Split>
-                    <SplitItem>
-                        <ExclamationCircleIcon className={ exclamationClassName } color={ global_danger_color_100.value } />
-                    </SplitItem>
-                    <SplitItem>{ props.error }</SplitItem>
-                </Split>
-            )}
-        </WizardFooter>
+      <WizardFooter>
+        <Button
+          variant={ButtonVariant.primary}
+          type="submit"
+          onClick={onNext}
+          isDisabled={props.isLoading || !wizardContext.activeStep.enableNext}
+        >
+          {wizardContext.activeStep.nextButtonText ?? 'Next'}
+        </Button>
+        {!wizardContext.activeStep.hideBackButton && (
+          <Button
+            variant={ButtonVariant.secondary}
+            onClick={onBack}
+            isDisabled={wizardContext.activeStep.id === 0 || props.isLoading}
+          >
+            Back
+          </Button>
+        )}
+        {!wizardContext.activeStep.hideCancelButton && (
+          <Button
+            variant={ButtonVariant.link}
+            onClick={wizardContext.onClose}
+            isDisabled={props.isLoading}
+          >
+            Cancel
+          </Button>
+        )}
+        {props.isLoading ? (
+          <div className="pf-v5-u-mt-auto pf-v5-u-mb-md">
+            <Spinner size="md" />
+          </div>
+        ) : (
+          props.error && (
+            <Split>
+              <SplitItem>
+                <Icon status="danger" className="pf-v5-u-mr-xs">
+                  <ExclamationCircleIcon />
+                </Icon>
+              </SplitItem>
+              <SplitItem>{props.error}</SplitItem>
+            </Split>
+          )
+        )}
+      </WizardFooter>
     );
-};
+  };
