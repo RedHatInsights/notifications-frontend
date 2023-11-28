@@ -255,6 +255,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
             >
               <CustomDataListItem
                 icon={IconName.USER}
+                isExpanded
                 heading="Manage your own notifications with My User Preferences"
                 linkTitle="Go to My User Preferences"
                 linkTarget={`${
