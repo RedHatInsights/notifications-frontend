@@ -38,6 +38,7 @@ interface CustomDataListItemProps {
   linkTarget?: string;
   expandableContent: string;
   isRedirect?: boolean;
+  isExpanded?: boolean;
 }
 
 const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
@@ -47,10 +48,11 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
   linkTarget,
   expandableContent,
   isRedirect,
+  isExpanded,
 }) => {
   const navigate = useNavigate();
   let iconElement: React.ReactNode = null;
-  const [expanded, setExpanded] = React.useState(false);
+  const [expanded, setExpanded] = React.useState(isExpanded || false);
 
   switch (icon) {
     case IconName.USER:
