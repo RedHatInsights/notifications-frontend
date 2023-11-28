@@ -2,10 +2,10 @@ import { assertNever } from 'assert-never';
 import { useMemo, useReducer } from 'react';
 
 enum UseFormModalReducerActionType {
-    EDIT = 'edit',
-    TEST = 'test',
-    CREATE = 'create',
-    RESET = 'reset'
+  EDIT = 'edit',
+  TEST = 'test',
+  CREATE = 'create',
+  RESET = 'reset',
 }
 
 interface UseFormModalReducerActionCreate<T> {
@@ -19,8 +19,8 @@ interface UseFormModalReducerActionEdit<T> {
 }
 
 interface UseFormModalReducerActionTest<T> {
-    type: UseFormModalReducerActionType.TEST;
-    template: T;
+  type: UseFormModalReducerActionType.TEST;
+  template: T;
 }
 
 interface UseFormModalReducerActionReset {
@@ -28,13 +28,16 @@ interface UseFormModalReducerActionReset {
 }
 
 type UseFormModalReducerAction<T> =
-  UseFormModalReducerActionCreate<T> | UseFormModalReducerActionTest<T> | UseFormModalReducerActionEdit<T> | UseFormModalReducerActionReset;
+  | UseFormModalReducerActionCreate<T>
+  | UseFormModalReducerActionTest<T>
+  | UseFormModalReducerActionEdit<T>
+  | UseFormModalReducerActionReset;
 
 type ReducerAction<T> = {
-    create: (template?: Partial<T>) => void;
-    test: (template: T) => void;
-    edit: (template: T) => void;
-    reset: () => void;
+  create: (template?: Partial<T>) => void;
+  test: (template: T) => void;
+  edit: (template: T) => void;
+  reset: () => void;
 };
 
 interface UseFormModalReducerState<T> {
@@ -56,43 +59,47 @@ const initialState: UseFormModalReducerState<undefined> = {
 type CopyFunction<T> = (from: Partial<T>) => Partial<T>;
 
 const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
-    const reducer = (
-        state: UseFormModalReducerState<T>,
-        action: UseFormModalReducerAction<T>
-    ): UseFormModalReducerState<T> => {
-        console.log('Understanding Current State: ', state);
-        console.log('Understanding Action: ', action);
-        switch (action.type) {
-            case UseFormModalReducerActionType.CREATE:
-                return {
-                    isOpen: true,
-                    isEdit: false,
-                    isTest: false,
-                    template: action.template ? copyFunction ? copyFunction(action.template) : action.template : undefined,
-                    isCopy: !!action.template
-                };
-            case UseFormModalReducerActionType.TEST:
-                return {
-                    isOpen: true,
-                    isEdit: false,
-                    isTest: true,
-                    template: action.template,
-                    isCopy: false
-                };
-            case UseFormModalReducerActionType.EDIT:
-                return {
-                    isOpen: true,
-                    isEdit: true,
-                    isTest: false,
-                    template: action.template,
-                    isCopy: false
-                };
-            case UseFormModalReducerActionType.RESET:
-                return initialState;
-            default:
-                assertNever(action);
-        }
-    };
+  const reducer = (
+    state: UseFormModalReducerState<T>,
+    action: UseFormModalReducerAction<T>
+  ): UseFormModalReducerState<T> => {
+    console.log('Understanding Current State: ', state);
+    console.log('Understanding Action: ', action);
+    switch (action.type) {
+      case UseFormModalReducerActionType.CREATE:
+        return {
+          isOpen: true,
+          isEdit: false,
+          isTest: false,
+          template: action.template
+            ? copyFunction
+              ? copyFunction(action.template)
+              : action.template
+            : undefined,
+          isCopy: !!action.template,
+        };
+      case UseFormModalReducerActionType.TEST:
+        return {
+          isOpen: true,
+          isEdit: false,
+          isTest: true,
+          template: action.template,
+          isCopy: false,
+        };
+      case UseFormModalReducerActionType.EDIT:
+        return {
+          isOpen: true,
+          isEdit: true,
+          isTest: false,
+          template: action.template,
+          isCopy: false,
+        };
+      case UseFormModalReducerActionType.RESET:
+        return initialState;
+      default:
+        assertNever(action);
+    }
+  };
 
   return reducer;
 };
@@ -110,8 +117,8 @@ const makeEditAction = <T>(template: T): UseFormModalReducerActionEdit<T> => ({
 });
 
 const makeTestAction = <T>(template: T): UseFormModalReducerActionTest<T> => ({
-    type: UseFormModalReducerActionType.TEST,
-    template
+  type: UseFormModalReducerActionType.TEST,
+  template,
 });
 
 const makeResetAction = (): UseFormModalReducerActionReset => ({
@@ -127,12 +134,15 @@ export const useFormModalReducer = <T>(
 
   const [state, dispatch] = useReducer(reducer, initialState);
 
-    const actions = useMemo<ReducerAction<T>>(() => ({
-        create: (data?: Partial<T>) => dispatch(makeCreateAction(data)),
-        test: (data: T) => dispatch(makeTestAction(data)),
-        edit: (data: T) => dispatch(makeEditAction(data)),
-        reset: () => dispatch(makeResetAction())
-    }), [ dispatch ]);
+  const actions = useMemo<ReducerAction<T>>(
+    () => ({
+      create: (data?: Partial<T>) => dispatch(makeCreateAction(data)),
+      test: (data: T) => dispatch(makeTestAction(data)),
+      edit: (data: T) => dispatch(makeEditAction(data)),
+      reset: () => dispatch(makeResetAction()),
+    }),
+    [dispatch]
+  );
 
   return [state, actions];
 };

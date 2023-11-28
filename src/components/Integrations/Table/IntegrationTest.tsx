@@ -1,30 +1,75 @@
 import React, { useState } from 'react';
-import { Button, Modal } from '@patternfly/react-core';
+import axios from 'axios';
+import { Button, Modal, TextInput } from '@patternfly/react-core';
+import {
+  addSuccessNotification,
+  addWarningNotification,
+} from '@redhat-cloud-services/insights-common-typescript';
 
-const IntegrationTestModal = () => {
-    const [ isModalOpen, setIsModalOpen ] = useState(false);
+const IntegrationTestModal = ({ integrationUUID }) => {
+  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [inputValue, setInputValue] = useState('');
 
-    const handleIntegrationTest = () => {
-        console.log('Te gusta mi test papi?');
-    };
+  const placeholderText =
+    'Congratulations! The integration you created on https://console.redhat.com was successfully tested!';
 
-    const handleModalCancel = () => {
-        console.log('Cierramelo papi');
-        setIsModalOpen(!isModalOpen);
-    };
+  const failedTestText =
+    'Your integration test has unfortunately failed, please verify your integration information.';
 
-    return (
-        <Modal
-            title="Integration Test"
-            isOpen={ true }
-            onClose={ () => console.log('Closing modal') }
-            actions={ [
-                <Button key="test" onClick={ handleIntegrationTest }>Test</Button>,
-                <Button key="cancel" onClick={ handleModalCancel }>Cancel</Button>
-            ] }
+  const handleModalCancel = () => {
+    setIsModalOpen(!isModalOpen);
+  };
+
+  const handleNotificationTest = async (notificationMessage: string) => {
+    const endpointURL = `/api/integrations/v1/endpoints/${integrationUUID}/test`;
+
+    const body = { message: notificationMessage };
+
+    try {
+      const response = await axios.post(endpointURL, body);
+      // response?.status === 204
+      //   ? addSuccessNotification('Integration Test', '')
+      //   : addWarningNotification('Failed Test', '');
+
+      addSuccessNotification('Integration Test', notificationMessage);
+
+      console.log('Succesful request. Response data:', response);
+    } catch (error) {
+      console.error('\nError sending test notification:', error);
+
+      const responseString = `${failedTestText} ${error}`;
+      addWarningNotification('Failed Test', responseString);
+    }
+
+    handleModalCancel();
+  };
+
+  return (
+    <Modal
+      title="Integration Test"
+      isOpen={isModalOpen}
+      onClose={handleModalCancel}
+      description="You can specify a custom message for the notification's payload. If you don't, the default message will be sent"
+      actions={[
+        <Button
+          key="test"
+          onClick={() => handleNotificationTest(inputValue || placeholderText)}
         >
-        </Modal>
-    );
+          Test
+        </Button>,
+        <Button key="cancel" onClick={handleModalCancel}>
+          Cancel
+        </Button>,
+      ]}
+    >
+      <TextInput
+        value={inputValue}
+        onChange={(value) => setInputValue(value)}
+        aria-label="Test notifications input"
+        placeholder={placeholderText}
+      />
+    </Modal>
+  );
 };
 
 export default IntegrationTestModal;

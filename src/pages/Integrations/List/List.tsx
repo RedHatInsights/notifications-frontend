@@ -10,7 +10,7 @@ import {
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { AppContext } from '../../../app/AppContext';
@@ -62,6 +62,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const dispatch = useDispatch();
   const wizardEnabled = usePreviewFlag('insights.integrations.wizard');
   const { savedNotificationScope } = useSelector(selector);
+  const [selectedIntegrationID, setSelectedIntegrationID] = useState('');
 
   const {
     rbac: { canWriteIntegrationsEndpoints },
@@ -135,13 +136,21 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     [modalIsOpenActions]
   );
 
-    const onTest = React.useCallback((integration: UserIntegration) => {
-        modalIsOpenActions.test(integration);
-    }, [ modalIsOpenActions ]);
+  const onTest = React.useCallback(
+    (integration: UserIntegration) => {
+      console.log('Testing our integration for onTest: ', integration);
+      setSelectedIntegrationID(integration.id);
+      modalIsOpenActions.test(integration);
+    },
+    [modalIsOpenActions]
+  );
 
-    const onDelete = React.useCallback((integration: UserIntegration) => {
-        deleteModalActions.delete(integration);
-    }, [ deleteModalActions ]);
+  const onDelete = React.useCallback(
+    (integration: UserIntegration) => {
+      deleteModalActions.delete(integration);
+    },
+    [deleteModalActions]
+  );
 
   const onExport = React.useCallback(
     async (type: ExporterType) => {
@@ -190,7 +199,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     },
     [exportIntegrationsQuery]
   );
-  
+
   const actionResolver = useActionResolver({
     canWrite: canWriteIntegrationsEndpoints,
     onEdit,
@@ -199,6 +208,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     onEnable: integrationRows.onEnable,
   });
 
+  // eslint-disable-next-line
   const closeFormModal = React.useCallback(
     (saved: boolean) => {
       const query = integrationsQuery.query;
@@ -282,15 +292,21 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
           onClose={closeFormModal}
         />
       )}
-      {wizardEnabled && category && (
+      {/* wizardEnabled && category && (
         <IntegrationWizard
+      )*/}
+      {modalIsOpenState.isTest && (
+        <IntegrationTestModal integrationUUID={selectedIntegrationID} />
+      )}
+      {/* wizardEnabled && (
+        <CreateWizard
           isOpen={modalIsOpenState.isOpen}
           isEdit={modalIsOpenState.isEdit}
           template={modalIsOpenState.template}
           closeModal={() => modalIsOpenActions.reset()}
           category={category}
         />
-      )}
+      )*/}
       {deleteModalState.data && (
         <IntegrationDeleteModalPage
           onClose={closeDeleteModal}
