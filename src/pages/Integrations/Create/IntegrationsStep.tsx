@@ -2,18 +2,25 @@ import {
   componentTypes,
   validatorTypes,
 } from '@data-driven-forms/react-form-renderer';
-import {
-  compileAllIntegrationComboOptions,
-  iconMapper,
-  nextDetailsStep,
-} from './helpers';
+import { compileAllIntegrationComboOptions, iconMapper } from './helpers';
 import { CARD_SELECT } from './CreateWizard';
 import { defaultIconList } from '../../../config/Config';
 
 export const integrationsStep = (category: string) => ({
   title: 'Select Integration type',
   name: 'integration-type',
-  nextStep: ({ values }) => nextDetailsStep(values),
+  nextStep: {
+    when: 'integration-type',
+    stepMapper: {
+      'camel:slack': 'slack-details',
+      'camel:google_chat': 'teams-gchat-details',
+      'camel:teams': 'teams-gchat-details',
+      'camel:splunk': 'splunk-details',
+      'camel:servicenow': 'service-now-details',
+      ansible: 'details',
+      webhooks: 'details',
+    },
+  },
   fields: [
     {
       component: componentTypes.PLAIN_TEXT,
