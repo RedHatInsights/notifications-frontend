@@ -296,7 +296,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
         <IntegrationWizard
       )*/}
       {modalIsOpenState.isTest && (
-        <IntegrationTestModal integrationUUID={selectedIntegrationID} />
+        <IntegrationTestProvider integrationUUID={selectedIntegrationID} />
       )}
       {/* wizardEnabled && (
         <CreateWizard
