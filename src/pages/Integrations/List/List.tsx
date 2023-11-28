@@ -226,6 +226,50 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       integrations.count - (pageData.page.index - 1) * pageData.page.size
     ) || 10;
 
+  const integrationsModals: JSX.Element[] = [];
+
+  if (modalIsOpenState.isOpen && !wizardEnabled) {
+    integrationsModals.push(
+      <CreatePage
+        isEdit={modalIsOpenState.isEdit}
+        initialIntegration={modalIsOpenState.template || {}}
+        onClose={closeFormModal}
+      />
+    );
+  }
+
+  if (wizardEnabled) {
+    integrationsModals.push(
+      <CreateWizard
+        isOpen={modalIsOpenState.isOpen}
+        closeModal={() => modalIsOpenActions.reset()}
+        category={category}
+      />
+    );
+  }
+
+  if (deleteModalState.data) {
+    integrationsModals.push(
+      <IntegrationDeleteModalPage
+        onClose={closeDeleteModal}
+        integration={deleteModalState.data}
+      />
+    );
+  }
+
+  if (integrations.count < 1 && !integrationsQuery.loading) {
+    return (
+      <>
+        <IntegrationsEmptyState
+          onAddIntegration={
+            canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
+          }
+        />
+        {...integrationsModals}
+      </>
+    );
+  }
+
   return (
     <>
       <IntegrationsDopeBox category={category} />
@@ -244,11 +288,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
         pageChanged={pageData.changePage}
         perPageChanged={pageData.changeItemsPerPage}
       >
-        <IntegrationsEmptyState
-          onAddIntegration={
-            canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
-          }
-        />
         <IntegrationsTable
           isLoading={integrationsQuery.loading}
           loadingCount={loadingCount}
@@ -262,26 +301,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
           sortBy={sort.sortBy}
         />
       </IntegrationsToolbar>
-      {modalIsOpenState.isOpen && !wizardEnabled && (
-        <CreatePage
-          isEdit={modalIsOpenState.isEdit}
-          initialIntegration={modalIsOpenState.template || {}}
-          onClose={closeFormModal}
-        />
-      )}
-      {wizardEnabled && (
-        <CreateWizard
-          isOpen={modalIsOpenState.isOpen}
-          closeModal={() => modalIsOpenActions.reset()}
-          category={category}
-        />
-      )}
-      {deleteModalState.data && (
-        <IntegrationDeleteModalPage
-          onClose={closeDeleteModal}
-          integration={deleteModalState.data}
-        />
-      )}
+      {...integrationsModals}
     </>
   );
 };
