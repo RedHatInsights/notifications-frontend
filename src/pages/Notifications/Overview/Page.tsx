@@ -107,15 +107,15 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       <a
                         href={`${
                           isBeta() ? '/preview' : ''
-                        }/${getBundle()}/notifications/user-preferences`}
+                        }/${getBundle()}/notifications/my-notification-preferences`}
                         onClick={(e) => {
                           e.preventDefault();
                           navigate(
-                            `/${getBundle()}/notifications/user-preferences`
+                            `/${getBundle()}/notifications/my-notification-preferences`
                           );
                         }}
                       >
-                        User Preferences
+                        Notification Preferences
                       </a>
                       .
                     </p>
@@ -164,7 +164,8 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       </FlexItem>
                       <FlexItem>
                         <Title headingLevel="h2">
-                          Manage your own notifications with My User Preferences
+                          Manage your own notifications with Notification
+                          Preferences
                         </Title>
                       </FlexItem>
                     </Flex>
@@ -192,7 +193,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         );
                       }}
                     >
-                      Go to My User Preferencesss
+                      Go to Notification Preferencesss
                     </Button>
                   </CardFooter>
                 </Card>
@@ -255,11 +256,11 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
             >
               <CustomDataListItem
                 icon={IconName.USER}
-                heading="Manage your own notifications with My User Preferences"
-                linkTitle="Go to My User Preferences"
+                heading="Manage your own notifications with Notification Preferences"
+                linkTitle="Go to Notification Preferences"
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/user-preferences`}
+                }/${getBundle()}/notifications/my-notification-preferences`}
                 expandableContent="This service allows you to opt-in and out of receiving notifications. Your Organization
                             Administrator has configured which notifications you can or can not receive in their Settings."
               />
