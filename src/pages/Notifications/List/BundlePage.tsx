@@ -145,6 +145,17 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                 className={paddingLeftClassName}
               >
                 <Tab
+                  eventKey={2}
+                  title={<TabTitleText>Openshift</TabTitleText>}
+                >
+                  <Main>
+                    <BundlePageBehaviorGroupContent
+                      applications={getInitialApplications}
+                      bundle={props.bundleTabs[2]}
+                    />
+                  </Main>
+                </Tab>
+                <Tab
                   eventKey={0}
                   title={<TabTitleText>Red Hat Enterprise Linux</TabTitleText>}
                 >
@@ -160,17 +171,6 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
                     <BundlePageBehaviorGroupContent
                       applications={getInitialApplications}
                       bundle={props.bundleTabs[1]}
-                    />
-                  </Main>
-                </Tab>
-                <Tab
-                  eventKey={2}
-                  title={<TabTitleText>Openshift</TabTitleText>}
-                >
-                  <Main>
-                    <BundlePageBehaviorGroupContent
-                      applications={getInitialApplications}
-                      bundle={props.bundleTabs[2]}
                     />
                   </Main>
                 </Tab>

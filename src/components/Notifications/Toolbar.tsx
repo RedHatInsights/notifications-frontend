@@ -81,8 +81,8 @@ export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarP
           NotificationFilterColumn.APPLICATION
         )
           ? {
-              label: 'Application',
-              placeholder: 'Filter by application',
+              label: 'Service',
+              placeholder: 'Filter by service',
               options: {
                 exclusive: false,
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any

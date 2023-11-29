@@ -257,15 +257,17 @@ export const NotificationsBehaviorGroupTable =
       >
         <Thead>
           <Tr>
-            <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>Event</Th>
+            <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>
+              Event Type
+            </Th>
             <Th sort={sortOptions[NotificationsTableColumns.APPLICATION]}>
-              Application
+              Service
             </Th>
             <Th
               sort={sortOptions[NotificationsTableColumns.BEHAVIOR]}
               width={35}
             >
-              Behavior
+              Configuration
             </Th>
             <Th />
           </Tr>
