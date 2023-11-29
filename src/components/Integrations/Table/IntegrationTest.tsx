@@ -1,14 +1,12 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { Button, Modal, TextInput } from '@patternfly/react-core';
-import {
-  addSuccessNotification,
-  addWarningNotification,
-} from '@redhat-cloud-services/insights-common-typescript';
+import { useNotification } from '../../../utils/AlertUtils';
 
 const IntegrationTestModal = ({ integrationUUID }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [inputValue, setInputValue] = useState('');
+  const { addSuccessNotification, addWarningNotification } = useNotification();
 
   const placeholderText =
     'Congratulations! The integration you created on https://console.redhat.com was successfully tested!';
@@ -27,11 +25,12 @@ const IntegrationTestModal = ({ integrationUUID }) => {
 
     try {
       const response = await axios.post(endpointURL, body);
-      // response?.status === 204
-      //   ? addSuccessNotification('Integration Test', '')
-      //   : addWarningNotification('Failed Test', '');
-
-      addSuccessNotification('Integration Test', notificationMessage);
+      response?.status === 204
+        ? addSuccessNotification('Integration Test', notificationMessage)
+        : addWarningNotification(
+            'Failed Test',
+            `Error through server response: ${response.status}`
+          );
 
       console.log('Succesful request. Response data:', response);
     } catch (error) {
