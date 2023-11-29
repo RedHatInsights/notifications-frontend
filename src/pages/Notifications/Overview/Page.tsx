@@ -256,8 +256,9 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
             >
               <CustomDataListItem
                 icon={IconName.USER}
+                isExpanded
                 heading="Manage your own notifications with Notification Preferences"
-                linkTitle="Go to Notification Preferences"
+                linkTitle="Go to My Notification Preferences"
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
                 }/${getBundle()}/notifications/my-notification-preferences`}
