@@ -5,6 +5,7 @@ import {
 import { compileAllIntegrationComboOptions, iconMapper } from './helpers';
 import { CARD_SELECT } from './CreateWizard';
 import { defaultIconList } from '../../../config/Config';
+import { IntegrationType } from '../../../types/Integration';
 
 export const integrationsStep = (category: string) => ({
   title: 'Select Integration type',
@@ -12,13 +13,13 @@ export const integrationsStep = (category: string) => ({
   nextStep: {
     when: 'integration-type',
     stepMapper: {
-      'camel:slack': 'slack-details',
-      'camel:google_chat': 'teams-gchat-details',
-      'camel:teams': 'teams-gchat-details',
-      'camel:splunk': 'splunk-details',
-      'camel:servicenow': 'service-now-details',
-      ansible: 'details',
-      webhooks: 'details',
+      [IntegrationType.SLACK]: 'slack-details',
+      [IntegrationType.GOOGLE_CHAT]: 'teams-gchat-details',
+      [IntegrationType.TEAMS]: 'teams-gchat-details',
+      [IntegrationType.SPLUNK]: 'splunk-details',
+      [IntegrationType.SERVICE_NOW]: 'service-now-details',
+      [IntegrationType.ANSIBLE]: 'details',
+      [IntegrationType.WEBHOOK]: 'details',
     },
   },
   fields: [
