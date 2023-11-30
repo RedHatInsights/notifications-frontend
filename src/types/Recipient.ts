@@ -73,7 +73,7 @@ export class NotificationUserRecipient extends BaseNotificationRecipient {
     } else {
       displayName = 'All';
       description =
-        'All users in your organization who subscribed to this email in their User Preferences';
+        'All users in your organization who subscribed to this email in their Notification Preferences';
     }
 
     super(
