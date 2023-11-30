@@ -265,7 +265,7 @@ export const NotificationsBehaviorGroupTable =
           </Tr>
         );
       });
-    }, [props.notifications, props.behaviorGroupContent, callbacks]);
+    }, [bundles, props.notifications, props.behaviorGroupContent, callbacks]);
 
     return (
       <TableComposable
