@@ -14,6 +14,7 @@ import { useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { AppContext } from '../../../app/AppContext';
+import { IntegrationsEmptyState } from '../../../components/Integrations/EmptyState';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
@@ -225,37 +226,51 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       integrations.count - (pageData.page.index - 1) * pageData.page.size
     ) || 10;
 
+  const integrationsEmpty =
+    integrations.count < 1 && !integrationsQuery.loading;
+
   return (
     <>
-      <IntegrationsDopeBox category={category} />
-      <IntegrationsToolbar
-        onAddIntegration={
-          canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
-        }
-        onExport={onExport}
-        filters={integrationFilter.filters}
-        setFilters={integrationFilter.setFilters}
-        clearFilters={integrationFilter.clearFilter}
-        count={integrations.count || 0}
-        pageCount={integrations.data.length}
-        page={pageData.page.index}
-        perPage={pageData.page.size}
-        pageChanged={pageData.changePage}
-        perPageChanged={pageData.changeItemsPerPage}
-      >
-        <IntegrationsTable
-          isLoading={integrationsQuery.loading}
-          loadingCount={loadingCount}
-          integrations={integrationRows.rows}
-          onCollapse={integrationRows.onCollapse}
-          onEnable={
-            canWriteIntegrationsEndpoints ? integrationRows.onEnable : undefined
+      {integrationsEmpty && (
+        <IntegrationsEmptyState
+          onAddIntegration={
+            canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
           }
-          actionResolver={actionResolver}
-          onSort={sort.onSort}
-          sortBy={sort.sortBy}
         />
-      </IntegrationsToolbar>
+      )}
+      {!integrationsEmpty && <IntegrationsDopeBox category={category} />}
+      {!integrationsEmpty && (
+        <IntegrationsToolbar
+          onAddIntegration={
+            canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
+          }
+          onExport={onExport}
+          filters={integrationFilter.filters}
+          setFilters={integrationFilter.setFilters}
+          clearFilters={integrationFilter.clearFilter}
+          count={integrations.count || 0}
+          pageCount={integrations.data.length}
+          page={pageData.page.index}
+          perPage={pageData.page.size}
+          pageChanged={pageData.changePage}
+          perPageChanged={pageData.changeItemsPerPage}
+        >
+          <IntegrationsTable
+            isLoading={integrationsQuery.loading}
+            loadingCount={loadingCount}
+            integrations={integrationRows.rows}
+            onCollapse={integrationRows.onCollapse}
+            onEnable={
+              canWriteIntegrationsEndpoints
+                ? integrationRows.onEnable
+                : undefined
+            }
+            actionResolver={actionResolver}
+            onSort={sort.onSort}
+            sortBy={sort.sortBy}
+          />
+        </IntegrationsToolbar>
+      )}
       {modalIsOpenState.isOpen && !wizardEnabled && (
         <CreatePage
           isEdit={modalIsOpenState.isEdit}
