@@ -226,82 +226,71 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       integrations.count - (pageData.page.index - 1) * pageData.page.size
     ) || 10;
 
-  const integrationsModals: JSX.Element[] = [];
+  const integrationsEmpty =
+    integrations.count < 1 && !integrationsQuery.loading;
 
-  if (modalIsOpenState.isOpen && !wizardEnabled) {
-    integrationsModals.push(
-      <CreatePage
-        isEdit={modalIsOpenState.isEdit}
-        initialIntegration={modalIsOpenState.template || {}}
-        onClose={closeFormModal}
-      />
-    );
-  }
-
-  if (wizardEnabled) {
-    integrationsModals.push(
-      <CreateWizard
-        isOpen={modalIsOpenState.isOpen}
-        closeModal={() => modalIsOpenActions.reset()}
-        category={category}
-      />
-    );
-  }
-
-  if (deleteModalState.data) {
-    integrationsModals.push(
-      <IntegrationDeleteModalPage
-        onClose={closeDeleteModal}
-        integration={deleteModalState.data}
-      />
-    );
-  }
-
-  if (integrations.count < 1 && !integrationsQuery.loading) {
-    return (
-      <>
+  return (
+    <>
+      {integrationsEmpty && (
         <IntegrationsEmptyState
           onAddIntegration={
             canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
           }
         />
-        {...integrationsModals}
-      </>
-    );
-  }
-
-  return (
-    <>
-      <IntegrationsDopeBox category={category} />
-      <IntegrationsToolbar
-        onAddIntegration={
-          canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
-        }
-        onExport={onExport}
-        filters={integrationFilter.filters}
-        setFilters={integrationFilter.setFilters}
-        clearFilters={integrationFilter.clearFilter}
-        count={integrations.count || 0}
-        pageCount={integrations.data.length}
-        page={pageData.page.index}
-        perPage={pageData.page.size}
-        pageChanged={pageData.changePage}
-        perPageChanged={pageData.changeItemsPerPage}
-      >
-        <IntegrationsTable
-          isLoading={integrationsQuery.loading}
-          loadingCount={loadingCount}
-          integrations={integrationRows.rows}
-          onCollapse={integrationRows.onCollapse}
-          onEnable={
-            canWriteIntegrationsEndpoints ? integrationRows.onEnable : undefined
+      )}
+      {!integrationsEmpty && <IntegrationsDopeBox category={category} />}
+      {!integrationsEmpty && (
+        <IntegrationsToolbar
+          onAddIntegration={
+            canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
           }
-          actionResolver={actionResolver}
-          onSort={sort.onSort}
-          sortBy={sort.sortBy}
+          onExport={onExport}
+          filters={integrationFilter.filters}
+          setFilters={integrationFilter.setFilters}
+          clearFilters={integrationFilter.clearFilter}
+          count={integrations.count || 0}
+          pageCount={integrations.data.length}
+          page={pageData.page.index}
+          perPage={pageData.page.size}
+          pageChanged={pageData.changePage}
+          perPageChanged={pageData.changeItemsPerPage}
+        >
+          <IntegrationsTable
+            isLoading={integrationsQuery.loading}
+            loadingCount={loadingCount}
+            integrations={integrationRows.rows}
+            onCollapse={integrationRows.onCollapse}
+            onEnable={
+              canWriteIntegrationsEndpoints
+                ? integrationRows.onEnable
+                : undefined
+            }
+            actionResolver={actionResolver}
+            onSort={sort.onSort}
+            sortBy={sort.sortBy}
+          />
+        </IntegrationsToolbar>
+      )}
+      {modalIsOpenState.isOpen && !wizardEnabled && (
+        <CreatePage
+          isEdit={modalIsOpenState.isEdit}
+          initialIntegration={modalIsOpenState.template || {}}
+          onClose={closeFormModal}
         />
-      </IntegrationsToolbar>
-      {...integrationsModals}
+      )}
+      {wizardEnabled && (
+        <CreateWizard
+          isOpen={modalIsOpenState.isOpen}
+          closeModal={() => modalIsOpenActions.reset()}
+          category={category}
+        />
+      )}
+      {deleteModalState.data && (
+        <IntegrationDeleteModalPage
+          onClose={closeDeleteModal}
+          integration={deleteModalState.data}
+        />
+      )}
     </>
   );
 };
