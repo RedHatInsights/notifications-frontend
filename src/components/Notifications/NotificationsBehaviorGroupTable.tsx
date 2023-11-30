@@ -36,6 +36,7 @@ import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
 import EmptyTableState from './EmptyTableState';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
+import { useGetBundles } from '../../services/Notifications/GetBundles';
 
 type OnNotificationIdHandler = (notificationId: UUID) => void;
 export type OnBehaviorGroupLinkUpdated = (
@@ -220,14 +221,32 @@ export const NotificationsBehaviorGroupTable =
       };
     }, [props.sortDirection, props.sortBy, onSort]);
 
+    const getBundles = useGetBundles(true);
+    const bundles = React.useMemo(() => {
+      const payload = getBundles.payload;
+      if (payload?.status === 200) {
+        return payload.value;
+      }
+
+      return [];
+    }, [getBundles.payload]);
+
     const rows = React.useMemo(() => {
       const notifications = props.notifications;
       const behaviorGroupContent = props.behaviorGroupContent;
       return notifications.map((notification) => {
+        console.log(notification.applicationDisplayName);
+        console.log(notification.behaviors);
+        const bundle = bundles?.find(
+          (b) => b?.id === notification?.behaviors[0]?.bundleId
+        );
         return (
           <Tr key={notification.id}>
             <Td>{notification.eventTypeDisplayName}</Td>
-            <Td>{notification.applicationDisplayName}</Td>
+            <Td>
+              {notification.applicationDisplayName}
+              {bundle?.displayName ? ` - ${bundle.displayName}` : ''}
+            </Td>
             <Td>
               {notification.loadingActionStatus === 'loading' ? (
                 <Skeleton width="90%" />
