@@ -3,8 +3,7 @@ import axios from 'axios';
 import { Button, Modal, TextInput } from '@patternfly/react-core';
 import { useNotification } from '../../../utils/AlertUtils';
 
-const IntegrationTestModal = ({ integrationUUID }) => {
-  const [isModalOpen, setIsModalOpen] = useState(true);
+const IntegrationTestModal = ({ integrationUUID, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState('');
   const { addSuccessNotification, addWarningNotification } = useNotification();
 
@@ -15,7 +14,7 @@ const IntegrationTestModal = ({ integrationUUID }) => {
     'Your integration test has unfortunately failed, please verify your integration information.';
 
   const handleModalCancel = () => {
-    setIsModalOpen(!isModalOpen);
+    onClose();
   };
 
   const handleNotificationTest = async (notificationMessage: string) => {
@@ -31,16 +30,14 @@ const IntegrationTestModal = ({ integrationUUID }) => {
             'Failed Test',
             `Error through server response: ${response.status}`
           );
-
-      console.log('Succesful request. Response data:', response);
+      handleModalCancel();
     } catch (error) {
       console.error('\nError sending test notification:', error);
 
       const responseString = `${failedTestText} ${error}`;
       addWarningNotification('Failed Test', responseString);
+      handleModalCancel();
     }
-
-    handleModalCancel();
   };
 
   return (

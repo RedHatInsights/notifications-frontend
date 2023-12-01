@@ -63,8 +63,6 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
     state: UseFormModalReducerState<T>,
     action: UseFormModalReducerAction<T>
   ): UseFormModalReducerState<T> => {
-    console.log('Understanding Current State: ', state);
-    console.log('Understanding Action: ', action);
     switch (action.type) {
       case UseFormModalReducerActionType.CREATE:
         return {
@@ -80,7 +78,7 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
         };
       case UseFormModalReducerActionType.TEST:
         return {
-          isOpen: true,
+          isOpen: false,
           isEdit: false,
           isTest: true,
           template: action.template,
