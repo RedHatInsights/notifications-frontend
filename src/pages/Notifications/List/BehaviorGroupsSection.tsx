@@ -1,20 +1,17 @@
 import {
-  Badge,
   Button,
   ButtonProps,
   ButtonVariant,
-  ExpandableSection,
-  ExpandableSectionToggle,
-  Popover,
   SearchInput,
   Split,
   SplitItem,
   Stack,
   StackItem,
-  Title,
+  Text,
+  TextContent,
+  TextVariants,
   Tooltip,
 } from '@patternfly/react-core';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
 
 import * as React from 'react';
 
@@ -67,7 +64,6 @@ const BehaviorGroupAddButton: React.FunctionComponent<BehaviorGroupAddButtonProp
 
 export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSectionProps> =
   (props) => {
-    const [isExpanded, setExpanded] = React.useState(true);
     const [filter, setFilter] = React.useState<string>('');
     const { rbac } = useAppContext();
 
@@ -149,93 +145,35 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
       setFilter('');
     }, [setFilter]);
 
-    const contentId = 'behavior-group-section-content';
-
     return (
       <>
         <div className="pf-v5-u-background-color-100 pf-v5-u-pt-lg pf-v5-u-px-lg">
           <Split className="pf-v5-u-mb-md" hasGutter>
-            <ExpandableSectionToggle
-              isExpanded={isExpanded}
-              onToggle={setExpanded}
-              contentId={contentId}
-              direction="down"
-            >
-              <SplitItem>
-                <Title
-                  className="pf-v5-u-pt-xs pf-v5-u-color-100"
-                  headingLevel="h2"
-                >
-                  Behavior groups
-                </Title>
-              </SplitItem>
-            </ExpandableSectionToggle>
-            <SplitItem className="pf-v5-u-align-self-flex-end pf-v5-u-pb-sm">
-              {!props.behaviorGroupContent.isLoading &&
-                !props.behaviorGroupContent.hasError &&
-                (props.behaviorGroupContent.content.length > 0 ? (
-                  <Badge isRead>
-                    {props.behaviorGroupContent.content.length}
-                  </Badge>
-                ) : (
-                  <BehaviorGroupAddButton
-                    component="a"
-                    onClick={createGroup}
-                    isDisabled={!rbac.canWriteNotifications}
-                  />
-                ))}
-            </SplitItem>
-            <SplitItem className="pf-v5-u-pt-sm">
-              <Popover
-                position="right"
-                hideOnOutsideClick
-                appendTo={() => document.body}
-                headerContent={
-                  <div className="pf-u-color-100">Behavior groups</div>
-                }
-                bodyContent={
-                  <div className="pf-u-font-size-sm pf-u-color-100">
-                    Behavior groups are made up of action/recipient pairings
-                    that allow you to configure which notification actions
-                    different users will be able to receive. Once you&apos;ve
-                    created a behavior group, you can assign it to an event
-                    using the Events table below.{' '}
-                  </div>
-                }
-                footerContent={
-                  <div className="pf-u-font-size-sm pf-u-color-100">
-                    {' '}
+            <SplitItem>
+              <TextContent>
+                <Text component={TextVariants.p}>
+                  <b>Behavior groups</b> are made up of action/recipient
+                  pairings that allow you to configure which notification
+                  actions different users will be able to receive. Once
+                  you&apos;ve created a behavior group, you can assign it to an
+                  event using the Events table below.
+                  <br></br>
+                  <Text component={TextVariants.p}>
                     You may also prevent users from changing assigned actions by
                     locking action/recipient pairings when creating or editing
                     behavior groups.
-                  </div>
-                }
-              >
-                <Button
-                  className="pf-v5-u-align-self-flex-end"
-                  variant="plain"
-                  aria-label="Help"
-                >
-                  <OutlinedQuestionCircleIcon />
-                </Button>
-              </Popover>
+                  </Text>
+                </Text>
+              </TextContent>
             </SplitItem>
           </Split>
-        </div>
-        <ExpandableSection
-          className="pf-v5-u-background-color-100 pf-v5-u-pb-lg pf-v5-u-px-lg"
-          contentId={contentId}
-          isExpanded={isExpanded}
-          onToggle={setExpanded}
-          isDetached
-        >
           <Stack hasGutter>
             {(props.behaviorGroupContent.isLoading ||
               props.behaviorGroupContent.hasError ||
               props.behaviorGroupContent.content.length > 0) && (
               <>
                 <StackItem>
-                  <Split hasGutter>
+                  <Split hasGutter className="pf-v5-u-mb-md">
                     <SplitItem>
                       <SearchInput
                         value={filter}
@@ -276,21 +214,21 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
               </>
             )}
           </Stack>
-          {editModalState.isOpen && (
-            <BehaviorGroupWizardPage
-              bundle={props.bundle}
-              applications={props.applications}
-              behaviorGroup={editModalState.template}
-              onClose={onCloseModal}
-            />
-          )}
-          {deleteModalState.isOpen && (
-            <DeleteBehaviorGroupPage
-              behaviorGroup={deleteModalState.data}
-              onClose={onCloseDelete}
-            />
-          )}
-        </ExpandableSection>
+        </div>
+        {editModalState.isOpen && (
+          <BehaviorGroupWizardPage
+            bundle={props.bundle}
+            applications={props.applications}
+            behaviorGroup={editModalState.template}
+            onClose={onCloseModal}
+          />
+        )}
+        {deleteModalState.isOpen && (
+          <DeleteBehaviorGroupPage
+            behaviorGroup={deleteModalState.data}
+            onClose={onCloseDelete}
+          />
+        )}
       </>
     );
   };
