@@ -215,7 +215,6 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
             )}
           </Stack>
         </div>
-
         {editModalState.isOpen && (
           <BehaviorGroupWizardPage
             bundle={props.bundle}
