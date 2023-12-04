@@ -230,7 +230,6 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
             onClose={onCloseDelete}
           />
         )}
-        {/* </ExpandableSection> */}
       </>
     );
   };
