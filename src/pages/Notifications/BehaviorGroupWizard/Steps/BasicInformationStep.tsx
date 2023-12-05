@@ -6,7 +6,7 @@ import {
 import * as React from 'react';
 import * as Yup from 'yup';
 
-import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
+import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 
 const title = 'Name';
 
@@ -34,7 +34,7 @@ export const schema = Yup.object({
     .required('Behavior group name is required'),
 });
 
-export const useBasicInformationStep: CreateWizardStep = () => {
+export const useBasicInformationStep: IntegrationWizardStep = () => {
   return React.useMemo(
     () => ({
       name: title,

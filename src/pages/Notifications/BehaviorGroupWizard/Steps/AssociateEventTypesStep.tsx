@@ -5,7 +5,7 @@ import produce from 'immer';
 import * as React from 'react';
 import { useEffect } from 'react';
 
-import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
+import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import {
   SelectableEventTypeRow,
   SelectableEventTypeTable,
@@ -215,7 +215,7 @@ const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepPr
     );
   };
 
-export const useAssociateEventTypesStep: CreateWizardStep<AssociateEventTypesStepProps> =
+export const useAssociateEventTypesStep: IntegrationWizardStep<AssociateEventTypesStepProps> =
   ({ applications, bundle }: AssociateEventTypesStepProps) => {
     return React.useMemo(
       () => ({

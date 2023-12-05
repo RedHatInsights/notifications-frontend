@@ -6,4 +6,4 @@ export interface ExtendedWizardStep extends WizardStep {
   schema?: Yup.AnySchema;
 }
 
-export type CreateWizardStep<T = void> = (arg: T) => ExtendedWizardStep;
+export type IntegrationWizardStep<T = void> = (arg: T) => ExtendedWizardStep;
