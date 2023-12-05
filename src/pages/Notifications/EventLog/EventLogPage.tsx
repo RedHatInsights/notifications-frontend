@@ -19,7 +19,6 @@ import {
 } from '../../../components/Notifications/EventLog/EventLogTable';
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
 import { PageHeader } from '../../../components/PageHeader';
-import { Main } from '../../../components/Store/Main';
 import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
@@ -168,32 +167,30 @@ export const EventLogPage: React.FunctionComponent = () => {
           )
         }
       />
-      <Main>
-        <EventLogToolbar
-          {...eventLogFilters}
-          bundleOptions={bundles}
-          dateFilter={dateFilter}
-          setDateFilter={setDateFilter}
-          count={events.count}
-          perPageChanged={eventsPage.changeItemsPerPage}
-          pageChanged={eventsPage.changePage}
-          perPage={eventsPage.page.size}
-          page={eventsPage.page.index}
-          pageCount={events.data.length}
-          retentionDays={RETENTION_DAYS}
-          period={period}
-          setPeriod={setPeriod}
-        >
-          <EventLogTable
-            events={events.data}
-            loading={eventsQuery.loading}
-            onSort={onSort}
-            sortColumn={sortColumn}
-            sortDirection={sortDirection}
-            getIntegrationRecipient={getIntegrationRecipient}
-          />
-        </EventLogToolbar>
-      </Main>
+      <EventLogToolbar
+        {...eventLogFilters}
+        bundleOptions={bundles}
+        dateFilter={dateFilter}
+        setDateFilter={setDateFilter}
+        count={events.count}
+        perPageChanged={eventsPage.changeItemsPerPage}
+        pageChanged={eventsPage.changePage}
+        perPage={eventsPage.page.size}
+        page={eventsPage.page.index}
+        pageCount={events.data.length}
+        retentionDays={RETENTION_DAYS}
+        period={period}
+        setPeriod={setPeriod}
+      >
+        <EventLogTable
+          events={events.data}
+          loading={eventsQuery.loading}
+          onSort={onSort}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          getIntegrationRecipient={getIntegrationRecipient}
+        />
+      </EventLogToolbar>
     </>
   );
 };

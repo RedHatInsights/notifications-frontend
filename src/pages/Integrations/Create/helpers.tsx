@@ -4,6 +4,19 @@ import {
   IntegrationIconTypes,
 } from '../../../types/Integration';
 
+export const INTEGRATION_TYPE = 'type';
+
+export const SLACK_DETAILS = 'slack-details';
+export const GOOGLE_CHAT_DETAILS = 'gchat-details';
+export const TEAMS_DETAILS = 'teams-details';
+export const SPLUNK_DETAILS = 'spunk-details';
+export const SERVICE_NOW_DETAILS = 'service-now-details';
+export const DETAILS = 'details';
+
+export const REVIEW = 'review';
+export const CARD_SELECT = 'card-select';
+export const INLINE_ALERT = 'inline-alert';
+
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>
   (name: string): React.FunctionComponent | null => {

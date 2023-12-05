@@ -15,7 +15,7 @@ import { useFormikContext } from 'formik';
 import * as React from 'react';
 
 import { BehaviorGroupActionsSummary } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupActionsSummary';
-import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
+import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType } from '../../../../types/Notification';
 
@@ -83,7 +83,7 @@ const ReviewStep: React.FunctionComponent = () => {
   );
 };
 
-export const createReviewStep: CreateWizardStep = () => ({
+export const createReviewStep: IntegrationWizardStep = () => ({
   name: title,
   component: <ReviewStep />,
   nextButtonText: 'Finish',

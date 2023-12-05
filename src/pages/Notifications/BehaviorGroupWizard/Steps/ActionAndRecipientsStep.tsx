@@ -5,7 +5,7 @@ import * as React from 'react';
 import * as Yup from 'yup';
 
 import { EditBehaviorGroupForm } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupForm';
-import { CreateWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
+import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { ActionsArray } from '../../../../schemas/Integrations/Notifications';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 
@@ -36,7 +36,7 @@ const schema = Yup.object({
   actions: ActionsArray,
 });
 
-export const useActionAndRecipientStep: CreateWizardStep = () => {
+export const useActionAndRecipientStep: IntegrationWizardStep = () => {
   return React.useMemo(
     () => ({
       name: title,

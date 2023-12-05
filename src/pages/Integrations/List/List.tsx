@@ -35,7 +35,7 @@ import {
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { usePreviewFlag } from '../../../utils/usePreviewFlag';
 import { CreatePage } from '../Create/CreatePage';
-import { CreateWizard } from '../Create/CreateWizard';
+import { IntegrationWizard } from '../Create/IntegrationWizard';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
@@ -278,9 +278,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
           onClose={closeFormModal}
         />
       )}
-      {wizardEnabled && (
-        <CreateWizard
+      {wizardEnabled && category && (
+        <IntegrationWizard
           isOpen={modalIsOpenState.isOpen}
+          isEdit={modalIsOpenState.isEdit}
+          template={modalIsOpenState.template}
           closeModal={() => modalIsOpenActions.reset()}
           category={category}
         />

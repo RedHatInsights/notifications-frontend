@@ -13,7 +13,6 @@ import messages from '../properties/DefinedMessages';
 import { linkTo } from '../Routes';
 import { useGetBundles } from '../services/Notifications/GetBundles';
 import { Facet } from '../types/Notification';
-import { Main } from './Store/Main';
 
 const eventLogService = 'Event Log';
 
@@ -112,20 +111,17 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
           </SplitItem>
         </Split>
       </PageHeader>
-      <Main>
-        <NotAuthorized
-          description={
-            <>
-              {' '}
-              Contact your organization administrator for more information or
-              visit
-              {myUserAccess} to learn more about your permissions. To manage
-              your notifications, go to your {userPreferences}.
-            </>
-          }
-          serviceName={serviceName}
-        />
-      </Main>
+      <NotAuthorized
+        description={
+          <>
+            Contact your organization administrator for more information or
+            visit
+            {myUserAccess} to learn more about your permissions. To manage your
+            notifications, go to your {userPreferences}.
+          </>
+        }
+        serviceName={serviceName}
+      />
     </>
   );
 };
