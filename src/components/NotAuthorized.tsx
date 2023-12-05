@@ -114,7 +114,6 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
       <NotAuthorized
         description={
           <>
-            {' '}
             Contact your organization administrator for more information or
             visit
             {myUserAccess} to learn more about your permissions. To manage your
