@@ -13,17 +13,19 @@ import {
   TEAMS_DETAILS,
 } from './helpers';
 
-const commonFields = (isSlack?: boolean) => [
+const commonFields = (isSlack: boolean, isEdit: boolean) => [
   {
     component: componentTypes.PLAIN_TEXT,
     name: 'integration-details-title',
-    label: 'Enter integration details',
+    label: `${isEdit ? 'Edit' : 'Enter'} integration details`,
     variant: 'h3',
   },
   {
     component: componentTypes.PLAIN_TEXT,
     name: 'integration-details-subtitle',
-    label: 'Enter the details for your integration.',
+    label: `${isEdit ? 'Edit' : 'Enter'} the details ${
+      isEdit ? 'of' : 'for'
+    } your integration.`,
     variant: 'p',
   },
   {
@@ -71,7 +73,7 @@ export const detailSteps = (isEdit: boolean) => {
       name: DETAILS,
       nextStep: REVIEW,
       fields: [
-        ...commonFields(),
+        ...commonFields(false, isEdit),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',
@@ -91,7 +93,7 @@ export const detailSteps = (isEdit: boolean) => {
       name: SERVICE_NOW_DETAILS,
       nextStep: REVIEW,
       fields: [
-        ...commonFields(),
+        ...commonFields(false, isEdit),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',
@@ -110,7 +112,7 @@ export const detailSteps = (isEdit: boolean) => {
       name: SLACK_DETAILS,
       nextStep: REVIEW,
       fields: [
-        ...commonFields(true),
+        ...commonFields(true, isEdit),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'channel',
@@ -127,7 +129,7 @@ export const detailSteps = (isEdit: boolean) => {
       title: title,
       name: GOOGLE_CHAT_DETAILS,
       nextStep: REVIEW,
-      fields: commonFields(),
+      fields: commonFields(false, isEdit),
     },
 
     // COMMUNICATIONS - TEAMS
@@ -135,7 +137,7 @@ export const detailSteps = (isEdit: boolean) => {
       title: title,
       name: TEAMS_DETAILS,
       nextStep: REVIEW,
-      fields: commonFields(),
+      fields: commonFields(false, isEdit),
     },
 
     // COMMUNICATIONS - SPLUNK
@@ -144,7 +146,7 @@ export const detailSteps = (isEdit: boolean) => {
       name: SPLUNK_DETAILS,
       nextStep: REVIEW,
       fields: [
-        ...commonFields(),
+        ...commonFields(false, isEdit),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',
