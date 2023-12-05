@@ -1,4 +1,5 @@
 import {
+  Badge,
   Chip,
   ChipGroup,
   Icon,
@@ -156,20 +157,30 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           onToggle={setOpen}
           toggleTemplate={
             sortedSelected.length === 0 ? (
-              <span className="pf-v5-u-disabled-color-100">
-                Select behavior group
-              </span>
+              <>
+                <span className="pf-v5-u-disabled-color-100">
+                  Select behavior group
+                </span>
+                <Badge className="pf-v5-u-ml-xs" isRead>
+                  {sortedSelected.length}
+                </Badge>
+              </>
             ) : (
-              <ChipGroup>
-                {sortedSelected.map((value) => (
-                  <BehaviorGroupChip
-                    key={value.id}
-                    behaviorGroup={value}
-                    notification={props.notification}
-                    onSelect={props.onSelect}
-                  />
-                ))}
-              </ChipGroup>
+              <>
+                <ChipGroup>
+                  {sortedSelected.map((value) => (
+                    <BehaviorGroupChip
+                      key={value.id}
+                      behaviorGroup={value}
+                      notification={props.notification}
+                      onSelect={props.onSelect}
+                    />
+                  ))}
+                </ChipGroup>
+                <Badge className="pf-v5-u-ml-xs" isRead>
+                  {sortedSelected.length}
+                </Badge>
+              </>
             )
           }
         />
