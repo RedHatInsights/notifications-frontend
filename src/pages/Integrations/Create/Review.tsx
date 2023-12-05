@@ -1,13 +1,18 @@
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 import {
-  Grid,
-  GridItem,
-  Stack,
-  StackItem,
-  Text,
-  TextVariants,
+  DescriptionList,
+  DescriptionListDescription,
+  DescriptionListGroup,
+  DescriptionListTerm,
 } from '@patternfly/react-core';
-import React, { Fragment } from 'react';
+import React from 'react';
+import { INTEGRATION_TYPE } from './helpers';
+import { defaultIconList } from '../../../config/Config';
+import {
+  IntegrationCategory,
+  IntegrationType,
+} from '../../../types/Integration';
+import './review.scss';
 
 const getFields = (fields) =>
   fields.flatMap(({ fields, ...rest }) => {
@@ -17,46 +22,56 @@ const getFields = (fields) =>
     return { ...rest };
   });
 
-const mapFieldValues = (values, fields) => {
+const mapFieldValues = (values, fields, category) => {
   const allFields = getFields(fields);
   return Object.entries(values)
     .filter(([, value]) => !!value)
     .map(([key, value]) => {
       const currField = allFields.find(({ name }) => name === key);
-      return {
-        ...currField,
-        value,
-      };
+      const isIntegrationType = currField?.name === INTEGRATION_TYPE;
+
+      return currField
+        ? {
+            ...currField,
+            label: isIntegrationType ? 'Integration type' : currField.label,
+            value: isIntegrationType
+              ? defaultIconList[category]?.[value as IntegrationType]
+                  ?.product_name || value
+              : value,
+          }
+        : {};
     })
     .filter(({ value }) => !!value);
 };
 
-const Review: React.FunctionComponent = () => {
+interface ReviewProps {
+  category: IntegrationCategory;
+  name: string;
+}
+
+const Review: React.FunctionComponent<ReviewProps> = ({
+  category,
+}: ReviewProps) => {
   const formOptions = useFormApi();
   const values = formOptions.getState().values;
-  const labelsWithValues = mapFieldValues(values, formOptions.schema.fields);
+  const labelsWithValues = mapFieldValues(
+    values,
+    formOptions.schema.fields,
+    category
+  );
 
   return (
-    <Stack hasGutter>
-      <StackItem>
-        <Stack hasGutter>
-          <StackItem>
-            <Grid>
-              {labelsWithValues.map((field) => (
-                <Fragment key={field.name}>
-                  <GridItem md={3}>
-                    <Text component={TextVariants.h4}>{field.label}</Text>
-                  </GridItem>
-                  <GridItem md={9}>
-                    <Text component={TextVariants.p}>{field.value}</Text>
-                  </GridItem>
-                </Fragment>
-              ))}
-            </Grid>
-          </StackItem>
-        </Stack>
-      </StackItem>
-    </Stack>
+    <DescriptionList
+      isHorizontal
+      className="src-c-wizard__summary-description-list"
+    >
+      {labelsWithValues.map((field) => (
+        <DescriptionListGroup key={field.name}>
+          <DescriptionListTerm>{field.label}</DescriptionListTerm>
+          <DescriptionListDescription>{field.value}</DescriptionListDescription>
+        </DescriptionListGroup>
+      ))}
+    </DescriptionList>
   );
 };
 
