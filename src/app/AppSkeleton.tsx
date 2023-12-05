@@ -7,8 +7,6 @@ import Spinner from '@redhat-cloud-services/frontend-components/Spinner';
 import useOuia from '@redhat-cloud-services/frontend-components/Ouia/useOuia';
 import * as React from 'react';
 
-import { Main } from '../components/Store/Main';
-
 export const AppSkeleton: React.FunctionComponent = () => {
   const ouia = useOuia({
     type: 'AppSkeleton',
@@ -21,13 +19,11 @@ export const AppSkeleton: React.FunctionComponent = () => {
           <PageHeaderTitle title={<Skeleton size="sm" />} />
         </div>
       </PageHeader>
-      <Main>
-        <Section>
-          <Bullseye>
-            <Spinner centered />
-          </Bullseye>
-        </Section>
-      </Main>
+      <Section>
+        <Bullseye>
+          <Spinner centered />
+        </Bullseye>
+      </Section>
     </div>
   );
 };

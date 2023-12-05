@@ -7,7 +7,6 @@ import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 
-import { Main } from '../../../components/Store/Main';
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import IntegrationsList from './List';
@@ -43,9 +42,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
           )}
         </Split>
       </PageHeader>
-      <Main>
-        <IntegrationsList />
-      </Main>
+      <IntegrationsList />
     </Section>
   );
 };
