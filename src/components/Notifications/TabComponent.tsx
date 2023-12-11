@@ -4,6 +4,7 @@ import React from 'react';
 interface MyTabComponentProps {
   configuration: React.ReactNode;
   settings: React.ReactNode;
+  activeKey?: number;
 }
 
 export const TabComponent: React.FunctionComponent<
@@ -19,7 +20,7 @@ export const TabComponent: React.FunctionComponent<
     <div className="pf-v5-u-background-color-100">
       <Tabs
         className="pf-v5-u-pl-lg"
-        defaultActiveKey={activeTabKey}
+        activeKey={activeTabKey}
         role="region"
         onClick={handleTabClick}
       >

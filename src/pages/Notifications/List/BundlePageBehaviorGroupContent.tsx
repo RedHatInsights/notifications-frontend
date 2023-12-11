@@ -1,5 +1,6 @@
 import { Tab, TabTitleText } from '@patternfly/react-core';
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
+import { useLocation } from 'react-router-dom';
 import * as React from 'react';
 
 import { useAppContext } from '../../../app/AppContext';
@@ -23,12 +24,23 @@ interface BundlePageBehaviorGroupContentProps {
   bundle: Facet;
 }
 
+enum TabIndex {
+  Configuration = 0,
+  BehaviorGroups = 1,
+}
+
 const noEvents = [];
 
 export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   React.PropsWithChildren<BundlePageBehaviorGroupContentProps>
 > = (props) => {
   const behaviorGroupContent = useBehaviorGroupContent(props.bundle.id);
+  const location = useLocation();
+  const queryParams = new URLSearchParams(location.search);
+  const activeTab =
+    queryParams.get('activeTab') === 'behaviorGroups'
+      ? TabIndex.BehaviorGroups
+      : TabIndex.Configuration;
 
   const { rbac } = useAppContext();
 
@@ -116,7 +128,11 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   );
 
   return (
-    <TabComponent configuration={props.children} settings={props.children}>
+    <TabComponent
+      configuration={props.children}
+      settings={props.children}
+      activeKey={activeTab}
+    >
       <Tab eventKey={0} title={<TabTitleText>Configuration</TabTitleText>}>
         <NotificationsToolbar
           filters={eventTypePage.filters}
