@@ -4,8 +4,10 @@ import {
   ChipGroup,
   Icon,
   Label,
+  MenuItem,
   OptionsMenu,
   OptionsMenuItem,
+  OptionsMenuItemGroup,
   OptionsMenuToggle,
   Tooltip,
 } from '@patternfly/react-core';
@@ -124,24 +126,40 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
         ...props.selected.filter((b) => b.isDefault),
         ...props.behaviorGroupContent.content.filter((b) => !b.isDefault),
       ];
-      return behaviorGroups.map((bg) => {
-        // eslint-disable-next-line testing-library/await-async-queries
-        const selected = !!props.selected.find(findById(bg.id));
 
-        return (
-          <OptionsMenuItem
-            key={bg.id}
-            onSelect={onSelected}
-            data-behavior-group-id={bg.id}
-            isSelected={selected}
-            isDisabled={bg.isDefault}
+      return [
+        <OptionsMenuItemGroup hasSeparator key={0}>
+          <MenuItem
+            onClick={onSelected}
+            key={props.id}
+            className="pf-v5-u-active-color-100"
           >
-            {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
-            {bg.displayName}
-          </OptionsMenuItem>
-        );
-      });
-    }, [props.behaviorGroupContent, props.selected, onSelected]);
+            <BellSlashIcon className="pf-v5-u-ml-sm pf-v5-u-active-color-100" />{' '}
+            Mute event
+          </MenuItem>
+        </OptionsMenuItemGroup>,
+
+        behaviorGroups.map((bg) => {
+          // eslint-disable-next-line testing-library/await-async-queries
+          const selected = !!props.selected.find(findById(bg.id));
+
+          return (
+            <MenuItem
+              key={bg.id}
+              hasCheck
+              onClick={onSelected}
+              data-behavior-group-id={bg.id}
+              isSelected={selected}
+              isDisabled={bg.isDefault}
+              className="pf-v5-u-ml-sm"
+            >
+              {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
+              <span className="pf-v5-u-ml-sm"> {bg.displayName}</span>
+            </MenuItem>
+          );
+        }),
+      ];
+    }, [props.behaviorGroupContent, props.selected, props.id, onSelected]);
 
     const sortedSelected = React.useMemo(
       () => [
