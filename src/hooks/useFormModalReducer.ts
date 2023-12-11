@@ -3,6 +3,7 @@ import { useMemo, useReducer } from 'react';
 
 enum UseFormModalReducerActionType {
   EDIT = 'edit',
+  TEST = 'test',
   CREATE = 'create',
   RESET = 'reset',
 }
@@ -17,16 +18,24 @@ interface UseFormModalReducerActionEdit<T> {
   template: T;
 }
 
+interface UseFormModalReducerActionTest<T> {
+  type: UseFormModalReducerActionType.TEST;
+  template: T;
+}
+
 interface UseFormModalReducerActionReset {
   type: UseFormModalReducerActionType.RESET;
 }
 
 type UseFormModalReducerAction<T> =
   | UseFormModalReducerActionCreate<T>
+  | UseFormModalReducerActionTest<T>
   | UseFormModalReducerActionEdit<T>
   | UseFormModalReducerActionReset;
+
 type ReducerAction<T> = {
   create: (template?: Partial<T>) => void;
+  test: (template: T) => void;
   edit: (template: T) => void;
   reset: () => void;
 };
@@ -34,6 +43,7 @@ type ReducerAction<T> = {
 interface UseFormModalReducerState<T> {
   isOpen: boolean;
   isEdit: boolean;
+  isTest: boolean;
   template: T | Partial<T> | undefined;
   isCopy: boolean;
 }
@@ -41,6 +51,7 @@ interface UseFormModalReducerState<T> {
 const initialState: UseFormModalReducerState<undefined> = {
   isOpen: false,
   isEdit: false,
+  isTest: false,
   template: undefined,
   isCopy: false,
 };
@@ -57,6 +68,7 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
         return {
           isOpen: true,
           isEdit: false,
+          isTest: false,
           template: action.template
             ? copyFunction
               ? copyFunction(action.template)
@@ -64,10 +76,19 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
             : undefined,
           isCopy: !!action.template,
         };
+      case UseFormModalReducerActionType.TEST:
+        return {
+          isOpen: false,
+          isEdit: false,
+          isTest: true,
+          template: action.template,
+          isCopy: false,
+        };
       case UseFormModalReducerActionType.EDIT:
         return {
           isOpen: true,
           isEdit: true,
+          isTest: false,
           template: action.template,
           isCopy: false,
         };
@@ -93,6 +114,11 @@ const makeEditAction = <T>(template: T): UseFormModalReducerActionEdit<T> => ({
   template,
 });
 
+const makeTestAction = <T>(template: T): UseFormModalReducerActionTest<T> => ({
+  type: UseFormModalReducerActionType.TEST,
+  template,
+});
+
 const makeResetAction = (): UseFormModalReducerActionReset => ({
   type: UseFormModalReducerActionType.RESET,
 });
@@ -109,6 +135,7 @@ export const useFormModalReducer = <T>(
   const actions = useMemo<ReducerAction<T>>(
     () => ({
       create: (data?: Partial<T>) => dispatch(makeCreateAction(data)),
+      test: (data: T) => dispatch(makeTestAction(data)),
       edit: (data: T) => dispatch(makeEditAction(data)),
       reset: () => dispatch(makeResetAction()),
     }),

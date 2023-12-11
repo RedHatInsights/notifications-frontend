@@ -10,7 +10,7 @@ import {
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 import { AppContext } from '../../../app/AppContext';
@@ -36,6 +36,7 @@ import { integrationExporterFactory } from '../../../utils/exporters/Integration
 import { usePreviewFlag } from '../../../utils/usePreviewFlag';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationWizard } from '../Create/IntegrationWizard';
+import IntegrationTestProvider from '../../../components/Integrations/Table/IntegrationTestProvider';
 import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
@@ -60,7 +61,8 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const dispatch = useDispatch();
   const wizardEnabled = usePreviewFlag('insights.integrations.wizard');
   const { savedNotificationScope } = useSelector(selector);
-
+  const [selectedIntegrationID, setSelectedIntegrationID] = useState('');
+  const [isTestModalOpen, setIsTestModalOpen] = useState(true);
   const {
     rbac: { canWriteIntegrationsEndpoints },
   } = useContext(AppContext);
@@ -88,6 +90,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     },
     [userIntegrations]
   );
+
+  const [modalIsOpenState, modalIsOpenActions] =
+    useFormModalReducer<UserIntegration>(userIntegrationCopier);
+  const [deleteModalState, deleteModalActions] =
+    useDeleteModalReducer<UserIntegration>();
 
   const sort = useSort();
 
@@ -117,10 +124,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     dispatch,
     savedNotificationScope
   );
-  const [modalIsOpenState, modalIsOpenActions] =
-    useFormModalReducer<UserIntegration>(userIntegrationCopier);
-  const [deleteModalState, deleteModalActions] =
-    useDeleteModalReducer<UserIntegration>();
 
   const onAddIntegrationClicked = React.useCallback(() => {
     modalIsOpenActions.create();
@@ -129,6 +132,14 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const onEdit = React.useCallback(
     (integration: UserIntegration) => {
       modalIsOpenActions.edit(integration);
+    },
+    [modalIsOpenActions]
+  );
+
+  const onTest = React.useCallback(
+    (integration: UserIntegration) => {
+      setSelectedIntegrationID(integration.id);
+      modalIsOpenActions.test(integration);
     },
     [modalIsOpenActions]
   );
@@ -191,10 +202,12 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const actionResolver = useActionResolver({
     canWrite: canWriteIntegrationsEndpoints,
     onEdit,
+    onTest,
     onDelete,
     onEnable: integrationRows.onEnable,
   });
 
+  // eslint-disable-next-line
   const closeFormModal = React.useCallback(
     (saved: boolean) => {
       const query = integrationsQuery.query;
@@ -217,6 +230,10 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     },
     [deleteModalActions, integrationsQuery.query]
   );
+
+  useEffect(() => {
+    modalIsOpenState.isTest && setIsTestModalOpen(true);
+  }, [modalIsOpenState]);
 
   // This is an estimate of how many rows are in the next page (Won't be always correct because a new row could be added while we are browsing)
   // Is used for the skeleton loading
@@ -278,7 +295,14 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
           onClose={closeFormModal}
         />
       )}
-      {wizardEnabled && category && (
+      {modalIsOpenState.isTest && (
+        <IntegrationTestProvider
+          integrationUUID={selectedIntegrationID}
+          onClose={() => setIsTestModalOpen(false)}
+          isModalOpen={isTestModalOpen}
+        />
+      )}
+      {wizardEnabled && category && !modalIsOpenState.isTest && (
         <IntegrationWizard
           isOpen={modalIsOpenState.isOpen}
           isEdit={modalIsOpenState.isEdit}

@@ -351,6 +351,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     const actionsResolverCallback: IActionsResolver = React.useCallback(
       (rowData) => {
         const actionResolver = props.actionResolver;
+
         if (rowData.parent === undefined && rowData && props.integrations) {
           const integrationIndex = props.integrations.findIndex(
             (i) => i.id === rowData.id
