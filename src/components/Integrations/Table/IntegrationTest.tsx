@@ -13,10 +13,6 @@ const IntegrationTestModal = ({ integrationUUID, isModalOpen, onClose }) => {
   const failedTestText =
     'Your integration test has unfortunately failed, please verify your integration information.';
 
-  const handleModalCancel = () => {
-    onClose();
-  };
-
   const handleNotificationTest = async (notificationMessage: string) => {
     const endpointURL = `/api/integrations/v1/endpoints/${integrationUUID}/test`;
 
@@ -30,13 +26,13 @@ const IntegrationTestModal = ({ integrationUUID, isModalOpen, onClose }) => {
             'Failed Test',
             `Error through server response: ${response.status}`
           );
-      handleModalCancel();
+      onClose();
     } catch (error) {
       console.error('\nError sending test notification:', error);
 
       const responseString = `${failedTestText} ${error}`;
       addWarningNotification('Failed Test', responseString);
-      handleModalCancel();
+      onClose();
     }
   };
 
@@ -44,7 +40,7 @@ const IntegrationTestModal = ({ integrationUUID, isModalOpen, onClose }) => {
     <Modal
       title="Integration Test"
       isOpen={isModalOpen}
-      onClose={handleModalCancel}
+      onClose={onClose}
       description="You can specify a custom message for the notification's payload. If you don't, the default message will be sent"
       actions={[
         <Button
@@ -53,7 +49,7 @@ const IntegrationTestModal = ({ integrationUUID, isModalOpen, onClose }) => {
         >
           Test
         </Button>,
-        <Button key="cancel" onClick={handleModalCancel}>
+        <Button key="cancel" onClick={onClose}>
           Cancel
         </Button>,
       ]}
