@@ -8,7 +8,7 @@ import * as Yup from 'yup';
 
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 
-const title = 'Name';
+const title = 'Name and domain';
 
 const BasicInformationStep: React.FunctionComponent = () => {
   return (

@@ -60,7 +60,7 @@ const ReviewStep: React.FunctionComponent = () => {
       </Title>
       <DescriptionList isHorizontal>
         <DescriptionListGroup>
-          <DescriptionListTerm>Name</DescriptionListTerm>
+          <DescriptionListTerm>Name and domain</DescriptionListTerm>
           <DescriptionListDescription>
             {' '}
             {values.displayName}
