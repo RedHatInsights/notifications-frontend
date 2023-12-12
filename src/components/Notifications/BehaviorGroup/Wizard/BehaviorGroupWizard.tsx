@@ -23,11 +23,13 @@ export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardPro
   (props) => {
     const { values } = useFormikContext<CreateBehaviorGroup>();
     const title = (values.id ? 'Edit' : 'Create') + ' behavior group';
+    const description = 'Define who gets notified of your events and how.';
 
     return (
       <Form>
         <Wizard
           title={title}
+          description={description}
           steps={props.steps}
           footer={
             <BehaviorGroupWizardFooter
