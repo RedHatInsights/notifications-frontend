@@ -33,7 +33,6 @@ import {
   UserIntegration,
 } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
-import { usePreviewFlag } from '../../../utils/usePreviewFlag';
 import { CreatePage } from '../Create/CreatePage';
 import { IntegrationWizard } from '../Create/IntegrationWizard';
 import IntegrationTestProvider from '../../../components/Integrations/Table/IntegrationTestProvider';
@@ -41,6 +40,7 @@ import { IntegrationDeleteModalPage } from '../Delete/DeleteModal';
 import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
+import { useFlag } from '@unleash/proxy-client-react';
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
   ...userIntegration,
@@ -59,7 +59,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   category,
 }: IntegrationListProps) => {
   const dispatch = useDispatch();
-  const wizardEnabled = usePreviewFlag('insights.integrations.wizard');
+  const wizardEnabled = useFlag('insights.integrations.wizard');
   const { savedNotificationScope } = useSelector(selector);
   const [selectedIntegrationID, setSelectedIntegrationID] = useState('');
   const [isTestModalOpen, setIsTestModalOpen] = useState(true);
