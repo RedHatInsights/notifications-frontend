@@ -5,6 +5,7 @@ import {
   OnEnable,
 } from '../../../components/Integrations/Table';
 import { UserIntegration } from '../../../types/Integration';
+import { usePreviewFlag } from '../../../utils/usePreviewFlag';
 
 interface ActionResolverParams {
   onEdit: (integration: UserIntegration) => void;
@@ -15,6 +16,7 @@ interface ActionResolverParams {
 }
 
 export const useActionResolver = (params: ActionResolverParams) => {
+  const integrationTest = usePreviewFlag('insights.integrations.test');
   return useCallback(
     (integration: IntegrationRow, index: number) => {
       const onEdit = params.onEdit;
@@ -30,11 +32,15 @@ export const useActionResolver = (params: ActionResolverParams) => {
           isDisabled,
           onClick: () => onEdit(integration),
         },
-        {
-          title: 'Test',
-          isDisabled,
-          onClick: () => onTest(integration),
-        },
+        ...(integrationTest
+          ? [
+              {
+                title: 'Test',
+                isDisabled,
+                onClick: () => onTest(integration),
+              },
+            ]
+          : []),
         {
           title: 'Delete',
           isDisabled,
@@ -53,6 +59,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
       params.onDelete,
       params.canWrite,
       params.onEnable,
+      integrationTest,
     ]
   );
 };
