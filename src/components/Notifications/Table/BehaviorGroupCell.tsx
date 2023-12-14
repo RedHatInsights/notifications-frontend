@@ -67,7 +67,10 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     const [isOpen, setOpen] = React.useState(false);
 
     const onSelected = React.useCallback(
-      (event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent) => {
+      (
+        event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent,
+        behaviorGroupId?: string
+      ) => {
         const dataset =
           (event?.currentTarget?.firstChild as HTMLElement)?.dataset ??
           emptyImmutableObject;
@@ -77,11 +80,19 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           !props.behaviorGroupContent.hasError &&
           onSelect
         ) {
-          if (dataset.behaviorGroupId) {
-            const found = props.behaviorGroupContent.content.find(
-              // eslint-disable-next-line testing-library/await-async-queries
-              findById(dataset.behaviorGroupId)
-            );
+          if (dataset.behaviorGroupId || behaviorGroupId) {
+            let found;
+            if (dataset.behaviorGroupId) {
+              found = props.behaviorGroupContent.content.find(
+                // eslint-disable-next-line testing-library/await-async-queries
+                findById(dataset.behaviorGroupId)
+              );
+            } else if (behaviorGroupId) {
+              found = props.behaviorGroupContent.content.find(
+                // eslint-disable-next-line testing-library/await-async-queries
+                findById(behaviorGroupId)
+              );
+            }
             if (found) {
               // eslint-disable-next-line testing-library/await-async-queries
               const isSelected = !!props.selected.find(findById(found.id));
@@ -147,7 +158,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             <MenuItem
               key={bg.id}
               hasCheck
-              onClick={onSelected}
+              onClick={(event) => onSelected(event, bg.id)}
               data-behavior-group-id={bg.id}
               isSelected={selected}
               isDisabled={bg.isDefault}
