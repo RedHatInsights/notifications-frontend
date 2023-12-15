@@ -168,34 +168,36 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
             </SplitItem>
           </Split>
           <Stack hasGutter>
+            <StackItem>
+              <Split hasGutter className="pf-v5-u-mb-md">
+                <SplitItem>
+                  <SearchInput
+                    value={filter}
+                    onChange={setFilter}
+                    onClear={onClearFilter}
+                    type="text"
+                    aria-label="Search by name"
+                    placeholder="Search by name"
+                    isDisabled={props.behaviorGroupContent.isLoading}
+                  />
+                </SplitItem>
+                <SplitItem>
+                  <BehaviorGroupAddButton
+                    isDisabled={
+                      props.behaviorGroupContent.isLoading ||
+                      !rbac.canWriteNotifications
+                    }
+                    onClick={createGroup}
+                  />
+                </SplitItem>
+              </Split>
+            </StackItem>
+          </Stack>
+          <Stack hasGutter>
             {(props.behaviorGroupContent.isLoading ||
               props.behaviorGroupContent.hasError ||
               props.behaviorGroupContent.content.length > 0) && (
               <>
-                <StackItem>
-                  <Split hasGutter className="pf-v5-u-mb-md">
-                    <SplitItem>
-                      <SearchInput
-                        value={filter}
-                        onChange={setFilter}
-                        onClear={onClearFilter}
-                        type="text"
-                        aria-label="Search by name"
-                        placeholder="Search by name"
-                        isDisabled={props.behaviorGroupContent.isLoading}
-                      />
-                    </SplitItem>
-                    <SplitItem>
-                      <BehaviorGroupAddButton
-                        isDisabled={
-                          props.behaviorGroupContent.isLoading ||
-                          !rbac.canWriteNotifications
-                        }
-                        onClick={createGroup}
-                      />
-                    </SplitItem>
-                  </Split>
-                </StackItem>
                 <StackItem>
                   {props.behaviorGroupContent.isLoading ? (
                     <BehaviorGroupCardList />
