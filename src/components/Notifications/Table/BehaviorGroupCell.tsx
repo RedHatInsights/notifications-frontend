@@ -164,7 +164,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
               isDisabled={bg.isDefault}
               className="pf-v5-u-ml-sm"
             >
-              {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
+              {bg.isDefault && <LockIcon className="pf-v5-u-ml-sm" />}{' '}
               <span className="pf-v5-u-ml-sm"> {bg.displayName}</span>
             </MenuItem>
           );
