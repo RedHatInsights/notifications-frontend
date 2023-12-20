@@ -146,7 +146,7 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
               >
                 <Tab
                   eventKey={2}
-                  title={<TabTitleText>Openshift</TabTitleText>}
+                  title={<TabTitleText>OpenShift</TabTitleText>}
                 >
                   <Main>
                     <BundlePageBehaviorGroupContent
