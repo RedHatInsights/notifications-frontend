@@ -7,7 +7,6 @@ import {
   MenuItem,
   OptionsMenu,
   OptionsMenuItem,
-  OptionsMenuItemGroup,
   OptionsMenuToggle,
   Tooltip,
 } from '@patternfly/react-core';
@@ -139,17 +138,6 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
       ];
 
       return [
-        <OptionsMenuItemGroup hasSeparator key={0}>
-          <MenuItem
-            onClick={onSelected}
-            key={props.id}
-            className="pf-v5-u-active-color-100"
-          >
-            <BellSlashIcon className="pf-v5-u-ml-sm pf-v5-u-active-color-100" />{' '}
-            Mute event
-          </MenuItem>
-        </OptionsMenuItemGroup>,
-
         behaviorGroups.map((bg) => {
           // eslint-disable-next-line testing-library/await-async-queries
           const selected = !!props.selected.find(findById(bg.id));
@@ -170,7 +158,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           );
         }),
       ];
-    }, [props.behaviorGroupContent, props.selected, props.id, onSelected]);
+    }, [props.behaviorGroupContent, props.selected, onSelected]);
 
     const sortedSelected = React.useMemo(
       () => [
