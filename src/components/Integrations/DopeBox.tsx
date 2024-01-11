@@ -198,7 +198,7 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
                     Configure Notifications Portal
                   </Text>
                   <Text component="p" className="pf-u-flex-grow-1">
-                    You can configure the Red Hat Cloud Console to send even
+                    You can configure the Red Hat Cloud Console to send event
                     notifications to all users on a new or existing channel in
                     Google Chat, Microsoft Teams, or Slack.
                   </Text>
