@@ -107,11 +107,11 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       <a
                         href={`${
                           isBeta() ? '/preview' : ''
-                        }/${getBundle()}/notifications/my-notification-preferences`}
+                        }/${getBundle()}/notifications/user-preferences`}
                         onClick={(e) => {
                           e.preventDefault();
                           navigate(
-                            `/${getBundle()}/notifications/my-notification-preferences`
+                            `/${getBundle()}/notifications/user-preferences`
                           );
                         }}
                       >
@@ -258,10 +258,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 icon={IconName.USER}
                 isExpanded
                 heading="Manage your own notifications with Notification Preferences"
-                linkTitle="Go to My Notification Preferences"
+                linkTitle="Go to Notification Preferences"
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/my-notification-preferences`}
+                }/${getBundle()}/notifications/user-preferences`}
                 expandableContent="This service allows you to opt-in and out of receiving notifications. Your Organization
                             Administrator has configured which notifications you can or can not receive in their Settings."
               />
