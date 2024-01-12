@@ -79,19 +79,15 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           !props.behaviorGroupContent.hasError &&
           onSelect
         ) {
+          let found;
           if (dataset.behaviorGroupId || behaviorGroupId) {
-            let found;
-            if (dataset.behaviorGroupId) {
-              found = props.behaviorGroupContent.content.find(
-                // eslint-disable-next-line testing-library/await-async-queries
-                findById(dataset.behaviorGroupId)
-              );
-            } else if (behaviorGroupId) {
-              found = props.behaviorGroupContent.content.find(
-                // eslint-disable-next-line testing-library/await-async-queries
-                findById(behaviorGroupId)
-              );
-            }
+            found = props.behaviorGroupContent.content.find(
+              // eslint-disable-next-line testing-library/await-async-queries
+              findById(
+                (dataset.behaviorGroupId as string) ||
+                  (behaviorGroupId as string)
+              )
+            );
             if (found) {
               // eslint-disable-next-line testing-library/await-async-queries
               const isSelected = !!props.selected.find(findById(found.id));
