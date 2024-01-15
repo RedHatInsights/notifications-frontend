@@ -65,7 +65,7 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
                     <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-md">
                       <CogIcon />
                     </Icon>
-                    Configure Applications
+                    Configure applications
                   </Text>
                   <Text component="p" className="pf-u-flex-grow-1">
                     To prepare for integration with the Hybrid Cloud Console,
@@ -161,7 +161,7 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
                   <Text component="p" className="pf-u-flex-grow-1">
                     To configure notifications and integration settings, you
                     must be a member of a group with the Notifications
-                    adminstrator role. This group must be configured in User
+                    administrator role. This group must be configured in User
                     Access by an Organization Administrator.
                   </Text>
                   <Text component="p">
@@ -195,12 +195,12 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
                     <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-md">
                       <BellIcon />
                     </Icon>
-                    Configure Notifications Portal
+                    Configure notifications portal
                   </Text>
                   <Text component="p" className="pf-u-flex-grow-1">
-                    You can configure the Red Hat Cloud Console to send event
+                    You can configure the Hybrid Cloud Console to send event
                     notifications to all users on a new or existing channel in
-                    Google Chat, Microsoft Teams, or Slack.
+                    Slack, Google Chat, or Microsoft Teams.
                   </Text>
                   <Text component="p">
                     <Link
