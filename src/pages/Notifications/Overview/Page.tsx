@@ -263,7 +263,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 linkTitle="Go to Notification Preferences"
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/my-notification-preferences`}
+                }/${getBundle()}/notifications/user-preferences`}
                 expandableContent="Select the events you want to be notified about, and how to receive notifications. Your Organization Administrator has configured which notifications you can or can’t receive in their Settings."
               />
               <CustomDataListItem
