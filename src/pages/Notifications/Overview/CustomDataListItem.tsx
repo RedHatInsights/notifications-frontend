@@ -20,7 +20,7 @@ import {
   UserIcon,
   UsersIcon,
 } from '@patternfly/react-icons';
-import React, { ReactNode } from 'react';
+import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 export enum IconName {
@@ -36,7 +36,7 @@ interface CustomDataListItemProps {
   heading: string;
   linkTitle?: string;
   linkTarget?: string;
-  expandableContent: ReactNode;
+  expandableContent: React.ReactNode;
   isRedirect?: boolean;
   isExpanded?: boolean;
 }
