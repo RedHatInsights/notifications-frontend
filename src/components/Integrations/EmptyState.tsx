@@ -106,7 +106,7 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
                 isOrgAdmin={isOrgAdmin}
                 TitleIcon={InfrastructureIcon}
                 title="Create behavior groups"
-                body="A behavior group defines which notifications will be sent to external services when a specific event is received by the notifications service. You can link events from any Red Hat Hybrid Cloud Console service to your behavior group."
+                body="A behavior group defines which notifications will be sent to external services when a specific event is received by the notifications service. You can link events from any Hybrid Cloud Console service to your behavior group."
                 link="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/assembly-config-behavior-groups_notifications"
               />
             )}

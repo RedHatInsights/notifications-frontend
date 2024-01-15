@@ -80,7 +80,7 @@ export const StatusSuccess: React.FunctionComponent<DegradedProps> = (
       <CheckCircleIcon
         data-testid="success-icon"
         color={global_success_color_100.value}
-      />
+      />{' '}
     </Status>
   </Degraded>
 );
@@ -93,7 +93,7 @@ export const StatusEventFailure: React.FunctionComponent<DegradedProps> = (
       <ExclamationCircleIcon
         data-testid="fail-icon"
         color={global_danger_color_100.value}
-      />
+      />{' '}
     </Status>
   </Degraded>
 );
@@ -103,7 +103,7 @@ export const StatusReady: React.FunctionComponent<unknown> = () => (
     <CheckCircleIcon
       data-testid="success-icon"
       color={global_success_color_100.value}
-    />
+    />{' '}
   </Status>
 );
 
@@ -112,18 +112,18 @@ export const StatusCreationFailure: React.FunctionComponent<unknown> = () => (
     <ExclamationCircleIcon
       data-testid="fail-icon"
       color={global_danger_color_100.value}
-    />
+    />{' '}
   </Status>
 );
 
 export const StatusProcessing: React.FunctionComponent<unknown> = () => (
   <Status text="Processing">
-    <InProgressIcon data-testid="in-progress-icon" />
+    <InProgressIcon data-testid="in-progress-icon" />{' '}
   </Status>
 );
 
 export const StatusUnknown: React.FunctionComponent<unknown> = () => (
   <Status text="Error loading status">
-    <UnknownIcon data-testid="unknown-icon" />
+    <UnknownIcon data-testid="unknown-icon" />{' '}
   </Status>
 );
