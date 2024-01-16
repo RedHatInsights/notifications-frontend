@@ -80,8 +80,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           <FlexItem className="pf-u-align-self-flex-start">
             <PageHeaderTitle title="Notifications" className="pf-u-mb-sm" />
             <p className="pf-u-mb-sm">
-              A standardized way of notifying users of events for supported
-              services on the Hybrid Cloud Console.
+              Receive notifications about events that occur in your console
+              services. You can choose to receive notifications in the console
+              notifications drawer, by email, in third-party applications, or
+              from a combination of these methods.
             </p>
           </FlexItem>
         </Flex>
@@ -99,11 +101,11 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   </CardTitle>
                   <CardBody>
                     <p>
-                      This service allows you to configure which notifications
-                      different users within your organization will be entitled
-                      to receiving. To do this, create behavior groups and apply
-                      them to different events. Users will be able to opt-in or
-                      out of receiving authorized event notifications in their{' '}
+                      Control which notifications different users within your
+                      organization can receive by creating behavior groups and
+                      associating them with specific events. Users can then
+                      select the event notifications they want to receive and
+                      how to be notified in their{' '}
                       <a
                         href={`${
                           isBeta() ? '/preview' : ''
@@ -262,8 +264,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
                 }/${getBundle()}/notifications/user-preferences`}
-                expandableContent="This service allows you to opt-in and out of receiving notifications. Your Organization
-                            Administrator has configured which notifications you can or can not receive in their Settings."
+                expandableContent="Select the events you want to be notified about, and how to receive notifications. Your Organization Administrator has configured which notifications you can or can’t receive in their Settings."
               />
               <CustomDataListItem
                 icon={IconName.RUNNING}
@@ -272,7 +273,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
                 }/${getBundle()}/notifications/eventlog `}
-                expandableContent="See all the events affecting your organization and view details around the events fired."
+                expandableContent="See all the events occurring in your organization and view details about the triggered events."
               />
               <CustomDataListItem
                 icon={IconName.INTEGRATION}
@@ -288,9 +289,23 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         isBeta() ? '/preview' : ''
                       }/${getBundle()}/notifications/integrations`
                 }
-                expandableContent="Notifications and integrations services work together to transmit messages to third-party application
-                    endpoints, such as instant messaging platforms and external ticketing systems, when triggering events occur. Integrations
-                    include Splunk, Slack, ServiceNow, and more."
+                expandableContent={
+                  <span>
+                    The notifications and integrations services work together to
+                    transmit messages to third-party applications, such as
+                    instant messaging platforms and external ticketing systems,
+                    when events occur. Integrations include Splunk, Slack,
+                    ServiceNow,{' '}
+                    <a
+                      href={
+                        'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index'
+                      }
+                    >
+                      and more
+                    </a>
+                    .
+                  </span>
+                }
               />
               <CustomDataListItem
                 icon={IconName.USERS}
@@ -299,10 +314,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
                 }/${getBundle()}/notifications/configure-events`}
-                expandableContent="Behavior groups are made up of action/recipient pairings that allow you to configure which notification
-                    actions different users will be able to receive. Once you've created a behavior group, you can assign it to an event. You
-                    may also prevent users from changing assigned actions by locking action/recipient pairings when creating or editing behavior
-                    groups."
+                expandableContent="Configure which notifications different users in your organization can receive, and how to notify groups of users when selected events occur."
               />
             </DataList>
           </React.Fragment>

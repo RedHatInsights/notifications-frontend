@@ -36,7 +36,7 @@ interface CustomDataListItemProps {
   heading: string;
   linkTitle?: string;
   linkTarget?: string;
-  expandableContent: string;
+  expandableContent: React.ReactNode;
   isRedirect?: boolean;
   isExpanded?: boolean;
 }
