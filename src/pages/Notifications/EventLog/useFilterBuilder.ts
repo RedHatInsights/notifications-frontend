@@ -29,8 +29,8 @@ export const useFilterBuilder = (
         filter.and('bundleIds', Operator.EQUAL, queryParams);
       }
 
-      if (filters?.application) {
-        const selectedAppNames = filters.application as string[];
+      if (filters?.service) {
+        const selectedAppNames = filters.service as string[];
 
         const queryParams: string[] = [];
         selectedAppNames.forEach((appName) => {

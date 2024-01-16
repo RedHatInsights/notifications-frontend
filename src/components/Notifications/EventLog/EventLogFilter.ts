@@ -7,7 +7,7 @@ import {
 export enum EventLogFilterColumn {
   EVENT = 'event',
   BUNDLE = 'bundle',
-  APPLICATION = 'application',
+  SERVICE = 'service',
   ACTION_TYPE = 'endpointTypes',
   ACTION_STATUS = 'invocationResults',
 }

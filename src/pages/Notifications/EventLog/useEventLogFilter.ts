@@ -12,7 +12,7 @@ const DEBOUNCE_MS = 250;
 
 export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
   const useStateFactory = useMemo(() => {
-    const useApplication = () => useUrlStateMultipleOptions('application');
+    const useService = () => useUrlStateMultipleOptions('service');
     const useBundle = () => useUrlStateMultipleOptions('bundle');
 
     const useActionType = () => useUrlStateMultipleOptions('endpointTypes');
@@ -23,8 +23,8 @@ export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
 
     return (column: EventLogFilterColumn) => {
       switch (column) {
-        case EventLogFilterColumn.APPLICATION:
-          return useApplication;
+        case EventLogFilterColumn.SERVICE:
+          return useService;
         case EventLogFilterColumn.BUNDLE:
           return useBundle;
         case EventLogFilterColumn.EVENT:

@@ -39,7 +39,7 @@ const groups = [
 const setFilters = {
   event: jest.fn(),
   bundle: jest.fn(),
-  application: jest.fn(),
+  service: jest.fn(),
   actionType: jest.fn(),
   actionState: jest.fn(),
 };
@@ -73,16 +73,16 @@ describe('src/components/Notifications/EventLog', () => {
 
     expect(filterDropdown.length).toBe(4);
     expect(filterDropdown[0]).toHaveTextContent('Event');
-    expect(filterDropdown[1]).toHaveTextContent('Application');
+    expect(filterDropdown[1]).toHaveTextContent('Service');
     expect(filterDropdown[2]).toHaveTextContent('Action Type');
     expect(filterDropdown[3]).toHaveTextContent('Action Status');
   });
 
-  it('Render custom Application filter and perform basic tree filtering', async () => {
+  it('Render custom Service filter and perform basic tree filtering', async () => {
     render(
       <EventLogTreeFilter
         groups={groups}
-        placeholder={'Filter by application'}
+        placeholder={'Filter by service'}
         filters={[]}
         updateFilters={jest.fn()}
       />
