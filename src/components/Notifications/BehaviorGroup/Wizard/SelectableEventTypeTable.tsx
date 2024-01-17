@@ -40,7 +40,7 @@ const SelectableEventTypeTableLayout: React.FunctionComponent = (props) => {
         <Tr>
           <Th />
           <Th>Event type</Th>
-          <Th>Application</Th>
+          <Th>Service</Th>
         </Tr>
       </Thead>
       <Tbody>{props.children}</Tbody>

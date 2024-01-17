@@ -147,9 +147,9 @@ export const EventLogToolbar: React.FunctionComponent<EventLogToolbarProps> = (
         label: 'Event',
         placeholder: 'Filter by event',
       },
-      [EventLogFilterColumn.APPLICATION]: {
-        label: 'Application',
-        placeholder: 'Filter by application',
+      [EventLogFilterColumn.SERVICE]: {
+        label: 'Service',
+        placeholder: 'Filter by service',
       },
       [EventLogFilterColumn.ACTION_TYPE]: {
         label: 'Action Type',

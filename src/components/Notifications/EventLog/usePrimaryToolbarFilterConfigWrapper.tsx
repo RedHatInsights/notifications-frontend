@@ -134,15 +134,15 @@ export const usePrimaryToolbarFilterConfigWrapper = (
       };
 
       const applicationsByBundle: { [key: string]: string[] } = {};
-      (filters.application as string[])?.forEach((queryParam) => {
+      (filters.service as string[])?.forEach((queryParam) => {
         const nameSplit = queryParam.split('.');
         const bundleName = nameSplit[0];
-        const application = nameSplit[1];
+        const service = nameSplit[1];
 
         if (!applicationsByBundle[bundleName]) {
-          applicationsByBundle[bundleName] = [application];
+          applicationsByBundle[bundleName] = [service];
         } else {
-          applicationsByBundle[bundleName].push(application);
+          applicationsByBundle[bundleName].push(service);
         }
       });
 
@@ -184,13 +184,13 @@ export const usePrimaryToolbarFilterConfigWrapper = (
 
   const applicationFilter = React.useMemo(() => {
     return {
-      label: 'Application',
+      label: 'Service',
       type: 'custom',
       filterValues: {
         children: (
           <EventLogTreeFilter
             groups={bundles}
-            placeholder={'Filter by Application'}
+            placeholder={'Filter by service'}
             filters={customFilters}
             updateFilters={setCustomFilters}
           />
@@ -246,7 +246,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
 
   // Update URL Query Params for Bundles
   const applicationProducer = React.useMemo(() => {
-    return produce(filters.application, (prev) => {
+    return produce(filters.service, (prev) => {
       if (bundles.length === 0) {
         return;
       }
@@ -280,10 +280,10 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         ? prev
         : currApplicationFilters;
     });
-  }, [bundles, filters.application, customFilters]);
+  }, [bundles, filters.service, customFilters]);
 
   setFilters.bundle(bundleProducer);
-  setFilters.application(applicationProducer);
+  setFilters.service(applicationProducer);
 
   return produce(toolbarConfig, (prev) => {
     prev.filterConfig.items[1] = applicationFilter;
