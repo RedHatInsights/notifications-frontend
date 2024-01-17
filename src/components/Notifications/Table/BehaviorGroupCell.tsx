@@ -1,8 +1,10 @@
 import {
+  Badge,
   Chip,
   ChipGroup,
   Icon,
   Label,
+  MenuItem,
   OptionsMenu,
   OptionsMenuItem,
   OptionsMenuToggle,
@@ -64,7 +66,10 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     const [isOpen, setOpen] = React.useState(false);
 
     const onSelected = React.useCallback(
-      (event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent) => {
+      (
+        event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent,
+        behaviorGroupId?: string
+      ) => {
         const dataset =
           (event?.currentTarget?.firstChild as HTMLElement)?.dataset ??
           emptyImmutableObject;
@@ -74,10 +79,14 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           !props.behaviorGroupContent.hasError &&
           onSelect
         ) {
-          if (dataset.behaviorGroupId) {
-            const found = props.behaviorGroupContent.content.find(
+          let found;
+          if (dataset.behaviorGroupId || behaviorGroupId) {
+            found = props.behaviorGroupContent.content.find(
               // eslint-disable-next-line testing-library/await-async-queries
-              findById(dataset.behaviorGroupId)
+              findById(
+                (dataset.behaviorGroupId as string) ||
+                  (behaviorGroupId as string)
+              )
             );
             if (found) {
               // eslint-disable-next-line testing-library/await-async-queries
@@ -123,23 +132,28 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
         ...props.selected.filter((b) => b.isDefault),
         ...props.behaviorGroupContent.content.filter((b) => !b.isDefault),
       ];
-      return behaviorGroups.map((bg) => {
-        // eslint-disable-next-line testing-library/await-async-queries
-        const selected = !!props.selected.find(findById(bg.id));
 
-        return (
-          <OptionsMenuItem
-            key={bg.id}
-            onSelect={onSelected}
-            data-behavior-group-id={bg.id}
-            isSelected={selected}
-            isDisabled={bg.isDefault}
-          >
-            {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
-            {bg.displayName}
-          </OptionsMenuItem>
-        );
-      });
+      return [
+        behaviorGroups.map((bg) => {
+          // eslint-disable-next-line testing-library/await-async-queries
+          const selected = !!props.selected.find(findById(bg.id));
+
+          return (
+            <MenuItem
+              key={bg.id}
+              hasCheck
+              onClick={(event) => onSelected(event, bg.id)}
+              data-behavior-group-id={bg.id}
+              isSelected={selected}
+              isDisabled={bg.isDefault}
+              className="pf-v5-u-ml-sm"
+            >
+              {bg.isDefault && <LockIcon className="pf-v5-u-ml-sm" />}{' '}
+              <span className="pf-v5-u-ml-sm"> {bg.displayName}</span>
+            </MenuItem>
+          );
+        }),
+      ];
     }, [props.behaviorGroupContent, props.selected, onSelected]);
 
     const sortedSelected = React.useMemo(
@@ -156,20 +170,30 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
           onToggle={setOpen}
           toggleTemplate={
             sortedSelected.length === 0 ? (
-              <span className="pf-v5-u-disabled-color-100">
-                Select behavior group
-              </span>
+              <>
+                <span className="pf-v5-u-disabled-color-100">
+                  Select behavior group
+                </span>
+                <Badge className="pf-v5-u-ml-xs" isRead>
+                  {sortedSelected.length}
+                </Badge>
+              </>
             ) : (
-              <ChipGroup>
-                {sortedSelected.map((value) => (
-                  <BehaviorGroupChip
-                    key={value.id}
-                    behaviorGroup={value}
-                    notification={props.notification}
-                    onSelect={props.onSelect}
-                  />
-                ))}
-              </ChipGroup>
+              <>
+                <ChipGroup>
+                  {sortedSelected.map((value) => (
+                    <BehaviorGroupChip
+                      key={value.id}
+                      behaviorGroup={value}
+                      notification={props.notification}
+                      onSelect={props.onSelect}
+                    />
+                  ))}
+                </ChipGroup>
+                <Badge className="pf-v5-u-ml-xs" isRead>
+                  {sortedSelected.length}
+                </Badge>
+              </>
             )
           }
         />
