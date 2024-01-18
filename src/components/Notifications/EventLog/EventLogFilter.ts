@@ -9,7 +9,7 @@ export enum EventLogFilterColumn {
   BUNDLE = 'bundle',
   SERVICE = 'service',
   ACTION_TYPE = 'endpointTypes',
-  ACTION_STATUS = 'invocationResults',
+  ACTION_STATUS = 'status',
 }
 
 export type EventLogFilters = Filters<typeof EventLogFilterColumn>;

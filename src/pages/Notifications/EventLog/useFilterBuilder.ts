@@ -56,12 +56,8 @@ export const useFilterBuilder = (
         filter.and('event', Operator.EQUAL, filters.event);
       }
 
-      if (filters?.invocationResults) {
-        filter.and(
-          'invocationResults',
-          Operator.EQUAL,
-          filters.invocationResults
-        );
+      if (filters?.status) {
+        filter.and('status', Operator.EQUAL, filters.status);
       }
 
       if (filters?.endpointTypes) {

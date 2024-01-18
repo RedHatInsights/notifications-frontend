@@ -16,8 +16,7 @@ export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
     const useBundle = () => useUrlStateMultipleOptions('bundle');
 
     const useActionType = () => useUrlStateMultipleOptions('endpointTypes');
-    const useActionStatus = () =>
-      useUrlStateMultipleOptions('invocationResults');
+    const useActionStatus = () => useUrlStateMultipleOptions('status');
 
     const useEvent = () => useUrlStateString('event');
 

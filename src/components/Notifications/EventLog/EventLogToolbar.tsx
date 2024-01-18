@@ -70,7 +70,7 @@ const notificationTypes: Record<NotificationType, { name: string }> = {
 
 const actionStatusMetadata = [
   {
-    value: 'true',
+    value: 'SUCCESS',
     chipValue: 'Success',
     label: (
       <span>
@@ -79,7 +79,7 @@ const actionStatusMetadata = [
     ),
   },
   {
-    value: 'false',
+    value: 'SENT',
     chipValue: 'Sent',
     label: (
       <span>
@@ -88,7 +88,7 @@ const actionStatusMetadata = [
     ),
   },
   {
-    value: 'false',
+    value: 'UNKNOWN',
     chipValue: 'Warning',
     label: (
       <span>
@@ -98,7 +98,7 @@ const actionStatusMetadata = [
     ),
   },
   {
-    value: 'false',
+    value: 'PROCESSING',
     chipValue: 'Processing',
     label: (
       <span>
@@ -107,7 +107,7 @@ const actionStatusMetadata = [
     ),
   },
   {
-    value: 'false',
+    value: 'FAILED',
     chipValue: 'Failure',
     label: (
       <span>
