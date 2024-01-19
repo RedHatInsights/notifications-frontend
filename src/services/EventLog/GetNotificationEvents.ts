@@ -39,6 +39,7 @@ export const useGetEvents = (page?: Page) => {
         bundleIds: query.filterBundleIds as [],
         appIds: query.filterAppIds as [],
         invocationResults: query.filterInvocationResults as [],
+        status: query.filterStatus as [],
         endpointTypes: query.filterEndpointTypes as [],
         startDate: query.filterStart as string,
         endDate: query.filterEnd as string,
