@@ -54,7 +54,7 @@ const MutableMessages = {
       },
       eventLog: {
         title: 'Event Log',
-        subtitle: 'View all the events affecting your organization',
+        subtitle: 'View all events that have occurred in your organization.',
         viewNotifications: 'View notification settings',
       },
       notificationsLog: {

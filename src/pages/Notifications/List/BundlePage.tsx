@@ -9,10 +9,6 @@ import {
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import {
-  getInsights,
-  localUrl,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { useFlag } from '@unleash/proxy-client-react';
 import { default as React, useEffect, useMemo, useState } from 'react';
 import { style } from 'typestyle';
@@ -120,19 +116,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             title={pageTitle()}
             subtitle={
               <span>
-                This service allows you to configure which notifications
-                different users within your organization will be entitled to
-                receiving. To do this, create behavior groups and apply
-                <a
-                  href={localUrl(
-                    `/user-preferences/notifications/${props.bundle.name}`,
-                    getInsights().chrome.isBeta()
-                  )}
-                >
-                  {' '}
-                  User Preferences
-                </a>
-                .
+                Configure which event notifications different users within your
+                organization are entitled to receive.
               </span>
             }
             action={eventLogButton()}
@@ -186,21 +171,8 @@ export const NotificationListBundlePage: React.FunctionComponent<NotificationLis
             title={`${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`}
             subtitle={
               <span>
-                This service allows you to configure which notifications
-                different users within your organization will be entitled to
-                receiving. To do this, create behavior groups and apply them to
-                different events. Users will be able to opt-in or out of
-                receiving authorized event notifications in their
-                <a
-                  href={localUrl(
-                    `/user-preferences/notifications/${props.bundle.name}`,
-                    getInsights().chrome.isBeta()
-                  )}
-                >
-                  {' '}
-                  User Preferences
-                </a>
-                .
+                Configure which event notifications different users within your
+                organization are entitled to receive.
               </span>
             }
             action={eventLogButton()}

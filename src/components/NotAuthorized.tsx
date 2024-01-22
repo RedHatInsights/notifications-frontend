@@ -75,23 +75,8 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
     if (serviceName === 'Notifications') {
       return (
         <span>
-          This service allows you to configure which notifications different
-          users within your organization will be entitled to receiving. To do
-          this, create behavior groups and apply them to different events. Users
-          will be able to opt-in or out of receiving authorized event
-          notifications in their
-          {
-            <a
-              href={localUrl(
-                `/user-preferences/notifications/`,
-                chrome.isBeta()
-              )}
-            >
-              {' '}
-              User Preferences
-            </a>
-          }
-          .
+          Configure which event notifications different users within your
+          organization are entitled to receive.
         </span>
       );
     } else {
