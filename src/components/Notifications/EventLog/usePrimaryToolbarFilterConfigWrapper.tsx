@@ -263,17 +263,11 @@ export const usePrimaryToolbarFilterConfigWrapper = (
         // Only add applications to Query Params under 2 conditions
         //     1. Bundle has children
         //     2. Every application under the Bundle is not selected
-        if (
-          chipValues &&
+
+        chipValues &&
           bundle.children?.some(
             (application) => !chipValues.includes(application.name)
-          )
-        ) {
-          chipValues.forEach((chipValue) => {
-            const applicationQueryParam = `${bundle.name}.${chipValue}`;
-            currApplicationFilters.push(applicationQueryParam);
-          });
-        }
+          );
       });
 
       return areEqual(prev as string[], currApplicationFilters, true)
