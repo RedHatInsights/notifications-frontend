@@ -202,18 +202,7 @@ const columns: Array<ICell> = [
     transforms: [],
   },
   {
-    title: (
-      <>
-        <span>
-          {Messages.components.integrations.table.columns.lastConnectionAttempt}
-        </span>
-        <LastConnectionHelpPopover>
-          <Button variant={ButtonVariant.plain}>
-            <HelpIcon />
-          </Button>
-        </LastConnectionHelpPopover>
-      </>
-    ),
+    title: Messages.components.integrations.table.columns.lastConnectionAttempt,
     transforms: [],
   },
   {
