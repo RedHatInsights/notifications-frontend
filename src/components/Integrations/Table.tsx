@@ -21,6 +21,7 @@ import {
   TableBody,
   TableHeader,
   expandable,
+  info,
   sortable,
 } from '@patternfly/react-table';
 import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTable';
@@ -203,7 +204,15 @@ const columns: Array<ICell> = [
   },
   {
     title: Messages.components.integrations.table.columns.lastConnectionAttempt,
-    transforms: [],
+    transforms: [
+      info({
+        tooltip: (
+          <LastConnectionHelpPopover>
+            <HelpIcon />
+          </LastConnectionHelpPopover>
+        ),
+      }),
+    ],
   },
   {
     title: Messages.components.integrations.table.columns.enabled,
