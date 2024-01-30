@@ -1,20 +1,6 @@
 import { Popover, Text, TextContent } from '@patternfly/react-core';
-import {
-  TableComposable,
-  TableVariant,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
-import { important } from 'csx';
 import * as React from 'react';
-import { style } from 'typestyle';
-
-const removeBorderBottomClass = style({
-  borderBottom: important('none'),
-});
+import { TableHelp } from './TableHelp';
 
 export interface TableHelpPopoverProps {
   title: string | React.ReactNode;
@@ -39,24 +25,7 @@ export const TableHelpPopover: React.FunctionComponent<TableHelpPopoverProps> =
       <Popover
         hasAutoWidth
         headerContent={getHeaderContent(props.title)}
-        bodyContent={
-          <TableComposable variant={TableVariant.compact} borders={false}>
-            <Thead>
-              <Tr className={removeBorderBottomClass}>
-                <Th>Status</Th>
-                <Th>Meaning</Th>
-              </Tr>
-            </Thead>
-            <Tbody>
-              {props.tableBody.map((tb, index) => (
-                <Tr key={index}>
-                  <Td>{tb[0]}</Td>
-                  <Td>{tb[1]}</Td>
-                </Tr>
-              ))}
-            </Tbody>
-          </TableComposable>
-        }
+        bodyContent={<TableHelp tableBody={props.tableBody} />}
       >
         <>{props.children}</>
       </Popover>

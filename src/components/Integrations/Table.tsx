@@ -54,7 +54,7 @@ import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
-import { LastConnectionHelpPopover } from './Table/LastConnectionHelpPopover';
+import { LastConnectionHelpTable } from './Table/LastConnectionHelpTable';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -207,9 +207,9 @@ const columns: Array<ICell> = [
     transforms: [
       info({
         tooltip: (
-          <LastConnectionHelpPopover>
+          <LastConnectionHelpTable>
             <HelpIcon />
-          </LastConnectionHelpPopover>
+          </LastConnectionHelpTable>
         ),
       }),
     ],

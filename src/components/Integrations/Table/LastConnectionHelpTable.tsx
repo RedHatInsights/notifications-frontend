@@ -1,6 +1,5 @@
 import * as React from 'react';
 
-import { TableHelpPopover } from '../../TableHelpPopover/TableHelpPopover';
 import {
   StatusCreationFailure,
   StatusEventFailure,
@@ -8,6 +7,7 @@ import {
   StatusReady,
   StatusSuccess,
 } from './IntegrationStatus';
+import { TableHelp } from '../../TableHelpPopover/TableHelp';
 
 const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
   [
@@ -32,13 +32,10 @@ const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
   ],
 ];
 
-export const LastConnectionHelpPopover: React.FunctionComponent<unknown> = (
+export const LastConnectionHelpTable: React.FunctionComponent<unknown> = (
   props
 ) => (
-  <TableHelpPopover
-    title="Last connection attempt status meanings"
-    tableBody={tableData}
-  >
+  <TableHelp tableBody={tableData}>
     <>{props.children}</>
-  </TableHelpPopover>
+  </TableHelp>
 );
