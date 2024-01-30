@@ -1,10 +1,4 @@
-import {
-  Button,
-  ButtonVariant,
-  EmptyStateVariant,
-  Spinner,
-  Switch,
-} from '@patternfly/react-core';
+import { EmptyStateVariant, Spinner, Switch } from '@patternfly/react-core';
 import { CubesIcon, HelpIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
@@ -206,11 +200,14 @@ const columns: Array<ICell> = [
     title: Messages.components.integrations.table.columns.lastConnectionAttempt,
     transforms: [
       info({
-        tooltip: (
+        popover: (
           <LastConnectionHelpTable>
             <HelpIcon />
           </LastConnectionHelpTable>
         ),
+        popoverProps: {
+          showClose: false,
+        },
       }),
     ],
   },
