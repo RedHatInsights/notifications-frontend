@@ -1,5 +1,11 @@
-import { EmptyStateVariant, Spinner, Switch } from '@patternfly/react-core';
-import { CubesIcon, HelpIcon } from '@patternfly/react-icons';
+import {
+  EmptyStateVariant,
+  Spinner,
+  Switch,
+  Text,
+  TextContent,
+} from '@patternfly/react-core';
+import { CubesIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
@@ -200,13 +206,16 @@ const columns: Array<ICell> = [
     title: Messages.components.integrations.table.columns.lastConnectionAttempt,
     transforms: [
       info({
-        popover: (
-          <LastConnectionHelpTable>
-            <HelpIcon />
-          </LastConnectionHelpTable>
-        ),
+        popover: <LastConnectionHelpTable />,
         popoverProps: {
-          showClose: false,
+          hasAutoWidth: true,
+          headerContent: (
+            <TextContent>
+              <Text component="h6">
+                {'Last connection attempt status meanings'}
+              </Text>
+            </TextContent>
+          ),
         },
       }),
     ],
