@@ -4,6 +4,7 @@ import {
   Sort,
 } from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback, useEffect, useMemo, useState } from 'react';
+import { IntegrationCategory } from '../types/Integration';
 
 export interface PageAdapter {
   page: Page;
@@ -17,14 +18,15 @@ export const usePage = <T>(
   defaultPerPage: number,
   filterBuilder: FilterBuilder<T>,
   filters?: T,
-  sort?: Sort
+  sort?: Sort,
+  category?: IntegrationCategory
 ): PageAdapter => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(defaultPerPage);
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters, setCurrentPage, itemsPerPage]);
+  }, [filters, setCurrentPage, itemsPerPage, category]);
 
   const page = useMemo(() => {
     const filter = filterBuilder ? filterBuilder(filters) : undefined;

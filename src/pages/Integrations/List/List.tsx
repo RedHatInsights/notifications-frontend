@@ -102,7 +102,8 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     20,
     integrationFilterBuilder,
     integrationFilter.filters,
-    sort.sortBy
+    sort.sortBy,
+    category
   );
   const integrationsQuery = useListIntegrationsQuery(pageData.page);
   const exportIntegrationsQuery = useListIntegrationPQuery();
