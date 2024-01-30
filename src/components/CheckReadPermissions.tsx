@@ -7,7 +7,9 @@ import Config from '../config/Config';
 import { linkTo } from '../Routes';
 import { NotAuthorizedPage } from './NotAuthorized';
 
-export const CheckReadPermissions: React.FunctionComponent<React.PropsWithChildren> = (props) => {
+export const CheckReadPermissions: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => {
   const chrome = useChrome();
   const { rbac } = useAppContext();
   const location = useLocation();

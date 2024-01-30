@@ -48,32 +48,33 @@ type NoIntegrationConfigured = {
   testNoIntegrationRenderWithoutRelAndTarget?: boolean;
 };
 
-const NoIntegrationConfigured: React.FunctionComponent<NoIntegrationConfigured> =
-  (props) => (
-    <>
-      <div>You have no integration configured.</div>
-      <div>
-        Go to Settings {'>'}{' '}
-        <Link
-          style={{ pointerEvents: 'all' }}
-          rel={
-            props.testNoIntegrationRenderWithoutRelAndTarget
-              ? undefined
-              : 'noopener noreferrer'
-          }
-          target={
-            props.testNoIntegrationRenderWithoutRelAndTarget
-              ? undefined
-              : '_blank'
-          }
-          to={linkTo.integrations()}
-        >
-          Integrations
-        </Link>{' '}
-        to configure.
-      </div>
-    </>
-  );
+const NoIntegrationConfigured: React.FunctionComponent<
+  NoIntegrationConfigured
+> = (props) => (
+  <>
+    <div>You have no integration configured.</div>
+    <div>
+      Go to Settings {'>'}{' '}
+      <Link
+        style={{ pointerEvents: 'all' }}
+        rel={
+          props.testNoIntegrationRenderWithoutRelAndTarget
+            ? undefined
+            : 'noopener noreferrer'
+        }
+        target={
+          props.testNoIntegrationRenderWithoutRelAndTarget
+            ? undefined
+            : '_blank'
+        }
+        to={linkTo.integrations()}
+      >
+        Integrations
+      </Link>{' '}
+      to configure.
+    </div>
+  </>
+);
 
 export interface ActionTypeaheadProps extends OuiaComponentProps {
   selectedNotifications: ReadonlyArray<NotificationType>;

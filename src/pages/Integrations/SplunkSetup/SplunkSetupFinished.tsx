@@ -19,13 +19,14 @@ interface SplunkSetupFinishedProps {
   error: Error | undefined;
 }
 
-export const SplunkSetupFinished: React.FunctionComponent<SplunkSetupFinishedProps> =
-  ({ isSuccess, error }) =>
-    isSuccess ? (
-      <SplunkSetupFinishedSuccess />
-    ) : (
-      <SplunkSetupFinishedFailure error={error} />
-    );
+export const SplunkSetupFinished: React.FunctionComponent<
+  SplunkSetupFinishedProps
+> = ({ isSuccess, error }) =>
+  isSuccess ? (
+    <SplunkSetupFinishedSuccess />
+  ) : (
+    <SplunkSetupFinishedFailure error={error} />
+  );
 
 export const SplunkSetupFinishedSuccess: React.FunctionComponent = () => (
   <EmptyState>

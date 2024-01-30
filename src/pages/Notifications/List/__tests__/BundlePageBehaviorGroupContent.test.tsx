@@ -118,7 +118,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     appWrapperCleanup();
   });
 
-  it.only('Loads the behavior group and event types', async () => {
+  it('Loads the behavior group and event types', async () => {
     const notifications = getNotifications(policiesApplication, 3);
     const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
 
@@ -340,8 +340,8 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     const notifications = getNotifications(policiesApplication, 3);
     const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
 
-    // mockNotifications(notifications);
-    // mockBehaviorGroups(behaviorGroups);
+    mockNotifications(notifications);
+    mockBehaviorGroups(behaviorGroups);
 
     render(
       <BundlePageBehaviorGroupContent
@@ -393,8 +393,6 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         }),
       }
     );
-
-    screen.debug();
     await waitForAsyncEvents();
 
     // The component is not really disabled (html-wise)
@@ -404,10 +402,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     );
     await act(async () => {
       await userEvent.hover(screen.getByText(/Create new group/i));
-    })
-    expect(screen.getByText(
-      /You do not have permissions to perform this action. Contact your org admin for more information/i
-    )).toBeInTheDocument();
+    });
+    expect(
+      screen.getByText(
+        /You do not have permissions to perform this action. Contact your org admin for more information/i
+      )
+    ).toBeInTheDocument();
   });
 
   it('Add group button should tooltip with no write permissions and user is an org_admin', async () => {

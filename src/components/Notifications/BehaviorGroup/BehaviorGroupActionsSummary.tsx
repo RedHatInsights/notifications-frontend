@@ -21,7 +21,9 @@ type BehaviorGroupActionSummaryImplProps =
 
 const skeletonActions = 3;
 
-const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<React.PropsWithChildren> = (props) => {
+const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => {
   return (
     <Grid>
       <GridItem span={6}>
@@ -39,23 +41,24 @@ const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<React.PropsWith
   );
 };
 
-const BehaviorGroupActionsSummaryImpl: React.FunctionComponent<BehaviorGroupActionSummaryImplProps> =
-  (props) => {
-    return (
-      <BehaviorGroupActionsSummaryLayout>
-        {props.actions.map((action, index) => (
-          <React.Fragment key={`${index}-${action.type}`}>
-            <GridItem span={6}>
-              <ActionComponent action={action} />
-            </GridItem>
-            <GridItem className="pf-u-text-break-word" span={6}>
-              <Recipient action={action} />
-            </GridItem>
-          </React.Fragment>
-        ))}
-      </BehaviorGroupActionsSummaryLayout>
-    );
-  };
+const BehaviorGroupActionsSummaryImpl: React.FunctionComponent<
+  BehaviorGroupActionSummaryImplProps
+> = (props) => {
+  return (
+    <BehaviorGroupActionsSummaryLayout>
+      {props.actions.map((action, index) => (
+        <React.Fragment key={`${index}-${action.type}`}>
+          <GridItem span={6}>
+            <ActionComponent action={action} />
+          </GridItem>
+          <GridItem className="pf-u-text-break-word" span={6}>
+            <Recipient action={action} />
+          </GridItem>
+        </React.Fragment>
+      ))}
+    </BehaviorGroupActionsSummaryLayout>
+  );
+};
 
 const BehaviorGroupActionsSummarySkeleton: React.FunctionComponent = () => {
   const contentWidth = '150px';
@@ -76,11 +79,12 @@ const BehaviorGroupActionsSummarySkeleton: React.FunctionComponent = () => {
   );
 };
 
-export const BehaviorGroupActionsSummary: React.FunctionComponent<BehaviorGroupActionsSummaryProps> =
-  (props) => {
-    if (props.actions) {
-      return <BehaviorGroupActionsSummaryImpl actions={props.actions} />;
-    }
+export const BehaviorGroupActionsSummary: React.FunctionComponent<
+  BehaviorGroupActionsSummaryProps
+> = (props) => {
+  if (props.actions) {
+    return <BehaviorGroupActionsSummaryImpl actions={props.actions} />;
+  }
 
-    return <BehaviorGroupActionsSummarySkeleton />;
-  };
+  return <BehaviorGroupActionsSummarySkeleton />;
+};

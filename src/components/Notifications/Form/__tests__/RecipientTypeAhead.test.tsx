@@ -22,7 +22,7 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
     getNotificationRecipients: getRecipients ?? fn(async () => []),
   };
 
-  const Wrapper: React.FunctionComponent = (props) => (
+  const Wrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => (
     <RecipientContextProvider value={context}>
       {props.children}
     </RecipientContextProvider>

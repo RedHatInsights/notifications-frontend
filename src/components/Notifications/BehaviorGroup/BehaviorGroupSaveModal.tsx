@@ -68,33 +68,34 @@ const InternalBehaviorGroupSaveModal: React.FunctionComponent<InternalProps> = (
   );
 };
 
-export const BehaviorGroupSaveModal: React.FunctionComponent<BehaviorGroupSaveModalProps> =
-  (props) => {
-    const onSubmit = React.useCallback(
-      async (data: Partial<BehaviorGroup>) => {
-        const onClose = props.onClose;
-        const onSave = props.onSave;
+export const BehaviorGroupSaveModal: React.FunctionComponent<
+  BehaviorGroupSaveModalProps
+> = (props) => {
+  const onSubmit = React.useCallback(
+    async (data: Partial<BehaviorGroup>) => {
+      const onClose = props.onClose;
+      const onSave = props.onSave;
 
-        const saved = await onSave(data as BehaviorGroup);
+      const saved = await onSave(data as BehaviorGroup);
 
-        if (saved) {
-          onClose(true);
-        }
-      },
-      [props.onClose, props.onSave]
-    );
+      if (saved) {
+        onClose(true);
+      }
+    },
+    [props.onClose, props.onSave]
+  );
 
-    return (
-      <Formik<Partial<BehaviorGroup>>
-        initialValues={props.data ?? {}}
-        validationSchema={BehaviorGroupSchema}
-        onSubmit={onSubmit}
-        validateOnMount={true}
-      >
-        <InternalBehaviorGroupSaveModal
-          onClose={props.onClose}
-          data={props.data}
-        />
-      </Formik>
-    );
-  };
+  return (
+    <Formik<Partial<BehaviorGroup>>
+      initialValues={props.data ?? {}}
+      validationSchema={BehaviorGroupSchema}
+      onSubmit={onSubmit}
+      validateOnMount={true}
+    >
+      <InternalBehaviorGroupSaveModal
+        onClose={props.onClose}
+        data={props.data}
+      />
+    </Formik>
+  );
+};

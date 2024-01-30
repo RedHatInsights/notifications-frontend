@@ -23,7 +23,9 @@ type BehaviorGroupCardListImplProps = MarkRequired<
 
 const skeletonBehaviorGroupCount = 3;
 
-const BehaviorGroupCardListLayout: React.FunctionComponent<React.PropsWithChildren> = (props) => {
+const BehaviorGroupCardListLayout: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => {
   return (
     <div data-testid="ref-card-list-container">
       <Flex
@@ -39,22 +41,23 @@ const BehaviorGroupCardListLayout: React.FunctionComponent<React.PropsWithChildr
   );
 };
 
-const BehaviorGroupaCrdListImpl: React.FunctionComponent<BehaviorGroupCardListImplProps> =
-  (props) => {
-    return (
-      <BehaviorGroupCardListLayout>
-        {props.behaviorGroups.map((behaviorGroup) => (
-          <FlexItem key={behaviorGroup.id} className="pf-v5-u-pb-md">
-            <BehaviorGroupCard
-              behaviorGroup={behaviorGroup}
-              onEdit={props.onEdit}
-              onDelete={props.onDelete}
-            />
-          </FlexItem>
-        ))}
-      </BehaviorGroupCardListLayout>
-    );
-  };
+const BehaviorGroupaCrdListImpl: React.FunctionComponent<
+  BehaviorGroupCardListImplProps
+> = (props) => {
+  return (
+    <BehaviorGroupCardListLayout>
+      {props.behaviorGroups.map((behaviorGroup) => (
+        <FlexItem key={behaviorGroup.id} className="pf-v5-u-pb-md">
+          <BehaviorGroupCard
+            behaviorGroup={behaviorGroup}
+            onEdit={props.onEdit}
+            onDelete={props.onDelete}
+          />
+        </FlexItem>
+      ))}
+    </BehaviorGroupCardListLayout>
+  );
+};
 
 const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
   return (
@@ -71,16 +74,17 @@ const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
   );
 };
 
-export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> =
-  (props) => {
-    if (props.behaviorGroups) {
-      return (
-        <BehaviorGroupaCrdListImpl
-          {...props}
-          behaviorGroups={props.behaviorGroups}
-        />
-      );
-    }
+export const BehaviorGroupCardList: React.FunctionComponent<
+  BehaviorGroupCardListProps
+> = (props) => {
+  if (props.behaviorGroups) {
+    return (
+      <BehaviorGroupaCrdListImpl
+        {...props}
+        behaviorGroups={props.behaviorGroups}
+      />
+    );
+  }
 
-    return <BehaviorGroupCardListSkeleton />;
-  };
+  return <BehaviorGroupCardListSkeleton />;
+};

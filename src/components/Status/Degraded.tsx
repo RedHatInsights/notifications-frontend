@@ -9,7 +9,9 @@ export interface DegradedProps {
   isDegraded?: boolean;
 }
 
-export const Degraded: React.FunctionComponent<React.PropsWithChildren<DegradedProps>> = (props) => (
+export const Degraded: React.FunctionComponent<
+  React.PropsWithChildren<DegradedProps>
+> = (props) => (
   <>
     {props.children}
     {props.isDegraded && (

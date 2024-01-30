@@ -117,9 +117,9 @@ const actionStatusMetadata = [
   },
 ];
 
-export const EventLogToolbar: React.FunctionComponent<React.PropsWithChildren<EventLogToolbarProps>> = (
-  props
-) => {
+export const EventLogToolbar: React.FunctionComponent<
+  React.PropsWithChildren<EventLogToolbarProps>
+> = (props) => {
   const notifications = useNotifications();
   const integrations = useIntegrations();
 

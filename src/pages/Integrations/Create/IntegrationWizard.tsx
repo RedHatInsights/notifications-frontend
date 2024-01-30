@@ -26,77 +26,76 @@ export interface IntegrationWizardProps {
   closeModal: () => void;
 }
 
-export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> =
-  ({
-    isOpen,
-    isEdit,
-    template,
-    closeModal,
-    category,
-  }: IntegrationWizardProps) => {
-    const mapperExtension = {
-      [REVIEW]: Review,
-      [CARD_SELECT]: CardSelect,
-      [INLINE_ALERT]: InlineAlert,
-    };
-
-    return isOpen ? (
-      <FormRenderer
-        schema={schema(category, isEdit)}
-        componentMapper={{ ...componentMapper, ...mapperExtension }}
-        onSubmit={({
-          url,
-          [INTEGRATION_TYPE]: intType,
-          name,
-          'secret-token': secret_token,
-          channel,
-        }) => {
-          const [type, sub_type] = intType?.split(':') || ['webhook'];
-          fetch(
-            `/api/integrations/v1.0/endpoints${
-              isEdit ? `/${template?.id}` : ''
-            }`,
-            {
-              method: isEdit ? 'PUT' : 'POST',
-              headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
-              },
-              body: JSON.stringify({
-                name,
-                enabled: true,
-                type,
-                ...(sub_type && { sub_type }),
-                description: '',
-                properties: {
-                  method: 'POST',
-                  url,
-                  disable_ssl_verification: false,
-                  secret_token,
-                  ...(channel && {
-                    extras: {
-                      channel,
-                    },
-                  }),
-                },
-              }),
-            }
-          );
-          closeModal();
-        }}
-        initialValues={
-          isEdit
-            ? {
-                ...template,
-                channel: template?.extras?.channel,
-                'secret-token': template?.secretToken,
-              }
-            : {}
-        }
-        onCancel={closeModal}
-      >
-        {(props) => {
-          return <Pf4FormTemplate {...props} showFormControls={false} />;
-        }}
-      </FormRenderer>
-    ) : null;
+export const IntegrationWizard: React.FunctionComponent<
+  IntegrationWizardProps
+> = ({
+  isOpen,
+  isEdit,
+  template,
+  closeModal,
+  category,
+}: IntegrationWizardProps) => {
+  const mapperExtension = {
+    [REVIEW]: Review,
+    [CARD_SELECT]: CardSelect,
+    [INLINE_ALERT]: InlineAlert,
   };
+
+  return isOpen ? (
+    <FormRenderer
+      schema={schema(category, isEdit)}
+      componentMapper={{ ...componentMapper, ...mapperExtension }}
+      onSubmit={({
+        url,
+        [INTEGRATION_TYPE]: intType,
+        name,
+        'secret-token': secret_token,
+        channel,
+      }) => {
+        const [type, sub_type] = intType?.split(':') || ['webhook'];
+        fetch(
+          `/api/integrations/v1.0/endpoints${isEdit ? `/${template?.id}` : ''}`,
+          {
+            method: isEdit ? 'PUT' : 'POST',
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+            },
+            body: JSON.stringify({
+              name,
+              enabled: true,
+              type,
+              ...(sub_type && { sub_type }),
+              description: '',
+              properties: {
+                method: 'POST',
+                url,
+                disable_ssl_verification: false,
+                secret_token,
+                ...(channel && {
+                  extras: {
+                    channel,
+                  },
+                }),
+              },
+            }),
+          }
+        );
+        closeModal();
+      }}
+      initialValues={
+        isEdit
+          ? {
+              ...template,
+              channel: template?.extras?.channel,
+              'secret-token': template?.secretToken,
+            }
+          : {}
+      }
+      onCancel={closeModal}
+    >
+      {(props) => {
+        return <Pf4FormTemplate {...props} showFormControls={false} />;
+      }}
+    </FormRenderer>
+  ) : null;
+};

@@ -15,10 +15,9 @@ interface IntegrationsAppProps {
   activeCategory?: string;
 }
 
-const IntegrationsApp: React.ComponentType<IntegrationsAppProps & AppEntryProps> = ({
-  activeCategory,
-  ...props
-}: IntegrationsAppProps) => {
+const IntegrationsApp: React.ComponentType<
+  IntegrationsAppProps & AppEntryProps
+> = ({ activeCategory, ...props }: IntegrationsAppProps) => {
   const { rbac, server, isOrgAdmin } = useApp();
 
   const category =

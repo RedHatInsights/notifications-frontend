@@ -35,57 +35,58 @@ interface AddNotificationBodyContainer {
   savedNotificationScope: SavedNotificationScopeState;
 }
 
-const AddNotificationBodyContainer: React.FunctionComponent<AddNotificationBodyContainer> =
-  (props) => {
-    const switchIntegrationEnabledStatus = useSwitchIntegrationEnabledStatus();
+const AddNotificationBodyContainer: React.FunctionComponent<
+  AddNotificationBodyContainer
+> = (props) => {
+  const switchIntegrationEnabledStatus = useSwitchIntegrationEnabledStatus();
 
-    const onClick = React.useCallback((): void => {
-      const reduxDispatch = props.reduxDispatch;
-      const mutate = switchIntegrationEnabledStatus.mutate;
-      const savedNotificationScope = props.savedNotificationScope;
-      if (savedNotificationScope) {
-        reduxDispatch(SavedNotificationScopeActions.start());
-        const integration = savedNotificationScope.integration;
-        mutate(integration).then((response) => {
-          if (!response.error) {
-            reduxDispatch(
-              SavedNotificationScopeActions.finish(!integration.isEnabled)
-            );
-          } else {
-            reduxDispatch(
-              SavedNotificationScopeActions.finish(integration.isEnabled)
-            );
-          }
-        });
-      }
-    }, [
-      switchIntegrationEnabledStatus.mutate,
-      props.reduxDispatch,
-      props.savedNotificationScope,
-    ]);
-
-    React.useEffect(() => {
-      const reduxDispatch = props.reduxDispatch;
-      reduxDispatch(
-        SavedNotificationScopeActions.setIntegration(props.integration)
-      );
-      return () => {
-        reduxDispatch(SavedNotificationScopeActions.unset());
-      };
-    }, [props.reduxDispatch, props.integration]);
-
-    if (!props.savedNotificationScope) {
-      return <React.Fragment />;
+  const onClick = React.useCallback((): void => {
+    const reduxDispatch = props.reduxDispatch;
+    const mutate = switchIntegrationEnabledStatus.mutate;
+    const savedNotificationScope = props.savedNotificationScope;
+    if (savedNotificationScope) {
+      reduxDispatch(SavedNotificationScopeActions.start());
+      const integration = savedNotificationScope.integration;
+      mutate(integration).then((response) => {
+        if (!response.error) {
+          reduxDispatch(
+            SavedNotificationScopeActions.finish(!integration.isEnabled)
+          );
+        } else {
+          reduxDispatch(
+            SavedNotificationScopeActions.finish(integration.isEnabled)
+          );
+        }
+      });
     }
+  }, [
+    switchIntegrationEnabledStatus.mutate,
+    props.reduxDispatch,
+    props.savedNotificationScope,
+  ]);
 
-    return (
-      <AddNotificationBody
-        integration={props.savedNotificationScope.integration}
-        isLoading={props.savedNotificationScope.status === Status.LOADING}
-        switchEnabled={onClick}
-      />
+  React.useEffect(() => {
+    const reduxDispatch = props.reduxDispatch;
+    reduxDispatch(
+      SavedNotificationScopeActions.setIntegration(props.integration)
     );
-  };
+    return () => {
+      reduxDispatch(SavedNotificationScopeActions.unset());
+    };
+  }, [props.reduxDispatch, props.integration]);
+
+  if (!props.savedNotificationScope) {
+    return <React.Fragment />;
+  }
+
+  return (
+    <AddNotificationBody
+      integration={props.savedNotificationScope.integration}
+      isLoading={props.savedNotificationScope.status === Status.LOADING}
+      switchEnabled={onClick}
+    />
+  );
+};
 
 const ConnectedAddNotificationBodyContainer = connect(
   (state: NotificationAppState) => ({

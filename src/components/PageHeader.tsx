@@ -9,7 +9,9 @@ interface PageHeaderProps {
   action?: React.ReactNode;
 }
 
-export const PageHeader: React.FunctionComponent<React.PropsWithChildren<PageHeaderProps>> = (props) => {
+export const PageHeader: React.FunctionComponent<
+  React.PropsWithChildren<PageHeaderProps>
+> = (props) => {
   return (
     <PageHeaderFC className="pf-v5-u-pb-md">
       <Split>

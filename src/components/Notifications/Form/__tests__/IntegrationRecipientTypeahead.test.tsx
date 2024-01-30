@@ -253,7 +253,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     expect(onSelected).toHaveBeenCalled();
   });
 
-  it.only('Integration recipients that have been previously used in the form are disabled', async () => {
+  it('Integration recipients that have been previously used in the form are disabled', async () => {
     jest.useFakeTimers();
     const formikValues: Partial<BehaviorGroup> = {
       actions: [
