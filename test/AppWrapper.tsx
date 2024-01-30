@@ -85,7 +85,7 @@ const defaultAppContextSettings: AppContext = {
   isOrgAdmin: false,
 };
 
-const InternalWrapper: React.FunctionComponent<Config> = (props) => {
+const InternalWrapper: React.FunctionComponent<React.PropsWithChildren<Config>> = (props) => {
   const location = useLocation();
 
   if (props.skipIsBetaMock) {
@@ -168,7 +168,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
 };
 
 export const getConfiguredAppWrapper = (config?: Partial<Config>) => {
-  const ConfiguredAppWrapper: React.FunctionComponent = (props) => {
+  const ConfiguredAppWrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => {
     return (
       <AppWrapper
         {...config}

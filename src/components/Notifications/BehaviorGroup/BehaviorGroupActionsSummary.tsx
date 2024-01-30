@@ -21,7 +21,7 @@ type BehaviorGroupActionSummaryImplProps =
 
 const skeletonActions = 3;
 
-const BehaviorGroupActionsSummaryLayout: React.FunctionComponent = (props) => {
+const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<React.PropsWithChildren> = (props) => {
   return (
     <Grid>
       <GridItem span={6}>

@@ -32,7 +32,7 @@ const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
   ],
 ];
 
-export const ActionsHelpPopover: React.FunctionComponent<unknown> = (props) => (
+export const ActionsHelpPopover: React.FunctionComponent<React.PropsWithChildren> = (props) => (
   <TableHelpPopover title="Action status meaning" tableBody={tableData}>
     <>{props.children}</>
   </TableHelpPopover>

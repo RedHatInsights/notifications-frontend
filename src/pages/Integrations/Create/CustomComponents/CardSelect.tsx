@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { ReactNode, useState } from 'react';
 import {
   FormGroup,
   FormHelperText,
@@ -43,7 +43,7 @@ export interface CardSelectProps extends UseFieldApiProps<any> {
   isMulti: boolean;
   label: Node;
   isRequired: boolean;
-  helperText: Node;
+  helperText: ReactNode;
   description: Node;
   hideLabel: boolean;
   name: string;
@@ -146,9 +146,9 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
   return (
     <FormGroup
       isRequired={isRequired}
-      label={!hideLabel && label}
+      label={(!hideLabel && label) as ReactNode}
       fieldId={input.name}
-      helperText={helperText}
+      helperText={helperText as ReactNode}
       helperTextInvalid={error}
       validated={showError ? 'error' : 'default'}
     >

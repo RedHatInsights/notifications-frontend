@@ -25,8 +25,8 @@ import {
   UserIcon,
 } from '@patternfly/react-icons';
 import Main from '@redhat-cloud-services/frontend-components/Main';
-import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
+import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader/PageHeader';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';

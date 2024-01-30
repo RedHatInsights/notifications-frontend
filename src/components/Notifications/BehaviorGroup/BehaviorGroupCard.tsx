@@ -44,7 +44,7 @@ export interface BehaviorGroupCardLayout {
   isDefaultBehavior?: boolean;
 }
 
-const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> =
+const BehaviorGroupCardLayout: React.FunctionComponent<React.PropsWithChildren<BehaviorGroupCardLayout>> =
   (props) => {
     const [isOpen, setOpen] = React.useState(false);
 

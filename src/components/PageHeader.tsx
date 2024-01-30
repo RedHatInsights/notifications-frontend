@@ -1,6 +1,6 @@
 import { Split, SplitItem, Text, TextContent } from '@patternfly/react-core';
-import PageHeaderFC from '@redhat-cloud-services/frontend-components/PageHeader';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
+import PageHeaderFC from '@redhat-cloud-services/frontend-components/PageHeader';
 import * as React from 'react';
 
 interface PageHeaderProps {
@@ -9,7 +9,7 @@ interface PageHeaderProps {
   action?: React.ReactNode;
 }
 
-export const PageHeader: React.FunctionComponent<PageHeaderProps> = (props) => {
+export const PageHeader: React.FunctionComponent<React.PropsWithChildren<PageHeaderProps>> = (props) => {
   return (
     <PageHeaderFC className="pf-v5-u-pb-md">
       <Split>

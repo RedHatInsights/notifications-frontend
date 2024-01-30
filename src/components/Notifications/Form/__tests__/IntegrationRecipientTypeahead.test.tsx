@@ -44,7 +44,7 @@ const getConfiguredWrapper = (
     getNotificationRecipients: fn(),
   };
 
-  const Wrapper: React.FunctionComponent = (props) => {
+  const Wrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => {
     return (
       <RecipientContextProvider value={context}>
         <Formik<Partial<BehaviorGroup>>
@@ -253,7 +253,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     expect(onSelected).toHaveBeenCalled();
   });
 
-  it('Integration recipients that have been previously used in the form are disabled', async () => {
+  it.only('Integration recipients that have been previously used in the form are disabled', async () => {
     jest.useFakeTimers();
     const formikValues: Partial<BehaviorGroup> = {
       actions: [

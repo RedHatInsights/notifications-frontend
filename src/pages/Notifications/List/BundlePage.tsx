@@ -30,7 +30,7 @@ interface NotificationListBundlePageProps {
   applications: Array<Facet>;
 }
 
-export const NotificationListBundlePage: React.FunctionComponent<NotificationListBundlePageProps> =
+export const NotificationListBundlePage: React.FunctionComponent<React.PropsWithChildren<NotificationListBundlePageProps>> =
   (props) => {
     const { updateDocumentTitle } = useChrome();
 

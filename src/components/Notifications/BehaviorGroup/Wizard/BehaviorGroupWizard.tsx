@@ -25,7 +25,7 @@ export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardPro
     const title = (values.id ? 'Edit' : 'Create') + ' behavior group';
 
     return (
-      <Form>
+      <Form placeholder="">
         <Wizard
           title={title}
           steps={props.steps}

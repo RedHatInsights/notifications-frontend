@@ -8,9 +8,9 @@ import {
 } from '../../../../types/Notification';
 import { BehaviorGroupCardList } from '../BehaviorGroupCardList';
 
-const Container: React.FunctionComponent<{
+const Container: React.FunctionComponent<React.PropsWithChildren<{
   hideContent: boolean;
-}> = (props) => (
+}>> = (props) => (
   <div>
     <div style={props.hideContent ? { display: 'none' } : { display: 'block' }}>
       {props.children}

@@ -16,8 +16,10 @@
     "sourceMap": true,
     "resolveJsonModule" : true
   },
+  "typeRoots": ["node_modules/@types", "node_modules/@testing-library", "node_modules/@testing-library/jest-dom"],
   "include": [
-    "./src/**/*"
+    "./src/**/*",
+    "./config/setupTests.ts"
   ],
   "exclude": [
     "./node_modules/*",

@@ -6,7 +6,7 @@ interface MyTabComponentProps {
   settings: React.ReactNode;
 }
 
-export const TabComponent: React.FunctionComponent<MyTabComponentProps> = (
+export const TabComponent: React.FunctionComponent<React.PropsWithChildren<MyTabComponentProps>> = (
   props
 ) => {
   const [activeTabKey, setActiveTabKey] = React.useState(0);

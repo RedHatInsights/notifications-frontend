@@ -82,7 +82,7 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
   },
 };
 
-export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarProps> =
+export const IntegrationsToolbar: React.FunctionComponent<React.PropsWithChildren<IntegrationsToolbarProps>> =
   (props) => {
     const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
       IntegrationFilterColumn,

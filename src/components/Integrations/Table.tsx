@@ -265,7 +265,7 @@ const buildClassNames = () => {
 const { rowExpandedContentClassName, rowWrapperClassName, tableClassName } =
   buildClassNames();
 
-const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
+const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { trRef, className, rowProps, row, ...rest } = props;
   if (!row) {

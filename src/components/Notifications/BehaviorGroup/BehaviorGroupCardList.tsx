@@ -23,7 +23,7 @@ type BehaviorGroupCardListImplProps = MarkRequired<
 
 const skeletonBehaviorGroupCount = 3;
 
-const BehaviorGroupCardListLayout: React.FunctionComponent = (props) => {
+const BehaviorGroupCardListLayout: React.FunctionComponent<React.PropsWithChildren> = (props) => {
   return (
     <div data-testid="ref-card-list-container">
       <Flex

@@ -9,12 +9,13 @@ import { IntegrationCategory } from '../types/Integration';
 import { AppContext } from './AppContext';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
+import { AppEntryProps } from '../AppEntry';
 
 interface IntegrationsAppProps {
   activeCategory?: string;
 }
 
-const IntegrationsApp: React.ComponentType<IntegrationsAppProps> = ({
+const IntegrationsApp: React.ComponentType<IntegrationsAppProps & AppEntryProps> = ({
   activeCategory,
   ...props
 }: IntegrationsAppProps) => {

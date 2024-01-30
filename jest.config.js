@@ -24,5 +24,28 @@ module.exports = {
     moduleNameMapper: {
         '.+\\.(css|scss|styl|less|sass|scss|png|jpg|ttf|woff|woff2|svg)$': 'jest-transform-stub',
         '@openshift/*': 'jest-transform-stub'
-    }
+    },
+    transform: {
+      '^.+\\.(ts|js)x?$': [
+        '@swc/jest',
+        {
+          $schema: 'http://json.schemastore.org/swcrc',
+          jsc: {
+            experimental: {
+              plugins: [['jest_workaround', {}]],
+            },
+            parser: {
+              jsx: true,
+              syntax: 'typescript',
+              tsx: true,
+            },
+            transform: {
+              react: {
+                runtime: 'automatic',
+              },
+            },
+          },
+        },
+      ],
+    },
 };

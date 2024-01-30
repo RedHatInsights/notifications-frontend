@@ -33,7 +33,7 @@ export interface SelectableEventTypeTableProps
   events?: ReadonlyArray<SelectableEventTypeRow>;
 }
 
-const SelectableEventTypeTableLayout: React.FunctionComponent = (props) => {
+const SelectableEventTypeTableLayout: React.FunctionComponent<React.PropsWithChildren> = (props) => {
   return (
     <TableComposable variant={TableVariant.compact}>
       <Thead>

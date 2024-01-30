@@ -56,7 +56,7 @@ const allFilterColumns = [
   NotificationFilterColumn.ACTION,
 ];
 
-export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> =
+export const NotificationsToolbar: React.FunctionComponent<React.PropsWithChildren<NotificationsToolbarProps>> =
   (props) => {
     const insights = getInsights();
     const filterColumns = props.filterColumns ?? allFilterColumns;

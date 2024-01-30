@@ -19,7 +19,7 @@ const getHeaderContent = (title: string | React.ReactNode): React.ReactNode => {
   return title;
 };
 
-export const TableHelpPopover: React.FunctionComponent<TableHelpPopoverProps> =
+export const TableHelpPopover: React.FunctionComponent<React.PropsWithChildren<TableHelpPopoverProps>> =
   (props) => {
     return (
       <Popover

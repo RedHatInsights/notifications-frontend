@@ -25,8 +25,9 @@ interface BundlePageBehaviorGroupContentProps {
 
 const noEvents = [];
 
-export const BundlePageBehaviorGroupContent: React.FunctionComponent<BundlePageBehaviorGroupContentProps> =
+export const BundlePageBehaviorGroupContent: React.FunctionComponent<React.PropsWithChildren<BundlePageBehaviorGroupContentProps>> =
   (props) => {
+    console.log('Am I here???!!!!?!!');
     const behaviorGroupContent = useBehaviorGroupContent(props.bundle.id);
 
     const { rbac } = useAppContext();

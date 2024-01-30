@@ -24,3 +24,4 @@ yalc.lock
 
 .env
 .cache
+.swc
