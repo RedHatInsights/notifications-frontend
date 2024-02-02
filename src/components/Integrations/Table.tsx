@@ -5,7 +5,7 @@ import {
   Spinner,
   Switch,
 } from '@patternfly/react-core';
-import { CubesIcon, HelpIcon } from '@patternfly/react-icons';
+import { HelpIcon, SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
@@ -390,7 +390,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
       return (
         <EmptyStateSearch
           variant={EmptyStateVariant.full}
-          icon={CubesIcon}
+          icon={SearchIcon}
           title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
           description={intl.formatMessage(
             messages.integrationsTableEmptyStateBody
