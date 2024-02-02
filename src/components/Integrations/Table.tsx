@@ -5,7 +5,7 @@ import {
   Text,
   TextContent,
 } from '@patternfly/react-core';
-import { CubesIcon } from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
@@ -394,7 +394,7 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
       return (
         <EmptyStateSearch
           variant={EmptyStateVariant.full}
-          icon={CubesIcon}
+          icon={SearchIcon}
           title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
           description={intl.formatMessage(
             messages.integrationsTableEmptyStateBody
