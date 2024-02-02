@@ -14,11 +14,12 @@ export default defineMessages({
   integrationsEmptyStateTitle: {
     id: 'integrationsEmptyStateTitle',
     description: 'Integrations Empty State title',
-    defaultMessage: 'No integrations',
+    defaultMessage: 'No integrations found',
   },
   integrationsTableEmptyStateBody: {
     id: 'integrationsTableEmptyStateBody',
     description: 'Integrations Empty State body',
-    defaultMessage: 'Connect to webhooks and external applications.',
+    defaultMessage:
+      'No integrations match the filter criteria. Remove all filters or clear all filters to show integrations.',
   },
 });
