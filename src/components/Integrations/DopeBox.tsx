@@ -53,27 +53,30 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
             <Card isFullHeight isPlain>
               <CardHeader>
                 <TextContent>
-                  <Text component={TextVariants.h3}>Getting Started</Text>
+                  <Text component={TextVariants.h4}>Getting Started</Text>
                 </TextContent>
               </CardHeader>
               <CardBody className="pf-v5-u-display-flex">
                 <TextContent className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
                   <Text
                     component={TextVariants.p}
-                    className="pf-v5-u-mb-sm pf-v5-u-active-color-100"
+                    className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover"
                   >
-                    <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-md">
+                    <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
                       <CogIcon />
                     </Icon>
                     Configure applications
                   </Text>
-                  <Text component="p" className="pf-u-flex-grow-1">
+                  <Text
+                    component="p"
+                    className="pf-u-flex-grow-1 pf-v5-u-font-size-sm"
+                  >
                     To prepare for integration with the Hybrid Cloud Console,
                     you must configure incoming webhooks in your third-party
                     applications.
                   </Text>
                   {category === IntegrationCategory.COMMUNICATIONS && (
-                    <TextList className="pf-u-ml-0">
+                    <TextList className="pf-u-ml-0 pf-v5-u-font-size-sm">
                       <TextListItem>
                         <Link
                           to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-insights-integration-with-slack_integrations"
@@ -151,14 +154,17 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
                 <TextContent className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
                   <Text
                     component={TextVariants.p}
-                    className="pf-v5-u-mb-sm pf-v5-u-active-color-100"
+                    className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover"
                   >
-                    <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-md">
+                    <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
                       <LockIcon />
                     </Icon>
                     Configure user access
                   </Text>
-                  <Text component="p" className="pf-u-flex-grow-1">
+                  <Text
+                    component="p"
+                    className="pf-u-flex-grow-1 pf-v5-u-font-size-sm"
+                  >
                     To configure notifications and integration settings, you
                     must be a member of a group with the Notifications
                     administrator role. This group must be configured in User
@@ -183,21 +189,24 @@ const DopeBox: React.FC<DopeBoxProps> = ({ category }) => {
             <Card className="noti-c-card-configure" isFullHeight isPlain>
               <CardHeader>
                 <TextContent>
-                  <Text component={TextVariants.h3}>Next Steps</Text>
+                  <Text component={TextVariants.h4}>Next Steps</Text>
                 </TextContent>
               </CardHeader>
               <CardBody className="pf-v5-u-display-flex">
                 <TextContent className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
                   <Text
                     component={TextVariants.p}
-                    className="pf-v5-u-mb-sm pf-v5-u-active-color-100"
+                    className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover"
                   >
-                    <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-md">
+                    <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
                       <BellIcon />
                     </Icon>
                     Configure notifications portal
                   </Text>
-                  <Text component="p" className="pf-u-flex-grow-1">
+                  <Text
+                    component="p"
+                    className="pf-u-flex-grow-1 pf-v5-u-font-size-sm"
+                  >
                     You can configure the Hybrid Cloud Console to send event
                     notifications to all users on a new or existing channel in
                     Slack, Google Chat, or Microsoft Teams.
