@@ -152,11 +152,11 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         wrapper: getConfiguredWrapper(),
       }
     );
-    await userEvent.click(
+    await waitFor(() => userEvent.click(
       screen.getByRole('button', {
         name: /Options menu/i,
       })
-    );
+    ));
 
     await waitForAsyncEvents();
     await act(async () => {
@@ -211,7 +211,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     );
     await waitForAsyncEvents();
 
-    await userEvent.type(screen.getByRole('textbox'), 'guy');
+    await waitFor(() => userEvent.type(screen.getByRole('textbox'), 'guy'));
     await act(async () => {
       jest.runAllTimers();
     });
@@ -240,16 +240,16 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         wrapper: getConfiguredWrapper(),
       }
     );
-    await userEvent.click(
+    await waitFor(() => userEvent.click(
       screen.getByRole('button', {
         name: /Options menu/i,
       })
-    );
+    ));
     await waitForAsyncEvents();
     await act(async () => {
       jest.runAllTimers();
     });
-    await userEvent.click(screen.getAllByRole('option')[0]);
+    await waitFor(() => userEvent.click(screen.getAllByRole('option')[0]));
     expect(onSelected).toHaveBeenCalled();
   });
 
@@ -273,9 +273,9 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     );
 
     await waitForAsyncEvents();
-    await userEvent.click(
+    await waitFor(() => userEvent.click(
       screen.getByRole('button', { name: /Options menu/i })
-    );
+    ));
 
     await waitForAsyncEvents();
     await act(async () => {

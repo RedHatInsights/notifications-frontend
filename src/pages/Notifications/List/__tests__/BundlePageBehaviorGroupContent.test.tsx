@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/prefer-screen-queries, testing-library/no-unnecessary-act */
-import { act, getAllByRole, render, screen } from '@testing-library/react';
+import { act, getAllByRole, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
@@ -15,9 +15,10 @@ import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupConten
 import BehaviorGroup = Schemas.BehaviorGroup;
 import EventType = Schemas.EventType;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import { getByRole, getByText } from '@testing-library/react';
+import { getByRole, getByText, getByLabelText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
+import * as chrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const policiesApplication: Facet = {
   id: 'app-1',
@@ -107,6 +108,20 @@ const mockNotifications = (notifications: Array<NotificationType>) => {
     }
   );
 };
+
+jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
+  return () => ({
+      auth: {
+        getUser: async () => ({
+          identity: {
+            user: {
+              is_org_admin: true
+            }
+          }
+        })
+      }
+    });
+});
 
 describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
   beforeEach(() => {
@@ -208,26 +223,22 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     expect(screen.getAllByText('Baz').length).toBe(1); // Only once, the behavior group card
 
     const behaviorGroupsTab = getAllByRole(document.body, 'tab');
-    act(() =>
+    await waitFor(() =>
       userEvent.click(getByText(behaviorGroupsTab[1], 'Behavior Groups'))
     );
 
     const pf4Card = ouiaSelectors.getAllByOuia('PF4/Card');
-    console.log(pf4Card[0], 'thgis is pf4Card!');
-    act(() => userEvent.click(getByRole(pf4Card[0], 'button')));
+    await waitFor(() => userEvent.click(getByLabelText(pf4Card[0], 'Actions')));
 
     const pf4CardDropdown = getByRole(document.body, 'menu');
-    act(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
+    await waitFor(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
 
-    await waitForAsyncEvents();
-    await userEvent.clear(screen.getByLabelText(/Group name/i));
-    await userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar');
-    await waitForAsyncEvents();
+    await waitFor(() => userEvent.clear(screen.getByLabelText(/Group name/i)));
+    await waitFor(() => userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar'));
 
-    await userEvent.click(screen.getByText(/next/i));
-    await waitForAsyncEvents();
+    await waitFor(() => userEvent.click(screen.getByText(/next/i)));
 
-    act(() =>
+    await waitFor(() =>
       userEvent.click(
         getByRole(
           ouiaSelectors.getByOuia('Notifications/ActionTypeahead'),
@@ -235,12 +246,10 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         )
       )
     );
-    await waitForAsyncEvents();
 
-    act(() => userEvent.click(screen.getByText(/Send an email/i)));
-    await waitForAsyncEvents();
+    await waitFor(() => userEvent.click(screen.getByText(/Send an email/i)));
 
-    act(() =>
+    await waitFor(() =>
       userEvent.click(
         getByRole(
           ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'),
@@ -248,13 +257,11 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         )
       )
     );
-    await waitForAsyncEvents();
     await act(async () => {
       jest.runAllTimers();
     });
 
-    act(() => userEvent.click(screen.getByText('All')));
-    await waitForAsyncEvents();
+    await waitFor(() => userEvent.click(screen.getByText('All')));
 
     // Changing name of behavior 1
     behaviorGroups[0].display_name = 'Foobar';
@@ -266,18 +273,19 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       },
     ];
 
-    await userEvent.click(screen.getByText(/next/i));
-    await waitForAsyncEvents();
+    await waitFor(() =>userEvent.click(screen.getByText(/next/i)));
 
-    await userEvent.click(screen.getByText(/next/i));
-    await waitForAsyncEvents();
+    await waitFor(() =>userEvent.click(screen.getByText(/next/i)));
 
     expect(screen.getByText(/finish/i)).toHaveAttribute(
       'aria-disabled',
       'false'
     );
-    act(() => userEvent.click(screen.getByText(/finish/i)));
-    await waitForAsyncEvents();
+    await waitFor(() => userEvent.click(screen.getByText(/finish/i)));
+
+    await act(async () => {
+      jest.runAllTimers();
+    });
 
     expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument();
     // Toast, behavior group section and table
@@ -400,7 +408,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       'aria-disabled',
       'true'
     );
-    await act(async () => {
+    await waitFor(async () => {
       await userEvent.hover(screen.getByText(/Create new group/i));
     });
     expect(
@@ -442,7 +450,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       'aria-disabled',
       'true'
     );
-    await userEvent.hover(screen.getByText(/Create new group/i));
+    await waitFor(() => userEvent.hover(screen.getByText(/Create new group/i)));
 
     expect(
       await screen.findByText(

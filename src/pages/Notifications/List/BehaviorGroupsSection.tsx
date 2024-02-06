@@ -25,6 +25,7 @@ import { emptyImmutableArray } from '../../../utils/Immutable';
 import { BehaviorGroupWizardPage } from '../BehaviorGroupWizard/BehaviorGroupWizardPage';
 import { DeleteBehaviorGroupPage } from '../Form/DeleteBehaviorGroupPage';
 import { BehaviorGroupContent } from './useBehaviorGroupContent';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 interface BehaviorGroupSectionProps {
   bundle: Facet;
@@ -41,7 +42,15 @@ const BehaviorGroupAddButton: React.FunctionComponent<
   BehaviorGroupAddButtonProps
 > = (props) => {
   const { isDisabled, ...buttonProps } = props;
-  const { isOrgAdmin } = useAppContext();
+  const [isOrgAdmin, setIsOrgAdmin] = React.useState<boolean | undefined>();
+  const { auth } = useChrome();
+  
+  React.useEffect(() => {
+    const getUserInfo = () => auth.getUser().then((user) => {
+      setIsOrgAdmin(user?.identity?.user?.is_org_admin);
+    })
+    getUserInfo();
+  }, []);
 
   const button = (
     <Button
@@ -52,6 +61,8 @@ const BehaviorGroupAddButton: React.FunctionComponent<
       Create new group
     </Button>
   );
+
+  console.log(isOrgAdmin, 'this is isOrgAdmin!');
 
   if (isDisabled) {
     const content = isOrgAdmin

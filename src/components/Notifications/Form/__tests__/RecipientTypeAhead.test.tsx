@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
@@ -184,14 +184,14 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
       }
     );
 
-    await userEvent.click(
+    await waitFor(() => userEvent.click(
       screen.getByRole('button', {
         name: /Options menu/i,
       })
-    );
+    ));
     await waitForAsyncEvents();
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => userEvent.click(screen.getAllByRole('checkbox')[0]));
+    await waitFor(() => userEvent.click(screen.getAllByRole('checkbox')[0]));
     expect(onSelected).toHaveBeenCalled();
   });
 

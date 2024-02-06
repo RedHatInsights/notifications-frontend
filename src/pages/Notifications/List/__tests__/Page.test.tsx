@@ -387,8 +387,20 @@ const mockBehaviorGroupsOfEventTypes = (
 };
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
-  return () => ({ getEnvironment: () => 'bar' });
+  return () => ({
+    getEnvironment: () => 'bar',
+    auth: {
+      getUser: async () => ({
+        identity: {
+          user: {
+            is_org_admin: true
+          }
+        }
+      })
+    }
+  });
 });
+
 
 describe('src/pages/Notifications/List/Page', () => {
   beforeEach(() => {
