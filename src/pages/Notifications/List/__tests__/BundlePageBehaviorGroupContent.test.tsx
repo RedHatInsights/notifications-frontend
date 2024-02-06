@@ -1,5 +1,11 @@
 /* eslint-disable testing-library/prefer-screen-queries, testing-library/no-unnecessary-act */
-import { act, fireEvent, getAllByRole, render, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  getAllByRole,
+  render,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
@@ -15,10 +21,9 @@ import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupConten
 import BehaviorGroup = Schemas.BehaviorGroup;
 import EventType = Schemas.EventType;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import { getByRole, getByText, getByLabelText } from '@testing-library/react';
+import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
-import * as chrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const policiesApplication: Facet = {
   id: 'app-1',
@@ -113,8 +118,8 @@ let getUser;
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
   return () => ({
-      auth: { getUser }
-    });
+    auth: { getUser },
+  });
 });
 
 describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
@@ -124,10 +129,10 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     getUser = async () => ({
       identity: {
         user: {
-          is_org_admin: true
-        }
-      }
-    }); 
+          is_org_admin: true,
+        },
+      },
+    });
   });
 
   afterEach(() => {
@@ -235,7 +240,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     await waitFor(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
 
     await waitFor(() => userEvent.clear(screen.getByLabelText(/Group name/i)));
-    await waitFor(() => userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar'));
+    await waitFor(() =>
+      userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar')
+    );
 
     await waitFor(() => userEvent.click(screen.getByText(/next/i)));
 
@@ -274,9 +281,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       },
     ];
 
-    await waitFor(() =>userEvent.click(screen.getByText(/next/i)));
+    await waitFor(() => userEvent.click(screen.getByText(/next/i)));
 
-    await waitFor(() =>userEvent.click(screen.getByText(/next/i)));
+    await waitFor(() => userEvent.click(screen.getByText(/next/i)));
 
     expect(screen.getByText(/finish/i)).toHaveAttribute(
       'aria-disabled',
@@ -378,13 +385,13 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     );
   });
 
-  it.only('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
+  it('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
     getUser = async () => ({
       identity: {
         user: {
-          is_org_admin: false
-        }
-      }
+          is_org_admin: false,
+        },
+      },
     });
     const notifications = getNotifications(policiesApplication, 3);
     const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
@@ -414,6 +421,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     expect(screen.getByText(/Create new group/i)).toHaveAttribute(
       'aria-disabled',
       'true'
+    );
+    await act(async () => {
+      await userEvent.hover(screen.getByText(/Create new group/i));
+    });
+    await screen.findByText(
+      /You do not have permissions to perform this action. Contact your org admin for more information/i
     );
   });
 

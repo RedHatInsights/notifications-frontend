@@ -393,14 +393,13 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
       getUser: async () => ({
         identity: {
           user: {
-            is_org_admin: true
-          }
-        }
-      })
-    }
+            is_org_admin: true,
+          },
+        },
+      }),
+    },
   });
 });
-
 
 describe('src/pages/Notifications/List/Page', () => {
   beforeEach(() => {

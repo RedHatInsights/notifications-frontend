@@ -44,11 +44,12 @@ const BehaviorGroupAddButton: React.FunctionComponent<
   const { isDisabled, ...buttonProps } = props;
   const [isOrgAdmin, setIsOrgAdmin] = React.useState<boolean | undefined>();
   const { auth } = useChrome();
-  
+
   React.useEffect(() => {
-    const getUserInfo = () => auth.getUser().then((user) => {
-      setIsOrgAdmin(user?.identity?.user?.is_org_admin);
-    })
+    const getUserInfo = () =>
+      auth.getUser().then((user) => {
+        setIsOrgAdmin(user?.identity?.user?.is_org_admin);
+      });
     getUserInfo();
   }, []);
 
