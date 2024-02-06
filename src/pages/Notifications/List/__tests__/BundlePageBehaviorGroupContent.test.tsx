@@ -1,6 +1,8 @@
 /* eslint-disable testing-library/prefer-screen-queries, testing-library/no-unnecessary-act */
 import {
-  act,
+  findByLabelText,
+  findByRole,
+  findByText,
   getAllByRole,
   render,
   screen,
@@ -21,7 +23,6 @@ import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupConten
 import BehaviorGroup = Schemas.BehaviorGroup;
 import EventType = Schemas.EventType;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import { getByLabelText, getByRole, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
 
@@ -171,7 +172,6 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
   });
 
   it('Upon addition of a behavior group, updates the name on the notification table and the linked event types', async () => {
-    jest.useFakeTimers();
     const notifications = getNotifications(policiesApplication, 1);
     const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
 
@@ -224,52 +224,57 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    await waitForAsyncEvents();
-
-    expect(screen.getAllByText('Baz').length).toBe(1); // Only once, the behavior group card
+    await waitFor(() => expect(screen.getAllByText('Baz').length).toBe(1)); // Only once, the behavior group card
 
     const behaviorGroupsTab = getAllByRole(document.body, 'tab');
-    await waitFor(() =>
-      userEvent.click(getByText(behaviorGroupsTab[1], 'Behavior Groups'))
+    await userEvent.click(
+      await findByText(behaviorGroupsTab[1], 'Behavior Groups')
     );
 
     const pf4Card = ouiaSelectors.getAllByOuia('PF4/Card');
-    await waitFor(() => userEvent.click(getByLabelText(pf4Card[0], 'Actions')));
+    expect(await findByLabelText(pf4Card[0], 'Actions')).toBeInTheDocument();
+    await userEvent.click(await findByLabelText(pf4Card[0], 'Actions'));
 
-    const pf4CardDropdown = getByRole(document.body, 'menu');
-    await waitFor(() => userEvent.click(getByText(pf4CardDropdown, /edit/i)));
+    expect(await findByRole(document.body, 'menu')).toBeInTheDocument();
+    const pf4CardDropdown = await findByRole(document.body, 'menu');
+    await userEvent.click(await findByText(pf4CardDropdown, /edit/i));
 
-    await waitFor(() => userEvent.clear(screen.getByLabelText(/Group name/i)));
-    await waitFor(() =>
-      userEvent.type(screen.getByLabelText(/Group name/i), 'Foobar')
+    expect(await screen.findByLabelText(/Group name/i)).toBeInTheDocument();
+    await userEvent.clear(await screen.findByLabelText(/Group name/i));
+    await userEvent.type(await screen.findByLabelText(/Group name/i), 'Foobar');
+
+    await userEvent.click(await screen.findByText(/Next/i));
+
+    expect(
+      await findByRole(
+        ouiaSelectors.getByOuia('Notifications/ActionTypeahead'),
+        'button'
+      )
+    ).toBeInTheDocument();
+    await userEvent.click(
+      await findByRole(
+        ouiaSelectors.getByOuia('Notifications/ActionTypeahead'),
+        'button'
+      )
     );
+    expect(await screen.findByText(/Send an email/i)).toBeInTheDocument();
+    await userEvent.click(await screen.findByText(/Send an email/i));
 
-    await waitFor(() => userEvent.click(screen.getByText(/next/i)));
-
-    await waitFor(() =>
-      userEvent.click(
-        getByRole(
-          ouiaSelectors.getByOuia('Notifications/ActionTypeahead'),
-          'button'
-        )
+    expect(
+      await findByRole(
+        ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'),
+        'button'
+      )
+    ).toBeInTheDocument();
+    await userEvent.click(
+      await findByRole(
+        ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'),
+        'button'
       )
     );
 
-    await waitFor(() => userEvent.click(screen.getByText(/Send an email/i)));
-
-    await waitFor(() =>
-      userEvent.click(
-        getByRole(
-          ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'),
-          'button'
-        )
-      )
-    );
-    await act(async () => {
-      jest.runAllTimers();
-    });
-
-    await waitFor(() => userEvent.click(screen.getByText('All')));
+    expect(await screen.findByText('All')).toBeInTheDocument();
+    await userEvent.click(await screen.findByText('All'));
 
     // Changing name of behavior 1
     behaviorGroups[0].display_name = 'Foobar';
@@ -281,25 +286,22 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       },
     ];
 
-    await waitFor(() => userEvent.click(screen.getByText(/next/i)));
+    await userEvent.click(await screen.findByText(/next/i));
+    await userEvent.click(await screen.findByText(/next/i));
 
-    await waitFor(() => userEvent.click(screen.getByText(/next/i)));
-
-    expect(screen.getByText(/finish/i)).toHaveAttribute(
+    expect(await screen.findByText(/finish/i)).toHaveAttribute(
       'aria-disabled',
       'false'
     );
-    await waitFor(() => userEvent.click(screen.getByText(/finish/i)));
+    await userEvent.click(await screen.findByText(/finish/i));
 
-    await act(async () => {
-      jest.runAllTimers();
-    });
-
-    expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument();
+    await waitFor(() =>
+      expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument()
+    );
     // Toast, behavior group section and table
-    expect(screen.getAllByText(/Foobar/i).length).toBe(3);
+    await waitFor(() => expect(screen.getAllByText(/Foobar/i).length).toBe(3));
     // behavior group and table
-    expect(screen.getAllByText(/Baz/i).length).toBe(2);
+    await waitFor(() => expect(screen.getAllByText(/Baz/i).length).toBe(2));
   });
 
   it('Add group button should appear', async () => {
@@ -321,7 +323,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
     await waitForAsyncEvents();
 
-    expect(screen.getByText(/Create new group/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Create new group/i)).toBeInTheDocument();
   });
 
   it('Add group button should be enabled with the write permissions', async () => {
@@ -341,12 +343,10 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    await waitForAsyncEvents();
-
-    expect(screen.getByText(/Create new group/i)).toBeEnabled();
+    expect(await screen.findByText(/Create new group/i)).toBeEnabled();
 
     // Check that is not aria-disabled
-    expect(screen.getByText(/Create new group/i)).not.toHaveAttribute(
+    expect(await screen.findByText(/Create new group/i)).not.toHaveAttribute(
       'aria-disabled',
       'true'
     );
@@ -376,10 +376,8 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    await waitForAsyncEvents();
-
     // The component is not really disabled (html-wise)
-    expect(screen.getByText(/Create new group/i)).toHaveAttribute(
+    expect(await screen.findByText(/Create new group/i)).toHaveAttribute(
       'aria-disabled',
       'true'
     );
@@ -416,15 +414,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         }),
       }
     );
-    await waitForAsyncEvents();
 
-    expect(screen.getByText(/Create new group/i)).toHaveAttribute(
+    expect(await screen.findByText(/Create new group/i)).toHaveAttribute(
       'aria-disabled',
       'true'
     );
-    await act(async () => {
-      await userEvent.hover(screen.getByText(/Create new group/i));
-    });
+    await userEvent.hover(await screen.findByText(/Create new group/i));
     await screen.findByText(
       /You do not have permissions to perform this action. Contact your org admin for more information/i
     );
@@ -455,14 +450,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    await waitForAsyncEvents();
-
     // The component is not really disabled (html-wise)
-    expect(screen.getByText(/Create new group/i)).toHaveAttribute(
+    expect(await screen.findByText(/Create new group/i)).toHaveAttribute(
       'aria-disabled',
       'true'
     );
-    await waitFor(() => userEvent.hover(screen.getByText(/Create new group/i)));
+    await userEvent.hover(await screen.findByText(/Create new group/i));
 
     expect(
       await screen.findByText(
