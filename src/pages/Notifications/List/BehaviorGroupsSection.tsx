@@ -62,8 +62,6 @@ const BehaviorGroupAddButton: React.FunctionComponent<
     </Button>
   );
 
-  console.log(isOrgAdmin, 'this is isOrgAdmin!');
-
   if (isDisabled) {
     const content = isOrgAdmin
       ? 'You need the Notifications administrator role to perform this action'

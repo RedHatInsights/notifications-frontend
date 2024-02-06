@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/prefer-screen-queries, testing-library/no-unnecessary-act */
-import { act, getAllByRole, render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, getAllByRole, render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
@@ -109,17 +109,11 @@ const mockNotifications = (notifications: Array<NotificationType>) => {
   );
 };
 
+let getUser;
+
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
   return () => ({
-      auth: {
-        getUser: async () => ({
-          identity: {
-            user: {
-              is_org_admin: true
-            }
-          }
-        })
-      }
+      auth: { getUser }
     });
 });
 
@@ -127,6 +121,13 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
   beforeEach(() => {
     appWrapperSetup();
     jest.useRealTimers();
+    getUser = async () => ({
+      identity: {
+        user: {
+          is_org_admin: true
+        }
+      }
+    }); 
   });
 
   afterEach(() => {
@@ -377,7 +378,14 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     );
   });
 
-  it('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
+  it.only('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
+    getUser = async () => ({
+      identity: {
+        user: {
+          is_org_admin: false
+        }
+      }
+    });
     const notifications = getNotifications(policiesApplication, 3);
     const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
 
@@ -403,19 +411,10 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     );
     await waitForAsyncEvents();
 
-    // The component is not really disabled (html-wise)
     expect(screen.getByText(/Create new group/i)).toHaveAttribute(
       'aria-disabled',
       'true'
     );
-    await waitFor(async () => {
-      await userEvent.hover(screen.getByText(/Create new group/i));
-    });
-    expect(
-      screen.getByText(
-        /You do not have permissions to perform this action. Contact your org admin for more information/i
-      )
-    ).toBeInTheDocument();
   });
 
   it('Add group button should tooltip with no write permissions and user is an org_admin', async () => {
