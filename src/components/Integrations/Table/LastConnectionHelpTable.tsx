@@ -32,9 +32,9 @@ const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
   ],
 ];
 
-export const LastConnectionHelpTable: React.FunctionComponent<React.PropsWithChildren> = (
-  props
-) => (
+export const LastConnectionHelpTable: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => (
   <TableHelp tableBody={tableData}>
     <>{props.children}</>
   </TableHelp>

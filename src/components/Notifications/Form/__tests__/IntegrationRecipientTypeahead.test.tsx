@@ -217,7 +217,6 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
   });
 
   it('onSelected GetsCalled when selecting an element', async () => {
-    // jest.useFakeTimers();
     const onSelected = fn();
     render(
       <IntegrationRecipientTypeahead
