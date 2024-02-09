@@ -212,7 +212,7 @@ const columns: Array<ICell> = [
           headerContent: (
             <TextContent>
               <Text component="h6">
-                {'Last connection attempt status meanings'}
+                Last connection attempt status meanings
               </Text>
             </TextContent>
           ),
