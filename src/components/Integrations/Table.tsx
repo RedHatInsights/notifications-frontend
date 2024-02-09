@@ -1,11 +1,11 @@
 import {
-  Button,
-  ButtonVariant,
   EmptyStateVariant,
   Spinner,
   Switch,
+  Text,
+  TextContent,
 } from '@patternfly/react-core';
-import { HelpIcon, SearchIcon } from '@patternfly/react-icons';
+import { SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import styles from '@patternfly/react-styles/css/components/Table/table';
 import {
@@ -21,6 +21,7 @@ import {
   TableBody,
   TableHeader,
   expandable,
+  info,
   sortable,
 } from '@patternfly/react-table';
 import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTable';
@@ -53,7 +54,7 @@ import { ConnectionDegraded } from './Table/ConnectionDegraded';
 import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
-import { LastConnectionHelpPopover } from './Table/LastConnectionHelpPopover';
+import { LastConnectionHelpTable } from './Table/LastConnectionHelpTable';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -202,19 +203,22 @@ const columns: Array<ICell> = [
     transforms: [],
   },
   {
-    title: (
-      <>
-        <span>
-          {Messages.components.integrations.table.columns.lastConnectionAttempt}
-        </span>
-        <LastConnectionHelpPopover>
-          <Button variant={ButtonVariant.plain}>
-            <HelpIcon />
-          </Button>
-        </LastConnectionHelpPopover>
-      </>
-    ),
-    transforms: [],
+    title: Messages.components.integrations.table.columns.lastConnectionAttempt,
+    transforms: [
+      info({
+        popover: <LastConnectionHelpTable />,
+        popoverProps: {
+          hasAutoWidth: true,
+          headerContent: (
+            <TextContent>
+              <Text component="h6">
+                Last connection attempt status meanings
+              </Text>
+            </TextContent>
+          ),
+        },
+      }),
+    ],
   },
   {
     title: Messages.components.integrations.table.columns.enabled,
