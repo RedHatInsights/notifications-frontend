@@ -29,7 +29,7 @@ export const TableHelp: React.FunctionComponent<TableHelpProps> = (props) => {
         </Tr>
       </Thead>
       <Tbody>
-        {props.tableBody.map((tb, index) => (
+        {props.tableBody.map(([status, meaning], index) => (
           <Tr key={index}>
             <Td>{tb[0]}</Td>
             <Td>{tb[1]}</Td>
