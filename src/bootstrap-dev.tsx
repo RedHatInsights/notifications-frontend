@@ -1,7 +1,9 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import logger from 'redux-logger';
 
 import AppEntry from './AppEntry';
 
-ReactDOM.render(<AppEntry logger={logger} />, document.getElementById('root'));
+const container = document.getElementById('root');
+const root = createRoot(container!);
+root.render(<AppEntry logger={logger} />);

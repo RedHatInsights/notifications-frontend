@@ -44,70 +44,71 @@ export interface BehaviorGroupCardLayout {
   isDefaultBehavior?: boolean;
 }
 
-const BehaviorGroupCardLayout: React.FunctionComponent<BehaviorGroupCardLayout> =
-  (props) => {
-    const [isOpen, setOpen] = React.useState(false);
+const BehaviorGroupCardLayout: React.FunctionComponent<
+  React.PropsWithChildren<BehaviorGroupCardLayout>
+> = (props) => {
+  const [isOpen, setOpen] = React.useState(false);
 
-    const switchOpen = React.useCallback(
-      () => setOpen((prev) => !prev),
-      [setOpen]
-    );
+  const switchOpen = React.useCallback(
+    () => setOpen((prev) => !prev),
+    [setOpen]
+  );
 
-    return (
-      <Card isFlat className={cardClassName}>
-        <CardHeader>
-          <CardHeaderMain>
-            <Split>
-              <SplitItem>
-                {props.isDefaultBehavior && (
-                  <Tooltip
-                    position="top"
-                    appendTo={() => document.body}
-                    // eslint-disable-next-line max-len
-                    content={
-                      <div>
-                        System required behavior group
-                        <br></br>
-                        <br></br>
-                        This group is system generated and can not be edited,
-                        deleted, or removed from being applied to an event
-                      </div>
-                    }
-                  >
-                    <LockIcon className="pf-v5-u-mr-sm" />
-                  </Tooltip>
-                )}
-              </SplitItem>
-              <SplitItem>
-                <TextContent>
-                  <Text component={TextVariants.h4}> {props.title} </Text>
-                </TextContent>
-              </SplitItem>
-            </Split>
-          </CardHeaderMain>
-          <CardActions>
-            {!props.isDefaultBehavior && (
-              <Dropdown
-                onSelect={switchOpen}
-                toggle={
-                  <KebabToggle
-                    onToggle={setOpen}
-                    isDisabled={!props.dropdownItems}
-                  />
-                }
-                isOpen={isOpen}
-                isPlain
-                dropdownItems={props.dropdownItems}
-                position={DropdownPosition.right}
-                menuAppendTo={() => document.body}
-              />
-            )}
-          </CardActions>
-        </CardHeader>
-        <CardBody>{props.children}</CardBody>
-      </Card>
-    );
-  };
+  return (
+    <Card isFlat className={cardClassName}>
+      <CardHeader>
+        <CardHeaderMain>
+          <Split>
+            <SplitItem>
+              {props.isDefaultBehavior && (
+                <Tooltip
+                  position="top"
+                  appendTo={() => document.body}
+                  // eslint-disable-next-line max-len
+                  content={
+                    <div>
+                      System required behavior group
+                      <br></br>
+                      <br></br>
+                      This group is system generated and can not be edited,
+                      deleted, or removed from being applied to an event
+                    </div>
+                  }
+                >
+                  <LockIcon className="pf-v5-u-mr-sm" />
+                </Tooltip>
+              )}
+            </SplitItem>
+            <SplitItem>
+              <TextContent>
+                <Text component={TextVariants.h4}> {props.title} </Text>
+              </TextContent>
+            </SplitItem>
+          </Split>
+        </CardHeaderMain>
+        <CardActions>
+          {!props.isDefaultBehavior && (
+            <Dropdown
+              onSelect={switchOpen}
+              toggle={
+                <KebabToggle
+                  onToggle={setOpen}
+                  isDisabled={!props.dropdownItems}
+                />
+              }
+              isOpen={isOpen}
+              isPlain
+              dropdownItems={props.dropdownItems}
+              position={DropdownPosition.right}
+              menuAppendTo={() => document.body}
+            />
+          )}
+        </CardActions>
+      </CardHeader>
+      <CardBody>{props.children}</CardBody>
+    </Card>
+  );
+};
 
 const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = (
   props

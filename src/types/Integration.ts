@@ -51,7 +51,7 @@ export const isUserIntegrationType = (
   !!type && Object.values(UserIntegrationType).includes(type as any);
 
 export type UserIntegrationType =
-  typeof UserIntegrationType[keyof typeof UserIntegrationType];
+  (typeof UserIntegrationType)[keyof typeof UserIntegrationType];
 
 export interface IntegrationBase<T extends IntegrationType> {
   id: string;

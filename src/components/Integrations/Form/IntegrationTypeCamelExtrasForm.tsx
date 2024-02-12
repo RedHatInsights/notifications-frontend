@@ -13,39 +13,40 @@ interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
   secretTokenDescription: string;
 }
 
-export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<IntegrationTypeCamelExtrasForm> =
-  (props) => {
-    return (
-      <div
-        className="pf-c-form"
-        {...getOuiaProps('Integrations/Camel/Splunk', props)}
+export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
+  IntegrationTypeCamelExtrasForm
+> = (props) => {
+  return (
+    <div
+      className="pf-c-form"
+      {...getOuiaProps('Integrations/Camel/Splunk', props)}
+    >
+      <FormTextInput
+        isRequired={true}
+        label="Endpoint URL"
+        type="text"
+        name="url"
+        id="integration-type-camel-url"
+        ouiaId={ouiaIdConcat(props.ouiaId, 'endpoint-url')}
+      />
+      <Checkbox
+        id="integration-type-camel-ssl-verification-enabled"
+        label="Enable SSL verification"
+        name="sslVerificationEnabled"
+        ouiaId={ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled')}
+      />
+      <FormGroup
+        fieldId="integration-type-camel-secret-token"
+        helperText={props.secretTokenDescription}
       >
         <FormTextInput
-          isRequired={true}
-          label="Endpoint URL"
-          type="text"
-          name="url"
-          id="integration-type-camel-url"
-          ouiaId={ouiaIdConcat(props.ouiaId, 'endpoint-url')}
+          isRequired={false}
+          label="Secret token"
+          id="integration-type-camel-secret-token"
+          name="secretToken"
+          ouiaId={ouiaIdConcat(props.ouiaId, 'secret-token')}
         />
-        <Checkbox
-          id="integration-type-camel-ssl-verification-enabled"
-          label="Enable SSL verification"
-          name="sslVerificationEnabled"
-          ouiaId={ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled')}
-        />
-        <FormGroup
-          fieldId="integration-type-camel-secret-token"
-          helperText={props.secretTokenDescription}
-        >
-          <FormTextInput
-            isRequired={false}
-            label="Secret token"
-            id="integration-type-camel-secret-token"
-            name="secretToken"
-            ouiaId={ouiaIdConcat(props.ouiaId, 'secret-token')}
-          />
-        </FormGroup>
-      </div>
-    );
-  };
+      </FormGroup>
+    </div>
+  );
+};

@@ -4,7 +4,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended',
     'plugin:jest/recommended',
     'plugin:jest-dom/recommended',
-    "plugin:react-hooks/recommended",
+    'plugin:react-hooks/recommended',
     'plugin:testing-library/react',
   ],
   globals: {

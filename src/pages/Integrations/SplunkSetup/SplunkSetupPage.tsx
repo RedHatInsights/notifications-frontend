@@ -15,8 +15,8 @@ import {
   HelpIcon,
   InProgressIcon,
 } from '@patternfly/react-icons';
-import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
+import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader/PageHeader';
 import React, { useState } from 'react';
 
 import { Messages } from '../../../properties/Messages';

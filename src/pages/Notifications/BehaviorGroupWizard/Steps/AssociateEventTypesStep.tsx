@@ -29,204 +29,200 @@ export interface AssociateEventTypesStepProps {
   bundle: Facet;
 }
 
-const AssociateEventTypesStep: React.FunctionComponent<AssociateEventTypesStepProps> =
-  (props) => {
-    const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
-    const [selectedEventTypes, setSelectedEventTypes] = React.useState<
-      Record<string, EventType>
-    >(() => {
-      const selected: Record<string, EventType> = {};
-      values.events.forEach((value) => {
-        selected[value.id] = value;
-      });
-
-      return selected;
+const AssociateEventTypesStep: React.FunctionComponent<
+  AssociateEventTypesStepProps
+> = (props) => {
+  const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
+  const [selectedEventTypes, setSelectedEventTypes] = React.useState<
+    Record<string, EventType>
+  >(() => {
+    const selected: Record<string, EventType> = {};
+    values.events.forEach((value) => {
+      selected[value.id] = value;
     });
-    const eventTypePage = useEventTypesPage(
-      props.bundle,
-      props.applications,
-      false
-    );
-    const eventTypesRaw = useListNotifications(
-      eventTypePage.pageController.page
-    );
-    const onDemandEventTypes = useParameterizedListNotifications();
 
-    useEffect(() => {
-      setValues(
+    return selected;
+  });
+  const eventTypePage = useEventTypesPage(
+    props.bundle,
+    props.applications,
+    false
+  );
+  const eventTypesRaw = useListNotifications(eventTypePage.pageController.page);
+  const onDemandEventTypes = useParameterizedListNotifications();
+
+  useEffect(() => {
+    setValues(
+      produce((draft) => {
+        draft.events = Object.values(selectedEventTypes);
+      })
+    );
+  }, [setValues, selectedEventTypes]);
+
+  const count = React.useMemo(() => {
+    const payload = eventTypesRaw.payload;
+    if (payload?.status === 200) {
+      return payload.value.meta.count;
+    }
+
+    return 0;
+  }, [eventTypesRaw.payload]);
+
+  const events = React.useMemo<ReadonlyArray<SelectableEventTypeRow>>(() => {
+    if (eventTypesRaw.payload?.type === 'eventTypesArray') {
+      return eventTypesRaw.payload.value.data.map((value) => ({
+        ...value,
+        isSelected: Object.keys(selectedEventTypes).includes(value.id),
+      }));
+    }
+
+    return [];
+  }, [eventTypesRaw.payload, selectedEventTypes]);
+
+  const onSelect = React.useCallback(
+    (isSelected: boolean, eventType: EventType) => {
+      setSelectedEventTypes(
         produce((draft) => {
-          draft.events = Object.values(selectedEventTypes);
+          if (isSelected) {
+            draft[eventType.id] = eventType;
+          } else {
+            delete draft[eventType.id];
+          }
         })
       );
-    }, [setValues, selectedEventTypes]);
+    },
+    [setSelectedEventTypes]
+  );
 
-    const count = React.useMemo(() => {
-      const payload = eventTypesRaw.payload;
-      if (payload?.status === 200) {
-        return payload.value.meta.count;
-      }
+  const onSelectCommand = React.useCallback(
+    (command: SelectionCommand) => {
+      const currentPage = eventTypePage.pageController.page;
 
-      return 0;
-    }, [eventTypesRaw.payload]);
-
-    const events = React.useMemo<ReadonlyArray<SelectableEventTypeRow>>(() => {
-      if (eventTypesRaw.payload?.type === 'eventTypesArray') {
-        return eventTypesRaw.payload.value.data.map((value) => ({
-          ...value,
-          isSelected: Object.keys(selectedEventTypes).includes(value.id),
-        }));
-      }
-
-      return [];
-    }, [eventTypesRaw.payload, selectedEventTypes]);
-
-    const onSelect = React.useCallback(
-      (isSelected: boolean, eventType: EventType) => {
-        setSelectedEventTypes(
-          produce((draft) => {
-            if (isSelected) {
-              draft[eventType.id] = eventType;
-            } else {
-              delete draft[eventType.id];
-            }
-          })
-        );
-      },
-      [setSelectedEventTypes]
-    );
-
-    const onSelectCommand = React.useCallback(
-      (command: SelectionCommand) => {
-        const currentPage = eventTypePage.pageController.page;
-
-        switch (command) {
-          case SelectionCommand.ALL:
-            if (count === events.length) {
-              return setSelectedEventTypes(
-                produce((draft) => {
-                  events.forEach((e) => {
-                    draft[e.id] = e;
-                  });
-                })
-              );
-            } else {
-              (async () => {
-                let pageIndex = 1;
-                const addedElements: Record<string, EventType> = {};
-                const lastPage = Page.lastPageForElements(
-                  count,
-                  currentPage.size
-                );
-                // eslint-disable-next-line no-constant-condition
-                while (true) {
-                  const fetchingPage = currentPage.withPage(pageIndex);
-
-                  if (fetchingPage.index > lastPage.index) {
-                    break;
-                  }
-
-                  if (currentPage.index === fetchingPage.index) {
-                    events.forEach((e) => {
-                      addedElements[e.id] = e;
-                    });
-                  } else {
-                    const events = await onDemandEventTypes.query(
-                      currentPage.withPage(pageIndex)
-                    );
-                    if (events.payload?.type === 'eventTypesArray') {
-                      events.payload.value.data.forEach((e) => {
-                        addedElements[e.id] = e;
-                      });
-                    } else {
-                      break;
-                    }
-                  }
-
-                  pageIndex++;
-                }
-
-                setSelectedEventTypes(
-                  produce((draft) => {
-                    for (const event of Object.values(addedElements)) {
-                      draft[event.id] = event;
-                    }
-                  })
-                );
-              })();
-            }
-
-            break;
-          case SelectionCommand.PAGE:
-            setSelectedEventTypes(
+      switch (command) {
+        case SelectionCommand.ALL:
+          if (count === events.length) {
+            return setSelectedEventTypes(
               produce((draft) => {
                 events.forEach((e) => {
                   draft[e.id] = e;
                 });
               })
             );
+          } else {
+            (async () => {
+              let pageIndex = 1;
+              const addedElements: Record<string, EventType> = {};
+              const lastPage = Page.lastPageForElements(
+                count,
+                currentPage.size
+              );
+              // eslint-disable-next-line no-constant-condition
+              while (true) {
+                const fetchingPage = currentPage.withPage(pageIndex);
 
-            break;
-          case SelectionCommand.NONE:
-            setSelectedEventTypes({});
-            break;
-        }
-      },
-      [
-        setSelectedEventTypes,
-        events,
-        onDemandEventTypes,
-        eventTypePage.pageController.page,
-        count,
-      ]
-    );
+                if (fetchingPage.index > lastPage.index) {
+                  break;
+                }
 
-    return (
-      <Form>
-        <div>
-          <Title headingLevel="h4" size="xl">
-            {title}
-          </Title>
-          <TextContent className="pf-v5-u-pt-sm">
-            <Text>
-              Select event types you would like to assign this behavior group
-              to.
-            </Text>
-          </TextContent>
-        </div>
-        <NotificationsToolbar
-          filters={eventTypePage.filters}
-          setFilters={eventTypePage.setFilters}
-          clearFilter={eventTypePage.clearFilters}
-          appFilterOptions={props.applications}
-          pageAdapter={eventTypePage.pageController}
-          count={count}
-          pageCount={events.length}
-          onSelectionChanged={onSelectCommand}
-          selectedCount={Object.keys(selectedEventTypes).length}
-          bulkSelectionDisabled={onDemandEventTypes.loading}
-        >
-          <SelectableEventTypeTable
-            onSelect={onSelect}
-            events={eventTypesRaw.loading ? undefined : events}
-            selectionLoading={onDemandEventTypes.loading}
-          />
-        </NotificationsToolbar>
-      </Form>
-    );
-  };
+                if (currentPage.index === fetchingPage.index) {
+                  events.forEach((e) => {
+                    addedElements[e.id] = e;
+                  });
+                } else {
+                  const events = await onDemandEventTypes.query(
+                    currentPage.withPage(pageIndex)
+                  );
+                  if (events.payload?.type === 'eventTypesArray') {
+                    events.payload.value.data.forEach((e) => {
+                      addedElements[e.id] = e;
+                    });
+                  } else {
+                    break;
+                  }
+                }
 
-export const useAssociateEventTypesStep: IntegrationWizardStep<AssociateEventTypesStepProps> =
-  ({ applications, bundle }: AssociateEventTypesStepProps) => {
-    return React.useMemo(
-      () => ({
-        name: title,
-        component: (
-          <AssociateEventTypesStep
-            applications={applications}
-            bundle={bundle}
-          />
-        ),
-      }),
-      [applications, bundle]
-    );
-  };
+                pageIndex++;
+              }
+
+              setSelectedEventTypes(
+                produce((draft) => {
+                  for (const event of Object.values(addedElements)) {
+                    draft[event.id] = event;
+                  }
+                })
+              );
+            })();
+          }
+
+          break;
+        case SelectionCommand.PAGE:
+          setSelectedEventTypes(
+            produce((draft) => {
+              events.forEach((e) => {
+                draft[e.id] = e;
+              });
+            })
+          );
+
+          break;
+        case SelectionCommand.NONE:
+          setSelectedEventTypes({});
+          break;
+      }
+    },
+    [
+      setSelectedEventTypes,
+      events,
+      onDemandEventTypes,
+      eventTypePage.pageController.page,
+      count,
+    ]
+  );
+
+  return (
+    <Form>
+      <div>
+        <Title headingLevel="h4" size="xl">
+          {title}
+        </Title>
+        <TextContent className="pf-v5-u-pt-sm">
+          <Text>
+            Select event types you would like to assign this behavior group to.
+          </Text>
+        </TextContent>
+      </div>
+      <NotificationsToolbar
+        filters={eventTypePage.filters}
+        setFilters={eventTypePage.setFilters}
+        clearFilter={eventTypePage.clearFilters}
+        appFilterOptions={props.applications}
+        pageAdapter={eventTypePage.pageController}
+        count={count}
+        pageCount={events.length}
+        onSelectionChanged={onSelectCommand}
+        selectedCount={Object.keys(selectedEventTypes).length}
+        bulkSelectionDisabled={onDemandEventTypes.loading}
+      >
+        <SelectableEventTypeTable
+          onSelect={onSelect}
+          events={eventTypesRaw.loading ? undefined : events}
+          selectionLoading={onDemandEventTypes.loading}
+        />
+      </NotificationsToolbar>
+    </Form>
+  );
+};
+
+export const useAssociateEventTypesStep: IntegrationWizardStep<
+  AssociateEventTypesStepProps
+> = ({ applications, bundle }: AssociateEventTypesStepProps) => {
+  return React.useMemo(
+    () => ({
+      name: title,
+      component: (
+        <AssociateEventTypesStep applications={applications} bundle={bundle} />
+      ),
+    }),
+    [applications, bundle]
+  );
+};

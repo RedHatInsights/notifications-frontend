@@ -164,136 +164,129 @@ const toTableRows = (
 
 const emptySpan = () => <span />;
 
-export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGroupFormTableProps> =
-  (props) => {
-    const { values, setValues, errors, touched, setFieldTouched } = props.form;
-    const actions = React.useMemo<ReadonlyArray<Action | undefined>>(
-      () => values.actions ?? ([] as ReadonlyArray<Action>),
-      [values]
-    );
-    const touchedActions = React.useMemo(
-      () => touched?.actions ?? [],
-      [touched]
-    );
-    const errorActions = React.useMemo(() => errors?.actions ?? [], [errors]);
+export const BehaviorGroupFormActionsTable: React.FunctionComponent<
+  BehaviorGroupFormTableProps
+> = (props) => {
+  const { values, setValues, errors, touched, setFieldTouched } = props.form;
+  const actions = React.useMemo<ReadonlyArray<Action | undefined>>(
+    () => values.actions ?? ([] as ReadonlyArray<Action>),
+    [values]
+  );
+  const touchedActions = React.useMemo(() => touched?.actions ?? [], [touched]);
+  const errorActions = React.useMemo(() => errors?.actions ?? [], [errors]);
 
-    const selectedNotifications = React.useMemo(
-      () =>
-        new Array(
-          ...new Set<NotificationType>(
-            (actions.filter((a) => a) as ReadonlyArray<Action>).map(
-              (a) => a.type
-            )
-          )
-        ) as ReadonlyArray<NotificationType>,
-      [actions]
-    );
+  const selectedNotifications = React.useMemo(
+    () =>
+      new Array(
+        ...new Set<NotificationType>(
+          (actions.filter((a) => a) as ReadonlyArray<Action>).map((a) => a.type)
+        )
+      ) as ReadonlyArray<NotificationType>,
+    [actions]
+  );
 
-    const setValueDispatch = React.useCallback(
-      (updater: SetActionUpdater) => {
-        setValues(
-          produce((prev) => {
-            const form = prev as Draft<FormType>;
-            if (updater instanceof Function) {
-              form.actions = castDraft(
-                updater(form.actions as ReadonlyArray<DeepPartial<Action>>)
-              );
-            } else {
-              form.actions = castDraft(updater);
-            }
-          }),
-          false
-        );
-      },
-      [setValues]
-    );
+  const setValueDispatch = React.useCallback(
+    (updater: SetActionUpdater) => {
+      setValues(
+        produce((prev) => {
+          const form = prev as Draft<FormType>;
+          if (updater instanceof Function) {
+            form.actions = castDraft(
+              updater(form.actions as ReadonlyArray<DeepPartial<Action>>)
+            );
+          } else {
+            form.actions = castDraft(updater);
+          }
+        }),
+        false
+      );
+    },
+    [setValues]
+  );
 
-    const addAction = React.useCallback(() => {
-      const push = props.push;
-      push(undefined);
-    }, [props.push]);
+  const addAction = React.useCallback(() => {
+    const push = props.push;
+    push(undefined);
+  }, [props.push]);
 
-    React.useEffect(() => {
-      if (actions.length === 0) {
-        addAction();
-      }
-    }, [actions, addAction]);
+  React.useEffect(() => {
+    if (actions.length === 0) {
+      addAction();
+    }
+  }, [actions, addAction]);
 
-    const rowHandlers = useBehaviorGroupActionHandlers(setValueDispatch);
+  const rowHandlers = useBehaviorGroupActionHandlers(setValueDispatch);
 
-    const rows = React.useMemo(
-      () =>
-        toTableRows(
-          actions,
-          errorActions,
-          touchedActions,
-          selectedNotifications,
-          rowHandlers,
-          setFieldTouched
-        ),
-      [
+  const rows = React.useMemo(
+    () =>
+      toTableRows(
         actions,
         errorActions,
         touchedActions,
         selectedNotifications,
         rowHandlers,
-        setFieldTouched,
-      ]
-    );
+        setFieldTouched
+      ),
+    [
+      actions,
+      errorActions,
+      touchedActions,
+      selectedNotifications,
+      rowHandlers,
+      setFieldTouched,
+    ]
+  );
 
-    const actionResolver = React.useCallback(
-      (rowData: IRowData): IActions => {
-        const handleRemove = props.handleRemove;
-        if (rows.length > 1) {
-          return [
-            {
-              key: 'delete',
-              title: (
-                <Button
-                  aria-label="delete-action"
-                  variant={ButtonVariant.plain}
-                >
-                  <MinusCircleIcon />
-                </Button>
-              ),
-              isOutsideDropdown: true,
-              onClick: handleRemove(rowData.id),
-            },
-          ];
+  const actionResolver = React.useCallback(
+    (rowData: IRowData): IActions => {
+      const handleRemove = props.handleRemove;
+      if (rows.length > 1) {
+        return [
+          {
+            key: 'delete',
+            title: (
+              <Button aria-label="delete-action" variant={ButtonVariant.plain}>
+                <MinusCircleIcon />
+              </Button>
+            ),
+            isOutsideDropdown: true,
+            onClick: handleRemove(rowData.id),
+          },
+        ];
+      }
+
+      return [];
+    },
+    [rows, props.handleRemove]
+  );
+
+  return (
+    <>
+      <Table
+        aria-label="behavior-group-actions-form"
+        rows={rows}
+        cells={cells}
+        actionResolver={actionResolver}
+        actionsToggle={
+          emptySpan as any /* eslint-disable-line @typescript-eslint/no-explicit-any */
         }
-
-        return [];
-      },
-      [rows, props.handleRemove]
-    );
-
-    return (
-      <>
-        <Table
-          aria-label="behavior-group-actions-form"
-          rows={rows}
-          cells={cells}
-          actionResolver={actionResolver}
-          actionsToggle={
-            emptySpan as any /* eslint-disable-line @typescript-eslint/no-explicit-any */
-          }
-          borders={false}
-          variant={TableVariant.compact}
-          isStickyHeader={true}
+        borders={false}
+        variant={TableVariant.compact}
+        isStickyHeader={true}
+      >
+        <TableHeader className={tableHeaderClassName} />
+        <TableBody className={tableBodyClassName} />
+      </Table>
+      <GridItem span={12}>
+        <Button
+          className={alignLeftClassName}
+          variant={ButtonVariant.link}
+          icon={<PlusCircleIcon />}
+          onClick={addAction}
         >
-          <TableHeader className={tableHeaderClassName} />
-          <TableBody className={tableBodyClassName} />
-        </Table>
-        <GridItem span={12}>
-          <Button
-            className={alignLeftClassName}
-            variant={ButtonVariant.link}
-            icon={<PlusCircleIcon />}
-            onClick={addAction}
-          >
-            Add action
-          </Button>
-        </GridItem>
-      </>
-    );
-  };
+          Add action
+        </Button>
+      </GridItem>
+    </>
+  );
+};

@@ -187,43 +187,44 @@ export interface NotificationsLogDateFilterProps {
   setPeriod: Dispatch<SetStateAction<EventPeriod>>;
 }
 
-export const NotificationsLogDateFilter: React.FunctionComponent<NotificationsLogDateFilterProps> =
-  ({ value, setValue, period, setPeriod, retentionDays }) => {
-    const [isOpen, setOpen] = useState(false);
-    const val = useMemo(() => new EventLogSelectObject(value), [value]);
+export const NotificationsLogDateFilter: React.FunctionComponent<
+  NotificationsLogDateFilterProps
+> = ({ value, setValue, period, setPeriod, retentionDays }) => {
+  const [isOpen, setOpen] = useState(false);
+  const val = useMemo(() => new EventLogSelectObject(value), [value]);
 
-    return (
-      <Split>
+  return (
+    <Split>
+      <SplitItem>
+        <Select
+          isOpen={isOpen}
+          variant={SelectVariant.single}
+          onToggle={() => setOpen((prev) => !prev)}
+          selections={val}
+          onSelect={(
+            _e: unknown,
+            selectObject: SelectOptionObject | string
+          ) => {
+            if (selectObject instanceof EventLogSelectObject) {
+              setValue(selectObject.value);
+              setOpen(false);
+            }
+          }}
+        >
+          {Object.values(NotificationsLogDateFilterValue).map((v) => (
+            <SelectOption key={v} value={new EventLogSelectObject(v)} />
+          ))}
+        </Select>
+      </SplitItem>
+      {value === NotificationsLogDateFilterValue.CUSTOM && (
         <SplitItem>
-          <Select
-            isOpen={isOpen}
-            variant={SelectVariant.single}
-            onToggle={() => setOpen((prev) => !prev)}
-            selections={val}
-            onSelect={(
-              _e: unknown,
-              selectObject: SelectOptionObject | string
-            ) => {
-              if (selectObject instanceof EventLogSelectObject) {
-                setValue(selectObject.value);
-                setOpen(false);
-              }
-            }}
-          >
-            {Object.values(NotificationsLogDateFilterValue).map((v) => (
-              <SelectOption key={v} value={new EventLogSelectObject(v)} />
-            ))}
-          </Select>
+          <CustomDateFilter
+            period={period}
+            setPeriod={setPeriod}
+            retentionDays={retentionDays}
+          />
         </SplitItem>
-        {value === NotificationsLogDateFilterValue.CUSTOM && (
-          <SplitItem>
-            <CustomDateFilter
-              period={period}
-              setPeriod={setPeriod}
-              retentionDays={retentionDays}
-            />
-          </SplitItem>
-        )}
-      </Split>
-    );
-  };
+      )}
+    </Split>
+  );
+};

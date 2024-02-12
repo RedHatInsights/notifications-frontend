@@ -35,9 +35,9 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (
   }
 };
 
-const ActionComponentWrapper: React.FunctionComponent<ActionComponentText> = (
-  props
-) => (
+const ActionComponentWrapper: React.FunctionComponent<
+  React.PropsWithChildren<ActionComponentText>
+> = (props) => (
   <div {...getOuiaProps('Notifications/ActionComponent', props)}>
     {props.children}
   </div>

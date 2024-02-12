@@ -265,7 +265,9 @@ const buildClassNames = () => {
 const { rowExpandedContentClassName, rowWrapperClassName, tableClassName } =
   buildClassNames();
 
-const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
+const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
+  props
+) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { trRef, className, rowProps, row, ...rest } = props;
   if (!row) {
@@ -293,135 +295,136 @@ const RowWrapper: React.FunctionComponent<RowWrapperProps> = (props) => {
   );
 };
 
-export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> =
-  (props) => {
-    const intl = useIntl();
-    const onCollapseHandler = React.useCallback(
-      (_event, _index: number, isOpen: boolean, data: IRowData) => {
-        const integrations = props.integrations;
-        const onCollapse = props.onCollapse;
-        const index = integrations.findIndex(
-          (integration) => integration.id === data.id
+export const IntegrationsTable: React.FunctionComponent<
+  IntegrationsTableProps
+> = (props) => {
+  const intl = useIntl();
+  const onCollapseHandler = React.useCallback(
+    (_event, _index: number, isOpen: boolean, data: IRowData) => {
+      const integrations = props.integrations;
+      const onCollapse = props.onCollapse;
+      const index = integrations.findIndex(
+        (integration) => integration.id === data.id
+      );
+      if (onCollapse && index !== -1) {
+        const integration = integrations[index];
+        onCollapse(integration, index, isOpen);
+      }
+    },
+    [props.integrations, props.onCollapse]
+  );
+
+  const onSort = React.useCallback(
+    (event, column: number, direction: SortByDirection) => {
+      const propsOnSort = props.onSort;
+      const mapping = sortMapper.find((p) => p.index === column);
+      if (propsOnSort && mapping) {
+        propsOnSort(
+          mapping.index,
+          mapping.name,
+          direction === SortByDirection.asc
+            ? Direction.ASCENDING
+            : Direction.DESCENDING
         );
-        if (onCollapse && index !== -1) {
-          const integration = integrations[index];
-          onCollapse(integration, index, isOpen);
-        }
-      },
-      [props.integrations, props.onCollapse]
-    );
+      }
+    },
+    [props.onSort]
+  );
 
-    const onSort = React.useCallback(
-      (event, column: number, direction: SortByDirection) => {
-        const propsOnSort = props.onSort;
-        const mapping = sortMapper.find((p) => p.index === column);
-        if (propsOnSort && mapping) {
-          propsOnSort(
-            mapping.index,
-            mapping.name,
-            direction === SortByDirection.asc
-              ? Direction.ASCENDING
-              : Direction.DESCENDING
-          );
-        }
-      },
-      [props.onSort]
-    );
+  const sortBy = React.useMemo<ISortBy>(() => {
+    const propsSortBy = props.sortBy;
+    if (propsSortBy) {
+      const mapping = sortMapper.find((p) => p.name === propsSortBy.column);
+      if (mapping) {
+        return {
+          index: mapping.index,
+          direction:
+            propsSortBy.direction === Direction.ASCENDING
+              ? SortByDirection.asc
+              : SortByDirection.desc,
+        };
+      }
+    }
 
-    const sortBy = React.useMemo<ISortBy>(() => {
-      const propsSortBy = props.sortBy;
-      if (propsSortBy) {
-        const mapping = sortMapper.find((p) => p.name === propsSortBy.column);
-        if (mapping) {
-          return {
-            index: mapping.index,
-            direction:
-              propsSortBy.direction === Direction.ASCENDING
-                ? SortByDirection.asc
-                : SortByDirection.desc,
-          };
+    return {
+      defaultDirection: SortByDirection.asc,
+    };
+  }, [props.sortBy]);
+
+  const rows = React.useMemo(() => {
+    return toTableRows(props.integrations, props.onEnable);
+  }, [props.integrations, props.onEnable]);
+
+  const actionsResolverCallback: IActionsResolver = React.useCallback(
+    (rowData) => {
+      const actionResolver = props.actionResolver;
+
+      if (rowData.parent === undefined && rowData && props.integrations) {
+        const integrationIndex = props.integrations.findIndex(
+          (i) => i.id === rowData.id
+        );
+        const integrationRow = props.integrations[integrationIndex];
+        if (integrationRow) {
+          return actionResolver(integrationRow, integrationIndex);
         }
       }
 
-      return {
-        defaultDirection: SortByDirection.asc,
-      };
-    }, [props.sortBy]);
+      return [];
+    },
+    [props.actionResolver, props.integrations]
+  );
 
-    const rows = React.useMemo(() => {
-      return toTableRows(props.integrations, props.onEnable);
-    }, [props.integrations, props.onEnable]);
-
-    const actionsResolverCallback: IActionsResolver = React.useCallback(
-      (rowData) => {
-        const actionResolver = props.actionResolver;
-
-        if (rowData.parent === undefined && rowData && props.integrations) {
-          const integrationIndex = props.integrations.findIndex(
-            (i) => i.id === rowData.id
-          );
-          const integrationRow = props.integrations[integrationIndex];
-          if (integrationRow) {
-            return actionResolver(integrationRow, integrationIndex);
-          }
-        }
-
-        return [];
-      },
-      [props.actionResolver, props.integrations]
-    );
-
-    if (props.isLoading) {
-      return (
-        <div
-          {...getOuiaProps('Integrations/Table', { ...props, ouiaSafe: false })}
-        >
-          <SkeletonTable
-            rowSize={
-              props.loadingCount && props.loadingCount > 0
-                ? props.loadingCount
-                : 10
-            }
-            columns={columns}
-            paddingColumnSize={0}
-            sortBy={undefined}
-          />
-        </div>
-      );
-    }
-
-    if (rows.length === 0) {
-      return (
-        <EmptyStateSearch
-          variant={EmptyStateVariant.full}
-          icon={SearchIcon}
-          title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
-          description={intl.formatMessage(
-            messages.integrationsTableEmptyStateBody
-          )}
-        />
-      );
-    }
-
+  if (props.isLoading) {
     return (
-      <div {...getOuiaProps('Integrations/Table', props)}>
-        <Table
-          className={tableClassName}
-          aria-label={Messages.components.integrations.table.title}
-          rows={rows}
-          cells={columns}
-          onCollapse={onCollapseHandler}
-          rowWrapper={
-            RowWrapper as (props: RowWrapperProps) => React.ReactElement
+      <div
+        {...getOuiaProps('Integrations/Table', { ...props, ouiaSafe: false })}
+      >
+        <SkeletonTable
+          rowSize={
+            props.loadingCount && props.loadingCount > 0
+              ? props.loadingCount
+              : 10
           }
-          actionResolver={actionsResolverCallback}
-          isStickyHeader={true}
-          onSort={onSort}
-          sortBy={sortBy}
-        >
-          <TableHeader />
-          <TableBody />
-        </Table>
+          columns={columns}
+          paddingColumnSize={0}
+          sortBy={undefined}
+        />
       </div>
     );
-  };
+  }
+
+  if (rows.length === 0) {
+    return (
+      <EmptyStateSearch
+        variant={EmptyStateVariant.full}
+        icon={SearchIcon}
+        title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
+        description={intl.formatMessage(
+          messages.integrationsTableEmptyStateBody
+        )}
+      />
+    );
+  }
+
+  return (
+    <div {...getOuiaProps('Integrations/Table', props)}>
+      <Table
+        className={tableClassName}
+        aria-label={Messages.components.integrations.table.title}
+        rows={rows}
+        cells={columns}
+        onCollapse={onCollapseHandler}
+        rowWrapper={
+          RowWrapper as (props: RowWrapperProps) => React.ReactElement
+        }
+        actionResolver={actionsResolverCallback}
+        isStickyHeader={true}
+        onSort={onSort}
+        sortBy={sortBy}
+      >
+        <TableHeader />
+        <TableBody />
+      </Table>
+    </div>
+  );
+};

@@ -82,101 +82,101 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
   },
 };
 
-export const IntegrationsToolbar: React.FunctionComponent<IntegrationsToolbarProps> =
-  (props) => {
-    const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
-      IntegrationFilterColumn,
-      props.filters,
-      props.setFilters,
-      props.clearFilters,
-      filterMetadata
-    );
+export const IntegrationsToolbar: React.FunctionComponent<
+  React.PropsWithChildren<IntegrationsToolbarProps>
+> = (props) => {
+  const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
+    IntegrationFilterColumn,
+    props.filters,
+    props.setFilters,
+    props.clearFilters,
+    filterMetadata
+  );
 
-    const actionsConfig = React.useMemo(() => {
-      const actions = [
-        {
-          key: 'add-integration',
-          label:
-            Messages.components.integrations.toolbar.actions.addIntegration,
-          onClick: props.onAddIntegration,
-          props: {
-            isDisabled: !props.onAddIntegration,
-          },
+  const actionsConfig = React.useMemo(() => {
+    const actions = [
+      {
+        key: 'add-integration',
+        label: Messages.components.integrations.toolbar.actions.addIntegration,
+        onClick: props.onAddIntegration,
+        props: {
+          isDisabled: !props.onAddIntegration,
         },
-      ];
-
-      return {
-        actions,
-        kebabToggleProps: {
-          isDisabled: false,
-        },
-      };
-    }, [props.onAddIntegration]);
-
-    const exportConfig = useTableExportConfig(props.onExport);
-
-    const pageChanged = React.useCallback(
-      (_event: unknown, page: number) => {
-        const inner = props.pageChanged;
-        inner(page);
       },
-      [props.pageChanged]
-    );
+    ];
 
-    const perPageChanged = React.useCallback(
-      (_event: unknown, perPage: number) => {
-        const inner = props.perPageChanged;
-        inner(perPage);
+    return {
+      actions,
+      kebabToggleProps: {
+        isDisabled: false,
       },
-      [props.perPageChanged]
-    );
+    };
+  }, [props.onAddIntegration]);
 
-    const topPaginationProps = React.useMemo<PaginationProps>(
-      () => ({
-        itemCount: props.count,
-        page: props.page,
-        perPage: props.perPage,
-        isCompact: true,
-        variant: PaginationVariant.top,
-        onSetPage: pageChanged,
-        onFirstClick: pageChanged,
-        onPreviousClick: pageChanged,
-        onNextClick: pageChanged,
-        onLastClick: pageChanged,
-        onPageInput: pageChanged,
-        onPerPageSelect: perPageChanged,
-      }),
-      [props.count, props.page, props.perPage, pageChanged, perPageChanged]
-    );
+  const exportConfig = useTableExportConfig(props.onExport);
 
-    const bottomPaginationProps = React.useMemo<PaginationProps>(
-      () => ({
-        ...topPaginationProps,
-        isCompact: false,
-        variant: PaginationVariant.bottom,
-      }),
-      [topPaginationProps]
-    );
+  const pageChanged = React.useCallback(
+    (_event: unknown, page: number) => {
+      const inner = props.pageChanged;
+      inner(page);
+    },
+    [props.pageChanged]
+  );
 
-    return (
-      <div {...getOuiaProps('Integrations/DualToolbar', props)}>
-        <PrimaryToolbar
-          actionsConfig={actionsConfig}
-          exportConfig={exportConfig}
-          filterConfig={
-            primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps
-          }
-          activeFiltersConfig={
-            primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps
-          }
-          pagination={topPaginationProps}
-          id="integrations-top-toolbar"
-        />
-        {props.children}
-        <PrimaryToolbar
-          id="integrations-bottom-toolbar"
-          pagination={bottomPaginationProps}
-        />
-      </div>
-    );
-  };
+  const perPageChanged = React.useCallback(
+    (_event: unknown, perPage: number) => {
+      const inner = props.perPageChanged;
+      inner(perPage);
+    },
+    [props.perPageChanged]
+  );
+
+  const topPaginationProps = React.useMemo<PaginationProps>(
+    () => ({
+      itemCount: props.count,
+      page: props.page,
+      perPage: props.perPage,
+      isCompact: true,
+      variant: PaginationVariant.top,
+      onSetPage: pageChanged,
+      onFirstClick: pageChanged,
+      onPreviousClick: pageChanged,
+      onNextClick: pageChanged,
+      onLastClick: pageChanged,
+      onPageInput: pageChanged,
+      onPerPageSelect: perPageChanged,
+    }),
+    [props.count, props.page, props.perPage, pageChanged, perPageChanged]
+  );
+
+  const bottomPaginationProps = React.useMemo<PaginationProps>(
+    () => ({
+      ...topPaginationProps,
+      isCompact: false,
+      variant: PaginationVariant.bottom,
+    }),
+    [topPaginationProps]
+  );
+
+  return (
+    <div {...getOuiaProps('Integrations/DualToolbar', props)}>
+      <PrimaryToolbar
+        actionsConfig={actionsConfig}
+        exportConfig={exportConfig}
+        filterConfig={
+          primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps
+        }
+        activeFiltersConfig={
+          primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps
+        }
+        pagination={topPaginationProps}
+        id="integrations-top-toolbar"
+      />
+      {props.children}
+      <PrimaryToolbar
+        id="integrations-bottom-toolbar"
+        pagination={bottomPaginationProps}
+      />
+    </div>
+  );
+};

@@ -19,29 +19,30 @@ interface BehaviorGroupWizardProps {
   loading: boolean;
 }
 
-export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardProps> =
-  (props) => {
-    const { values } = useFormikContext<CreateBehaviorGroup>();
-    const title = (values.id ? 'Edit' : 'Create') + ' behavior group';
+export const BehaviorGroupWizard: React.FunctionComponent<
+  BehaviorGroupWizardProps
+> = (props) => {
+  const { values } = useFormikContext<CreateBehaviorGroup>();
+  const title = (values.id ? 'Edit' : 'Create') + ' behavior group';
 
-    return (
-      <Form>
-        <Wizard
-          title={title}
-          steps={props.steps}
-          footer={
-            <BehaviorGroupWizardFooter
-              isLoading={props.loading}
-              onNext={props.onNext}
-              onBack={props.onBack}
-            />
-          }
-          isOpen={true}
-          startAtStep={1}
-          onGoToStep={(step) => props.onGoToStep((step.id as number) ?? 1)}
-          onClose={props.onClose}
-          onSave={props.onSave}
-        />
-      </Form>
-    );
-  };
+  return (
+    <Form placeholder="">
+      <Wizard
+        title={title}
+        steps={props.steps}
+        footer={
+          <BehaviorGroupWizardFooter
+            isLoading={props.loading}
+            onNext={props.onNext}
+            onBack={props.onBack}
+          />
+        }
+        isOpen={true}
+        startAtStep={1}
+        onGoToStep={(step) => props.onGoToStep((step.id as number) ?? 1)}
+        onClose={props.onClose}
+        onSave={props.onSave}
+      />
+    </Form>
+  );
+};

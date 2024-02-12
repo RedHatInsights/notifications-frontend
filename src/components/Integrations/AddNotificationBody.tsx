@@ -9,27 +9,28 @@ interface AddNotificationBodyProps {
   switchEnabled: () => void;
 }
 
-export const AddNotificationBody: React.FunctionComponent<AddNotificationBodyProps> =
-  (props) => {
-    const text = props.integration.isEnabled
-      ? 'This integration is enabled and ready to use.'
-      : 'This integration is disabled.';
-    const buttonText = props.integration.isEnabled
-      ? 'Disable integration'
-      : 'Enable integration';
+export const AddNotificationBody: React.FunctionComponent<
+  AddNotificationBodyProps
+> = (props) => {
+  const text = props.integration.isEnabled
+    ? 'This integration is enabled and ready to use.'
+    : 'This integration is disabled.';
+  const buttonText = props.integration.isEnabled
+    ? 'Disable integration'
+    : 'Enable integration';
 
-    return (
-      <>
-        <div>{text}</div>
-        <Button
-          className="pf-v5-u-pl-0"
-          isDisabled={props.isLoading}
-          variant={ButtonVariant.link}
-          onClick={props.switchEnabled}
-        >
-          {buttonText}
-        </Button>
-        {props.isLoading && <Spinner size="sm" />}
-      </>
-    );
-  };
+  return (
+    <>
+      <div>{text}</div>
+      <Button
+        className="pf-v5-u-pl-0"
+        isDisabled={props.isLoading}
+        variant={ButtonVariant.link}
+        onClick={props.switchEnabled}
+      >
+        {buttonText}
+      </Button>
+      {props.isLoading && <Spinner size="sm" />}
+    </>
+  );
+};

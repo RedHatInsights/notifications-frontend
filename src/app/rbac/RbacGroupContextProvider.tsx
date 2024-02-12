@@ -39,7 +39,9 @@ const getPage = async (
   return [undefined, false];
 };
 
-export const RbacGroupContextProvider: React.FunctionComponent = (props) => {
+export const RbacGroupContextProvider: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => {
   const { query } = useClient();
   const [isLoading, setLoading] = useState(true);
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
