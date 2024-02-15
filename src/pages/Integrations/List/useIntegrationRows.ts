@@ -87,6 +87,7 @@ export const useIntegrationRows = (
           isSelected: false,
           isEnabledLoading: false,
           lastConnectionAttempts: [],
+          includeDetails: true,
           isConnectionAttemptLoading: true,
           ...prev.find((i) => i.id === integration.id),
           ...integration,
@@ -105,6 +106,7 @@ export const useIntegrationRows = (
                   integrationId,
                   limit: 5,
                   sortBy: 'created:desc',
+                  includeDetails: true,
                 })
               )
             ).then((response) => {

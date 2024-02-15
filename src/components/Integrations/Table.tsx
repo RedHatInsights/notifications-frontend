@@ -83,6 +83,7 @@ export type IntegrationRow = UserIntegration & {
   isEnabledLoading: boolean;
   isConnectionAttemptLoading: boolean;
   lastConnectionAttempts?: Array<IntegrationConnectionAttempt>;
+  includeDetails: boolean;
 };
 
 const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
