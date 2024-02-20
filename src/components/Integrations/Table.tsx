@@ -139,6 +139,7 @@ const toTableRows = (
                       ? undefined
                       : integration.lastConnectionAttempts
                   }
+                  includeDetails={integration.includeDetails}
                 />
               )}
             </>
