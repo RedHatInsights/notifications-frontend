@@ -1,6 +1,6 @@
 import { Button, Split, SplitItem } from '@patternfly/react-core';
-import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
+import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader/PageHeader';
 import Section from '@redhat-cloud-services/frontend-components/Section';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';

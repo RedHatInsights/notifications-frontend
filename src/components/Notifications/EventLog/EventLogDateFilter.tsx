@@ -226,58 +226,56 @@ export interface EventLogDateFilterProps {
   setPeriod: Dispatch<SetStateAction<EventPeriod>>;
 }
 
-export const EventLogDateFilter: React.FunctionComponent<EventLogDateFilterProps> =
-  (props) => {
-    const options = React.useMemo(
-      () =>
-        Object.values(EventLogDateFilterValue).map((v) => (
-          <SelectOption key={v} value={new EventLogSelectObject(v)} />
-        )),
-      []
-    );
-    const [isOpen, setOpen] = React.useState(false);
-    const onToggle = React.useCallback(
-      () => setOpen((prev) => !prev),
-      [setOpen]
-    );
-    const value = React.useMemo(
-      () => new EventLogSelectObject(props.value),
-      [props.value]
-    );
-    const onSelect = React.useCallback(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      (_e: any, selectObject: SelectOptionObject | string) => {
-        const setValue = props.setValue;
-        if (selectObject instanceof EventLogSelectObject) {
-          setValue(selectObject.value);
-          setOpen(false);
-        }
-      },
-      [props.setValue]
-    );
+export const EventLogDateFilter: React.FunctionComponent<
+  EventLogDateFilterProps
+> = (props) => {
+  const options = React.useMemo(
+    () =>
+      Object.values(EventLogDateFilterValue).map((v) => (
+        <SelectOption key={v} value={new EventLogSelectObject(v)} />
+      )),
+    []
+  );
+  const [isOpen, setOpen] = React.useState(false);
+  const onToggle = React.useCallback(() => setOpen((prev) => !prev), [setOpen]);
+  const value = React.useMemo(
+    () => new EventLogSelectObject(props.value),
+    [props.value]
+  );
+  const onSelect = React.useCallback(
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (_e: any, selectObject: SelectOptionObject | string) => {
+      const setValue = props.setValue;
+      if (selectObject instanceof EventLogSelectObject) {
+        setValue(selectObject.value);
+        setOpen(false);
+      }
+    },
+    [props.setValue]
+  );
 
-    return (
-      <Split>
+  return (
+    <Split>
+      <SplitItem>
+        <Select
+          isOpen={isOpen}
+          variant={SelectVariant.single}
+          onToggle={onToggle}
+          selections={value}
+          onSelect={onSelect}
+        >
+          {options}
+        </Select>
+      </SplitItem>
+      {props.value === EventLogDateFilterValue.CUSTOM && (
         <SplitItem>
-          <Select
-            isOpen={isOpen}
-            variant={SelectVariant.single}
-            onToggle={onToggle}
-            selections={value}
-            onSelect={onSelect}
-          >
-            {options}
-          </Select>
+          <CustomDateFilter
+            period={props.period}
+            setPeriod={props.setPeriod}
+            retentionDays={props.retentionDays}
+          />
         </SplitItem>
-        {props.value === EventLogDateFilterValue.CUSTOM && (
-          <SplitItem>
-            <CustomDateFilter
-              period={props.period}
-              setPeriod={props.setPeriod}
-              retentionDays={props.retentionDays}
-            />
-          </SplitItem>
-        )}
-      </Split>
-    );
-  };
+      )}
+    </Split>
+  );
+};

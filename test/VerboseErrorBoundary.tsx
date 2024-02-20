@@ -7,7 +7,7 @@ interface VerboseErrorState {
 }
 
 export class VerboseErrorBoundary extends React.Component<
-  unknown,
+  React.PropsWithChildren<unknown>,
   VerboseErrorState
 > {
   constructor(props: Readonly<unknown>) {

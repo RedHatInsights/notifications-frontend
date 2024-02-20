@@ -9,7 +9,9 @@ import {
 import { ErrorPage } from '../Page';
 
 jest.mock('@redhat-cloud-services/frontend-components', () => {
-  const Children: React.FunctionComponent = (props) => {
+  const Children: React.FunctionComponent<React.PropsWithChildren> = (
+    props
+  ) => {
     return <span>{props.children}</span>;
   };
 

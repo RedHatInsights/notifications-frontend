@@ -244,46 +244,7 @@ export const usePrimaryToolbarFilterConfigWrapper = (
     });
   }, [bundles, filters.bundle, customFilters]);
 
-  // Update URL Query Params for Bundles
-  const applicationProducer = React.useMemo(() => {
-    return produce(filters.service, (prev) => {
-      if (bundles.length === 0) {
-        return;
-      }
-
-      const currApplicationFilters: string[] = [];
-      customFilters.forEach((customFilter) => {
-        const bundle = bundles.find(
-          (bundle) => bundle.name === customFilter.bundleId
-        ) as Schemas.Facet;
-        const chipValues = customFilter.chips?.map((chip) => chip.value) as
-          | string[]
-          | undefined;
-
-        // Only add applications to Query Params under 2 conditions
-        //     1. Bundle has children
-        //     2. Every application under the Bundle is not selected
-        if (
-          chipValues &&
-          bundle.children?.some(
-            (application) => !chipValues.includes(application.name)
-          )
-        ) {
-          chipValues.forEach((chipValue) => {
-            const applicationQueryParam = `${bundle.name}.${chipValue}`;
-            currApplicationFilters.push(applicationQueryParam);
-          });
-        }
-      });
-
-      return areEqual(prev as string[], currApplicationFilters, true)
-        ? prev
-        : currApplicationFilters;
-    });
-  }, [bundles, filters.service, customFilters]);
-
   setFilters.bundle(bundleProducer);
-  setFilters.service(applicationProducer);
 
   return produce(toolbarConfig, (prev) => {
     prev.filterConfig.items[1] = applicationFilter;

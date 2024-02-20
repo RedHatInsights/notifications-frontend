@@ -1,9 +1,8 @@
-import { act, render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
 
-import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import {
   BaseNotificationRecipient,
   NotificationRbacGroupRecipient,
@@ -22,7 +21,7 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
     getNotificationRecipients: getRecipients ?? fn(async () => []),
   };
 
-  const Wrapper: React.FunctionComponent = (props) => (
+  const Wrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => (
     <RecipientContextProvider value={context}>
       {props.children}
     </RecipientContextProvider>
@@ -71,12 +70,13 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitForAsyncEvents();
-    expect(
-      screen.getByRole('button', {
-        name: 'Options menu',
-      })
-    ).toBeDisabled();
+    await waitFor(() =>
+      expect(
+        screen.getByRole('button', {
+          name: 'Options menu',
+        })
+      ).toBeDisabled()
+    );
   });
 
   it('Renders the selected even if getRecipients does not yield it', async () => {
@@ -90,8 +90,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitForAsyncEvents();
-    expect(screen.getByText('Admins')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('Admins')).toBeVisible());
   });
 
   it('Renders multiple selected', async () => {
@@ -105,9 +104,8 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(createDefaultGetMock()),
       }
     );
-    await waitForAsyncEvents();
-    expect(screen.getByText('Admins')).toBeVisible();
-    expect(screen.getByText('All')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('Admins')).toBeVisible());
+    await waitFor(() => expect(screen.getByText('All')).toBeVisible());
   });
 
   it('Clicking clear button will call onClear', async () => {
@@ -128,8 +126,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         name: /Clear all/i,
       })
     );
-    await waitForAsyncEvents();
-    expect(onClear).toHaveBeenCalled();
+    await waitFor(() => expect(onClear).toHaveBeenCalled());
   });
 
   it('Clicking will show the options', async () => {
@@ -149,9 +146,12 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         name: /Options menu/i,
       })
     );
-    await waitForAsyncEvents();
-    screen.getAllByText('Admins').map((e) => expect(e).toBeVisible());
-    screen.getAllByText('All').map((e) => expect(e).toBeVisible());
+    await waitFor(() =>
+      screen.getAllByText('Admins').map((e) => expect(e).toBeVisible())
+    );
+    await waitFor(() =>
+      screen.getAllByText('All').map((e) => expect(e).toBeVisible())
+    );
   });
 
   it('getRecipients is called on init', async () => {
@@ -167,8 +167,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
       }
     );
 
-    await waitForAsyncEvents();
-    expect(getRecipient).toHaveBeenCalledWith();
+    await waitFor(() => expect(getRecipient).toHaveBeenCalledWith());
   });
 
   it('onSelected GetsCalled when selecting an element', async () => {
@@ -189,10 +188,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         name: /Options menu/i,
       })
     );
-    await waitForAsyncEvents();
+    await screen.findAllByRole('checkbox');
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    act(() => userEvent.click(screen.getAllByRole('checkbox')[0]));
-    expect(onSelected).toHaveBeenCalled();
+    await userEvent.click(screen.getAllByRole('checkbox')[0]);
+    await waitFor(() => expect(onSelected).toHaveBeenCalled());
   });
 
   it('Renders selected loaded group with its name', async () => {
@@ -206,8 +205,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitForAsyncEvents();
-    expect(screen.getByText('I am real')).toBeVisible();
+    await waitFor(() => expect(screen.getByText('I am real')).toBeVisible());
   });
 
   it('Renders selected loading group as a loading', async () => {
@@ -221,8 +219,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitForAsyncEvents();
-    expect(screen.getByTestId('loading-group')).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByTestId('loading-group')).toBeVisible()
+    );
   });
 
   it('Renders selected non existent group as a does not exist', async () => {
@@ -236,15 +235,13 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitForAsyncEvents();
-    expect(screen.getByText(/User Access group \(Not found\)/i)).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText(/User Access group \(Not found\)/i)).toBeVisible()
+    );
 
     await userEvent.hover(screen.getByText(/User Access group \(Not found\)/i));
-    await waitForAsyncEvents();
-    expect(
-      await screen.findByText(
-        /This User Access group was not found, and may have been deleted/i
-      )
-    ).toBeVisible();
+    await screen.findByText(
+      /This User Access group was not found, and may have been deleted/i
+    );
   });
 });

@@ -88,132 +88,132 @@ const userOptions = [
   ]),
 ];
 
-export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> =
-  (props) => {
-    const [isOpen, setOpen] = React.useState(false);
-    const [state, dispatchers] =
-      useTypeaheadReducer<BaseNotificationRecipient>();
-    const prevOpen = usePrevious(isOpen);
-    const { getNotificationRecipients } = useRecipientContext();
+export const RecipientTypeahead: React.FunctionComponent<
+  RecipientTypeaheadProps
+> = (props) => {
+  const [isOpen, setOpen] = React.useState(false);
+  const [state, dispatchers] = useTypeaheadReducer<BaseNotificationRecipient>();
+  const prevOpen = usePrevious(isOpen);
+  const { getNotificationRecipients } = useRecipientContext();
 
-    React.useEffect(() => {
+  React.useEffect(() => {
+    getNotificationRecipients().then((recipients) =>
+      dispatchers.setDefaults(recipients)
+    );
+  }, [getNotificationRecipients, dispatchers]);
+
+  React.useEffect(() => {
+    if (state.loadingFilter) {
       getNotificationRecipients().then((recipients) =>
-        dispatchers.setDefaults(recipients)
+        dispatchers.setFilterValue(state.lastSearch, recipients)
       );
-    }, [getNotificationRecipients, dispatchers]);
+    }
+  }, [
+    getNotificationRecipients,
+    state.loadingFilter,
+    state.lastSearch,
+    dispatchers,
+  ]);
 
-    React.useEffect(() => {
-      if (state.loadingFilter) {
-        getNotificationRecipients().then((recipients) =>
-          dispatchers.setFilterValue(state.lastSearch, recipients)
-        );
-      }
-    }, [
-      getNotificationRecipients,
-      state.loadingFilter,
-      state.lastSearch,
-      dispatchers,
-    ]);
+  const toggle = React.useCallback(
+    (isOpen: boolean) => {
+      setOpen(isOpen);
+    },
+    [setOpen]
+  );
 
-    const toggle = React.useCallback(
-      (isOpen: boolean) => {
-        setOpen(isOpen);
-      },
-      [setOpen]
+  React.useEffect(() => {
+    const onOpenChange = props.onOpenChange;
+    if (prevOpen !== undefined && prevOpen !== isOpen) {
+      onOpenChange && onOpenChange(isOpen);
+    }
+  }, [prevOpen, isOpen, props.onOpenChange]);
+
+  // We probably need to augment these.
+  // Change to use this  mapper only for the groups and prepend the Users
+  const rbacOptions = useRecipientOptionMemo(
+    state,
+    recipientMapper,
+    loadingMapper
+  );
+  // augment rbacOptions
+  const options = React.useMemo(
+    () => [...userOptions, ...rbacOptions],
+    [rbacOptions]
+  );
+
+  const selection = React.useMemo(() => {
+    const sel = props.selected;
+    if (sel === undefined) {
+      return undefined;
+    }
+
+    return (sel as ReadonlyArray<NotificationUserRecipient>).map(
+      (s) => new RecipientOption(s)
     );
+  }, [props.selected]);
 
-    React.useEffect(() => {
-      const onOpenChange = props.onOpenChange;
-      if (prevOpen !== undefined && prevOpen !== isOpen) {
-        onOpenChange && onOpenChange(isOpen);
+  const onSelect = React.useCallback(
+    (_event, value: string | SelectOptionObject) => {
+      const onSelected = props.onSelected;
+      if (value instanceof RecipientOption) {
+        onSelected(value);
       }
-    }, [prevOpen, isOpen, props.onOpenChange]);
+    },
+    [props.onSelected]
+  );
 
-    // We probably need to augment these.
-    // Change to use this  mapper only for the groups and prepend the Users
-    const rbacOptions = useRecipientOptionMemo(
-      state,
-      recipientMapper,
-      loadingMapper
-    );
-    // augment rbacOptions
-    const options = React.useMemo(
-      () => [...userOptions, ...rbacOptions],
-      [rbacOptions]
-    );
+  const selectContent = React.useMemo(() => {
+    return selection?.map((value) => {
+      const unselect =
+        (element: RecipientOption) => (evt: React.MouseEvent) => {
+          evt.stopPropagation();
+          onSelect(evt, element);
+        };
 
-    const selection = React.useMemo(() => {
-      const sel = props.selected;
-      if (sel === undefined) {
-        return undefined;
+      const key = value.recipient.getKey();
+
+      if (value.recipient instanceof NotificationRbacGroupRecipient) {
+        if (value.recipient.isLoading) {
+          return (
+            <Chip key={key} onClick={unselect(value)}>
+              <Skeleton data-testid="loading-group" width="40px" />
+            </Chip>
+          );
+        } else if (value.recipient.hasError) {
+          return <GroupNotFound key={key} onClose={unselect(value)} />;
+        }
       }
 
-      return (sel as ReadonlyArray<NotificationUserRecipient>).map(
-        (s) => new RecipientOption(s)
+      return (
+        <Chip onClick={unselect(value)} key={key}>
+          {value.recipient.displayName}
+        </Chip>
       );
-    }, [props.selected]);
+    });
+  }, [selection, onSelect]);
 
-    const onSelect = React.useCallback(
-      (_event, value: string | SelectOptionObject) => {
-        const onSelected = props.onSelected;
-        if (value instanceof RecipientOption) {
-          onSelected(value);
-        }
-      },
-      [props.onSelected]
-    );
-
-    const selectContent = React.useMemo(() => {
-      return selection?.map((value) => {
-        const unselect =
-          (element: RecipientOption) => (evt: React.MouseEvent) => {
-            evt.stopPropagation();
-            onSelect(evt, element);
-          };
-
-        const key = value.recipient.getKey();
-
-        if (value.recipient instanceof NotificationRbacGroupRecipient) {
-          if (value.recipient.isLoading) {
-            return (
-              <Chip key={key} onClick={unselect(value)}>
-                <Skeleton data-testid="loading-group" width="40px" />
-              </Chip>
-            );
-          } else if (value.recipient.hasError) {
-            return <GroupNotFound key={key} onClose={unselect(value)} />;
-          }
-        }
-
-        return (
-          <Chip onClick={unselect(value)} key={key}>
-            {value.recipient.displayName}
-          </Chip>
-        );
-      });
-    }, [selection, onSelect]);
-
-    return (
-      <div {...getOuiaProps('RecipientTypeahead', props)}>
-        <Select
-          maxHeight={400}
-          variant={SelectVariant.checkbox}
-          selections={selection}
-          onSelect={onSelect}
-          onToggle={toggle}
-          isOpen={isOpen}
-          menuAppendTo={document.body}
-          isDisabled={props.isDisabled}
-          onClear={props.onClear}
-          validated={props.error ? 'error' : undefined}
-          isGrouped
-          isCheckboxSelectionBadgeHidden
-          // hasInlineFilter // Disabled filter. see: https://github.com/patternfly/patternfly-react/issues/7134
-          isInputValuePersisted
-          placeholderText={<ChipGroup>{selectContent}</ChipGroup>}
-        >
-          {options}
-        </Select>
-      </div>
-    );
-  };
+  return (
+    <div {...getOuiaProps('RecipientTypeahead', props)}>
+      <Select
+        maxHeight={400}
+        variant={SelectVariant.checkbox}
+        selections={selection}
+        onSelect={onSelect}
+        onToggle={toggle}
+        isOpen={isOpen}
+        menuAppendTo={document.body}
+        isDisabled={props.isDisabled}
+        onClear={props.onClear}
+        validated={props.error ? 'error' : undefined}
+        isGrouped
+        isCheckboxSelectionBadgeHidden
+        // hasInlineFilter // Disabled filter. see: https://github.com/patternfly/patternfly-react/issues/7134
+        isInputValuePersisted
+        placeholderText={<ChipGroup>{selectContent}</ChipGroup>}
+      >
+        {options}
+      </Select>
+    </div>
+  );
+};

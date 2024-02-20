@@ -19,7 +19,9 @@ export interface TableHelpProps {
   tableBody: ReadonlyArray<[React.ReactNode, React.ReactNode]>;
 }
 
-export const TableHelp: React.FunctionComponent<TableHelpProps> = (props) => {
+export const TableHelp: React.FunctionComponent<
+  React.PropsWithChildren<TableHelpProps>
+> = (props) => {
   return (
     <TableComposable variant={TableVariant.compact} borders={false}>
       <Thead>

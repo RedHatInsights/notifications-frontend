@@ -1,5 +1,5 @@
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Formik } from 'formik';
 import { fn } from 'jest-mock';
@@ -44,7 +44,7 @@ const getConfiguredWrapper = (
     getNotificationRecipients: fn(),
   };
 
-  const Wrapper: React.FunctionComponent = (props) => {
+  const Wrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => {
     return (
       <RecipientContextProvider value={context}>
         <Formik<Partial<BehaviorGroup>>
@@ -141,7 +141,6 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
   });
 
   it('Clicking will show the options', async () => {
-    jest.useFakeTimers();
     render(
       <IntegrationRecipientTypeahead
         selected={undefined}
@@ -158,11 +157,9 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       })
     );
 
-    await waitForAsyncEvents();
-    await act(async () => {
-      jest.runAllTimers();
-    });
-    expect(screen.getByText('Integration 1234')).toBeVisible();
+    await waitFor(() =>
+      expect(screen.getByText('Integration 1234')).toBeVisible()
+    );
   });
 
   it('getIntegrations is called on init', async () => {
@@ -183,7 +180,6 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
   });
 
   it('When writing, getIntegrations is called with the input', async () => {
-    jest.useFakeTimers();
     const guyRef: IntegrationRef = {
       id: '1234',
       type: IntegrationType.WEBHOOK,
@@ -209,26 +205,18 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         wrapper: getConfiguredWrapper(getIntegrations),
       }
     );
-    await waitForAsyncEvents();
 
     await userEvent.type(screen.getByRole('textbox'), 'guy');
-    await act(async () => {
-      jest.runAllTimers();
-    });
     await waitFor(() =>
       expect(getIntegrations).toHaveBeenCalledWith(
         IntegrationType.WEBHOOK,
         'guy'
       )
     );
-    await act(async () => {
-      jest.runAllTimers();
-    });
     expect(await screen.findByText('guy integration')).toBeInTheDocument();
   });
 
   it('onSelected GetsCalled when selecting an element', async () => {
-    jest.useFakeTimers();
     const onSelected = fn();
     render(
       <IntegrationRecipientTypeahead
@@ -240,21 +228,24 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         wrapper: getConfiguredWrapper(),
       }
     );
+    await new Promise(process.nextTick);
     await userEvent.click(
       screen.getByRole('button', {
         name: /Options menu/i,
       })
     );
-    await waitForAsyncEvents();
-    await act(async () => {
-      jest.runAllTimers();
-    });
+    await waitFor(() =>
+      expect(screen.getAllByRole('option')[0]).toBeInTheDocument()
+    );
+    await waitFor(() =>
+      // eslint-disable-next-line testing-library/no-node-access
+      expect(document.querySelector('.pf-c-skeleton')).not.toBeInTheDocument()
+    );
     await userEvent.click(screen.getAllByRole('option')[0]);
-    expect(onSelected).toHaveBeenCalled();
+    await waitFor(() => expect(onSelected).toHaveBeenCalled());
   });
 
   it('Integration recipients that have been previously used in the form are disabled', async () => {
-    jest.useFakeTimers();
     const formikValues: Partial<BehaviorGroup> = {
       actions: [
         { integration: ref1, type: NotificationType.INTEGRATION },
@@ -271,18 +262,13 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         wrapper: getConfiguredWrapper(undefined, formikValues),
       }
     );
-
-    await waitForAsyncEvents();
     await userEvent.click(
-      screen.getByRole('button', { name: /Options menu/i })
+      await screen.findByRole('button', { name: /Options menu/i })
     );
-
-    await waitForAsyncEvents();
-    await act(async () => {
-      jest.runAllTimers();
-    });
-    expect(
-      screen.getAllByRole('option')[0].className.includes('disabled')
-    ).toBeTruthy();
+    await waitFor(() =>
+      expect(
+        screen.getAllByRole('option')[0].className.includes('disabled')
+      ).toBeTruthy()
+    );
   });
 });

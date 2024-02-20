@@ -31,14 +31,15 @@ const getIcon = (type: ConnectionAttemptType) => {
   }
 };
 
-export const ConnectionAttempt: React.FunctionComponent<ConnectionAttemptProps> =
-  (props) => {
-    return (
-      <>
-        {getIcon(props.type)}
-        <span className="pf-v5-u-ml-xs">
-          <DateFormat type="relative" date={props.date} />
-        </span>
-      </>
-    );
-  };
+export const ConnectionAttempt: React.FunctionComponent<
+  ConnectionAttemptProps
+> = (props) => {
+  return (
+    <>
+      {getIcon(props.type)}
+      <span className="pf-v5-u-ml-xs">
+        <DateFormat type="relative" date={props.date} />
+      </span>
+    </>
+  );
+};

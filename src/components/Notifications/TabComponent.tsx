@@ -6,9 +6,9 @@ interface MyTabComponentProps {
   settings: React.ReactNode;
 }
 
-export const TabComponent: React.FunctionComponent<MyTabComponentProps> = (
-  props
-) => {
+export const TabComponent: React.FunctionComponent<
+  React.PropsWithChildren<MyTabComponentProps>
+> = (props) => {
   const [activeTabKey, setActiveTabKey] = React.useState(0);
 
   const handleTabClick = React.useCallback((tabIndex) => {

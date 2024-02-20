@@ -33,7 +33,9 @@ export interface SelectableEventTypeTableProps
   events?: ReadonlyArray<SelectableEventTypeRow>;
 }
 
-const SelectableEventTypeTableLayout: React.FunctionComponent = (props) => {
+const SelectableEventTypeTableLayout: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => {
   return (
     <TableComposable variant={TableVariant.compact}>
       <Thead>
@@ -72,42 +74,44 @@ const SelectableEventTypeTableSkeleton: React.FunctionComponent = () => {
   );
 };
 
-const SelectableEventTypeTableImpl: React.FunctionComponent<SelectableEventTypeTableImplProps> =
-  (props) => {
-    return (
-      <SelectableEventTypeTableLayout>
-        {props.events.map((event, rowIndex) => (
-          <Tr key={event.id}>
-            <Td
-              modifier={props.selectionLoading ? 'fitContent' : undefined}
-              noPadding={props.selectionLoading}
-              select={
-                props.selectionLoading
-                  ? undefined
-                  : {
-                      rowIndex,
-                      onSelect: (_event, isSelected) =>
-                        props.onSelect && props.onSelect(isSelected, event),
-                      isSelected: event.isSelected,
-                      disable: props.selectionLoading,
-                    }
-              }
-            >
-              {props.selectionLoading && <Spinner size="sm" />}
-            </Td>
-            <Td>{event.eventTypeDisplayName}</Td>
-            <Td>{event.applicationDisplayName}</Td>
-          </Tr>
-        ))}
-      </SelectableEventTypeTableLayout>
-    );
-  };
+const SelectableEventTypeTableImpl: React.FunctionComponent<
+  SelectableEventTypeTableImplProps
+> = (props) => {
+  return (
+    <SelectableEventTypeTableLayout>
+      {props.events.map((event, rowIndex) => (
+        <Tr key={event.id}>
+          <Td
+            modifier={props.selectionLoading ? 'fitContent' : undefined}
+            noPadding={props.selectionLoading}
+            select={
+              props.selectionLoading
+                ? undefined
+                : {
+                    rowIndex,
+                    onSelect: (_event, isSelected) =>
+                      props.onSelect && props.onSelect(isSelected, event),
+                    isSelected: event.isSelected,
+                    disable: props.selectionLoading,
+                  }
+            }
+          >
+            {props.selectionLoading && <Spinner size="sm" />}
+          </Td>
+          <Td>{event.eventTypeDisplayName}</Td>
+          <Td>{event.applicationDisplayName}</Td>
+        </Tr>
+      ))}
+    </SelectableEventTypeTableLayout>
+  );
+};
 
-export const SelectableEventTypeTable: React.FunctionComponent<SelectableEventTypeTableProps> =
-  (props) => {
-    if (props.events) {
-      return <SelectableEventTypeTableImpl {...props} events={props.events} />;
-    }
+export const SelectableEventTypeTable: React.FunctionComponent<
+  SelectableEventTypeTableProps
+> = (props) => {
+  if (props.events) {
+    return <SelectableEventTypeTableImpl {...props} events={props.events} />;
+  }
 
-    return <SelectableEventTypeTableSkeleton />;
-  };
+  return <SelectableEventTypeTableSkeleton />;
+};

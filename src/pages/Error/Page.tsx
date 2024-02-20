@@ -3,7 +3,9 @@ import * as React from 'react';
 
 import { Messages } from '../../properties/Messages';
 
-export const ErrorPage: React.FunctionComponent = (props) => {
+export const ErrorPage: React.FunctionComponent<React.PropsWithChildren> = (
+  props
+) => {
   return (
     <ErrorBoundary
       headerTitle={Messages.pages.error.title}

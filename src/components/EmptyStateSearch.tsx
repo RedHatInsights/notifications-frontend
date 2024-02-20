@@ -18,16 +18,17 @@ interface EmptyStateSearchProps {
   description: string;
 }
 
-export const EmptyStateSearch: React.FunctionComponent<EmptyStateSearchProps> =
-  (props) => {
-    return (
-      <EmptyState
-        className={`pf-v5-u-background-color-100 ${props.className}`}
-        variant={props.variant}
-      >
-        <EmptyStateIcon icon={props.icon ?? SearchIcon} />
-        <Title headingLevel={props.headingLevel ?? 'h3'}>{props.title}</Title>
-        <EmptyStateBody>{props.description}</EmptyStateBody>
-      </EmptyState>
-    );
-  };
+export const EmptyStateSearch: React.FunctionComponent<
+  EmptyStateSearchProps
+> = (props) => {
+  return (
+    <EmptyState
+      className={`pf-v5-u-background-color-100 ${props.className}`}
+      variant={props.variant}
+    >
+      <EmptyStateIcon icon={props.icon ?? SearchIcon} />
+      <Title headingLevel={props.headingLevel ?? 'h3'}>{props.title}</Title>
+      <EmptyStateBody>{props.description}</EmptyStateBody>
+    </EmptyState>
+  );
+};

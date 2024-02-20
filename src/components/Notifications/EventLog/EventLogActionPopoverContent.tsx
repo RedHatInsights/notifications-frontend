@@ -78,63 +78,62 @@ const failed = (action: NotificationEventAction) => {
   return 'failed';
 };
 
-export const EventLogActionPopoverContent: React.FunctionComponent<EventLogActionPopoverContentProps> =
-  (props) => {
-    const {
-      action: { id },
-      getIntegrationRecipient,
-    } = props;
-    const recipient = useAsync(
-      async () => id && getIntegrationRecipient(id),
-      [id, getIntegrationRecipient]
-    );
+export const EventLogActionPopoverContent: React.FunctionComponent<
+  EventLogActionPopoverContentProps
+> = (props) => {
+  const {
+    action: { id },
+    getIntegrationRecipient,
+  } = props;
+  const recipient = useAsync(
+    async () => id && getIntegrationRecipient(id),
+    [id, getIntegrationRecipient]
+  );
 
-    return (
-      <TableComposable
-        borders={false}
-        variant={TableVariant.compact}
-        isStickyHeader={true}
-      >
-        <Thead>
-          <Tr>
-            <Th className={headerClass}>Action</Th>
-            <Th className={headerClass}>Recipient</Th>
-            <Th className={headerClass}>Status</Th>
-          </Tr>
-        </Thead>
-        <Tbody>
-          <Tr>
-            <Td>
-              {Config.integrations.types[props.action.endpointType].action}
-            </Td>
-            <Td>
-              {id ? (
-                recipient.loading ? (
-                  <Skeleton width="150px" />
-                ) : (
-                  recipient.value
-                )
+  return (
+    <TableComposable
+      borders={false}
+      variant={TableVariant.compact}
+      isStickyHeader={true}
+    >
+      <Thead>
+        <Tr>
+          <Th className={headerClass}>Action</Th>
+          <Th className={headerClass}>Recipient</Th>
+          <Th className={headerClass}>Status</Th>
+        </Tr>
+      </Thead>
+      <Tbody>
+        <Tr>
+          <Td>{Config.integrations.types[props.action.endpointType].action}</Td>
+          <Td>
+            {id ? (
+              recipient.loading ? (
+                <Skeleton width="150px" />
               ) : (
-                <Tooltip content="The integration no longer exists, it could have been deleted.">
-                  <span>Unknown integration</span>
-                </Tooltip>
-              )}
-            </Td>
-            <Td>
-              <div>{toDisplayStatus(props.action.status)}</div>
-              {props.action.successCount > 1 && (
-                <div className="pf-v5-u-color-300">
-                  {props.action.successCount} {succeeded(props.action)}{' '}
-                </div>
-              )}
-              {props.action.errorCount > 1 && (
-                <div className="pf-v5-u-color-300">
-                  {props.action.errorCount} {failed(props.action)}{' '}
-                </div>
-              )}
-            </Td>
-          </Tr>
-        </Tbody>
-      </TableComposable>
-    );
-  };
+                recipient.value
+              )
+            ) : (
+              <Tooltip content="The integration no longer exists, it could have been deleted.">
+                <span>Unknown integration</span>
+              </Tooltip>
+            )}
+          </Td>
+          <Td>
+            <div>{toDisplayStatus(props.action.status)}</div>
+            {props.action.successCount > 1 && (
+              <div className="pf-v5-u-color-300">
+                {props.action.successCount} {succeeded(props.action)}{' '}
+              </div>
+            )}
+            {props.action.errorCount > 1 && (
+              <div className="pf-v5-u-color-300">
+                {props.action.errorCount} {failed(props.action)}{' '}
+              </div>
+            )}
+          </Td>
+        </Tr>
+      </Tbody>
+    </TableComposable>
+  );
+};

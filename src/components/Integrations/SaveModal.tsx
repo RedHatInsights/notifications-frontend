@@ -34,85 +34,87 @@ interface InternalIntegrationSaveModalProps {
   error?: ActionModalError;
 }
 
-const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationSaveModalProps> =
-  (props) => {
-    const pageMessages = props.isEdit
-      ? Messages.pages.integrations.edit
-      : Messages.pages.integrations.add;
-    const pageTitle = pageMessages.title;
-    const { handleSubmit, isValid, isSubmitting } =
-      useFormikContext<NewUserIntegration>();
+const InternalIntegrationSaveModal: React.FunctionComponent<
+  InternalIntegrationSaveModalProps
+> = (props) => {
+  const pageMessages = props.isEdit
+    ? Messages.pages.integrations.edit
+    : Messages.pages.integrations.add;
+  const pageTitle = pageMessages.title;
+  const { handleSubmit, isValid, isSubmitting } =
+    useFormikContext<NewUserIntegration>();
 
-    const onSaveClicked = React.useCallback(() => {
-      handleSubmit();
-      return false;
-    }, [handleSubmit]);
+  const onSaveClicked = React.useCallback(() => {
+    handleSubmit();
+    return false;
+  }, [handleSubmit]);
 
-    return (
-      <SaveModal
-        isOpen={true}
-        isSaving={isSubmitting}
-        onSave={onSaveClicked}
-        title={pageTitle}
-        content={<IntegrationsForm />}
+  return (
+    <SaveModal
+      isOpen={true}
+      isSaving={isSubmitting}
+      onSave={onSaveClicked}
+      title={pageTitle}
+      content={<IntegrationsForm />}
+      onClose={props.onClose}
+      error={props.error}
+      actionButtonDisabled={!isValid}
+    />
+  );
+};
+
+export const IntegrationSaveModal: React.FunctionComponent<
+  IntegrationSaveModalProps
+> = (props) => {
+  const [initialIntegration] = React.useState<PartialIntegration>(() => {
+    const initial = {
+      // The call is twice, because we use lazy evaluation for the integration base type.
+      // To ensure we get the defaults on the second level (webhook, slack, etc) we need to call it again
+      ...IntegrationSchema.cast(IntegrationSchema.cast({})),
+      ...props.initialIntegration,
+    } as PartialIntegration;
+
+    // patch extras to be a string for SPLUNK
+    if (
+      isCamelIntegrationType(initial) &&
+      initial.type === IntegrationType.SPLUNK &&
+      typeof initial.extras === 'object'
+    ) {
+      // We are casting as any, because `extras` is an object, but we need it to be a string for the form
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      initial.extras = JSON.stringify(initial.extras, undefined, 2) as any;
+    }
+
+    return initial;
+  });
+
+  const onSubmit = React.useCallback(
+    async (integration: PartialIntegration) => {
+      const onSave = props.onSave;
+      const onClose = props.onClose;
+      const transformedIntegration = IntegrationSchema.cast(
+        integration
+      ) as NewUserIntegration;
+      const saved = await onSave(transformedIntegration);
+      if (saved) {
+        onClose(true);
+      }
+    },
+    [props.onSave, props.onClose]
+  );
+
+  return (
+    <Formik<PartialIntegration>
+      initialValues={initialIntegration}
+      validationSchema={IntegrationSchema}
+      onSubmit={onSubmit}
+      validateOnMount={true}
+    >
+      <InternalIntegrationSaveModal
+        isEdit={props.isEdit}
         onClose={props.onClose}
         error={props.error}
-        actionButtonDisabled={!isValid}
       />
-    );
-  };
-
-export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalProps> =
-  (props) => {
-    const [initialIntegration] = React.useState<PartialIntegration>(() => {
-      const initial = {
-        // The call is twice, because we use lazy evaluation for the integration base type.
-        // To ensure we get the defaults on the second level (webhook, slack, etc) we need to call it again
-        ...IntegrationSchema.cast(IntegrationSchema.cast({})),
-        ...props.initialIntegration,
-      } as PartialIntegration;
-
-      // patch extras to be a string for SPLUNK
-      if (
-        isCamelIntegrationType(initial) &&
-        initial.type === IntegrationType.SPLUNK &&
-        typeof initial.extras === 'object'
-      ) {
-        // We are casting as any, because `extras` is an object, but we need it to be a string for the form
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        initial.extras = JSON.stringify(initial.extras, undefined, 2) as any;
-      }
-
-      return initial;
-    });
-
-    const onSubmit = React.useCallback(
-      async (integration: PartialIntegration) => {
-        const onSave = props.onSave;
-        const onClose = props.onClose;
-        const transformedIntegration = IntegrationSchema.cast(
-          integration
-        ) as NewUserIntegration;
-        const saved = await onSave(transformedIntegration);
-        if (saved) {
-          onClose(true);
-        }
-      },
-      [props.onSave, props.onClose]
-    );
-
-    return (
-      <Formik<PartialIntegration>
-        initialValues={initialIntegration}
-        validationSchema={IntegrationSchema}
-        onSubmit={onSubmit}
-        validateOnMount={true}
-      >
-        <InternalIntegrationSaveModal
-          isEdit={props.isEdit}
-          onClose={props.onClose}
-          error={props.error}
-        />
-      </Formik>
-    );
-  };
+    </Formik>
+  );
+};

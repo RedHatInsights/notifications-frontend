@@ -50,34 +50,34 @@ export const IntegrationStatus: React.FunctionComponent<IntegrationStatusProps> 
           return <StatusProcessing />;
       }
     }
+  }
 
-    if (!props.lastConnectionAttempts) {
-      return <Skeleton data-testid="skeleton-loading" width="80%" />;
-    }
+  if (!props.lastConnectionAttempts) {
+    return <Skeleton data-testid="skeleton-loading" width="80%" />;
+  }
 
-    const aggregatedConnectionAttemptStatus = aggregateConnectionAttemptStatus(
-      props.lastConnectionAttempts
-    );
+  const aggregatedConnectionAttemptStatus = aggregateConnectionAttemptStatus(
+    props.lastConnectionAttempts
+  );
 
-    // No attempts found
-    if (
-      aggregatedConnectionAttemptStatus ===
-      AggregatedConnectionAttemptStatus.UNKNOWN
-    ) {
-      return <StatusReady />;
-    }
+  // No attempts found
+  if (
+    aggregatedConnectionAttemptStatus ===
+    AggregatedConnectionAttemptStatus.UNKNOWN
+  ) {
+    return <StatusReady />;
+  }
 
-    const lastConnectionAttemptStatus =
-      props.lastConnectionAttempts[0].isSuccess;
-    const isDegraded =
-      aggregatedConnectionAttemptStatus ===
-      AggregatedConnectionAttemptStatus.WARNING;
-    if (lastConnectionAttemptStatus) {
-      return <StatusSuccess isDegraded={isDegraded} />;
-    } else {
-      return <StatusEventFailure isDegraded={isDegraded} />;
-    }
-  };
+  const lastConnectionAttemptStatus = props.lastConnectionAttempts[0].isSuccess;
+  const isDegraded =
+    aggregatedConnectionAttemptStatus ===
+    AggregatedConnectionAttemptStatus.WARNING;
+  if (lastConnectionAttemptStatus) {
+    return <StatusSuccess isDegraded={isDegraded} />;
+  } else {
+    return <StatusEventFailure isDegraded={isDegraded} />;
+  }
+};
 
 export const StatusSuccess: React.FunctionComponent<DegradedProps> = (
   props
