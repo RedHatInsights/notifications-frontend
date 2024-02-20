@@ -32,23 +32,21 @@ export interface StatusCreationFailureProps {
   includeDetails: boolean;
 }
 
-export const IntegrationStatus: React.FunctionComponent<IntegrationStatusProps> =
-  (props) => {
-    const status = props.status ?? 'UNKNOWN';
-    if (
-      status === 'FAILED' ||
-      status === 'PROVISIONING' ||
-      status === 'DELETING'
-    ) {
-      switch (status) {
-        case 'FAILED':
-          return (
-            <StatusCreationFailure includeDetails={props.includeDetails} />
-          );
-        case 'DELETING':
-        case 'PROVISIONING':
-          return <StatusProcessing />;
-      }
+export const IntegrationStatus: React.FunctionComponent<
+  IntegrationStatusProps
+> = (props) => {
+  const status = props.status ?? 'UNKNOWN';
+  if (
+    status === 'FAILED' ||
+    status === 'PROVISIONING' ||
+    status === 'DELETING'
+  ) {
+    switch (status) {
+      case 'FAILED':
+        return <StatusCreationFailure includeDetails={props.includeDetails} />;
+      case 'DELETING':
+      case 'PROVISIONING':
+        return <StatusProcessing />;
     }
   }
 
@@ -114,21 +112,22 @@ export const StatusReady: React.FunctionComponent<unknown> = () => (
   </Status>
 );
 
-export const StatusCreationFailure: React.FunctionComponent<StatusCreationFailureProps> =
-  (props) => (
-    <Popover
-      aria-label="Basic popover"
-      headerContent={<div>Failed connection</div>}
-      bodyContent={props.includeDetails}
-    >
-      <Status text="Creation failure">
-        <ExclamationCircleIcon
-          data-testid="fail-icon"
-          color={global_danger_color_100.value}
-        />{' '}
-      </Status>
-    </Popover>
-  );
+export const StatusCreationFailure: React.FunctionComponent<
+  StatusCreationFailureProps
+> = (props) => (
+  <Popover
+    aria-label="Basic popover"
+    headerContent={<div>Failed connection</div>}
+    bodyContent={props.includeDetails}
+  >
+    <Status text="Creation failure">
+      <ExclamationCircleIcon
+        data-testid="fail-icon"
+        color={global_danger_color_100.value}
+      />{' '}
+    </Status>
+  </Popover>
+);
 
 export const StatusProcessing: React.FunctionComponent<unknown> = () => (
   <Status text="Processing">
