@@ -27,6 +27,7 @@ describe('components/Integrations/Table', () => {
     isConnectionAttemptLoading: false,
     serverErrors: 0,
     status: 'READY',
+    includeDetails: true,
     lastConnectionAttempts: [
       {
         isSuccess: true,

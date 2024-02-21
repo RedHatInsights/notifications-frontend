@@ -19,7 +19,10 @@ const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
     'The last connection attempt failed',
   ],
   [
-    <StatusCreationFailure key="status-creation-failure" />,
+    <StatusCreationFailure
+      key="status-creation-failure"
+      includeDetails={true}
+    />,
     'Integration creation failed. Configuration error',
   ],
   [

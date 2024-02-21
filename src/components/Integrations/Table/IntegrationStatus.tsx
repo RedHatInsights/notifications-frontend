@@ -1,4 +1,4 @@
-import { Skeleton } from '@patternfly/react-core';
+import { Popover, Skeleton } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -25,6 +25,11 @@ import { Status } from '../../Status/Status';
 export interface IntegrationStatusProps {
   status: Integration['status'];
   lastConnectionAttempts: Array<IntegrationConnectionAttempt> | undefined;
+  includeDetails: boolean;
+}
+
+export interface StatusCreationFailureProps {
+  includeDetails: boolean;
 }
 
 export const IntegrationStatus: React.FunctionComponent<
@@ -38,7 +43,7 @@ export const IntegrationStatus: React.FunctionComponent<
   ) {
     switch (status) {
       case 'FAILED':
-        return <StatusCreationFailure />;
+        return <StatusCreationFailure includeDetails={props.includeDetails} />;
       case 'DELETING':
       case 'PROVISIONING':
         return <StatusProcessing />;
@@ -107,13 +112,21 @@ export const StatusReady: React.FunctionComponent<unknown> = () => (
   </Status>
 );
 
-export const StatusCreationFailure: React.FunctionComponent<unknown> = () => (
-  <Status text="Creation failure">
-    <ExclamationCircleIcon
-      data-testid="fail-icon"
-      color={global_danger_color_100.value}
-    />{' '}
-  </Status>
+export const StatusCreationFailure: React.FunctionComponent<
+  StatusCreationFailureProps
+> = (props) => (
+  <Popover
+    aria-label="Basic popover"
+    headerContent={<div>Failed connection</div>}
+    bodyContent={props.includeDetails}
+  >
+    <Status text="Creation failure">
+      <ExclamationCircleIcon
+        data-testid="fail-icon"
+        color={global_danger_color_100.value}
+      />{' '}
+    </Status>
+  </Popover>
 );
 
 export const StatusProcessing: React.FunctionComponent<unknown> = () => (
