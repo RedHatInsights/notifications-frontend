@@ -10,7 +10,7 @@ import {
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
-import { MemoryRouter, useLocation } from 'react-router-dom';
+import { MemoryRouter } from 'react-router-dom';
 
 import {
   appWrapperCleanup,
@@ -27,20 +27,18 @@ import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testin
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: jest.fn(),
-}));
-
-// beforeEach(() => {
-//   (useLocation as jest.Mock).mockReturnValue({
-//     pathname: '/settings/notifications',
-//     search: '?activeTab=BehaviorGroups',
-//     state: {},
-//     hash: '',
-//     key: 'testKey',
-//   });
-// });
+beforeEach(() => {
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useLocation: () => ({
+      pathname: '/settings/notifications',
+      search: '?activeTab=behaviorGroups',
+      hash: '',
+      state: {},
+      key: 'defaultKey',
+    }),
+  }));
+});
 
 afterEach(() => {
   jest.clearAllMocks();
@@ -324,18 +322,58 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     await waitFor(() => expect(screen.getAllByText(/Baz/i).length).toBe(2));
   });
 
-  it('Opens in the correct tab if parameter is present', async () => {
-    (useLocation as jest.Mock).mockReturnValue({
-      pathname: '/settings/notifications',
-      search: '?activeTab=BehaviorGroups',
-      state: {},
-      hash: '',
-      key: 'key',
-    });
+  it('Add group button should appear', async () => {
+    const notifications = getNotifications(policiesApplication, 3);
+    const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
+
+    mockNotifications(notifications);
+    mockBehaviorGroups(behaviorGroups);
 
     render(
+      <BundlePageBehaviorGroupContent
+        applications={applications}
+        bundle={bundle}
+      />,
+      {
+        wrapper: getConfiguredAppWrapper(),
+      }
+    );
+
+    await waitForAsyncEvents();
+
+    expect(await screen.findByText(/Create new group/i)).toBeInTheDocument();
+  });
+
+  it('Add group button should be enabled with the write permissions', async () => {
+    const notifications = getNotifications(policiesApplication, 3);
+    const behaviorGroups = getBehaviorGroups([[notifications[0]], []]);
+
+    mockNotifications(notifications);
+    mockBehaviorGroups(behaviorGroups);
+
+    render(
+      <BundlePageBehaviorGroupContent
+        applications={applications}
+        bundle={bundle}
+      />,
+      {
+        wrapper: getConfiguredAppWrapper(),
+      }
+    );
+
+    expect(await screen.findByText(/Create new group/i)).toBeEnabled();
+
+    // Check that is not aria-disabled
+    expect(await screen.findByText(/Create new group/i)).not.toHaveAttribute(
+      'aria-disabled',
+      'true'
+    );
+  });
+
+  it('Opens in the correct tab if parameter is present', async () => {
+    render(
       <MemoryRouter
-        initialEntries={['/settings/notifications?activeTab=BehaviorGroups']}
+        initialEntries={['/settings/notifications?activeTab=behaviorGroups']}
       >
         <BundlePageBehaviorGroupContent
           applications={applications}
@@ -344,9 +382,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       </MemoryRouter>
     );
 
-    expect(
-      screen.getByText('Unique Identifier of the Active Tab Content')
-    ).toBeInTheDocument();
+    expect(screen.getByText('Behavior groups')).toBeInTheDocument();
   });
 
   it('Add group button should be disabled with no write permissions', async () => {

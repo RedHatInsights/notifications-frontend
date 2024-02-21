@@ -9,12 +9,16 @@ interface MyTabComponentProps {
 
 export const TabComponent: React.FunctionComponent<
   React.PropsWithChildren<MyTabComponentProps>
-> = (props) => {
-  const [activeTabKey, setActiveTabKey] = React.useState(0);
+> = ({ activeKey = 0, ...props }) => {
+  const [activeTabKey, setActiveTabKey] = React.useState(activeKey);
 
-  const handleTabClick = React.useCallback((tabIndex) => {
-    setActiveTabKey(tabIndex);
-  }, []);
+  const handleTabSelect = (
+    // eslint-disable-next-line
+    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    tabIndex: number | string
+  ) => {
+    setActiveTabKey(tabIndex as number);
+  };
 
   return (
     <div className="pf-v5-u-background-color-100">
@@ -22,7 +26,7 @@ export const TabComponent: React.FunctionComponent<
         className="pf-v5-u-pl-lg"
         activeKey={activeTabKey}
         role="region"
-        onClick={handleTabClick}
+        onSelect={handleTabSelect}
       >
         {props.children}
       </Tabs>
