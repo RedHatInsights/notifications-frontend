@@ -13,8 +13,7 @@ export const TabComponent: React.FunctionComponent<
   const [activeTabKey, setActiveTabKey] = React.useState(activeKey);
 
   const handleTabSelect = (
-    // eslint-disable-next-line
-    event: React.MouseEvent<HTMLElement, MouseEvent>,
+    _e: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: number | string
   ) => {
     setActiveTabKey(tabIndex as number);
