@@ -81,9 +81,8 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
             <PageHeaderTitle title="Notifications" className="pf-u-mb-sm" />
             <p className="pf-u-mb-sm">
               Receive notifications about events that occur in your console
-              services. You can choose to receive notifications in the console
-              notifications drawer, by email, in third-party applications, or
-              from a combination of these methods.
+              services. You can choose to receive notifications by email, in
+              third-party applications, or from a combination of these methods.
             </p>
           </FlexItem>
         </Flex>
@@ -195,7 +194,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         );
                       }}
                     >
-                      Go to Notification Preferencesss
+                      Go to Notification Preferences
                     </Button>
                   </CardFooter>
                 </Card>
@@ -328,7 +327,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 icon={IconName.BELL}
                 heading="About Notifications"
                 expandableContent="Notifications are a way for users to be alerted of important events that occur in the Hybrid Cloud
-                            Console. You can receive notifications within the console via the notifications drawer as well as through email and
+                            Console. You can receive notifications through email and
                             third-party integrations, such as Slack or ServiceNow."
               />
             </DataList>
