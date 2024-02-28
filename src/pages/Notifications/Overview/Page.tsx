@@ -312,7 +312,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 linkTitle="Create new behavior group"
                 linkTarget={`${
                   isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/configure-events`}
+                }/${getBundle()}/notifications/configure-events?activeTab=behaviorGroups`}
                 expandableContent="Configure which notifications different users in your organization can receive, and how to notify groups of users when selected events occur."
               />
             </DataList>

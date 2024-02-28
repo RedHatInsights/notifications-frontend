@@ -4,24 +4,28 @@ import React from 'react';
 interface MyTabComponentProps {
   configuration: React.ReactNode;
   settings: React.ReactNode;
+  activeKey?: number;
 }
 
 export const TabComponent: React.FunctionComponent<
   React.PropsWithChildren<MyTabComponentProps>
-> = (props) => {
-  const [activeTabKey, setActiveTabKey] = React.useState(0);
+> = ({ activeKey = 0, ...props }) => {
+  const [activeTabKey, setActiveTabKey] = React.useState(activeKey);
 
-  const handleTabClick = React.useCallback((tabIndex) => {
-    setActiveTabKey(tabIndex);
-  }, []);
+  const handleTabSelect = (
+    _e: React.MouseEvent<HTMLElement, MouseEvent>,
+    tabIndex: number | string
+  ) => {
+    setActiveTabKey(tabIndex as number);
+  };
 
   return (
     <div className="pf-v5-u-background-color-100">
       <Tabs
         className="pf-v5-u-pl-lg"
-        defaultActiveKey={activeTabKey}
+        activeKey={activeTabKey}
         role="region"
-        onClick={handleTabClick}
+        onSelect={handleTabSelect}
       >
         {props.children}
       </Tabs>

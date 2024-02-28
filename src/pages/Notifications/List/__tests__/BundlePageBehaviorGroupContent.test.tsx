@@ -10,6 +10,7 @@ import {
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
+import { MemoryRouter } from 'react-router-dom';
 
 import {
   appWrapperCleanup,
@@ -25,6 +26,23 @@ import EventType = Schemas.EventType;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
+
+beforeEach(() => {
+  jest.mock('react-router-dom', () => ({
+    ...jest.requireActual('react-router-dom'),
+    useLocation: () => ({
+      pathname: '/settings/notifications',
+      search: '?activeTab=behaviorGroups',
+      hash: '',
+      state: {},
+      key: 'defaultKey',
+    }),
+  }));
+});
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
 const policiesApplication: Facet = {
   id: 'app-1',
@@ -350,6 +368,21 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       'aria-disabled',
       'true'
     );
+  });
+
+  it('Opens in the correct tab if parameter is present', async () => {
+    render(
+      <MemoryRouter
+        initialEntries={['/settings/notifications?activeTab=behaviorGroups']}
+      >
+        <BundlePageBehaviorGroupContent
+          applications={applications}
+          bundle={bundle}
+        />
+      </MemoryRouter>
+    );
+
+    expect(screen.getByText('Behavior groups')).toBeInTheDocument();
   });
 
   it('Add group button should be disabled with no write permissions', async () => {
