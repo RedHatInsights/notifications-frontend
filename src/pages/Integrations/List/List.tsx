@@ -64,7 +64,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const [selectedIntegrationID, setSelectedIntegrationID] = useState('');
   const [isTestModalOpen, setIsTestModalOpen] = useState(true);
   const {
-    rbac: { canWriteIntegrationsEndpoints },
+    rbac: { canWriteIntegrationsEndpoints, canReadIntegrationsEndpoints },
   } = useContext(AppContext);
 
   const integrationFilter = useIntegrationFilter();
@@ -202,6 +202,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 
   const actionResolver = useActionResolver({
     canWrite: canWriteIntegrationsEndpoints,
+    canRead: canReadIntegrationsEndpoints,
     onEdit,
     onTest,
     onDelete,

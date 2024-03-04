@@ -11,6 +11,7 @@ interface ActionResolverParams {
   onEdit: (integration: UserIntegration) => void;
   onTest: (integration: UserIntegration) => void;
   onDelete: (integration: UserIntegration) => void;
+  canRead: boolean;
   canWrite: boolean;
   onEnable: OnEnable;
 }
@@ -25,6 +26,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
       const onEnable = params.onEnable;
 
       const isDisabled = !params.canWrite;
+      const isTestDisabled = !params.canRead;
 
       return [
         {
@@ -36,7 +38,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
           ? [
               {
                 title: 'Test',
-                isDisabled,
+                isDisabled: isTestDisabled,
                 onClick: () => onTest(integration),
               },
             ]
@@ -58,6 +60,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
       params.onTest,
       params.onDelete,
       params.canWrite,
+      params.canRead,
       params.onEnable,
       integrationTest,
     ]
