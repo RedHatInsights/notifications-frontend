@@ -5,11 +5,17 @@ import IntegrationTestModal from './IntegrationTest';
 
 const registry = getNotificationsRegistry();
 
-const IntegrationTestProvider = ({ integrationUUID, onClose, isModalOpen }) => {
+const IntegrationTestProvider = ({
+  integrationId,
+  integrationType,
+  onClose,
+  isModalOpen,
+}) => {
   return (
     <Provider store={registry.getStore()}>
       <IntegrationTestModal
-        integrationUUID={integrationUUID}
+        integrationId={integrationId}
+        integrationType={integrationType}
         onClose={onClose}
         isModalOpen={isModalOpen}
       />

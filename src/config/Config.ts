@@ -33,7 +33,10 @@ interface NotificationTypeConfig {
   name: string;
 }
 
-const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
+export const integrationTypes: Record<
+  IntegrationType,
+  IntegrationTypeConfigBase
+> = {
   [IntegrationType.SPLUNK]: {
     name: 'Splunk',
   },
