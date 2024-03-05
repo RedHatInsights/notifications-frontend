@@ -41,7 +41,7 @@ const IntegrationTestModal = ({
         ? addSuccessNotification(
             notificationMessage,
             <>
-              Your test to integration {type} was successful, to view payload
+              Your test to integration {type} was successful. To view payload
               response check{' '}
               <Link to={`/settings/notifications${linkTo.eventLog()}`}>
                 event log
