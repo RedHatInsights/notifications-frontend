@@ -50,8 +50,9 @@ const IntegrationTestModal = ({
             </>
           )
         : addWarningNotification(
-            `${testFailedMessage} - ${response.status} ${response.statusText}`,
-            response.data
+            testFailedMessage,
+            response.data ||
+              `Status: ${response.status} - ${response.statusText}`
           );
     } catch (error) {
       console.error(testFailedMessage, error);
