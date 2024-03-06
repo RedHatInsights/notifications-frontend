@@ -205,17 +205,15 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
   ];
 
   return (
-    <div>
-      <PageSection className="pf-v5-u-px-0">
-        <MultiContentCard
-          isExpandable
-          defaultExpanded
-          withDividers
-          toggleText="Making use of Integrations"
-          cards={integrationCards}
-        />
-      </PageSection>
-    </div>
+    <PageSection className="pf-v5-u-px-0">
+      <MultiContentCard
+        isExpandable
+        defaultExpanded
+        withDividers
+        toggleText="Making use of Integrations"
+        cards={integrationCards}
+      />
+    </PageSection>
   );
 };
 
