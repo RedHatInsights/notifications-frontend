@@ -28,6 +28,42 @@ interface DopeBoxProps {
 }
 
 const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
+  const communicationsDetails = [
+    {
+      id: 0,
+      name: 'Configure Slack',
+      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-insights-integration-with-slack_integrations',
+    },
+    {
+      id: 1,
+      name: 'Configure Google Chat',
+      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-gchat_integrations',
+    },
+    {
+      id: 2,
+      name: 'Configure Microsoft Teams',
+      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-teams_integrations',
+    },
+  ];
+
+  const reportingDetails = [
+    {
+      id: 3,
+      name: 'Configure Splunk',
+      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-splunk_integrations',
+    },
+    {
+      id: 4,
+      name: 'Configure ServiceNow',
+      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-snow_integrations',
+    },
+    {
+      id: 5,
+      name: 'Configure Event-Driven Ansible',
+      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-eda_integrations',
+    },
+  ];
+
   const integrationCards = [
     <Card isFullHeight isPlain key="card-1">
       <CardHeader>
@@ -53,70 +89,28 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <TextContent>
           {category === IntegrationCategory.COMMUNICATIONS && (
             <TextList className="pf-v5-u-font-size-sm pf-v5-u-link-color pf-v5-u-ml-0">
-              <TextListItem>
-                <Button variant="link" isInline>
-                  <Link
-                    to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-insights-integration-with-slack_integrations"
-                    target="_blank"
-                  >
-                    Configure Slack
-                  </Link>{' '}
-                </Button>
-              </TextListItem>
-              <TextListItem>
-                <Button variant="link" isInline>
-                  <Link
-                    to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-gchat_integrations"
-                    target="_blank"
-                  >
-                    Configure Google Chat
-                  </Link>{' '}
-                </Button>
-              </TextListItem>
-              <TextListItem>
-                <Button variant="link" isInline>
-                  <Link
-                    to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-teams_integrations"
-                    target="_blank"
-                  >
-                    Configure Microsoft Teams
-                  </Link>{' '}
-                </Button>
-              </TextListItem>
+              {communicationsDetails.map((communication) => (
+                <TextListItem key={communication.id}>
+                  <Button variant="link" isInline>
+                    <Link to={communication.url} target="_blank">
+                      {communication.name}
+                    </Link>{' '}
+                  </Button>
+                </TextListItem>
+              ))}
             </TextList>
           )}
           {category === IntegrationCategory.REPORTING && (
             <TextList className="pf-v5-u-font-size-sm pf-v5-u-link-color pf-v5-u-ml-0">
-              <TextListItem>
-                <Button variant="link" isInline>
-                  <Link
-                    to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-splunk_integrations"
-                    target="_blank"
-                  >
-                    Configure Splunk
-                  </Link>{' '}
-                </Button>
-              </TextListItem>
-              <TextListItem>
-                <Button variant="link" isInline>
-                  <Link
-                    to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-installing-configuring-insights-for-snow_integrations"
-                    target="_blank"
-                  >
-                    Configure ServiceNow
-                  </Link>{' '}
-                </Button>
-              </TextListItem>
-              <TextListItem>
-                <Button variant="link" isInline>
-                  <Link
-                    to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-integration-with-eda_integrations"
-                    target="_blank"
-                  >
-                    Configure Event-Driven Ansible
-                  </Link>{' '}
-                </Button>
-              </TextListItem>
+              {reportingDetails.map((reporting) => (
+                <TextListItem key={reporting.id}>
+                  <Button variant="link" isInline>
+                    <Link to={reporting.url} target="_blank">
+                      {reporting.name}
+                    </Link>{' '}
+                  </Button>
+                </TextListItem>
+              ))}
             </TextList>
           )}
           {category === IntegrationCategory.WEBHOOKS && (
@@ -213,7 +207,6 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
     <MultiContentCard
       isExpandable
       defaultExpanded
-      withHeaderBorder
       withDividers
       toggleText="Making use of Integrations"
       cards={integrationCards}
