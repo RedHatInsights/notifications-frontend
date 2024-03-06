@@ -55,7 +55,6 @@ const IntegrationTestModal = ({
               `Status: ${response.status} - ${response.statusText}`
           );
     } catch (error) {
-      console.error(testFailedMessage, error);
       addWarningNotification(testFailedMessage, error?.toString());
     } finally {
       onClose();
