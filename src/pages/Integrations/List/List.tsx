@@ -61,7 +61,8 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const dispatch = useDispatch();
   const wizardEnabled = useFlag('insights.integrations.wizard');
   const { savedNotificationScope } = useSelector(selector);
-  const [selectedIntegrationID, setSelectedIntegrationID] = useState('');
+  const [selectedIntegration, setSelectedIntegration] =
+    useState<UserIntegration>();
   const [isTestModalOpen, setIsTestModalOpen] = useState(true);
   const {
     rbac: { canWriteIntegrationsEndpoints },
@@ -139,7 +140,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 
   const onTest = React.useCallback(
     (integration: UserIntegration) => {
-      setSelectedIntegrationID(integration.id);
+      setSelectedIntegration(integration);
       modalIsOpenActions.test(integration);
     },
     [modalIsOpenActions]
@@ -208,7 +209,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     onEnable: integrationRows.onEnable,
   });
 
-  // eslint-disable-next-line
   const closeFormModal = React.useCallback(
     (saved: boolean) => {
       const query = integrationsQuery.query;
@@ -304,17 +304,18 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       )}
       {modalIsOpenState.isTest && (
         <IntegrationTestProvider
-          integrationUUID={selectedIntegrationID}
+          integrationId={selectedIntegration?.id}
+          integrationType={selectedIntegration?.type}
           onClose={() => setIsTestModalOpen(false)}
           isModalOpen={isTestModalOpen}
         />
       )}
-      {wizardEnabled && category && !modalIsOpenState.isTest && (
+      {wizardEnabled && category && (
         <IntegrationWizard
           isOpen={modalIsOpenState.isOpen}
           isEdit={modalIsOpenState.isEdit}
           template={modalIsOpenState.template}
-          closeModal={() => modalIsOpenActions.reset()}
+          closeModal={modalIsOpenActions.reset}
           category={category}
         />
       )}
