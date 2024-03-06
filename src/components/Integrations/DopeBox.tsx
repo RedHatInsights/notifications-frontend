@@ -7,6 +7,7 @@ import {
   CardFooter,
   CardHeader,
   Icon,
+  PageSection,
   Text,
   TextContent,
   TextList,
@@ -204,13 +205,17 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
   ];
 
   return (
-    <MultiContentCard
-      isExpandable
-      defaultExpanded
-      withDividers
-      toggleText="Making use of Integrations"
-      cards={integrationCards}
-    />
+    <div>
+      <PageSection className="pf-v5-u-px-0">
+        <MultiContentCard
+          isExpandable
+          defaultExpanded
+          withDividers
+          toggleText="Making use of Integrations"
+          cards={integrationCards}
+        />
+      </PageSection>
+    </div>
   );
 };
 
