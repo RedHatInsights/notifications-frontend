@@ -6,7 +6,7 @@
     "@data-driven-forms/pf4-component-mapper": "3.20.1",
     "@data-driven-forms/react-form-renderer": "3.21.10",
     "@patternfly/patternfly": "4.217.1",
-    "@patternfly/react-component-groups": "^5.1.0-prerelease.11",
+    "@patternfly/react-component-groups": "5.1.0",
     "@patternfly/react-core": "4.250.1",
     "@patternfly/react-icons": "4.92.6",
     "@patternfly/react-styles": "4.91.6",
