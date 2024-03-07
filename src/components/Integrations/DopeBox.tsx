@@ -1,5 +1,7 @@
 import React from 'react';
-import MultiContentCard from '@patternfly/react-component-groups/dist/dynamic/MultiContentCard';
+import MultiContentCard, {
+  MultiContentCardDividerVariant,
+} from '@patternfly/react-component-groups/dist/dynamic/MultiContentCard';
 import {
   Button,
   Card,
@@ -165,43 +167,48 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         </Text>
       </CardFooter>
     </Card>,
-    <Card isFullHeight isPlain key="card-3">
-      <CardHeader>
-        <TextContent>
-          <Text component={TextVariants.h4}>Next Steps</Text>
-        </TextContent>
-      </CardHeader>
-      <CardBody>
-        <TextContent>
-          <Text className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover">
-            <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-              <BellIcon />
-            </Icon>
-            Configure notifications portal
-          </Text>
-          <Text className="pf-v5-u-font-size-sm">
-            You can configure the Hybrid Cloud Console to send event
-            notifications to all users on a new or existing channel in Slack,
-            Google Chat, or Microsoft Teams.
-          </Text>
-        </TextContent>
-      </CardBody>
-      <CardFooter>
-        <Text>
-          <Button variant="link" isInline>
-            <Link
-              to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index"
-              target="_blank"
-            >
-              Learn more
-              <Icon className="pf-u-ml-sm" isInline>
-                <ArrowRightIcon />
-              </Icon>
-            </Link>
-          </Button>
-        </Text>
-      </CardFooter>
-    </Card>,
+    {
+      content: (
+        <Card isFullHeight isPlain key="card-3">
+          <CardHeader>
+            <TextContent>
+              <Text component={TextVariants.h4}>Next Steps</Text>
+            </TextContent>
+          </CardHeader>
+          <CardBody>
+            <TextContent>
+              <Text className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover">
+                <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
+                  <BellIcon />
+                </Icon>
+                Configure notifications portal
+              </Text>
+              <Text className="pf-v5-u-font-size-sm">
+                You can configure the Hybrid Cloud Console to send event
+                notifications to all users on a new or existing channel in
+                Slack, Google Chat, or Microsoft Teams.
+              </Text>
+            </TextContent>
+          </CardBody>
+          <CardFooter>
+            <Text>
+              <Button variant="link" isInline>
+                <Link
+                  to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index"
+                  target="_blank"
+                >
+                  Learn more
+                  <Icon className="pf-u-ml-sm" isInline>
+                    <ArrowRightIcon />
+                  </Icon>
+                </Link>
+              </Button>
+            </Text>
+          </CardFooter>
+        </Card>
+      ),
+      dividerVariant: MultiContentCardDividerVariant.left,
+    },
   ];
 
   return (
@@ -209,7 +216,6 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
       <MultiContentCard
         isExpandable
         defaultExpanded
-        withDividers
         toggleText="Making use of Integrations"
         cards={integrationCards}
       />
