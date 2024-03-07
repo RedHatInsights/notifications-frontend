@@ -5,7 +5,7 @@ import {
   OnEnable,
 } from '../../../components/Integrations/Table';
 import { UserIntegration } from '../../../types/Integration';
-import { usePreviewFlag } from '../../../utils/usePreviewFlag';
+import { useFlag } from '@unleash/proxy-client-react';
 
 interface ActionResolverParams {
   onEdit: (integration: UserIntegration) => void;
@@ -16,7 +16,7 @@ interface ActionResolverParams {
 }
 
 export const useActionResolver = (params: ActionResolverParams) => {
-  const integrationTest = usePreviewFlag('insights.integrations.test');
+  const integrationTest = useFlag('insights.integrations.test');
   return useCallback(
     (integration: IntegrationRow, index: number) => {
       const onEdit = params.onEdit;
