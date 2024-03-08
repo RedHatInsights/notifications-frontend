@@ -18,7 +18,6 @@ import { IntegrationsEmptyState } from '../../../components/Integrations/EmptySt
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
 import { IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
-import IntegrationsDopeBox from '../../../components/Integrations/DopeBox';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -41,6 +40,7 @@ import { useActionResolver } from './useActionResolver';
 import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useFlag } from '@unleash/proxy-client-react';
+import DopeBox from '../../../components/Integrations/DopeBox';
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
   ...userIntegration,
@@ -260,7 +260,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       )}
       {!integrationsEmpty && (
         <>
-          <IntegrationsDopeBox category={category} />
+          <DopeBox category={category} />
           <IntegrationsToolbar
             onAddIntegration={
               canWriteIntegrationsEndpoints
