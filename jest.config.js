@@ -10,7 +10,7 @@ module.exports = {
   roots: ['<rootDir>/src/'],
   moduleNameMapper: {
     '\\.(css|scss|svg)$': 'identity-obj-proxy',
-    '@openshift/*': 'jest-transform-stub'
+    '@openshift/*': 'jest-transform-stub',
   },
   transformIgnorePatterns,
   setupFilesAfterEnv: ['<rootDir>/config/setupTests.ts'],
