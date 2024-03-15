@@ -26,7 +26,8 @@ module.exports = {
             './RootApp': path.resolve(__dirname, './src/AppEntry.tsx'),
             './IntegrationsTable': path.resolve(__dirname, './src/IntegrationsEntry.tsx'),
             './TimeConfig': path.resolve(__dirname, './src/components/Notifications/TimeConfig.tsx'),
-            './ConnectedTimeConfig': path.resolve(__dirname, './src/components/Notifications/ConnectedTimeConfig.tsx')
+            './ConnectedTimeConfig': path.resolve(__dirname, './src/components/Notifications/ConnectedTimeConfig.tsx'),
+            './DashboardWidget': path.resolve(__dirname, './src/components/Widgets/EventsWidget')
         },
         shared: [
             {
