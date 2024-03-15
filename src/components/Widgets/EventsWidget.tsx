@@ -19,15 +19,17 @@ import {
   StackItem,
   Title,
 } from '@patternfly/react-core';
+import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { useIntl } from 'react-intl';
 import messages from '../../properties/DefinedMessages';
 
 export type Notification = {
   id: string;
-  title: string;
+  event_type: string;
   description: string;
   read: boolean;
-  source: string;
+  application: string;
+  bundle: string;
   created: string;
 };
 
@@ -51,7 +53,7 @@ const EventsWidget: React.FunctionComponent = () => {
   const fetchNotifications = async () => {
     try {
       const response = await fetch(
-        '/api/notifications/v1/notifications/drawer'
+        '/api/notifications/v1.0/notifications/events?limit=5'
       );
       const { data } = await response.json();
       setNotifications(data);
@@ -101,13 +103,13 @@ const EventsWidget: React.FunctionComponent = () => {
             {notifications?.slice(0, MAX_ROWS).map((event) => (
               <Tr key={event.id}>
                 <Td dataLabel={intl.formatMessage(messages.event)}>
-                  {event.title}
+                  {event.event_type}
                 </Td>
                 <Td dataLabel={intl.formatMessage(messages.service)}>
-                  {event.source}
+                  {event.application} - {event.bundle}
                 </Td>
                 <Td dataLabel={intl.formatMessage(messages.date)}>
-                  {event.created}
+                  <DateFormat date={event.created} />
                 </Td>
               </Tr>
             ))}
