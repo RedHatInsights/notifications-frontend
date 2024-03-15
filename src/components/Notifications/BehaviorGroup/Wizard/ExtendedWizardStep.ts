@@ -1,4 +1,4 @@
-import { WizardStep } from '@patternfly/react-core';
+import { WizardStep } from '@patternfly/react-core/deprecated';
 import * as Yup from 'yup';
 
 export interface ExtendedWizardStep extends WizardStep {

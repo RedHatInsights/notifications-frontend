@@ -1,9 +1,11 @@
-import { Button, ButtonVariant, Skeleton } from '@patternfly/react-core';
+import { Button, ButtonVariant, Icon, Skeleton } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
 import {
+  CustomActionsToggleProps,
+  IActions,
   IExtraColumnData,
   SortByDirection,
-  TableComposable,
+  Table as TableComposable,
   TableVariant,
   Tbody,
   Td,
@@ -11,8 +13,7 @@ import {
   ThProps,
   Thead,
   Tr,
-} from '@patternfly/react-table';
-import { TdActionsType } from '@patternfly/react-table/dist/esm/components/Table/base';
+} from '@patternfly/react-table/dist/dynamic/components/Table';
 import {
   global_active_color_100,
   global_disabled_color_100,
@@ -36,6 +37,33 @@ import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
 import EmptyTableState from './EmptyTableState';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
+import {
+  DropdownDirection,
+  DropdownPosition,
+} from '@patternfly/react-core/dist/dynamic/deprecated/components/Dropdown';
+
+export interface TdActionsType {
+  /** The row index */
+  rowIndex?: number;
+  /** Cell actions */
+  items: IActions;
+  /** Whether the actions are disabled */
+  isDisabled?: boolean;
+  /** Actions dropdown position */
+  dropdownPosition?: DropdownPosition;
+  /** Actions dropdown direction */
+  dropdownDirection?: DropdownDirection;
+  /** The container to append the dropdown menu to. Defaults to 'inline'.
+   * If your menu is being cut off you can append it to an element higher up the DOM tree.
+   * Some examples:
+   * menuAppendTo="parent"
+   * menuAppendTo={() => document.body}
+   * menuAppendTo={document.getElementById('target')}
+   */
+  menuAppendTo?: HTMLElement | (() => HTMLElement) | 'inline' | 'parent';
+  /** Custom toggle for the actions menu */
+  actionsToggle?: (props: CustomActionsToggleProps) => React.ReactNode;
+}
 
 type OnNotificationIdHandler = (notificationId: UUID) => void;
 export type OnBehaviorGroupLinkUpdated = (
@@ -119,13 +147,15 @@ const getActions = (
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
           >
-            <CheckIcon
+            <Icon
               color={
                 isDisabled
                   ? global_disabled_color_100.value
                   : global_active_color_100.value
               }
-            />
+            >
+              <CheckIcon />
+            </Icon>
           </Button>
         ),
         isOutsideDropdown: true,

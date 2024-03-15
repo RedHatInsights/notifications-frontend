@@ -6,14 +6,14 @@ import {
   CardHeader,
   EmptyState,
   EmptyStateBody,
+  EmptyStateFooter,
+  EmptyStateHeader,
   EmptyStateIcon,
   Gallery,
   Icon,
   Text,
   TextContent,
   TextVariants,
-  Title,
-  TitleSizes,
 } from '@patternfly/react-core';
 import {
   ArrowRightIcon,
@@ -76,10 +76,11 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
   return (
     <div className="pf-v5-l-flex pf-m-justify-content-center">
       <EmptyState>
-        <EmptyStateIcon icon={CubesIcon} />
-        <Title headingLevel={TextVariants.h4} size={TitleSizes.lg}>
-          No integrations yet
-        </Title>
+        <EmptyStateHeader
+          titleText="No integrations yet"
+          icon={<EmptyStateIcon icon={CubesIcon} />}
+          headingLevel={TextVariants.h4}
+        />
         <EmptyStateBody>
           <Gallery
             aria-label="Card container"
@@ -112,14 +113,16 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
             )}
           </Gallery>
         </EmptyStateBody>
-        <Button
-          variant={ButtonVariant.primary}
-          component="a"
-          disabled={!onAddIntegration}
-          onClick={() => (onAddIntegration ? onAddIntegration() : null)}
-        >
-          {Messages.components.integrations.toolbar.actions.addIntegration}
-        </Button>
+        <EmptyStateFooter>
+          <Button
+            variant={ButtonVariant.primary}
+            component="a"
+            disabled={!onAddIntegration}
+            onClick={() => (onAddIntegration ? onAddIntegration() : null)}
+          >
+            {Messages.components.integrations.toolbar.actions.addIntegration}
+          </Button>
+        </EmptyStateFooter>
       </EmptyState>
     </div>
   );

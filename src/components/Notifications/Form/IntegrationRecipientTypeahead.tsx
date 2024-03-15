@@ -3,7 +3,7 @@ import {
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
@@ -171,7 +171,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
         placeholderText={chooseText}
         selections={selection}
         onSelect={onSelect}
-        onToggle={toggle}
+        onToggle={(_e, isOpen) => toggle(isOpen)}
         isOpen={isOpen}
         onFilter={onFilter}
         menuAppendTo={document.body}

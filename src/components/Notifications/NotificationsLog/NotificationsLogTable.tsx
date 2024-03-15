@@ -1,13 +1,13 @@
 import { Pagination } from '@patternfly/react-core';
 import {
-  TableComposable,
+  Table as TableComposable,
   Tbody,
   Td,
   Th,
   ThProps,
   Thead,
   Tr,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/dynamic/components/Table';
 import React from 'react';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 

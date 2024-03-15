@@ -87,7 +87,7 @@ const IntegrationTestModal = ({
     >
       <TextInput
         value={inputValue}
-        onChange={setInputValue}
+        onChange={(_event, value) => setInputValue(value)}
         aria-label="Test notification input"
         placeholder={placeholderText}
       />

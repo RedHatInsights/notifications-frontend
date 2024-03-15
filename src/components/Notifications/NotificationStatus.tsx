@@ -5,16 +5,12 @@ import {
   InProgressIcon,
   UnknownIcon,
 } from '@patternfly/react-icons';
-import {
-  c_alert_m_warning__icon_Color,
-  global_danger_color_100,
-  global_success_color_100,
-} from '@patternfly/react-tokens';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
 
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { Status } from '../Status/Status';
+import { Icon } from '@patternfly/react-core';
 
 interface NotificationStatusProps {
   status: Schemas.EventLogEntryActionStatus;
@@ -41,10 +37,9 @@ export const NotificationStatus: React.FunctionComponent<
 
 export const NotificationStatusFailed: React.FunctionComponent = () => (
   <Status text="Failure">
-    <ExclamationCircleIcon
-      data-testid="fail-icon"
-      color={global_danger_color_100.value}
-    />
+    <Icon status="danger">
+      <ExclamationCircleIcon data-testid="fail-icon" />
+    </Icon>
   </Status>
 );
 
@@ -62,24 +57,24 @@ export const NotificationStatusProcessing: React.FunctionComponent = () => (
 
 export const NotificationStatusSent: React.FunctionComponent = () => (
   <Status text="Sent">
-    <CheckCircleIcon
-      data-testid="success-icon"
-      color={global_success_color_100.value}
-    />
+    <Icon status="success">
+      <CheckCircleIcon data-testid="success-icon" />
+    </Icon>
   </Status>
 );
 
 export const NotificationStatusSuccess: React.FunctionComponent = () => (
   <Status text="Success">
-    <CheckCircleIcon
-      data-testid="success-icon"
-      color={global_success_color_100.value}
-    />
+    <Icon status="success">
+      <CheckCircleIcon data-testid="success-icon" />
+    </Icon>
   </Status>
 );
 
 export const NotificationStatusWarning: React.FunctionComponent = () => (
   <Status text="Warning">
-    <ExclamationTriangleIcon color={c_alert_m_warning__icon_Color.value} />
+    <Icon status="warning">
+      <ExclamationTriangleIcon />
+    </Icon>
   </Status>
 );

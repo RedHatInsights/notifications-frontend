@@ -1,4 +1,5 @@
-import { SelectOption, Skeleton } from '@patternfly/react-core';
+import { Skeleton } from '@patternfly/react-core';
+import { SelectOption } from '@patternfly/react-core/deprecated';
 import assertNever from 'assert-never';
 import * as React from 'react';
 

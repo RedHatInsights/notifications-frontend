@@ -1,10 +1,10 @@
 import {
   EmptyState,
   EmptyStateBody,
+  EmptyStateHeader,
   EmptyStateIcon,
   Text,
   TextContent,
-  Title,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
@@ -12,10 +12,11 @@ import React from 'react';
 const EmptyTableState = () => {
   return (
     <EmptyState variant="full">
-      <EmptyStateIcon className="pf-u-mb-xl" icon={SearchIcon} />
-      <Title headingLevel="h2" size="lg">
-        No results found
-      </Title>
+      <EmptyStateHeader
+        titleText="No results found"
+        icon={<EmptyStateIcon className="pf-u-mb-xl" icon={SearchIcon} />}
+        headingLevel="h2"
+      />
       <EmptyStateBody>
         <TextContent>
           <Text>

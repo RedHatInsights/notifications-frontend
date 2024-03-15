@@ -1,4 +1,9 @@
-import { FormGroup } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import {
   Checkbox,
   FormTextInput,
@@ -31,10 +36,7 @@ export const IntegrationTypeHttpForm: React.FunctionComponent<
         name="sslVerificationEnabled"
         ouiaId={ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled')}
       />
-      <FormGroup
-        fieldId="integration-type-http-secret-token"
-        helperText='The defined secret token is sent as a "X-Insight-Token" header on the request.'
-      >
+      <FormGroup fieldId="integration-type-http-secret-token">
         <FormTextInput
           isRequired={false}
           label="Secret token"
@@ -42,6 +44,14 @@ export const IntegrationTypeHttpForm: React.FunctionComponent<
           name="secretToken"
           ouiaId={ouiaIdConcat(props.ouiaId, 'secret-token')}
         />
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>
+              The defined secret token is sent as a &quot;X-Insight-Token&quot;
+              header on the request.
+            </HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     </div>
   );

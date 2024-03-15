@@ -1,4 +1,5 @@
-import { Tabs } from '@patternfly/react-core';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import { Tabs } from '@patternfly/react-core/dist/dynamic/components/Tabs';
 import React from 'react';
 
 interface MyTabComponentProps {
@@ -27,7 +28,7 @@ export const TabComponent: React.FunctionComponent<
         role="region"
         onSelect={handleTabSelect}
       >
-        {props.children}
+        {props.children as any}
       </Tabs>
     </div>
   );

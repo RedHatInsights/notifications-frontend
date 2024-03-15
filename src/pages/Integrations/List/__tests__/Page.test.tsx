@@ -229,7 +229,7 @@ describe('src/pages/Integrations/List/Page', () => {
 
       const dropdownContainer = ouiaSelectors
         .getByOuia('Notifications/Integrations/Table')
-        .getByOuia('PF4/Dropdown');
+        .getByOuia('PF5/Dropdown');
 
       await userEvent.click(getByRole(dropdownContainer, 'button'));
 
@@ -280,7 +280,7 @@ describe('src/pages/Integrations/List/Page', () => {
       await waitForAsyncEvents();
       const dropdownContainer = ouiaSelectors
         .getByOuia('Notifications/Integrations/Table')
-        .getByOuia('PF4/Dropdown');
+        .getByOuia('PF5/Dropdown');
 
       await userEvent.click(getByRole(dropdownContainer, 'button'));
 

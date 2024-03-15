@@ -228,7 +228,7 @@ describe('src/components/Integrations/DeleteModal', () => {
       />
     );
 
-    await userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
+    await userEvent.click(ouiaSelectors.getByOuia('PF5/Button', 'action'));
 
     await waitForAsyncEvents();
     expect(onDelete).toHaveBeenCalled();
@@ -258,7 +258,7 @@ describe('src/components/Integrations/DeleteModal', () => {
       />
     );
 
-    await userEvent.click(ouiaSelectors.getByOuia('PF4/Button', 'action'));
+    await userEvent.click(ouiaSelectors.getByOuia('PF5/Button', 'action'));
 
     await waitForAsyncEvents();
     expect(onDelete).toHaveBeenCalled();
