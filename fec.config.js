@@ -1,5 +1,7 @@
+const path = require('path');
+
 module.exports = {
-    appUrl: '/settings/notifications',
+    appUrl: [ '/settings/notifications', 'settings/integrations' ],
     debug: true,
     useProxy: true,
     proxyVerbose: true,
@@ -11,5 +13,26 @@ module.exports = {
      * Add additional webpack plugins
      */
     plugins: [],
-    _unstableHotReload: process.env.HOT === 'true'
+    _unstableHotReload: process.env.HOT === 'true',
+    routes: {
+        ...(process.env.CONFIG_PORT && {
+            '/api/chrome-service/v1/static': {
+                host: `http://localhost:${process.env.CONFIG_PORT}`
+            }
+        })
+    },
+    moduleFederation: {
+        exposes: {
+            './RootApp': path.resolve(__dirname, './src/AppEntry.tsx'),
+            './IntegrationsTable': path.resolve(__dirname, './src/IntegrationsEntry.tsx'),
+            './TimeConfig': path.resolve(__dirname, './src/components/Notifications/TimeConfig.tsx'),
+            './ConnectedTimeConfig': path.resolve(__dirname, './src/components/Notifications/ConnectedTimeConfig.tsx'),
+            './DashboardWidget': path.resolve(__dirname, './src/components/Widgets/EventsWidget')
+        },
+        shared: [
+            {
+                'react-router-dom': { singleton: true, requiredVersion: '*' }
+            }
+        ]
+    }
 };
