@@ -5,9 +5,8 @@ import {
   Spinner,
   Split,
   SplitItem,
-  WizardContext,
-  WizardFooter,
 } from '@patternfly/react-core';
+import { WizardContext, WizardFooter } from '@patternfly/react-core/deprecated';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 export interface BehaviorGroupWizardFooterProps {

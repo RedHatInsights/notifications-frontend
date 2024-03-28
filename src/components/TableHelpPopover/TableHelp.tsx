@@ -1,12 +1,12 @@
 import {
-  TableComposable,
+  Table,
   TableVariant,
   Tbody,
   Td,
   Th,
   Thead,
   Tr,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/dynamic/components/Table';
 import { important } from 'csx';
 import * as React from 'react';
 import { style } from 'typestyle';
@@ -23,7 +23,7 @@ export const TableHelp: React.FunctionComponent<
   React.PropsWithChildren<TableHelpProps>
 > = (props) => {
   return (
-    <TableComposable variant={TableVariant.compact} borders={false}>
+    <Table variant={TableVariant.compact} borders={false}>
       <Thead>
         <Tr className={removeBorderBottomClass}>
           <Th>Status</Th>
@@ -38,6 +38,6 @@ export const TableHelp: React.FunctionComponent<
           </Tr>
         ))}
       </Tbody>
-    </TableComposable>
+    </Table>
   );
 };

@@ -5,11 +5,13 @@ import {
   Icon,
   Label,
   MenuItem,
+  Tooltip,
+} from '@patternfly/react-core';
+import {
   OptionsMenu,
   OptionsMenuItem,
   OptionsMenuToggle,
-  Tooltip,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
 import { join } from '@redhat-cloud-services/insights-common-typescript';
@@ -141,7 +143,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
         return (
           <MenuItem
             key={bg.id}
-            hasCheck
+            hasCheckbox
             onClick={(event) => onSelected(event, bg.id)}
             data-behavior-group-id={bg.id}
             isSelected={selected}
@@ -167,7 +169,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
   const toggle = React.useMemo(() => {
     return (
       <OptionsMenuToggle
-        onToggle={setOpen}
+        onToggle={(_e, isOpen) => setOpen(isOpen)}
         toggleTemplate={
           sortedSelected.length === 0 ? (
             <>

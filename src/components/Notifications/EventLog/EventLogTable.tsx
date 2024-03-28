@@ -1,13 +1,15 @@
+import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
+import { Popover } from '@patternfly/react-core/dist/dynamic/components/Popover';
+import { Skeleton } from '@patternfly/react-core/dist/dynamic/components/Skeleton';
 import {
   Button,
   ButtonVariant,
-  EmptyStateVariant,
+} from '@patternfly/react-core/dist/dynamic/components/Button';
+import {
   Label,
   LabelGroup,
   LabelProps,
-  Popover,
-  Skeleton,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/dynamic/components/Label';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -19,14 +21,14 @@ import {
 import {
   IExtraColumnData,
   SortByDirection,
-  TableComposable,
+  Table as TableComposable,
   Tbody,
   Td,
   Th,
   ThProps,
   Thead,
   Tr,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/dynamic/components/Table';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import assertNever from 'assert-never';
 import * as React from 'react';

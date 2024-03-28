@@ -128,7 +128,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       href={`${
                         isBeta() ? '/preview' : ''
                       }/${getBundle()}/notifications/configure-events`}
-                      isLarge
+                      size="lg"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate(
@@ -182,7 +182,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   <CardFooter>
                     <Button
                       variant="primary"
-                      isLarge
+                      size="lg"
                       component="a"
                       href={`${
                         isBeta() ? '/preview' : ''
@@ -225,7 +225,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                     {!notificationsOverhaul && (
                       <Button
                         variant="secondary"
-                        isLarge
+                        size="lg"
                         component="a"
                         href={`${
                           isBeta() ? '/preview' : ''

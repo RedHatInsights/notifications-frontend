@@ -3,9 +3,10 @@ import {
   Button,
   EmptyState,
   EmptyStateBody,
+  EmptyStateFooter,
+  EmptyStateHeader,
   EmptyStateIcon,
   EmptyStateVariant,
-  Title,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
@@ -13,13 +14,16 @@ import React from 'react';
 const NotificationsLogEmptyState = () => {
   return (
     <Bullseye>
-      <EmptyState variant={EmptyStateVariant.small}>
-        <EmptyStateIcon icon={SearchIcon} />
-        <Title headingLevel="h2" size="lg">
-          No results found
-        </Title>
+      <EmptyState variant={EmptyStateVariant.sm}>
+        <EmptyStateHeader
+          titleText="No results found"
+          icon={<EmptyStateIcon icon={SearchIcon} />}
+          headingLevel="h2"
+        />
         <EmptyStateBody>Clear all filters and try again.</EmptyStateBody>
-        <Button variant="link">Clear all filters</Button>
+        <EmptyStateFooter>
+          <Button variant="link">Clear all filters</Button>
+        </EmptyStateFooter>
       </EmptyState>
     </Bullseye>
   );

@@ -1,4 +1,8 @@
-import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
+import {
+  Icon,
+  PaginationProps,
+  PaginationVariant,
+} from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -74,7 +78,9 @@ const actionStatusMetadata = [
     chipValue: 'Success',
     label: (
       <span>
-        <CheckCircleIcon color="green" /> Success
+        <Icon status="success">
+          <CheckCircleIcon /> Success
+        </Icon>
       </span>
     ),
   },
@@ -83,7 +89,10 @@ const actionStatusMetadata = [
     chipValue: 'Sent',
     label: (
       <span>
-        <CheckCircleIcon color="green" /> Sent
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+        Sent
       </span>
     ),
   },
@@ -111,7 +120,10 @@ const actionStatusMetadata = [
     chipValue: 'Failure',
     label: (
       <span>
-        <ExclamationCircleIcon color="red" /> Failure
+        <Icon status="danger">
+          <ExclamationCircleIcon />
+        </Icon>
+        Failure
       </span>
     ),
   },

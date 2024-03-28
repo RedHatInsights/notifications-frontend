@@ -47,7 +47,7 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
               aria-label="Help description"
               className="title-help-label"
             >
-              <HelpIcon noVerticalAlign />
+              <HelpIcon />
             </Button>
           </Popover>
         </>
@@ -117,7 +117,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                 </ProgressStep>
               </ProgressStepper>
             </SplitItem>
-            <Divider isVertical />
+            <Divider orientation={{ default: 'vertical' }} />
             <SplitItem isFilled>
               {step === 2 && (
                 <SplunkSetupForm

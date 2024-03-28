@@ -1,4 +1,9 @@
-import { FormGroup } from '@patternfly/react-core';
+import {
+  FormGroup,
+  FormHelperText,
+  HelperText,
+  HelperTextItem,
+} from '@patternfly/react-core';
 import {
   Checkbox,
   FormTextInput,
@@ -35,10 +40,7 @@ export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
         name="sslVerificationEnabled"
         ouiaId={ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled')}
       />
-      <FormGroup
-        fieldId="integration-type-camel-secret-token"
-        helperText={props.secretTokenDescription}
-      >
+      <FormGroup fieldId="integration-type-camel-secret-token">
         <FormTextInput
           isRequired={false}
           label="Secret token"
@@ -46,6 +48,11 @@ export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
           name="secretToken"
           ouiaId={ouiaIdConcat(props.ouiaId, 'secret-token')}
         />
+        <FormHelperText>
+          <HelperText>
+            <HelperTextItem>{props.secretTokenDescription}</HelperTextItem>
+          </HelperText>
+        </FormHelperText>
       </FormGroup>
     </div>
   );

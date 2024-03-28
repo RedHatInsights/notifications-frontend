@@ -63,7 +63,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
             <Checkbox
               id="checkbox-delete-i-acknowledge"
               label="I acknowledge that this action cannot be undone"
-              onChange={setAckDelete}
+              onChange={(_e, checked) => setAckDelete(checked)}
               isChecked={ackDelete}
             />
           </StackItem>
@@ -98,7 +98,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
             <Checkbox
               id="checkbox-delete-i-acknowledge"
               label="I acknowledge that this action cannot be undone"
-              onChange={setAckDelete}
+              onChange={(_e, checked) => setAckDelete(checked)}
               isChecked={ackDelete}
             />
           </StackItem>
@@ -114,6 +114,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
 
   return (
     <DeleteModal
+      variant="default"
       isOpen={true}
       isDeleting={props.isDeleting}
       title="Delete behavior group"
@@ -136,6 +137,7 @@ export const BehaviorGroupDeleteModalSkeleton: React.FunctionComponent<
 > = (props) => {
   return (
     <DeleteModal
+      variant="default"
       isOpen={true}
       title="Delete behavior group"
       actionButtonDisabled={true}

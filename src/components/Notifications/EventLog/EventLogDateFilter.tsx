@@ -1,14 +1,18 @@
 import {
   DatePicker,
   DatePickerRef,
+} from '@patternfly/react-core/dist/dynamic/components/DatePicker';
+import {
+  Split,
+  SplitItem,
+} from '@patternfly/react-core/dist/dynamic/layouts/Split';
+import { TextInputProps } from '@patternfly/react-core/dist/dynamic/components/TextInput';
+import {
   Select,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  Split,
-  SplitItem,
-  TextInputProps,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
@@ -69,7 +73,7 @@ class EventLogSelectObject implements SelectOptionObject {
 }
 
 const dateInputProps: TextInputProps = {
-  isReadOnly: true,
+  readOnly: true,
   className: datePickerClassName,
 };
 
@@ -196,7 +200,7 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (
           placeholder="Start"
           inputProps={startDateInputProps}
           validators={startRangeValidators}
-          onChange={setStartDate}
+          onChange={(_e, val) => setStartDate(val)}
           value={startValue}
           ref={startDateRef}
         />
@@ -209,7 +213,7 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (
           placeholder="End"
           inputProps={endDateInputProps}
           validators={endRangeValidators}
-          onChange={setEndDate}
+          onChange={(_e, val) => setEndDate(val)}
           value={endValue}
           ref={endDateRef}
         />

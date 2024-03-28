@@ -5,12 +5,14 @@ import {
   ICell,
   IRow,
   IRowData,
-  Table,
-  TableBody,
-  TableHeader,
   TableVariant,
   cellWidth,
 } from '@patternfly/react-table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+} from '@patternfly/react-table/deprecated';
 import { important } from 'csx';
 import { FieldArrayRenderProps, FormikProps } from 'formik';
 import produce, { Draft, castDraft } from 'immer';

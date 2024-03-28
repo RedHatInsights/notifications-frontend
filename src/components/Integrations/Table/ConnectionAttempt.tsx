@@ -1,11 +1,8 @@
+import { Icon } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
 } from '@patternfly/react-icons';
-import {
-  global_danger_color_100,
-  global_success_color_100,
-} from '@patternfly/react-tokens';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
@@ -23,9 +20,17 @@ export enum ConnectionAttemptType {
 const getIcon = (type: ConnectionAttemptType) => {
   switch (type) {
     case ConnectionAttemptType.SUCCESS:
-      return <CheckCircleIcon color={global_success_color_100.value} />;
+      return (
+        <Icon status="success">
+          <CheckCircleIcon />
+        </Icon>
+      );
     case ConnectionAttemptType.FAILED:
-      return <ExclamationCircleIcon color={global_danger_color_100.value} />;
+      return (
+        <Icon status="danger">
+          <ExclamationCircleIcon />
+        </Icon>
+      );
     default:
       assertNever(type);
   }

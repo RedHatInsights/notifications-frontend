@@ -1,13 +1,17 @@
+import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
+import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
 import {
-  EmptyStateVariant,
-  Spinner,
-  Switch,
   Text,
   TextContent,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/dynamic/components/Text';
+import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
-import styles from '@patternfly/react-styles/css/components/Table/table';
+import {
+  Table,
+  TableBody,
+  TableHeader,
+} from '@patternfly/react-table/deprecated';
 import {
   IActions,
   IActionsResolver,
@@ -17,9 +21,6 @@ import {
   ISortBy,
   RowWrapperProps,
   SortByDirection,
-  Table,
-  TableBody,
-  TableHeader,
   expandable,
   info,
   sortable,
@@ -112,7 +113,7 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
 const toTableRows = (
   integrations: Array<IntegrationRow>,
   onEnable?: OnEnable
-): Array<IRow> => {
+): IRow[] => {
   return integrations.reduce((rows, integration, idx) => {
     rows.push({
       id: integration.id,
@@ -155,7 +156,7 @@ const toTableRows = (
                   id={`table-row-switch-id-${integration.id}`}
                   aria-label="Enabled"
                   isChecked={integration.isEnabled}
-                  onChange={(isChecked) =>
+                  onChange={(_e, isChecked) =>
                     onEnable && onEnable(integration, idx, isChecked)
                   }
                   isDisabled={!onEnable}
@@ -240,32 +241,20 @@ const sortMapper = [
 ];
 
 const buildClassNames = () => {
-  const noneStyle = important('none');
   const borderStyle = important(
     'var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor)'
   );
 
-  const noBorderBottom = {
-    borderBottom: noneStyle,
-  };
-
-  const rowExpandedContentClassName = style(noBorderBottom);
-  const rowWrapperClassName = style(noBorderBottom, {
-    borderTop: borderStyle,
-  });
   const tableClassName = style({
     borderBottom: borderStyle,
   });
 
   return {
-    rowExpandedContentClassName,
-    rowWrapperClassName,
     tableClassName,
   };
 };
 
-const { rowExpandedContentClassName, rowWrapperClassName, tableClassName } =
-  buildClassNames();
+const { tableClassName } = buildClassNames();
 
 const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
   props
@@ -282,14 +271,7 @@ const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
       ref={
         trRef as any /* eslint-disable-line @typescript-eslint/no-explicit-any */
       }
-      className={css(
-        className,
-        row.isExpanded === true
-          ? rowExpandedContentClassName
-          : rowWrapperClassName,
-        row.isExpanded !== undefined && styles.tableExpandableRow,
-        row.isExpanded && styles.modifiers.expanded
-      )}
+      className={css('pf-v5-c-table__tr', className)}
       hidden={row?.isExpanded !== undefined && !row.isExpanded}
     >
       {props.children}
@@ -382,14 +364,12 @@ export const IntegrationsTable: React.FunctionComponent<
         {...getOuiaProps('Integrations/Table', { ...props, ouiaSafe: false })}
       >
         <SkeletonTable
-          rowSize={
+          rows={
             props.loadingCount && props.loadingCount > 0
               ? props.loadingCount
               : 10
           }
-          columns={columns}
-          paddingColumnSize={0}
-          sortBy={undefined}
+          columns={columns.map(({ title }) => title)}
         />
       </div>
     );

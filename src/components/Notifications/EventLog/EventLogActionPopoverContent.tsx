@@ -1,13 +1,13 @@
 import { Skeleton, Tooltip } from '@patternfly/react-core';
 import {
-  TableComposable,
+  Table as TableComposable,
   TableVariant,
   Tbody,
   Td,
   Th,
   Thead,
   Tr,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/dynamic/components/Table';
 import assertNever from 'assert-never';
 import { important } from 'csx';
 import * as React from 'react';

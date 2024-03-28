@@ -1,13 +1,7 @@
 import {
   Card,
-  CardActions,
   CardBody,
   CardHeader,
-  CardHeaderMain,
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  KebabToggle,
   Skeleton,
   Split,
   SplitItem,
@@ -16,6 +10,12 @@ import {
   TextVariants,
   Tooltip,
 } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownPosition,
+  KebabToggle,
+} from '@patternfly/react-core/deprecated';
 import { LockIcon } from '@patternfly/react-icons';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
@@ -56,54 +56,64 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
 
   return (
     <Card isFlat className={cardClassName}>
-      <CardHeader>
-        <CardHeaderMain>
-          <Split>
-            <SplitItem>
-              {props.isDefaultBehavior && (
-                <Tooltip
-                  position="top"
-                  appendTo={() => document.body}
-                  // eslint-disable-next-line max-len
-                  content={
-                    <div>
-                      System required behavior group
-                      <br></br>
-                      <br></br>
-                      This group is system generated and can not be edited,
-                      deleted, or removed from being applied to an event
-                    </div>
+      <CardHeader
+        actions={{
+          actions: (
+            <>
+              {!props.isDefaultBehavior && (
+                <Dropdown
+                  onSelect={switchOpen}
+                  toggle={
+                    <KebabToggle
+                      onToggle={(_e, isOpen) => setOpen(isOpen)}
+                      isDisabled={!props.dropdownItems}
+                    />
                   }
-                >
-                  <LockIcon className="pf-v5-u-mr-sm" />
-                </Tooltip>
-              )}
-            </SplitItem>
-            <SplitItem>
-              <TextContent>
-                <Text component={TextVariants.h4}> {props.title} </Text>
-              </TextContent>
-            </SplitItem>
-          </Split>
-        </CardHeaderMain>
-        <CardActions>
-          {!props.isDefaultBehavior && (
-            <Dropdown
-              onSelect={switchOpen}
-              toggle={
-                <KebabToggle
-                  onToggle={setOpen}
-                  isDisabled={!props.dropdownItems}
+                  isOpen={isOpen}
+                  isPlain
+                  dropdownItems={props.dropdownItems}
+                  position={DropdownPosition.right}
+                  menuAppendTo={() => document.body}
                 />
-              }
-              isOpen={isOpen}
-              isPlain
-              dropdownItems={props.dropdownItems}
-              position={DropdownPosition.right}
-              menuAppendTo={() => document.body}
-            />
-          )}
-        </CardActions>
+              )}
+            </>
+          ),
+          hasNoOffset: false,
+          className: undefined,
+        }}
+      >
+        actions=
+        {
+          <>
+            <Split>
+              <SplitItem>
+                {props.isDefaultBehavior && (
+                  <Tooltip
+                    position="top"
+                    appendTo={() => document.body}
+                    // eslint-disable-next-line max-len
+                    content={
+                      <div>
+                        System required behavior group
+                        <br></br>
+                        <br></br>
+                        This group is system generated and can not be edited,
+                        deleted, or removed from being applied to an event
+                      </div>
+                    }
+                  >
+                    <LockIcon className="pf-v5-u-mr-sm" />
+                  </Tooltip>
+                )}
+              </SplitItem>
+              <SplitItem>
+                <TextContent>
+                  <Text component={TextVariants.h4}> {props.title} </Text>
+                </TextContent>
+              </SplitItem>
+            </Split>
+          </>
+        }
       </CardHeader>
       <CardBody>{props.children}</CardBody>
     </Card>

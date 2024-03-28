@@ -249,7 +249,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       await findByText(behaviorGroupsTab[1], 'Behavior Groups')
     );
 
-    const pf4Card = ouiaSelectors.getAllByOuia('PF4/Card');
+    const pf4Card = ouiaSelectors.getAllByOuia('PF5/Card');
     expect(await findByLabelText(pf4Card[0], 'Actions')).toBeInTheDocument();
     await userEvent.click(await findByLabelText(pf4Card[0], 'Actions'));
 

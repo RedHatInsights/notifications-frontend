@@ -3,7 +3,7 @@ import {
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated/';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
 import * as React from 'react';
@@ -45,6 +45,7 @@ const getSelectOptions = (
 ];
 
 type NoIntegrationConfigured = {
+  Comp?: React.ComponentType<unknown>;
   testNoIntegrationRenderWithoutRelAndTarget?: boolean;
 };
 
@@ -53,6 +54,7 @@ const NoIntegrationConfigured: React.FunctionComponent<
 > = (props) => (
   <>
     <div>You have no integration configured.</div>
+    {props.Comp && <props.Comp />}
     <div>
       Go to Settings {'>'}{' '}
       <Link
@@ -190,7 +192,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
         aria-label="Select action"
         placeholderText="Select action"
         selections={selectedOption}
-        onToggle={toggle}
+        onToggle={(_e, val) => toggle(val)}
         isOpen={isOpen}
         onSelect={onSelect}
         menuAppendTo={document.body}

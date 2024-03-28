@@ -1,4 +1,4 @@
-import { SelectOptionObject } from '@patternfly/react-core';
+import { SelectOptionObject } from '@patternfly/react-core/deprecated';
 
 import Config from '../../../config/Config';
 import { UserIntegrationType } from '../../../types/Integration';

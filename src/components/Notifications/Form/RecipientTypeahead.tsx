@@ -1,13 +1,11 @@
+import { Chip, ChipGroup, Skeleton } from '@patternfly/react-core';
 import {
-  Chip,
-  ChipGroup,
   Select,
   SelectGroup,
   SelectOption,
   SelectOptionObject,
   SelectVariant,
-  Skeleton,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/deprecated';
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
@@ -200,7 +198,7 @@ export const RecipientTypeahead: React.FunctionComponent<
         variant={SelectVariant.checkbox}
         selections={selection}
         onSelect={onSelect}
-        onToggle={toggle}
+        onToggle={(_e, val) => toggle(val)}
         isOpen={isOpen}
         menuAppendTo={document.body}
         isDisabled={props.isDisabled}

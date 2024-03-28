@@ -1,10 +1,11 @@
 import {
   Button,
   EmptyState,
+  EmptyStateActions,
   EmptyStateBody,
+  EmptyStateFooter,
+  EmptyStateHeader,
   EmptyStateIcon,
-  EmptyStateSecondaryActions,
-  Title,
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -30,13 +31,16 @@ export const SplunkSetupFinished: React.FunctionComponent<
 
 export const SplunkSetupFinishedSuccess: React.FunctionComponent = () => (
   <EmptyState>
-    <EmptyStateIcon
-      icon={CheckCircleIcon}
-      color="var(--pf-global--success-color--100)"
+    <EmptyStateHeader
+      titleText="Splunk integration in Insights completed"
+      icon={
+        <EmptyStateIcon
+          icon={CheckCircleIcon}
+          color="var(--pf-global--success-color--100)"
+        />
+      }
+      headingLevel="h4"
     />
-    <Title headingLevel="h4" size="lg">
-      Splunk integration in Insights completed
-    </Title>
     <EmptyStateBody>
       Splunk integration in Insights was completed. To confirm these changes,{' '}
       <strong>go back to Splunk application</strong>.
@@ -48,13 +52,16 @@ export const SplunkSetupFinishedFailure: React.FunctionComponent<{
   error: Error | undefined;
 }> = ({ error }) => (
   <EmptyState>
-    <EmptyStateIcon
-      icon={ExclamationCircleIcon}
-      color="var(--pf-global--danger-color--100)"
+    <EmptyStateHeader
+      titleText="Configuration failed"
+      icon={
+        <EmptyStateIcon
+          icon={ExclamationCircleIcon}
+          color="var(--pf-global--danger-color--100)"
+        />
+      }
+      headingLevel="h4"
     />
-    <Title headingLevel="h4" size="lg">
-      Configuration failed
-    </Title>
     <EmptyStateBody>
       <p className="pf-u-mb-md">
         There was a problem processing the request. Please try again. If the
@@ -62,25 +69,27 @@ export const SplunkSetupFinishedFailure: React.FunctionComponent<{
       </p>
       {error && <p>{`${error}`}</p>}
     </EmptyStateBody>
-    <Button
-      variant="primary"
-      component="a"
-      href={OPEN_CASE_URL}
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      Open a Red Hat Support ticket
-    </Button>
-    <EmptyStateSecondaryActions>
+    <EmptyStateFooter>
       <Button
-        variant="link"
+        variant="primary"
         component="a"
-        href={DOCUMENTATION_URL}
+        href={OPEN_CASE_URL}
         target="_blank"
         rel="noopener noreferrer"
       >
-        Go to documentation
+        Open a Red Hat Support ticket
       </Button>
-    </EmptyStateSecondaryActions>
+      <EmptyStateActions>
+        <Button
+          variant="link"
+          component="a"
+          href={DOCUMENTATION_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Go to documentation
+        </Button>
+      </EmptyStateActions>
+    </EmptyStateFooter>
   </EmptyState>
 );

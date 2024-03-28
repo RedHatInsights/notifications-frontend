@@ -148,9 +148,6 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
       isRequired={isRequired}
       label={(!hideLabel && label) as ReactNode}
       fieldId={input.name}
-      helperText={helperText as ReactNode}
-      helperTextInvalid={error}
-      validated={showError ? 'error' : 'default'}
     >
       <Grid hasGutter className="pf-v5-u-mb-md">
         {prepareCards()}
