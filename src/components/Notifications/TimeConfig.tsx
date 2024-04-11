@@ -28,6 +28,7 @@ import { style } from 'typestyle';
 import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
 import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 import { useNotification } from '../../utils/AlertUtils';
+import axios from 'axios';
 
 const dropDownClassName = style({
   width: '280px',
@@ -144,25 +145,27 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
   const handleButtonSave = React.useCallback(() => {
     if (timeSelect) {
-      const mutate = saveTimePreference.mutate;
-      mutate({
-        body: timeSelect.utcTime,
-      }).then((response) => {
-        if (response.status === 204) {
+      const body = timeSelect.utcTime;
+      axios
+        .put(
+          '/api/notifications/v1.0/org-config/daily-digest/time-preference',
+          body,
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        )
+        .then(() => {
           addSuccessNotification('Action settings saved', '');
-        } else {
+        })
+        .catch(() => {
           addDangerNotification('Failed to save action settings', '');
-        }
-      });
+        });
     }
 
     setIsModalOpen(false);
-  }, [
-    addDangerNotification,
-    addSuccessNotification,
-    saveTimePreference.mutate,
-    timeSelect,
-  ]);
+  }, [addDangerNotification, addSuccessNotification, timeSelect]);
 
   const isLoading = saveTimePreference.loading || getTimePreference.loading;
 
