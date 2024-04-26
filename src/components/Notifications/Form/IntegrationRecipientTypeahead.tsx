@@ -41,7 +41,7 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
 
 export const IntegrationRecipientTypeahead: React.FunctionComponent<
   IntegrationRecipientTypeaheadProps
-> = ({ integrationType, selected, onSelected }) => {
+> = ({ integrationType, selected, onSelected, isDisabled }) => {
   const chooseText = React.useMemo(
     () =>
       `Choose ${Config.integrations.types[integrationType].name.toLowerCase()}`,
@@ -259,8 +259,9 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       innerRef={toggleRef}
       isExpanded={isOpen}
       isFullWidth
+      data-ouia-component-type="PF5/typeahead"
     >
-      <TextInputGroup isPlain>
+      <TextInputGroup isPlain isDisabled={isDisabled}>
         <TextInputGroupMain
           value={inputValue}
           onClick={onToggleClick}

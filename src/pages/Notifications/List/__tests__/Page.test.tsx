@@ -739,7 +739,7 @@ describe('src/pages/Notifications/List/Page', () => {
       await userEvent.click(screen.getByText(/create new group/i));
       await waitForAsyncEvents();
       expect(
-        screen.getByLabelText(/Create behavior group/i, {
+        screen.getByText(/Create behavior group/i, {
           exact: true,
           selector: 'h2',
         })
