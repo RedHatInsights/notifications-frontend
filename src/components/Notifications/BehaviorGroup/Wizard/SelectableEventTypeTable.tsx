@@ -1,13 +1,13 @@
 import { Skeleton, Spinner } from '@patternfly/react-core';
 import {
-  TableComposable,
+  Table as TableComposable,
   TableVariant,
   Tbody,
   Td,
   Th,
   Thead,
   Tr,
-} from '@patternfly/react-table';
+} from '@patternfly/react-table/dist/dynamic/components/Table';
 import * as React from 'react';
 
 import { EventType } from '../../../../types/Notification';
@@ -59,7 +59,7 @@ const SelectableEventTypeTableSkeleton: React.FunctionComponent = () => {
             select={{
               isSelected: false,
               rowIndex: index,
-              disable: true,
+              isDisabled: true,
             }}
           />
           <Td>
@@ -92,7 +92,7 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<
                     onSelect: (_event, isSelected) =>
                       props.onSelect && props.onSelect(isSelected, event),
                     isSelected: event.isSelected,
-                    disable: props.selectionLoading,
+                    isDisabled: props.selectionLoading,
                   }
             }
           >

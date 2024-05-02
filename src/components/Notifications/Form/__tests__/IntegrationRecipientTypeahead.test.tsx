@@ -77,7 +77,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await waitForAsyncEvents();
-    expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
+    expect(ouiaSelectors.getByOuia('PF5/typeahead')).toBeVisible();
   });
 
   it('Renders with existing notifications that are not Integrations', async () => {
@@ -105,7 +105,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     );
 
     await waitForAsyncEvents();
-    expect(ouiaSelectors.getByOuia('PF4/Select')).toBeVisible();
+    expect(ouiaSelectors.getByOuia('PF5/typeahead')).toBeVisible();
   });
 
   it('Renders disabled if isDisabled', async () => {
@@ -121,7 +121,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await waitForAsyncEvents();
-    expect(screen.getByRole('textbox')).toBeDisabled();
+    expect(screen.getByRole('combobox')).toBeDisabled();
   });
 
   it('Renders the selected even if getIntegrations does not yield it', async () => {
@@ -153,7 +153,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     );
     await userEvent.click(
       screen.getByRole('button', {
-        name: /Options menu/i,
+        name: /Menu toggle/i,
       })
     );
 
@@ -206,7 +206,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
 
-    await userEvent.type(screen.getByRole('textbox'), 'guy');
+    await userEvent.type(screen.getByRole('combobox'), 'guy');
     await waitFor(() =>
       expect(getIntegrations).toHaveBeenCalledWith(
         IntegrationType.WEBHOOK,
@@ -229,19 +229,15 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await new Promise(process.nextTick);
-    await userEvent.click(
-      screen.getByRole('button', {
-        name: /Options menu/i,
-      })
-    );
+    await userEvent.click(screen.getByRole('button', { name: /Menu toggle/i }));
     await waitFor(() =>
-      expect(screen.getAllByRole('option')[0]).toBeInTheDocument()
+      expect(screen.getAllByRole('menuitem')[0]).toBeInTheDocument()
     );
     await waitFor(() =>
       // eslint-disable-next-line testing-library/no-node-access
       expect(document.querySelector('.pf-c-skeleton')).not.toBeInTheDocument()
     );
-    await userEvent.click(screen.getAllByRole('option')[0]);
+    await userEvent.click(screen.getAllByRole('menuitem')[0]);
     await waitFor(() => expect(onSelected).toHaveBeenCalled());
   });
 
@@ -263,12 +259,10 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await userEvent.click(
-      await screen.findByRole('button', { name: /Options menu/i })
+      await screen.findByRole('button', { name: /Menu toggle/i })
     );
     await waitFor(() =>
-      expect(
-        screen.getAllByRole('option')[0].className.includes('disabled')
-      ).toBeTruthy()
+      expect(screen.getAllByRole('menuitem')[0]).toBeDisabled()
     );
   });
 });

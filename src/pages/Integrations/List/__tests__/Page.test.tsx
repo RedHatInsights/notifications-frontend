@@ -1,4 +1,4 @@
-/* eslint-disable testing-library/prefer-screen-queries */
+/* eslint-disable testing-library/prefer-screen-queries, testing-library/no-node-access */
 import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
@@ -13,7 +13,7 @@ import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { IntegrationsListPage } from '../Page';
 import Endpoint = Schemas.Endpoint;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import { getByLabelText, getByRole, getByText } from '@testing-library/react';
+import { getByLabelText, getByText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
@@ -227,24 +227,25 @@ describe('src/pages/Integrations/List/Page', () => {
 
       await waitForAsyncEvents();
 
-      const dropdownContainer = ouiaSelectors
-        .getByOuia('Notifications/Integrations/Table')
-        .getByOuia('PF4/Dropdown');
+      const dropdownContainer = getByLabelText(
+        ouiaSelectors.getByOuia('Notifications/Integrations/Table'),
+        'Kebab toggle'
+      );
 
-      await userEvent.click(getByRole(dropdownContainer, 'button'));
+      await userEvent.click(dropdownContainer);
 
-      expect(getByText(dropdownContainer, /Edit/i)).toHaveAttribute(
-        'aria-disabled',
-        'true'
-      );
-      expect(getByText(dropdownContainer, /Delete/i)).toHaveAttribute(
-        'aria-disabled',
-        'true'
-      );
-      expect(getByText(dropdownContainer, /(Enable|Disable)/i)).toHaveAttribute(
-        'aria-disabled',
-        'true'
-      );
+      expect(
+        getByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)
+      ).toBeEnabled();
+      expect(
+        getByText(dropdownContainer.parentElement as HTMLElement, /Delete/i)
+      ).toBeEnabled();
+      expect(
+        getByText(
+          dropdownContainer.parentElement as HTMLElement,
+          /(Enable|Disable)/i
+        )
+      ).toBeEnabled();
     });
 
     it('Action menu elements are enabled when write permissions is true', async () => {
@@ -278,24 +279,25 @@ describe('src/pages/Integrations/List/Page', () => {
       });
 
       await waitForAsyncEvents();
-      const dropdownContainer = ouiaSelectors
-        .getByOuia('Notifications/Integrations/Table')
-        .getByOuia('PF4/Dropdown');
+      const dropdownContainer = getByLabelText(
+        ouiaSelectors.getByOuia('Notifications/Integrations/Table'),
+        'Kebab toggle'
+      );
 
-      await userEvent.click(getByRole(dropdownContainer, 'button'));
+      await userEvent.click(dropdownContainer);
 
-      expect(getByText(dropdownContainer, /Edit/i)).toHaveAttribute(
-        'aria-disabled',
-        'false'
-      );
-      expect(getByText(dropdownContainer, /Delete/i)).toHaveAttribute(
-        'aria-disabled',
-        'false'
-      );
-      expect(getByText(dropdownContainer, /(Enable|Disable)/i)).toHaveAttribute(
-        'aria-disabled',
-        'false'
-      );
+      expect(
+        getByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)
+      ).toBeEnabled();
+      expect(
+        getByText(dropdownContainer.parentElement as HTMLElement, /Delete/i)
+      ).toBeEnabled();
+      expect(
+        getByText(
+          dropdownContainer.parentElement as HTMLElement,
+          /(Enable|Disable)/i
+        )
+      ).toBeEnabled();
     });
   });
 });

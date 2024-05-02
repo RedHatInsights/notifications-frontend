@@ -1,9 +1,6 @@
 import {
   AlertActionLink,
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownToggle,
   HelperText,
   HelperTextItem,
   Modal,
@@ -19,6 +16,11 @@ import {
   TimePicker,
   Title,
 } from '@patternfly/react-core';
+import {
+  Dropdown,
+  DropdownItem,
+  DropdownToggle,
+} from '@patternfly/react-core/deprecated';
 import { Alert } from '@patternfly/react-core';
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';

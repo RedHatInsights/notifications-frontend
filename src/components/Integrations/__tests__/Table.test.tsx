@@ -94,7 +94,7 @@ describe('components/Integrations/Table', () => {
     );
 
     const input = ouiaSelectors
-      .getByOuia('PF4/Switch', 'enabled-integration-id')
+      .getByOuia('PF5/Switch', 'enabled-integration-id')
       .querySelector('input');
     expect(input).toBeChecked();
   });
@@ -111,7 +111,7 @@ describe('components/Integrations/Table', () => {
     );
 
     const input = ouiaSelectors
-      .getByOuia('PF4/Switch', 'enabled-integration-id')
+      .getByOuia('PF5/Switch', 'enabled-integration-id')
       .querySelector('input');
     expect(input).not.toBeChecked();
   });
@@ -315,9 +315,14 @@ describe('components/Integrations/Table', () => {
 
     const successIcon = screen.getByTestId('success-icon');
     expect(successIcon).toBeVisible();
-    expect(successIcon.parentElement).toBeTruthy();
     expect(
-      getByText(successIcon.parentElement as HTMLElement, /Ready/i)
+      successIcon.parentElement?.parentElement?.parentElement
+    ).toBeTruthy();
+    expect(
+      getByText(
+        successIcon.parentElement?.parentElement?.parentElement as HTMLElement,
+        /Ready/i
+      )
     ).toBeVisible();
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
@@ -341,9 +346,12 @@ describe('components/Integrations/Table', () => {
 
     const failIcon = screen.getByTestId('fail-icon');
     expect(failIcon).toBeVisible();
-    expect(failIcon.parentElement).toBeTruthy();
+    expect(failIcon.parentElement?.parentElement?.parentElement).toBeTruthy();
     expect(
-      getByText(failIcon.parentElement as HTMLElement, /Creation failure/i)
+      getByText(
+        failIcon.parentElement?.parentElement?.parentElement as HTMLElement,
+        /Creation failure/i
+      )
     ).toBeVisible();
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
@@ -388,9 +396,12 @@ describe('components/Integrations/Table', () => {
 
     const failIcon = screen.getByTestId('fail-icon');
     expect(failIcon).toBeVisible();
-    expect(failIcon.parentElement).toBeTruthy();
+    expect(failIcon.parentElement?.parentElement?.parentElement).toBeTruthy();
     expect(
-      getByText(failIcon.parentElement as HTMLElement, /Creation failure/i)
+      getByText(
+        failIcon.parentElement?.parentElement?.parentElement as HTMLElement,
+        /Creation failure/i
+      )
     ).toBeVisible();
     // This status does not show the degraded connection
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
@@ -695,7 +706,7 @@ describe('components/Integrations/Table', () => {
     );
 
     await userEvent.click(
-      ouiaSelectors.getByOuia('PF4/Switch', 'enabled-integration-id')
+      ouiaSelectors.getByOuia('PF5/Switch', 'enabled-integration-id')
     );
 
     await waitForAsyncEvents();

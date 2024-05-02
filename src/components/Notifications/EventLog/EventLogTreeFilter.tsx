@@ -1,9 +1,5 @@
-import {
-  Dropdown,
-  DropdownToggle,
-  TreeView,
-  TreeViewDataItem,
-} from '@patternfly/react-core';
+import { TreeView, TreeViewDataItem } from '@patternfly/react-core';
+import { Dropdown, DropdownToggle } from '@patternfly/react-core/deprecated';
 import { TreeViewCheckProps } from '@patternfly/react-core/dist/esm/components/TreeView/TreeViewListItem';
 import { AngleDownIcon } from '@patternfly/react-icons';
 import produce from 'immer';
@@ -268,7 +264,7 @@ export const EventLogTreeFilter: React.FunctionComponent<
     >
       <TreeView
         data={treeDataArray}
-        hasChecks={true}
+        hasCheckboxes={true}
         onCheck={onCheckWrapper}
       />
     </Dropdown>

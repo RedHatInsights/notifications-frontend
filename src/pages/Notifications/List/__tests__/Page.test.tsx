@@ -503,7 +503,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
       const table = ouiaSelectors
         .getByOuia('Notifications/Notifications/Table')
-        .getByOuia('PF4/Table');
+        .getByOuia('PF5/Table');
 
       await userEvent.click(getAllByLabelText(table, /edit/i)[0]);
 
@@ -541,7 +541,7 @@ describe('src/pages/Notifications/List/Page', () => {
       await waitForAsyncEvents();
       const table = ouiaSelectors
         .getByOuia('Notifications/Notifications/Table')
-        .getByOuia('PF4/Table');
+        .getByOuia('PF5/Table');
 
       await userEvent.click(getAllByLabelText(table, /edit/i)[0]);
 
@@ -590,7 +590,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
       const table = ouiaSelectors
         .getByOuia('Notifications/Notifications/Table')
-        .getByOuia('PF4/Table');
+        .getByOuia('PF5/Table');
 
       await userEvent.click(getAllByLabelText(table, /edit/i)[0]);
 
@@ -739,7 +739,7 @@ describe('src/pages/Notifications/List/Page', () => {
       await userEvent.click(screen.getByText(/create new group/i));
       await waitForAsyncEvents();
       expect(
-        screen.getByLabelText(/Create behavior group/i, {
+        screen.getByText(/Create behavior group/i, {
           exact: true,
           selector: 'h2',
         })

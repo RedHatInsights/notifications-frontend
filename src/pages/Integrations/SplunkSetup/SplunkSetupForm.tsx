@@ -5,8 +5,11 @@ import {
   CodeBlockCode,
   Form,
   FormGroup,
+  FormHelperText,
   Grid,
   GridItem,
+  HelperText,
+  HelperTextItem,
   List,
   ListItem,
   ListVariant,
@@ -199,14 +202,12 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
                   aria-describedby="splunk-server-hostname"
                   className="pf-c-form__group-label-help"
                 >
-                  <HelpIcon noVerticalAlign />
+                  <HelpIcon />
                 </button>
               </Popover>
             }
             isRequired
             fieldId="splunk-server-hostname"
-            helperTextInvalid="Invalid URL. Example: https://hostname:8088"
-            validated={validatedServerHostname}
           >
             <TextInput
               isRequired
@@ -216,15 +217,22 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               aria-describedby="splunk-server-hostname-helper"
               value={splunkServerHostName}
               validated={validatedServerHostname}
-              onChange={onHostnameChange}
+              onChange={(_event, value) => onHostnameChange(value)}
             />
+            {validatedServerHostname === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">
+                    Invalid URL. Example: https://hostname:8088
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
           <FormGroup
             label="Splunk HEC Token"
             fieldId="splunk-hec-token"
             isRequired
-            helperTextInvalid="Invalid HEC token. Example: 123e4567-e89b-12d3-a456-426614174000"
-            validated={validatedHecToken}
           >
             <TextInput
               isRequired
@@ -234,8 +242,18 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               aria-describedby="splunk-hec-token-helper"
               validated={validatedHecToken}
               value={hecToken}
-              onChange={onHecTokenChange}
+              onChange={(_event, value) => onHecTokenChange(value)}
             />
+            {validatedHecToken === 'error' && (
+              <FormHelperText>
+                <HelperText>
+                  <HelperTextItem variant="error">
+                    Invalid HEC token. Example:
+                    123e4567-e89b-12d3-a456-426614174000
+                  </HelperTextItem>
+                </HelperText>
+              </FormHelperText>
+            )}
           </FormGroup>
           <ActionGroup>
             <SplunkAutomationButton

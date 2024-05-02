@@ -1,4 +1,4 @@
-import { Wizard } from '@patternfly/react-core';
+import { Wizard } from '@patternfly/react-core/deprecated';
 import { Form, useFormikContext } from 'formik';
 import * as React from 'react';
 
@@ -26,7 +26,11 @@ export const BehaviorGroupWizard: React.FunctionComponent<
   const title = (values.id ? 'Edit' : 'Create') + ' behavior group';
 
   return (
-    <Form placeholder="">
+    <Form
+      placeholder=""
+      onPointerEnterCapture={undefined}
+      onPointerLeaveCapture={undefined}
+    >
       <Wizard
         title={title}
         steps={props.steps}

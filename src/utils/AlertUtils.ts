@@ -38,8 +38,6 @@ export const useNotification = () => {
       addNotification('info', ...args);
     const addWarningNotification: ExplicitNotificationFunction = (...args) =>
       addNotification('warning', ...args);
-    const addDefaultNotification: ExplicitNotificationFunction = (...args) =>
-      addNotification('default', ...args);
     const clearNotifications = () => dispatch(createClearNotificationsAction());
 
     return {
@@ -48,7 +46,6 @@ export const useNotification = () => {
       addDangerNotification,
       addInfoNotification,
       addWarningNotification,
-      addDefaultNotification,
       clearNotifications,
     };
   }, [dispatch]);

@@ -13,9 +13,22 @@ if (isCi) {
 
 const { config: webpackConfig, plugins } = config({
   rootFolder: resolve(__dirname, '..'),
+  appName: 'notifications',
 });
 
-updateTsLoaderRule(webpackConfig.module.rules);
+webpackConfig.module = {
+  ...webpackConfig.module,
+  rules: [
+    ...(webpackConfig.module?.rules || []),
+    {
+      test: /test\/.*\.tsx?$/,
+      loader: 'ts-loader',
+      exclude: /(node_modules)/i,
+    },
+  ],
+};
+
+updateTsLoaderRule(webpackConfig.module?.rules || []);
 
 const browsers = () => {
   const browserList = ['Chrome', 'Firefox'];
@@ -58,14 +71,6 @@ module.exports = function (config) {
       plugins,
       module: {
         ...webpackConfig.module,
-        rules: [
-          ...webpackConfig.module.rules,
-          {
-            test: /test\/.*\.tsx?$/,
-            loader: 'ts-loader',
-            exclude: /(node_modules)/i,
-          },
-        ],
       },
       watch: !isCi,
       watchOptions: isCi

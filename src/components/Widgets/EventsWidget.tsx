@@ -69,7 +69,7 @@ const EventsWidget: React.FunctionComponent = () => {
   return (
     <>
       {notifications.length === 0 ? (
-        <EmptyState variant={EmptyStateVariant.large}>
+        <EmptyState variant={EmptyStateVariant.full}>
           <EmptyStateIcon icon={EmptyStateBellIcon} />
           <Title headingLevel="h4" size="lg">
             {intl.formatMessage(messages.noFiredEventsTitle)}

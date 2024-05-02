@@ -1,14 +1,10 @@
-import { Popover, Skeleton } from '@patternfly/react-core';
+import { Icon, Popover, Skeleton } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
   InProgressIcon,
   UnknownIcon,
 } from '@patternfly/react-icons';
-import {
-  global_danger_color_100,
-  global_success_color_100,
-} from '@patternfly/react-tokens';
 import React from 'react';
 
 import {
@@ -82,10 +78,9 @@ export const StatusSuccess: React.FunctionComponent<DegradedProps> = (
 ) => (
   <Degraded isDegraded={props.isDegraded}>
     <Status text="Success">
-      <CheckCircleIcon
-        data-testid="success-icon"
-        color={global_success_color_100.value}
-      />{' '}
+      <Icon status="success">
+        <CheckCircleIcon data-testid="success-icon" />
+      </Icon>{' '}
     </Status>
   </Degraded>
 );
@@ -95,20 +90,18 @@ export const StatusEventFailure: React.FunctionComponent<DegradedProps> = (
 ) => (
   <Degraded isDegraded={props.isDegraded}>
     <Status text="Event failure">
-      <ExclamationCircleIcon
-        data-testid="fail-icon"
-        color={global_danger_color_100.value}
-      />{' '}
+      <Icon status="danger">
+        <ExclamationCircleIcon data-testid="fail-icon" />
+      </Icon>{' '}
     </Status>
   </Degraded>
 );
 
 export const StatusReady: React.FunctionComponent<unknown> = () => (
   <Status text="Ready">
-    <CheckCircleIcon
-      data-testid="success-icon"
-      color={global_success_color_100.value}
-    />{' '}
+    <Icon status="success">
+      <CheckCircleIcon data-testid="success-icon" />
+    </Icon>{' '}
   </Status>
 );
 
@@ -121,10 +114,9 @@ export const StatusCreationFailure: React.FunctionComponent<
     bodyContent={props.includeDetails}
   >
     <Status text="Creation failure">
-      <ExclamationCircleIcon
-        data-testid="fail-icon"
-        color={global_danger_color_100.value}
-      />{' '}
+      <Icon status="danger">
+        <ExclamationCircleIcon data-testid="fail-icon" />
+      </Icon>{' '}
     </Status>
   </Popover>
 );

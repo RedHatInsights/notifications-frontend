@@ -185,7 +185,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<
               <SplitItem>
                 <SearchInput
                   value={filter}
-                  onChange={setFilter}
+                  onChange={(_e, val) => setFilter(val)}
                   onClear={onClearFilter}
                   type="text"
                   aria-label="Search by name"
@@ -195,6 +195,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<
               </SplitItem>
               <SplitItem>
                 <BehaviorGroupAddButton
+                  component="a"
                   isDisabled={
                     props.behaviorGroupContent.isLoading ||
                     !rbac.canWriteNotifications

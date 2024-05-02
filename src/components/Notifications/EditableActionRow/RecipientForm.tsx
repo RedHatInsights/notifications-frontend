@@ -1,4 +1,5 @@
-import { FormHelperText, Select, SelectVariant } from '@patternfly/react-core';
+import { FormHelperText } from '@patternfly/react-core';
+import { Select, SelectVariant } from '@patternfly/react-core/deprecated';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
@@ -68,11 +69,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
     <>
       {' '}
       {recipient}
-      {props.error && (
-        <FormHelperText isError isHidden={!props.error}>
-          {props.error}
-        </FormHelperText>
-      )}
+      {props.error && <FormHelperText>{props.error}</FormHelperText>}
     </>
   );
 };
