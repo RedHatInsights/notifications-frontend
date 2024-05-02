@@ -196,7 +196,6 @@ export const BehaviorGroupsSection: React.FunctionComponent<
               <SplitItem>
                 <BehaviorGroupAddButton
                   component="a"
-                  className=""
                   isDisabled={
                     props.behaviorGroupContent.isLoading ||
                     !rbac.canWriteNotifications
