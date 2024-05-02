@@ -242,8 +242,6 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
   };
 
   const onSelect = (value: RecipientOption) => {
-    // eslint-disable-next-line no-console
-
     if (value) {
       onSelected(value);
       setIsOpen(false);
