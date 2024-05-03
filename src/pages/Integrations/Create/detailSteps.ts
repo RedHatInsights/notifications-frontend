@@ -111,17 +111,7 @@ export const detailSteps = (isEdit: boolean) => {
       title: title,
       name: SLACK_DETAILS,
       nextStep: REVIEW,
-      fields: [
-        ...commonFields(true, isEdit),
-        {
-          component: componentTypes.TEXT_FIELD,
-          name: 'channel',
-          type: 'text',
-          label: 'Channel',
-          isRequired: true,
-          validate: [{ type: validatorTypes.REQUIRED }],
-        },
-      ],
+      fields: commonFields(true, isEdit),
     },
 
     // COMMUNICATIONS - GOOGLE CHAT
