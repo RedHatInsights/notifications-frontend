@@ -50,7 +50,6 @@ export const IntegrationWizard: React.FunctionComponent<
         [INTEGRATION_TYPE]: intType,
         name,
         'secret-token': secret_token,
-        channel,
       }) => {
         const [type, sub_type] = intType?.split(':') || ['webhook'];
         fetch(
@@ -71,11 +70,6 @@ export const IntegrationWizard: React.FunctionComponent<
                 url,
                 disable_ssl_verification: false,
                 secret_token,
-                ...(channel && {
-                  extras: {
-                    channel,
-                  },
-                }),
               },
             }),
           }
@@ -86,7 +80,6 @@ export const IntegrationWizard: React.FunctionComponent<
         isEdit
           ? {
               ...template,
-              channel: template?.extras?.channel,
               'secret-token': template?.secretToken,
             }
           : {}

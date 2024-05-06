@@ -17,8 +17,6 @@ import {
 export const SlackExpandedContent: React.FunctionComponent<
   ExpandedContentProps<CamelIntegrationType>
 > = (props) => {
-  const channel = props.integration.extras?.channel;
-
   return (
     <TextContent
       {...getOuiaProps('Integrations/Table/SlackExpandedContent', props)}
@@ -32,15 +30,6 @@ export const SlackExpandedContent: React.FunctionComponent<
         </TextListItem>
         <TextListItem component={TextListItemVariants.dd}>
           {props.integration.url}
-        </TextListItem>
-        <TextListItem
-          className={expandedContentTitleClass}
-          component={TextListItemVariants.dt}
-        >
-          Channel
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd}>
-          {channel ?? ''}
         </TextListItem>
       </TextList>
     </TextContent>

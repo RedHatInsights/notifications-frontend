@@ -23,14 +23,6 @@ export const IntegrationTypeSlackForm: React.FunctionComponent<
         id="integration-type-camel-url"
         ouiaId={ouiaIdConcat(props.ouiaId, 'endpoint-url')}
       />
-      <FormTextInput
-        isRequired={true}
-        label="Channel"
-        type="text"
-        name="extras.channel"
-        id="integration-type-slack-channel"
-        ouiaId={ouiaIdConcat(props.ouiaId, 'extras.channel')}
-      />
     </div>
   );
 };
