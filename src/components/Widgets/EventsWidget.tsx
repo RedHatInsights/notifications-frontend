@@ -23,6 +23,8 @@ import { DateFormat } from '@redhat-cloud-services/frontend-components/DateForma
 import { useIntl } from 'react-intl';
 import messages from '../../properties/DefinedMessages';
 
+import './EventsWidget.scss';
+
 export type Notification = {
   id: string;
   event_type: string;
