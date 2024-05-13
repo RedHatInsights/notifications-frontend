@@ -45,3 +45,7 @@
 .noti-c-card-configure {
   border-left: 1px solid var(--pf-v5-global--disabled-color--200);
 }
+
+.noti-c-table-border-top {
+  border-top: var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor);
+}
