@@ -5,10 +5,6 @@ import {
   CardFooter,
   CardTitle,
   DataList,
-  DataListCell,
-  DataListItem,
-  DataListItemCells,
-  DataListItemRow,
   Divider,
   Flex,
   FlexItem,
@@ -34,6 +30,7 @@ import { useNavigate } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
+import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 
 // eslint-disable-next-line max-len
 const LEARN_MORE =
@@ -340,144 +337,100 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
 
         {isOrgAdmin ? (
           <React.Fragment>
-            <DataList
-              aria-label="Recommended content list"
-              className="pf-u-mb-lg"
-            >
-              <DataListItem>
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key="row1-col1">
-                        <span>Configuring notifications and integrations</span>
-                      </DataListCell>,
-                      <DataListCell key="row1-col2">
-                        <Label color="orange">Documentation</Label>
-                      </DataListCell>,
-                      <DataListCell alignRight isFilled={false} key="row1-col3">
-                        <a
-                          href={LEARN_MORE}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(LEARN_MORE, '_blank');
-                          }}
-                        >
-                          View documentation <ExternalLinkAltIcon />
-                        </a>
-                      </DataListCell>,
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-              <DataListItem>
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key="row2-col1">
-                        <span>Configuring integrations and events</span>
-                      </DataListCell>,
-                      <DataListCell key="row2-col2">
-                        <Label color="orange">Documentation</Label>
-                      </DataListCell>,
-                      <DataListCell alignRight isFilled={false} key="row2-col3">
-                        <a
-                          href={CONFIGURE_INTEGRATIONS}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(CONFIGURE_INTEGRATIONS, '_blank');
-                          }}
-                        >
-                          View documentation <ExternalLinkAltIcon />
-                        </a>
-                      </DataListCell>,
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-              <DataListItem>
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key="row3-col1">
-                        <span>Restricting access to a service to a team</span>
-                      </DataListCell>,
-                      <DataListCell key="row3-col2">
-                        <Label color="green">Quick start</Label>
-                      </DataListCell>,
-                      <DataListCell alignRight isFilled={false} key="row3-col3">
-                        <a
-                          href={`${
-                            isBeta() ? '/preview' : ''
-                          }/iam/my-user-access?bundle=rhel&quickstart=rbac-admin-vuln-permissions`}
-                        >
-                          Begin Quick start <ArrowRightIcon />
-                        </a>
-                      </DataListCell>,
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-            </DataList>
+            <Table aria-label="Recommended content" className="pf-u-mb-lg">
+              <Tbody>
+                <Tr className="noti-c-table-border-top">
+                  <Td>Configuring notifications and integrations</Td>
+                  <Td>
+                    <Label color="orange">Documentation</Label>
+                  </Td>
+                  <Td className="pf-v5-u-text-align-right">
+                    <a
+                      href={LEARN_MORE}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.open(LEARN_MORE, '_blank');
+                      }}
+                    >
+                      View documentation <ExternalLinkAltIcon />
+                    </a>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Td>Configuring integrations and events</Td>
+                  <Td>
+                    <Label color="orange">Documentation</Label>
+                  </Td>
+                  <Td className="pf-v5-u-text-align-right">
+                    <a
+                      href={CONFIGURE_INTEGRATIONS}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.open(CONFIGURE_INTEGRATIONS, '_blank');
+                      }}
+                    >
+                      View documentation <ExternalLinkAltIcon />
+                    </a>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Td>Restricting access to a service to a team</Td>
+                  <Td>
+                    <Label color="green">Quick start</Label>
+                  </Td>
+                  <Td className="pf-v5-u-text-align-right">
+                    <a
+                      href={`${
+                        isBeta() ? '/preview' : ''
+                      }/iam/my-user-access?bundle=rhel&quickstart=rbac-admin-vuln-permissions`}
+                    >
+                      Begin Quick start <ArrowRightIcon />
+                    </a>
+                  </Td>
+                </Tr>
+              </Tbody>
+            </Table>
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <DataList
-              aria-label="Recommended content list"
-              className="pf-u-mb-lg"
-            >
-              <DataListItem>
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key="row1-col1">
-                        <span>Configuring notifications and integrations</span>
-                      </DataListCell>,
-                      <DataListCell key="row1-col2">
-                        <Label color="orange">Documentation</Label>
-                      </DataListCell>,
-                      <DataListCell alignRight isFilled={false} key="row1-col3">
-                        <a
-                          href={CONFIGURE_INTEGRATIONS}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(CONFIGURE_INTEGRATIONS, '_blank');
-                          }}
-                        >
-                          View documentation <ExternalLinkAltIcon />
-                        </a>
-                      </DataListCell>,
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-              <DataListItem>
-                <DataListItemRow>
-                  <DataListItemCells
-                    dataListCells={[
-                      <DataListCell key="row2-col1">
-                        <span>
-                          Configuring integrations for Red Hat services
-                        </span>
-                      </DataListCell>,
-                      <DataListCell key="row2-col2">
-                        <Label color="orange">Documentation</Label>
-                      </DataListCell>,
-                      <DataListCell alignRight isFilled={false} key="row2-col3">
-                        <a
-                          href={CONFIGURE_SOURCES}
-                          onClick={(e) => {
-                            e.preventDefault();
-                            window.open(CONFIGURE_SOURCES, '_blank');
-                          }}
-                        >
-                          View documentation <ExternalLinkAltIcon />
-                        </a>
-                      </DataListCell>,
-                    ]}
-                  />
-                </DataListItemRow>
-              </DataListItem>
-            </DataList>
+            <Table aria-label="Recommended content" className="pf-u-mb-lg">
+              <Tbody>
+                <Tr className="noti-c-table-border-top">
+                  <Td>Configuring notifications and integrations</Td>
+                  <Td>
+                    <Label color="orange">Documentation</Label>
+                  </Td>
+                  <Td className="pf-v5-u-text-align-right">
+                    <a
+                      href={CONFIGURE_INTEGRATIONS}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.open(CONFIGURE_INTEGRATIONS, '_blank');
+                      }}
+                    >
+                      View documentation <ExternalLinkAltIcon />
+                    </a>
+                  </Td>
+                </Tr>
+                <Tr>
+                  <Td>Configuring integrations for Red Hat services</Td>
+                  <Td>
+                    <Label color="orange">Documentation</Label>
+                  </Td>
+                  <Td className="pf-v5-u-text-align-right">
+                    <a
+                      href={CONFIGURE_SOURCES}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        window.open(CONFIGURE_SOURCES, '_blank');
+                      }}
+                    >
+                      View documentation <ExternalLinkAltIcon />
+                    </a>
+                  </Td>
+                </Tr>
+              </Tbody>
+            </Table>
           </React.Fragment>
         )}
         <a
