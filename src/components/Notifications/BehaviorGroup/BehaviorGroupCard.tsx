@@ -82,7 +82,6 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
           className: undefined,
         }}
       >
-        actions=
         {
           <>
             <Split>
