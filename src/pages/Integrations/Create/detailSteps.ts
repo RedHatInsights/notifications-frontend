@@ -4,9 +4,9 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import {
   DETAILS,
+  EVENT_TYPES,
   GOOGLE_CHAT_DETAILS,
   INLINE_ALERT,
-  REVIEW,
   SERVICE_NOW_DETAILS,
   SLACK_DETAILS,
   SPLUNK_DETAILS,
@@ -71,7 +71,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: DETAILS,
-      nextStep: REVIEW,
+      nextStep: EVENT_TYPES,
       fields: [
         ...commonFields(false, isEdit),
         {
@@ -91,7 +91,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: SERVICE_NOW_DETAILS,
-      nextStep: REVIEW,
+      nextStep: EVENT_TYPES,
       fields: [
         ...commonFields(false, isEdit),
         {
@@ -110,7 +110,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: SLACK_DETAILS,
-      nextStep: REVIEW,
+      nextStep: EVENT_TYPES,
       fields: commonFields(true, isEdit),
     },
 
@@ -118,7 +118,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: GOOGLE_CHAT_DETAILS,
-      nextStep: REVIEW,
+      nextStep: EVENT_TYPES,
       fields: commonFields(false, isEdit),
     },
 
@@ -126,7 +126,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: TEAMS_DETAILS,
-      nextStep: REVIEW,
+      nextStep: EVENT_TYPES,
       fields: commonFields(false, isEdit),
     },
 
@@ -134,7 +134,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: SPLUNK_DETAILS,
-      nextStep: REVIEW,
+      nextStep: EVENT_TYPES,
       fields: [
         ...commonFields(false, isEdit),
         {

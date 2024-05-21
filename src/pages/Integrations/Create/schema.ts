@@ -3,6 +3,7 @@ import { integrationTypeStep } from './integrationTypeStep';
 import { IntegrationCategory } from '../../../types/Integration';
 import { detailSteps } from './detailSteps';
 import { REVIEW } from './helpers';
+import { eventTypesStep } from './EventTypesStep';
 
 export const schema = (category, isEdit) => ({
   fields: [
@@ -25,6 +26,9 @@ export const schema = (category, isEdit) => ({
 
         // INTEGRATION DETAILS
         ...detailSteps(isEdit),
+
+        // ASSOCIATE EVENT TYPES
+        eventTypesStep(isEdit),
 
         // REVIEW
         {

@@ -13,6 +13,8 @@ export const SPLUNK_DETAILS = 'spunk-details';
 export const SERVICE_NOW_DETAILS = 'service-now-details';
 export const DETAILS = 'details';
 
+export const EVENT_TYPES = 'event-types';
+
 export const REVIEW = 'review';
 export const CARD_SELECT = 'card-select';
 export const INLINE_ALERT = 'inline-alert';
