@@ -7,8 +7,15 @@ import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
 import { schema } from './schema';
-import { CARD_SELECT, INLINE_ALERT, INTEGRATION_TYPE, REVIEW } from './helpers';
+import {
+  CARD_SELECT,
+  EVENT_TYPES,
+  INLINE_ALERT,
+  INTEGRATION_TYPE,
+  REVIEW,
+} from './helpers';
 import { Integration } from '../../../types/Integration';
+import EventTypes from './EventTypes';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -39,6 +46,7 @@ export const IntegrationWizard: React.FunctionComponent<
     [REVIEW]: Review,
     [CARD_SELECT]: CardSelect,
     [INLINE_ALERT]: InlineAlert,
+    [EVENT_TYPES]: EventTypes,
   };
 
   return isOpen ? (
