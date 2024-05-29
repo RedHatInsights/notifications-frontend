@@ -17,6 +17,7 @@ export const EVENT_TYPES = 'event-types';
 export const REVIEW = 'review';
 export const CARD_SELECT = 'card-select';
 export const INLINE_ALERT = 'inline-alert';
+export const SELECTABLE_TABLE = 'selectable-table';
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>

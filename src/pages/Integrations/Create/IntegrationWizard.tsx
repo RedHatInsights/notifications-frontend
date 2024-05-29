@@ -6,16 +6,16 @@ import * as React from 'react';
 import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
+import SelectableTable from './CustomComponents/SelectableTable';
 import { schema } from './schema';
 import {
   CARD_SELECT,
-  EVENT_TYPES,
   INLINE_ALERT,
   INTEGRATION_TYPE,
   REVIEW,
+  SELECTABLE_TABLE,
 } from './helpers';
 import { Integration } from '../../../types/Integration';
-import EventTypes from './EventTypes';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -46,7 +46,7 @@ export const IntegrationWizard: React.FunctionComponent<
     [REVIEW]: Review,
     [CARD_SELECT]: CardSelect,
     [INLINE_ALERT]: InlineAlert,
-    [EVENT_TYPES]: EventTypes,
+    [SELECTABLE_TABLE]: SelectableTable,
   };
 
   return isOpen ? (

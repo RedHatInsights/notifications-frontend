@@ -2,7 +2,8 @@ import { componentTypes } from '@data-driven-forms/react-form-renderer';
 import { integrationTypeStep } from './integrationTypeStep';
 import { IntegrationCategory } from '../../../types/Integration';
 import { detailSteps } from './detailSteps';
-import { EVENT_TYPES, REVIEW } from './helpers';
+import { REVIEW } from './helpers';
+import { eventTypesStep } from './EventTypes';
 
 export const schema = (category, isEdit) => ({
   fields: [
@@ -27,17 +28,7 @@ export const schema = (category, isEdit) => ({
         ...detailSteps(isEdit),
 
         // ASSOCIATE EVENT TYPES
-        {
-          title: 'Associate event types',
-          name: EVENT_TYPES,
-          nextStep: REVIEW,
-          fields: [
-            {
-              component: EVENT_TYPES,
-              name: EVENT_TYPES,
-            }
-          ]
-        },
+        eventTypesStep(),
 
         // REVIEW
         {
