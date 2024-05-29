@@ -14,8 +14,10 @@ import {
   INTEGRATION_TYPE,
   REVIEW,
   SELECTABLE_TABLE,
+  TABLE_TOOLBAR,
 } from './helpers';
 import { Integration } from '../../../types/Integration';
+import TableToolbar from './CustomComponents/TableToolbar';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -47,6 +49,7 @@ export const IntegrationWizard: React.FunctionComponent<
     [CARD_SELECT]: CardSelect,
     [INLINE_ALERT]: InlineAlert,
     [SELECTABLE_TABLE]: SelectableTable,
+    [TABLE_TOOLBAR]: TableToolbar,
   };
 
   return isOpen ? (

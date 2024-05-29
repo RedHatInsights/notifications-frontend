@@ -1,5 +1,5 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
-import { EVENT_TYPES, SELECTABLE_TABLE } from './helpers';
+import { EVENT_TYPES, SELECTABLE_TABLE, TABLE_TOOLBAR } from './helpers';
 
 export const eventTypesStep = () => ({
   title: 'Associate event types',
@@ -20,6 +20,20 @@ export const eventTypesStep = () => ({
         { label: 'Console', value: 'console' },
       ],
     },
+    // {
+    //   component: TABLE_TOOLBAR,
+    //   name: 'event-types-toolbar',
+    //   filters: [],
+    //   setFilters: () => {},
+    //   clearFilter: () => {},
+    //   appFilterOptions: [],
+    //   pageAdapter: {}, // need some way to use useEventTypesPage here. This isn't a component, so it's not clear how to do that.
+    //   count: 0,
+    //   pageCount: 0,
+    //   onSelectionChanged: () => {},
+    //   selectedCount: 0,
+    //   bulkSelectionDisabled: false,
+    // },
     {
       component: SELECTABLE_TABLE,
       name: 'event-types-table',
