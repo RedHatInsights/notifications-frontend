@@ -27,17 +27,23 @@ const title = 'Associate event types';
 export interface AssociateEventTypesStepProps {
   applications: ReadonlyArray<Facet>;
   bundle: Facet;
+  setValues?: (
+    values: React.SetStateAction<CreateBehaviorGroup>,
+    shouldValidate?: boolean | undefined
+  ) => void;
+  values?: {
+    events: readonly EventType[];
+  };
 }
 
-const AssociateEventTypesStep: React.FunctionComponent<
+export const AssociateEventTypesStep: React.FunctionComponent<
   AssociateEventTypesStepProps
 > = (props) => {
-  const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
   const [selectedEventTypes, setSelectedEventTypes] = React.useState<
     Record<string, EventType>
   >(() => {
     const selected: Record<string, EventType> = {};
-    values.events.forEach((value) => {
+    props.values?.events.forEach((value) => {
       selected[value.id] = value;
     });
 
@@ -52,12 +58,12 @@ const AssociateEventTypesStep: React.FunctionComponent<
   const onDemandEventTypes = useParameterizedListNotifications();
 
   useEffect(() => {
-    setValues(
+    props.setValues?.(
       produce((draft) => {
         draft.events = Object.values(selectedEventTypes);
       })
     );
-  }, [setValues, selectedEventTypes]);
+  }, [props.setValues, selectedEventTypes]);
 
   const count = React.useMemo(() => {
     const payload = eventTypesRaw.payload;
@@ -216,11 +222,17 @@ const AssociateEventTypesStep: React.FunctionComponent<
 export const useAssociateEventTypesStep: IntegrationWizardStep<
   AssociateEventTypesStepProps
 > = ({ applications, bundle }: AssociateEventTypesStepProps) => {
+  const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
   return React.useMemo(
     () => ({
       name: title,
       component: (
-        <AssociateEventTypesStep applications={applications} bundle={bundle} />
+        <AssociateEventTypesStep
+          applications={applications}
+          bundle={bundle}
+          setValues={setValues}
+          values={values}
+        />
       ),
     }),
     [applications, bundle]

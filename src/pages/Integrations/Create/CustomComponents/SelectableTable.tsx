@@ -1,114 +1,50 @@
-import React from 'react';
-import { Skeleton, Spinner } from '@patternfly/react-core';
-import {
-  Table as TableComposable,
-  TableVariant,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table/dist/dynamic/components/Table';
-import useFieldApi, {
-  UseFieldApiProps,
-} from '@data-driven-forms/react-form-renderer/use-field-api';
+import React, { useEffect, useMemo, useState } from 'react';
+import { AssociateEventTypesStep } from '../../../Notifications/BehaviorGroupWizard/Steps/AssociateEventTypesStep';
+import { useGetBundleByName } from '../../../../services/Notifications/GetBundles';
+import { useGetApplicationsLazy } from '../../../../services/Notifications/GetApplications';
+import { Facet } from '../../../../types/Notification';
+import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 
-export interface TableRow {
-  id: string;
-  [key: string]: unknown;
-}
+const SelectableTable = () => {
+  const [bundle, setBundle] = useState<Facet | undefined>();
+  const { getState } = useFormApi();
 
-export interface SelectableTableProps<T extends TableRow>
-  extends UseFieldApiProps<T[]> {
-  name: string;
-  data?: ReadonlyArray<T>;
-  columns: { name: string; key: string }[];
-  onSelect?: (isSelected: boolean, row: T) => void;
-  selectionLoading?: boolean;
-  skeletonRows?: number;
-}
+  const getBundles = useGetBundleByName();
+  useEffect(() => {
+    // use the value from form to determine which bundle to pull from
+    getBundles(getState().values['product-family']).then((data) => {
+      setBundle({ ...data, displayName: data?.display_name } as Facet);
+    });
+  }, [getBundles, getState]);
+  const getApplications = useGetApplicationsLazy();
 
-const SelectableTable = <T extends TableRow>(
-  props: SelectableTableProps<T>
-) => {
-  const {
-    input,
-    data = [],
-    onSelect,
-    selectionLoading,
-    columns,
-    skeletonRows = 10,
-  } = useFieldApi(props);
+  React.useEffect(() => {
+    const query = getApplications.query;
+    // use the value from form to determine which bundle to pull from
+    query('rhel');
+  }, [bundle, getApplications.query]);
 
-  const inputValue = input.value || [];
-
-  const handleSelect = (isSelected: boolean, row: T) => {
-    if (onSelect) {
-      onSelect(isSelected, row);
+  const applications: Array<Facet> | null | undefined = useMemo(() => {
+    if (getApplications.payload) {
+      return getApplications.payload.status === 200
+        ? getApplications.payload.value
+        : null;
     }
-    input.onChange(
-      isSelected
-        ? [...inputValue, row]
-        : inputValue.filter((selectedRow) => selectedRow.id !== row.id)
-    );
-  };
 
-  return (
-    <TableComposable variant={TableVariant.compact}>
-      <Thead>
-        <Tr>
-          <Th />
-          {columns.map((column) => (
-            <Th key={column.key}>{column.name}</Th>
-          ))}
-        </Tr>
-      </Thead>
-      <Tbody>
-        {data.length === 0
-          ? [...Array(skeletonRows)].map((_, index) => (
-              <Tr key={index}>
-                <Td
-                  select={{
-                    isSelected: false,
-                    rowIndex: index,
-                    isDisabled: true,
-                  }}
-                />
-                {columns.map((column) => (
-                  <Td key={column.key}>
-                    <Skeleton width="80%" />
-                  </Td>
-                ))}
-              </Tr>
-            ))
-          : data.map((row, rowIndex) => (
-              <Tr key={row.id}>
-                <Td
-                  modifier={selectionLoading ? 'fitContent' : undefined}
-                  noPadding={selectionLoading}
-                  select={
-                    selectionLoading
-                      ? undefined
-                      : {
-                          rowIndex,
-                          onSelect: (_event, isSelected) =>
-                            handleSelect(isSelected, row),
-                          isSelected: inputValue.some(
-                            (selectedRow) => selectedRow.id === row.id
-                          ),
-                          isDisabled: selectionLoading,
-                        }
-                  }
-                >
-                  {selectionLoading && <Spinner size="sm" />}
-                </Td>
-                {columns.map((column) => (
-                  <Td key={column.key}>{row[column.key]}</Td>
-                ))}
-              </Tr>
-            ))}
-      </Tbody>
-    </TableComposable>
+    return undefined;
+  }, [getApplications.payload]);
+
+  return applications && bundle ? (
+    <AssociateEventTypesStep
+      applications={applications}
+      bundle={bundle}
+      setValues={(values) => {
+        console.log(values);
+      }}
+      values={{ events: [] }}
+    />
+  ) : (
+    'loading'
   );
 };
 
