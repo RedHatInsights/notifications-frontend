@@ -5,6 +5,7 @@ import {
 } from '../../../types/Integration';
 
 export const INTEGRATION_TYPE = 'type';
+export const EVENT_TYPES_TABLE = 'event-types-table';
 
 export const SLACK_DETAILS = 'slack-details';
 export const GOOGLE_CHAT_DETAILS = 'gchat-details';

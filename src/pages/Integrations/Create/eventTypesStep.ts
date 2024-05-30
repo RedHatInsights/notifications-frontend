@@ -1,9 +1,15 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
-import { EVENT_TYPES, SELECTABLE_TABLE, TABLE_TOOLBAR } from './helpers';
+import {
+  EVENT_TYPES,
+  EVENT_TYPES_TABLE,
+  REVIEW,
+  SELECTABLE_TABLE,
+} from './helpers';
 
 export const eventTypesStep = () => ({
   title: 'Associate event types',
   name: EVENT_TYPES,
+  nextStep: REVIEW,
   fields: [
     {
       component: componentTypes.PLAIN_TEXT,
@@ -12,6 +18,7 @@ export const eventTypesStep = () => ({
     },
     {
       component: componentTypes.SELECT,
+      isVisibleOnReview: false,
       name: 'product-family',
       label: 'Product family',
       options: [
@@ -20,34 +27,11 @@ export const eventTypesStep = () => ({
         { label: 'Console', value: 'console' },
       ],
     },
-    // {
-    //   component: TABLE_TOOLBAR,
-    //   name: 'event-types-toolbar',
-    //   filters: [],
-    //   setFilters: () => {},
-    //   clearFilter: () => {},
-    //   appFilterOptions: [],
-    //   pageAdapter: {}, // need some way to use useEventTypesPage here. This isn't a component, so it's not clear how to do that.
-    //   count: 0,
-    //   pageCount: 0,
-    //   onSelectionChanged: () => {},
-    //   selectedCount: 0,
-    //   bulkSelectionDisabled: false,
-    // },
     {
       component: SELECTABLE_TABLE,
-      name: 'event-types-table',
+      name: EVENT_TYPES_TABLE,
       label: 'Select event types',
-      columns: [
-        { title: 'Event type', key: 'event-type' },
-        { title: 'Service', key: 'service' },
-      ],
-      // temporary dummy data
-      data: [
-        { 'event-type': 'Cluster creation', service: 'OpenShift', id: 1 },
-        { 'event-type': 'Cluster deletion', service: 'OpenShift', id: 2 },
-        { 'event-type': 'Node failure', service: 'OpenShift', id: 3 },
-      ],
+      bundleFieldName: 'product-family',
     },
   ],
 });

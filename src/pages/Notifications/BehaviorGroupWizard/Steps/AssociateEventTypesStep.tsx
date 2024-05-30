@@ -27,10 +27,7 @@ const title = 'Associate event types';
 export interface AssociateEventTypesStepProps {
   applications: ReadonlyArray<Facet>;
   bundle: Facet;
-  setValues?: (
-    values: React.SetStateAction<CreateBehaviorGroup>,
-    shouldValidate?: boolean | undefined
-  ) => void;
+  setValues?: (values: Record<string, EventType>) => void;
   values?: {
     events: readonly EventType[];
   };
@@ -58,12 +55,16 @@ export const AssociateEventTypesStep: React.FunctionComponent<
   const onDemandEventTypes = useParameterizedListNotifications();
 
   useEffect(() => {
-    props.setValues?.(
-      produce((draft) => {
-        draft.events = Object.values(selectedEventTypes);
-      })
-    );
-  }, [props.setValues, selectedEventTypes]);
+    if (props.bundle.displayName) {
+      setSelectedEventTypes(
+        props.values?.events.reduce<Record<string, EventType>>((acc, curr) => {
+          acc[curr.id] = curr;
+          return acc;
+        }, {}) || {}
+      );
+      eventTypesRaw.reset();
+    }
+  }, [props.bundle.displayName]);
 
   const count = React.useMemo(() => {
     const payload = eventTypesRaw.payload;
@@ -84,6 +85,10 @@ export const AssociateEventTypesStep: React.FunctionComponent<
 
     return [];
   }, [eventTypesRaw.payload, selectedEventTypes]);
+
+  useEffect(() => {
+    props.setValues?.(selectedEventTypes);
+  }, [selectedEventTypes]);
 
   const onSelect = React.useCallback(
     (isSelected: boolean, eventType: EventType) => {
@@ -230,7 +235,12 @@ export const useAssociateEventTypesStep: IntegrationWizardStep<
         <AssociateEventTypesStep
           applications={applications}
           bundle={bundle}
-          setValues={setValues}
+          setValues={(selected) => {
+            const setter = produce((draft) => {
+              draft.events = Object.values(selected);
+            });
+            setValues(setter);
+          }}
           values={values}
         />
       ),

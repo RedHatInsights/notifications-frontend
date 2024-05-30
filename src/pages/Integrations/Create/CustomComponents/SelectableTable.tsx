@@ -1,51 +1,115 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import useFieldApi, {
+  UseFieldApiProps,
+} from '@data-driven-forms/react-form-renderer/use-field-api';
 import { AssociateEventTypesStep } from '../../../Notifications/BehaviorGroupWizard/Steps/AssociateEventTypesStep';
-import { useGetBundleByName } from '../../../../services/Notifications/GetBundles';
-import { useGetApplicationsLazy } from '../../../../services/Notifications/GetApplications';
-import { Facet } from '../../../../types/Notification';
+import { EventType, Facet } from '../../../../types/Notification';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
+import FormSpy from '@data-driven-forms/react-form-renderer/form-spy';
+import {
+  Bullseye,
+  EmptyState,
+  EmptyStateBody,
+  EmptyStateHeader,
+  EmptyStateIcon,
+} from '@patternfly/react-core';
+import CubesIcon from '@patternfly/react-icons/dist/dynamic/icons/cube-icon';
 
-const SelectableTable = () => {
-  const [bundle, setBundle] = useState<Facet | undefined>();
+export interface TableRow {
+  id: string;
+  [key: string]: unknown;
+}
+
+function isEvent(data: unknown): data is Record<string, EventType> {
+  return Object.values(data || {}).every((event) =>
+    Object.prototype.hasOwnProperty.call(event, 'id')
+  );
+}
+
+function isEventReadonly(
+  data: Record<string, unknown>
+): data is Record<string, Record<string, EventType>> {
+  return Object.values(data).every(
+    (item) =>
+      isEvent(item) &&
+      Object.values(item).every((event) =>
+        Object.prototype.hasOwnProperty.call(event, 'id')
+      )
+  );
+}
+
+export interface SelectableTableProps<T extends TableRow>
+  extends UseFieldApiProps<T[]> {
+  name: string;
+  data?: ReadonlyArray<T>;
+  columns: { name: string; key: string }[];
+  onSelect?: (isSelected: boolean, row: T) => void;
+  selectionLoading?: boolean;
+  skeletonRows?: number;
+}
+
+const SelectableTable = (props) => {
+  const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
-
-  const getBundles = useGetBundleByName();
+  const { input } = useFieldApi<Record<string, unknown>>(props);
+  let value: readonly EventType[] = [];
+  const productFamily = getState().values[props.bundleFieldName];
   useEffect(() => {
-    // use the value from form to determine which bundle to pull from
-    getBundles(getState().values['product-family']).then((data) => {
-      setBundle({ ...data, displayName: data?.display_name } as Facet);
-    });
-  }, [getBundles, getState]);
-  const getApplications = useGetApplicationsLazy();
+    const getAllBundles = async () => {
+      const bundles: Facet[] = await (
+        await fetch(
+          '/api/notifications/v1/notifications/facets/bundles?includeApplications=true'
+        )
+      ).json();
+      setAllBundles(bundles);
+    };
+    getAllBundles();
+  }, []);
 
-  React.useEffect(() => {
-    const query = getApplications.query;
-    // use the value from form to determine which bundle to pull from
-    query('rhel');
-  }, [bundle, getApplications.query]);
+  const currBundle = allBundles?.find(({ name }) => name === productFamily);
 
-  const applications: Array<Facet> | null | undefined = useMemo(() => {
-    if (getApplications.payload) {
-      return getApplications.payload.status === 200
-        ? getApplications.payload.value
-        : null;
-    }
+  if (currBundle?.name && isEventReadonly(input.value)) {
+    value = Object.values(
+      input.value?.[currBundle?.name] || {}
+    ) as readonly EventType[];
+  }
 
-    return undefined;
-  }, [getApplications.payload]);
-
-  return applications && bundle ? (
+  return currBundle ? (
     <AssociateEventTypesStep
-      applications={applications}
-      bundle={bundle}
-      setValues={(values) => {
-        console.log(values);
+      applications={currBundle.children as readonly Facet[]}
+      bundle={currBundle}
+      setValues={(events) => {
+        input.onChange({
+          ...input.value,
+          [currBundle?.name]: {
+            ...(input.value?.[currBundle?.name] || {}),
+            ...events,
+          },
+        });
       }}
-      values={{ events: [] }}
+      values={{ events: value }}
     />
   ) : (
-    'loading'
+    <Bullseye>
+      <EmptyState>
+        <EmptyStateHeader
+          titleText="Select product family"
+          headingLevel="h4"
+          icon={<EmptyStateIcon icon={CubesIcon} />}
+        />
+        <EmptyStateBody>
+          Before you can assign events to integration you have to select from
+          which bundle events should be assignable.
+        </EmptyStateBody>
+      </EmptyState>
+    </Bullseye>
   );
 };
 
-export default SelectableTable;
+const SelectableTableWrapper = (props) => (
+  <FormSpy subscription={{ values: true }}>
+    {() => <SelectableTable {...props} />}
+  </FormSpy>
+);
+
+export default SelectableTableWrapper;
