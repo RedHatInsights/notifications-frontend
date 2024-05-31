@@ -71,13 +71,17 @@ const mapFieldValues = (values, fields, category) => {
       }
 
       return isEventsType
-        ? Object.entries(value || {}).map(([key, val]) => ({
-            ...currField,
-            label: `${currField.label} - ${key}`,
-            ...(valueMapper(category, val)[currField?.name] || {
-              value,
-            }),
-          }))
+        ? Object.entries(value || {}).map(([key, val]) =>
+            Object.values(val).length !== 0
+              ? {
+                  ...currField,
+                  label: `${key} ${currField.label.toLowerCase()}`,
+                  ...(valueMapper(category, val)[currField?.name] || {
+                    val,
+                  }),
+                }
+              : []
+          )
         : {
             ...currField,
             label: isIntegrationType ? 'Integration type' : currField.label,

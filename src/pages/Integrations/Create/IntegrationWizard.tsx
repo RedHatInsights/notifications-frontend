@@ -18,6 +18,7 @@ import {
 } from './helpers';
 import { Integration } from '../../../types/Integration';
 import TableToolbar from './CustomComponents/TableToolbar';
+import { useFlag } from '@unleash/proxy-client-react';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -52,9 +53,13 @@ export const IntegrationWizard: React.FunctionComponent<
     [TABLE_TOOLBAR]: TableToolbar,
   };
 
+  const isBehaviorGroupsEnabled = useFlag(
+    'platform.integrations.behavior-groups-move'
+  );
+
   return isOpen ? (
     <FormRenderer
-      schema={schema(category, isEdit)}
+      schema={schema(category, isEdit, isBehaviorGroupsEnabled)}
       componentMapper={{ ...componentMapper, ...mapperExtension }}
       onSubmit={({
         url,

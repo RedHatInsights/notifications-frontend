@@ -68,9 +68,9 @@ const SelectableTable = (props) => {
 
   const currBundle = allBundles?.find(({ name }) => name === productFamily);
 
-  if (currBundle?.name && isEventReadonly(input.value)) {
+  if (currBundle?.displayName && isEventReadonly(input.value)) {
     value = Object.values(
-      input.value?.[currBundle?.name] || {}
+      input.value?.[currBundle?.displayName] || {}
     ) as readonly EventType[];
   }
 
@@ -81,8 +81,7 @@ const SelectableTable = (props) => {
       setValues={(events) => {
         input.onChange({
           ...input.value,
-          [currBundle?.name]: {
-            ...(input.value?.[currBundle?.name] || {}),
+          [currBundle?.displayName]: {
             ...events,
           },
         });
