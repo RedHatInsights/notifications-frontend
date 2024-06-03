@@ -27,17 +27,20 @@ const title = 'Associate event types';
 export interface AssociateEventTypesStepProps {
   applications: ReadonlyArray<Facet>;
   bundle: Facet;
+  setValues?: (values: Record<string, EventType>) => void;
+  values?: {
+    events: readonly EventType[];
+  };
 }
 
-const AssociateEventTypesStep: React.FunctionComponent<
+export const AssociateEventTypesStep: React.FunctionComponent<
   AssociateEventTypesStepProps
 > = (props) => {
-  const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
   const [selectedEventTypes, setSelectedEventTypes] = React.useState<
     Record<string, EventType>
   >(() => {
     const selected: Record<string, EventType> = {};
-    values.events.forEach((value) => {
+    props.values?.events.forEach((value) => {
       selected[value.id] = value;
     });
 
@@ -52,12 +55,16 @@ const AssociateEventTypesStep: React.FunctionComponent<
   const onDemandEventTypes = useParameterizedListNotifications();
 
   useEffect(() => {
-    setValues(
-      produce((draft) => {
-        draft.events = Object.values(selectedEventTypes);
-      })
-    );
-  }, [setValues, selectedEventTypes]);
+    if (props.bundle.displayName) {
+      setSelectedEventTypes(
+        props.values?.events.reduce<Record<string, EventType>>((acc, curr) => {
+          acc[curr.id] = curr;
+          return acc;
+        }, {}) || {}
+      );
+      eventTypesRaw.reset();
+    }
+  }, [props.bundle.displayName]);
 
   const count = React.useMemo(() => {
     const payload = eventTypesRaw.payload;
@@ -78,6 +85,10 @@ const AssociateEventTypesStep: React.FunctionComponent<
 
     return [];
   }, [eventTypesRaw.payload, selectedEventTypes]);
+
+  useEffect(() => {
+    props.setValues?.(selectedEventTypes);
+  }, [selectedEventTypes]);
 
   const onSelect = React.useCallback(
     (isSelected: boolean, eventType: EventType) => {
@@ -216,11 +227,22 @@ const AssociateEventTypesStep: React.FunctionComponent<
 export const useAssociateEventTypesStep: IntegrationWizardStep<
   AssociateEventTypesStepProps
 > = ({ applications, bundle }: AssociateEventTypesStepProps) => {
+  const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
   return React.useMemo(
     () => ({
       name: title,
       component: (
-        <AssociateEventTypesStep applications={applications} bundle={bundle} />
+        <AssociateEventTypesStep
+          applications={applications}
+          bundle={bundle}
+          setValues={(selected) => {
+            const setter = produce((draft) => {
+              draft.events = Object.values(selected);
+            });
+            setValues(setter);
+          }}
+          values={values}
+        />
       ),
     }),
     [applications, bundle]

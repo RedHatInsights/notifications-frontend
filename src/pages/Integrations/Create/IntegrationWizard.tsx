@@ -6,9 +6,19 @@ import * as React from 'react';
 import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
+import SelectableTable from './CustomComponents/SelectableTable';
 import { schema } from './schema';
-import { CARD_SELECT, INLINE_ALERT, INTEGRATION_TYPE, REVIEW } from './helpers';
+import {
+  CARD_SELECT,
+  INLINE_ALERT,
+  INTEGRATION_TYPE,
+  REVIEW,
+  SELECTABLE_TABLE,
+  TABLE_TOOLBAR,
+} from './helpers';
 import { Integration } from '../../../types/Integration';
+import TableToolbar from './CustomComponents/TableToolbar';
+import { useFlag } from '@unleash/proxy-client-react';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -39,11 +49,17 @@ export const IntegrationWizard: React.FunctionComponent<
     [REVIEW]: Review,
     [CARD_SELECT]: CardSelect,
     [INLINE_ALERT]: InlineAlert,
+    [SELECTABLE_TABLE]: SelectableTable,
+    [TABLE_TOOLBAR]: TableToolbar,
   };
+
+  const isBehaviorGroupsEnabled = useFlag(
+    'platform.integrations.behavior-groups-move'
+  );
 
   return isOpen ? (
     <FormRenderer
-      schema={schema(category, isEdit)}
+      schema={schema(category, isEdit, isBehaviorGroupsEnabled)}
       componentMapper={{ ...componentMapper, ...mapperExtension }}
       onSubmit={({
         url,

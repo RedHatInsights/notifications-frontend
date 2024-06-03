@@ -4,6 +4,7 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import {
   DETAILS,
+  EVENT_TYPES,
   GOOGLE_CHAT_DETAILS,
   INLINE_ALERT,
   REVIEW,
@@ -63,7 +64,10 @@ const sslAlert = {
   variant: 'info',
 };
 
-export const detailSteps = (isEdit: boolean) => {
+export const detailSteps = (
+  isEdit: boolean,
+  isBehaviorGroupsEnabled: boolean
+) => {
   const title = `${isEdit ? 'Edit' : 'Enter'} details`;
   return [
     // REPORTING - SPLUNK, ANSIBLE
@@ -71,7 +75,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: DETAILS,
-      nextStep: REVIEW,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: [
         ...commonFields(false, isEdit),
         {
@@ -91,7 +95,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: SERVICE_NOW_DETAILS,
-      nextStep: REVIEW,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: [
         ...commonFields(false, isEdit),
         {
@@ -110,7 +114,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: SLACK_DETAILS,
-      nextStep: REVIEW,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: commonFields(true, isEdit),
     },
 
@@ -118,7 +122,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: GOOGLE_CHAT_DETAILS,
-      nextStep: REVIEW,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: commonFields(false, isEdit),
     },
 
@@ -126,7 +130,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: TEAMS_DETAILS,
-      nextStep: REVIEW,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: commonFields(false, isEdit),
     },
 
@@ -134,7 +138,7 @@ export const detailSteps = (isEdit: boolean) => {
     {
       title: title,
       name: SPLUNK_DETAILS,
-      nextStep: REVIEW,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: [
         ...commonFields(false, isEdit),
         {

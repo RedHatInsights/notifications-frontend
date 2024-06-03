@@ -5,6 +5,7 @@ import {
 } from '../../../types/Integration';
 
 export const INTEGRATION_TYPE = 'type';
+export const EVENT_TYPES_TABLE = 'event-types-table';
 
 export const SLACK_DETAILS = 'slack-details';
 export const GOOGLE_CHAT_DETAILS = 'gchat-details';
@@ -13,9 +14,12 @@ export const SPLUNK_DETAILS = 'spunk-details';
 export const SERVICE_NOW_DETAILS = 'service-now-details';
 export const DETAILS = 'details';
 
+export const EVENT_TYPES = 'event-types';
 export const REVIEW = 'review';
 export const CARD_SELECT = 'card-select';
 export const INLINE_ALERT = 'inline-alert';
+export const SELECTABLE_TABLE = 'selectable-table';
+export const TABLE_TOOLBAR = 'table-toolbar';
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>

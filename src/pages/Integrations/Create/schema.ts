@@ -3,8 +3,9 @@ import { integrationTypeStep } from './integrationTypeStep';
 import { IntegrationCategory } from '../../../types/Integration';
 import { detailSteps } from './detailSteps';
 import { REVIEW } from './helpers';
+import { eventTypesStep } from './eventTypesStep';
 
-export const schema = (category, isEdit) => ({
+export const schema = (category, isEdit, isBehaviorGroupsEnabled) => ({
   fields: [
     {
       component: componentTypes.WIZARD,
@@ -24,7 +25,10 @@ export const schema = (category, isEdit) => ({
           : []),
 
         // INTEGRATION DETAILS
-        ...detailSteps(isEdit),
+        ...detailSteps(isEdit, isBehaviorGroupsEnabled),
+
+        // ASSOCIATE EVENT TYPES
+        ...(isBehaviorGroupsEnabled ? [eventTypesStep()] : []),
 
         // REVIEW
         {
