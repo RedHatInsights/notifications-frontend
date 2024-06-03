@@ -30,7 +30,7 @@ export const eventTypesStep = () => ({
     {
       component: SELECTABLE_TABLE,
       name: EVENT_TYPES_TABLE,
-      label: 'Selected even types',
+      label: 'Selected event types',
       bundleFieldName: 'product-family',
     },
   ],
