@@ -1,11 +1,10 @@
-import { Tab, TabTitleText } from '@patternfly/react-core';
+import { Tab, TabTitleText, Tabs } from '@patternfly/react-core';
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
-import { useLocation } from 'react-router-dom';
-import * as React from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import React, { useCallback, useEffect, useMemo } from 'react';
 
 import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
-import { TabComponent } from '../../../components/Notifications/TabComponent';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useListNotifications } from '../../../services/useListNotifications';
 import {
@@ -24,10 +23,10 @@ interface BundlePageBehaviorGroupContentProps {
   bundle: Facet;
 }
 
-enum TabIndex {
-  Configuration = 0,
-  BehaviorGroups = 1,
-}
+const tabMapping = {
+  configuration: 0,
+  behaviorGroups: 1,
+};
 
 const noEvents = [];
 
@@ -35,16 +34,18 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   React.PropsWithChildren<BundlePageBehaviorGroupContentProps>
 > = (props) => {
   const behaviorGroupContent = useBehaviorGroupContent(props.bundle.id);
+
+  const navigate = useNavigate();
   const location = useLocation();
-  const queryParams = new URLSearchParams(location.search);
-  const activeTab =
-    queryParams.get('activeTab') === 'behaviorGroups'
-      ? TabIndex.BehaviorGroups
-      : TabIndex.Configuration;
+
+  const tab = useMemo(
+    () => new URLSearchParams(location.search).get('tab') ?? 'configuration',
+    [location.search]
+  );
 
   const { rbac } = useAppContext();
 
-  const onExport = React.useCallback((type: ExporterType) => {
+  const onExport = useCallback((type: ExporterType) => {
     console.log('Export to', type);
   }, []);
 
@@ -58,7 +59,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     eventTypePage.pageController.page
   );
 
-  const count = React.useMemo(() => {
+  const count = useMemo(() => {
     const payload = useNotifications.payload;
     if (payload?.status === 200) {
       return payload.value.meta.count;
@@ -87,13 +88,13 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     behaviorGroups
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (behaviorGroups) {
       updateBehaviorGroups(behaviorGroups);
     }
   }, [behaviorGroups, updateBehaviorGroups]);
 
-  const onBehaviorGroupLinkUpdated = React.useCallback(
+  const onBehaviorGroupLinkUpdated = useCallback(
     (
       notification: NotificationBehaviorGroup,
       behaviorGroup: BehaviorGroup,
@@ -106,32 +107,52 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     [updateBehaviorGroupLink]
   );
 
-  const onStartEditing = React.useCallback(
+  const onStartEditing = useCallback(
     (notificationId: UUID) => {
       startEditMode(notificationId);
     },
     [startEditMode]
   );
 
-  const onFinishEditing = React.useCallback(
+  const onFinishEditing = useCallback(
     (notificationId: UUID) => {
       finishEditMode(notificationId);
     },
     [finishEditMode]
   );
 
-  const onCancelEditing = React.useCallback(
+  const onCancelEditing = useCallback(
     (notificationId: UUID) => {
       cancelEditMode(notificationId);
     },
     [cancelEditMode]
   );
 
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (!searchParams.has('tab')) {
+      searchParams.set('tab', 'configuration');
+      navigate(`${location.pathname}?${searchParams.toString()}`, {
+        replace: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, navigate]);
+
   return (
-    <TabComponent
-      configuration={props.children}
-      settings={props.children}
-      activeKey={activeTab}
+    <Tabs
+      className="pf-v5-u-background-color-100 pf-v5-u-pl-lg"
+      activeKey={tabMapping[tab]}
+      onSelect={(event, tabIndex) => {
+        const newSearchParams = new URLSearchParams(location.search);
+        const selectedTab =
+          Object.keys(tabMapping).find((key) => tabMapping[key] === tabIndex) ??
+          'configuration';
+        newSearchParams.set('tab', selectedTab);
+        navigate(`${location.pathname}?${newSearchParams.toString()}`, {
+          replace: true,
+        });
+      }}
     >
       <Tab eventKey={0} title={<TabTitleText>Configuration</TabTitleText>}>
         <NotificationsToolbar
@@ -171,6 +192,6 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
           />
         </div>
       </Tab>
-    </TabComponent>
+    </Tabs>
   );
 };

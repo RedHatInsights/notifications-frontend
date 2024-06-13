@@ -10,7 +10,7 @@ import { global_spacer_lg } from '@patternfly/react-tokens';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
-import { default as React, useEffect, useMemo, useState } from 'react';
+import { default as React, useEffect, useMemo } from 'react';
 import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
@@ -23,6 +23,7 @@ import { linkTo } from '../../../Routes';
 import { useGetApplicationsLazy } from '../../../services/Notifications/GetApplications';
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface NotificationListBundlePageProps {
   bundle: Facet;
@@ -30,10 +31,23 @@ interface NotificationListBundlePageProps {
   applications: Array<Facet>;
 }
 
+const bundleMapping = {
+  rhel: 0,
+  console: 1,
+  openshift: 2,
+};
+
 export const NotificationListBundlePage: React.FunctionComponent<
   React.PropsWithChildren<NotificationListBundlePageProps>
 > = (props) => {
   const { updateDocumentTitle } = useChrome();
+  const navigate = useNavigate();
+  const location = useLocation();
+
+  const bundle = useMemo(
+    () => new URLSearchParams(location.search).get('bundle') ?? 'rhel',
+    [location.search]
+  );
 
   updateDocumentTitle?.(`${props.bundle.displayName} - Notifications`);
 
@@ -45,7 +59,6 @@ export const NotificationListBundlePage: React.FunctionComponent<
     [props.bundle.name]
   );
   const getApplications = useGetApplicationsLazy();
-  const [activeTabKey, setActiveTabKey] = useState(0);
 
   const mainPage = (
     <Main>
@@ -87,16 +100,23 @@ export const NotificationListBundlePage: React.FunctionComponent<
   );
 
   useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    if (!searchParams.has('bundle')) {
+      searchParams.set('bundle', 'rhel');
+      navigate(`${location.pathname}?${searchParams.toString()}`, {
+        replace: true,
+      });
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [location.search, navigate]);
+
+  useEffect(() => {
     if (notificationsOverhaul) {
       const query = getApplications.query;
-      query(props.bundleTabs[activeTabKey].name);
+      query(props.bundleTabs[bundleMapping[bundle]].name);
     }
-  }, [
-    activeTabKey,
-    getApplications.query,
-    props.bundleTabs,
-    notificationsOverhaul,
-  ]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [bundle]);
 
   const getInitialApplications = useMemo(() => {
     if (getApplications.payload) {
@@ -107,10 +127,6 @@ export const NotificationListBundlePage: React.FunctionComponent<
   }, [getApplications.payload]);
 
   if (notificationsOverhaul) {
-    const handleTabClick = (event, tabIndex) => {
-      setActiveTabKey(tabIndex);
-    };
-
     return (
       <>
         <PageHeader
@@ -126,8 +142,17 @@ export const NotificationListBundlePage: React.FunctionComponent<
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
             <Tabs
-              activeKey={activeTabKey}
-              onSelect={handleTabClick}
+              activeKey={bundleMapping[bundle]}
+              onSelect={(event, tabIndex) => {
+                const newSearchParams = new URLSearchParams(location.search);
+                const selectedBundle = Object.keys(bundleMapping).find(
+                  (key) => bundleMapping[key] === tabIndex
+                );
+                newSearchParams.set('bundle', selectedBundle ?? 'rhel');
+                navigate(`${location.pathname}?${newSearchParams.toString()}`, {
+                  replace: true,
+                });
+              }}
               className={paddingLeftClassName}
             >
               <Tab eventKey={2} title={<TabTitleText>OpenShift</TabTitleText>}>
