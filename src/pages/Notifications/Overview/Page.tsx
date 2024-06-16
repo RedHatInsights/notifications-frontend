@@ -34,10 +34,10 @@ import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 
 // eslint-disable-next-line max-len
 const LEARN_MORE =
-  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
+  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html-single/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
 // eslint-disable-next-line max-len
 const CONFIGURE_INTEGRATIONS =
-  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/assembly-intro_notifications';
+  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#doc-wrapper';
 // eslint-disable-next-line max-len
 const CONFIGURE_SOURCES =
   'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_sources_for_red_hat_services/index';
@@ -340,7 +340,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
             <Table aria-label="Recommended content" className="pf-u-mb-lg">
               <Tbody>
                 <Tr className="noti-c-table-border-top">
-                  <Td>Configuring notifications and integrations</Td>
+                  <Td>Configuring Notifications</Td>
                   <Td>
                     <Label color="orange">Documentation</Label>
                   </Td>
@@ -357,7 +357,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   </Td>
                 </Tr>
                 <Tr>
-                  <Td>Configuring integrations and events</Td>
+                  <Td>Configuring Integrations</Td>
                   <Td>
                     <Label color="orange">Documentation</Label>
                   </Td>
