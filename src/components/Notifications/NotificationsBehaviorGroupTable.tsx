@@ -1,4 +1,10 @@
-import { Button, ButtonVariant, Icon, Skeleton } from '@patternfly/react-core';
+import {
+  Button,
+  ButtonVariant,
+  Icon,
+  Skeleton,
+  Text,
+} from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
 import {
   CustomActionsToggleProps,
@@ -77,6 +83,15 @@ export enum NotificationsTableColumns {
   EVENT,
   APPLICATION,
   BEHAVIOR,
+}
+
+export interface NotificationsBehaviorGroupRowProps {
+  rowIndex: number;
+  notification: BehaviorGroupNotificationRow;
+  behaviorGroupContent: BehaviorGroupContent;
+  onSelect?: OnBehaviorGroupLinkUpdated;
+  isEditMode: boolean;
+  callbacks?: Callbacks;
 }
 
 export interface NotificationsBehaviorGroupTableProps {
@@ -188,6 +203,64 @@ const getActions = (
   };
 };
 
+export const NotificationsBehaviorGroupRow: React.FunctionComponent<
+  NotificationsBehaviorGroupRowProps
+> = ({
+  rowIndex,
+  notification,
+  behaviorGroupContent,
+  onSelect,
+  isEditMode,
+  callbacks,
+}) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+  return (
+    <>
+      <Tr key={notification.id}>
+        {notification.description ? (
+          <Td
+            expand={{
+              rowIndex: rowIndex,
+              isExpanded: isExpanded,
+              onToggle: () => setIsExpanded(!isExpanded),
+              expandId: `expandable-toggle-${notification.id}`,
+            }}
+          />
+        ) : (
+          <Td className="pf-u-display-none pf-u-display-block-on-md" />
+        )}
+        <Td>{notification.eventTypeDisplayName}</Td>
+        <Td>{notification.applicationDisplayName}</Td>
+        <Td>
+          {notification.loadingActionStatus === 'loading' ? (
+            <Skeleton width="90%" />
+          ) : (
+            <BehaviorGroupCell
+              id={`behavior-group-cell-${notification.id}`}
+              notification={notification}
+              behaviorGroupContent={behaviorGroupContent}
+              selected={notification.behaviors ?? emptyImmutableArray}
+              onSelect={onSelect}
+              isEditMode={isEditMode}
+            />
+          )}
+        </Td>
+        <Td actions={getActions(notification, callbacks)} />
+      </Tr>
+      {notification.description && isExpanded && (
+        <Tr>
+          <Td className="pf-u-display-none pf-u-display-block-on-md" />
+          <Td colSpan={4}>
+            <Text className="pf-v5-u-color-200 pf-v5-u-p-sm">
+              {notification.description}
+            </Text>
+          </Td>
+        </Tr>
+      )}
+    </>
+  );
+};
+
 export const NotificationsBehaviorGroupTable =
   ouia<NotificationsBehaviorGroupTableProps>((props) => {
     const callbacks: Callbacks | undefined = React.useMemo(() => {
@@ -253,27 +326,17 @@ export const NotificationsBehaviorGroupTable =
     const rows = React.useMemo(() => {
       const notifications = props.notifications;
       const behaviorGroupContent = props.behaviorGroupContent;
-      return notifications.map((notification) => {
+      return notifications.map((notification, rowIndex) => {
         return (
-          <Tr key={notification.id}>
-            <Td>{notification.eventTypeDisplayName}</Td>
-            <Td>{notification.applicationDisplayName}</Td>
-            <Td>
-              {notification.loadingActionStatus === 'loading' ? (
-                <Skeleton width="90%" />
-              ) : (
-                <BehaviorGroupCell
-                  id={`behavior-group-cell-${notification.id}`}
-                  notification={notification}
-                  behaviorGroupContent={behaviorGroupContent}
-                  selected={notification.behaviors ?? emptyImmutableArray}
-                  onSelect={callbacks?.onBehaviorGroupLinkUpdated}
-                  isEditMode={notification.isEditMode}
-                />
-              )}
-            </Td>
-            <Td actions={getActions(notification, callbacks)} />
-          </Tr>
+          <NotificationsBehaviorGroupRow
+            key={notification.id}
+            rowIndex={rowIndex}
+            notification={notification}
+            behaviorGroupContent={behaviorGroupContent}
+            onSelect={callbacks?.onBehaviorGroupLinkUpdated}
+            isEditMode={notification.isEditMode}
+            callbacks={callbacks}
+          />
         );
       });
     }, [props.notifications, props.behaviorGroupContent, callbacks]);
@@ -287,6 +350,7 @@ export const NotificationsBehaviorGroupTable =
       >
         <Thead>
           <Tr>
+            <Th />
             <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>
               Event Type
             </Th>

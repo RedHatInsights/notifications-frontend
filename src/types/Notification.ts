@@ -8,6 +8,7 @@ export interface EventType {
   id: UUID;
   applicationDisplayName: string;
   eventTypeDisplayName: string;
+  description?: string;
 }
 
 export interface Notification extends EventType {
