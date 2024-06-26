@@ -7,14 +7,15 @@ import {
 } from './helpers';
 
 export const eventTypesStep = () => ({
-  title: 'Associate event types',
+  title: 'Associate event types (Optional)',
   name: EVENT_TYPES,
   nextStep: REVIEW,
   fields: [
     {
       component: componentTypes.PLAIN_TEXT,
       name: 'plain-text',
-      label: 'Select event types you would like your integration to react to.',
+      label:
+        'Select event types you would like your integration to react to. You may also skip this step and attach event types later.',
     },
     {
       component: componentTypes.SELECT,
