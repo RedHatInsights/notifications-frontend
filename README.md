@@ -4,7 +4,6 @@
 
 Notifications frontend for Red Hat Insights
 
-
 ## Build app
 
 0. If needed run `npm install` to install dependency packages
@@ -68,4 +67,5 @@ When you want to test your code with unit tests please use `jest` which is preco
 ## Generating types from Openapi file
 
 The ui-frontend depends on types from the ui-backend, these are generated from the Openapi spec file, run `npm run schema` to reload the types.
+
 Generate types can be found in: `src/generated/`, check `package.json` for more info.
