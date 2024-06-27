@@ -93,7 +93,7 @@ const getActions = (
           className: actionButtonClassName,
           title: (
             <Button
-              aria-label='edit'
+              aria-label="edit"
               variant={ButtonVariant.plain}
               isDisabled={isDisabled}
             >
@@ -116,7 +116,7 @@ const getActions = (
         className: actionButtonClassName,
         title: (
           <Button
-            aria-label='done'
+            aria-label="done"
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
           >
@@ -140,7 +140,7 @@ const getActions = (
         className: actionButtonClassName,
         title: (
           <Button
-            aria-label='cancel'
+            aria-label="cancel"
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
           >
@@ -194,13 +194,13 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
             }}
           />
         ) : (
-          <Td className='pf-u-display-none pf-u-display-block-on-md' />
+          <Td className="pf-u-display-none pf-u-display-block-on-md" />
         )}
         <Td>{notification.eventTypeDisplayName}</Td>
         <Td>{notification.applicationDisplayName}</Td>
         <Td>
           {notification.loadingActionStatus === 'loading' ? (
-            <Skeleton width='90%' />
+            <Skeleton width="90%" />
           ) : (
             <BehaviorGroupCell
               id={`behavior-group-cell-${notification.id}`}
@@ -216,9 +216,9 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
       </Tr>
       {notification.description && isExpanded && (
         <Tr>
-          <Td className='pf-u-display-none pf-u-display-block-on-md' />
+          <Td className="pf-u-display-none pf-u-display-block-on-md" />
           <Td colSpan={4}>
-            <Text className='pf-v5-u-color-200 pf-v5-u-p-0'>
+            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
               {notification.description}
             </Text>
           </Td>

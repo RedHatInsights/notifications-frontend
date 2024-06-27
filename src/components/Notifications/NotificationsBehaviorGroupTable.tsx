@@ -19,7 +19,12 @@ import {
 } from '../../types/SortDirection';
 import { ouia } from '../Ouia';
 import EmptyTableState from './EmptyTableState';
-import { Callbacks, NotificationsBehaviorGroupRow, OnBehaviorGroupLinkUpdated, OnNotificationIdHandler } from './NotificationsBehaviorGroupRow';
+import {
+  Callbacks,
+  NotificationsBehaviorGroupRow,
+  OnBehaviorGroupLinkUpdated,
+  OnNotificationIdHandler,
+} from './NotificationsBehaviorGroupRow';
 
 // The value has to be the order on which the columns appear on the table
 export enum NotificationsTableColumns {
