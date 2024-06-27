@@ -251,7 +251,7 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
         <Tr>
           <Td className="pf-u-display-none pf-u-display-block-on-md" />
           <Td colSpan={4}>
-            <Text className="pf-v5-u-color-200 pf-v5-u-p-sm">
+            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
               {notification.description}
             </Text>
           </Td>

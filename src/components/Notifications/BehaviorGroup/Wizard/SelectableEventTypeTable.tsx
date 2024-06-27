@@ -121,8 +121,9 @@ const SelectableEventTypeTableRow: React.FunctionComponent<{
       </Tr>
       {event.description && isExpanded && (
         <Tr>
-          <Td colSpan={4}>
-            <Text className="pf-v5-u-color-200 pf-v5-u-p-sm">
+          <Td colSpan={2} />
+          <Td colSpan={2}>
+            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
               {event.description}
             </Text>
           </Td>
