@@ -2,7 +2,7 @@ import { componentTypes } from '@data-driven-forms/react-form-renderer';
 import { integrationTypeStep } from './integrationTypeStep';
 import { IntegrationCategory } from '../../../types/Integration';
 import { detailSteps } from './detailSteps';
-import { REVIEW } from './helpers';
+import { INTEGRATION_TYPE, REVIEW } from './helpers';
 import { eventTypesStep } from './eventTypesStep';
 
 export const schema = (category, isEdit, isBehaviorGroupsEnabled) => ({
@@ -12,6 +12,7 @@ export const schema = (category, isEdit, isBehaviorGroupsEnabled) => ({
       inModal: true,
       className: 'notifications',
       title: `${isEdit ? 'Edit' : 'Add'} integration`,
+      crossroads: [INTEGRATION_TYPE],
       description:
         'Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console.',
       name: `${isEdit ? 'edit' : 'add'}-integration-wizard`,
