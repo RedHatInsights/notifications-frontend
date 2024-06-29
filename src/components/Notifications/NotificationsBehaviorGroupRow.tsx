@@ -72,10 +72,6 @@ export interface TdActionsType {
   actionsToggle?: (props: CustomActionsToggleProps) => React.ReactNode;
 }
 
-const actionButtonClassName = style({
-  float: 'right',
-});
-
 const HiddenActionsToggle = () => <React.Fragment />;
 
 const getActions = (
@@ -90,7 +86,6 @@ const getActions = (
       items: [
         {
           key: 'edit',
-          className: actionButtonClassName,
           title: (
             <Button
               aria-label="edit"
@@ -113,7 +108,6 @@ const getActions = (
     items: [
       {
         key: 'done',
-        className: actionButtonClassName,
         title: (
           <Button
             aria-label="done"
@@ -137,7 +131,6 @@ const getActions = (
       },
       {
         key: 'cancel',
-        className: actionButtonClassName,
         title: (
           <Button
             aria-label="cancel"
