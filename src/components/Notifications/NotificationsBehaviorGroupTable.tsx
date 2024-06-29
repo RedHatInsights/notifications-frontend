@@ -1,76 +1,30 @@
-import { Button, ButtonVariant, Icon, Skeleton } from '@patternfly/react-core';
-import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
 import {
-  CustomActionsToggleProps,
-  IActions,
   IExtraColumnData,
   SortByDirection,
   Table as TableComposable,
   TableVariant,
   Tbody,
-  Td,
   Th,
   ThProps,
   Thead,
   Tr,
 } from '@patternfly/react-table/dist/dynamic/components/Table';
-import {
-  global_active_color_100,
-  global_disabled_color_100,
-  global_palette_black_600,
-} from '@patternfly/react-tokens';
 import * as React from 'react';
-import { style } from 'typestyle';
 
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
 import {
-  BehaviorGroup,
-  NotificationBehaviorGroup,
-  UUID,
-} from '../../types/Notification';
-import {
   SortDirection,
   sortDirectionFromString,
 } from '../../types/SortDirection';
-import { emptyImmutableArray } from '../../utils/Immutable';
 import { ouia } from '../Ouia';
 import EmptyTableState from './EmptyTableState';
-import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 import {
-  DropdownDirection,
-  DropdownPosition,
-} from '@patternfly/react-core/dist/dynamic/deprecated/components/Dropdown';
-
-export interface TdActionsType {
-  /** The row index */
-  rowIndex?: number;
-  /** Cell actions */
-  items: IActions;
-  /** Whether the actions are disabled */
-  isDisabled?: boolean;
-  /** Actions dropdown position */
-  dropdownPosition?: DropdownPosition;
-  /** Actions dropdown direction */
-  dropdownDirection?: DropdownDirection;
-  /** The container to append the dropdown menu to. Defaults to 'inline'.
-   * If your menu is being cut off you can append it to an element higher up the DOM tree.
-   * Some examples:
-   * menuAppendTo="parent"
-   * menuAppendTo={() => document.body}
-   * menuAppendTo={document.getElementById('target')}
-   */
-  menuAppendTo?: HTMLElement | (() => HTMLElement) | 'inline' | 'parent';
-  /** Custom toggle for the actions menu */
-  actionsToggle?: (props: CustomActionsToggleProps) => React.ReactNode;
-}
-
-type OnNotificationIdHandler = (notificationId: UUID) => void;
-export type OnBehaviorGroupLinkUpdated = (
-  notification: NotificationBehaviorGroup,
-  behaviorGroup: BehaviorGroup,
-  isLinked: boolean
-) => void;
+  Callbacks,
+  NotificationsBehaviorGroupRow,
+  OnBehaviorGroupLinkUpdated,
+  OnNotificationIdHandler,
+} from './NotificationsBehaviorGroupRow';
 
 // The value has to be the order on which the columns appear on the table
 export enum NotificationsTableColumns {
@@ -91,102 +45,6 @@ export interface NotificationsBehaviorGroupTableProps {
 
   onSort: (column: NotificationsTableColumns, direction: SortDirection) => void;
 }
-
-const actionButtonClassName = style({
-  float: 'right',
-});
-
-type Callbacks = {
-  onStartEditing: OnNotificationIdHandler;
-  onFinishEditing: OnNotificationIdHandler;
-  onCancelEditing: OnNotificationIdHandler;
-  onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
-};
-
-const HiddenActionsToggle = () => <React.Fragment />;
-
-const getActions = (
-  notification: BehaviorGroupNotificationRow,
-  callbacks?: Callbacks
-): TdActionsType => {
-  const isDisabled = notification.loadingActionStatus !== 'done';
-
-  if (!notification.isEditMode) {
-    return {
-      actionsToggle: HiddenActionsToggle,
-      items: [
-        {
-          key: 'edit',
-          className: actionButtonClassName,
-          title: (
-            <Button
-              aria-label="edit"
-              variant={ButtonVariant.plain}
-              isDisabled={isDisabled}
-            >
-              <PencilAltIcon />
-            </Button>
-          ),
-          isOutsideDropdown: true,
-          onClick: () => callbacks?.onStartEditing(notification.id),
-          isDisabled: isDisabled || !callbacks,
-        },
-      ],
-    };
-  }
-
-  return {
-    actionsToggle: HiddenActionsToggle,
-    items: [
-      {
-        key: 'done',
-        className: actionButtonClassName,
-        title: (
-          <Button
-            aria-label="done"
-            variant={ButtonVariant.plain}
-            isDisabled={isDisabled}
-          >
-            <Icon
-              color={
-                isDisabled
-                  ? global_disabled_color_100.value
-                  : global_active_color_100.value
-              }
-            >
-              <CheckIcon />
-            </Icon>
-          </Button>
-        ),
-        isOutsideDropdown: true,
-        onClick: () => callbacks?.onFinishEditing(notification.id),
-        isDisabled: isDisabled || !callbacks,
-      },
-      {
-        key: 'cancel',
-        className: actionButtonClassName,
-        title: (
-          <Button
-            aria-label="cancel"
-            variant={ButtonVariant.plain}
-            isDisabled={isDisabled}
-          >
-            <CloseIcon
-              color={
-                isDisabled
-                  ? global_disabled_color_100.value
-                  : global_palette_black_600.value
-              }
-            />
-          </Button>
-        ),
-        isOutsideDropdown: true,
-        onClick: () => callbacks?.onCancelEditing(notification.id),
-        isDisabled: isDisabled || !callbacks,
-      },
-    ],
-  };
-};
 
 export const NotificationsBehaviorGroupTable =
   ouia<NotificationsBehaviorGroupTableProps>((props) => {
@@ -253,27 +111,17 @@ export const NotificationsBehaviorGroupTable =
     const rows = React.useMemo(() => {
       const notifications = props.notifications;
       const behaviorGroupContent = props.behaviorGroupContent;
-      return notifications.map((notification) => {
+      return notifications.map((notification, rowIndex) => {
         return (
-          <Tr key={notification.id}>
-            <Td>{notification.eventTypeDisplayName}</Td>
-            <Td>{notification.applicationDisplayName}</Td>
-            <Td>
-              {notification.loadingActionStatus === 'loading' ? (
-                <Skeleton width="90%" />
-              ) : (
-                <BehaviorGroupCell
-                  id={`behavior-group-cell-${notification.id}`}
-                  notification={notification}
-                  behaviorGroupContent={behaviorGroupContent}
-                  selected={notification.behaviors ?? emptyImmutableArray}
-                  onSelect={callbacks?.onBehaviorGroupLinkUpdated}
-                  isEditMode={notification.isEditMode}
-                />
-              )}
-            </Td>
-            <Td actions={getActions(notification, callbacks)} />
-          </Tr>
+          <NotificationsBehaviorGroupRow
+            key={notification.id}
+            rowIndex={rowIndex}
+            notification={notification}
+            behaviorGroupContent={behaviorGroupContent}
+            onSelect={callbacks?.onBehaviorGroupLinkUpdated}
+            isEditMode={notification.isEditMode}
+            callbacks={callbacks}
+          />
         );
       });
     }, [props.notifications, props.behaviorGroupContent, callbacks]);
@@ -287,6 +135,7 @@ export const NotificationsBehaviorGroupTable =
       >
         <Thead>
           <Tr>
+            <Th />
             <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>
               Event Type
             </Th>

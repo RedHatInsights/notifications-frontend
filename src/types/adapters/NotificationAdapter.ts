@@ -80,6 +80,7 @@ export const toNotification = (
     id: serverNotification.id,
     applicationDisplayName: serverNotification.application.display_name,
     eventTypeDisplayName: serverNotification.display_name,
+    description: serverNotification.description || undefined,
   };
 };
 
