@@ -40,7 +40,7 @@ const bundleMapping = {
 export const NotificationListBundlePage: React.FunctionComponent<
   React.PropsWithChildren<NotificationListBundlePageProps>
 > = (props) => {
-  const { updateDocumentTitle } = useChrome();
+  const { updateDocumentTitle, isFedramp } = useChrome();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -155,14 +155,19 @@ export const NotificationListBundlePage: React.FunctionComponent<
               }}
               className={paddingLeftClassName}
             >
-              <Tab eventKey={2} title={<TabTitleText>OpenShift</TabTitleText>}>
-                <Main>
-                  <BundlePageBehaviorGroupContent
-                    applications={getInitialApplications}
-                    bundle={props.bundleTabs[2]}
-                  />
-                </Main>
-              </Tab>
+              {isFedramp ? null : (
+                <Tab
+                  eventKey={2}
+                  title={<TabTitleText>OpenShift</TabTitleText>}
+                >
+                  <Main>
+                    <BundlePageBehaviorGroupContent
+                      applications={getInitialApplications}
+                      bundle={props.bundleTabs[2]}
+                    />
+                  </Main>
+                </Tab>
+              )}
               <Tab
                 eventKey={0}
                 title={<TabTitleText>Red Hat Enterprise Linux</TabTitleText>}
