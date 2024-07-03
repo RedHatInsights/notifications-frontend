@@ -1,7 +1,11 @@
 const path = require('path');
 
 module.exports = {
-  appUrl: ['/settings/notifications', 'settings/integrations'],
+  appUrl: [
+    '/settings/notifications',
+    'settings/integrations',
+    '/beta/settings/notifications',
+  ],
   debug: true,
   useProxy: true,
   proxyVerbose: true,
@@ -13,6 +17,7 @@ module.exports = {
    * Add additional webpack plugins
    */
   plugins: [],
+  ...(process.env.IS_BETA && { deployment: 'beta/apps' }),
   hotReload: process.env.HOT === 'true',
   routes: {
     ...(process.env.CONFIG_PORT && {
