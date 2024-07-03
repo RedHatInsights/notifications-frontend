@@ -92,15 +92,16 @@ export const IntegrationWizard: React.FunctionComponent<
             }),
           }
         );
-        fetch(`/api/notifications/v1.0/behaviorGroups`, {
-          method: isEdit ? 'PUT' : 'POST',
+        fetch(`/api/notifications/v1.0/notifications/behaviorGroups`, {
+          method: 'POST',
           headers: {
             'Content-Type': 'application/json;charset=UTF-8',
           },
           body: JSON.stringify({
-            name,
-            enabled: true,
-            type,
+            productFamily: '',
+            displayName: '',
+            endpoint_ids: [],
+            event_type_ids: [],
           }),
         });
         closeModal();
