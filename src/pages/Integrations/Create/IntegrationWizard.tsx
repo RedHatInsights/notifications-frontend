@@ -53,6 +53,8 @@ export const IntegrationWizard: React.FunctionComponent<
     [TABLE_TOOLBAR]: TableToolbar,
   };
 
+  // const [progress, setProgress] = React.useState(0);
+
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
   );
@@ -90,6 +92,17 @@ export const IntegrationWizard: React.FunctionComponent<
             }),
           }
         );
+        fetch(`/api/notifications/v1.0/behaviorGroups`, {
+          method: isEdit ? 'PUT' : 'POST',
+          headers: {
+            'Content-Type': 'application/json;charset=UTF-8',
+          },
+          body: JSON.stringify({
+            name,
+            enabled: true,
+            type,
+          }),
+        });
         closeModal();
       }}
       initialValues={

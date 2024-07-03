@@ -111,17 +111,21 @@ const Review: React.FunctionComponent<ReviewProps> = ({
   );
 
   return (
-    <DescriptionList
-      isHorizontal
-      className="src-c-wizard__summary-description-list"
-    >
-      {labelsWithValues.map((field) => (
-        <DescriptionListGroup key={field.name}>
-          <DescriptionListTerm>{field.label}</DescriptionListTerm>
-          <DescriptionListDescription>{field.value}</DescriptionListDescription>
-        </DescriptionListGroup>
-      ))}
-    </DescriptionList>
+    <>
+      <DescriptionList
+        isHorizontal
+        className="src-c-wizard__summary-description-list"
+      >
+        {labelsWithValues.map((field) => (
+          <DescriptionListGroup key={field.name}>
+            <DescriptionListTerm>{field.label}</DescriptionListTerm>
+            <DescriptionListDescription>
+              {field.value}
+            </DescriptionListDescription>
+          </DescriptionListGroup>
+        ))}
+      </DescriptionList>
+    </>
   );
 };
 

@@ -20,6 +20,7 @@ export const CARD_SELECT = 'card-select';
 export const INLINE_ALERT = 'inline-alert';
 export const SELECTABLE_TABLE = 'selectable-table';
 export const TABLE_TOOLBAR = 'table-toolbar';
+export const PROGRESS_BAR = 'progress-bar';
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>
