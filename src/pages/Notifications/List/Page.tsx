@@ -8,6 +8,7 @@ import { useGetApplicationsLazy } from '../../../services/Notifications/GetAppli
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { Facet } from '../../../types/Notification';
 import { NotificationListBundlePage } from './BundlePage';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 enum BundleStatus {
   LOADING,
@@ -20,9 +21,14 @@ const isBundleStatus = (bundle: Facet | BundleStatus): bundle is BundleStatus =>
 
 export const NotificationsListPage: React.FunctionComponent = () => {
   const navigate = useNavigate();
+  const { isFedramp } = useChrome();
   const params = useParams<Record<string, string | undefined>>();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-  const bundleList = ['rhel', 'console', 'openshift'];
+  const bundleList = ['rhel', 'console'];
+
+  if (!isFedramp) {
+    bundleList.push('openshift');
+  }
 
   const bundleName = useMemo(
     () => (notificationsOverhaul ? 'rhel' : params.bundleName),
