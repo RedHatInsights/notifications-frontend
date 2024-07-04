@@ -111,19 +111,17 @@ export const NotificationsBehaviorGroupTable =
     const rows = React.useMemo(() => {
       const notifications = props.notifications;
       const behaviorGroupContent = props.behaviorGroupContent;
-      return notifications.map((notification, rowIndex) => {
-        return (
-          <NotificationsBehaviorGroupRow
-            key={notification.id}
-            rowIndex={rowIndex}
-            notification={notification}
-            behaviorGroupContent={behaviorGroupContent}
-            onSelect={callbacks?.onBehaviorGroupLinkUpdated}
-            isEditMode={notification.isEditMode}
-            callbacks={callbacks}
-          />
-        );
-      });
+      return notifications.map((notification, rowIndex) => (
+        <NotificationsBehaviorGroupRow
+          key={notification.id}
+          rowIndex={rowIndex}
+          notification={notification}
+          behaviorGroupContent={behaviorGroupContent}
+          onSelect={callbacks?.onBehaviorGroupLinkUpdated}
+          isEditMode={notification.isEditMode}
+          callbacks={callbacks}
+        />
+      ));
     }, [props.notifications, props.behaviorGroupContent, callbacks]);
 
     return (

@@ -97,7 +97,7 @@ const SelectableEventTypeTableRow: React.FunctionComponent<{
             }}
           />
         ) : (
-          <Td className="pf-u-display-none pf-u-display-block-on-md" />
+          <Td />
         )}
         <Td
           modifier={selectionLoading ? 'fitContent' : undefined}
