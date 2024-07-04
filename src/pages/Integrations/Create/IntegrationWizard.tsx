@@ -108,3 +108,5 @@ export const IntegrationWizard: React.FunctionComponent<
     </FormRenderer>
   ) : null;
 };
+
+export default IntegrationWizard;

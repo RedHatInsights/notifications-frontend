@@ -45,6 +45,10 @@ module.exports = {
         __dirname,
         './src/components/Widgets/EventsWidget'
       ),
+      './IntegrationsWizard': path.resolve(
+        __dirname,
+        './src/pages/Integrations/Create/IntegrationWizard.tsx'
+      ),
     },
     exclude: ['react-router-dom'],
     shared: [
