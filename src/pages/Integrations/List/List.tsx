@@ -316,6 +316,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
           isEdit={modalIsOpenState.isEdit}
           template={modalIsOpenState.template}
           closeModal={modalIsOpenActions.reset}
+          afterSubmit={integrationsQuery.query}
           category={category}
         />
       )}

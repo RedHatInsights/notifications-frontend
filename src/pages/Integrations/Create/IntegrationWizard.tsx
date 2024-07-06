@@ -34,6 +34,7 @@ export interface IntegrationWizardProps {
     }
   >;
   closeModal: () => void;
+  afterSubmit: () => void;
 }
 
 export const IntegrationWizard: React.FunctionComponent<
@@ -44,6 +45,7 @@ export const IntegrationWizard: React.FunctionComponent<
   template,
   closeModal,
   category,
+  afterSubmit,
 }: IntegrationWizardProps) => {
   const mapperExtension = {
     [REVIEW]: Review,
@@ -90,6 +92,7 @@ export const IntegrationWizard: React.FunctionComponent<
             }),
           }
         );
+        afterSubmit?.();
         closeModal();
       }}
       initialValues={
