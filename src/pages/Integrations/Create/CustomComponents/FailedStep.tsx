@@ -27,10 +27,6 @@ export const FailedStep: React.FunctionComponent<ProgressBarProps> = (
           <>
             <Stack hasGutter>
               <StackItem>
-                {/** I am not sure where to have this Edit button go? To the beginning of the wizard? */}
-                <Button variant="primary">Edit</Button>
-              </StackItem>
-              <StackItem>
                 <Button variant="link" onClick={props.closeModal}>
                   Close
                 </Button>

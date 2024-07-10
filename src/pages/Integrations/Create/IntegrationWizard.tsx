@@ -95,7 +95,7 @@ export const IntegrationWizard: React.FunctionComponent<
         fetch(`/api/notifications/v1.0/notifications/behaviorGroups`, {
           method: 'POST',
           headers: {
-            'Content-Type': 'application/json;charset=UTF-8',
+            'Content-Type': 'application/json',
           },
           body: JSON.stringify({
             productFamily: '',
