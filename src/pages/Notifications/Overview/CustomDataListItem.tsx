@@ -15,6 +15,7 @@ import {
 } from '@patternfly/react-core';
 import {
   BellIcon,
+  BugIcon,
   IntegrationIcon,
   RunningIcon,
   UserIcon,
@@ -29,6 +30,7 @@ export enum IconName {
   INTEGRATION = 'integration',
   USERS = 'users',
   BELL = 'bell',
+  BUG = 'bug',
 }
 
 interface CustomDataListItemProps {
@@ -41,6 +43,17 @@ interface CustomDataListItemProps {
   isExpanded?: boolean;
 }
 
+const IconMapper = {
+  [IconName.USER]: <UserIcon className="pf-u-primary-color-100" />,
+  [IconName.RUNNING]: <RunningIcon className="pf-u-primary-color-100" />,
+  [IconName.INTEGRATION]: (
+    <IntegrationIcon className="pf-u-primary-color-100" />
+  ),
+  [IconName.USERS]: <UsersIcon className="pf-u-primary-color-100" />,
+  [IconName.BELL]: <BellIcon className="pf-u-primary-color-100" />,
+  [IconName.BUG]: <BugIcon className="pf-u-primary-color-100" />,
+};
+
 const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
   icon,
   heading,
@@ -51,28 +64,8 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
   isExpanded,
 }) => {
   const navigate = useNavigate();
-  let iconElement: React.ReactNode = null;
+  const iconElement: React.ReactNode | null = IconMapper[icon] || null;
   const [expanded, setExpanded] = React.useState(isExpanded || false);
-
-  switch (icon) {
-    case IconName.USER:
-      iconElement = <UserIcon className="pf-u-primary-color-100" />;
-      break;
-    case IconName.RUNNING:
-      iconElement = <RunningIcon className="pf-u-primary-color-100" />;
-      break;
-    case IconName.INTEGRATION:
-      iconElement = <IntegrationIcon className="pf-u-primary-color-100" />;
-      break;
-    case IconName.USERS:
-      iconElement = <UsersIcon className="pf-u-primary-color-100" />;
-      break;
-    case IconName.BELL:
-      iconElement = <BellIcon className="pf-u-primary-color-100" />;
-      break;
-    default:
-      break;
-  }
 
   return (
     <React.Fragment>

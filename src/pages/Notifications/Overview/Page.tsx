@@ -48,6 +48,9 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const [isOrgAdmin, setIsOrgAdmin] = React.useState(null);
   const { auth, isBeta, getBundle } = useChrome();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+  const errataNotifications = useFlag(
+    'platform.notifications.errata.userpreferences'
+  );
   React.useEffect(() => {
     const getUser = async () => {
       const {
@@ -312,6 +315,37 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 }/${getBundle()}/notifications/configure-events?activeTab=behaviorGroups`}
                 expandableContent="Configure which notifications different users in your organization can receive, and how to notify groups of users when selected events occur."
               />
+              {errataNotifications && (
+                <CustomDataListItem
+                  icon={IconName.BUG}
+                  heading="Manage errata for your Subscriptions"
+                  linkTitle="Manage subscriptions errata"
+                  linkTarget={`${
+                    isBeta() ? '/preview' : ''
+                  }/notifications/user-preferences`}
+                  expandableContent={
+                    <span>
+                      Configure notifications for product advisories that affect
+                      your purchased subscriptions. Managing these notifications
+                      can be done in your .{' '}
+                      <Button
+                        component="a"
+                        href={`${
+                          isBeta() ? '/preview' : ''
+                        }/notifications/user-preferences`}
+                        variant="link"
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigate('/notifications/user-preferences');
+                        }}
+                      >
+                        Notifications preferences
+                      </Button>
+                      .
+                    </span>
+                  }
+                />
+              )}
             </DataList>
           </React.Fragment>
         ) : (
