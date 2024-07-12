@@ -1,11 +1,4 @@
-import {
-  Button,
-  Progress,
-  ProgressMeasureLocation,
-  ProgressVariant,
-  Stack,
-  StackItem,
-} from '@patternfly/react-core';
+import { Button, Stack, StackItem } from '@patternfly/react-core';
 import ErrorState from '@patternfly/react-component-groups/dist/dynamic/ErrorState';
 import React from 'react';
 
@@ -33,11 +26,6 @@ export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
             </Stack>
           </>
         }
-      />
-      <Progress
-        value={props.progress}
-        measureLocation={ProgressMeasureLocation.outside}
-        variant={ProgressVariant.danger}
       />
     </>
   );
