@@ -53,8 +53,6 @@ export const IntegrationWizard: React.FunctionComponent<
     [TABLE_TOOLBAR]: TableToolbar,
   };
 
-  // const [progress, setProgress] = React.useState(0);
-
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
   );

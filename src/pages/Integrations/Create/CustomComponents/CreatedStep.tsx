@@ -15,14 +15,13 @@ import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface ProgressBarProps {
+interface ProgressProps {
   progress: number;
   integrationName: string;
+  behaviorGroupName: string;
 }
 
-export const CreatedStep: React.FunctionComponent<ProgressBarProps> = (
-  props
-) => {
+export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
   const { isBeta, getBundle } = useChrome();
   const navigate = useNavigate();
   return (
@@ -33,9 +32,9 @@ export const CreatedStep: React.FunctionComponent<ProgressBarProps> = (
         icon={<EmptyStateIcon icon={CheckCircleIcon} />}
       />
       <EmptyStateBody>
-        The integration ${props.integrationName} was created successfully. As a
-        next step, you can configure event notifications in the Hybrid Cloud
-        Console settings.
+        The integration ${props.integrationName} was created successfully. The
+        behavior group ${props.behaviorGroupName} was created successfully. You
+        can configure additional events in the Hybrid Cloud Console settings.
       </EmptyStateBody>
       <EmptyStateFooter>
         <EmptyStateActions>
@@ -46,14 +45,14 @@ export const CreatedStep: React.FunctionComponent<ProgressBarProps> = (
                 component="a"
                 href={`${
                   isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/configure-events`}
+                }/${getBundle()}/settings/integrations`}
                 size="lg"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(`/${getBundle()}/notifications/configure-events`);
+                  navigate(`/${getBundle()}/settings/integrations`);
                 }}
               >
-                Configure event notifications
+                View integration
               </Button>
             </StackItem>
             <StackItem>
@@ -62,14 +61,14 @@ export const CreatedStep: React.FunctionComponent<ProgressBarProps> = (
                 component="a"
                 href={`${
                   isBeta() ? '/preview' : ''
-                }/${getBundle()}/settings/integrations`}
+                }/${getBundle()}/notifications/configure-events`}
                 size="lg"
                 onClick={(e) => {
                   e.preventDefault();
-                  navigate(`/${getBundle()}/settings/integrations`);
+                  navigate(`/${getBundle()}/notifications/configure-events`);
                 }}
               >
-                Back to Integrations
+                View behavior group
               </Button>
             </StackItem>
           </Stack>
