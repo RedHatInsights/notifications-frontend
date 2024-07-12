@@ -3,10 +3,8 @@ import ErrorState from '@patternfly/react-component-groups/dist/dynamic/ErrorSta
 import React from 'react';
 
 interface ProgressProps {
-  progress: number;
   integrationName: string;
   behaviorGroupName: string;
-  closeModal: () => void;
 }
 
 export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
@@ -19,9 +17,7 @@ export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
           <>
             <Stack hasGutter>
               <StackItem>
-                <Button variant="link" onClick={props.closeModal}>
-                  Close
-                </Button>
+                <Button variant="link">Close</Button>
               </StackItem>
             </Stack>
           </>

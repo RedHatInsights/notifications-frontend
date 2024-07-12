@@ -6,6 +6,7 @@ import {
   WizardHeader,
   WizardStep,
 } from '@patternfly/react-core';
+import FinalStep from './CustomComponents/FinalStep';
 
 export const FinalWizard = () => {
   const [isModalOpen, setIsModalOpen] = React.useState(false);
@@ -29,7 +30,9 @@ export const FinalWizard = () => {
           />
         }
       >
-        <WizardStep name="Finish" id="complete-wizard-step"></WizardStep>
+        <WizardStep name="Finish" id="complete-wizard-step">
+          {<FinalStep />}
+        </WizardStep>
       </Wizard>
     </Modal>
   );
