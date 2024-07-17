@@ -18,6 +18,7 @@ import { useNavigate } from 'react-router-dom';
 interface ProgressProps {
   integrationName: string;
   behaviorGroupName: string;
+  onClose: () => void;
 }
 
 export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
@@ -47,6 +48,7 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
                 }/${getBundle()}/settings/integrations`}
                 size="lg"
                 onClick={(e) => {
+                  props.onClose();
                   e.preventDefault();
                   navigate(`/${getBundle()}/settings/integrations`);
                 }}
@@ -63,6 +65,7 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
                 }/${getBundle()}/notifications/configure-events`}
                 size="lg"
                 onClick={(e) => {
+                  props.onClose();
                   e.preventDefault();
                   navigate(`/${getBundle()}/notifications/configure-events`);
                 }}

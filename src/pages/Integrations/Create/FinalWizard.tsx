@@ -6,10 +6,21 @@ import {
   WizardHeader,
   WizardStep,
 } from '@patternfly/react-core';
-import FinalStep from './CustomComponents/FinalStep';
+import FinalStep, { IntegrationsData } from './CustomComponents/FinalStep';
+import './finalWizard.scss';
 
-export const FinalWizard = () => {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+interface ProgressProps {
+  data: IntegrationsData;
+  onClose: () => void;
+}
+
+export const FinalWizard: React.FunctionComponent<ProgressProps> = ({
+  data,
+  onClose,
+}) => {
+  const [isModalOpen, setIsModalOpen] = React.useState(true);
+
+  console.log(data, 'this is data!');
 
   return (
     <Modal
@@ -18,21 +29,47 @@ export const FinalWizard = () => {
       showClose={false}
       onEscapePress={() => setIsModalOpen(false)}
       hasNoBodyWrapper
+      className="notifications"
     >
       <Wizard
         height={400}
-        onClose={() => setIsModalOpen(false)}
+        onClose={() => {
+          setIsModalOpen(false);
+          onClose();
+        }}
+        className="src-c-wizard__progress"
         header={
           <WizardHeader
-            onClose={() => setIsModalOpen(false)}
+            onClose={() => {
+              onClose();
+              setIsModalOpen(false);
+            }}
             title="Add integration"
             description="Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console."
           />
         }
+        nav={<></>}
+        footer={<></>}
       >
-        <WizardStep name="Finish" id="complete-wizard-step">
-          {<FinalStep />}
-        </WizardStep>
+        <WizardStep
+          body={{
+            hasNoPadding: true,
+          }}
+          name="progress"
+          id="complete-wizard-step"
+          steps={[
+            <div key="final-step">
+              <FinalStep
+                data={data}
+                onCancel={() => {
+                  onClose();
+                  setIsModalOpen(false);
+                }}
+              />
+            </div>,
+          ]}
+          isHidden={true}
+        ></WizardStep>
       </Wizard>
     </Modal>
   );

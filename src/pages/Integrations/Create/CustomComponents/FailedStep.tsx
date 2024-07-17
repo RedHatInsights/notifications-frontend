@@ -5,6 +5,7 @@ import React from 'react';
 interface ProgressProps {
   integrationName: string;
   behaviorGroupName: string;
+  onClose: () => void;
 }
 
 export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
@@ -17,7 +18,9 @@ export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
           <>
             <Stack hasGutter>
               <StackItem>
-                <Button variant="link">Close</Button>
+                <Button variant="link" onClick={props.onClose}>
+                  Close
+                </Button>
               </StackItem>
             </Stack>
           </>

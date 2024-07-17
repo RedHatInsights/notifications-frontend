@@ -26,7 +26,7 @@ import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader/Pa
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
@@ -43,6 +43,8 @@ const CONFIGURE_SOURCES =
   'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_sources_for_red_hat_services/index';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
+  const params = useLocation();
+  console.log(params, 'this is params!');
   const navigate = useNavigate();
   const isSourcesIntegrations = useFlag('platform.sources.integrations');
   const [isOrgAdmin, setIsOrgAdmin] = React.useState(null);

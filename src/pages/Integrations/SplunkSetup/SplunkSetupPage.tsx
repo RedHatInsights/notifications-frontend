@@ -58,6 +58,7 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
 );
 
 export const SplunkSetupPage: React.FunctionComponent = () => {
+  console.log('======================== I am here!!! =============');
   const [step, setStep] = useState(2);
   const [stepIsInProgress, setStepIsInProgress] = useState(false);
   const [stepVariant, setStepVariant] =
