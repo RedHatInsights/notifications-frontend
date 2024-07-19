@@ -1,38 +1,132 @@
-import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
 import CreatedStep from './CreatedStep';
 import FailedStep from './FailedStep';
+import {
+  Button,
+  EmptyState,
+  EmptyStateActions,
+  EmptyStateFooter,
+  EmptyStateHeader,
+  EmptyStateIcon,
+  EmptyStateVariant,
+  Spinner,
+} from '@patternfly/react-core';
+
+export type IntegrationsData = {
+  url: string;
+  type: string;
+  sub_type?: string;
+  name: string;
+  secret_token?: string;
+  isEdit?: boolean;
+  template?: {
+    id: string;
+  };
+};
 
 interface ProgressProps {
-  integrationName: string;
-  behaviorGroupName: string;
+  data: IntegrationsData;
+  onCancel: () => void;
 }
 
-export const FinalStep: React.FunctionComponent<ProgressProps> = (props) => {
-  const { isBeta, getBundle } = useChrome();
-  const navigate = useNavigate();
-  const [isCreating, setIsCreating] = React.useState(true);
-  const [isCreated, setIsCreated] = React.useState(false);
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
- 
-//   I am trying to make sense of this to set the different pages as it progresses.. doesn't do anything right now.
+export const FinalStep: React.FunctionComponent<ProgressProps> = ({
+  data,
+  onCancel,
+}) => {
+  const [isFinished, setIsFinished] = React.useState(false);
+  const [hasError, setHasError] = React.useState(false);
 
-  const handleCreate = () => {
-    setIsCreating(true);
+  const integrationsUrl = '/api/integrations/v1.0/endpoints';
+  const behaviorGroupUrl = `/api/notifications/v1.0/notifications/behaviorGroups`;
 
-    if (data.response === '200') {
-      setIsCreated(true);
-      <CreatedStep integrationName={''} behaviorGroupName={''} />;
-    } else {
-      setIsCreated(false);
-      <FailedStep integrationName={''} behaviorGroupName={''} />;
-    }
-  };
+  React.useEffect(() => {
+    console.log('I was rendered!');
+    const createAction = async () => {
+      try {
+        const result = await (
+          await fetch(
+            `${integrationsUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
+            {
+              method: data.isEdit ? 'PUT' : 'POST',
+              headers: {
+                'Content-Type': 'application/json;charset=UTF-8',
+              },
+              body: JSON.stringify({
+                name: data.name,
+                enabled: true,
+                type: data.type,
+                ...(data.sub_type && { sub_type: data.sub_type }),
+                description: '',
+                properties: {
+                  method: 'POST',
+                  url: data.url,
+                  disable_ssl_verification: false,
+                  secret_token: data.secret_token,
+                },
+              }),
+            }
+          )
+        ).json();
 
-  return (
+        console.log(result, 'this is the result data!');
+        await fetch(`${behaviorGroupUrl}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            // TODO: we'll have to go trough each event and probably create multiple behavior groups for each product family
+            bundle_name: 'rhel',
+            display_name: `${data?.name || ''} behavior group`,
+            endpoint_ids: [result.id],
+            // TODO: fill in event ids from data object
+            event_type_ids: [],
+          }),
+        });
+      } catch (e) {
+        setHasError(true);
+      }
+      setIsFinished(true);
+    };
+    createAction();
+  }, [behaviorGroupUrl, data]);
 
-  )
+  return isFinished ? (
+    hasError ? (
+      <FailedStep
+        integrationName={data?.name || ''}
+        behaviorGroupName={`${data?.name || ''} group`}
+        onClose={onCancel}
+      />
+    ) : (
+      <CreatedStep
+        integrationName={data?.name || ''}
+        behaviorGroupName={`${data?.name || ''} group`}
+        onClose={onCancel}
+      />
+    )
+  ) : (
+    <EmptyState variant={EmptyStateVariant.lg}>
+      <EmptyStateHeader
+        titleText="Creating integration"
+        headingLevel="h4"
+        icon={<EmptyStateIcon icon={Spinner} />}
+      />
+      <EmptyStateFooter>
+        <EmptyStateActions>
+          <Button
+            variant="link"
+            onClick={() => {
+              onCancel();
+            }}
+          >
+            {' '}
+            Cancel
+          </Button>
+        </EmptyStateActions>
+      </EmptyStateFooter>
+    </EmptyState>
+  );
 };
 
 export default FinalStep;

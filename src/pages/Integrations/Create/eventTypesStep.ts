@@ -4,7 +4,6 @@ import {
   EVENT_TYPES_TABLE,
   REVIEW,
   SELECTABLE_TABLE,
-  behaviorGroupTooltip,
 } from './helpers';
 
 export const eventTypesStep = () => ({
@@ -15,7 +14,7 @@ export const eventTypesStep = () => ({
     {
       component: componentTypes.PLAIN_TEXT,
       name: 'plain-text',
-      label: `Select event types you would like your integration to react to. This will create a ${behaviorGroupTooltip} automatically for you. You may also skip this step and attach event types later.`,
+      label: `Select event types you would like your integration to react to. This will create a behavior group automatically for you. You may also skip this step and attach event types later.`,
     },
     {
       component: componentTypes.SELECT,

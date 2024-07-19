@@ -1,7 +1,6 @@
 import {
   Button,
   EmptyState,
-  EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
   EmptyStateHeader,
@@ -18,6 +17,7 @@ import { useNavigate } from 'react-router-dom';
 interface ProgressProps {
   integrationName: string;
   behaviorGroupName: string;
+  onClose: () => void;
 }
 
 export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
@@ -28,50 +28,54 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
       <EmptyStateHeader
         titleText="Integration created"
         headingLevel="h4"
-        icon={<EmptyStateIcon icon={CheckCircleIcon} />}
+        icon={<EmptyStateIcon icon={CheckCircleIcon} color="green" />}
       />
       <EmptyStateBody>
-        The integration ${props.integrationName} was created successfully. The
-        behavior group ${props.behaviorGroupName} was created successfully. You
-        can configure additional events in the Hybrid Cloud Console settings.
+        The integration <b>&apos;{props.integrationName}&apos;</b> was created
+        successfully. The behavior group{' '}
+        <b>&apos;{props.behaviorGroupName}&apos;</b> was created successfully.
+        You can configure additional events in the Hybrid Cloud Console
+        settings.
       </EmptyStateBody>
       <EmptyStateFooter>
-        <EmptyStateActions>
-          <Stack hasGutter>
-            <StackItem>
-              <Button
-                variant="primary"
-                component="a"
-                href={`${
-                  isBeta() ? '/preview' : ''
-                }/${getBundle()}/settings/integrations`}
-                size="lg"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(`/${getBundle()}/settings/integrations`);
-                }}
-              >
-                View integration
-              </Button>
-            </StackItem>
-            <StackItem>
-              <Button
-                variant="link"
-                component="a"
-                href={`${
-                  isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/configure-events`}
-                size="lg"
-                onClick={(e) => {
-                  e.preventDefault();
-                  navigate(`/${getBundle()}/notifications/configure-events`);
-                }}
-              >
-                View behavior group
-              </Button>
-            </StackItem>
-          </Stack>
-        </EmptyStateActions>
+        <Stack hasGutter>
+          <StackItem>
+            <Button
+              variant="primary"
+              component="a"
+              href={`${
+                isBeta() ? '/preview' : ''
+              }/${getBundle()}/settings/integrations`}
+              size="lg"
+              onClick={(e) => {
+                props.onClose();
+                e.preventDefault();
+                navigate(`/${getBundle()}/settings/integrations`);
+              }}
+            >
+              View integration
+            </Button>
+          </StackItem>
+          <StackItem>
+            <Button
+              variant="link"
+              component="a"
+              href={`${
+                isBeta() ? '/preview' : ''
+              }/${getBundle()}/notifications/configure-events?tab=behaviorGroups`}
+              size="lg"
+              onClick={(e) => {
+                props.onClose();
+                e.preventDefault();
+                navigate(
+                  `/${getBundle()}/notifications/configure-events?tab=behaviorGroups`
+                );
+              }}
+            >
+              View behavior group
+            </Button>
+          </StackItem>
+        </Stack>
       </EmptyStateFooter>
     </EmptyState>
   );

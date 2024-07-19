@@ -3,7 +3,6 @@ import {
   IntegrationIcon,
   IntegrationIconTypes,
 } from '../../../types/Integration';
-import { Button, Tooltip } from '@patternfly/react-core';
 
 export const INTEGRATION_TYPE = 'type';
 export const EVENT_TYPES_TABLE = 'event-types-table';
@@ -21,22 +20,6 @@ export const CARD_SELECT = 'card-select';
 export const INLINE_ALERT = 'inline-alert';
 export const SELECTABLE_TABLE = 'selectable-table';
 export const TABLE_TOOLBAR = 'table-toolbar';
-
-export const behaviorGroupTooltip = (
-  <Tooltip
-    content={
-      <div>
-        Behavior groups are made up of action/recipient pairings that allow you
-        to configure which notification actions different users will be able to
-        receiveMessageOnPort. Once you&apos;ve created a behavior group, you can
-        assign it to a notification event
-      </div>
-    }
-    position="bottom"
-  >
-    <Button variant="link">behavior group</Button>
-  </Tooltip>
-);
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>

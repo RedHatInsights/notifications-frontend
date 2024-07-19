@@ -19,6 +19,8 @@ import {
 import { Integration } from '../../../types/Integration';
 import TableToolbar from './CustomComponents/TableToolbar';
 import { useFlag } from '@unleash/proxy-client-react';
+import { IntegrationsData } from './CustomComponents/FinalStep';
+import { FinalWizard } from './FinalWizard';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -57,66 +59,94 @@ export const IntegrationWizard: React.FunctionComponent<
     'platform.integrations.behavior-groups-move'
   );
 
-  return isOpen ? (
-    <FormRenderer
-      schema={schema(category, isEdit, isBehaviorGroupsEnabled)}
-      componentMapper={{ ...componentMapper, ...mapperExtension }}
-      onSubmit={({
-        url,
-        [INTEGRATION_TYPE]: intType,
-        name,
-        'secret-token': secret_token,
-      }) => {
-        const [type, sub_type] = intType?.split(':') || ['webhook'];
-        fetch(
-          `/api/integrations/v1.0/endpoints${isEdit ? `/${template?.id}` : ''}`,
-          {
-            method: isEdit ? 'PUT' : 'POST',
-            headers: {
-              'Content-Type': 'application/json;charset=UTF-8',
-            },
-            body: JSON.stringify({
-              name,
-              enabled: true,
-              type,
-              ...(sub_type && { sub_type }),
-              description: '',
-              properties: {
-                method: 'POST',
+  const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
+  const [wizardState, setWizardState] = React.useState<
+    IntegrationsData | undefined
+  >();
+
+  React.useEffect(() => {
+    setWizardOpen(isOpen);
+  }, [isOpen]);
+
+  return (
+    <React.Fragment>
+      {wizardOpen ? (
+        <FormRenderer
+          schema={schema(category, isEdit, isBehaviorGroupsEnabled)}
+          componentMapper={{ ...componentMapper, ...mapperExtension }}
+          onSubmit={({
+            url,
+            [INTEGRATION_TYPE]: intType,
+            name,
+            'secret-token': secret_token,
+            //TODO: collect information about selected events
+          }) => {
+            console.log('I am here!');
+            const [type, sub_type] = intType?.split(':') || ['webhook'];
+            if (!isBehaviorGroupsEnabled) {
+              fetch(
+                `/api/integrations/v1.0/endpoints${
+                  isEdit ? `/${template?.id}` : ''
+                }`,
+                {
+                  method: isEdit ? 'PUT' : 'POST',
+                  headers: {
+                    'Content-Type': 'application/json;charset=UTF-8',
+                  },
+                  body: JSON.stringify({
+                    name,
+                    enabled: true,
+                    type,
+                    ...(sub_type && { sub_type }),
+                    description: '',
+                    properties: {
+                      method: 'POST',
+                      url,
+                      disable_ssl_verification: false,
+                      secret_token,
+                    },
+                  }),
+                }
+              );
+              closeModal();
+            } else {
+              setWizardState({
+                isEdit,
+                // TODO: add information about selected events
+                // template,
                 url,
-                disable_ssl_verification: false,
+                type,
+                sub_type,
+                name,
                 secret_token,
-              },
-            }),
-          }
-        );
-        fetch(`/api/notifications/v1.0/notifications/behaviorGroups`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            productFamily: '',
-            displayName: '',
-            endpoint_ids: [],
-            event_type_ids: [],
-          }),
-        });
-        closeModal();
-      }}
-      initialValues={
-        isEdit
-          ? {
-              ...template,
-              'secret-token': template?.secretToken,
+              });
+              setWizardOpen(false);
             }
-          : {}
-      }
-      onCancel={closeModal}
-    >
-      {(props) => {
-        return <Pf4FormTemplate {...props} showFormControls={false} />;
-      }}
-    </FormRenderer>
-  ) : null;
+          }}
+          initialValues={
+            isEdit
+              ? {
+                  ...template,
+                  'secret-token': template?.secretToken,
+                }
+              : {}
+          }
+          onCancel={closeModal}
+        >
+          {(props) => {
+            return <Pf4FormTemplate {...props} showFormControls={false} />;
+          }}
+        </FormRenderer>
+      ) : null}
+      {wizardState !== undefined && (
+        <FinalWizard
+          data={wizardState}
+          onClose={() => {
+            setWizardState(undefined);
+            closeModal();
+          }}
+        />
+      )}
+    </React.Fragment>
+  );
 };
