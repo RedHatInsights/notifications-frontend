@@ -19,7 +19,6 @@ export const FinalWizard: React.FunctionComponent<ProgressProps> = ({
   onClose,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(true);
-  console.log(data, 'this is data!');
 
   return (
     <Modal

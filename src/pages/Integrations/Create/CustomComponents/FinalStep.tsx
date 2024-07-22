@@ -22,6 +22,8 @@ export type IntegrationsData = {
   template?: {
     id: string;
   };
+  event_type_id: string;
+  bundle_name: string;
 };
 
 interface ProgressProps {
@@ -40,7 +42,6 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
   const behaviorGroupUrl = `/api/notifications/v1.0/notifications/behaviorGroups`;
 
   React.useEffect(() => {
-    console.log('I was rendered!');
     const createAction = async () => {
       try {
         const result = await (
@@ -68,19 +69,17 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
           )
         ).json();
 
-        console.log(result, 'this is the result data!');
         await fetch(`${behaviorGroupUrl}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            // TODO: we'll have to go trough each event and probably create multiple behavior groups for each product family
-            bundle_name: 'rhel',
+            bundle_name: [data.bundle_name],
             display_name: `${data?.name || ''} behavior group`,
             endpoint_ids: [result.id],
             // TODO: fill in event ids from data object
-            event_type_ids: [],
+            id: [data?.event_type_id],
           }),
         });
       } catch (e) {
@@ -95,13 +94,13 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
     hasError ? (
       <FailedStep
         integrationName={data?.name || ''}
-        behaviorGroupName={`${data?.name || ''} group`}
+        behaviorGroupName={`${data?.name || ''} behavior group`}
         onClose={onCancel}
       />
     ) : (
       <CreatedStep
         integrationName={data?.name || ''}
-        behaviorGroupName={`${data?.name || ''} group`}
+        behaviorGroupName={`${data?.name || ''} behavior group`}
         onClose={onCancel}
       />
     )

@@ -79,7 +79,8 @@ export const IntegrationWizard: React.FunctionComponent<
             [INTEGRATION_TYPE]: intType,
             name,
             'secret-token': secret_token,
-            //TODO: collect information about selected events
+            'event-types': event_type_id,
+            'product-family': bundle_name,
           }) => {
             console.log('I am here!');
             const [type, sub_type] = intType?.split(':') || ['webhook'];
@@ -112,13 +113,13 @@ export const IntegrationWizard: React.FunctionComponent<
             } else {
               setWizardState({
                 isEdit,
-                // TODO: add information about selected events
-                // template,
                 url,
                 type,
                 sub_type,
                 name,
                 secret_token,
+                event_type_id,
+                bundle_name,
               });
               setWizardOpen(false);
             }
