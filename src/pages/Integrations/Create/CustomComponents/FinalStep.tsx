@@ -69,6 +69,8 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
           )
         ).json();
 
+        console.log(result, 'resultsss');
+
         await fetch(`${behaviorGroupUrl}`, {
           method: 'POST',
           headers: {
@@ -79,7 +81,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
             display_name: `${data?.name || ''} behavior group`,
             endpoint_ids: [result.id],
             // TODO: fill in event ids from data object
-            id: [data?.event_type_id],
+            id: [data.event_type_id],
           }),
         });
       } catch (e) {
@@ -89,6 +91,8 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
     };
     createAction();
   }, [behaviorGroupUrl, data]);
+
+  console.log(data, 'ah');
 
   return isFinished ? (
     hasError ? (

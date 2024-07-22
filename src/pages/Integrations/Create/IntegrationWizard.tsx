@@ -79,7 +79,7 @@ export const IntegrationWizard: React.FunctionComponent<
             [INTEGRATION_TYPE]: intType,
             name,
             'secret-token': secret_token,
-            'event-types': event_type_id,
+            'event-types-table': event_type_id,
             'product-family': bundle_name,
           }) => {
             console.log('I am here!');
@@ -123,6 +123,7 @@ export const IntegrationWizard: React.FunctionComponent<
               });
               setWizardOpen(false);
             }
+            console.log(wizardState, 'stateeee');
           }}
           initialValues={
             isEdit
