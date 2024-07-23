@@ -88,11 +88,20 @@ const routesOverhaul: Path[] = [
 
 export const Routes: React.FunctionComponent = () => {
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+  const { getApp } = useChrome();
 
   const pathRoutes = React.useMemo(
     () => (notificationsOverhaul ? routesOverhaul : legacyRoutes),
     [notificationsOverhaul]
   );
+
+  // FIXUP: notifications overhaul removed splunk setup page, but customers require it
+  if (notificationsOverhaul && getApp() === 'integrations') {
+    pathRoutes.unshift({
+      path: '/',
+      component: SplunkSetupPage,
+    });
+  }
 
   return (
     <DomRoutes>

@@ -1,4 +1,4 @@
-import { Skeleton, Spinner } from '@patternfly/react-core';
+import { Skeleton, Spinner, Text } from '@patternfly/react-core';
 import {
   Table as TableComposable,
   TableVariant,
@@ -41,6 +41,7 @@ const SelectableEventTypeTableLayout: React.FunctionComponent<
       <Thead>
         <Tr>
           <Th />
+          <Th />
           <Th>Event type</Th>
           <Th>Service</Th>
         </Tr>
@@ -55,6 +56,7 @@ const SelectableEventTypeTableSkeleton: React.FunctionComponent = () => {
     <SelectableEventTypeTableLayout>
       {[...Array(skeletonRows)].map((_unused, index) => (
         <Tr key={index}>
+          <Td expand={{ rowIndex: index, isExpanded: false }} />
           <Td
             select={{
               isSelected: false,
@@ -74,33 +76,76 @@ const SelectableEventTypeTableSkeleton: React.FunctionComponent = () => {
   );
 };
 
+const SelectableEventTypeTableRow: React.FunctionComponent<{
+  event: SelectableEventTypeRow;
+  rowIndex: number;
+  onSelect?: (isSelected: boolean, event: EventType) => void;
+  selectionLoading?: boolean;
+}> = ({ event, rowIndex, onSelect, selectionLoading }) => {
+  const [isExpanded, setIsExpanded] = React.useState(false);
+
+  return (
+    <>
+      <Tr key={event.id}>
+        {event.description ? (
+          <Td
+            expand={{
+              rowIndex: rowIndex,
+              isExpanded,
+              onToggle: () => setIsExpanded(!isExpanded),
+              expandId: `expandable-toggle-${event.id}`,
+            }}
+          />
+        ) : (
+          <Td />
+        )}
+        <Td
+          modifier={selectionLoading ? 'fitContent' : undefined}
+          noPadding={selectionLoading}
+          select={
+            selectionLoading
+              ? undefined
+              : {
+                  rowIndex: rowIndex,
+                  onSelect: (_event, isSelected) =>
+                    onSelect && onSelect(isSelected, event),
+                  isSelected: event.isSelected,
+                  isDisabled: selectionLoading,
+                }
+          }
+        >
+          {selectionLoading && <Spinner size="sm" />}
+        </Td>
+        <Td>{event.eventTypeDisplayName}</Td>
+        <Td>{event.applicationDisplayName}</Td>
+      </Tr>
+      {event.description && isExpanded && (
+        <Tr>
+          <Td colSpan={2} />
+          <Td colSpan={2}>
+            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
+              {event.description}
+            </Text>
+          </Td>
+        </Tr>
+      )}
+    </>
+  );
+};
+
 const SelectableEventTypeTableImpl: React.FunctionComponent<
   SelectableEventTypeTableImplProps
 > = (props) => {
   return (
     <SelectableEventTypeTableLayout>
       {props.events.map((event, rowIndex) => (
-        <Tr key={event.id}>
-          <Td
-            modifier={props.selectionLoading ? 'fitContent' : undefined}
-            noPadding={props.selectionLoading}
-            select={
-              props.selectionLoading
-                ? undefined
-                : {
-                    rowIndex,
-                    onSelect: (_event, isSelected) =>
-                      props.onSelect && props.onSelect(isSelected, event),
-                    isSelected: event.isSelected,
-                    isDisabled: props.selectionLoading,
-                  }
-            }
-          >
-            {props.selectionLoading && <Spinner size="sm" />}
-          </Td>
-          <Td>{event.eventTypeDisplayName}</Td>
-          <Td>{event.applicationDisplayName}</Td>
-        </Tr>
+        <SelectableEventTypeTableRow
+          key={event.id}
+          event={event}
+          rowIndex={rowIndex}
+          onSelect={props.onSelect}
+          selectionLoading={props.selectionLoading}
+        />
       ))}
     </SelectableEventTypeTableLayout>
   );

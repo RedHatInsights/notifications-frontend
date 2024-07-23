@@ -36,6 +36,7 @@ export interface IntegrationWizardProps {
     }
   >;
   closeModal: () => void;
+  afterSubmit: () => void;
 }
 
 export const IntegrationWizard: React.FunctionComponent<
@@ -46,6 +47,7 @@ export const IntegrationWizard: React.FunctionComponent<
   template,
   closeModal,
   category,
+  afterSubmit,
 }: IntegrationWizardProps) => {
   const mapperExtension = {
     [REVIEW]: Review,
@@ -122,6 +124,18 @@ export const IntegrationWizard: React.FunctionComponent<
                 bundle_name,
               });
               setWizardOpen(false);
+              },
+            }),
+          }
+        );
+        afterSubmit?.();
+        closeModal();
+      }}
+      initialValues={
+        isEdit
+          ? {
+              ...template,
+              'secret-token': template?.secretToken,
             }
           }}
           initialValues={
@@ -151,3 +165,5 @@ export const IntegrationWizard: React.FunctionComponent<
     </React.Fragment>
   );
 };
+
+export default IntegrationWizard;
