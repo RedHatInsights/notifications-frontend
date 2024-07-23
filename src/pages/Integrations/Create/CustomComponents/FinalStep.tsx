@@ -22,7 +22,7 @@ export type IntegrationsData = {
   template?: {
     id: string;
   };
-  event_type_id: string;
+  event_type_id: [];
   bundle_name: string;
 };
 
@@ -68,8 +68,12 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
             }
           )
         ).json();
+        console.log(result);
 
-        console.log(result, 'resultsss');
+        let ids = [];
+        Object.values(data.event_type_id).forEach((item) => {
+          ids = [...ids, ...Object.keys(item)];
+        });
 
         await fetch(`${behaviorGroupUrl}`, {
           method: 'POST',
@@ -77,11 +81,11 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            bundle_name: [data.bundle_name],
+            bundle_name: data.bundle_name,
             display_name: `${data?.name || ''} behavior group`,
             endpoint_ids: [result.id],
             // TODO: fill in event ids from data object
-            id: [data.event_type_id],
+            event_type_ids: ids,
           }),
         });
       } catch (e) {
@@ -91,8 +95,6 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
     };
     createAction();
   }, [behaviorGroupUrl, data]);
-
-  console.log(data, 'ah');
 
   return isFinished ? (
     hasError ? (

@@ -123,7 +123,6 @@ export const IntegrationWizard: React.FunctionComponent<
               });
               setWizardOpen(false);
             }
-            console.log(wizardState, 'stateeee');
           }}
           initialValues={
             isEdit
