@@ -292,6 +292,7 @@ spec:
       - name: BUILD_ARGS_FILE
         value: $(params.build-args-file)
       runAfter:
+      - prefetch-dependencies
       - create-frontend-dockerfile
       taskRef:
         params:
