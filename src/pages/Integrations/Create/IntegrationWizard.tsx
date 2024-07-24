@@ -2,7 +2,6 @@ import componentMapper from '@data-driven-forms/pf4-component-mapper/component-m
 import Pf4FormTemplate from '@data-driven-forms/pf4-component-mapper/form-template';
 import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 import * as React from 'react';
-
 import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
@@ -21,7 +20,6 @@ import TableToolbar from './CustomComponents/TableToolbar';
 import { useFlag } from '@unleash/proxy-client-react';
 import { IntegrationsData } from './CustomComponents/FinalStep';
 import { FinalWizard } from './FinalWizard';
-
 export interface IntegrationWizardProps {
   category: string;
   isOpen: boolean;
@@ -36,9 +34,7 @@ export interface IntegrationWizardProps {
     }
   >;
   closeModal: () => void;
-  afterSubmit: () => void;
 }
-
 export const IntegrationWizard: React.FunctionComponent<
   IntegrationWizardProps
 > = ({
@@ -47,7 +43,6 @@ export const IntegrationWizard: React.FunctionComponent<
   template,
   closeModal,
   category,
-  afterSubmit,
 }: IntegrationWizardProps) => {
   const mapperExtension = {
     [REVIEW]: Review,
@@ -56,20 +51,16 @@ export const IntegrationWizard: React.FunctionComponent<
     [SELECTABLE_TABLE]: SelectableTable,
     [TABLE_TOOLBAR]: TableToolbar,
   };
-
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
   );
-
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   const [wizardState, setWizardState] = React.useState<
     IntegrationsData | undefined
   >();
-
   React.useEffect(() => {
     setWizardOpen(isOpen);
   }, [isOpen]);
-
   return (
     <React.Fragment>
       {wizardOpen ? (
@@ -124,19 +115,8 @@ export const IntegrationWizard: React.FunctionComponent<
                 bundle_name,
               });
               setWizardOpen(false);
-              },
-            }),
-          }
-        );
-        afterSubmit?.();
-        closeModal();
-      }}
-      initialValues={
-        isEdit
-          ? {
-              ...template,
-              'secret-token': template?.secretToken,
             }
+            console.log(wizardState, 'stateeee');
           }}
           initialValues={
             isEdit
@@ -165,5 +145,3 @@ export const IntegrationWizard: React.FunctionComponent<
     </React.Fragment>
   );
 };
-
-export default IntegrationWizard;

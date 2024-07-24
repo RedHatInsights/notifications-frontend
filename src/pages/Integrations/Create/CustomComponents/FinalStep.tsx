@@ -71,23 +71,26 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
         console.log(result);
 
         let ids = [];
+        let bundles = ['openshift', 'rhel', 'console'];
+
         Object.values(data.event_type_id).forEach((item) => {
           ids = [...ids, ...Object.keys(item)];
         });
 
-        await fetch(`${behaviorGroupUrl}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            bundle_name: data.bundle_name,
-            display_name: `${data?.name || ''} behavior group`,
-            endpoint_ids: [result.id],
-            // TODO: fill in event ids from data object
-            event_type_ids: ids,
-          }),
-        });
+        for (const bundleName of bundles) {
+          await fetch(`${behaviorGroupUrl}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              bundle_name: bundleName,
+              display_name: `${data?.name || ''} behavior group`,
+              endpoint_ids: [result.id],
+              event_type_ids: ids,
+            }),
+          });
+        }
       } catch (e) {
         setHasError(true);
       }
