@@ -207,7 +207,7 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
-      - name: parse-build-deploy-script
+    - name: parse-build-deploy-script
       params:
         - name: path-context
           value: $(params.path-context)

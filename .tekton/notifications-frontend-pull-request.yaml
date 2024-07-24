@@ -210,7 +210,6 @@ spec:
         workspace: git-auth
       - name: netrc
         workspace: netrc
-            # put this before the "build-container" task in your repository
     - name: parse-build-deploy-script
       params:
         - name: path-context
