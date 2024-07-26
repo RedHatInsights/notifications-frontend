@@ -13,11 +13,13 @@ import { CheckCircleIcon } from '@patternfly/react-icons';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IntegrationsData } from './FinalStep';
 
 interface ProgressProps {
   integrationName: string;
   behaviorGroupName: string;
   onClose: () => void;
+  data: IntegrationsData;
 }
 
 export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
@@ -62,7 +64,9 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
               component="a"
               href={`${
                 isBeta() ? '/preview' : ''
-              }/${getBundle()}/notifications/configure-events?tab=behaviorGroups`}
+              }/${getBundle()}/notifications/configure-events?bundle=${
+                props.data.bundle_name
+              }&tab=behaviorGroups`}
               size="lg"
               onClick={(e) => {
                 props.onClose();

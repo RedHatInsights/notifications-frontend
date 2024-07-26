@@ -117,6 +117,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
           isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
         }
         onClose={onCancel}
+        data={data}
       />
     )
   ) : (

@@ -34,6 +34,7 @@ export interface IntegrationWizardProps {
     }
   >;
   closeModal: () => void;
+  afterSubmit: () => void;
 }
 export const IntegrationWizard: React.FunctionComponent<
   IntegrationWizardProps
