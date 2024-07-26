@@ -75,7 +75,6 @@ export const IntegrationWizard: React.FunctionComponent<
             'event-types-table': event_type_id,
             'product-family': bundle_name,
           }) => {
-            console.log('I am here!');
             const [type, sub_type] = intType?.split(':') || ['webhook'];
             if (!isBehaviorGroupsEnabled) {
               fetch(
@@ -116,7 +115,6 @@ export const IntegrationWizard: React.FunctionComponent<
               });
               setWizardOpen(false);
             }
-            console.log(wizardState, 'stateeee');
           }}
           initialValues={
             isEdit

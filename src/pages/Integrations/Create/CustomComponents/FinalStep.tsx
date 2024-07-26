@@ -11,6 +11,7 @@ import {
   EmptyStateVariant,
   Spinner,
 } from '@patternfly/react-core';
+import { useFlag } from '@unleash/proxy-client-react';
 
 export type IntegrationsData = {
   url: string;
@@ -37,6 +38,10 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
 }) => {
   const [isFinished, setIsFinished] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
+
+  const isBehaviorGroupsEnabled = useFlag(
+    'platform.integrations.behavior-groups-move'
+  );
 
   const integrationsUrl = '/api/integrations/v1.0/endpoints';
   const behaviorGroupUrl = `/api/notifications/v1.0/notifications/behaviorGroups`;
@@ -68,48 +73,49 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
             }
           )
         ).json();
-        console.log(result);
 
-        let ids = [];
-        let bundles = ['openshift', 'rhel', 'console'];
-
+        let ids: string[] = [];
         Object.values(data.event_type_id).forEach((item) => {
           ids = [...ids, ...Object.keys(item)];
         });
 
-        for (const bundleName of bundles) {
-          await fetch(`${behaviorGroupUrl}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              bundle_name: bundleName,
-              display_name: `${data?.name || ''} behavior group`,
-              endpoint_ids: [result.id],
-              event_type_ids: ids,
-            }),
-          });
-        }
+        isBehaviorGroupsEnabled
+          ? await fetch(`${behaviorGroupUrl}`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                bundle_name: data.bundle_name,
+                display_name: `${data?.name || ''} behavior group`,
+                endpoint_ids: [result.id],
+                event_type_ids: ids,
+              }),
+            })
+          : '';
       } catch (e) {
         setHasError(true);
       }
       setIsFinished(true);
     };
     createAction();
-  }, [behaviorGroupUrl, data]);
+  }, [behaviorGroupUrl, data, isBehaviorGroupsEnabled]);
 
   return isFinished ? (
     hasError ? (
       <FailedStep
         integrationName={data?.name || ''}
-        behaviorGroupName={`${data?.name || ''} behavior group`}
+        behaviorGroupName={
+          isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
+        }
         onClose={onCancel}
       />
     ) : (
       <CreatedStep
         integrationName={data?.name || ''}
-        behaviorGroupName={`${data?.name || ''} behavior group`}
+        behaviorGroupName={
+          isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
+        }
         onClose={onCancel}
       />
     )
