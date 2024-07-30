@@ -8,8 +8,7 @@ interface ProgressProps {
   onClose: () => void;
 }
 
-export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
-  return (
+export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => (
     <>
       <ErrorState
         errorTitle="Integration creation failed"
@@ -34,6 +33,5 @@ export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
       />
     </>
   );
-};
 
 export default FailedStep;
