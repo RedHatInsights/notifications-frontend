@@ -15,7 +15,7 @@ export const eventTypesStep = () => ({
       component: componentTypes.PLAIN_TEXT,
       name: 'plain-text',
       label:
-        'Select event types you would like your integration to react to. You may also skip this step and attach event types later.',
+        'Select event types you would like your integration to react to. This will create a behavior group automatically for you. You may also skip this step and attach event types later.',
     },
     {
       component: componentTypes.SELECT,
