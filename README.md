@@ -38,7 +38,6 @@ Then run the application:
 npm start
 ```
 
-
 For more info refer to [Insights Frontend Starter App README](https://github.com/RedHatInsights/insights-frontend-starter-app/blob/master/README.md)
 
 ## Deploying
