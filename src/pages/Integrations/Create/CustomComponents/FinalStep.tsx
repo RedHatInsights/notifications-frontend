@@ -49,7 +49,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
   React.useEffect(() => {
     const createAction = async () => {
       try {
-        const result = await (
+        let result = await (
           await fetch(
             `${integrationsUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
             {
@@ -73,6 +73,13 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
             }
           )
         ).json();
+
+        try {
+          result = JSON.parse(result);
+          result?.status === 400 && setHasError(true);
+        } catch (error) {
+          setHasError(true);
+        }
 
         let ids: string[] = [];
         Object.values(data.event_type_id).forEach((item) => {
