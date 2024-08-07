@@ -207,6 +207,7 @@ export const EventLogTreeFilter: React.FunctionComponent<
     treeNode: TreeNodeItem,
     parentNode: TreeNodeItem
   ) => {
+    console.log('onCheck', event, treeNode, parentNode);
     const checked = event.target.checked;
     setTreeNodeById(
       produce((prev) => {
