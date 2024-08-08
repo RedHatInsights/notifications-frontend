@@ -144,3 +144,5 @@ export const IntegrationWizard: React.FunctionComponent<
     </React.Fragment>
   );
 };
+
+export default IntegrationWizard;
