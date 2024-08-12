@@ -49,54 +49,64 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
   React.useEffect(() => {
     const createAction = async () => {
       try {
-        const result = await (
-          await fetch(
-            `${integrationsUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
-            {
-              method: data.isEdit ? 'PUT' : 'POST',
-              headers: {
-                'Content-Type': 'application/json;charset=UTF-8',
+        const response = await fetch(
+          `${integrationsUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
+          {
+            method: data.isEdit ? 'PUT' : 'POST',
+            headers: {
+              'Content-Type': 'application/json;charset=UTF-8',
+            },
+            body: JSON.stringify({
+              name: data.name,
+              enabled: true,
+              type: data.type,
+              ...(data.sub_type && { sub_type: data.sub_type }),
+              description: '',
+              properties: {
+                method: 'POST',
+                url: data.url,
+                disable_ssl_verification: false,
+                secret_token: data.secret_token,
               },
-              body: JSON.stringify({
-                name: data.name,
-                enabled: true,
-                type: data.type,
-                ...(data.sub_type && { sub_type: data.sub_type }),
-                description: '',
-                properties: {
-                  method: 'POST',
-                  url: data.url,
-                  disable_ssl_verification: false,
-                  secret_token: data.secret_token,
-                },
-              }),
-            }
-          )
-        ).json();
+            }),
+          }
+        );
 
-        let ids: string[] = [];
-        Object.values(data.event_type_id).forEach((item) => {
-          ids = [...ids, ...Object.keys(item)];
-        });
+        if (!response.ok) {
+          throw new Error('Failed to create or update the integration');
+        }
 
-        isBehaviorGroupsEnabled
-          ? await fetch(`${behaviorGroupUrl}`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                bundle_name: data.bundle_name,
-                display_name: `${data?.name || ''} behavior group`,
-                endpoint_ids: [result.id],
-                event_type_ids: ids,
-              }),
-            })
-          : '';
+        const result = await response.json();
+
+        if (isBehaviorGroupsEnabled && data?.event_type_id) {
+          let ids: string[] = [];
+          Object.values(data.event_type_id).forEach((item) => {
+            ids = [...ids, ...Object.keys(item)];
+          });
+
+          const behaviorGroupResponse = await fetch(`${behaviorGroupUrl}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              bundle_name: data.bundle_name,
+              display_name: `${data?.name || ''} behavior group`,
+              endpoint_ids: [result.id],
+              event_type_ids: ids,
+            }),
+          });
+
+          if (!behaviorGroupResponse.ok) {
+            throw new Error('Failed to create behavior group');
+          }
+        }
+
+        setIsFinished(true);
       } catch (e) {
         setHasError(true);
+        setIsFinished(true);
       }
-      setIsFinished(true);
     };
     createAction();
   }, [behaviorGroupUrl, data, isBehaviorGroupsEnabled]);
