@@ -38,6 +38,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
 }) => {
   const [isFinished, setIsFinished] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
+  const [hasBehaviorGroup, setHasBehaviorGroup] = React.useState(false);
 
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
@@ -80,6 +81,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
 
         if (isBehaviorGroupsEnabled && data?.event_type_id) {
           let ids: string[] = [];
+          setHasBehaviorGroup(true);
           Object.values(data.event_type_id).forEach((item) => {
             ids = [...ids, ...Object.keys(item)];
           });
@@ -96,6 +98,8 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
               event_type_ids: ids,
             }),
           });
+
+          setHasBehaviorGroup(true);
 
           if (!behaviorGroupResponse.ok) {
             throw new Error('Failed to create behavior group');
@@ -116,7 +120,9 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
       <FailedStep
         integrationName={data?.name || ''}
         behaviorGroupName={
-          isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
+          isBehaviorGroupsEnabled && hasBehaviorGroup
+            ? `${data?.name || ''} behavior group`
+            : ''
         }
         onClose={onCancel}
       />
@@ -124,7 +130,9 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
       <CreatedStep
         integrationName={data?.name || ''}
         behaviorGroupName={
-          isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
+          isBehaviorGroupsEnabled && hasBehaviorGroup
+            ? `${data?.name || ''} behavior group`
+            : ''
         }
         onClose={onCancel}
         data={data}
