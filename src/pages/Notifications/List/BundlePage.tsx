@@ -31,16 +31,10 @@ interface NotificationListBundlePageProps {
   applications: Array<Facet>;
 }
 
-const bundleMapping = {
-  rhel: 0,
-  console: 1,
-  openshift: 2,
-};
-
 export const NotificationListBundlePage: React.FunctionComponent<
   React.PropsWithChildren<NotificationListBundlePageProps>
 > = (props) => {
-  const { updateDocumentTitle, isFedramp } = useChrome();
+  const { updateDocumentTitle } = useChrome();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -113,7 +107,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
   useEffect(() => {
     if (notificationsOverhaul) {
       const query = getApplications.query;
-      query(props.bundleTabs[bundleMapping[bundle]].name);
+      query(props.bundleTabs.find(({ name }) => name === bundle)?.name);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bundle]);
@@ -142,12 +136,12 @@ export const NotificationListBundlePage: React.FunctionComponent<
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
             <Tabs
-              activeKey={bundleMapping[bundle]}
+              activeKey={props.bundleTabs.findIndex(
+                ({ name }) => name === bundle
+              )}
               onSelect={(event, tabIndex) => {
                 const newSearchParams = new URLSearchParams(location.search);
-                const selectedBundle = Object.keys(bundleMapping).find(
-                  (key) => bundleMapping[key] === tabIndex
-                );
+                const selectedBundle = props.bundleTabs[tabIndex]?.name;
                 newSearchParams.set('bundle', selectedBundle ?? 'rhel');
                 navigate(`${location.pathname}?${newSearchParams.toString()}`, {
                   replace: true,
@@ -155,38 +149,20 @@ export const NotificationListBundlePage: React.FunctionComponent<
               }}
               className={paddingLeftClassName}
             >
-              {isFedramp ? null : (
+              {props.bundleTabs.map((item, key) => (
                 <Tab
-                  eventKey={2}
-                  title={<TabTitleText>OpenShift</TabTitleText>}
+                  key={key}
+                  eventKey={key}
+                  title={<TabTitleText>{item.displayName}</TabTitleText>}
                 >
                   <Main>
                     <BundlePageBehaviorGroupContent
                       applications={getInitialApplications}
-                      bundle={props.bundleTabs[2]}
+                      bundle={item}
                     />
                   </Main>
                 </Tab>
-              )}
-              <Tab
-                eventKey={0}
-                title={<TabTitleText>Red Hat Enterprise Linux</TabTitleText>}
-              >
-                <Main>
-                  <BundlePageBehaviorGroupContent
-                    applications={getInitialApplications}
-                    bundle={props.bundleTabs[0]}
-                  />
-                </Main>
-              </Tab>
-              <Tab eventKey={1} title={<TabTitleText>Console</TabTitleText>}>
-                <Main>
-                  <BundlePageBehaviorGroupContent
-                    applications={getInitialApplications}
-                    bundle={props.bundleTabs[1]}
-                  />
-                </Main>
-              </Tab>
+              ))}
             </Tabs>
           </FlexItem>
         </Flex>

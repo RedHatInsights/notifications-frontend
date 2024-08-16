@@ -24,11 +24,19 @@ export const NotificationsListPage: React.FunctionComponent = () => {
   const { isFedramp } = useChrome();
   const params = useParams<Record<string, string | undefined>>();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-  const bundleList = ['rhel', 'console'];
-
-  if (!isFedramp) {
-    bundleList.push('openshift');
-  }
+  const errataNotifications = useFlag(
+    'platform.notifications.errata.userpreferences'
+  );
+  const ansibleAutomation = useFlag(
+    'platform.notifications.ansible-automation'
+  );
+  const bundleList = [
+    'rhel',
+    'console',
+    ...(!isFedramp ? ['openshift'] : []),
+    ...(errataNotifications ? ['subscription-services'] : []),
+    ...(ansibleAutomation ? ['ansible-automation-platform'] : []),
+  ];
 
   const bundleName = useMemo(
     () => (notificationsOverhaul ? 'rhel' : params.bundleName),
