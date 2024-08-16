@@ -62,9 +62,13 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
             <Button
               variant="link"
               component="a"
-              href={`/${getBundle()}/notifications/configure-events?bundle=${
-                props.data.bundle_name
-              }&tab=behaviorGroups`}
+              onClick={() => {
+                navigate(
+                  `/${getBundle()}/notifications/configure-events?bundle=${
+                    props.data.bundle_name
+                  }&tab=behaviorGroups`
+                );
+              }}
               size="lg"
             >
               View behavior group
