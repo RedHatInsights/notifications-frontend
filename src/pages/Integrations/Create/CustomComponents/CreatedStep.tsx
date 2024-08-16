@@ -20,12 +20,12 @@ interface ProgressProps {
   behaviorGroupName: string;
   onClose: () => void;
   data: IntegrationsData;
+  hasBehaviorGroup: boolean;
 }
 
 export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
   const { isBeta, getBundle } = useChrome();
   const navigate = useNavigate();
-  const [behaviorGroupCreated] = React.useState(false);
 
   return (
     <EmptyState variant={EmptyStateVariant.lg}>
@@ -35,7 +35,7 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
         icon={<EmptyStateIcon icon={CheckCircleIcon} color="green" />}
       />
       <EmptyStateBody>
-        {behaviorGroupCreated ? (
+        {props.hasBehaviorGroup ? (
           <span>
             The integration <b>&apos;{props.integrationName}&apos;</b> was
             created successfully. The behavior group{' '}
@@ -71,7 +71,7 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
             </Button>
           </StackItem>
           <StackItem>
-            {behaviorGroupCreated ? (
+            {props.hasBehaviorGroup ? (
               <Button
                 variant="link"
                 component="a"

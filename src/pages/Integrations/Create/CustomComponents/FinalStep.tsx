@@ -120,22 +120,20 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
       <FailedStep
         integrationName={data?.name || ''}
         behaviorGroupName={
-          isBehaviorGroupsEnabled && hasBehaviorGroup
-            ? `${data?.name || ''} behavior group`
-            : ''
+          isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
         }
         onClose={onCancel}
+        hasBehaviorGroup={hasBehaviorGroup}
       />
     ) : (
       <CreatedStep
         integrationName={data?.name || ''}
         behaviorGroupName={
-          isBehaviorGroupsEnabled && hasBehaviorGroup
-            ? `${data?.name || ''} behavior group`
-            : ''
+          isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
         }
         onClose={onCancel}
         data={data}
+        hasBehaviorGroup={hasBehaviorGroup}
       />
     )
   ) : (

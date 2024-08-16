@@ -6,17 +6,16 @@ interface ProgressProps {
   integrationName: string;
   behaviorGroupName: string;
   onClose: () => void;
+  hasBehaviorGroup: boolean;
 }
 
 export const FailedStep: React.FunctionComponent<ProgressProps> = (props) => {
-  const [hasBehaviorGroupCreated] = React.useState(false);
-
   return (
     <>
       <ErrorState
         errorTitle="Integration creation failed"
         errorDescription={
-          hasBehaviorGroupCreated ? (
+          props.hasBehaviorGroup ? (
             <span>
               There was an error creating <b>&apos;{props.integrationName}</b>
               &apos; integrations and/or the
