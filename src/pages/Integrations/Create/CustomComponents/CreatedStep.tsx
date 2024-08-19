@@ -20,11 +20,13 @@ interface ProgressProps {
   behaviorGroupName: string;
   onClose: () => void;
   data: IntegrationsData;
+  hasBehaviorGroup: boolean;
 }
 
 export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
   const { isBeta, getBundle } = useChrome();
   const navigate = useNavigate();
+
   return (
     <EmptyState variant={EmptyStateVariant.lg}>
       <EmptyStateHeader
@@ -33,11 +35,21 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
         icon={<EmptyStateIcon icon={CheckCircleIcon} color="green" />}
       />
       <EmptyStateBody>
-        The integration <b>&apos;{props.integrationName}&apos;</b> was created
-        successfully. The behavior group{' '}
-        <b>&apos;{props.behaviorGroupName}&apos;</b> was created successfully.
-        You can configure additional events in the Hybrid Cloud Console
-        settings.
+        {props.hasBehaviorGroup ? (
+          <span>
+            The integration <b>&apos;{props.integrationName}&apos;</b> was
+            created successfully. The behavior group{' '}
+            <b>&apos;{props.behaviorGroupName}&apos;</b> was created
+            successfully. You can configure additional events in the Hybrid
+            Cloud Console settings.
+          </span>
+        ) : (
+          <span>
+            The integration <b>&apos;{props.integrationName}&apos;</b> was
+            created successfully. You can configure additional events in the
+            Hybrid Cloud Console settings.
+          </span>
+        )}
       </EmptyStateBody>
       <EmptyStateFooter>
         <Stack hasGutter>
@@ -59,25 +71,29 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
             </Button>
           </StackItem>
           <StackItem>
-            <Button
-              variant="link"
-              component="a"
-              href={`${
-                isBeta() ? '/preview' : ''
-              }/${getBundle()}/notifications/configure-events?bundle=${
-                props.data.bundle_name
-              }&tab=behaviorGroups`}
-              size="lg"
-              onClick={(e) => {
-                props.onClose();
-                e.preventDefault();
-                navigate(
-                  `/${getBundle()}/notifications/configure-events?tab=behaviorGroups`
-                );
-              }}
-            >
-              View behavior group
-            </Button>
+            {props.hasBehaviorGroup ? (
+              <Button
+                variant="link"
+                component="a"
+                href={`${
+                  isBeta() ? '/preview' : ''
+                }/${getBundle()}/notifications/configure-events?bundle=${
+                  props.data.bundle_name
+                }&tab=behaviorGroups`}
+                size="lg"
+                onClick={(e) => {
+                  props.onClose();
+                  e.preventDefault();
+                  navigate(
+                    `/${getBundle()}/notifications/configure-events?tab=behaviorGroups`
+                  );
+                }}
+              >
+                View behavior group
+              </Button>
+            ) : (
+              ''
+            )}
           </StackItem>
         </Stack>
       </EmptyStateFooter>

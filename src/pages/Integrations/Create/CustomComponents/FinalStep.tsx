@@ -38,6 +38,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
 }) => {
   const [isFinished, setIsFinished] = React.useState(false);
   const [hasError, setHasError] = React.useState(false);
+  const [hasBehaviorGroup, setHasBehaviorGroup] = React.useState(false);
 
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
@@ -97,6 +98,8 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
             }),
           });
 
+          setHasBehaviorGroup(true);
+
           if (!behaviorGroupResponse.ok) {
             throw new Error('Failed to create behavior group');
           }
@@ -119,6 +122,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
           isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
         }
         onClose={onCancel}
+        hasBehaviorGroup={hasBehaviorGroup}
       />
     ) : (
       <CreatedStep
@@ -128,6 +132,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
         }
         onClose={onCancel}
         data={data}
+        hasBehaviorGroup={hasBehaviorGroup}
       />
     )
   ) : (
