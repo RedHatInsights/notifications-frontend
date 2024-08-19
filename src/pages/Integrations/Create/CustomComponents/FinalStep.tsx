@@ -81,7 +81,6 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
 
         if (isBehaviorGroupsEnabled && data?.event_type_id) {
           let ids: string[] = [];
-          setHasBehaviorGroup(true);
           Object.values(data.event_type_id).forEach((item) => {
             ids = [...ids, ...Object.keys(item)];
           });
