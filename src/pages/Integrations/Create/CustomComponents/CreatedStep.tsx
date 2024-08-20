@@ -57,14 +57,11 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
             <Button
               variant="primary"
               component="a"
-              href={`${
-                isBeta() ? '/preview' : ''
-              }/${getBundle()}/settings/integrations`}
               size="lg"
-              onClick={(e) => {
+              href={`/${getBundle()}/integrations`}
+              onClick={() => {
                 props.onClose();
-                e.preventDefault();
-                navigate(`/${getBundle()}/settings/integrations`);
+                navigate(`/${getBundle()}/integrations`);
               }}
             >
               View integration
