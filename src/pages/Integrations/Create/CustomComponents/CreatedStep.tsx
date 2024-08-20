@@ -75,24 +75,22 @@ export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
               <Button
                 variant="link"
                 component="a"
-                href={`${
-                  isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/configure-events?bundle=${
+                href={`/${getBundle()}/notifications/configure-events?bundle=${
                   props.data.bundle_name
                 }&tab=behaviorGroups`}
-                size="lg"
-                onClick={(e) => {
-                  props.onClose();
-                  e.preventDefault();
+                onClick={() => {
                   navigate(
-                    `/${getBundle()}/notifications/configure-events?tab=behaviorGroups`
+                    `/${getBundle()}/notifications/configure-events?bundle=${
+                      props.data.bundle_name
+                    }&tab=behaviorGroups`
                   );
                 }}
+                size="lg"
               >
                 View behavior group
               </Button>
             ) : (
-              ''
+              ' '
             )}
           </StackItem>
         </Stack>
