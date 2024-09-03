@@ -24,7 +24,7 @@ interface ProgressProps {
 }
 
 export const CreatedStep: React.FunctionComponent<ProgressProps> = (props) => {
-  const { isBeta, getBundle } = useChrome();
+  const { getBundle } = useChrome();
   const navigate = useNavigate();
 
   return (

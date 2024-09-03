@@ -79,8 +79,9 @@ const actionStatusMetadata = [
     label: (
       <span>
         <Icon status="success">
-          <CheckCircleIcon /> Success
-        </Icon>
+          <CheckCircleIcon />
+        </Icon>{' '}
+        Success
       </span>
     ),
   },
@@ -91,7 +92,7 @@ const actionStatusMetadata = [
       <span>
         <Icon status="success">
           <CheckCircleIcon />
-        </Icon>
+        </Icon>{' '}
         Sent
       </span>
     ),
@@ -122,7 +123,7 @@ const actionStatusMetadata = [
       <span>
         <Icon status="danger">
           <ExclamationCircleIcon />
-        </Icon>
+        </Icon>{' '}
         Failure
       </span>
     ),
