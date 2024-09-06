@@ -38,7 +38,7 @@
     "react-redux": "7.2.9",
     "react-router-dom": "6.16.0",
     "react-string-format": "0.1.0",
-    "react-use": "17.4.3",
+    "react-use": "17.5.1",
     "redux-logger": "3.0.6",
     "redux-promise-middleware": "5.1.1",
     "timezones.json": "1.7.0",
