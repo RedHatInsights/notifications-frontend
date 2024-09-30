@@ -113,6 +113,7 @@ export const IntegrationWizard: React.FunctionComponent<
                 secret_token,
                 event_type_id,
                 bundle_name,
+                template,
               });
               setWizardOpen(false);
             }
