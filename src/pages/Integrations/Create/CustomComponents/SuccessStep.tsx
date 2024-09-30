@@ -38,7 +38,7 @@ export const SuccessStep: React.FunctionComponent<ProgressProps> = (props) => {
       <EmptyStateBody>
         {props.hasBehaviorGroup ? (
           <span>
-            The integration <b>&apos;{props.integrationName}&apos;</b> was
+            The integration <b>&apos;{props.integrationName}&apos;</b> was{' '}
             {props.isEdit ? 'updated' : 'created'} successfully. The behavior
             group <b>&apos;{props.behaviorGroupName}&apos;</b> was{' '}
             {props.isEdit ? 'updated' : 'created'}
@@ -47,7 +47,7 @@ export const SuccessStep: React.FunctionComponent<ProgressProps> = (props) => {
           </span>
         ) : (
           <span>
-            The integration <b>&apos;{props.integrationName}&apos;</b> was
+            The integration <b>&apos;{props.integrationName}&apos;</b> was{' '}
             {props.isEdit ? 'updated' : 'created'} successfully. You can
             configure additional events in the Hybrid Cloud Console settings.
           </span>
