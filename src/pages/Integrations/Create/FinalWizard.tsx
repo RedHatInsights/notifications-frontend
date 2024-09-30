@@ -43,7 +43,7 @@ export const FinalWizard: React.FunctionComponent<ProgressProps> = ({
               onClose();
               setIsModalOpen(false);
             }}
-            title="Add integration"
+            title={`${data.isEdit ? 'Edit' : 'Create'} integration`}
             description="Configure integrations between third-party tools and the Red Hat Hybrid Cloud Console."
           />
         }

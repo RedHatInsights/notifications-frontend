@@ -1,5 +1,5 @@
 import React from 'react';
-import CreatedStep from './CreatedStep';
+import SuccessStep from './SuccessStep';
 import FailedStep from './FailedStep';
 import {
   Button,
@@ -21,7 +21,7 @@ export type IntegrationsData = {
   secret_token?: string;
   isEdit?: boolean;
   template?: {
-    id: string;
+    id?: string;
   };
   event_type_id: [];
   bundle_name: string;
@@ -49,11 +49,12 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
 
   React.useEffect(() => {
     const createAction = async () => {
+      const method = data.isEdit ? 'PUT' : 'POST';
       try {
         const response = await fetch(
           `${integrationsUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
           {
-            method: data.isEdit ? 'PUT' : 'POST',
+            method,
             headers: {
               'Content-Type': 'application/json;charset=UTF-8',
             },
@@ -64,7 +65,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
               ...(data.sub_type && { sub_type: data.sub_type }),
               description: '',
               properties: {
-                method: 'POST',
+                method: method,
                 url: data.url,
                 disable_ssl_verification: false,
                 secret_token: data.secret_token,
@@ -76,27 +77,30 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
         if (!response.ok) {
           throw new Error('Failed to create or update the integration');
         }
-
-        const result = await response.json();
-
-        if (isBehaviorGroupsEnabled && data?.event_type_id) {
+        const result = data.isEdit
+          ? { id: data.template?.id }
+          : await response.json();
+        // disabling behavior group update until we have an API endpoint to fetch its ID
+        if (isBehaviorGroupsEnabled && data?.event_type_id && !data.isEdit) {
           let ids: string[] = [];
           Object.values(data.event_type_id).forEach((item) => {
             ids = [...ids, ...Object.keys(item)];
           });
-
-          const behaviorGroupResponse = await fetch(`${behaviorGroupUrl}`, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-              bundle_name: data.bundle_name,
-              display_name: `${data?.name || ''} behavior group`,
-              endpoint_ids: [result.id],
-              event_type_ids: ids,
-            }),
-          });
+          const behaviorGroupResponse = await fetch(
+            `${behaviorGroupUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
+            {
+              method: method,
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                bundle_name: data.bundle_name,
+                display_name: `${data?.name || ''} behavior group`,
+                endpoint_ids: [result.id],
+                event_type_ids: ids,
+              }),
+            }
+          );
 
           setHasBehaviorGroup(true);
 
@@ -125,7 +129,8 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
         hasBehaviorGroup={hasBehaviorGroup}
       />
     ) : (
-      <CreatedStep
+      <SuccessStep
+        isEdit={data.isEdit}
         integrationName={data?.name || ''}
         behaviorGroupName={
           isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
@@ -138,18 +143,13 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
   ) : (
     <EmptyState variant={EmptyStateVariant.lg}>
       <EmptyStateHeader
-        titleText="Creating integration"
+        titleText={`${data.isEdit ? 'Updating' : 'Creating'} integration`}
         headingLevel="h4"
         icon={<EmptyStateIcon icon={Spinner} />}
       />
       <EmptyStateFooter>
         <EmptyStateActions>
-          <Button
-            variant="link"
-            onClick={() => {
-              onCancel();
-            }}
-          >
+          <Button variant="link" onClick={() => onCancel()}>
             {' '}
             Cancel
           </Button>
