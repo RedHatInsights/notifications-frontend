@@ -37,10 +37,10 @@ const LEARN_MORE =
   'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html-single/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
 // eslint-disable-next-line max-len
 const CONFIGURE_INTEGRATIONS =
-  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#doc-wrapper';
+  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
 // eslint-disable-next-line max-len
 const CONFIGURE_SOURCES =
-  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_sources_for_red_hat_services/index';
+  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const navigate = useNavigate();
