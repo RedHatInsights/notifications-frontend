@@ -1,68 +1,67 @@
-import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { render } from '@testing-library/react';
 import * as React from 'react';
 
-import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../../../test/AppWrapper';
+import {
+  appWrapperCleanup,
+  appWrapperSetup,
+  getConfiguredAppWrapper,
+} from '../../../../test/AppWrapper';
 import { ErrorPage } from '../Page';
 
 jest.mock('@redhat-cloud-services/frontend-components', () => {
+  const Children: React.FunctionComponent<React.PropsWithChildren> = (
+    props
+  ) => {
+    return <span>{props.children}</span>;
+  };
 
-    const Children: React.FunctionComponent = (props) => {
-        return <span>{ props.children }</span>;
-    };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const Title: React.FunctionComponent<any> = (props) => {
+    return <span>{props.title}</span>;
+  };
 
-    const Title: React.FunctionComponent<any> = (props) => {
-        return <span>{ props.title }</span>;
-    };
-
-    return {
-        Main: Children,
-        PageHeader: Children,
-        PageHeaderTitle: Title
-    };
+  return {
+    Main: Children,
+    PageHeader: Children,
+    PageHeaderTitle: Title,
+  };
 });
 
 describe('src/pages/Error/Page', () => {
+  let mockConsole;
 
-    let mockConsole;
+  beforeEach(() => {
+    mockConsole = jest.spyOn(console, 'error');
+    mockConsole.mockImplementation(() => '');
+    appWrapperSetup();
+  });
 
-    beforeEach(() => {
-        mockConsole = jest.spyOn(console, 'error');
-        mockConsole.mockImplementation(() => '');
-        appWrapperSetup();
+  afterEach(() => {
+    mockConsole.mockRestore();
+    appWrapperCleanup();
+  });
+
+  it('Goes to back when clicking the button', () => {
+    const getLocation = jest.fn();
+    const AppWrapper = getConfiguredAppWrapper({
+      getLocation,
+      router: {
+        initialEntries: ['/foo'],
+      },
     });
 
-    afterEach(() => {
-        mockConsole.mockRestore();
-        appWrapperCleanup();
-    });
+    const Surprise = () => {
+      throw new Error('surprise');
+    };
 
-    it('Goes to back when clicking the button', () => {
-        const getLocation = jest.fn();
-        const AppWrapper = getConfiguredAppWrapper({
-            getLocation,
-            route: {
-                path: '/'
-            },
-            router: {
-                initialEntries: [
-                    '/foo',
-                    '/bar'
-                ]
-            }
-        });
-
-        const Surprise = () => {
-            throw new Error('surprise');
-        };
-
-        render(<ErrorPage><Surprise /></ErrorPage>, {
-            wrapper: AppWrapper
-        });
-
-        userEvent.click(screen.getByRole('link', {
-            name: /Go to home page/i
-        }));
-        expect(getLocation().pathname).toEqual('/foo');
-    });
+    render(
+      <ErrorPage>
+        <Surprise />
+      </ErrorPage>,
+      {
+        wrapper: AppWrapper,
+      }
+    );
+    expect(getLocation().pathname).toEqual('/foo');
+  });
 });

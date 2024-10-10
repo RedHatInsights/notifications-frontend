@@ -1,109 +1,124 @@
-import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
-import { useEffect } from 'react';
-import { matchPath, Route, RouteProps, Switch, useHistory } from 'react-router';
+import { Routes as DomRoutes, Navigate, Route } from 'react-router-dom';
 
 import { CheckReadPermissions } from './components/CheckReadPermissions';
-import { RedirectToDefaultBundle } from './components/RedirectToDefaultBundle';
-import { ErrorPage } from './pages/Error/Page';
-import { ConnectedIntegrationsListPage } from './pages/Integrations/List/Page';
+import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
-import { getBaseName } from './utils/Basename';
+import { NotificationsLogPage } from './pages/Notifications/NotificationsLog/Page';
+import { NotificationsOverviewPage } from './pages/Notifications/Overview/Page';
 
 interface Path {
-    path: string;
-    component: React.ComponentType;
+  path: string;
+  component: React.ComponentType;
 }
 
 export const linkTo = {
-    integrations: () => '/integrations',
-    notifications: (bundle: string) => `/notifications/${bundle}`,
-    eventLog: (bundle?: string) => `/notifications/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
-    splunk: () => '/integrations/splunk-setup'
+  overview: () => '/',
+  configureEvents: () => '/configure-events',
+  integrations: () => '/settings/integrations',
+  notifications: (bundle: string) => `/${bundle}`,
+  eventLog: (bundle?: string) =>
+    `/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
+  notificationsLog: () => '/notificationslog',
+  splunk: () => '/integrations/splunk-setup',
 };
 
-const EmptyPage: React.FunctionComponent = () => null;
+const EmptyPage: React.FunctionComponent = () => {
+  const { getApp } = useChrome();
+  if (getApp() === 'integrations') {
+    return <IntegrationsListPage />;
+  }
 
-const pathRoutes: Path[] = [
-    {
-        path: '/',
-        component: EmptyPage
-    },
-    {
-        path: linkTo.integrations(),
-        component: ConnectedIntegrationsListPage
-    },
-    {
-        path: linkTo.eventLog(),
-        component: EventLogPage
-    },
-    {
-        path: linkTo.notifications(':bundleName'),
-        component: NotificationsListPage
-    },
-    {
-        path: linkTo.splunk(),
-        component: SplunkSetupPage
-    }
+  return null;
+};
+
+const legacyRoutes: Path[] = [
+  {
+    path: '/',
+    component: EmptyPage,
+  },
+  {
+    path: linkTo.integrations(),
+    component: IntegrationsListPage,
+  },
+  {
+    path: linkTo.eventLog(),
+    component: EventLogPage,
+  },
+  {
+    path: linkTo.notifications(':bundleName'),
+    component: NotificationsListPage,
+  },
+  {
+    path: linkTo.splunk(),
+    component: SplunkSetupPage,
+  },
+  {
+    path: linkTo.notificationsLog(),
+    component: NotificationsLogPage,
+  },
 ];
 
-type InsightsRouteProps = Omit<RouteProps, 'component'> & Pick<Path, 'component'>;
-
-const InsightsRoute: React.FunctionComponent<InsightsRouteProps> = (props: InsightsRouteProps) => {
-    const { component, ...restProps } = props;
-    return (
-        <ErrorPage>
-            <Route { ...restProps }>
-                <CheckReadPermissions>
-                    <props.component />
-                </CheckReadPermissions>
-            </Route>
-        </ErrorPage>
-    );
-};
+const routesOverhaul: Path[] = [
+  {
+    path: linkTo.overview(),
+    component: NotificationsOverviewPage,
+  },
+  {
+    path: linkTo.integrations(),
+    component: IntegrationsListPage,
+  },
+  {
+    path: linkTo.configureEvents(),
+    component: NotificationsListPage,
+  },
+  {
+    path: linkTo.eventLog(),
+    component: EventLogPage,
+  },
+  {
+    path: linkTo.notificationsLog(),
+    component: NotificationsLogPage,
+  },
+];
 
 export const Routes: React.FunctionComponent = () => {
-    const insights = getInsights();
-    const history = useHistory();
+  const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+  const { getApp } = useChrome();
 
-    useEffect(() => {
-        const on = insights.chrome.on;
-        if (on) {
-            return on('APP_NAVIGATION', event => {
-                const pathname = event.domEvent.href;
-                const base = getBaseName(pathname);
-                const relative = pathname.substr(base.length);
+  const pathRoutes = React.useMemo(
+    () => (notificationsOverhaul ? routesOverhaul : legacyRoutes),
+    [notificationsOverhaul]
+  );
 
-                for (const route of pathRoutes) {
-                    if (matchPath(relative, {
-                        path: route.path,
-                        exact: true
-                    })) {
-                        if (history.location.pathname !== relative) {
-                            history.replace(relative);
-                        }
+  // FIXUP: notifications overhaul removed splunk setup page, but customers require it
+  if (notificationsOverhaul && getApp() === 'integrations') {
+    pathRoutes.unshift({
+      path: '/',
+      component: SplunkSetupPage,
+    });
+  }
 
-                        break;
-                    }
-                }
-
-            });
-        }
-    }, [ insights.chrome.on, history ]);
-
-    return (
-        <Switch>
-            { pathRoutes.map(pathRoute => (
-                <InsightsRoute
-                    key={ pathRoute.path }
-                    component={ pathRoute.component }
-                    path={ pathRoute.path }
-                    exact={ true }
-                />
-            ))}
-            <RedirectToDefaultBundle />
-        </Switch>
-    );
+  return (
+    <DomRoutes>
+      {pathRoutes.map((pathRoute) => (
+        <Route
+          key={pathRoute.path}
+          path={pathRoute.path}
+          element={
+            <CheckReadPermissions>
+              <pathRoute.component />
+            </CheckReadPermissions>
+          }
+        />
+      ))}
+      {!notificationsOverhaul && (
+        <Route path="*" element={<Navigate to="/" replace />} />
+      )}
+    </DomRoutes>
+  );
 };
