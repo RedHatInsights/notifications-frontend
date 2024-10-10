@@ -25,17 +25,22 @@ import {
 import { IntegrationCategory } from '../../types/Integration';
 import '../../app/App.scss';
 import { Link } from 'react-router-dom';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 interface DopeBoxProps {
   category?: IntegrationCategory;
 }
 
 const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
+  const chrome = useChrome();
+
   const communicationsDetails = [
     {
       id: 0,
       name: 'Configure Slack',
-      url: 'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/assembly-configuring-insights-integration-with-slack_integrations',
+      onClick: () => {
+        chrome.quickStarts.activateQuickstart('integrations-slack-notifs-qs');
+      },
     },
     {
       id: 1,
@@ -94,10 +99,18 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             <TextList className="pf-v5-u-font-size-sm pf-v5-u-link-color pf-v5-u-ml-0">
               {communicationsDetails.map((communication) => (
                 <TextListItem key={communication.id}>
-                  <Button variant="link" isInline>
-                    <Link to={communication.url} target="_blank">
-                      {communication.name}
-                    </Link>{' '}
+                  <Button
+                    variant="link"
+                    isInline
+                    onClick={() => communication.onClick?.()}
+                  >
+                    {communication.url ? (
+                      <Link to={communication.url} target="_blank">
+                        {communication.name}
+                      </Link>
+                    ) : (
+                      communication.name
+                    )}{' '}
                   </Button>
                 </TextListItem>
               ))}
