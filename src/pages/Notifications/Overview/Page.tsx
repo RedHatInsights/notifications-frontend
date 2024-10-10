@@ -282,7 +282,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   isSourcesIntegrations
                     ? `${
                         isBeta() ? '/preview' : ''
-                      }/settings/sources?category=Integrations`
+                      }/settings/sources?category=Communications`
                     : `${
                         isBeta() ? '/preview' : ''
                       }/${getBundle()}/notifications/integrations`
