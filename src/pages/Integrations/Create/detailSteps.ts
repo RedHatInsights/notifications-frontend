@@ -7,6 +7,7 @@ import {
   EVENT_TYPES,
   GOOGLE_CHAT_DETAILS,
   INLINE_ALERT,
+  PAGERDUTY_DETAILS,
   REVIEW,
   SERVICE_NOW_DETAILS,
   SLACK_DETAILS,
@@ -107,6 +108,82 @@ export const detailSteps = (
           isRequired: false,
         },
         sslAlert,
+      ],
+    },
+
+    // REPORTING - PAGERDUTY
+    {
+      title: title,
+      name: PAGERDUTY_DETAILS,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
+      fields: [
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'integration-details-title',
+          label: `${isEdit ? 'Edit' : 'Enter'} integration details`,
+          variant: 'h3',
+        },
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'integration-details-subtitle',
+          label: `${isEdit ? 'Edit' : 'Enter'} the details ${
+            isEdit ? 'of' : 'for'
+          } your integration.`,
+          variant: 'p',
+        },
+        {
+          component: componentTypes.TEXT_FIELD,
+          name: 'name',
+          type: 'text',
+          label: 'Integration name',
+          isRequired: true,
+          validate: [
+            {
+              type: validatorTypes.REQUIRED,
+            },
+          ],
+        },
+        {
+          component: componentTypes.TEXT_FIELD,
+          name: 'integration_key',
+          type: 'text',
+          label: 'Integration key',
+          isRequired: true,
+          validate: [
+            {
+              type: validatorTypes.REQUIRED,
+            },
+          ],
+        },
+        {
+          component: componentTypes.SELECT,
+          name: 'severity',
+          label: 'Alert severity',
+          simpleValue: true,
+          options: [
+            {
+              label: 'Info',
+              placeholder: 'Info',
+              name: 'info',
+              value: '1',
+            },
+            {
+              label: 'Warning',
+              name: 'warning',
+              value: '2',
+            },
+            {
+              label: 'Error',
+              name: 'error',
+              value: '3',
+            },
+            {
+              label: 'Critical',
+              name: 'critical',
+              value: '3',
+            },
+          ],
+        },
       ],
     },
 

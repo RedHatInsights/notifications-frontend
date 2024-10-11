@@ -13,6 +13,7 @@ export enum IntegrationType {
   GOOGLE_CHAT = 'camel:google_chat',
   ANSIBLE = 'ansible', // Event-Driven Ansible
   DRAWER = 'drawer',
+  PAGERDUTY = 'pagerduty',
 }
 
 export const UserIntegrationType = {
@@ -23,6 +24,7 @@ export const UserIntegrationType = {
   SLACK: IntegrationType.SLACK,
   TEAMS: IntegrationType.TEAMS,
   GOOGLE_CHAT: IntegrationType.GOOGLE_CHAT,
+  PAGERDUTY: IntegrationType.PAGERDUTY,
 } as const;
 
 export enum IntegrationCategory {
@@ -79,6 +81,12 @@ export interface IntegrationAnsible
   method: Schemas.HttpType;
 }
 
+export interface IntegrationPagerduty
+  extends IntegrationBase<IntegrationType.PAGERDUTY> {
+  secretToken?: string;
+  severity: Schemas.PagerDutySeverity;
+}
+
 export interface IntegrationDrawer
   extends IntegrationBase<IntegrationType.DRAWER> {
   type: IntegrationType.DRAWER;
@@ -113,7 +121,8 @@ export type Integration =
   | IntegrationAnsible
   | IntegrationEmailSubscription
   | IntegrationCamel
-  | IntegrationDrawer;
+  | IntegrationDrawer
+  | IntegrationPagerduty;
 export type TypedIntegration<T extends IntegrationType> = Extract<
   Integration,
   {

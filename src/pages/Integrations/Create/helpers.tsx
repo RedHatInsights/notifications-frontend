@@ -12,6 +12,7 @@ export const GOOGLE_CHAT_DETAILS = 'gchat-details';
 export const TEAMS_DETAILS = 'teams-details';
 export const SPLUNK_DETAILS = 'spunk-details';
 export const SERVICE_NOW_DETAILS = 'service-now-details';
+export const PAGERDUTY_DETAILS = 'pagerduty-details';
 export const DETAILS = 'details';
 
 export const EVENT_TYPES = 'event-types';
