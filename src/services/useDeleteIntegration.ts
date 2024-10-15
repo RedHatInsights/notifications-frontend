@@ -3,7 +3,7 @@ import { useMutation } from 'react-fetching-library';
 import { Operations } from '../generated/OpenapiIntegrations';
 
 export const deleteIntegrationActionCreator = (integrationId: string) => {
-  return Operations.EndpointResourceDeleteEndpoint.actionCreator({
+  return Operations.EndpointResource$v1DeleteEndpoint.actionCreator({
     id: integrationId,
   });
 };

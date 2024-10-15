@@ -60,7 +60,7 @@ export interface IntegrationBase<T extends IntegrationType> {
   name: string;
   type: T;
   isEnabled: boolean;
-  status?: Schemas.EndpointStatus | undefined;
+  status?: Schemas.EndpointStatusDTO | undefined;
   serverErrors: number;
 }
 
@@ -83,15 +83,15 @@ export interface IntegrationAnsible
 
 export interface IntegrationPagerduty
   extends IntegrationBase<IntegrationType.PAGERDUTY> {
-  secretToken?: string;
+  secretToken: string;
   severity: Schemas.PagerDutySeverity;
 }
 
 export interface IntegrationDrawer
   extends IntegrationBase<IntegrationType.DRAWER> {
   type: IntegrationType.DRAWER;
-  ignorePreferences: boolean;
-  onlyAdmin: boolean;
+  ignorePreferences: boolean | null | undefined;
+  onlyAdmin: boolean | null | undefined;
   groupId?: UUID;
 }
 
@@ -111,8 +111,8 @@ export interface IntegrationCamel
 export interface IntegrationEmailSubscription
   extends IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION> {
   type: IntegrationType.EMAIL_SUBSCRIPTION;
-  onlyAdmin: boolean;
-  ignorePreferences: boolean;
+  onlyAdmin: boolean | null | undefined;
+  ignorePreferences: boolean | null | undefined;
   groupId?: UUID;
 }
 
@@ -149,8 +149,8 @@ export type NewIntegrationBase = NewIntegrationTemplate<
 export type NewIntegration = NewIntegrationTemplate<Integration>;
 export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
 
-export type ServerIntegrationRequest = Schemas.Endpoint;
-export type ServerIntegrationResponse = Schemas.Endpoint;
+export type ServerIntegrationRequest = Schemas.EndpointDTO;
+export type ServerIntegrationResponse = Schemas.EndpointDTO;
 
 export interface IntegrationConnectionAttempt {
   date: Date;
