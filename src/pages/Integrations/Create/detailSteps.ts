@@ -148,6 +148,7 @@ export const detailSteps = (
           name: 'integration_key',
           type: 'text',
           label: 'Integration key',
+          helperText: 'Integration key provided by PagerDuty.',
           isRequired: true,
           validate: [
             {
@@ -159,28 +160,26 @@ export const detailSteps = (
           component: componentTypes.SELECT,
           name: 'severity',
           label: 'Alert severity',
+          helperText:
+            'Severity of the alert created in PagerDuty when this integration is used.',
+          isRequired: true,
           simpleValue: true,
           options: [
             {
               label: 'Info',
-              placeholder: 'Info',
-              name: 'info',
-              value: '1',
+              value: 'Info',
             },
             {
               label: 'Warning',
-              name: 'warning',
-              value: '2',
+              value: 'Warning',
             },
             {
               label: 'Error',
-              name: 'error',
-              value: '3',
+              value: 'Error',
             },
             {
               label: 'Critical',
-              name: 'critical',
-              value: '3',
+              value: 'Critical',
             },
           ],
         },
