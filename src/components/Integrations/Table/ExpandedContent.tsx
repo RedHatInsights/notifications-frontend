@@ -4,6 +4,7 @@ import { style } from 'typestyle';
 
 import {
   IntegrationCamel,
+  IntegrationPagerduty,
   IntegrationType,
   TypedIntegration,
   UserIntegrationType,
@@ -12,6 +13,7 @@ import { GoogleChatExpandedContent } from './ExpandedContent/GoogleChatExpandedC
 import { IntegrationExpandedContent } from './ExpandedContent/IntegrationExpandedContent';
 import { SlackExpandedContent } from './ExpandedContent/SlackExpandedContent';
 import { TeamsExpandedContent } from './ExpandedContent/TeamsExpandedContent';
+import { PagerDutyExpandedContent } from './ExpandedContent/PagerDutyExpandedContent';
 
 export const expandedContentTitleClass = style({
   fontWeight: 400,
@@ -45,6 +47,14 @@ export const ExpandedContent: React.FunctionComponent<
     return (
       <GoogleChatExpandedContent
         integration={props.integration as IntegrationCamel}
+      />
+    );
+  }
+
+  if (props.integration.type === IntegrationType.PAGERDUTY) {
+    return (
+      <PagerDutyExpandedContent
+        integration={props.integration as IntegrationPagerduty}
       />
     );
   }
