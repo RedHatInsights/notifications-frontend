@@ -145,7 +145,7 @@ export const detailSteps = (
         },
         {
           component: componentTypes.TEXT_FIELD,
-          name: 'integration_key',
+          name: 'secret-token',
           type: 'text',
           label: 'Integration key',
           helperText: 'Integration key provided by PagerDuty.',

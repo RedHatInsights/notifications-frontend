@@ -1,7 +1,9 @@
 import { assertNever } from 'assert-never';
 import produce, { castDraft } from 'immer';
-
-import { Schemas } from '../../generated/OpenapiNotifications';
+import {
+  Schemas,
+  Schemas as SchemasIntegrations,
+} from '../../generated/OpenapiIntegrations';
 import {
   IntegrationEmailSubscription,
   ServerIntegrationResponse,
@@ -56,8 +58,8 @@ const _toAction = (
     action.recipient = [
       new NotificationUserRecipient(
         integration.id,
-        integration.onlyAdmin,
-        integration.ignorePreferences
+        Boolean(integration.onlyAdmin),
+        Boolean(integration.ignorePreferences)
       ),
     ];
   }
@@ -86,14 +88,20 @@ export const toNotification = (
 
 export const toAction = (serverAction: ServerIntegrationResponse): Action => {
   switch (serverAction.type) {
-    case Schemas.EndpointType.enum.webhook:
+    case SchemasIntegrations.EndpointType.enum.webhook:
     case Schemas.EndpointType.enum.ansible:
     case Schemas.EndpointType.enum.camel:
+    case Schemas.EndpointType.enum.pagerduty:
       return _toAction(NotificationType.INTEGRATION, serverAction);
     case Schemas.EndpointType.enum.email_subscription:
       return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);
     case Schemas.EndpointType.enum.drawer:
       return _toAction(NotificationType.DRAWER, serverAction);
+    case null:
+    case undefined:
+      throw new Error(
+        `serverAction.type is null or undefined: ${serverAction.type}`
+      );
     default:
       assertNever(serverAction.type);
   }
