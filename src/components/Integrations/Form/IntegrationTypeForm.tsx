@@ -52,6 +52,8 @@ export const IntegrationTypeForm: React.FunctionComponent<
     case IntegrationType.WEBHOOK:
     case IntegrationType.ANSIBLE:
       return <IntegrationTypeHttpForm {...props} />;
+    case IntegrationType.PAGERDUTY:
+      return null;
     default:
       assertNever(props.type);
   }

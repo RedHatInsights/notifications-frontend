@@ -144,7 +144,10 @@ export const toIntegration = (
     id: serverIntegration.id || '',
     name: serverIntegration.name || '',
     isEnabled: !!serverIntegration.enabled,
-    type: getIntegrationType(serverIntegration),
+    type: getIntegrationType({
+      ...serverIntegration,
+      type: serverIntegration.type ?? '',
+    }),
     status: serverIntegration.status ?? 'UNKNOWN',
     serverErrors: serverIntegration.server_errors ?? 0,
   };

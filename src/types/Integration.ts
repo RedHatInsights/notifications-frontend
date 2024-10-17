@@ -150,7 +150,7 @@ export type NewIntegration = NewIntegrationTemplate<Integration>;
 export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
 
 export type ServerIntegrationRequest = Schemas.EndpointDTO;
-export type ServerIntegrationResponse = Schemas.EndpointDTO;
+export type ServerIntegrationResponse = Schemas.Endpoint;
 
 export interface IntegrationConnectionAttempt {
   date: Date;

@@ -22,24 +22,34 @@ export const IntegrationExpandedContent: React.FunctionComponent<
       {...getOuiaProps('Integrations/Table/IntegrationExpandedContent', props)}
     >
       <TextList component={TextListVariants.dl}>
-        <TextListItem
-          className={expandedContentTitleClass}
-          component={TextListItemVariants.dt}
-        >
-          Endpoint URL
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd}>
-          {props.integration.url}
-        </TextListItem>
-        <TextListItem
-          className={expandedContentTitleClass}
-          component={TextListItemVariants.dt}
-        >
-          SSL verification
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd}>
-          {props.integration.sslVerificationEnabled ? 'Enabled' : 'Disabled'}
-        </TextListItem>
+        {props.integration['url'] && (
+          <>
+            <TextListItem
+              className={expandedContentTitleClass}
+              component={TextListItemVariants.dt}
+            >
+              Endpoint URL
+            </TextListItem>
+            <TextListItem component={TextListItemVariants.dd}>
+              {props.integration['url']}
+            </TextListItem>
+          </>
+        )}
+        {props.integration['sslVerificationEnabled'] && (
+          <>
+            <TextListItem
+              className={expandedContentTitleClass}
+              component={TextListItemVariants.dt}
+            >
+              SSL verification
+            </TextListItem>
+            <TextListItem component={TextListItemVariants.dd}>
+              {props.integration['sslVerificationEnabled']
+                ? 'Enabled'
+                : 'Disabled'}
+            </TextListItem>
+          </>
+        )}
         {'secretToken' in props.integration && (
           <>
             <TextListItem
