@@ -1,6 +1,5 @@
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
-
 import { Operations } from '../generated/OpenapiIntegrations';
 import {
   toIntegration,
@@ -13,7 +12,7 @@ import {
 } from '../types/Integration';
 
 export const createIntegrationActionCreator = (integration: NewIntegration) => {
-  return Operations.EndpointResourceCreateEndpoint.actionCreator({
+  return Operations.EndpointResource$v1CreateEndpoint.actionCreator({
     body: toServerIntegrationRequest(integration),
   });
 };
@@ -22,7 +21,7 @@ export const saveIntegrationActionCreator = (
   integration: Integration | NewIntegration | UserIntegration
 ) => {
   if (integration.id) {
-    return Operations.EndpointResourceUpdateEndpoint.actionCreator({
+    return Operations.EndpointResource$v1UpdateEndpoint.actionCreator({
       body: toServerIntegrationRequest(integration),
       id: integration.id,
     });
@@ -33,8 +32,8 @@ export const saveIntegrationActionCreator = (
 
 const decoder = (
   response:
-    | Operations.EndpointResourceCreateEndpoint.Payload
-    | Operations.EndpointResourceUpdateEndpoint.Payload
+    | Operations.EndpointResource$v1CreateEndpoint.Payload
+    | Operations.EndpointResource$v1UpdateEndpoint.Payload
 ) => {
   if (response.type === 'Endpoint') {
     return {

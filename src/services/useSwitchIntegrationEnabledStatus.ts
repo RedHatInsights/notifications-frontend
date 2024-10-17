@@ -7,11 +7,11 @@ export const switchIntegrationEnabledStatusActionCreator = (
   integration: Integration
 ) => {
   if (integration.isEnabled) {
-    return Operations.EndpointResourceDisableEndpoint.actionCreator({
+    return Operations.EndpointResource$v1DisableEndpoint.actionCreator({
       id: integration.id,
     });
   } else {
-    return Operations.EndpointResourceEnableEndpoint.actionCreator({
+    return Operations.EndpointResource$v1EnableEndpoint.actionCreator({
       id: integration.id,
     });
   }

@@ -14,7 +14,7 @@ import { IntegrationType, UserIntegration } from '../types/Integration';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
   const query = (pager ?? Page.defaultPage()).toQuery();
-  return Operations.EndpointResourceGetEndpoints.actionCreator({
+  return Operations.EndpointResource$v1GetEndpoints.actionCreator({
     limit: +query.limit,
     offset: +query.offset,
     type: query.filterType
@@ -29,7 +29,7 @@ export const listIntegrationsActionCreator = (pager?: Page) => {
 };
 
 export const listIntegrationIntegrationDecoder = validationResponseTransformer(
-  (payload: Operations.EndpointResourceGetEndpoints.Payload) => {
+  (payload: Operations.EndpointResource$v1GetEndpoints.Payload) => {
     if (payload?.status === 200) {
       return validatedResponse(
         'IntegrationPage',

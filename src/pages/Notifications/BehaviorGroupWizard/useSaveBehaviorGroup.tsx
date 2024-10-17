@@ -147,7 +147,7 @@ export const useSaveBehaviorGroup = (
       const enpointIds = await Promise.all(
         toFetch.map((systemProps) =>
           query(getDefaultSystemEndpointAction(systemProps)).then((result) =>
-            result.payload?.type === 'Endpoint'
+            result.payload?.type === 'EndpointDTO'
               ? result.payload.value.id
               : undefined
           )

@@ -64,6 +64,9 @@ export const integrationTypes: Record<
   [IntegrationType.DRAWER]: {
     name: 'Drawer',
   },
+  [IntegrationType.PAGERDUTY]: {
+    name: 'PagerDuty',
+  },
 };
 
 const notificationTypes: Record<NotificationType, NotificationTypeConfig> = {
@@ -157,6 +160,11 @@ export const defaultIconList = {
       product_name: 'Event-Driven Ansible',
       icon_url: '/apps/frontend-assets/sources-integrations/ansible.svg',
     },
+    [UserIntegrationType.PAGERDUTY]: <IntegrationIcon>{
+      name: IntegrationType.PAGERDUTY,
+      product_name: 'PagerDuty',
+      icon_url: '/apps/frontend-assets/sources-integrations/pagerduty.svg',
+    },
   },
 };
 
@@ -170,6 +178,7 @@ const defaultIntegrationList = {
     UserIntegrationType.SERVICE_NOW,
     UserIntegrationType.SPLUNK,
     UserIntegrationType.ANSIBLE,
+    UserIntegrationType.PAGERDUTY,
   ]),
   [IntegrationCategory.WEBHOOKS]: sortedIntegrationList([
     UserIntegrationType.WEBHOOK,
@@ -177,6 +186,7 @@ const defaultIntegrationList = {
   all: sortedIntegrationList([
     UserIntegrationType.ANSIBLE,
     UserIntegrationType.GOOGLE_CHAT,
+    UserIntegrationType.PAGERDUTY,
     UserIntegrationType.TEAMS,
     UserIntegrationType.SERVICE_NOW,
     UserIntegrationType.SLACK,
