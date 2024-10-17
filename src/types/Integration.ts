@@ -13,6 +13,7 @@ export enum IntegrationType {
   GOOGLE_CHAT = 'camel:google_chat',
   ANSIBLE = 'ansible', // Event-Driven Ansible
   DRAWER = 'drawer',
+  PAGERDUTY = 'pagerduty',
 }
 
 export const UserIntegrationType = {
@@ -23,6 +24,7 @@ export const UserIntegrationType = {
   SLACK: IntegrationType.SLACK,
   TEAMS: IntegrationType.TEAMS,
   GOOGLE_CHAT: IntegrationType.GOOGLE_CHAT,
+  PAGERDUTY: IntegrationType.PAGERDUTY,
 } as const;
 
 export enum IntegrationCategory {
@@ -58,7 +60,7 @@ export interface IntegrationBase<T extends IntegrationType> {
   name: string;
   type: T;
   isEnabled: boolean;
-  status?: Schemas.EndpointStatus | undefined;
+  status?: Schemas.EndpointStatusDTO | undefined;
   serverErrors: number;
 }
 
@@ -79,11 +81,17 @@ export interface IntegrationAnsible
   method: Schemas.HttpType;
 }
 
+export interface IntegrationPagerduty
+  extends IntegrationBase<IntegrationType.PAGERDUTY> {
+  secretToken: string;
+  severity: Schemas.PagerDutySeverity;
+}
+
 export interface IntegrationDrawer
   extends IntegrationBase<IntegrationType.DRAWER> {
   type: IntegrationType.DRAWER;
-  ignorePreferences: boolean;
-  onlyAdmin: boolean;
+  ignorePreferences: boolean | null | undefined;
+  onlyAdmin: boolean | null | undefined;
   groupId?: UUID;
 }
 
@@ -103,8 +111,8 @@ export interface IntegrationCamel
 export interface IntegrationEmailSubscription
   extends IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION> {
   type: IntegrationType.EMAIL_SUBSCRIPTION;
-  onlyAdmin: boolean;
-  ignorePreferences: boolean;
+  onlyAdmin: boolean | null | undefined;
+  ignorePreferences: boolean | null | undefined;
   groupId?: UUID;
 }
 
@@ -113,7 +121,8 @@ export type Integration =
   | IntegrationAnsible
   | IntegrationEmailSubscription
   | IntegrationCamel
-  | IntegrationDrawer;
+  | IntegrationDrawer
+  | IntegrationPagerduty;
 export type TypedIntegration<T extends IntegrationType> = Extract<
   Integration,
   {
@@ -140,8 +149,8 @@ export type NewIntegrationBase = NewIntegrationTemplate<
 export type NewIntegration = NewIntegrationTemplate<Integration>;
 export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
 
-export type ServerIntegrationRequest = Schemas.Endpoint;
-export type ServerIntegrationResponse = Schemas.Endpoint;
+export type ServerIntegrationRequest = Schemas.EndpointDTO;
+export type ServerIntegrationResponse = Schemas.EndpointDTO;
 
 export interface IntegrationConnectionAttempt {
   date: Date;

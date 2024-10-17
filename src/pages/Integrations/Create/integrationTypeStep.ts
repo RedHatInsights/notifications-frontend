@@ -7,6 +7,7 @@ import {
   DETAILS,
   GOOGLE_CHAT_DETAILS,
   INTEGRATION_TYPE,
+  PAGERDUTY_DETAILS,
   SERVICE_NOW_DETAILS,
   SLACK_DETAILS,
   SPLUNK_DETAILS,
@@ -51,6 +52,7 @@ export const integrationTypeStep = (category: string, isEdit: boolean) => ({
 
       [IntegrationType.SPLUNK]: SPLUNK_DETAILS,
       [IntegrationType.SERVICE_NOW]: SERVICE_NOW_DETAILS,
+      [IntegrationType.PAGERDUTY]: PAGERDUTY_DETAILS,
       [IntegrationType.ANSIBLE]: DETAILS,
     },
   },
