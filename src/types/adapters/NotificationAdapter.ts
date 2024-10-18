@@ -1,9 +1,6 @@
 import { assertNever } from 'assert-never';
 import produce, { castDraft } from 'immer';
-import {
-  Schemas,
-  Schemas as SchemasIntegrations,
-} from '../../generated/OpenapiIntegrations';
+import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
   IntegrationEmailSubscription,
   ServerIntegrationResponse,
@@ -88,10 +85,9 @@ export const toNotification = (
 
 export const toAction = (serverAction: ServerIntegrationResponse): Action => {
   switch (serverAction.type) {
-    case SchemasIntegrations.EndpointType.enum.webhook:
+    case Schemas.EndpointType.enum.webhook:
     case Schemas.EndpointType.enum.ansible:
     case Schemas.EndpointType.enum.camel:
-    case Schemas.EndpointType.enum.pagerduty:
       return _toAction(NotificationType.INTEGRATION, serverAction);
     case Schemas.EndpointType.enum.email_subscription:
       return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);

@@ -59,6 +59,15 @@ export module Schemas {
   export const ApplicationDTO = zodSchemaApplicationDTO();
   export type ApplicationDTO = {
     bundle_id: UUID;
+    display_name: string;
+    event_types?: Array<EventTypeDTO> | undefined | null;
+    id?: UUID | undefined | null;
+    name: string;
+  };
+
+  export const ApplicationDTO1 = zodSchemaApplicationDTO1();
+  export type ApplicationDTO1 = {
+    bundle_id: UUID;
     created?: string | undefined | null;
     display_name: string;
     id?: UUID | undefined | null;
@@ -115,6 +124,14 @@ export module Schemas {
     id?: UUID | undefined | null;
     name: string;
     updated?: LocalDateTime | undefined | null;
+  };
+
+  export const BundleDTO = zodSchemaBundleDTO();
+  export type BundleDTO = {
+    applications?: Array<ApplicationDTO> | undefined | null;
+    display_name: string;
+    id?: UUID | undefined | null;
+    name: string;
   };
 
   export const BundleSettingsValue = zodSchemaBundleSettingsValue();
@@ -201,6 +218,11 @@ export module Schemas {
     created?: LocalDateTime | undefined | null;
     description: string;
     enabled?: boolean | undefined | null;
+    event_types?: Array<string> | undefined | null;
+    event_types_group_by_bundles_and_applications?:
+      | Array<BundleDTO>
+      | undefined
+      | null;
     id?: UUID | undefined | null;
     name: string;
     properties?:
@@ -340,6 +362,15 @@ export module Schemas {
   export type EventTypeBehaviorId = {
     behaviorGroupId: UUID;
     eventTypeId: UUID;
+  };
+
+  export const EventTypeDTO = zodSchemaEventTypeDTO();
+  export type EventTypeDTO = {
+    application?: ApplicationDTO | undefined | null;
+    description?: string | undefined | null;
+    display_name: string;
+    id?: UUID | undefined | null;
+    name: string;
   };
 
   export const EventTypeSettingsValue = zodSchemaEventTypeSettingsValue();
@@ -501,11 +532,14 @@ export module Schemas {
   export const PagerDutyPropertiesDTO = zodSchemaPagerDutyPropertiesDTO();
   export type PagerDutyPropertiesDTO = {
     secretToken: string;
-    severity: PagerDutySeverity;
+    severity: PagerDutySeverityDTO;
   };
 
   export const PagerDutySeverity = zodSchemaPagerDutySeverity();
   export type PagerDutySeverity = 'critical' | 'error' | 'warning' | 'info';
+
+  export const PagerDutySeverityDTO = zodSchemaPagerDutySeverityDTO();
+  export type PagerDutySeverityDTO = 'critical' | 'error' | 'warning' | 'info';
 
   export const RenderEmailTemplateRequest =
     zodSchemaRenderEmailTemplateRequest();
@@ -687,6 +721,18 @@ export module Schemas {
     return z
       .object({
         bundle_id: zodSchemaUUID(),
+        display_name: z.string(),
+        event_types: z.array(zodSchemaEventTypeDTO()).optional().nullable(),
+        id: zodSchemaUUID().optional().nullable(),
+        name: z.string(),
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaApplicationDTO1() {
+    return z
+      .object({
+        bundle_id: zodSchemaUUID(),
         created: z.string().optional().nullable(),
         display_name: z.string(),
         id: zodSchemaUUID().optional().nullable(),
@@ -759,6 +805,17 @@ export module Schemas {
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
         updated: zodSchemaLocalDateTime().optional().nullable(),
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaBundleDTO() {
+    return z
+      .object({
+        applications: z.array(zodSchemaApplicationDTO()).optional().nullable(),
+        display_name: z.string(),
+        id: zodSchemaUUID().optional().nullable(),
+        name: z.string(),
       })
       .nonstrict();
   }
@@ -862,6 +919,11 @@ export module Schemas {
         created: zodSchemaLocalDateTime().optional().nullable(),
         description: z.string(),
         enabled: z.boolean().optional().nullable(),
+        event_types: z.array(z.string()).optional().nullable(),
+        event_types_group_by_bundles_and_applications: z
+          .array(zodSchemaBundleDTO())
+          .optional()
+          .nullable(),
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
         properties: z
@@ -1022,6 +1084,21 @@ export module Schemas {
       .object({
         behaviorGroupId: zodSchemaUUID(),
         eventTypeId: zodSchemaUUID(),
+      })
+      .nonstrict();
+  }
+
+  function zodSchemaEventTypeDTO() {
+    return z
+      .object({
+        application: z
+          .lazy(() => zodSchemaApplicationDTO())
+          .optional()
+          .nullable(),
+        description: z.string().optional().nullable(),
+        display_name: z.string(),
+        id: zodSchemaUUID().optional().nullable(),
+        name: z.string(),
       })
       .nonstrict();
   }
@@ -1217,12 +1294,16 @@ export module Schemas {
     return z
       .object({
         secretToken: z.string(),
-        severity: zodSchemaPagerDutySeverity(),
+        severity: zodSchemaPagerDutySeverityDTO(),
       })
       .nonstrict();
   }
 
   function zodSchemaPagerDutySeverity() {
+    return z.enum(['critical', 'error', 'warning', 'info']);
+  }
+
+  function zodSchemaPagerDutySeverityDTO() {
     return z.enum(['critical', 'error', 'warning', 'info']);
   }
 
@@ -1519,6 +1600,112 @@ export module Operations {
         .data(params.body)
         .config({
           rules: [new ValidateRule(Schemas.EndpointDTO, 'EndpointDTO', 200)],
+        })
+        .build();
+    };
+  }
+  // PUT /endpoints/{endpointId}/eventType/{eventTypeId}
+  // Add a link between an endpoint and an event type
+  export module EndpointResource$v1AddEventTypeToEndpoint {
+    const Response204 = z.string();
+    type Response204 = string;
+    const Response404 = z.string();
+    type Response404 = string;
+    export interface Params {
+      endpointId: Schemas.UUID;
+      eventTypeId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 204, Response204>
+      | ValidatedResponse<'unknown', 404, Response404>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+      const path =
+        '/api/integrations/v1.0/endpoints/{endpointId}/eventType/{eventTypeId}'
+          .replace('{endpointId}', params['endpointId'].toString())
+          .replace('{eventTypeId}', params['eventTypeId'].toString());
+      const query = {} as Record<string, any>;
+      return actionBuilder('PUT', path)
+        .queryParams(query)
+        .config({
+          rules: [
+            new ValidateRule(Response204, 'unknown', 204),
+            new ValidateRule(Response404, 'unknown', 404),
+          ],
+        })
+        .build();
+    };
+  }
+  // DELETE /endpoints/{endpointId}/eventType/{eventTypeId}
+  // Delete the link between an endpoint and an event type
+  export module EndpointResource$v1DeleteEventTypeFromEndpoint {
+    const Response204 = z.string();
+    type Response204 = string;
+    const Response404 = z.string();
+    type Response404 = string;
+    export interface Params {
+      endpointId: Schemas.UUID;
+      eventTypeId: Schemas.UUID;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 204, Response204>
+      | ValidatedResponse<'unknown', 404, Response404>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+      const path =
+        '/api/integrations/v1.0/endpoints/{endpointId}/eventType/{eventTypeId}'
+          .replace('{endpointId}', params['endpointId'].toString())
+          .replace('{eventTypeId}', params['eventTypeId'].toString());
+      const query = {} as Record<string, any>;
+      return actionBuilder('DELETE', path)
+        .queryParams(query)
+        .config({
+          rules: [
+            new ValidateRule(Response204, 'unknown', 204),
+            new ValidateRule(Response404, 'unknown', 404),
+          ],
+        })
+        .build();
+    };
+  }
+  // PUT /endpoints/{endpointId}/eventTypes
+  // Update  links between an endpoint and event types
+  export module EndpointResource$v1UpdateEventTypesLinkedToEndpoint {
+    const Body = z.array(z.string());
+    type Body = Array<string>;
+    const Response204 = z.string();
+    type Response204 = string;
+    const Response404 = z.string();
+    type Response404 = string;
+    export interface Params {
+      endpointId: Schemas.UUID;
+      body: Body;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 204, Response204>
+      | ValidatedResponse<'unknown', 404, Response404>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+      const path =
+        '/api/integrations/v1.0/endpoints/{endpointId}/eventTypes'.replace(
+          '{endpointId}',
+          params['endpointId'].toString()
+        );
+      const query = {} as Record<string, any>;
+      return actionBuilder('PUT', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+          rules: [
+            new ValidateRule(Response204, 'unknown', 204),
+            new ValidateRule(Response404, 'unknown', 404),
+          ],
         })
         .build();
     };

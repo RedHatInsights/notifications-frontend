@@ -1,6 +1,6 @@
 import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
-import { Operations } from '../generated/OpenapiIntegrations';
+import { Operations, Schemas } from '../generated/OpenapiIntegrations';
 import {
   toIntegration,
   toServerIntegrationRequest,
@@ -39,7 +39,7 @@ const decoder = (
     return {
       ...response,
       type: 'Integration',
-      value: toIntegration(response.value),
+      value: toIntegration(response.value as Schemas.EndpointDTO),
     };
   }
 

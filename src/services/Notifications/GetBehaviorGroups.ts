@@ -11,7 +11,7 @@ import { UUID } from '../../types/Notification';
 
 const behaviorGroupDecoder = validationResponseTransformer(
   (
-    payload: Operations.NotificationResourceFindBehaviorGroupsByBundleId.Payload
+    payload: Operations.NotificationResource$v1FindBehaviorGroupsByBundleId.Payload
   ) => {
     if (payload.status === 200) {
       return validatedResponse(
@@ -29,7 +29,7 @@ const behaviorGroupDecoder = validationResponseTransformer(
 export const useGetBehaviorGroups = (bundleId: UUID) => {
   return useTransformQueryResponse(
     useQuery(
-      Operations.NotificationResourceFindBehaviorGroupsByBundleId.actionCreator(
+      Operations.NotificationResource$v1FindBehaviorGroupsByBundleId.actionCreator(
         {
           bundleId,
         }
