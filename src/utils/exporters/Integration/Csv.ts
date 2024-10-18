@@ -19,7 +19,7 @@ export class IntegrationExporterCsv extends ExporterCsv<UserIntegration> {
       ['isEnabled', 'isEnabled'],
       ['type', 'type'],
       // This works now, but what will happen when there are multiple types (slack, webhook, etc)
-      ['url', 'url'],
+      ['secretToken', 'secretToken'],
       ['status', 'status'],
       ['serverErrors', 'serverErrors'],
     ];

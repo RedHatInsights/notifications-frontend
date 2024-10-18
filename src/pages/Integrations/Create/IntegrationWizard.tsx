@@ -75,6 +75,7 @@ export const IntegrationWizard: React.FunctionComponent<
             'secret-token': secret_token,
             'event-types-table': event_type_id,
             'product-family': bundle_name,
+            severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
             if (!isBehaviorGroupsEnabled) {
@@ -98,6 +99,7 @@ export const IntegrationWizard: React.FunctionComponent<
                       url,
                       disable_ssl_verification: false,
                       secret_token,
+                      severity,
                     },
                   }),
                 }
@@ -114,6 +116,7 @@ export const IntegrationWizard: React.FunctionComponent<
                 event_type_id,
                 bundle_name,
                 template,
+                severity,
               });
               setWizardOpen(false);
             }

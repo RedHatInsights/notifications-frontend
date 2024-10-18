@@ -37,7 +37,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
         try {
           const text = (reader.result as string).split('\r');
           expect(text[0]).toEqual(
-            'id,name,isEnabled,type,url,status,serverErrors'
+            'id,name,isEnabled,type,secretToken,status,serverErrors'
           );
           done();
         } catch (ex) {

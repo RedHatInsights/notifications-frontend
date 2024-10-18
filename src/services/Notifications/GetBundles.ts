@@ -3,7 +3,7 @@ import { useQuery } from 'react-fetching-library';
 import { Operations, Schemas } from '../../generated/OpenapiNotifications';
 
 const getBundlesAction = (includeApplications: boolean) =>
-  Operations.NotificationResourceGetBundleFacets.actionCreator({
+  Operations.NotificationResource$v1GetBundleFacets.actionCreator({
     includeApplications,
   });
 
@@ -17,7 +17,7 @@ export const useGetBundleByName = () => {
   return async (bundleName: string) => {
     const response = await query();
     const payload =
-      response.payload as Operations.NotificationResourceGetApplicationsFacets.Payload;
+      response.payload as Operations.NotificationResource$v1GetApplicationsFacets.Payload;
     if (response.errorObject) {
       throw response.errorObject;
     }

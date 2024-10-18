@@ -1,7 +1,6 @@
 import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
-
 import {
   IntegrationType,
   UserIntegrationType,
@@ -52,6 +51,8 @@ export const IntegrationTypeForm: React.FunctionComponent<
     case IntegrationType.WEBHOOK:
     case IntegrationType.ANSIBLE:
       return <IntegrationTypeHttpForm {...props} />;
+    case IntegrationType.PAGERDUTY:
+      return null;
     default:
       assertNever(props.type);
   }

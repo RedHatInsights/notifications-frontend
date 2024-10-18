@@ -7,6 +7,7 @@ import {
   EVENT_TYPES,
   GOOGLE_CHAT_DETAILS,
   INLINE_ALERT,
+  PAGERDUTY_DETAILS,
   REVIEW,
   SERVICE_NOW_DETAILS,
   SLACK_DETAILS,
@@ -107,6 +108,81 @@ export const detailSteps = (
           isRequired: false,
         },
         sslAlert,
+      ],
+    },
+
+    // REPORTING - PAGERDUTY
+    {
+      title: title,
+      name: PAGERDUTY_DETAILS,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
+      fields: [
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'integration-details-title',
+          label: `${isEdit ? 'Edit' : 'Enter'} integration details`,
+          variant: 'h3',
+        },
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'integration-details-subtitle',
+          label: `${isEdit ? 'Edit' : 'Enter'} the details ${
+            isEdit ? 'of' : 'for'
+          } your integration.`,
+          variant: 'p',
+        },
+        {
+          component: componentTypes.TEXT_FIELD,
+          name: 'name',
+          type: 'text',
+          label: 'Integration name',
+          isRequired: true,
+          validate: [
+            {
+              type: validatorTypes.REQUIRED,
+            },
+          ],
+        },
+        {
+          component: componentTypes.TEXT_FIELD,
+          name: 'secret-token',
+          type: 'text',
+          label: 'Integration key',
+          helperText: 'Integration key provided by PagerDuty.',
+          isRequired: true,
+          validate: [
+            {
+              type: validatorTypes.REQUIRED,
+            },
+          ],
+        },
+        {
+          component: componentTypes.SELECT,
+          name: 'severity',
+          label: 'Alert severity',
+          helperText:
+            'Severity of the alert created in PagerDuty when this integration is used.',
+          isRequired: true,
+          simpleValue: true,
+          options: [
+            {
+              label: 'Info',
+              value: 'Info',
+            },
+            {
+              label: 'Warning',
+              value: 'Warning',
+            },
+            {
+              label: 'Error',
+              value: 'Error',
+            },
+            {
+              label: 'Critical',
+              value: 'Critical',
+            },
+          ],
+        },
       ],
     },
 

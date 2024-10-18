@@ -7,7 +7,7 @@ export type SaveTimePrefActionsParams = {
 };
 
 const actionCreator = (params: SaveTimePrefActionsParams) => {
-  return Operations.OrgConfigResourceSaveDailyDigestTimePreference.actionCreator(
+  return Operations.OrgConfigResource$v1SaveDailyDigestTimePreference.actionCreator(
     {
       body: params.body,
     }

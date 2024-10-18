@@ -6,7 +6,6 @@ import {
   TextListVariants,
 } from '@patternfly/react-core';
 import * as React from 'react';
-
 import { UserIntegrationType } from '../../../../types/Integration';
 import { getOuiaProps } from '../../../../utils/getOuiaProps';
 import {
@@ -14,54 +13,39 @@ import {
   expandedContentTitleClass,
 } from '../ExpandedContent';
 
-export const IntegrationExpandedContent: React.FunctionComponent<
+export const PagerDutyExpandedContent: React.FunctionComponent<
   ExpandedContentProps<UserIntegrationType>
 > = (props) => {
   return (
     <TextContent
-      {...getOuiaProps('Integrations/Table/IntegrationExpandedContent', props)}
+      {...getOuiaProps('Integrations/Table/PagerDutyExpandedContent', props)}
     >
       <TextList component={TextListVariants.dl}>
-        {props.integration['url'] && (
-          <>
-            <TextListItem
-              className={expandedContentTitleClass}
-              component={TextListItemVariants.dt}
-            >
-              Endpoint URL
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
-              {props.integration['url']}
-            </TextListItem>
-          </>
-        )}
-        {props.integration['sslVerificationEnabled'] && (
-          <>
-            <TextListItem
-              className={expandedContentTitleClass}
-              component={TextListItemVariants.dt}
-            >
-              SSL verification
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
-              {props.integration['sslVerificationEnabled']
-                ? 'Enabled'
-                : 'Disabled'}
-            </TextListItem>
-          </>
-        )}
         {'secretToken' in props.integration && (
           <>
             <TextListItem
               className={expandedContentTitleClass}
               component={TextListItemVariants.dt}
             >
-              Authentication type
+              Integration Key
             </TextListItem>
             <TextListItem component={TextListItemVariants.dd}>
               {props.integration.secretToken !== undefined
                 ? 'Secret token'
                 : 'None'}
+            </TextListItem>
+          </>
+        )}
+        {props.integration['severity'] && (
+          <>
+            <TextListItem
+              className={expandedContentTitleClass}
+              component={TextListItemVariants.dt}
+            >
+              Severity
+            </TextListItem>
+            <TextListItem component={TextListItemVariants.dd}>
+              {props.integration['severity']}
             </TextListItem>
           </>
         )}

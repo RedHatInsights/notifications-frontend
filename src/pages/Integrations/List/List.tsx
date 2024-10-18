@@ -12,7 +12,6 @@ import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
 import { useContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationsEmptyState } from '../../../components/Integrations/EmptyState';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';

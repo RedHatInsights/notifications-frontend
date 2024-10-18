@@ -9,7 +9,7 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
 
 const behaviorGroupsForEndpointActionCreator = (integrationId: string) => {
-  return Operations.NotificationResourceGetBehaviorGroupsAffectedByRemovalOfEndpoint.actionCreator(
+  return Operations.NotificationResource$v1GetBehaviorGroupsAffectedByRemovalOfEndpoint.actionCreator(
     {
       endpointId: integrationId,
     }
@@ -18,7 +18,7 @@ const behaviorGroupsForEndpointActionCreator = (integrationId: string) => {
 
 const defaultBehaviorGroupDecoder = validationResponseTransformer(
   (
-    payload: Operations.NotificationResourceGetBehaviorGroupsAffectedByRemovalOfEndpoint.Payload
+    payload: Operations.NotificationResource$v1GetBehaviorGroupsAffectedByRemovalOfEndpoint.Payload
   ) => {
     if (payload.status === 200) {
       return validatedResponse(
