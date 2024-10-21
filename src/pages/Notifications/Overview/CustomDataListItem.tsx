@@ -44,14 +44,14 @@ interface CustomDataListItemProps {
 }
 
 const IconMapper = {
-  [IconName.USER]: <UserIcon className="pf-u-primary-color-100" />,
-  [IconName.RUNNING]: <RunningIcon className="pf-u-primary-color-100" />,
+  [IconName.USER]: <UserIcon className="pf-v5-u-primary-color-100" />,
+  [IconName.RUNNING]: <RunningIcon className="pf-v5-u-primary-color-100" />,
   [IconName.INTEGRATION]: (
-    <IntegrationIcon className="pf-u-primary-color-100" />
+    <IntegrationIcon className="pf-v5-u-primary-color-100" />
   ),
-  [IconName.USERS]: <UsersIcon className="pf-u-primary-color-100" />,
-  [IconName.BELL]: <BellIcon className="pf-u-primary-color-100" />,
-  [IconName.BUG]: <BugIcon className="pf-u-primary-color-100" />,
+  [IconName.USERS]: <UsersIcon className="pf-v5-u-primary-color-100" />,
+  [IconName.BELL]: <BellIcon className="pf-v5-u-primary-color-100" />,
+  [IconName.BUG]: <BugIcon className="pf-v5-u-primary-color-100" />,
 };
 
 const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
@@ -70,7 +70,7 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
   return (
     <React.Fragment>
       <DataListItem aria-labelledby="item1" isExpanded={expanded}>
-        <DataListItemRow className="pf-u-align-items-center">
+        <DataListItemRow className="pf-v5-u-align-items-center">
           <DataListToggle
             isExpanded={expanded}
             id="toggle1"
@@ -81,8 +81,8 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
             dataListCells={[
               <DataListCell key={'cell-' + icon.toString().toLowerCase()}>
                 <div>
-                  <Flex className="pf-u-flex-nowrap">
-                    <FlexItem className="pf-u-align-self-center">
+                  <Flex className="pf-v5-u-flex-nowrap">
+                    <FlexItem className="pf-v5-u-align-self-center">
                       <Icon size="lg">{iconElement}</Icon>
                     </FlexItem>
                     <Divider
@@ -90,7 +90,7 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
                         default: 'vertical',
                       }}
                     />
-                    <FlexItem className="pf-u-align-self-center">
+                    <FlexItem className="pf-v5-u-align-self-center">
                       <Title headingLevel="h4">{heading}</Title>
                     </FlexItem>
                   </Flex>

@@ -83,7 +83,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <TextContent>
           <Text className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover">
             <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-              <CogIcon className="pf-u-primary-color-100" />
+              <CogIcon className="pf-v5-u-primary-color-100" />
             </Icon>
             Configure applications
           </Text>
@@ -137,7 +137,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
                   target="_blank"
                 >
                   Learn more
-                  <Icon className="pf-u-ml-sm" isInline>
+                  <Icon className="pf-v5-u-ml-sm" isInline>
                     <ArrowRightIcon />
                   </Icon>
                 </Link>
@@ -152,7 +152,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <TextContent>
           <Text className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover">
             <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-              <LockIcon className="pf-u-primary-color-100" />
+              <LockIcon className="pf-v5-u-primary-color-100" />
             </Icon>
             Configure user access
           </Text>
@@ -172,7 +172,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
               target="_blank"
             >
               Learn more
-              <Icon className="pf-u-ml-sm" isInline>
+              <Icon className="pf-v5-u-ml-sm" isInline>
                 <ArrowRightIcon />
               </Icon>
             </Link>
@@ -192,7 +192,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             <TextContent>
               <Text className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover">
                 <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-                  <BellIcon className="pf-u-primary-color-100" />
+                  <BellIcon className="pf-v5-u-primary-color-100" />
                 </Icon>
                 Configure notifications portal
               </Text>
@@ -211,7 +211,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
                   target="_blank"
                 >
                   Learn more
-                  <Icon className="pf-u-ml-sm" isInline>
+                  <Icon className="pf-v5-u-ml-sm" isInline>
                     <ArrowRightIcon />
                   </Icon>
                 </Link>

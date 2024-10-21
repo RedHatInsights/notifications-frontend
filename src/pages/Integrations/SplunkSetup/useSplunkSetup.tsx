@@ -91,21 +91,21 @@ export const useSplunkSetup = () => {
       hecToken,
       splunkServerHostName,
     });
-    onProgress(' OK', 'pf-u-success-color-200');
+    onProgress(' OK', 'pf-v5-u-success-color-200');
 
     onProgress(`\nCreating Behavior Group ${behaviorGroupName}...`);
     const behaviorGroup = await createSplunkBehaviorGroup({
       behaviorGroupName,
       bundleName,
     });
-    onProgress(' OK', 'pf-u-success-color-200');
+    onProgress(' OK', 'pf-v5-u-success-color-200');
 
     onProgress(
       '\nAssociating integration as an action for the behavior group...'
     );
     await updateSplunkBehaviorActions(behaviorGroup, integration);
 
-    onProgress(' OK', 'pf-u-success-color-200');
+    onProgress(' OK', 'pf-v5-u-success-color-200');
     onProgress('\n\nAssociating events to the behavior group:\n');
 
     await attachEvents(behaviorGroup, events, onProgress);
@@ -255,9 +255,9 @@ const useAttachEventsToSplunk = () => {
       );
       try {
         await appendActionToNotification(eventType, behaviorGroup);
-        onProgress(' ASSOCIATED\n', 'pf-u-success-color-200');
+        onProgress(' ASSOCIATED\n', 'pf-v5-u-success-color-200');
       } catch (error) {
-        onProgress(' ERROR!\n', 'pf-u-danger-color-200');
+        onProgress(' ERROR!\n', 'pf-v5-u-danger-color-200');
         console.log(error);
       }
     }

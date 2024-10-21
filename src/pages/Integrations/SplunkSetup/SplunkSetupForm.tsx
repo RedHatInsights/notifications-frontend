@@ -142,7 +142,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
         onProgress
       );
     } catch (error) {
-      onProgress(`\n${error}`, 'pf-u-danger-color-200');
+      onProgress(`\n${error}`, 'pf-v5-u-danger-color-200');
       setStepIsInProgress(false);
       setStepVariant('danger');
 
@@ -158,7 +158,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     setIsDisabled(false);
     setStepIsInProgress(false);
     setStepVariant('success');
-    onProgress('\nDONE!', 'pf-u-success-color-200');
+    onProgress('\nDONE!', 'pf-v5-u-success-color-200');
   };
 
   const onFinish = () => {
@@ -168,7 +168,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
   return (
     <Grid>
       <GridItem span={6}>
-        <Form className="pf-u-mr-md">
+        <Form className="pf-v5-u-mr-md">
           <FormGroup
             label="Splunk HEC URL"
             labelIcon={
@@ -313,7 +313,7 @@ const SplunkAutomationButton = ({
 
 const SplunkSetupFailedToast = () => (
   <>
-    <p className="pf-u-mb-md">
+    <p className="pf-v5-u-mb-md">
       There was a problem processing the request. Please try again. If the
       problem persists, contact Red Hat support by opening the ticket.
     </p>

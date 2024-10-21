@@ -67,7 +67,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
   return (
     <React.Fragment>
       <PageHeader>
-        <Flex className="pf-u-flex-nowrap">
+        <Flex className="pf-v5-u-flex-nowrap">
           <FlexItem>
             <img src={notificationsProductIcon} />
           </FlexItem>
@@ -76,9 +76,9 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
               default: 'vertical',
             }}
           />
-          <FlexItem className="pf-u-align-self-flex-start">
-            <PageHeaderTitle title="Notifications" className="pf-u-mb-sm" />
-            <p className="pf-u-mb-sm">
+          <FlexItem className="pf-v5-u-align-self-flex-start">
+            <PageHeaderTitle title="Notifications" className="pf-v5-u-mb-sm" />
+            <p className="pf-v5-u-mb-sm">
               Receive notifications about events that occur in your console
               services. You can choose to receive notifications by email, in
               third-party applications, or from a combination of these methods.
@@ -89,7 +89,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
       <Main>
         {isOrgAdmin ? (
           <React.Fragment>
-            <Card className="pf-u-mb-lg">
+            <Card className="pf-v5-u-mb-lg">
               <Grid hasGutter>
                 <GridItem sm={12} md={6} lg={8}>
                   <CardTitle>
@@ -142,24 +142,24 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 <GridItem
                   md={6}
                   lg={4}
-                  className="pf-u-display-none pf-u-display-block-on-md pf-c-card__cover-image"
+                  className="pf-v5-u-display-none pf-v5-u-display-block-on-md pf-c-card__cover-image"
                 ></GridItem>
               </Grid>
             </Card>
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Title headingLevel="h2" className="pf-u-mb-md">
+            <Title headingLevel="h2" className="pf-v5-u-mb-md">
               Get started with Notifications on the Hybrid Cloud Console
             </Title>
-            <Grid hasGutter className="pf-u-mb-lg">
+            <Grid hasGutter className="pf-v5-u-mb-lg">
               <GridItem sm={12} md={6}>
-                <Card className="pf-u-h-100">
+                <Card className="pf-v5-u-h-100">
                   <CardTitle>
-                    <Flex className="pf-u-flex-nowrap">
+                    <Flex className="pf-v5-u-flex-nowrap">
                       <FlexItem>
                         <Icon size="lg">
-                          <UserIcon className="pf-u-primary-color-100" />
+                          <UserIcon className="pf-v5-u-primary-color-100" />
                         </Icon>
                       </FlexItem>
                       <FlexItem>
@@ -199,12 +199,12 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 </Card>
               </GridItem>
               <GridItem sm={12} md={6}>
-                <Card className="pf-u-h-100">
+                <Card className="pf-v5-u-h-100">
                   <CardTitle>
-                    <Flex className="pf-u-flex-nowrap">
+                    <Flex className="pf-v5-u-flex-nowrap">
                       <FlexItem>
                         <Icon size="lg">
-                          <RunningIcon className="pf-u-primary-color-100" />
+                          <RunningIcon className="pf-v5-u-primary-color-100" />
                         </Icon>
                       </FlexItem>
                       <FlexItem>
@@ -246,13 +246,13 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
 
         {isOrgAdmin ? (
           <React.Fragment>
-            <Title headingLevel="h2" className="pf-u-mb-md">
+            <Title headingLevel="h2" className="pf-v5-u-mb-md">
               Supporting features
             </Title>
 
             <DataList
               aria-label="Supporting features list"
-              className="pf-u-mb-lg"
+              className="pf-v5-u-mb-lg"
             >
               <CustomDataListItem
                 icon={IconName.USER}
@@ -332,7 +332,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         href={`${
                           isBeta() ? '/preview' : ''
                         }/${getBundle()}/notifications/user-preferences`}
-                        className="pf-u-px-0"
+                        className="pf-v5-u-px-0"
                         variant="link"
                         onClick={(e) => {
                           e.preventDefault();
@@ -356,7 +356,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           <React.Fragment>
             <DataList
               aria-label="Supporting features list"
-              className="pf-u-mb-lg"
+              className="pf-v5-u-mb-lg"
             >
               <CustomDataListItem
                 icon={IconName.BELL}
@@ -369,13 +369,13 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           </React.Fragment>
         )}
 
-        <Title headingLevel="h2" className="pf-u-mb-md">
+        <Title headingLevel="h2" className="pf-v5-u-mb-md">
           Recommended content
         </Title>
 
         {isOrgAdmin ? (
           <React.Fragment>
-            <Table aria-label="Recommended content" className="pf-u-mb-lg">
+            <Table aria-label="Recommended content" className="pf-v5-u-mb-lg">
               <Tbody>
                 <Tr className="noti-c-table-border-top">
                   <Td>Configuring Notifications</Td>
@@ -431,7 +431,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Table aria-label="Recommended content" className="pf-u-mb-lg">
+            <Table aria-label="Recommended content" className="pf-v5-u-mb-lg">
               <Tbody>
                 <Tr className="noti-c-table-border-top">
                   <Td>Configuring notifications and integrations</Td>
@@ -473,7 +473,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
         )}
         <a
           href={`${isBeta() ? '/preview' : ''}/settings/learning-resources`}
-          className="pf-u-mb-lg"
+          className="pf-v5-u-mb-lg"
         >
           View all Settings Learning Resources
         </a>

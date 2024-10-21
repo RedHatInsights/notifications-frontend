@@ -52,13 +52,13 @@ const EmptyIntegrationCard: React.FunctionComponent<{
       </CardHeader>
       <CardBody className="pf-v5-u-display-flex">
         <TextContent className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
-          <Text component={TextVariants.p} className="pf-u-flex-grow-1">
+          <Text component={TextVariants.p} className="pf-v5-u-flex-grow-1">
             {body}
           </Text>
           <Text component={TextVariants.p}>
             <Link to={link} target="_blank">
               Learn more
-              <Icon className="pf-u-ml-sm" isInline>
+              <Icon className="pf-v5-u-ml-sm" isInline>
                 <ArrowRightIcon />
               </Icon>
             </Link>
