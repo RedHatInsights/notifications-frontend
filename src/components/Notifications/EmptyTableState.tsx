@@ -14,7 +14,7 @@ const EmptyTableState = () => {
     <EmptyState variant="full">
       <EmptyStateHeader
         titleText="No results found"
-        icon={<EmptyStateIcon className="pf-u-mb-xl" icon={SearchIcon} />}
+        icon={<EmptyStateIcon className="pf-v5-u-mb-xl" icon={SearchIcon} />}
         headingLevel="h2"
       />
       <EmptyStateBody>
