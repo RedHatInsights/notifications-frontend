@@ -1,5 +1,5 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
-import { integrationTypeStep } from './integrationTypeStep';
+import { IntegrationTypeStep } from './integrationTypeStep';
 import { IntegrationCategory } from '../../../types/Integration';
 import { detailSteps } from './detailSteps';
 import { INTEGRATION_TYPE, REVIEW } from './helpers';
@@ -22,7 +22,7 @@ export const schema = (category, isEdit, isBehaviorGroupsEnabled) => ({
           IntegrationCategory.COMMUNICATIONS,
           IntegrationCategory.REPORTING,
         ].includes(category)
-          ? [integrationTypeStep(category, isEdit)]
+          ? [IntegrationTypeStep(category, isEdit)]
           : []),
 
         // INTEGRATION DETAILS

@@ -14,6 +14,7 @@ import { IntegrationExpandedContent } from './ExpandedContent/IntegrationExpande
 import { SlackExpandedContent } from './ExpandedContent/SlackExpandedContent';
 import { TeamsExpandedContent } from './ExpandedContent/TeamsExpandedContent';
 import { PagerDutyExpandedContent } from './ExpandedContent/PagerDutyExpandedContent';
+import { useFlag } from '@unleash/proxy-client-react';
 
 export const expandedContentTitleClass = style({
   fontWeight: 400,
@@ -27,6 +28,8 @@ export interface ExpandedContentProps<T extends IntegrationType>
 export const ExpandedContent: React.FunctionComponent<
   ExpandedContentProps<UserIntegrationType>
 > = (props) => {
+  const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
+
   if (props.integration.type === IntegrationType.SLACK) {
     return (
       <SlackExpandedContent
@@ -51,11 +54,15 @@ export const ExpandedContent: React.FunctionComponent<
     );
   }
 
-  if (props.integration.type === IntegrationType.PAGERDUTY) {
-    return (
-      <PagerDutyExpandedContent
-        integration={props.integration as IntegrationPagerduty}
-      />
+  {
+    isPagerDutyEnabled ? (
+      props.integration.type === IntegrationType.PAGERDUTY ? (
+        <PagerDutyExpandedContent
+          integration={props.integration as IntegrationPagerduty}
+        />
+      ) : null
+    ) : (
+      ''
     );
   }
 
