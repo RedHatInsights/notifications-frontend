@@ -125,7 +125,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
             url: 'https://my-cool-webhook.com',
             disable_ssl_verification: false,
             method: Schemas.HttpType.Enum.GET,
-            secret_token: 'my-token',
+            secretToken: 'my-token',
           },
           server_errors: 3,
           status: 'PROVISIONING',
@@ -237,8 +237,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'POST',
-          disable_ssl_verification: false,
-          secret_token: undefined,
+          disableSslVerification: false,
+          secretToken: undefined,
         },
         sub_type: undefined,
       });
@@ -265,8 +265,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'GET',
-          disable_ssl_verification: false,
-          secret_token: 'foobar',
+          disableSslVerification: false,
+          secretToken: 'foobar',
         },
       });
     });
