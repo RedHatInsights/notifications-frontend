@@ -129,6 +129,7 @@ export const EventLogPage: React.FunctionComponent = () => {
           case 'camel':
           case 'webhook':
           case 'ansible':
+          case 'pagerduty':
             return endpoint.payload.value.name;
           case 'email_subscription':
           case 'drawer': {

@@ -294,7 +294,8 @@ export module Schemas {
     | 'camel'
     | 'drawer'
     | 'email_subscription'
-    | 'webhook';
+    | 'webhook'
+    | 'pagerduty';
 
   export const Environment = zodSchemaEnvironment();
   export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
@@ -1010,6 +1011,7 @@ export module Schemas {
       'drawer',
       'email_subscription',
       'webhook',
+      'pagerduty',
     ]);
   }
 

@@ -88,6 +88,7 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
     case Schemas.EndpointType.enum.webhook:
     case Schemas.EndpointType.enum.ansible:
     case Schemas.EndpointType.enum.camel:
+    case Schemas.EndpointType.enum.pagerduty:
       return _toAction(NotificationType.INTEGRATION, serverAction);
     case Schemas.EndpointType.enum.email_subscription:
       return _toAction(NotificationType.EMAIL_SUBSCRIPTION, serverAction);
