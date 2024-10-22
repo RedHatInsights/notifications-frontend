@@ -80,8 +80,10 @@ export const useSplunkSetup = () => {
   const attachEvents = useAttachEventsToSplunk();
 
   return async ({ hecToken, splunkServerHostName }, onProgress) => {
-    const integrationName = SPLUNK_INTEGRATION_NAME;
-    const behaviorGroupName = SPLUNK_BEHAVIOR_GROUP_NAME;
+    const now = new Date();
+    const timestamp = now.getTime();
+    const integrationName = `${SPLUNK_INTEGRATION_NAME}_${timestamp}`;
+    const behaviorGroupName = `${SPLUNK_BEHAVIOR_GROUP_NAME}_${timestamp}`;
     const bundleName = BUNDLE_NAME;
     const events = DEFAULT_SPLUNK_EVENTS;
 
