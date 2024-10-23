@@ -1,11 +1,16 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
-import { IntegrationTypeStep } from './integrationTypeStep';
+import { integrationTypeStep } from './integrationTypeStep';
 import { IntegrationCategory } from '../../../types/Integration';
 import { detailSteps } from './detailSteps';
 import { INTEGRATION_TYPE, REVIEW } from './helpers';
 import { eventTypesStep } from './eventTypesStep';
 
-export const schema = (category, isEdit, isBehaviorGroupsEnabled) => ({
+export const schema = (
+  category,
+  isEdit,
+  isBehaviorGroupsEnabled,
+  isPagerDutyEnabled
+) => ({
   fields: [
     {
       component: componentTypes.WIZARD,
@@ -22,7 +27,7 @@ export const schema = (category, isEdit, isBehaviorGroupsEnabled) => ({
           IntegrationCategory.COMMUNICATIONS,
           IntegrationCategory.REPORTING,
         ].includes(category)
-          ? [IntegrationTypeStep(category, isEdit)]
+          ? [integrationTypeStep(category, isEdit, isPagerDutyEnabled)]
           : []),
 
         // INTEGRATION DETAILS

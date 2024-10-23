@@ -55,6 +55,7 @@ export const IntegrationWizard: React.FunctionComponent<
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
   );
+  const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   const [wizardState, setWizardState] = React.useState<
     IntegrationsData | undefined
@@ -66,7 +67,12 @@ export const IntegrationWizard: React.FunctionComponent<
     <React.Fragment>
       {wizardOpen ? (
         <FormRenderer
-          schema={schema(category, isEdit, isBehaviorGroupsEnabled)}
+          schema={schema(
+            category,
+            isEdit,
+            isBehaviorGroupsEnabled,
+            isPagerDutyEnabled
+          )}
           componentMapper={{ ...componentMapper, ...mapperExtension }}
           onSubmit={({
             url,
