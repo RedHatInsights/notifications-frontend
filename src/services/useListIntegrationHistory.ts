@@ -10,7 +10,7 @@ type IntegrationHistoryParams = {
 export const listIntegrationHistoryActionCreator = (
   params: IntegrationHistoryParams
 ) => {
-  return Operations.EndpointResourceGetEndpointHistory.actionCreator({
+  return Operations.EndpointResource$v1GetEndpointHistory.actionCreator({
     id: params.integrationId,
     limit: params.limit,
     sortBy: params.sortBy,

@@ -14,7 +14,7 @@ import { toNotifications } from '../types/adapters/NotificationAdapter';
 
 export const listNotificationsActionCreator = (pager?: Page) => {
   const query = (pager ?? Page.defaultPage()).toQuery();
-  return Operations.NotificationResourceGetEventTypes.actionCreator({
+  return Operations.NotificationResource$v1GetEventTypes.actionCreator({
     limit: +query.limit,
     offset: +query.offset,
     applicationIds: query.filterApplicationId as unknown as Array<Schemas.UUID>,
@@ -25,7 +25,7 @@ export const listNotificationsActionCreator = (pager?: Page) => {
 };
 
 const decoder = validationResponseTransformer(
-  (payload: Operations.NotificationResourceGetEventTypes.Payload) => {
+  (payload: Operations.NotificationResource$v1GetEventTypes.Payload) => {
     if (payload.status === 200) {
       return validatedResponse(
         'eventTypesArray',

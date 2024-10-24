@@ -25,6 +25,7 @@ export type IntegrationsData = {
   };
   event_type_id: [];
   bundle_name: string;
+  severity: string;
 };
 
 interface ProgressProps {
@@ -69,6 +70,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
                 url: data.url,
                 disable_ssl_verification: false,
                 secret_token: data.secret_token,
+                severity: data.severity,
               },
             }),
           }

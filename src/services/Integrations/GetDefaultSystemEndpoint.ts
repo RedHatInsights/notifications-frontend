@@ -11,7 +11,7 @@ export const getDefaultSystemEndpointAction = (
   systemProperties: SystemProperties
 ) => {
   if (isEmailSystemProperties(systemProperties)) {
-    return Operations.EndpointResourceGetOrCreateEmailSubscriptionEndpoint.actionCreator(
+    return Operations.EndpointResource$v1GetOrCreateEmailSubscriptionEndpoint.actionCreator(
       {
         body: {
           only_admins: systemProperties.props.onlyAdmins,
@@ -20,7 +20,7 @@ export const getDefaultSystemEndpointAction = (
       }
     );
   } else if (isDrawerSystemProperties(systemProperties)) {
-    return Operations.EndpointResourceGetOrCreateDrawerSubscriptionEndpoint.actionCreator(
+    return Operations.EndpointResource$v1GetOrCreateDrawerSubscriptionEndpoint.actionCreator(
       {
         body: {
           only_admins: systemProperties.props.onlyAdmins,

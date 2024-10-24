@@ -9,8 +9,8 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { BehaviorGroup, UUID } from '../../types/Notification';
 
 type Payload =
-  | Operations.NotificationResourceCreateBehaviorGroup.Payload
-  | Operations.NotificationResourceUpdateBehaviorGroup.Payload;
+  | Operations.NotificationResource$v1CreateBehaviorGroup.Payload
+  | Operations.NotificationResource$v1UpdateBehaviorGroup.Payload;
 
 export type SaveBehaviorGroupRequest = {
   eventTypesIds?: Array<UUID>;
@@ -54,7 +54,7 @@ const saveBehaviorGroupActionCreator = (
   behaviorGroup: SaveBehaviorGroupRequest
 ) => {
   if ('id' in behaviorGroup) {
-    return Operations.NotificationResourceUpdateBehaviorGroup.actionCreator({
+    return Operations.NotificationResource$v1UpdateBehaviorGroup.actionCreator({
       id: behaviorGroup.id,
       body: {
         display_name: behaviorGroup.displayName,
@@ -64,7 +64,7 @@ const saveBehaviorGroupActionCreator = (
     });
   }
 
-  return Operations.NotificationResourceCreateBehaviorGroup.actionCreator({
+  return Operations.NotificationResource$v1CreateBehaviorGroup.actionCreator({
     body: {
       bundle_id: behaviorGroup.bundleId,
       display_name: behaviorGroup.displayName,

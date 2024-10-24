@@ -4,6 +4,6 @@ import { Operations } from '../../generated/OpenapiNotifications';
 
 export const useGetTimePreference = () => {
   return useQuery(
-    Operations.OrgConfigResourceGetDailyDigestTimePreference.actionCreator()
+    Operations.OrgConfigResource$v1GetDailyDigestTimePreference.actionCreator()
   );
 };

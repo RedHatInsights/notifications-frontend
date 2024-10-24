@@ -12,7 +12,7 @@ import { Operations } from '../../generated/OpenapiNotifications';
 import { toNotificationEvent } from '../../types/adapters/NotificationEventAdapter';
 
 const eventDecoder = validationResponseTransformer(
-  (payload: Operations.EventResourceGetEvents.Payload) => {
+  (payload: Operations.EventResource$v1GetEvents.Payload) => {
     if (payload.status === 200) {
       return validatedResponse(
         'Events',
@@ -33,7 +33,7 @@ export const useGetEvents = (page?: Page) => {
   const query = (page ?? Page.defaultPage()).toQuery();
   return useTransformQueryResponse(
     useQuery(
-      Operations.EventResourceGetEvents.actionCreator({
+      Operations.EventResource$v1GetEvents.actionCreator({
         limit: +query.limit,
         offset: +query.offset,
         bundleIds: query.filterBundleIds as [],

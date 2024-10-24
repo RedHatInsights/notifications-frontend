@@ -11,7 +11,7 @@ import { UUID } from '../../types/Notification';
 export const getBehaviorGroupByNotificationDecoder =
   validationResponseTransformer(
     (
-      payload: Operations.NotificationResourceGetLinkedBehaviorGroups.Payload
+      payload: Operations.NotificationResource$v1GetLinkedBehaviorGroups.Payload
     ) => {
       if (payload.status === 200) {
         return validatedResponse(
@@ -27,7 +27,7 @@ export const getBehaviorGroupByNotificationDecoder =
   );
 
 export const getBehaviorGroupByNotificationAction = (notificationId: UUID) =>
-  Operations.NotificationResourceGetLinkedBehaviorGroups.actionCreator({
+  Operations.NotificationResource$v1GetLinkedBehaviorGroups.actionCreator({
     eventTypeId: notificationId,
   });
 
@@ -49,7 +49,7 @@ export const useGetAnyBehaviorGroupByNotification = () => {
     }
 
     return getBehaviorGroupByNotificationDecoder(
-      payload as Operations.NotificationResourceGetLinkedBehaviorGroups.Payload
+      payload as Operations.NotificationResource$v1GetLinkedBehaviorGroups.Payload
     );
   };
 };

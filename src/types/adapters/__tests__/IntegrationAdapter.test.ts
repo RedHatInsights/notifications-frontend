@@ -12,7 +12,6 @@ import {
   toIntegrations,
   toServerIntegrationRequest,
 } from '../IntegrationAdapter';
-import EndpointType = Schemas.EndpointType;
 
 describe('src/types/adapters/IntegrationAdapter', () => {
   describe('toIntegration', () => {
@@ -25,9 +24,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         type: Schemas.EndpointType.Enum.webhook,
         properties: {
           url: 'https://my-cool-webhook.com',
-          disable_ssl_verification: false,
+          disableSslVerification: false,
           method: Schemas.HttpType.Enum.GET,
-          secret_token: undefined,
+          secretToken: undefined,
         },
         server_errors: 5,
         status: 'READY',
@@ -56,9 +55,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         type: Schemas.EndpointType.Enum.webhook,
         properties: {
           url: 'https://foobarbaz.com',
-          disable_ssl_verification: false,
+          disableSslVerification: false,
           method: Schemas.HttpType.Enum.GET,
-          secret_token: '',
+          secretToken: '',
         },
         server_errors: 5,
         status: 'READY',
@@ -84,12 +83,12 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         enabled: true,
         name: 'abc',
         description: 'dragons be here',
-        type: undefined as unknown as EndpointType,
+        type: undefined as unknown as Schemas.EndpointTypeDTO,
         properties: {
           url: 'https://foobarbaz.com',
-          disable_ssl_verification: false,
+          disableSslVerification: false,
           method: Schemas.HttpType.Enum.GET,
-          secret_token: '',
+          secretToken: '',
         },
       };
       expect(() => toIntegration(serverIntegration)).toThrow();
@@ -126,7 +125,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
             url: 'https://my-cool-webhook.com',
             disable_ssl_verification: false,
             method: Schemas.HttpType.Enum.GET,
-            secret_token: 'my-token',
+            secretToken: 'my-token',
           },
           server_errors: 3,
           status: 'PROVISIONING',
@@ -139,9 +138,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           type: Schemas.EndpointType.Enum.webhook,
           properties: {
             url: 'https://foobarbaz.com',
-            disable_ssl_verification: false,
+            disableSslVerification: false,
             method: Schemas.HttpType.Enum.GET,
-            secret_token: '',
+            secretToken: '',
           },
           server_errors: 7,
           status: 'FAILED',
@@ -185,9 +184,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           type: Schemas.EndpointType.Enum.webhook,
           properties: {
             url: 'https://my-cool-webhook.com',
-            disable_ssl_verification: false,
+            disableSslVerification: false,
             method: Schemas.HttpType.Enum.GET,
-            secret_token: '',
+            secretToken: '',
           },
         },
         {
@@ -199,9 +198,9 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           type: undefined as any,
           properties: {
             url: 'https://foobarbaz.com',
-            disable_ssl_verification: false,
+            disableSslVerification: false,
             method: Schemas.HttpType.Enum.GET,
-            secret_token: '',
+            secretToken: '',
           },
         },
       ];
@@ -238,8 +237,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'POST',
-          disable_ssl_verification: false,
-          secret_token: undefined,
+          disableSslVerification: false,
+          secretToken: undefined,
         },
         sub_type: undefined,
       });
@@ -266,8 +265,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'GET',
-          disable_ssl_verification: false,
-          secret_token: 'foobar',
+          disableSslVerification: false,
+          secretToken: 'foobar',
         },
       });
     });

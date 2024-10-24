@@ -14,7 +14,7 @@ export const toBehaviorGroup = (
   const actions =
     serverBehaviorGroup.actions?.map((behaviorAction) => {
       if (behaviorAction.endpoint) {
-        return toAction(behaviorAction.endpoint);
+        return toAction(behaviorAction.endpoint as Schemas.EndpointDTO);
       }
 
       return reportBehaviorGroup(serverBehaviorGroup);

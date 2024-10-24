@@ -7,6 +7,7 @@ import {
   DETAILS,
   GOOGLE_CHAT_DETAILS,
   INTEGRATION_TYPE,
+  PAGERDUTY_DETAILS,
   SERVICE_NOW_DETAILS,
   SLACK_DETAILS,
   SPLUNK_DETAILS,
@@ -15,9 +16,16 @@ import {
   iconMapper,
 } from './helpers';
 import { defaultIconList } from '../../../config/Config';
-import { IntegrationType } from '../../../types/Integration';
+import {
+  IntegrationIconTypes,
+  IntegrationType,
+} from '../../../types/Integration';
 
-export const integrationTypeStep = (category: string, isEdit: boolean) => ({
+export const integrationTypeStep = (
+  category: string,
+  isEdit: boolean,
+  isPagerDutyEnabled: boolean
+) => ({
   title: `${isEdit ? '' : 'Select '}Integration type`,
   name: INTEGRATION_TYPE,
   fields: [
@@ -39,7 +47,16 @@ export const integrationTypeStep = (category: string, isEdit: boolean) => ({
           type: validatorTypes.REQUIRED,
         },
       ],
-      options: compileAllIntegrationComboOptions(defaultIconList[category]),
+      options: compileAllIntegrationComboOptions(
+        Object.fromEntries(
+          Object.entries(defaultIconList[category]).filter(([key]) => {
+            if (key === IntegrationType.PAGERDUTY && !isPagerDutyEnabled) {
+              return false;
+            }
+            return true;
+          })
+        ) as IntegrationIconTypes
+      ),
     },
   ],
   nextStep: {
@@ -51,6 +68,9 @@ export const integrationTypeStep = (category: string, isEdit: boolean) => ({
 
       [IntegrationType.SPLUNK]: SPLUNK_DETAILS,
       [IntegrationType.SERVICE_NOW]: SERVICE_NOW_DETAILS,
+      [IntegrationType.PAGERDUTY]: isPagerDutyEnabled
+        ? PAGERDUTY_DETAILS
+        : null,
       [IntegrationType.ANSIBLE]: DETAILS,
     },
   },

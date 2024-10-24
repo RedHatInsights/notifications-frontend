@@ -55,6 +55,7 @@ export const IntegrationWizard: React.FunctionComponent<
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
   );
+  const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   const [wizardState, setWizardState] = React.useState<
     IntegrationsData | undefined
@@ -66,7 +67,12 @@ export const IntegrationWizard: React.FunctionComponent<
     <React.Fragment>
       {wizardOpen ? (
         <FormRenderer
-          schema={schema(category, isEdit, isBehaviorGroupsEnabled)}
+          schema={schema(
+            category,
+            isEdit,
+            isBehaviorGroupsEnabled,
+            isPagerDutyEnabled
+          )}
           componentMapper={{ ...componentMapper, ...mapperExtension }}
           onSubmit={({
             url,
@@ -75,6 +81,7 @@ export const IntegrationWizard: React.FunctionComponent<
             'secret-token': secret_token,
             'event-types-table': event_type_id,
             'product-family': bundle_name,
+            severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
             if (!isBehaviorGroupsEnabled) {
@@ -98,6 +105,7 @@ export const IntegrationWizard: React.FunctionComponent<
                       url,
                       disable_ssl_verification: false,
                       secret_token,
+                      severity,
                     },
                   }),
                 }
@@ -114,6 +122,7 @@ export const IntegrationWizard: React.FunctionComponent<
                 event_type_id,
                 bundle_name,
                 template,
+                severity,
               });
               setWizardOpen(false);
             }
