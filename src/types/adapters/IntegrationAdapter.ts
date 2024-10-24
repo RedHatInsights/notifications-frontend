@@ -130,10 +130,10 @@ const toIntegrationDrawer = (
 
 const toIntegrationPagerDuty = (
   integrationBase: IntegrationBase<IntegrationType.PAGERDUTY>,
-  properties: Schemas.PagerDutyPropertiesDTO
+  properties: Schemas.PagerDutyPropertiesDTO & { secret_token?: string }
 ): IntegrationPagerduty => ({
   ...integrationBase,
-  secretToken: properties.secretToken,
+  secretToken: properties.secret_token || properties.secretToken,
   severity: properties.severity,
 });
 
