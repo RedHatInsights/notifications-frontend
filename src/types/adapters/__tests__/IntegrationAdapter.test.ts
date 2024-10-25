@@ -83,7 +83,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         enabled: true,
         name: 'abc',
         description: 'dragons be here',
-        type: undefined as unknown as Schemas.EndpointTypeDTO,
+        type: undefined as unknown as Schemas.EndpointType,
         properties: {
           url: 'https://foobarbaz.com',
           disableSslVerification: false,

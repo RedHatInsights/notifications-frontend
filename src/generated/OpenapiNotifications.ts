@@ -11,35 +11,7 @@ import {
   actionBuilder,
 } from 'openapi2typescript/react-fetching-library';
 
-export module Schemas {
-  export const AddAccessRequest = zodSchemaAddAccessRequest();
-  export type AddAccessRequest = {
-    application_id?: UUID | undefined | null;
-    role?: string | undefined | null;
-  };
-
-  export const AddApplicationRequest = zodSchemaAddApplicationRequest();
-  export type AddApplicationRequest = {
-    bundle_id: UUID;
-    display_name: string;
-    name: string;
-    owner_role?: string | undefined | null;
-  };
-
-  export const AggregationEmailTemplate = zodSchemaAggregationEmailTemplate();
-  export type AggregationEmailTemplate = {
-    application?: Application | undefined | null;
-    application_id?: UUID | undefined | null;
-    body_template?: Template | undefined | null;
-    body_template_id: UUID;
-    created?: LocalDateTime | undefined | null;
-    id?: UUID | undefined | null;
-    subject_template?: Template | undefined | null;
-    subject_template_id: UUID;
-    subscription_type: SubscriptionType;
-    updated?: LocalDateTime | undefined | null;
-  };
-
+export namespace Schemas {
   export const Application = zodSchemaApplication();
   export type Application = {
     bundle_id: UUID;
@@ -48,47 +20,6 @@ export module Schemas {
     id?: UUID | undefined | null;
     name: string;
     updated?: LocalDateTime | undefined | null;
-  };
-
-  export const Application1 = zodSchemaApplication1();
-  export type Application1 = {
-    display_name: string;
-    id: UUID;
-  };
-
-  export const ApplicationDTO = zodSchemaApplicationDTO();
-  export type ApplicationDTO = {
-    bundle_id: UUID;
-    display_name: string;
-    event_types?: Array<EventTypeDTO> | undefined | null;
-    id?: UUID | undefined | null;
-    name: string;
-  };
-
-  export const ApplicationDTO1 = zodSchemaApplicationDTO1();
-  export type ApplicationDTO1 = {
-    bundle_id: UUID;
-    created?: string | undefined | null;
-    display_name: string;
-    id?: UUID | undefined | null;
-    name: string;
-    owner_role?: string | undefined | null;
-  };
-
-  export const ApplicationSettingsValue = zodSchemaApplicationSettingsValue();
-  export type ApplicationSettingsValue = {
-    eventTypes?:
-      | {
-          [x: string]: EventTypeSettingsValue;
-        }
-      | undefined
-      | null;
-  };
-
-  export const BasicAuthenticationDTO = zodSchemaBasicAuthenticationDTO();
-  export type BasicAuthenticationDTO = {
-    password?: string | undefined | null;
-    username?: string | undefined | null;
   };
 
   export const BehaviorGroup = zodSchemaBehaviorGroup();
@@ -126,38 +57,6 @@ export module Schemas {
     updated?: LocalDateTime | undefined | null;
   };
 
-  export const BundleDTO = zodSchemaBundleDTO();
-  export type BundleDTO = {
-    applications?: Array<ApplicationDTO> | undefined | null;
-    display_name: string;
-    id?: UUID | undefined | null;
-    name: string;
-  };
-
-  export const BundleSettingsValue = zodSchemaBundleSettingsValue();
-  export type BundleSettingsValue = {
-    applications?:
-      | {
-          [x: string]: ApplicationSettingsValue;
-        }
-      | undefined
-      | null;
-  };
-
-  export const CamelPropertiesDTO = zodSchemaCamelPropertiesDTO();
-  export type CamelPropertiesDTO = {
-    basicAuthentication?: BasicAuthenticationDTO | undefined | null;
-    disableSslVerification: boolean;
-    extras?:
-      | {
-          [x: string]: string;
-        }
-      | undefined
-      | null;
-    secretToken?: string | undefined | null;
-    url: string;
-  };
-
   export const CreateBehaviorGroupRequest =
     zodSchemaCreateBehaviorGroupRequest();
   export type CreateBehaviorGroupRequest = {
@@ -178,13 +77,6 @@ export module Schemas {
     endpoints: Array<string>;
     event_types: Array<string>;
     id: UUID;
-  };
-
-  export const CurrentStatus = zodSchemaCurrentStatus();
-  export type CurrentStatus = {
-    end_time?: LocalDateTime | undefined | null;
-    start_time?: LocalDateTime | undefined | null;
-    status: Status;
   };
 
   export const DrawerEntryPayload = zodSchemaDrawerEntryPayload();
@@ -213,48 +105,8 @@ export module Schemas {
     updated?: LocalDateTime | undefined | null;
   };
 
-  export const EndpointDTO = zodSchemaEndpointDTO();
-  export type EndpointDTO = {
-    created?: LocalDateTime | undefined | null;
-    description: string;
-    enabled?: boolean | undefined | null;
-    event_types?: Array<string> | undefined | null;
-    event_types_group_by_bundles_and_applications?:
-      | Array<BundleDTO>
-      | undefined
-      | null;
-    id?: UUID | undefined | null;
-    name: string;
-    properties?:
-      | (
-          | CamelPropertiesDTO
-          | SystemSubscriptionPropertiesDTO
-          | WebhookPropertiesDTO
-          | PagerDutyPropertiesDTO
-        )
-      | undefined
-      | null;
-    server_errors?: number | undefined | null;
-    status?: EndpointStatusDTO | undefined | null;
-    sub_type?: string | undefined | null;
-    type: EndpointTypeDTO;
-    updated?: LocalDateTime | undefined | null;
-  };
-
-  export const EndpointPage = zodSchemaEndpointPage();
-  export type EndpointPage = {
-    data: Array<EndpointDTO>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
-  };
-
   export const EndpointProperties = zodSchemaEndpointProperties();
   export type EndpointProperties = unknown;
-
-  export const EndpointPropertiesDTO = zodSchemaEndpointPropertiesDTO();
-  export type EndpointPropertiesDTO = unknown;
 
   export const EndpointStatus = zodSchemaEndpointStatus();
   export type EndpointStatus =
@@ -265,20 +117,6 @@ export module Schemas {
     | 'DELETING'
     | 'FAILED';
 
-  export const EndpointStatusDTO = zodSchemaEndpointStatusDTO();
-  export type EndpointStatusDTO =
-    | 'DELETING'
-    | 'FAILED'
-    | 'NEW'
-    | 'PROVISIONING'
-    | 'READY'
-    | 'UNKNOWN';
-
-  export const EndpointTestRequest = zodSchemaEndpointTestRequest();
-  export type EndpointTestRequest = {
-    message: string;
-  };
-
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType =
     | 'ansible'
@@ -287,17 +125,6 @@ export module Schemas {
     | 'email_subscription'
     | 'webhook'
     | 'pagerduty';
-
-  export const EndpointTypeDTO = zodSchemaEndpointTypeDTO();
-  export type EndpointTypeDTO =
-    | 'ansible'
-    | 'camel'
-    | 'drawer'
-    | 'email_subscription'
-    | 'webhook';
-
-  export const Environment = zodSchemaEnvironment();
-  export type Environment = 'PROD' | 'STAGE' | 'EPHEMERAL' | 'LOCAL_SERVER';
 
   export const EventLogEntry = zodSchemaEventLogEntry();
   export type EventLogEntry = {
@@ -364,78 +191,12 @@ export module Schemas {
     eventTypeId: UUID;
   };
 
-  export const EventTypeDTO = zodSchemaEventTypeDTO();
-  export type EventTypeDTO = {
-    application?: ApplicationDTO | undefined | null;
-    description?: string | undefined | null;
-    display_name: string;
-    id?: UUID | undefined | null;
-    name: string;
-  };
-
-  export const EventTypeSettingsValue = zodSchemaEventTypeSettingsValue();
-  export type EventTypeSettingsValue = {
-    emailSubscriptionTypes?:
-      | {
-          [x: string]: boolean;
-        }
-      | undefined
-      | null;
-    hasForcedEmail?: boolean | undefined | null;
-    subscriptionLocked?: boolean | undefined | null;
-  };
-
-  export const EventsReplayRequest = zodSchemaEventsReplayRequest();
-  export type EventsReplayRequest = {
-    end_date: LocalDateTime;
-    org_id?: string | undefined | null;
-    start_date: LocalDateTime;
-  };
-
   export const Facet = zodSchemaFacet();
   export type Facet = {
     children?: Array<Facet> | undefined | null;
     displayName: string;
     id: string;
     name: string;
-  };
-
-  export const HttpType = zodSchemaHttpType();
-  export type HttpType = 'GET' | 'POST' | 'PUT';
-
-  export const InstantEmailTemplate = zodSchemaInstantEmailTemplate();
-  export type InstantEmailTemplate = {
-    body_template?: Template | undefined | null;
-    body_template_id: UUID;
-    created?: LocalDateTime | undefined | null;
-    event_type?: EventType | undefined | null;
-    event_type_id?: UUID | undefined | null;
-    id?: UUID | undefined | null;
-    subject_template?: Template | undefined | null;
-    subject_template_id: UUID;
-    updated?: LocalDateTime | undefined | null;
-  };
-
-  export const InternalApplicationUserPermission =
-    zodSchemaInternalApplicationUserPermission();
-  export type InternalApplicationUserPermission = {
-    application_display_name: string;
-    application_id: UUID;
-    role: string;
-  };
-
-  export const InternalRoleAccess = zodSchemaInternalRoleAccess();
-  export type InternalRoleAccess = {
-    application_id: UUID;
-    id?: UUID | undefined | null;
-    role: string;
-  };
-
-  export const InternalUserPermissions = zodSchemaInternalUserPermissions();
-  export type InternalUserPermissions = {
-    applications: Array<Application1>;
-    is_admin: boolean;
-    roles: Array<string>;
   };
 
   export const LocalDate = zodSchemaLocalDate();
@@ -447,50 +208,9 @@ export module Schemas {
   export const LocalTime = zodSchemaLocalTime();
   export type LocalTime = string;
 
-  export const MessageValidationResponse = zodSchemaMessageValidationResponse();
-  export type MessageValidationResponse = {
-    errors: {
-      [x: string]: Array<string>;
-    };
-  };
-
   export const Meta = zodSchemaMeta();
   export type Meta = {
     count: number;
-  };
-
-  export const NotificationHistory = zodSchemaNotificationHistory();
-  export type NotificationHistory = {
-    created?: LocalDateTime | undefined | null;
-    details?:
-      | {
-          [x: string]: unknown;
-        }
-      | undefined
-      | null;
-    endpointId?: UUID | undefined | null;
-    endpointSubType?: string | undefined | null;
-    endpointType?: EndpointType | undefined | null;
-    id?: UUID | undefined | null;
-    invocationTime: number;
-    status: NotificationStatus;
-  };
-
-  export const NotificationStatus = zodSchemaNotificationStatus();
-  export type NotificationStatus =
-    | 'FAILED_INTERNAL'
-    | 'FAILED_EXTERNAL'
-    | 'PROCESSING'
-    | 'SENT'
-    | 'SUCCESS';
-
-  export const PageBehaviorGroup = zodSchemaPageBehaviorGroup();
-  export type PageBehaviorGroup = {
-    data: Array<BehaviorGroup>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
   };
 
   export const PageDrawerEntryPayload = zodSchemaPageDrawerEntryPayload();
@@ -520,105 +240,8 @@ export module Schemas {
     meta: Meta;
   };
 
-  export const PageNotificationHistory = zodSchemaPageNotificationHistory();
-  export type PageNotificationHistory = {
-    data: Array<NotificationHistory>;
-    links: {
-      [x: string]: string;
-    };
-    meta: Meta;
-  };
-
-  export const PagerDutyPropertiesDTO = zodSchemaPagerDutyPropertiesDTO();
-  export type PagerDutyPropertiesDTO = {
-    secretToken: string;
-    severity: PagerDutySeverityDTO;
-  };
-
-  export const PagerDutySeverity = zodSchemaPagerDutySeverity();
-  export type PagerDutySeverity = 'critical' | 'error' | 'warning' | 'info';
-
-  export const PagerDutySeverityDTO = zodSchemaPagerDutySeverityDTO();
-  export type PagerDutySeverityDTO = 'critical' | 'error' | 'warning' | 'info';
-
-  export const RenderEmailTemplateRequest =
-    zodSchemaRenderEmailTemplateRequest();
-  export type RenderEmailTemplateRequest = {
-    payload: string;
-    template: Array<string>;
-  };
-
-  export const RequestDefaultBehaviorGroupPropertyList =
-    zodSchemaRequestDefaultBehaviorGroupPropertyList();
-  export type RequestDefaultBehaviorGroupPropertyList = {
-    ignore_preferences: boolean;
-    only_admins: boolean;
-  };
-
-  export const RequestSystemSubscriptionProperties =
-    zodSchemaRequestSystemSubscriptionProperties();
-  export type RequestSystemSubscriptionProperties = {
-    group_id?: UUID | undefined | null;
-    only_admins: boolean;
-  };
-
-  export const ServerInfo = zodSchemaServerInfo();
-  export type ServerInfo = {
-    environment?: Environment | undefined | null;
-  };
-
-  export const SettingsValuesByEventType = zodSchemaSettingsValuesByEventType();
-  export type SettingsValuesByEventType = {
-    bundles?:
-      | {
-          [x: string]: BundleSettingsValue;
-        }
-      | undefined
-      | null;
-  };
-
-  export const Status = zodSchemaStatus();
-  export type Status = 'UP' | 'MAINTENANCE';
-
-  export const SubscriptionType = zodSchemaSubscriptionType();
-  export type SubscriptionType = 'INSTANT' | 'DAILY' | 'DRAWER';
-
-  export const SystemSubscriptionPropertiesDTO =
-    zodSchemaSystemSubscriptionPropertiesDTO();
-  export type SystemSubscriptionPropertiesDTO = {
-    groupId?: UUID | undefined | null;
-    ignorePreferences?: boolean | undefined | null;
-    onlyAdmins?: boolean | undefined | null;
-  };
-
-  export const Template = zodSchemaTemplate();
-  export type Template = {
-    created?: LocalDateTime | undefined | null;
-    data: string;
-    description: string;
-    id?: UUID | undefined | null;
-    name: string;
-    updated?: LocalDateTime | undefined | null;
-  };
-
-  export const TriggerDailyDigestRequest = zodSchemaTriggerDailyDigestRequest();
-  export type TriggerDailyDigestRequest = {
-    application_name: string;
-    bundle_name: string;
-    end?: LocalDateTime | undefined | null;
-    org_id: string;
-    start?: LocalDateTime | undefined | null;
-  };
-
   export const UUID = zodSchemaUUID();
   export type UUID = string;
-
-  export const UpdateApplicationRequest = zodSchemaUpdateApplicationRequest();
-  export type UpdateApplicationRequest = {
-    display_name?: string | undefined | null;
-    name?: string | undefined | null;
-    owner_role?: string | undefined | null;
-  };
 
   export const UpdateBehaviorGroupRequest =
     zodSchemaUpdateBehaviorGroupRequest();
@@ -636,64 +259,8 @@ export module Schemas {
     read_status: boolean;
   };
 
-  export const WebhookPropertiesDTO = zodSchemaWebhookPropertiesDTO();
-  export type WebhookPropertiesDTO = {
-    basicAuthentication?: BasicAuthenticationDTO | undefined | null;
-    bearerAuthentication?: string | undefined | null;
-    disableSslVerification: boolean;
-    method: HttpType;
-    secretToken?: string | undefined | null;
-    url: string;
-  };
-
-  export const X509Certificate = zodSchemaX509Certificate();
-  export type X509Certificate = {
-    application: string;
-    bundle: string;
-    id?: UUID | undefined | null;
-    source_environment: string;
-    subject_dn: string;
-  };
-
   export const __Empty = zodSchema__Empty();
   export type __Empty = string | undefined;
-
-  function zodSchemaAddAccessRequest() {
-    return z
-      .object({
-        application_id: zodSchemaUUID().optional().nullable(),
-        role: z.string().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaAddApplicationRequest() {
-    return z
-      .object({
-        bundle_id: zodSchemaUUID(),
-        display_name: z.string(),
-        name: z.string(),
-        owner_role: z.string().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaAggregationEmailTemplate() {
-    return z
-      .object({
-        application: zodSchemaApplication().optional().nullable(),
-        application_id: zodSchemaUUID().optional().nullable(),
-        body_template: zodSchemaTemplate().optional().nullable(),
-        body_template_id: zodSchemaUUID(),
-        created: zodSchemaLocalDateTime().optional().nullable(),
-        id: zodSchemaUUID().optional().nullable(),
-        subject_template: zodSchemaTemplate().optional().nullable(),
-        subject_template_id: zodSchemaUUID(),
-        subscription_type: zodSchemaSubscriptionType(),
-        updated: zodSchemaLocalDateTime().optional().nullable(),
-      })
-      .nonstrict();
-  }
 
   function zodSchemaApplication() {
     return z
@@ -704,60 +271,6 @@ export module Schemas {
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
         updated: zodSchemaLocalDateTime().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaApplication1() {
-    return z
-      .object({
-        display_name: z.string(),
-        id: zodSchemaUUID(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaApplicationDTO() {
-    return z
-      .object({
-        bundle_id: zodSchemaUUID(),
-        display_name: z.string(),
-        event_types: z.array(zodSchemaEventTypeDTO()).optional().nullable(),
-        id: zodSchemaUUID().optional().nullable(),
-        name: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaApplicationDTO1() {
-    return z
-      .object({
-        bundle_id: zodSchemaUUID(),
-        created: z.string().optional().nullable(),
-        display_name: z.string(),
-        id: zodSchemaUUID().optional().nullable(),
-        name: z.string(),
-        owner_role: z.string().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaApplicationSettingsValue() {
-    return z
-      .object({
-        eventTypes: z
-          .record(zodSchemaEventTypeSettingsValue())
-          .optional()
-          .nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaBasicAuthenticationDTO() {
-    return z
-      .object({
-        password: z.string().optional().nullable(),
-        username: z.string().optional().nullable(),
       })
       .nonstrict();
   }
@@ -809,42 +322,6 @@ export module Schemas {
       .nonstrict();
   }
 
-  function zodSchemaBundleDTO() {
-    return z
-      .object({
-        applications: z.array(zodSchemaApplicationDTO()).optional().nullable(),
-        display_name: z.string(),
-        id: zodSchemaUUID().optional().nullable(),
-        name: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaBundleSettingsValue() {
-    return z
-      .object({
-        applications: z
-          .record(zodSchemaApplicationSettingsValue())
-          .optional()
-          .nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaCamelPropertiesDTO() {
-    return z
-      .object({
-        basicAuthentication: zodSchemaBasicAuthenticationDTO()
-          .optional()
-          .nullable(),
-        disableSslVerification: z.boolean(),
-        extras: z.record(z.string()).optional().nullable(),
-        secretToken: z.string().optional().nullable(),
-        url: z.string(),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaCreateBehaviorGroupRequest() {
     return z
       .object({
@@ -867,16 +344,6 @@ export module Schemas {
         endpoints: z.array(z.string()),
         event_types: z.array(z.string()),
         id: zodSchemaUUID(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaCurrentStatus() {
-    return z
-      .object({
-        end_time: zodSchemaLocalDateTime().optional().nullable(),
-        start_time: zodSchemaLocalDateTime().optional().nullable(),
-        status: zodSchemaStatus(),
       })
       .nonstrict();
   }
@@ -913,52 +380,7 @@ export module Schemas {
       .nonstrict();
   }
 
-  function zodSchemaEndpointDTO() {
-    return z
-      .object({
-        created: zodSchemaLocalDateTime().optional().nullable(),
-        description: z.string(),
-        enabled: z.boolean().optional().nullable(),
-        event_types: z.array(z.string()).optional().nullable(),
-        event_types_group_by_bundles_and_applications: z
-          .array(zodSchemaBundleDTO())
-          .optional()
-          .nullable(),
-        id: zodSchemaUUID().optional().nullable(),
-        name: z.string(),
-        properties: z
-          .union([
-            zodSchemaCamelPropertiesDTO(),
-            zodSchemaSystemSubscriptionPropertiesDTO(),
-            zodSchemaWebhookPropertiesDTO(),
-            zodSchemaPagerDutyPropertiesDTO(),
-          ])
-          .optional()
-          .nullable(),
-        server_errors: z.number().int().optional().nullable(),
-        status: zodSchemaEndpointStatusDTO().optional().nullable(),
-        sub_type: z.string().optional().nullable(),
-        type: zodSchemaEndpointTypeDTO(),
-        updated: zodSchemaLocalDateTime().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaEndpointPage() {
-    return z
-      .object({
-        data: z.array(zodSchemaEndpointDTO()),
-        links: z.record(z.string()),
-        meta: zodSchemaMeta(),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaEndpointProperties() {
-    return z.unknown();
-  }
-
-  function zodSchemaEndpointPropertiesDTO() {
     return z.unknown();
   }
 
@@ -973,25 +395,6 @@ export module Schemas {
     ]);
   }
 
-  function zodSchemaEndpointStatusDTO() {
-    return z.enum([
-      'DELETING',
-      'FAILED',
-      'NEW',
-      'PROVISIONING',
-      'READY',
-      'UNKNOWN',
-    ]);
-  }
-
-  function zodSchemaEndpointTestRequest() {
-    return z
-      .object({
-        message: z.string(),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaEndpointType() {
     return z.enum([
       'ansible',
@@ -1001,20 +404,6 @@ export module Schemas {
       'webhook',
       'pagerduty',
     ]);
-  }
-
-  function zodSchemaEndpointTypeDTO() {
-    return z.enum([
-      'ansible',
-      'camel',
-      'drawer',
-      'email_subscription',
-      'webhook',
-    ]);
-  }
-
-  function zodSchemaEnvironment() {
-    return z.enum(['PROD', 'STAGE', 'EPHEMERAL', 'LOCAL_SERVER']);
   }
 
   function zodSchemaEventLogEntry() {
@@ -1088,41 +477,6 @@ export module Schemas {
       .nonstrict();
   }
 
-  function zodSchemaEventTypeDTO() {
-    return z
-      .object({
-        application: z
-          .lazy(() => zodSchemaApplicationDTO())
-          .optional()
-          .nullable(),
-        description: z.string().optional().nullable(),
-        display_name: z.string(),
-        id: zodSchemaUUID().optional().nullable(),
-        name: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaEventTypeSettingsValue() {
-    return z
-      .object({
-        emailSubscriptionTypes: z.record(z.boolean()).optional().nullable(),
-        hasForcedEmail: z.boolean().optional().nullable(),
-        subscriptionLocked: z.boolean().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaEventsReplayRequest() {
-    return z
-      .object({
-        end_date: zodSchemaLocalDateTime(),
-        org_id: z.string().optional().nullable(),
-        start_date: zodSchemaLocalDateTime(),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaFacet() {
     return z
       .object({
@@ -1133,56 +487,6 @@ export module Schemas {
         displayName: z.string(),
         id: z.string(),
         name: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaHttpType() {
-    return z.enum(['GET', 'POST', 'PUT']);
-  }
-
-  function zodSchemaInstantEmailTemplate() {
-    return z
-      .object({
-        body_template: zodSchemaTemplate().optional().nullable(),
-        body_template_id: zodSchemaUUID(),
-        created: zodSchemaLocalDateTime().optional().nullable(),
-        event_type: zodSchemaEventType().optional().nullable(),
-        event_type_id: zodSchemaUUID().optional().nullable(),
-        id: zodSchemaUUID().optional().nullable(),
-        subject_template: zodSchemaTemplate().optional().nullable(),
-        subject_template_id: zodSchemaUUID(),
-        updated: zodSchemaLocalDateTime().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaInternalApplicationUserPermission() {
-    return z
-      .object({
-        application_display_name: z.string(),
-        application_id: zodSchemaUUID(),
-        role: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaInternalRoleAccess() {
-    return z
-      .object({
-        application_id: zodSchemaUUID(),
-        id: zodSchemaUUID().optional().nullable(),
-        role: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaInternalUserPermissions() {
-    return z
-      .object({
-        applications: z.array(zodSchemaApplication1()),
-        is_admin: z.boolean(),
-        roles: z.array(z.string()),
       })
       .nonstrict();
   }
@@ -1199,53 +503,10 @@ export module Schemas {
     return z.string();
   }
 
-  function zodSchemaMessageValidationResponse() {
-    return z
-      .object({
-        errors: z.record(z.array(z.string())),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaMeta() {
     return z
       .object({
         count: z.number().int(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaNotificationHistory() {
-    return z
-      .object({
-        created: zodSchemaLocalDateTime().optional().nullable(),
-        details: z.record(z.unknown()).optional().nullable(),
-        endpointId: zodSchemaUUID().optional().nullable(),
-        endpointSubType: z.string().optional().nullable(),
-        endpointType: zodSchemaEndpointType().optional().nullable(),
-        id: zodSchemaUUID().optional().nullable(),
-        invocationTime: z.number().int(),
-        status: zodSchemaNotificationStatus(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaNotificationStatus() {
-    return z.enum([
-      'FAILED_INTERNAL',
-      'FAILED_EXTERNAL',
-      'PROCESSING',
-      'SENT',
-      'SUCCESS',
-    ]);
-  }
-
-  function zodSchemaPageBehaviorGroup() {
-    return z
-      .object({
-        data: z.array(zodSchemaBehaviorGroup()),
-        links: z.record(z.string()),
-        meta: zodSchemaMeta(),
       })
       .nonstrict();
   }
@@ -1280,131 +541,8 @@ export module Schemas {
       .nonstrict();
   }
 
-  function zodSchemaPageNotificationHistory() {
-    return z
-      .object({
-        data: z.array(zodSchemaNotificationHistory()),
-        links: z.record(z.string()),
-        meta: zodSchemaMeta(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaPagerDutyPropertiesDTO() {
-    return z
-      .object({
-        secretToken: z.string(),
-        severity: zodSchemaPagerDutySeverityDTO(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaPagerDutySeverity() {
-    return z.enum(['critical', 'error', 'warning', 'info']);
-  }
-
-  function zodSchemaPagerDutySeverityDTO() {
-    return z.enum(['critical', 'error', 'warning', 'info']);
-  }
-
-  function zodSchemaRenderEmailTemplateRequest() {
-    return z
-      .object({
-        payload: z.string(),
-        template: z.array(z.string()),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRequestDefaultBehaviorGroupPropertyList() {
-    return z
-      .object({
-        ignore_preferences: z.boolean(),
-        only_admins: z.boolean(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaRequestSystemSubscriptionProperties() {
-    return z
-      .object({
-        group_id: zodSchemaUUID().optional().nullable(),
-        only_admins: z.boolean(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaServerInfo() {
-    return z
-      .object({
-        environment: zodSchemaEnvironment().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaSettingsValuesByEventType() {
-    return z
-      .object({
-        bundles: z.record(zodSchemaBundleSettingsValue()).optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaStatus() {
-    return z.enum(['UP', 'MAINTENANCE']);
-  }
-
-  function zodSchemaSubscriptionType() {
-    return z.enum(['INSTANT', 'DAILY', 'DRAWER']);
-  }
-
-  function zodSchemaSystemSubscriptionPropertiesDTO() {
-    return z
-      .object({
-        groupId: zodSchemaUUID().optional().nullable(),
-        ignorePreferences: z.boolean().optional().nullable(),
-        onlyAdmins: z.boolean().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaTemplate() {
-    return z
-      .object({
-        created: zodSchemaLocalDateTime().optional().nullable(),
-        data: z.string(),
-        description: z.string(),
-        id: zodSchemaUUID().optional().nullable(),
-        name: z.string(),
-        updated: zodSchemaLocalDateTime().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaTriggerDailyDigestRequest() {
-    return z
-      .object({
-        application_name: z.string(),
-        bundle_name: z.string(),
-        end: zodSchemaLocalDateTime().optional().nullable(),
-        org_id: z.string(),
-        start: zodSchemaLocalDateTime().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaUUID() {
     return z.string();
-  }
-
-  function zodSchemaUpdateApplicationRequest() {
-    return z
-      .object({
-        display_name: z.string().optional().nullable(),
-        name: z.string().optional().nullable(),
-        owner_role: z.string().optional().nullable(),
-      })
-      .nonstrict();
   }
 
   function zodSchemaUpdateBehaviorGroupRequest() {
@@ -1423,33 +561,6 @@ export module Schemas {
       .object({
         notification_ids: z.array(z.string()),
         read_status: z.boolean(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaWebhookPropertiesDTO() {
-    return z
-      .object({
-        basicAuthentication: zodSchemaBasicAuthenticationDTO()
-          .optional()
-          .nullable(),
-        bearerAuthentication: z.string().optional().nullable(),
-        disableSslVerification: z.boolean(),
-        method: zodSchemaHttpType(),
-        secretToken: z.string().optional().nullable(),
-        url: z.string(),
-      })
-      .nonstrict();
-  }
-
-  function zodSchemaX509Certificate() {
-    return z
-      .object({
-        application: z.string(),
-        bundle: z.string(),
-        id: zodSchemaUUID().optional().nullable(),
-        source_environment: z.string(),
-        subject_dn: z.string(),
       })
       .nonstrict();
   }

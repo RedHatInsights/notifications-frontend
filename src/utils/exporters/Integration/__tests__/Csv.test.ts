@@ -1,6 +1,6 @@
 import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 
-import { Schemas } from '../../../../generated/OpenapiNotifications';
+import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { IntegrationType } from '../../../../types/Integration';
 import { IntegrationExporterCsv } from '../Csv';
 

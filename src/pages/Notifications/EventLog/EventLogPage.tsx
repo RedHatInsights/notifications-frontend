@@ -123,7 +123,7 @@ export const EventLogPage: React.FunctionComponent = () => {
     async (id: UUID) => {
       const query = getEndpoint.query;
       const endpoint = await query(id);
-      if (endpoint.payload?.type === 'EndpointDTO') {
+      if (endpoint.payload?.type === 'Endpoint') {
         const type = endpoint.payload.value.type;
         switch (type) {
           case 'camel':
@@ -134,7 +134,7 @@ export const EventLogPage: React.FunctionComponent = () => {
           case 'email_subscription':
           case 'drawer': {
             const properties = endpoint.payload.value
-              .properties as Schemas.SystemSubscriptionPropertiesDTO;
+              .properties as Schemas.SystemSubscriptionProperties;
             if (properties.onlyAdmins) {
               return 'Users: Admin';
             }

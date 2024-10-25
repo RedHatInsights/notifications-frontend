@@ -39,7 +39,7 @@ const decoder = (
     return {
       ...response,
       type: 'Integration',
-      value: toIntegration(response.value as Schemas.EndpointDTO),
+      value: toIntegration(response.value as Schemas.Endpoint),
     };
   }
 
