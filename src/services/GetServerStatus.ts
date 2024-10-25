@@ -11,12 +11,7 @@ import { toServer } from '../types/adapters/ServerAdapter';
 const adapter = validationResponseTransformer(
   (payload: Operations.StatusResourceGetCurrentStatus.Payload) => {
     if (payload.status === 200) {
-      return validatedResponse(
-        'ServerStatus',
-        200,
-        toServer(payload.value),
-        payload.errors
-      );
+      return validatedResponse('ServerStatus', 200, toServer(), payload.errors);
     }
 
     return payload;

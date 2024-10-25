@@ -60,7 +60,7 @@ export interface IntegrationBase<T extends IntegrationType> {
   name: string;
   type: T;
   isEnabled: boolean;
-  status?: Schemas.EndpointStatusDTO | undefined;
+  status?: Schemas.EndpointStatus | undefined;
   serverErrors: number;
 }
 
@@ -149,8 +149,8 @@ export type NewIntegrationBase = NewIntegrationTemplate<
 export type NewIntegration = NewIntegrationTemplate<Integration>;
 export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
 
-export type ServerIntegrationRequest = Schemas.EndpointDTO;
-export type ServerIntegrationResponse = Schemas.EndpointDTO;
+export type ServerIntegrationRequest = Schemas.Endpoint;
+export type ServerIntegrationResponse = Schemas.Endpoint;
 
 export interface IntegrationConnectionAttempt {
   date: Date;

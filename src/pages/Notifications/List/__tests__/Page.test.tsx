@@ -26,7 +26,7 @@ import {
 } from '../../../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { VerboseErrorBoundary } from '../../../../../test/VerboseErrorBoundary';
-import { Schemas } from '../../../../generated/OpenapiIntegrations';
+import { Schemas } from '../../../../generated/OpenapiNotifications';
 import { linkTo } from '../../../../Routes';
 import { NotificationsListPage } from '../Page';
 import Facet = Schemas.Facet;

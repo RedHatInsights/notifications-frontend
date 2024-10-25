@@ -1,8 +1,9 @@
-import { Schemas } from '../../generated/OpenapiNotifications';
+import { Schemas } from '../../generated/OpenapiIntegrations';
+import { Schemas as NotifSchemas } from '../../generated/OpenapiNotifications';
 import { BehaviorGroup } from '../Notification';
 import { reduceActions, toAction } from './NotificationAdapter';
 
-type ServerBehaviorGroup = Schemas.BehaviorGroup;
+type ServerBehaviorGroup = NotifSchemas.BehaviorGroup;
 
 const reportBehaviorGroup = (element: ServerBehaviorGroup): never => {
   throw new Error('Invalid behavior group:' + JSON.stringify(element));
@@ -14,7 +15,7 @@ export const toBehaviorGroup = (
   const actions =
     serverBehaviorGroup.actions?.map((behaviorAction) => {
       if (behaviorAction.endpoint) {
-        return toAction(behaviorAction.endpoint as Schemas.EndpointDTO);
+        return toAction(behaviorAction.endpoint as Schemas.Endpoint);
       }
 
       return reportBehaviorGroup(serverBehaviorGroup);

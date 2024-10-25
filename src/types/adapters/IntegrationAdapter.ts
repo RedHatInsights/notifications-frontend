@@ -46,10 +46,10 @@ export const getIntegrationType = (
 
 const getEndpointType = (
   type: IntegrationType
-): { type: Schemas.EndpointTypeDTO; subType?: string } => {
+): { type: Schemas.EndpointType; subType?: string } => {
   const splitType = type.split(':', 2);
   return {
-    type: splitType[0] as Schemas.EndpointTypeDTO,
+    type: splitType[0] as Schemas.EndpointType,
     subType: splitType.length === 2 ? splitType[1] : undefined,
   };
 };
@@ -70,33 +70,33 @@ const toSecretToken = (
 
 const toIntegrationWebhook = (
   integrationBase: IntegrationBase<IntegrationType.WEBHOOK>,
-  properties?: Schemas.WebhookPropertiesDTO
+  properties?: Schemas.WebhookProperties
 ): IntegrationHttp => ({
   ...integrationBase,
   url: properties?.url ?? '',
-  sslVerificationEnabled: !properties?.disableSslVerification ?? false,
+  sslVerificationEnabled: !properties?.disableSslVerification,
   secretToken: toSecretToken(properties?.secretToken),
   method: properties?.method ?? Schemas.HttpType.Enum.GET,
 });
 
 const toIntegrationAnsible = (
   integrationBase: IntegrationBase<IntegrationType.ANSIBLE>,
-  properties?: Schemas.WebhookPropertiesDTO
+  properties?: Schemas.WebhookProperties
 ): IntegrationAnsible => ({
   ...integrationBase,
   url: properties?.url ?? '',
-  sslVerificationEnabled: !properties?.disableSslVerification ?? false,
+  sslVerificationEnabled: !properties?.disableSslVerification,
   secretToken: toSecretToken(properties?.secretToken),
   method: properties?.method ?? Schemas.HttpType.Enum.POST,
 });
 
 const toIntegrationCamel = (
   integrationBase: IntegrationBase<CamelIntegrationType>,
-  properties?: Schemas.CamelPropertiesDTO
+  properties?: Schemas.CamelProperties
 ): IntegrationCamel => ({
   ...integrationBase,
   url: properties?.url ?? '',
-  sslVerificationEnabled: !properties?.disableSslVerification ?? false,
+  sslVerificationEnabled: !properties?.disableSslVerification,
   secretToken: toSecretToken(properties?.secretToken),
   basicAuth:
     properties?.basicAuthentication === null
@@ -110,7 +110,7 @@ const toIntegrationCamel = (
 
 const toIntegrationEmail = (
   integrationBase: IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
-  properties: Schemas.SystemSubscriptionPropertiesDTO
+  properties: Schemas.SystemSubscriptionProperties
 ): IntegrationEmailSubscription => ({
   ...integrationBase,
   ignorePreferences: properties.ignorePreferences,
@@ -120,7 +120,7 @@ const toIntegrationEmail = (
 
 const toIntegrationDrawer = (
   integrationBase: IntegrationBase<IntegrationType.DRAWER>,
-  properties: Schemas.SystemSubscriptionPropertiesDTO
+  properties: Schemas.SystemSubscriptionProperties
 ): IntegrationDrawer => ({
   ...integrationBase,
   ignorePreferences: properties.ignorePreferences,
@@ -130,7 +130,7 @@ const toIntegrationDrawer = (
 
 const toIntegrationPagerDuty = (
   integrationBase: IntegrationBase<IntegrationType.PAGERDUTY>,
-  properties: Schemas.PagerDutyPropertiesDTO & { secret_token?: string }
+  properties: Schemas.PagerDutyProperties & { secret_token?: string }
 ): IntegrationPagerduty => ({
   ...integrationBase,
   secretToken: properties.secret_token || properties.secretToken,
@@ -152,7 +152,7 @@ export const toIntegration = (
   if (isCamelType(integrationBase.type)) {
     return toIntegrationCamel(
       integrationBase as IntegrationBase<CamelIntegrationType>,
-      serverIntegration.properties as Schemas.CamelPropertiesDTO
+      serverIntegration.properties as Schemas.CamelProperties
     );
   }
 
@@ -160,27 +160,27 @@ export const toIntegration = (
     case IntegrationType.WEBHOOK:
       return toIntegrationWebhook(
         integrationBase as IntegrationBase<IntegrationType.WEBHOOK>,
-        serverIntegration.properties as Schemas.WebhookPropertiesDTO
+        serverIntegration.properties as Schemas.WebhookProperties
       );
     case IntegrationType.ANSIBLE:
       return toIntegrationAnsible(
         integrationBase as IntegrationBase<IntegrationType.ANSIBLE>,
-        serverIntegration.properties as Schemas.WebhookPropertiesDTO
+        serverIntegration.properties as Schemas.WebhookProperties
       );
     case IntegrationType.EMAIL_SUBSCRIPTION:
       return toIntegrationEmail(
         integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
-        serverIntegration.properties as Schemas.SystemSubscriptionPropertiesDTO
+        serverIntegration.properties as Schemas.SystemSubscriptionProperties
       );
     case IntegrationType.DRAWER:
       return toIntegrationDrawer(
         integrationBase as IntegrationBase<IntegrationType.DRAWER>,
-        serverIntegration.properties as Schemas.SystemSubscriptionPropertiesDTO
+        serverIntegration.properties as Schemas.SystemSubscriptionProperties
       );
     case IntegrationType.PAGERDUTY:
       return toIntegrationPagerDuty(
         integrationBase as IntegrationBase<IntegrationType.PAGERDUTY>,
-        serverIntegration.properties as Schemas.PagerDutyPropertiesDTO
+        serverIntegration.properties as Schemas.PagerDutyProperties
       );
     default:
       assertNever(integrationBase.type);
@@ -194,10 +194,10 @@ export const toIntegrations = (
 };
 
 type ServerIntegrationProperties =
-  | Schemas.SystemSubscriptionPropertiesDTO
-  | Schemas.WebhookPropertiesDTO
-  | Schemas.CamelPropertiesDTO
-  | Schemas.PagerDutyPropertiesDTO;
+  | Schemas.SystemSubscriptionProperties
+  | Schemas.WebhookProperties
+  | Schemas.CamelProperties
+  | Schemas.PagerDutyProperties;
 
 export const toIntegrationProperties = (
   integration: Integration | NewIntegration
