@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.com/RedHatInsights/notifications-frontend.svg?branch=master)](https://travis-ci.com/RedHatInsights/notifications-frontend)
 
+
 # notifications-frontend
 
 Notifications frontend for Red Hat Insights
