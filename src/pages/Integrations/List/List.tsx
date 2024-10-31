@@ -40,6 +40,7 @@ import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useFlag } from '@unleash/proxy-client-react';
 import DopeBox from '../../../components/Integrations/DopeBox';
+import { DataViewIntegrationsTable } from '../../../components/Integrations/IntegrationsTable';
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
   ...userIntegration,
@@ -59,6 +60,9 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 }: IntegrationListProps) => {
   const dispatch = useDispatch();
   const wizardEnabled = useFlag('insights.integrations.wizard');
+  const isBehaviorGroupsEnabled = useFlag(
+    'platform.integrations.behavior-groups-move'
+  );
   const { savedNotificationScope } = useSelector(selector);
   const [selectedIntegration, setSelectedIntegration] =
     useState<UserIntegration>();
@@ -277,20 +281,37 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
             pageChanged={pageData.changePage}
             perPageChanged={pageData.changeItemsPerPage}
           >
-            <IntegrationsTable
-              isLoading={integrationsQuery.loading}
-              loadingCount={loadingCount}
-              integrations={integrationRows.rows}
-              onCollapse={integrationRows.onCollapse}
-              onEnable={
-                canWriteIntegrationsEndpoints
-                  ? integrationRows.onEnable
-                  : undefined
-              }
-              actionResolver={actionResolver}
-              onSort={sort.onSort}
-              sortBy={sort.sortBy}
-            />
+            {!isBehaviorGroupsEnabled ? (
+              <IntegrationsTable
+                isLoading={integrationsQuery.loading}
+                loadingCount={loadingCount}
+                integrations={integrationRows.rows}
+                onCollapse={integrationRows.onCollapse}
+                onEnable={
+                  canWriteIntegrationsEndpoints
+                    ? integrationRows.onEnable
+                    : undefined
+                }
+                actionResolver={actionResolver}
+                onSort={sort.onSort}
+                sortBy={sort.sortBy}
+              />
+            ) : (
+              <DataViewIntegrationsTable
+                isLoading={integrationsQuery.loading}
+                loadingCount={loadingCount}
+                integrations={integrationRows.rows}
+                onCollapse={integrationRows.onCollapse}
+                onEnable={
+                  canWriteIntegrationsEndpoints
+                    ? integrationRows.onEnable
+                    : undefined
+                }
+                actionResolver={actionResolver}
+                onSort={sort.onSort}
+                sortBy={sort.sortBy}
+              />
+            )}
           </IntegrationsToolbar>
         </>
       )}
