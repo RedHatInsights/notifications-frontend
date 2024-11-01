@@ -3,7 +3,11 @@ import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { SearchIcon } from '@patternfly/react-icons';
 import { IActions, ISortBy, SortByDirection } from '@patternfly/react-table';
-import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTable';
+import {
+  SkeletonTableBody,
+  SkeletonTableHead,
+} from '@patternfly/react-component-groups';
+
 import {
   Direction,
   OuiaComponentProps,
@@ -154,27 +158,33 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
     },
   ];
 
-  if (props.isLoading) {
-    return <SkeletonTable rows={props.loadingCount || 10} columns={COLUMNS} />;
-  }
+  const emptyState = (
+    <EmptyStateSearch
+      variant={EmptyStateVariant.full}
+      icon={SearchIcon}
+      title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
+      description={intl.formatMessage(messages.integrationsTableEmptyStateBody)}
+    />
+  );
 
-  if (rows.length === 0) {
-    return (
-      <EmptyStateSearch
-        variant={EmptyStateVariant.full}
-        icon={SearchIcon}
-        title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
-        description={intl.formatMessage(
-          messages.integrationsTableEmptyStateBody
-        )}
-      />
-    );
-  }
+  const loadingStateHeader = <SkeletonTableHead columns={COLUMNS} />;
+  const loadingStateBody = (
+    <SkeletonTableBody
+      rowsCount={props.loadingCount || 10}
+      columnsCount={COLUMNS.length}
+    />
+  );
 
   return (
     <div>
       <DataView ouiaId="integrations-table">
-        <DataViewTable variant="compact" columns={COLUMNS} rows={rows} />
+        <DataViewTable
+          variant="compact"
+          columns={COLUMNS}
+          rows={rows}
+          headStates={{ loading: loadingStateHeader }}
+          bodyStates={{ loading: loadingStateBody, empty: emptyState }}
+        />
       </DataView>
     </div>
   );
