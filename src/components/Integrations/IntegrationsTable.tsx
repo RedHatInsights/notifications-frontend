@@ -19,11 +19,9 @@ import {
   IntegrationConnectionAttempt,
   UserIntegration,
 } from '../../types/Integration';
-import { getOuiaProps } from '../../utils/getOuiaProps';
 import { EmptyStateSearch } from '../EmptyStateSearch';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { DataView } from '@patternfly/react-data-view/dist/dynamic/DataView';
-import { DataViewToolbar } from '@patternfly/react-data-view/dist/dynamic/DataViewToolbar';
 import {
   DataViewTable,
   DataViewTh,
@@ -38,7 +36,7 @@ export type OnEnable = (
 interface IntegrationsTableProps extends OuiaComponentProps {
   isLoading: boolean;
   loadingCount?: number;
-  integrations: Array<IntegrationRow>;
+  integrations: IntegrationRow[];
   onCollapse?: (
     integration: IntegrationRow,
     index: number,
@@ -77,10 +75,10 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
 
   const onSort = React.useCallback(
     (event, column: number, direction: SortByDirection) => {
-      const propsOnSort = props.onSort;
+      const { onSort } = props;
       const mapping = sortMapper.find((p) => p.index === column);
-      if (propsOnSort && mapping) {
-        propsOnSort(
+      if (onSort && mapping) {
+        onSort(
           mapping.index,
           mapping.name,
           direction === SortByDirection.asc
@@ -93,22 +91,20 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   );
 
   const sortBy = React.useMemo<ISortBy>(() => {
-    const propsSortBy = props.sortBy;
-    if (propsSortBy) {
-      const mapping = sortMapper.find((p) => p.name === propsSortBy.column);
+    const { sortBy } = props;
+    if (sortBy) {
+      const mapping = sortMapper.find((p) => p.name === sortBy.column);
       if (mapping) {
         return {
           index: mapping.index,
           direction:
-            propsSortBy.direction === Direction.ASCENDING
+            sortBy.direction === Direction.ASCENDING
               ? SortByDirection.asc
               : SortByDirection.desc,
         };
       }
     }
-    return {
-      defaultDirection: SortByDirection.asc,
-    };
+    return { defaultDirection: SortByDirection.asc };
   }, [props.sortBy]);
 
   const rows = React.useMemo(() => {
@@ -148,31 +144,18 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   const COLUMNS: DataViewTh[] = [
     {
       cell: 'Name',
-      props: { sort: { sortBy: sortBy, onSort: onSort, columnIndex: 1 } },
+      props: { sort: { sortBy, onSort, columnIndex: 1 } },
     },
     'Type',
     'Last connection attempt',
     {
       cell: 'Enabled',
-      props: { sort: { sortBy: sortBy, onSort: onSort, columnIndex: 4 } },
+      props: { sort: { sortBy, onSort, columnIndex: 4 } },
     },
   ];
 
   if (props.isLoading) {
-    return (
-      <div
-        {...getOuiaProps('Integrations/Table', { ...props, ouiaSafe: false })}
-      >
-        <SkeletonTable
-          rows={
-            props.loadingCount && props.loadingCount > 0
-              ? props.loadingCount
-              : 10
-          }
-          columns={COLUMNS}
-        />
-      </div>
-    );
+    return <SkeletonTable rows={props.loadingCount || 10} columns={COLUMNS} />;
   }
 
   if (rows.length === 0) {
@@ -191,7 +174,6 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   return (
     <div>
       <DataView ouiaId="integrations-table">
-        <DataViewToolbar ouiaId="integrations-table-toolbar" />
         <DataViewTable variant="compact" columns={COLUMNS} rows={rows} />
       </DataView>
     </div>
