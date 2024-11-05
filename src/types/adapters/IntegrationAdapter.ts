@@ -282,5 +282,6 @@ export const toServerIntegrationRequest = (
     sub_type: subType,
     description: '',
     properties: toIntegrationProperties(integration),
+    event_types: integration.eventTypes,
   };
 };
