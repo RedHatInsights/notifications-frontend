@@ -42,6 +42,7 @@ export const IntegrationWizard: React.FunctionComponent<
   isOpen,
   isEdit,
   template,
+  afterSubmit,
   closeModal,
   category,
 }: IntegrationWizardProps) => {
@@ -111,6 +112,8 @@ export const IntegrationWizard: React.FunctionComponent<
                 }
               );
               closeModal();
+              console.log('aaaa');
+              afterSubmit();
             } else {
               setWizardState({
                 isEdit,
@@ -145,6 +148,7 @@ export const IntegrationWizard: React.FunctionComponent<
       {wizardState !== undefined && (
         <FinalWizard
           data={wizardState}
+          afterSubmit={afterSubmit}
           onClose={() => {
             setWizardState(undefined);
             closeModal();
