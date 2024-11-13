@@ -30,6 +30,10 @@ import {
   DataViewTable,
   DataViewTh,
 } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
+import {
+  EventTypes,
+  useDataViewEventsContext,
+} from '@patternfly/react-data-view';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -50,6 +54,7 @@ interface IntegrationsTableProps extends OuiaComponentProps {
   actionResolver: (row: IntegrationRow, index: number) => IActions;
   sortBy?: Sort;
   onSort?: UseSortReturn['onSort'];
+  selectedIntegration?: UserIntegration;
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -76,6 +81,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   IntegrationsTableProps
 > = (props) => {
   const intl = useIntl();
+  const { trigger } = useDataViewEventsContext();
 
   const onSort = React.useCallback(
     (event, column: number, direction: SortByDirection) => {
@@ -112,38 +118,64 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   }, [props.sortBy]);
 
   const rows = React.useMemo(() => {
-    return props.integrations.map((integration, idx) => [
-      integration.name,
-      Config.integrations.types[integration.type].name,
-      integration.lastConnectionAttempts === undefined ? (
-        <StatusUnknown />
-      ) : (
-        <IntegrationStatus
-          status={integration.status}
-          lastConnectionAttempts={
-            integration.isConnectionAttemptLoading
+    const handleRowClick = (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      event: any,
+      integration: UserIntegration | undefined
+    ) => {
+      (event.target.matches('td') || event.target.matches('tr')) &&
+        trigger(EventTypes.rowClick, integration);
+    };
+    return props.integrations.map((integration, idx) => ({
+      row: [
+        integration.name,
+        Config.integrations.types[integration.type].name,
+        integration.lastConnectionAttempts === undefined ? (
+          <StatusUnknown />
+        ) : (
+          <IntegrationStatus
+            status={integration.status}
+            lastConnectionAttempts={
+              integration.isConnectionAttemptLoading
+                ? undefined
+                : integration.lastConnectionAttempts
+            }
+            includeDetails={integration.includeDetails}
+          />
+        ),
+        integration.isEnabledLoading ? (
+          <Spinner className="pf-v5-u-ml-sm" size="md" />
+        ) : (
+          <Switch
+            id={`table-row-switch-id-${integration.id}`}
+            aria-label="Enabled"
+            isChecked={integration.isEnabled}
+            onChange={(_e, isChecked) =>
+              props.onEnable && props.onEnable(integration, idx, isChecked)
+            }
+            isDisabled={!props.onEnable}
+            ouiaId={`enabled-${integration.id}`}
+          />
+        ),
+      ],
+      props: {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onRowClick: (event: any) =>
+          handleRowClick(
+            event,
+            props.selectedIntegration?.name === integration.name
               ? undefined
-              : integration.lastConnectionAttempts
-          }
-          includeDetails={integration.includeDetails}
-        />
-      ),
-      integration.isEnabledLoading ? (
-        <Spinner className="pf-v5-u-ml-sm" size="md" />
-      ) : (
-        <Switch
-          id={`table-row-switch-id-${integration.id}`}
-          aria-label="Enabled"
-          isChecked={integration.isEnabled}
-          onChange={(_e, isChecked) =>
-            props.onEnable && props.onEnable(integration, idx, isChecked)
-          }
-          isDisabled={!props.onEnable}
-          ouiaId={`enabled-${integration.id}`}
-        />
-      ),
-    ]);
-  }, [props.integrations, props.onEnable]);
+              : integration
+          ),
+        isRowSelected: props.selectedIntegration?.name === integration.name,
+      },
+    }));
+  }, [
+    props.integrations,
+    props.onEnable,
+    trigger,
+    props.selectedIntegration?.name,
+  ]);
 
   const COLUMNS: DataViewTh[] = [
     {
