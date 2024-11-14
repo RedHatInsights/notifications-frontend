@@ -105,7 +105,7 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
   integration,
 }) => {
   return (
-    <DescriptionList isHorizontal>
+    <DescriptionList isHorizontal className="pf-v5-u-p-sm pf-v5-u-m-sm">
       <DescriptionListGroup>
         <DescriptionListTerm>Integration type</DescriptionListTerm>
         <DescriptionListDescription>
