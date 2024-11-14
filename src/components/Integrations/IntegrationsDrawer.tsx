@@ -13,7 +13,6 @@ import {
   EventTypes,
   useDataViewEventsContext,
 } from '@patternfly/react-data-view';
-import { UserIntegration } from '../../types/Integration';
 import {
   Dropdown,
   DropdownItem,
@@ -45,6 +44,7 @@ const ActionDropdown: React.FunctionComponent = () => {
     <Dropdown
       isOpen={isOpen}
       onSelect={onSelect}
+      popperProps={{ position: 'right', enableFlip: true }}
       onOpenChange={(isOpen: boolean) => setIsOpen(isOpen)}
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle

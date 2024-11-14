@@ -6,22 +6,37 @@ import {
   DescriptionListTerm,
 } from '@patternfly/react-core';
 import {
-  CamelIntegrationType,
   IntegrationCamel,
-  IntegrationIconTypes,
+  IntegrationIcon,
   IntegrationPagerduty,
   IntegrationType,
 } from '../../types/Integration';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { IntegrationRow } from './Table';
-import { iconMapper } from '../../pages/Integrations/Create/helpers';
 import Config, { defaultIconList } from '../../config/Config';
 
-interface IntegrationDetailsProps {
-  integration?: IntegrationRow;
-}
-
-const ouiaId = 'IntegrationsTable';
+export const getIntegrationIcon = (type: string): React.ReactElement | null => {
+  const allIcons = Object.assign(
+    defaultIconList['Communications'],
+    defaultIconList['Reporting']
+  );
+  const integrationType: IntegrationIcon | undefined = Object.values(
+    allIcons
+  ).find((icon: IntegrationIcon) => icon.name === type);
+  if (integrationType === undefined) {
+    return null;
+  }
+  return (
+    <>
+      <img
+        width="16px"
+        src={integrationType.icon_url}
+        alt={integrationType.product_name}
+        className="pf-v5-u-mr-sm"
+      />
+    </>
+  );
+};
 
 const buildIntegrationDetails = (integration: IntegrationRow) => {
   if (integration.type === IntegrationType.SLACK) {
@@ -82,13 +97,11 @@ const buildIntegrationDetails = (integration: IntegrationRow) => {
   }
 };
 
-const integrationIcon = (type: CamelIntegrationType) => {
-  return iconMapper(defaultIconList[type]) === null
-    ? iconMapper(defaultIconList[type])
-    : '';
-};
+interface IntegrationDetailsProps {
+  integration?: IntegrationRow;
+}
 
-const IntegrationsDrawer: React.FunctionComponent<IntegrationDetailsProps> = ({
+const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
   integration,
 }) => {
   return (
@@ -96,8 +109,8 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationDetailsProps> = ({
       <DescriptionListGroup>
         <DescriptionListTerm>Integration type</DescriptionListTerm>
         <DescriptionListDescription>
+          {integration && getIntegrationIcon(integration.type)}
           {integration && Config.integrations.types[integration.type].name}
-          {/* {integrationIcon(integration?.type)} */}
         </DescriptionListDescription>
         <DescriptionListTerm>Last connection attempt</DescriptionListTerm>
         <DescriptionListDescription>
@@ -125,4 +138,4 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationDetailsProps> = ({
   );
 };
 
-export default IntegrationsDrawer;
+export default IntegrationDetails;

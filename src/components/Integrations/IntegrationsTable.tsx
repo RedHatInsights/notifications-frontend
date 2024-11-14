@@ -34,6 +34,8 @@ import {
   EventTypes,
   useDataViewEventsContext,
 } from '@patternfly/react-data-view';
+import { getIntegrationIcon } from './IntegrationDetails';
+import { Split, SplitItem } from '@patternfly/react-core';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -129,7 +131,13 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
     return props.integrations.map((integration, idx) => ({
       row: [
         integration.name,
-        Config.integrations.types[integration.type].name,
+        <Split key={idx}>
+          <SplitItem>{getIntegrationIcon(integration.type)}</SplitItem>
+          <SplitItem>
+            {' '}
+            {Config.integrations.types[integration.type].name}{' '}
+          </SplitItem>
+        </Split>,
         integration.lastConnectionAttempts === undefined ? (
           <StatusUnknown />
         ) : (
