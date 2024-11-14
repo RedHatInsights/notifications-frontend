@@ -14,6 +14,8 @@ import {
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { IntegrationRow } from './Table';
 import Config, { defaultIconList } from '../../config/Config';
+import messages from '../../properties/DefinedMessages';
+import { useIntl } from 'react-intl';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
   const allIcons = Object.assign(
@@ -38,65 +40,6 @@ export const getIntegrationIcon = (type: string): React.ReactElement | null => {
   );
 };
 
-const buildIntegrationDetails = (integration: IntegrationRow) => {
-  if (integration.type === IntegrationType.SLACK) {
-    const integrationCamel = integration as IntegrationCamel;
-    return (
-      <>
-        <DescriptionListTerm>Endpoint URL</DescriptionListTerm>
-        <DescriptionListDescription>
-          {integrationCamel.url}
-        </DescriptionListDescription>
-        <DescriptionListTerm>SSL Verification</DescriptionListTerm>
-        <DescriptionListDescription>
-          {integrationCamel.sslVerificationEnabled}
-        </DescriptionListDescription>
-      </>
-    );
-  }
-
-  if (
-    integration.type === IntegrationType.TEAMS ||
-    integration.type === IntegrationType.GOOGLE_CHAT
-  ) {
-    const integrationCamel = integration as IntegrationCamel;
-    return (
-      <>
-        <DescriptionListTerm>Endpoint URL</DescriptionListTerm>
-        <DescriptionListDescription>
-          {integrationCamel.url}
-        </DescriptionListDescription>
-      </>
-    );
-  }
-
-  if (integration.type === IntegrationType.PAGERDUTY) {
-    const integrationPager = integration as IntegrationPagerduty;
-    return (
-      <>
-        {'secretToken' in integrationPager && (
-          <>
-            <DescriptionListTerm>Integration Key</DescriptionListTerm>
-            <DescriptionListDescription>
-              {integrationPager.secretToken !== undefined
-                ? 'Secret token'
-                : 'None'}
-            </DescriptionListDescription>
-          </>
-        )}
-        {integrationPager.severity && (
-          <>
-            <DescriptionListTerm>Severity</DescriptionListTerm>
-            <DescriptionListDescription>
-              {integrationPager.severity}
-            </DescriptionListDescription>
-          </>
-        )}
-      </>
-    );
-  }
-};
-
 interface IntegrationDetailsProps {
   integration?: IntegrationRow;
 }
@@ -104,15 +47,88 @@ interface IntegrationDetailsProps {
 const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
   integration,
 }) => {
+  const intl = useIntl();
+
+  const buildIntegrationDetails = (integration: IntegrationRow) => {
+    if (integration.type === IntegrationType.SLACK) {
+      const integrationCamel = integration as IntegrationCamel;
+      return (
+        <>
+          <DescriptionListTerm>
+            {intl.formatMessage(messages.endPointUrl)}
+          </DescriptionListTerm>
+          <DescriptionListDescription>
+            {integrationCamel.url}
+          </DescriptionListDescription>
+          <DescriptionListTerm>
+            {' '}
+            {intl.formatMessage(messages.sslVerification)}
+          </DescriptionListTerm>
+          <DescriptionListDescription>
+            {integrationCamel.sslVerificationEnabled}
+          </DescriptionListDescription>
+        </>
+      );
+    }
+
+    if (
+      integration.type === IntegrationType.TEAMS ||
+      integration.type === IntegrationType.GOOGLE_CHAT
+    ) {
+      const integrationCamel = integration as IntegrationCamel;
+      return (
+        <>
+          <DescriptionListTerm>
+            {intl.formatMessage(messages.endPointUrl)}
+          </DescriptionListTerm>
+          <DescriptionListDescription>
+            {integrationCamel.url}
+          </DescriptionListDescription>
+        </>
+      );
+    }
+
+    if (integration.type === IntegrationType.PAGERDUTY) {
+      const integrationPager = integration as IntegrationPagerduty;
+      return (
+        <>
+          {'secretToken' in integrationPager && (
+            <>
+              <DescriptionListTerm>Integration Key</DescriptionListTerm>
+              <DescriptionListDescription>
+                {integrationPager.secretToken !== undefined
+                  ? 'Secret token'
+                  : 'None'}
+              </DescriptionListDescription>
+            </>
+          )}
+          {integrationPager.severity && (
+            <>
+              <DescriptionListTerm>Severity</DescriptionListTerm>
+              <DescriptionListDescription>
+                {integrationPager.severity}
+              </DescriptionListDescription>
+            </>
+          )}
+        </>
+      );
+    }
+  };
+
   return (
     <DescriptionList isHorizontal className="pf-v5-u-p-sm pf-v5-u-m-sm">
       <DescriptionListGroup>
-        <DescriptionListTerm>Integration type</DescriptionListTerm>
+        <DescriptionListTerm>
+          {' '}
+          {intl.formatMessage(messages.integrationType)}
+        </DescriptionListTerm>
         <DescriptionListDescription>
           {integration && getIntegrationIcon(integration.type)}
           {integration && Config.integrations.types[integration.type].name}
         </DescriptionListDescription>
-        <DescriptionListTerm>Last connection attempt</DescriptionListTerm>
+        <DescriptionListTerm>
+          {intl.formatMessage(messages.lastConnectionAttempt)}
+        </DescriptionListTerm>
         <DescriptionListDescription>
           {integration?.lastConnectionAttempts === undefined ? (
             <StatusUnknown />
@@ -128,7 +144,9 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
             />
           )}
         </DescriptionListDescription>
-        <DescriptionListTerm>Enabled</DescriptionListTerm>
+        <DescriptionListTerm>
+          {intl.formatMessage(messages.enabled)}
+        </DescriptionListTerm>
         <DescriptionListDescription>
           {integration?.isEnabled}
         </DescriptionListDescription>

@@ -23,9 +23,13 @@ import {
 import EllipsisVIcon from '@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon';
 import IntegrationDetails from './IntegrationDetails';
 import { IntegrationRow } from './Table';
+import messages from '../../properties/DefinedMessages';
+import { useIntl } from 'react-intl';
 
 const ActionDropdown: React.FunctionComponent = () => {
   const [isOpen, setIsOpen] = React.useState(false);
+
+  const intl = useIntl();
 
   const onToggleClick = () => {
     setIsOpen(!isOpen);
@@ -58,20 +62,20 @@ const ActionDropdown: React.FunctionComponent = () => {
         <DropdownItem
           value={0}
           key="action"
-          description="Temporarily disable data collection"
+          description={intl.formatMessage(messages.pauseDescription)}
         >
-          Pause
+          {intl.formatMessage(messages.integrationdropdownPause)}
         </DropdownItem>
         <DropdownItem
           value={1}
           key="action"
           to="#default-link2"
-          description="Permanently delete this integration and all collected data"
+          description={intl.formatMessage(messages.removeDescription)}
         >
-          Remove
+          {intl.formatMessage(messages.integrationdropdownRemove)}
         </DropdownItem>
         <DropdownItem value={2} key="action" to="#default-link3">
-          Edit
+          {intl.formatMessage(messages.integrationdropdownEdit)}
         </DropdownItem>
       </DropdownList>
     </Dropdown>
@@ -92,6 +96,8 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
   setSelectedIntegration,
 }) => {
   const [activeTabKey, setActiveTabKey] = React.useState<string | number>(0);
+
+  const intl = useIntl();
 
   const context = useDataViewEventsContext();
 
@@ -137,14 +143,22 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
       >
         <Tab
           eventKey={0}
-          title={<TabTitleText>Integration details</TabTitleText>}
+          title={
+            <TabTitleText>
+              {intl.formatMessage(messages.integrationDetailsTabTitle)}
+            </TabTitleText>
+          }
           ouiaId={`${ouiaId}-details-tab`}
         >
           <IntegrationDetails integration={selectedIntegration} />
         </Tab>
         <Tab
           eventKey={1}
-          title={<TabTitleText>Associated event types</TabTitleText>}
+          title={
+            <TabTitleText>
+              {intl.formatMessage(messages.associatedEventTypesTabTitle)}
+            </TabTitleText>
+          }
           ouiaId={`${ouiaId}-associated-event-types-tab`}
         >
           hi
