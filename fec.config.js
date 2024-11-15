@@ -21,7 +21,7 @@ module.exports = {
   hotReload: process.env.HOT === 'true',
   routes: {
     ...(process.env.CONFIG_PORT && {
-      '/api/chrome-service/v1/static': {
+      '/api/chrome-service/v1/': {
         host: `http://localhost:${process.env.CONFIG_PORT}`,
       },
     }),
@@ -48,6 +48,10 @@ module.exports = {
       './IntegrationsWizard': path.resolve(
         __dirname,
         './src/pages/Integrations/Create/IntegrationWizard.tsx'
+      ),
+      './NotificationsDrawer': path.resolve(
+        __dirname,
+        './src/components/NotificationsDrawer/DrawerPanel.tsx'
       ),
     },
     exclude: ['react-router-dom'],

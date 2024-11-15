@@ -18,3 +18,9 @@ export const UtcDate: React.FunctionComponent<UtcDateProps> = (props) => {
 
   return <>{formatted} UTC</>;
 };
+
+export function getSevenDaysAgo(): string {
+  const today = new Date();
+  const sevenDaysAgo = new Date(today.setDate(today.getDate() - 7));
+  return sevenDaysAgo.toISOString().split('.')[0];
+}
