@@ -294,7 +294,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
             pageChanged={pageData.changePage}
             perPageChanged={pageData.changeItemsPerPage}
           >
-            {isBehaviorGroupsEnabled ? (
+            {!isBehaviorGroupsEnabled ? (
               <IntegrationsTable
                 isLoading={integrationsQuery.loading}
                 loadingCount={loadingCount}
