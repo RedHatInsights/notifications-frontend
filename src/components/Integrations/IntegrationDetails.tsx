@@ -5,17 +5,17 @@ import {
   DescriptionListGroup,
   DescriptionListTerm,
 } from '@patternfly/react-core';
-import {
-  IntegrationCamel,
-  IntegrationIcon,
-  IntegrationPagerduty,
-  IntegrationType,
-} from '../../types/Integration';
+import { IntegrationIcon, IntegrationType } from '../../types/Integration';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { IntegrationRow } from './Table';
 import Config, { defaultIconList } from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
 import { useIntl } from 'react-intl';
+import {
+  GoogleOrTeamsContent,
+  PagerDutyContent,
+  SlackContent,
+} from './IntegrationDetailsContent';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
   const allIcons = {
@@ -51,67 +51,18 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
 
   const buildIntegrationDetails = (integration: IntegrationRow) => {
     if (integration.type === IntegrationType.SLACK) {
-      const integrationCamel = integration as IntegrationCamel;
-      return (
-        <>
-          <DescriptionListTerm>
-            {intl.formatMessage(messages.endPointUrl)}
-          </DescriptionListTerm>
-          <DescriptionListDescription>
-            {integrationCamel.url}
-          </DescriptionListDescription>
-          <DescriptionListTerm>
-            {' '}
-            {intl.formatMessage(messages.sslVerification)}
-          </DescriptionListTerm>
-          <DescriptionListDescription>
-            {integrationCamel.sslVerificationEnabled}
-          </DescriptionListDescription>
-        </>
-      );
+      return <SlackContent integration={integration} />;
     }
 
     if (
       integration.type === IntegrationType.TEAMS ||
       integration.type === IntegrationType.GOOGLE_CHAT
     ) {
-      const integrationCamel = integration as IntegrationCamel;
-      return (
-        <>
-          <DescriptionListTerm>
-            {intl.formatMessage(messages.endPointUrl)}
-          </DescriptionListTerm>
-          <DescriptionListDescription>
-            {integrationCamel.url}
-          </DescriptionListDescription>
-        </>
-      );
+      return <GoogleOrTeamsContent integration={integration} />;
     }
 
     if (integration.type === IntegrationType.PAGERDUTY) {
-      const integrationPager = integration as IntegrationPagerduty;
-      return (
-        <>
-          {'secretToken' in integrationPager && (
-            <>
-              <DescriptionListTerm>Integration Key</DescriptionListTerm>
-              <DescriptionListDescription>
-                {integrationPager.secretToken !== undefined
-                  ? 'Secret token'
-                  : 'None'}
-              </DescriptionListDescription>
-            </>
-          )}
-          {integrationPager.severity && (
-            <>
-              <DescriptionListTerm>Severity</DescriptionListTerm>
-              <DescriptionListDescription>
-                {integrationPager.severity}
-              </DescriptionListDescription>
-            </>
-          )}
-        </>
-      );
+      return <PagerDutyContent integration={integration} />;
     }
   };
 

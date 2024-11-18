@@ -114,4 +114,14 @@ export default defineMessages({
     description: 'is enabled',
     defaultMessage: 'Enabled',
   },
+  integrationKey: {
+    id: 'integrationKey',
+    description: 'integration key',
+    defaultMessage: 'Integration Key',
+  },
+  severity: {
+    id: 'severity',
+    description: 'severity',
+    defaultMessage: 'Severity',
+  },
 });
