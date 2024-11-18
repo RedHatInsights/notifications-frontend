@@ -21,7 +21,6 @@ interface ProgressProps {
   onClose: () => void;
   data: IntegrationsData;
   hasBehaviorGroup: boolean;
-  isEdit?: boolean;
 }
 
 export const SuccessStep: React.FunctionComponent<ProgressProps> = (props) => {
@@ -31,25 +30,24 @@ export const SuccessStep: React.FunctionComponent<ProgressProps> = (props) => {
   return (
     <EmptyState variant={EmptyStateVariant.lg}>
       <EmptyStateHeader
-        titleText={`Integration ${props.isEdit ? 'updated' : 'created'}`}
+        titleText="Integration updated"
         headingLevel="h4"
         icon={<EmptyStateIcon icon={CheckCircleIcon} color="green" />}
       />
       <EmptyStateBody>
         {props.hasBehaviorGroup ? (
           <span>
-            The integration <b>&apos;{props.integrationName}&apos;</b> was{' '}
-            {props.isEdit ? 'updated' : 'created'} successfully. The behavior
-            group <b>&apos;{props.behaviorGroupName}&apos;</b> was{' '}
-            {props.isEdit ? 'updated' : 'created'}
+            The integration <b>&apos;{props.integrationName}&apos;</b> was
+            updated successfully. The behavior group{' '}
+            <b>&apos;{props.behaviorGroupName}&apos;</b> was updated
             successfully. You can configure additional events in the Hybrid
             Cloud Console settings.
           </span>
         ) : (
           <span>
-            The integration <b>&apos;{props.integrationName}&apos;</b> was{' '}
-            {props.isEdit ? 'updated' : 'created'} successfully. You can
-            configure additional events in the Hybrid Cloud Console settings.
+            The integration <b>&apos;{props.integrationName}&apos;</b> was
+            updated successfully. You can configure additional events in the
+            Hybrid Cloud Console settings.
           </span>
         )}
       </EmptyStateBody>

@@ -18,8 +18,14 @@ import {
 import { Integration } from '../../../types/Integration';
 import TableToolbar from './CustomComponents/TableToolbar';
 import { useFlag } from '@unleash/proxy-client-react';
+import {
+  createEndpoint,
+  updateEndpoint,
+} from '../../../api/helpers/integrations/endpoints-helper';
 import { IntegrationsData } from './CustomComponents/FinalStep';
 import { FinalWizard } from './FinalWizard';
+import { useNotification } from '../../../utils/AlertUtils';
+
 export interface IntegrationWizardProps {
   category: string;
   isOpen: boolean;
@@ -56,6 +62,7 @@ export const IntegrationWizard: React.FunctionComponent<
     'platform.integrations.behavior-groups-move'
   );
   const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
+  const notifications = useNotification();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   const [wizardState, setWizardState] = React.useState<
     IntegrationsData | undefined
@@ -63,9 +70,10 @@ export const IntegrationWizard: React.FunctionComponent<
   React.useEffect(() => {
     setWizardOpen(isOpen);
   }, [isOpen]);
+
   return (
     <React.Fragment>
-      {wizardOpen ? (
+      {wizardOpen && (
         <FormRenderer
           schema={schema(
             category,
@@ -79,39 +87,37 @@ export const IntegrationWizard: React.FunctionComponent<
             [INTEGRATION_TYPE]: intType,
             name,
             'secret-token': secret_token,
-            'event-types-table': event_type_id,
+            'event-types-table': event_types,
             'product-family': bundle_name,
             severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
-            if (!isBehaviorGroupsEnabled) {
-              fetch(
-                `/api/integrations/v1.0/endpoints${
-                  isEdit ? `/${template?.id}` : ''
-                }`,
-                {
-                  method: isEdit ? 'PUT' : 'POST',
-                  headers: {
-                    'Content-Type': 'application/json;charset=UTF-8',
-                  },
-                  body: JSON.stringify({
-                    name,
-                    enabled: true,
-                    type,
-                    ...(sub_type && { sub_type }),
-                    description: '',
-                    properties: {
-                      method: 'POST',
-                      url,
-                      disable_ssl_verification: false,
-                      secret_token,
-                      severity,
-                    },
-                  }),
-                }
-              );
-              closeModal();
-            } else {
+            const data = {
+              name,
+              enabled: true,
+              type,
+              ...(sub_type && { sub_type }),
+              description: '',
+              properties: {
+                method: 'POST',
+                url,
+                disable_ssl_verification: false,
+                secret_token,
+                severity,
+              },
+              ...(isBehaviorGroupsEnabled &&
+                !isEdit && {
+                  event_types: event_types
+                    ? Object.values(event_types as object).flatMap(Object.keys)
+                    : [],
+                }),
+            };
+            if (
+              isEdit &&
+              template?.id &&
+              Object.keys(event_types ?? {}).length > 0
+            ) {
+              // temporary update flow until the API allows to update event types with the integration
               setWizardState({
                 isEdit,
                 url,
@@ -119,12 +125,18 @@ export const IntegrationWizard: React.FunctionComponent<
                 sub_type,
                 name,
                 secret_token,
-                event_type_id,
+                event_types,
                 bundle_name,
                 template,
                 severity,
               });
               setWizardOpen(false);
+            } else {
+              // new JS client calls
+              isEdit && template?.id
+                ? updateEndpoint(template?.id, data, undefined, notifications)
+                : createEndpoint(data, notifications);
+              closeModal();
             }
           }}
           initialValues={
@@ -141,7 +153,7 @@ export const IntegrationWizard: React.FunctionComponent<
             return <Pf4FormTemplate {...props} showFormControls={false} />;
           }}
         </FormRenderer>
-      ) : null}
+      )}
       {wizardState !== undefined && (
         <FinalWizard
           data={wizardState}

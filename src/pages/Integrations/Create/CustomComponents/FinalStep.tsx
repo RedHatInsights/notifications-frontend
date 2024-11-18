@@ -23,7 +23,7 @@ export type IntegrationsData = {
   template?: {
     id?: string;
   };
-  event_type_id: [];
+  event_types: [];
   bundle_name: string;
   severity: string;
 };
@@ -46,14 +46,13 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
   );
 
   const integrationsUrl = '/api/integrations/v1.0/endpoints';
-  const behaviorGroupUrl = `/api/notifications/v1.0/notifications/behaviorGroups`;
 
   React.useEffect(() => {
-    const createAction = async () => {
-      const method = data.isEdit ? 'PUT' : 'POST';
+    const updateAction = async () => {
+      const method = 'PUT';
       try {
         const response = await fetch(
-          `${integrationsUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
+          `${integrationsUrl}/${data.template?.id}`,
           {
             method,
             headers: {
@@ -79,28 +78,19 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
         if (!response.ok) {
           throw new Error('Failed to create or update the integration');
         }
-        const result = data.isEdit
-          ? { id: data.template?.id }
-          : await response.json();
-        // disabling behavior group update until we have an API endpoint to fetch its ID
-        if (isBehaviorGroupsEnabled && data?.event_type_id && !data.isEdit) {
+        if (isBehaviorGroupsEnabled && data?.event_types) {
           let ids: string[] = [];
-          Object.values(data.event_type_id).forEach((item) => {
+          Object.values(data.event_types).forEach((item) => {
             ids = [...ids, ...Object.keys(item)];
           });
           const behaviorGroupResponse = await fetch(
-            `${behaviorGroupUrl}${data.isEdit ? `/${data.template?.id}` : ''}`,
+            `${integrationsUrl}/${data.template?.id}/eventTypes`,
             {
               method: method,
               headers: {
                 'Content-Type': 'application/json',
               },
-              body: JSON.stringify({
-                bundle_name: data.bundle_name,
-                display_name: `${data?.name || ''} behavior group`,
-                endpoint_ids: [result.id],
-                event_type_ids: ids,
-              }),
+              body: JSON.stringify(ids),
             }
           );
 
@@ -117,8 +107,8 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
         setIsFinished(true);
       }
     };
-    createAction();
-  }, [behaviorGroupUrl, data, isBehaviorGroupsEnabled]);
+    updateAction();
+  }, [data, isBehaviorGroupsEnabled]);
 
   return isFinished ? (
     hasError ? (
@@ -132,7 +122,6 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
       />
     ) : (
       <SuccessStep
-        isEdit={data.isEdit}
         integrationName={data?.name || ''}
         behaviorGroupName={
           isBehaviorGroupsEnabled ? `${data?.name || ''} behavior group` : ''
@@ -145,7 +134,7 @@ export const FinalStep: React.FunctionComponent<ProgressProps> = ({
   ) : (
     <EmptyState variant={EmptyStateVariant.lg}>
       <EmptyStateHeader
-        titleText={`${data.isEdit ? 'Updating' : 'Creating'} integration`}
+        titleText="Updating integration"
         headingLevel="h4"
         icon={<EmptyStateIcon icon={Spinner} />}
       />
