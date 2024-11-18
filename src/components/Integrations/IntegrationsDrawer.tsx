@@ -20,7 +20,7 @@ import {
   MenuToggle,
   MenuToggleElement,
 } from '@patternfly/react-core';
-import EllipsisVIcon from '@patternfly/react-icons/dist/esm/icons/ellipsis-v-icon';
+import { EllipsisVIcon } from '@patternfly/react-icons';
 import IntegrationDetails from './IntegrationDetails';
 import { IntegrationRow } from './Table';
 import messages from '../../properties/DefinedMessages';

@@ -18,10 +18,10 @@ import messages from '../../properties/DefinedMessages';
 import { useIntl } from 'react-intl';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
-  const allIcons = Object.assign(
-    defaultIconList['Communications'],
-    defaultIconList['Reporting']
-  );
+  const allIcons = {
+    ...defaultIconList['Communications'],
+    ...defaultIconList['Reporting'],
+  };
   const integrationType: IntegrationIcon | undefined = Object.values(
     allIcons
   ).find((icon: IntegrationIcon) => icon.name === type);
