@@ -82,7 +82,7 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
     } else {
       return <span></span>;
     }
-  }, [serviceName, chrome]);
+  }, [serviceName, chrome]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <>

@@ -244,6 +244,6 @@ export const useAssociateEventTypesStep: IntegrationWizardStep<
         />
       ),
     }),
-    [applications, bundle]
+    [applications, bundle] // eslint-disable-line react-hooks/exhaustive-deps
   );
 };

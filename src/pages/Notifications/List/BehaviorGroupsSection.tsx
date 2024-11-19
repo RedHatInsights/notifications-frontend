@@ -51,7 +51,7 @@ const BehaviorGroupAddButton: React.FunctionComponent<
         setIsOrgAdmin(user?.identity?.user?.is_org_admin);
       });
     getUserInfo();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const button = (
     <Button

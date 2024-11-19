@@ -1,7 +1,6 @@
 import axios from 'axios';
 import {
   errorInterceptor,
-  interceptor401,
   interceptor500,
   responseDataInterceptor,
 } from '@redhat-cloud-services/frontend-components-utilities/interceptors';

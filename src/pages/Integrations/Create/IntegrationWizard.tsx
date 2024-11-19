@@ -84,7 +84,6 @@ export const IntegrationWizard: React.FunctionComponent<
             name,
             'secret-token': secret_token,
             'event-types-table': event_types,
-            'product-family': bundle_name,
             severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
@@ -102,13 +101,19 @@ export const IntegrationWizard: React.FunctionComponent<
                 severity,
               },
               ...(isBehaviorGroupsEnabled && {
-                  event_types: event_types
-                    ? Object.values(event_types as object).flatMap(Object.keys)
-                    : [],
-                }),
+                event_types: event_types
+                  ? Object.values(event_types as object).flatMap(Object.keys)
+                  : [],
+              }),
             };
             isEdit && template?.id
-              ? updateEndpoint(template?.id, data, undefined, notifications, afterSubmit)
+              ? updateEndpoint(
+                  template?.id,
+                  data,
+                  undefined,
+                  notifications,
+                  afterSubmit
+                )
               : createEndpoint(data, notifications, afterSubmit);
             closeModal();
           }}

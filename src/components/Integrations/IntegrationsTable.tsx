@@ -96,7 +96,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         );
       }
     },
-    [props.onSort]
+    [props.onSort] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const sortBy = React.useMemo<ISortBy>(() => {
@@ -114,7 +114,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
       }
     }
     return { defaultDirection: SortByDirection.asc };
-  }, [props.sortBy]);
+  }, [props.sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const rows = React.useMemo(() => {
     return props.integrations.map((integration, idx) => [
@@ -152,7 +152,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         props: { isActionCell: true },
       },
     ]);
-  }, [props.integrations, props.onEnable]);
+  }, [props.integrations, props.onEnable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const COLUMNS: DataViewTh[] = [
     {
