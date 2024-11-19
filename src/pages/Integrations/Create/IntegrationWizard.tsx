@@ -22,8 +22,6 @@ import {
   createEndpoint,
   updateEndpoint,
 } from '../../../api/helpers/integrations/endpoints-helper';
-import { IntegrationsData } from './CustomComponents/FinalStep';
-import { FinalWizard } from './FinalWizard';
 import { useNotification } from '../../../utils/AlertUtils';
 
 export interface IntegrationWizardProps {
@@ -64,9 +62,6 @@ export const IntegrationWizard: React.FunctionComponent<
   const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
   const notifications = useNotification();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
-  const [wizardState, setWizardState] = React.useState<
-    IntegrationsData | undefined
-  >();
   React.useEffect(() => {
     setWizardOpen(isOpen);
   }, [isOpen]);
@@ -105,39 +100,16 @@ export const IntegrationWizard: React.FunctionComponent<
                 secret_token,
                 severity,
               },
-              ...(isBehaviorGroupsEnabled &&
-                !isEdit && {
+              ...(isBehaviorGroupsEnabled && {
                   event_types: event_types
                     ? Object.values(event_types as object).flatMap(Object.keys)
                     : [],
                 }),
             };
-            if (
-              isEdit &&
-              template?.id &&
-              Object.keys(event_types ?? {}).length > 0
-            ) {
-              // temporary update flow until the API allows to update event types with the integration
-              setWizardState({
-                isEdit,
-                url,
-                type,
-                sub_type,
-                name,
-                secret_token,
-                event_types,
-                bundle_name,
-                template,
-                severity,
-              });
-              setWizardOpen(false);
-            } else {
-              // new JS client calls
-              isEdit && template?.id
-                ? updateEndpoint(template?.id, data, undefined, notifications)
-                : createEndpoint(data, notifications);
-              closeModal();
-            }
+            isEdit && template?.id
+              ? updateEndpoint(template?.id, data, undefined, notifications)
+              : createEndpoint(data, notifications);
+            closeModal();
           }}
           initialValues={
             isEdit
@@ -149,19 +121,8 @@ export const IntegrationWizard: React.FunctionComponent<
           }
           onCancel={closeModal}
         >
-          {(props) => {
-            return <Pf4FormTemplate {...props} showFormControls={false} />;
-          }}
+          {(props) => <Pf4FormTemplate {...props} showFormControls={false} />}
         </FormRenderer>
-      )}
-      {wizardState !== undefined && (
-        <FinalWizard
-          data={wizardState}
-          onClose={() => {
-            setWizardState(undefined);
-            closeModal();
-          }}
-        />
       )}
     </React.Fragment>
   );
