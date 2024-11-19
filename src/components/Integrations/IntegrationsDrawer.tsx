@@ -160,9 +160,7 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
             </TabTitleText>
           }
           ouiaId={`${ouiaId}-associated-event-types-tab`}
-        >
-          hi
-        </Tab>
+        ></Tab>
       </Tabs>
     </DrawerPanelContent>
   );
