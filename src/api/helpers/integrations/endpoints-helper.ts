@@ -18,7 +18,8 @@ const formatError = (error: any): string => {
 
 export async function createEndpoint(
   config: EndpointDTO,
-  notifications?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  notifications?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  afterSubmit?: () => void
 ) {
   try {
     await integrationsApi.createEndpoint(config);
@@ -28,6 +29,7 @@ export async function createEndpoint(
         config.name ? `${config.name} ` : ''
       }was created successfully.`
     );
+    afterSubmit?.();
   } catch (e) {
     notifications.addDangerNotification(
       'Failed to create integration',
@@ -40,7 +42,8 @@ export async function updateEndpoint(
   id: string,
   data: EndpointDTO,
   config?: AxiosRequestConfig,
-  notifications?: any // eslint-disable-line @typescript-eslint/no-explicit-any
+  notifications?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
+  afterSubmit?: () => void
 ) {
   try {
     await integrationsApi.updateEndpoint(id, data, config);
@@ -50,6 +53,7 @@ export async function updateEndpoint(
         data.name ? `${data.name} ` : ''
       }was updated successfully.`
     );
+    afterSubmit?.();
   } catch (e) {
     notifications?.addDangerNotification(
       'Failed to update integration',

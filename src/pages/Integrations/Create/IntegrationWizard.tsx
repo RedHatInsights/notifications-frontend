@@ -46,6 +46,7 @@ export const IntegrationWizard: React.FunctionComponent<
   isOpen,
   isEdit,
   template,
+  afterSubmit,
   closeModal,
   category,
 }: IntegrationWizardProps) => {
@@ -107,8 +108,8 @@ export const IntegrationWizard: React.FunctionComponent<
                 }),
             };
             isEdit && template?.id
-              ? updateEndpoint(template?.id, data, undefined, notifications)
-              : createEndpoint(data, notifications);
+              ? updateEndpoint(template?.id, data, undefined, notifications, afterSubmit)
+              : createEndpoint(data, notifications, afterSubmit);
             closeModal();
           }}
           initialValues={
