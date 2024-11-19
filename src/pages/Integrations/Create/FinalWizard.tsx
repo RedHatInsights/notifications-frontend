@@ -12,11 +12,13 @@ import './styling/finalWizard.scss';
 interface ProgressProps {
   data: IntegrationsData;
   onClose: () => void;
+  afterSubmit: () => void;
 }
 
 export const FinalWizard: React.FunctionComponent<ProgressProps> = ({
   data,
   onClose,
+  afterSubmit,
 }) => {
   const [isModalOpen, setIsModalOpen] = React.useState(true);
 
