@@ -167,6 +167,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         ),
       ],
       props: {
+        isClickable: true,
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         onRowClick: (event: any) =>
           handleRowClick(
@@ -178,12 +179,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         isRowSelected: props.selectedIntegration?.name === integration.name,
       },
     }));
-  }, [
-    props.integrations,
-    props.onEnable,
-    trigger,
-    props.selectedIntegration?.name,
-  ]);
+  }, [props, trigger]);
 
   const COLUMNS: DataViewTh[] = [
     {
@@ -216,7 +212,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   );
 
   return (
-    <div>
+    <>
       <DataView ouiaId="integrations-table">
         <DataViewTable
           variant="compact"
@@ -226,6 +222,6 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
           bodyStates={{ loading: loadingStateBody, empty: emptyState }}
         />
       </DataView>
-    </div>
+    </>
   );
 };

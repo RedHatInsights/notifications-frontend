@@ -338,7 +338,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                         actionResolver={actionResolver}
                         onSort={sort.onSort}
                         sortBy={sort.sortBy}
-                        selectedIntegration={selectedIntegration}
+                        selectedIntegration={focusedIntegration}
                       />
                     </DrawerContentBody>
                   </DrawerContent>
