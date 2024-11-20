@@ -1,6 +1,8 @@
 /*
 Steps:
 
+1) [GET] Retrieve UUIDs of Notifications event types to link to this new Splunk endpoint 
+
 1) [POST] Create Integrations under /api/integrations/v1.0/endpoints with the payload:
 {
     "name": "Splunk Automation",
@@ -14,23 +16,8 @@ Steps:
         "secret_token": "MYHEC_TOKEN",
         "basic_authentication": {},
         "extras": {}
-    }
-}
-
-2) Create behavior group under /api/notifications/v1.0/notifications/behaviorGroups with the payload:
-
-{
-  "bundle_id":"35fd787b-a345-4fe8-a135-7773de15905e",
-  "display_name":"Splunk-automation"
-}
-
-3) [POST] Update behavior group under api/notifications/v1.0/notifications/behaviorGroups/{BEHAVIOR_GROUP_ID}/actions with the payload:
-
-  ["8d8dca57-1834-48dd-b6ac-265c949c5e60"] <<-- Id of the integration
-
-4) [PUT] Update eventType under /api/notifications/v1.0/notifications/eventTypes/{EVENT_TYPE_UUID}/behaviorGroups with the payload:
-
-["ff59b502-da25-4297-bd88-6934ad0e0d63"] <<- Behavior group ID
+    },
+    "event_types": ["3fa85f64-5717-4562-b3fc-2c963f66afa6","8d8dca57-1834-48dd-b6ac-265c949c5e60"] <<-- Event type Ids
 */
 
 import { useGetAllEventTypes } from '../../../services/GetEventTypes';
@@ -42,10 +29,9 @@ import {
   NewIntegrationTemplate,
 } from '../../../types/Integration';
 import { UUID } from '../../../types/Notification';
+import { useGetBundles } from '../../../services/Notifications/GetBundles';
 
-export const SPLUNK_GROUP_NAME = 'SPLUNK_INTEGRATION';
 export const SPLUNK_INTEGRATION_NAME = 'SPLUNK_AUTOMATION';
-export const SPLUNK_BEHAVIOR_GROUP_NAME = 'SPLUNK_AUTOMATION_GROUP';
 export const BUNDLE_NAME = 'rhel';
 
 interface SplunkEventsDef {
@@ -63,6 +49,7 @@ const DEFAULT_SPLUNK_EVENTS: SplunkEventsDef = {
 };
 
 export const useSplunkSetup = () => {
+  const getRhelBundleUuid = useGetRhelBundleUuid();
   const createSplunkIntegration = useCreateSplunkIntegration();
   const attachEventTypes = useFindEventTypesToAssociate();
 
@@ -74,7 +61,13 @@ export const useSplunkSetup = () => {
 
     onProgress(`Fetching Event types...\n`);
 
-    const eventTypeList = await attachEventTypes(events, onProgress);
+    const rhelBundleId = getRhelBundleUuid();
+
+    const eventTypeList = await attachEventTypes(
+      rhelBundleId,
+      events,
+      onProgress
+    );
 
     onProgress(`Creating Integration ${integrationName}...`);
     await createSplunkIntegration({
@@ -83,8 +76,21 @@ export const useSplunkSetup = () => {
       splunkServerHostName,
       eventTypeList,
     });
-    onProgress(' OK', 'pf-v5-u-success-color-200');
   };
+};
+
+const useGetRhelBundleUuid = () => {
+  const getBundles = useGetBundles();
+
+  const getbundleTabs = () => {
+    if (getBundles.payload?.status === 200) {
+      return getBundles.payload.value.find((b) => b.name === BUNDLE_NAME)?.id;
+    } else {
+      throw new Error(`Error when fetching bundle ${BUNDLE_NAME}`);
+    }
+  };
+
+  return getbundleTabs;
 };
 
 const useCreateSplunkIntegration = () => {
@@ -122,11 +128,14 @@ const useCreateSplunkIntegration = () => {
 const useFindEventTypesToAssociate = () => {
   const getAllEventTypes = useGetAllEventTypes();
 
-  return async (events, onProgress) => {
+  return async (rhelBundleId, events, onProgress) => {
     const eventTypes = await getAllEventTypes();
-
     const selectedEventTypes = eventTypes.filter((eventType) => {
       if (!eventType?.application) {
+        return false;
+      }
+
+      if (eventType.application.bundle_id !== rhelBundleId) {
         return false;
       }
 
@@ -144,9 +153,8 @@ const useFindEventTypesToAssociate = () => {
     const selectedEventTypeIds: UUID[] = [];
     for (const eventType of selectedEventTypes) {
       onProgress(
-        `  ${eventType.application?.display_name} - ${eventType.display_name}...`
+        `  ${eventType.application?.display_name} - ${eventType.display_name}\n`
       );
-      onProgress(' FETCHED\n', 'pf-v5-u-success-color-200');
       selectedEventTypeIds.push(eventType.id as UUID);
     }
     return selectedEventTypeIds;
