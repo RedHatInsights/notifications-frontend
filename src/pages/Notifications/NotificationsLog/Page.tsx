@@ -96,7 +96,7 @@ export const NotificationsLogPage: React.FunctionComponent = () => {
 
   const filterBuilder = useMemo(
     () => createFilter(dateFilter, period),
-    [dateFilter, period[0]?.toString(), period[1]?.toString()]
+    [dateFilter, period[0]?.toString(), period[1]?.toString()] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   //TODO: use new JS client instead of directly calling fetch

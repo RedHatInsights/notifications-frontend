@@ -2,7 +2,12 @@ import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner'
 import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { SearchIcon } from '@patternfly/react-icons';
-import { IActions, ISortBy, SortByDirection } from '@patternfly/react-table';
+import {
+  ActionsColumn,
+  IActions,
+  ISortBy,
+  SortByDirection,
+} from '@patternfly/react-table';
 import {
   SkeletonTableBody,
   SkeletonTableHead,
@@ -91,7 +96,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         );
       }
     },
-    [props.onSort]
+    [props.onSort] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
   const sortBy = React.useMemo<ISortBy>(() => {
@@ -109,7 +114,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
       }
     }
     return { defaultDirection: SortByDirection.asc };
-  }, [props.sortBy]);
+  }, [props.sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const rows = React.useMemo(() => {
     return props.integrations.map((integration, idx) => [
@@ -142,8 +147,12 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
           ouiaId={`enabled-${integration.id}`}
         />
       ),
+      {
+        cell: <ActionsColumn items={props.actionResolver(integration, idx)} />,
+        props: { isActionCell: true },
+      },
     ]);
-  }, [props.integrations, props.onEnable]);
+  }, [props.integrations, props.onEnable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const COLUMNS: DataViewTh[] = [
     {
@@ -176,16 +185,23 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   );
 
   return (
-    <div>
-      <DataView ouiaId="integrations-table">
-        <DataViewTable
-          variant="compact"
-          columns={COLUMNS}
-          rows={rows}
-          headStates={{ loading: loadingStateHeader }}
-          bodyStates={{ loading: loadingStateBody, empty: emptyState }}
-        />
-      </DataView>
-    </div>
+    <DataView
+      ouiaId="integrations-table"
+      activeState={
+        props.isLoading
+          ? 'loading'
+          : !(props.integrations?.length > 0)
+          ? 'empty'
+          : undefined
+      }
+    >
+      <DataViewTable
+        variant="compact"
+        columns={COLUMNS}
+        rows={rows}
+        headStates={{ loading: loadingStateHeader }}
+        bodyStates={{ loading: loadingStateBody, empty: emptyState }}
+      />
+    </DataView>
   );
 };
