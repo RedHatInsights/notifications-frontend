@@ -6,6 +6,7 @@ import { AssociateEventTypesStep } from '../../../Notifications/BehaviorGroupWiz
 import { EventType, Facet } from '../../../../types/Notification';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 import FormSpy from '@data-driven-forms/react-form-renderer/form-spy';
+import { getBundleFacets } from '../../../../api/helpers/notifications/bundle-facets-helper';
 import {
   Bullseye,
   EmptyState,
@@ -56,11 +57,9 @@ const SelectableTable = (props) => {
   const productFamily = getState().values[props.bundleFieldName];
   useEffect(() => {
     const getAllBundles = async () => {
-      const bundles: Facet[] = await (
-        await fetch(
-          '/api/notifications/v1/notifications/facets/bundles?includeApplications=true'
-        )
-      ).json();
+      const bundles: Facet[] = await getBundleFacets({
+        includeApplications: true,
+      });
       setAllBundles(bundles);
     };
     getAllBundles();

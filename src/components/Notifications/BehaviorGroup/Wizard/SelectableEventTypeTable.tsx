@@ -23,11 +23,6 @@ interface SelectableEventTypeTableBaseProps {
   selectionLoading?: boolean;
 }
 
-interface SelectableEventTypeTableImplProps
-  extends SelectableEventTypeTableBaseProps {
-  events: ReadonlyArray<SelectableEventTypeRow>;
-}
-
 export interface SelectableEventTypeTableProps
   extends SelectableEventTypeTableBaseProps {
   events?: ReadonlyArray<SelectableEventTypeRow>;
@@ -133,10 +128,10 @@ const SelectableEventTypeTableRow: React.FunctionComponent<{
   );
 };
 
-const SelectableEventTypeTableImpl: React.FunctionComponent<
-  SelectableEventTypeTableImplProps
-> = (props) => {
-  return (
+export const SelectableEventTypeTable: React.FunctionComponent<
+  SelectableEventTypeTableProps
+> = (props) =>
+  props.events ? (
     <SelectableEventTypeTableLayout>
       {props.events.map((event, rowIndex) => (
         <SelectableEventTypeTableRow
@@ -148,15 +143,6 @@ const SelectableEventTypeTableImpl: React.FunctionComponent<
         />
       ))}
     </SelectableEventTypeTableLayout>
+  ) : (
+    <SelectableEventTypeTableSkeleton />
   );
-};
-
-export const SelectableEventTypeTable: React.FunctionComponent<
-  SelectableEventTypeTableProps
-> = (props) => {
-  if (props.events) {
-    return <SelectableEventTypeTableImpl {...props} events={props.events} />;
-  }
-
-  return <SelectableEventTypeTableSkeleton />;
-};

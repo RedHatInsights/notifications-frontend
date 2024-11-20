@@ -12,6 +12,7 @@ module.exports = {
     '\\.(css|scss|svg)$': 'identity-obj-proxy',
     '@openshift/*': 'jest-transform-stub',
   },
+  preset: 'ts-jest/presets/js-with-ts-esm',
   transformIgnorePatterns,
   setupFilesAfterEnv: ['<rootDir>/config/setupTests.ts'],
 };

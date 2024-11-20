@@ -51,7 +51,10 @@ export const AssociateEventTypesStep: React.FunctionComponent<
     props.applications,
     false
   );
-  const eventTypesRaw = useListNotifications(eventTypePage.pageController.page);
+
+  const { response, loading, refresh } = useListNotifications(
+    eventTypePage.pageController.page
+  );
   const onDemandEventTypes = useParameterizedListNotifications();
 
   useEffect(() => {
@@ -62,32 +65,28 @@ export const AssociateEventTypesStep: React.FunctionComponent<
           return acc;
         }, {}) || {}
       );
-      eventTypesRaw.reset();
+      refresh();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [props.bundle.displayName]);
 
-  const count = React.useMemo(() => {
-    const payload = eventTypesRaw.payload;
-    if (payload?.status === 200) {
-      return payload.value.meta.count;
-    }
-
-    return 0;
-  }, [eventTypesRaw.payload]);
-
   const events = React.useMemo<ReadonlyArray<SelectableEventTypeRow>>(() => {
-    if (eventTypesRaw.payload?.type === 'eventTypesArray') {
-      return eventTypesRaw.payload.value.data.map((value) => ({
-        ...value,
-        isSelected: Object.keys(selectedEventTypes).includes(value.id),
-      }));
+    if (response?.meta.count > 0) {
+      return (
+        response?.data?.map((value) => ({
+          ...value,
+          isSelected: Object.keys(selectedEventTypes).includes(value.id),
+        })) ?? []
+      );
     }
 
     return [];
-  }, [eventTypesRaw.payload, selectedEventTypes]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [response?.data, selectedEventTypes]);
 
   useEffect(() => {
     props.setValues?.(selectedEventTypes);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedEventTypes]);
 
   const onSelect = React.useCallback(
@@ -111,7 +110,7 @@ export const AssociateEventTypesStep: React.FunctionComponent<
 
       switch (command) {
         case SelectionCommand.ALL:
-          if (count === events.length) {
+          if (response?.meta.count === events.length) {
             return setSelectedEventTypes(
               produce((draft) => {
                 events.forEach((e) => {
@@ -124,7 +123,7 @@ export const AssociateEventTypesStep: React.FunctionComponent<
               let pageIndex = 1;
               const addedElements: Record<string, EventType> = {};
               const lastPage = Page.lastPageForElements(
-                count,
+                response?.meta.count,
                 currentPage.size
               );
               // eslint-disable-next-line no-constant-condition
@@ -186,7 +185,7 @@ export const AssociateEventTypesStep: React.FunctionComponent<
       events,
       onDemandEventTypes,
       eventTypePage.pageController.page,
-      count,
+      response?.meta.count,
     ]
   );
 
@@ -208,7 +207,7 @@ export const AssociateEventTypesStep: React.FunctionComponent<
         clearFilter={eventTypePage.clearFilters}
         appFilterOptions={props.applications}
         pageAdapter={eventTypePage.pageController}
-        count={count}
+        count={response?.meta.count}
         pageCount={events.length}
         onSelectionChanged={onSelectCommand}
         selectedCount={Object.keys(selectedEventTypes).length}
@@ -216,7 +215,7 @@ export const AssociateEventTypesStep: React.FunctionComponent<
       >
         <SelectableEventTypeTable
           onSelect={onSelect}
-          events={eventTypesRaw.loading ? undefined : events}
+          events={loading ? undefined : events}
           selectionLoading={onDemandEventTypes.loading}
         />
       </NotificationsToolbar>
@@ -245,6 +244,6 @@ export const useAssociateEventTypesStep: IntegrationWizardStep<
         />
       ),
     }),
-    [applications, bundle]
+    [applications, bundle] // eslint-disable-line react-hooks/exhaustive-deps
   );
 };

@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useMemo } from 'react';
 import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
-import { useListNotifications } from '../../../services/useListNotifications';
+import { useListNotificationsOld } from '../../../services/useListNotifications';
 import {
   BehaviorGroup,
   Facet,
@@ -55,7 +55,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     true
   );
 
-  const useNotifications = useListNotifications(
+  const useNotifications = useListNotificationsOld(
     eventTypePage.pageController.page
   );
 
