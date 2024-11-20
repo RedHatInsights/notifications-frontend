@@ -35,6 +35,12 @@ import {
   DataViewTable,
   DataViewTh,
 } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
+import {
+  EventTypes,
+  useDataViewEventsContext,
+} from '@patternfly/react-data-view';
+import { getIntegrationIcon } from './IntegrationDetails';
+import { Split, SplitItem } from '@patternfly/react-core';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -55,6 +61,7 @@ interface IntegrationsTableProps extends OuiaComponentProps {
   actionResolver: (row: IntegrationRow, index: number) => IActions;
   sortBy?: Sort;
   onSort?: UseSortReturn['onSort'];
+  selectedIntegration?: UserIntegration;
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -81,6 +88,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   IntegrationsTableProps
 > = (props) => {
   const intl = useIntl();
+  const { trigger } = useDataViewEventsContext();
 
   const onSort = React.useCallback(
     (event, column: number, direction: SortByDirection) => {
@@ -117,42 +125,72 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   }, [props.sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const rows = React.useMemo(() => {
-    return props.integrations.map((integration, idx) => [
-      integration.name,
-      Config.integrations.types[integration.type].name,
-      integration.lastConnectionAttempts === undefined ? (
-        <StatusUnknown />
-      ) : (
-        <IntegrationStatus
-          status={integration.status}
-          lastConnectionAttempts={
-            integration.isConnectionAttemptLoading
+    const handleRowClick = (
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      event: any,
+      integration: UserIntegration | undefined
+    ) => {
+      (event.target.matches('td') || event.target.matches('tr')) &&
+        trigger(EventTypes.rowClick, integration);
+    };
+    return props.integrations.map((integration, idx) => ({
+      row: [
+        integration.name,
+        <Split key={idx}>
+          <SplitItem>{getIntegrationIcon(integration.type)}</SplitItem>
+          <SplitItem>
+            {' '}
+            {Config.integrations.types[integration.type].name}{' '}
+          </SplitItem>
+        </Split>,
+        integration.lastConnectionAttempts === undefined ? (
+          <StatusUnknown />
+        ) : (
+          <IntegrationStatus
+            status={integration.status}
+            lastConnectionAttempts={
+              integration.isConnectionAttemptLoading
+                ? undefined
+                : integration.lastConnectionAttempts
+            }
+            includeDetails={integration.includeDetails}
+          />
+        ),
+        integration.isEnabledLoading ? (
+          <Spinner className="pf-v5-u-ml-sm" size="md" />
+        ) : (
+          <Switch
+            id={`table-row-switch-id-${integration.id}`}
+            aria-label="Enabled"
+            isChecked={integration.isEnabled}
+            onChange={(_e, isChecked) =>
+              props.onEnable && props.onEnable(integration, idx, isChecked)
+            }
+            isDisabled={!props.onEnable}
+            ouiaId={`enabled-${integration.id}`}
+          />
+        ),
+        {
+          cell: (
+            <ActionsColumn items={props.actionResolver(integration, idx)} />
+          ),
+          props: { isActionCell: true },
+        },
+      ],
+      props: {
+        isClickable: true,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        onRowClick: (event: any) =>
+          handleRowClick(
+            event,
+            props.selectedIntegration?.name === integration.name
               ? undefined
-              : integration.lastConnectionAttempts
-          }
-          includeDetails={integration.includeDetails}
-        />
-      ),
-      integration.isEnabledLoading ? (
-        <Spinner className="pf-v5-u-ml-sm" size="md" />
-      ) : (
-        <Switch
-          id={`table-row-switch-id-${integration.id}`}
-          aria-label="Enabled"
-          isChecked={integration.isEnabled}
-          onChange={(_e, isChecked) =>
-            props.onEnable && props.onEnable(integration, idx, isChecked)
-          }
-          isDisabled={!props.onEnable}
-          ouiaId={`enabled-${integration.id}`}
-        />
-      ),
-      {
-        cell: <ActionsColumn items={props.actionResolver(integration, idx)} />,
-        props: { isActionCell: true },
+              : integration
+          ),
+        isRowSelected: props.selectedIntegration?.name === integration.name,
       },
-    ]);
-  }, [props.integrations, props.onEnable]); // eslint-disable-line react-hooks/exhaustive-deps
+    }));
+  }, [props.integrations, props.onEnable, trigger]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const COLUMNS: DataViewTh[] = [
     {

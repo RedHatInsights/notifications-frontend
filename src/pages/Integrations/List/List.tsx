@@ -15,7 +15,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationsEmptyState } from '../../../components/Integrations/EmptyState';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
-import { IntegrationsTable } from '../../../components/Integrations/Table';
+import {
+  IntegrationRow,
+  IntegrationsTable,
+} from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
@@ -41,6 +44,13 @@ import { useIntegrationRows } from './useIntegrationRows';
 import { useFlag } from '@unleash/proxy-client-react';
 import DopeBox from '../../../components/Integrations/DopeBox';
 import { DataViewIntegrationsTable } from '../../../components/Integrations/IntegrationsTable';
+import { DataViewEventsProvider } from '@patternfly/react-data-view/dist/dynamic/DataViewEventsContext';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+} from '@patternfly/react-core';
+import IntegrationsDrawer from '../../../components/Integrations/IntegrationsDrawer';
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
   ...userIntegration,
@@ -67,6 +77,9 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const [selectedIntegration, setSelectedIntegration] =
     useState<UserIntegration>();
   const [isTestModalOpen, setIsTestModalOpen] = useState(true);
+  const [focusedIntegration, setFocusedIntegration] =
+    useState<IntegrationRow>();
+  const drawerRef = React.useRef<HTMLDivElement>(null);
   const {
     rbac: { canWriteIntegrationsEndpoints },
   } = useContext(AppContext);
@@ -297,20 +310,40 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                 sortBy={sort.sortBy}
               />
             ) : (
-              <DataViewIntegrationsTable
-                isLoading={integrationsQuery.loading}
-                loadingCount={loadingCount}
-                integrations={integrationRows.rows}
-                onCollapse={integrationRows.onCollapse}
-                onEnable={
-                  canWriteIntegrationsEndpoints
-                    ? integrationRows.onEnable
-                    : undefined
-                }
-                actionResolver={actionResolver}
-                onSort={sort.onSort}
-                sortBy={sort.sortBy}
-              />
+              <DataViewEventsProvider>
+                <Drawer
+                  isExpanded={Boolean(focusedIntegration)}
+                  onExpand={() => drawerRef.current?.focus()}
+                  data-ouia-component-id="integration-detail-drawer"
+                >
+                  <DrawerContent
+                    panelContent={
+                      <IntegrationsDrawer
+                        selectedIntegration={focusedIntegration}
+                        setSelectedIntegration={setFocusedIntegration}
+                      />
+                    }
+                  >
+                    <DrawerContentBody>
+                      <DataViewIntegrationsTable
+                        isLoading={integrationsQuery.loading}
+                        loadingCount={loadingCount}
+                        integrations={integrationRows.rows}
+                        onCollapse={integrationRows.onCollapse}
+                        onEnable={
+                          canWriteIntegrationsEndpoints
+                            ? integrationRows.onEnable
+                            : undefined
+                        }
+                        actionResolver={actionResolver}
+                        onSort={sort.onSort}
+                        sortBy={sort.sortBy}
+                        selectedIntegration={focusedIntegration}
+                      />
+                    </DrawerContentBody>
+                  </DrawerContent>
+                </Drawer>
+              </DataViewEventsProvider>
             )}
           </IntegrationsToolbar>
         </>
