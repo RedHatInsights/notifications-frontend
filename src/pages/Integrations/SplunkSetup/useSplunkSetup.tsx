@@ -29,7 +29,7 @@ import {
   NewIntegrationTemplate,
 } from '../../../types/Integration';
 import { UUID } from '../../../types/Notification';
-import { useGetBundles } from '../../../services/Notifications/GetBundles';
+import { useGetBundleByName } from '../../../services/Notifications/GetBundles';
 
 export const SPLUNK_INTEGRATION_NAME = 'SPLUNK_AUTOMATION';
 export const BUNDLE_NAME = 'rhel';
@@ -61,7 +61,7 @@ export const useSplunkSetup = () => {
 
     onProgress(`Fetching Event types...\n`);
 
-    const rhelBundleId = getRhelBundleUuid();
+    const rhelBundleId = await getRhelBundleUuid();
 
     const eventTypeList = await attachEventTypes(
       rhelBundleId,
@@ -80,17 +80,16 @@ export const useSplunkSetup = () => {
 };
 
 const useGetRhelBundleUuid = () => {
-  const getBundles = useGetBundles();
+  const getBundleByName = useGetBundleByName();
+  return async () => {
+    const rhelBundle = await getBundleByName(BUNDLE_NAME);
 
-  const getbundleTabs = () => {
-    if (getBundles.payload?.status === 200) {
-      return getBundles.payload.value.find((b) => b.name === BUNDLE_NAME)?.id;
+    if (rhelBundle !== undefined) {
+      return rhelBundle?.id;
     } else {
       throw new Error(`Error when fetching bundle ${BUNDLE_NAME}`);
     }
   };
-
-  return getbundleTabs;
 };
 
 const useCreateSplunkIntegration = () => {
