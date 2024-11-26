@@ -62,6 +62,7 @@ export interface IntegrationBase<T extends IntegrationType> {
   isEnabled: boolean;
   status?: Schemas.EndpointStatus | undefined;
   serverErrors: number;
+  eventTypes?: Array<string> | undefined;
 }
 
 export interface IntegrationHttp

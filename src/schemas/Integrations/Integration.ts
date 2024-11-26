@@ -32,6 +32,7 @@ export const IntegrationSchemaBase: Yup.SchemaOf<NewIntegrationBase> =
       .oneOf(Object.values(Schemas.EndpointStatus.Enum))
       .default(Schemas.EndpointStatus.Enum.UNKNOWN),
     serverErrors: Yup.number().default(0),
+    eventTypes: Yup.array().of(Yup.string()).optional(),
   });
 
 export const IntegrationHttpSchema: Yup.SchemaOf<
