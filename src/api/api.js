@@ -13,6 +13,10 @@ import getEventTypes from '@redhat-cloud-services/notifications-client/dist/Noti
 import createEndpoint from '@redhat-cloud-services/integrations-client/dist/EndpointResourceV1CreateEndpoint';
 import updateEndpoint from '@redhat-cloud-services/integrations-client/dist/EndpointResourceV1UpdateEndpoint';
 
+// Time config endpoints
+import getTimePreference from '@redhat-cloud-services/notifications-client/dist/OrgConfigResourceV1GetDailyDigestTimePreference';
+import putTimePreference from '@redhat-cloud-services/notifications-client/dist/OrgConfigResourceV1SaveDailyDigestTimePreference';
+
 import { APIFactory } from '@redhat-cloud-services/javascript-clients-shared';
 import { INTEGRATIONS_API_BASE, NOTIFICATIONS_API_BASE } from './constants';
 
@@ -27,6 +31,8 @@ const notificationsApi = new APIFactory(
   {
     getBundleFacets,
     getEventTypes,
+    getTimePreference,
+    putTimePreference,
   },
   { axios: axiosInstance }
 );
