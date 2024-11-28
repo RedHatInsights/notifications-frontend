@@ -4,6 +4,7 @@ import {
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
+  Icon,
 } from '@patternfly/react-core';
 import { IntegrationIcon, IntegrationType } from '../../types/Integration';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
@@ -16,6 +17,7 @@ import {
   PagerDutyContent,
   SlackContent,
 } from './IntegrationDetailsContent';
+import { CheckCircleIcon, StopCircleIcon } from '@patternfly/react-icons';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
   const allIcons = {
@@ -99,7 +101,13 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
           {intl.formatMessage(messages.enabled)}
         </DescriptionListTerm>
         <DescriptionListDescription>
-          {integration?.isEnabled}
+          <Icon status={integration?.isEnabled ? 'success' : 'warning'}>
+            {integration?.isEnabled ? (
+              <CheckCircleIcon data-testid="success-icon" />
+            ) : (
+              <StopCircleIcon data-testid="error-icon" />
+            )}
+          </Icon>
         </DescriptionListDescription>
         {integration && buildIntegrationDetails(integration)}
       </DescriptionListGroup>

@@ -35,10 +35,6 @@ import {
   DataViewTable,
   DataViewTh,
 } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
-import {
-  EventTypes,
-  useDataViewEventsContext,
-} from '@patternfly/react-data-view';
 import { getIntegrationIcon } from './IntegrationDetails';
 import { Split, SplitItem } from '@patternfly/react-core';
 
@@ -62,6 +58,9 @@ interface IntegrationsTableProps extends OuiaComponentProps {
   sortBy?: Sort;
   onSort?: UseSortReturn['onSort'];
   selectedIntegration?: UserIntegration;
+  setFocusedIntegration?: React.Dispatch<
+    React.SetStateAction<IntegrationRow | undefined>
+  >;
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -86,13 +85,21 @@ const sortMapper = [
 
 export const DataViewIntegrationsTable: React.FunctionComponent<
   IntegrationsTableProps
-> = (props) => {
+> = ({
+  onSort,
+  sortBy,
+  selectedIntegration,
+  actionResolver,
+  setFocusedIntegration,
+  integrations,
+  onEnable,
+  loadingCount,
+  isLoading,
+}) => {
   const intl = useIntl();
-  const { trigger } = useDataViewEventsContext();
 
-  const onSort = React.useCallback(
+  const onSortCallback = React.useCallback(
     (event, column: number, direction: SortByDirection) => {
-      const { onSort } = props;
       const mapping = sortMapper.find((p) => p.index === column);
       if (onSort && mapping) {
         onSort(
@@ -104,11 +111,10 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         );
       }
     },
-    [props.onSort] // eslint-disable-line react-hooks/exhaustive-deps
+    [onSort] // eslint-disable-line react-hooks/exhaustive-deps
   );
 
-  const sortBy = React.useMemo<ISortBy>(() => {
-    const { sortBy } = props;
+  const sortByMemo = React.useMemo<ISortBy>(() => {
     if (sortBy) {
       const mapping = sortMapper.find((p) => p.name === sortBy.column);
       if (mapping) {
@@ -122,18 +128,22 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
       }
     }
     return { defaultDirection: SortByDirection.asc };
-  }, [props.sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [sortBy]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const rows = React.useMemo(() => {
     const handleRowClick = (
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      event: any,
-      integration: UserIntegration | undefined
+      event: React.MouseEvent<HTMLTableElement, MouseEvent>,
+      integration: IntegrationRow | undefined
     ) => {
-      (event.target.matches('td') || event.target.matches('tr')) &&
-        trigger(EventTypes.rowClick, integration);
+      if (
+        event.target instanceof Element &&
+        (event.target.matches('td') || event.target.matches('tr'))
+      ) {
+        setFocusedIntegration?.(integration);
+      }
     };
-    return props.integrations.map((integration, idx) => ({
+    return integrations.map((integration, idx) => ({
       row: [
         integration.name,
         <Split key={idx}>
@@ -164,16 +174,14 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
             aria-label="Enabled"
             isChecked={integration.isEnabled}
             onChange={(_e, isChecked) =>
-              props.onEnable && props.onEnable(integration, idx, isChecked)
+              onEnable?.(integration, idx, isChecked)
             }
-            isDisabled={!props.onEnable}
+            isDisabled={!onEnable}
             ouiaId={`enabled-${integration.id}`}
           />
         ),
         {
-          cell: (
-            <ActionsColumn items={props.actionResolver(integration, idx)} />
-          ),
+          cell: <ActionsColumn items={actionResolver(integration, idx)} />,
           props: { isActionCell: true },
         },
       ],
@@ -183,25 +191,27 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         onRowClick: (event: any) =>
           handleRowClick(
             event,
-            props.selectedIntegration?.name === integration.name
-              ? undefined
-              : integration
+            selectedIntegration?.id === integration.id ? undefined : integration
           ),
-        isRowSelected: props.selectedIntegration?.name === integration.name,
+        isRowSelected: selectedIntegration?.id === integration.id,
       },
     }));
-  }, [props.integrations, props.onEnable, trigger]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [integrations, selectedIntegration?.id, onEnable]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const COLUMNS: DataViewTh[] = [
     {
       cell: 'Name',
-      props: { sort: { sortBy, onSort, columnIndex: 1 } },
+      props: {
+        sort: { sortBy: sortByMemo, onSort: onSortCallback, columnIndex: 1 },
+      },
     },
     'Type',
     'Last connection attempt',
     {
       cell: 'Enabled',
-      props: { sort: { sortBy, onSort, columnIndex: 4 } },
+      props: {
+        sort: { sortBy: sortByMemo, onSort: onSortCallback, columnIndex: 4 },
+      },
     },
   ];
 
@@ -217,7 +227,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
   const loadingStateHeader = <SkeletonTableHead columns={COLUMNS} />;
   const loadingStateBody = (
     <SkeletonTableBody
-      rowsCount={props.loadingCount || 10}
+      rowsCount={loadingCount || 10}
       columnsCount={COLUMNS.length}
     />
   );
@@ -226,9 +236,9 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
     <DataView
       ouiaId="integrations-table"
       activeState={
-        props.isLoading
+        isLoading
           ? 'loading'
-          : !(props.integrations?.length > 0)
+          : !(integrations?.length > 0)
           ? 'empty'
           : undefined
       }
