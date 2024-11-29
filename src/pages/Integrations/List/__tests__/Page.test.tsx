@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/prefer-screen-queries, testing-library/no-node-access */
-import { render, screen } from '@testing-library/react';
+import { getAllByText, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
@@ -13,7 +13,7 @@ import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { IntegrationsListPage } from '../Page';
 import Endpoint = Schemas.Endpoint;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import { getByLabelText, getByText } from '@testing-library/react';
+import { getByLabelText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
@@ -235,16 +235,19 @@ describe('src/pages/Integrations/List/Page', () => {
       await userEvent.click(dropdownContainer);
 
       expect(
-        getByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)
+        getAllByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)[0]
       ).toBeEnabled();
       expect(
-        getByText(dropdownContainer.parentElement as HTMLElement, /Delete/i)
+        getAllByText(
+          dropdownContainer.parentElement as HTMLElement,
+          /Delete/i
+        )[0]
       ).toBeEnabled();
       expect(
-        getByText(
+        getAllByText(
           dropdownContainer.parentElement as HTMLElement,
           /(Enable|Disable)/i
-        )
+        )[0]
       ).toBeEnabled();
     });
 
@@ -287,16 +290,19 @@ describe('src/pages/Integrations/List/Page', () => {
       await userEvent.click(dropdownContainer);
 
       expect(
-        getByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)
+        getAllByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)[0]
       ).toBeEnabled();
       expect(
-        getByText(dropdownContainer.parentElement as HTMLElement, /Delete/i)
+        getAllByText(
+          dropdownContainer.parentElement as HTMLElement,
+          /Delete/i
+        )[0]
       ).toBeEnabled();
       expect(
-        getByText(
+        getAllByText(
           dropdownContainer.parentElement as HTMLElement,
           /(Enable|Disable)/i
-        )
+        )[0]
       ).toBeEnabled();
     });
   });

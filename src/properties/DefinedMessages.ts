@@ -63,6 +63,11 @@ export default defineMessages({
     description: 'integrations drawer dropdown pause action description',
     defaultMessage: 'Temporarily disable data collection',
   },
+  resumeDescription: {
+    id: 'resumeDescription',
+    description: 'integrations drawer dropdown resume action description',
+    defaultMessage: 'Enable data collection',
+  },
   integrationdropdownRemove: {
     id: 'integrationdropdownRemove',
     description: 'integrations drawer dropdown remove action',
@@ -78,6 +83,16 @@ export default defineMessages({
     id: 'integrationdropdownEdit',
     description: 'integrations drawer dropdown edit action',
     defaultMessage: 'Edit',
+  },
+  integrationdropdownEditDescription: {
+    id: 'integrationdropdownEditDescription',
+    description: 'integrations drawer dropdown edit action description',
+    defaultMessage: 'Edit this integration',
+  },
+  integrationdropdownTestDescription: {
+    id: 'integrationdropdownTestDescription',
+    description: 'integrations drawer dropdown test action description',
+    defaultMessage: 'Execute test command for this integration',
   },
   integrationDetailsTabTitle: {
     id: 'integrationDetailsTabTitle',

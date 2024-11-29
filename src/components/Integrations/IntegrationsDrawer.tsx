@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import {
   DrawerActions,
   DrawerCloseButton,
@@ -9,10 +9,6 @@ import {
   Tabs,
   Title,
 } from '@patternfly/react-core';
-import {
-  EventTypes,
-  useDataViewEventsContext,
-} from '@patternfly/react-data-view';
 import {
   Dropdown,
   DropdownItem,
@@ -25,11 +21,19 @@ import IntegrationDetails from './IntegrationDetails';
 import { IntegrationRow } from './Table';
 import messages from '../../properties/DefinedMessages';
 import { useIntl } from 'react-intl';
+import { IAction } from '@patternfly/react-table';
 
-const ActionDropdown: React.FunctionComponent = () => {
+type ResolvedActions = (Omit<IAction, 'onClick'> & {
+  onClick?: (event?: React.MouseEvent) => void;
+})[];
+
+const ActionDropdown: React.FunctionComponent<{
+  actionResolver: (row: IntegrationRow, index: number) => ResolvedActions;
+  integration: IntegrationRow;
+  index: number;
+}> = ({ actionResolver, index, integration }) => {
+  const actions = actionResolver(integration, index);
   const [isOpen, setIsOpen] = React.useState(false);
-
-  const intl = useIntl();
 
   const onToggleClick = () => {
     setIsOpen(!isOpen);
@@ -59,30 +63,24 @@ const ActionDropdown: React.FunctionComponent = () => {
       shouldFocusToggleOnSelect
     >
       <DropdownList>
-        <DropdownItem
-          value={0}
-          key="action"
-          description={intl.formatMessage(messages.pauseDescription)}
-        >
-          {intl.formatMessage(messages.integrationdropdownPause)}
-        </DropdownItem>
-        <DropdownItem
-          value={1}
-          key="action"
-          to="#default-link2"
-          description={intl.formatMessage(messages.removeDescription)}
-        >
-          {intl.formatMessage(messages.integrationdropdownRemove)}
-        </DropdownItem>
-        <DropdownItem value={2} key="action" to="#default-link3">
-          {intl.formatMessage(messages.integrationdropdownEdit)}
-        </DropdownItem>
+        {actions.map((item, key) => (
+          <DropdownItem
+            key={key}
+            value={key}
+            description={item.description}
+            onClick={() => item?.onClick?.()}
+          >
+            {item.title}
+          </DropdownItem>
+        ))}
       </DropdownList>
     </Dropdown>
   );
 };
 
 interface IntegrationsDrawerProps {
+  actionResolver: (row: IntegrationRow, index: number) => ResolvedActions;
+  selectedIndex?: number;
   selectedIntegration?: IntegrationRow;
   setSelectedIntegration: React.Dispatch<
     React.SetStateAction<IntegrationRow | undefined>
@@ -92,6 +90,8 @@ interface IntegrationsDrawerProps {
 const ouiaId = 'IntegrationsTable';
 
 const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
+  actionResolver,
+  selectedIndex,
   selectedIntegration,
   setSelectedIntegration,
 }) => {
@@ -99,24 +99,12 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
 
   const intl = useIntl();
 
-  const context = useDataViewEventsContext();
-
   const handleTabClick = (
     _event: React.MouseEvent<HTMLElement, MouseEvent>,
     tabIndex: string | number
   ) => {
     setActiveTabKey(tabIndex);
   };
-
-  useEffect(() => {
-    const unsubscribe = context.subscribe(
-      EventTypes.rowClick,
-      (integration: IntegrationRow) => {
-        setSelectedIntegration(integration);
-      }
-    );
-    return () => unsubscribe();
-  }, []);
 
   return (
     <DrawerPanelContent>
@@ -129,7 +117,13 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
           {selectedIntegration?.name}
         </Title>
         <DrawerActions>
-          <ActionDropdown />
+          {selectedIndex !== undefined && selectedIntegration && (
+            <ActionDropdown
+              actionResolver={actionResolver}
+              integration={selectedIntegration}
+              index={selectedIndex}
+            />
+          )}
           <DrawerCloseButton
             onClick={() => setSelectedIntegration(undefined)}
             data-ouia-component-id={`${ouiaId}-drawer-close-button`}

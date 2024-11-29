@@ -143,6 +143,19 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     savedNotificationScope
   );
 
+  const focusedIntegrationEnabled = integrationRows.rows.find(
+    ({ id }) => id === focusedIntegration?.id
+  )?.isEnabled;
+
+  React.useEffect(() => {
+    if (focusedIntegration) {
+      setFocusedIntegration(
+        integrationRows.rows.find(({ id }) => id === focusedIntegration?.id)
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusedIntegrationEnabled]);
+
   const onAddIntegrationClicked = React.useCallback(() => {
     modalIsOpenActions.create();
   }, [modalIsOpenActions]);
@@ -319,6 +332,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                   <DrawerContent
                     panelContent={
                       <IntegrationsDrawer
+                        actionResolver={actionResolver}
+                        selectedIndex={integrationRows.rows?.findIndex(
+                          ({ id }) =>
+                            focusedIntegration && id === focusedIntegration.id
+                        )}
                         selectedIntegration={focusedIntegration}
                         setSelectedIntegration={setFocusedIntegration}
                       />
@@ -338,6 +356,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                         actionResolver={actionResolver}
                         onSort={sort.onSort}
                         sortBy={sort.sortBy}
+                        setFocusedIntegration={setFocusedIntegration}
                         selectedIntegration={focusedIntegration}
                       />
                     </DrawerContentBody>
