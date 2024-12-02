@@ -57,18 +57,23 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
   const reportingDetails = [
     {
       id: 3,
-      name: 'Configure Splunk',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-installing-configuring-insights-for-splunk_integrating-communications',
+      name: 'Configure Event-Driven Ansible',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-eda_integrating-communications',
     },
     {
       id: 4,
+      name: 'Configure PagerDuty',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-pagerduty_integrating-communications',
+    },
+    {
+      id: 5,
       name: 'Configure ServiceNow',
       url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-installing-configuring-insights-for-snow_integrating-communications',
     },
     {
-      id: 5,
-      name: 'Configure Event-Driven Ansible',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-eda_integrating-communications',
+      id: 6,
+      name: 'Configure Splunk',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-installing-configuring-insights-for-splunk_integrating-communications',
     },
   ];
 
