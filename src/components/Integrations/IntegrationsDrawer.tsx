@@ -17,18 +17,19 @@ import {
   MenuToggleElement,
 } from '@patternfly/react-core';
 import { EllipsisVIcon } from '@patternfly/react-icons';
+import IntegrationEventDetails from './IntegrationEventDetails';
 import IntegrationDetails from './IntegrationDetails';
 import { IntegrationRow } from './Table';
 import messages from '../../properties/DefinedMessages';
 import { useIntl } from 'react-intl';
 import { IAction } from '@patternfly/react-table';
 
-type ResolvedActions = (Omit<IAction, 'onClick'> & {
+type ResolvedAction = Omit<IAction, 'onClick'> & {
   onClick?: (event?: React.MouseEvent) => void;
-})[];
+};
 
 const ActionDropdown: React.FunctionComponent<{
-  actionResolver: (row: IntegrationRow, index: number) => ResolvedActions;
+  actionResolver: (row: IntegrationRow, index: number) => ResolvedAction[];
   integration: IntegrationRow;
   index: number;
 }> = ({ actionResolver, index, integration }) => {
@@ -79,7 +80,7 @@ const ActionDropdown: React.FunctionComponent<{
 };
 
 interface IntegrationsDrawerProps {
-  actionResolver: (row: IntegrationRow, index: number) => ResolvedActions;
+  actionResolver: (row: IntegrationRow, index: number) => ResolvedAction[];
   selectedIndex?: number;
   selectedIntegration?: IntegrationRow;
   setSelectedIntegration: React.Dispatch<
@@ -154,7 +155,20 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
             </TabTitleText>
           }
           ouiaId={`${ouiaId}-associated-event-types-tab`}
-        ></Tab>
+        >
+          {selectedIntegration && selectedIndex && (
+            <IntegrationEventDetails
+              id={selectedIntegration?.id}
+              onEdit={() => {
+                const editAction = actionResolver(
+                  selectedIntegration,
+                  selectedIndex
+                ).find(({ type }) => type === 'edit');
+                editAction?.onClick?.();
+              }}
+            />
+          )}
+        </Tab>
       </Tabs>
     </DrawerPanelContent>
   );

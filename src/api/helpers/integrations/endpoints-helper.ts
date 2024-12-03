@@ -1,4 +1,4 @@
-import { EndpointDTO } from '@redhat-cloud-services/integrations-client/dist/types';
+import { Endpoint } from '@redhat-cloud-services/integrations-client/dist/types';
 import { getIntegrationsApi } from '../../api';
 import { AxiosRequestConfig } from 'axios';
 
@@ -17,7 +17,7 @@ const formatError = (error: any): string => {
 };
 
 export async function createEndpoint(
-  config: EndpointDTO,
+  config: Endpoint,
   notifications?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   afterSubmit?: () => void
 ) {
@@ -40,7 +40,7 @@ export async function createEndpoint(
 
 export async function updateEndpoint(
   id: string,
-  data: EndpointDTO,
+  data: Endpoint,
   config?: AxiosRequestConfig,
   notifications?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   afterSubmit?: () => void
@@ -60,4 +60,8 @@ export async function updateEndpoint(
       formatError(e)
     ) || console.error(e);
   }
+}
+
+export async function getEntpoint(id) {
+  return await integrationsApi.getEndpoint(id);
 }

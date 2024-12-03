@@ -32,6 +32,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
       return [
         {
           title: 'Edit',
+          type: 'edit',
           isDisabled,
           onClick: () => onEdit(integration),
           description: intl.formatMessage(
