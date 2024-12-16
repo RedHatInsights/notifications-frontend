@@ -23,6 +23,8 @@ import {
   updateEndpoint,
 } from '../../../api/helpers/integrations/endpoints-helper';
 import { useNotification } from '../../../utils/AlertUtils';
+import { Provider } from 'react-redux';
+import { Store } from 'redux';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -40,6 +42,7 @@ export interface IntegrationWizardProps {
   closeModal: () => void;
   afterSubmit: () => void;
 }
+
 export const IntegrationWizard: React.FunctionComponent<
   IntegrationWizardProps
 > = ({
@@ -134,4 +137,16 @@ export const IntegrationWizard: React.FunctionComponent<
   );
 };
 
-export default IntegrationWizard;
+const IntegrationWizardWrapper: React.FC<
+  { store?: Store } & IntegrationWizardProps
+> = ({ store, ...props }) => {
+  return store ? (
+    <Provider store={store}>
+      <IntegrationWizard {...props} />
+    </Provider>
+  ) : (
+    <IntegrationWizard {...props} />
+  );
+};
+
+export default IntegrationWizardWrapper;
