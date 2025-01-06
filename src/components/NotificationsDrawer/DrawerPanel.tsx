@@ -28,11 +28,11 @@ import {
   EmptyStateIcon,
 } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import {
-  NotificationDrawer,
   NotificationDrawerBody,
   NotificationDrawerHeader,
   NotificationDrawerList,
 } from '@patternfly/react-core/dist/dynamic/components/NotificationDrawer';
+// import { DrawerContent } from '@patternfly/react-core/dist/dynamic/components/Drawer';
 import {
   NotificationData,
   NotificationsPayload,
@@ -60,7 +60,7 @@ import {
   StackItem,
 } from '@patternfly/react-core/dist/dynamic/layouts/Stack';
 import { getSevenDaysAgo } from '../UtcDate';
-import { useFlag } from '@unleash/proxy-client-react';
+// import { DrawerPanelContent } from '@patternfly/react-core';
 
 interface Bundle {
   id: string;
@@ -154,21 +154,19 @@ const EmptyNotifications = ({
   </EmptyState>
 );
 
-const DrawerPanelBase = ({
-  innerRef,
-  isOrgAdmin,
-  getUserPermissions,
-}: DrawerPanelProps) => {
+const DrawerPanelBase = (
+  { isOrgAdmin, getUserPermissions }: DrawerPanelProps,
+  innerRef
+) => {
   const { addWsEventListener } = useChrome();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useAtom(
     notificationDrawerFilterAtom
   );
+  console.log(innerRef);
   const navigate = useNavigate();
   const populateNotifications = useSetAtom(notificationDrawerDataAtom);
-  const isEnabled = useFlag('platform.chrome.notifications-drawer');
-  console.log(isEnabled);
   const addNotification = useSetAtom(addNotificationAtom);
   const notifications = useAtomValue(notificationDrawerDataAtom);
   const selectedNotifications = useAtomValue(notificationDrawerSelectedAtom);
@@ -183,8 +181,7 @@ const DrawerPanelBase = ({
   const eventType: ChromeWsEventTypes =
     'com.redhat.console.notifications.drawer';
   const handleWsEvent = (event: ChromeWsPayload<NotificationsPayload>) => {
-    console.log('AHHHH AN EVENT');
-    console.log(event);
+    console.log('new event');
     addNotification(event.data as unknown as NotificationData);
   };
 
@@ -415,7 +412,8 @@ const DrawerPanelBase = ({
   };
 
   return (
-    <NotificationDrawer ref={innerRef}>
+    // <DrawerPanelContent>
+    <>
       <NotificationDrawerHeader
         onClose={onNotificationsDrawerClose}
         title="Notifications"
@@ -500,17 +498,19 @@ const DrawerPanelBase = ({
       <NotificationDrawerBody>
         <NotificationDrawerList>{renderNotifications()}</NotificationDrawerList>
       </NotificationDrawerBody>
-    </NotificationDrawer>
+    </>
   );
 };
 
-const DrawerPanel = React.forwardRef((props: DrawerPanelProps, ref) => (
-  <DrawerPanelBase
-    innerRef={ref}
-    isOrgAdmin={props.isOrgAdmin}
-    getUserPermissions={props.getUserPermissions}
-    expanded={props.expanded}
-  />
-));
+const DrawerPanel = React.forwardRef(
+  (props: DrawerPanelProps, innerRef: React.Ref<unknown>) => (
+    <DrawerPanelBase
+      isOrgAdmin={props.isOrgAdmin}
+      innerRef={innerRef}
+      getUserPermissions={props.getUserPermissions}
+      expanded={props.expanded}
+    />
+  )
+);
 
 export default DrawerPanel;
