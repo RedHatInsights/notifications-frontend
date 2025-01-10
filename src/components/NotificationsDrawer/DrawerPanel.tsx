@@ -60,7 +60,6 @@ import {
   StackItem,
 } from '@patternfly/react-core/dist/dynamic/layouts/Stack';
 import { getSevenDaysAgo } from '../UtcDate';
-// import { DrawerPanelContent } from '@patternfly/react-core';
 
 interface Bundle {
   id: string;
@@ -75,7 +74,7 @@ interface FilterConfigItem {
 }
 
 export type DrawerPanelProps = {
-  innerRef: React.Ref<unknown>;
+  panelRef: React.Ref<unknown>;
   isOrgAdmin: boolean;
   expanded: boolean;
   getUserPermissions: (
@@ -154,17 +153,16 @@ const EmptyNotifications = ({
   </EmptyState>
 );
 
-const DrawerPanelBase = (
-  { isOrgAdmin, getUserPermissions }: DrawerPanelProps,
-  innerRef
-) => {
+const DrawerPanelBase = ({
+  isOrgAdmin,
+  getUserPermissions,
+}: DrawerPanelProps) => {
   const { addWsEventListener } = useChrome();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [activeFilters, setActiveFilters] = useAtom(
     notificationDrawerFilterAtom
   );
-  console.log(innerRef);
   const navigate = useNavigate();
   const populateNotifications = useSetAtom(notificationDrawerDataAtom);
   const addNotification = useSetAtom(addNotificationAtom);
@@ -259,6 +257,7 @@ const DrawerPanelBase = (
 
   const onNotificationsDrawerClose = () => {
     setActiveFilters([]);
+    // toggleDrawer(false);
   };
 
   const onUpdateSelectedStatus = (read: boolean) => {
@@ -412,7 +411,6 @@ const DrawerPanelBase = (
   };
 
   return (
-    // <DrawerPanelContent>
     <>
       <NotificationDrawerHeader
         onClose={onNotificationsDrawerClose}
@@ -503,10 +501,10 @@ const DrawerPanelBase = (
 };
 
 const DrawerPanel = React.forwardRef(
-  (props: DrawerPanelProps, innerRef: React.Ref<unknown>) => (
+  (props: DrawerPanelProps, panelRef: React.Ref<unknown>) => (
     <DrawerPanelBase
       isOrgAdmin={props.isOrgAdmin}
-      innerRef={innerRef}
+      panelRef={panelRef}
       getUserPermissions={props.getUserPermissions}
       expanded={props.expanded}
     />
