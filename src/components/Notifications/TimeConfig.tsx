@@ -148,8 +148,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
   const handleButtonSave = React.useCallback(() => {
     if (timeSelect) {
       setTimeConfig(`${timeSelect.utcTime}:00`)
-        .then(() => {
+        .then(async () => {
           addSuccessNotification('Action settings saved', '');
+          setTimePref(await getTimeConfig());
         })
         .catch(() => {
           addDangerNotification('Failed to save action settings', '');
@@ -163,6 +164,13 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
+    if (timePref) {
+      setTimeSelect({
+        baseCustomTime: timePref,
+        utcTime: timePref,
+        timezoneText: undefined,
+      });
+    }
   };
 
   return (
