@@ -76,7 +76,7 @@ interface FilterConfigItem {
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
   isOrgAdmin: boolean;
-  expanded: boolean;
+  toggleDrawer: () => void;
   getUserPermissions: (
     applicationName?: string,
     disableCache?: boolean
@@ -156,6 +156,7 @@ const EmptyNotifications = ({
 const DrawerPanelBase = ({
   isOrgAdmin,
   getUserPermissions,
+  toggleDrawer,
 }: DrawerPanelProps) => {
   const { addWsEventListener } = useChrome();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -257,7 +258,7 @@ const DrawerPanelBase = ({
 
   const onNotificationsDrawerClose = () => {
     setActiveFilters([]);
-    // toggleDrawer(false);
+    toggleDrawer();
   };
 
   const onUpdateSelectedStatus = (read: boolean) => {
@@ -506,7 +507,7 @@ const DrawerPanel = React.forwardRef(
       isOrgAdmin={props.isOrgAdmin}
       panelRef={panelRef}
       getUserPermissions={props.getUserPermissions}
-      expanded={props.expanded}
+      toggleDrawer={props.toggleDrawer}
     />
   )
 );
