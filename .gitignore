@@ -25,3 +25,4 @@ yalc.lock
 .env
 .cache
 .swc
+.cypress-cache
