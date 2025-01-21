@@ -156,18 +156,20 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
           }
           ouiaId={`${ouiaId}-associated-event-types-tab`}
         >
-          {selectedIntegration && selectedIndex && (
-            <IntegrationEventDetails
-              id={selectedIntegration?.id}
-              onEdit={() => {
-                const editAction = actionResolver(
-                  selectedIntegration,
-                  selectedIndex
-                ).find(({ type }) => type === 'edit');
-                editAction?.onClick?.();
-              }}
-            />
-          )}
+          {selectedIntegration &&
+            selectedIndex !== undefined &&
+            selectedIndex !== -1 && (
+              <IntegrationEventDetails
+                id={selectedIntegration?.id}
+                onEdit={() => {
+                  const editAction = actionResolver(
+                    selectedIntegration,
+                    selectedIndex
+                  ).find(({ type }) => type === 'edit');
+                  editAction?.onClick?.();
+                }}
+              />
+            )}
         </Tab>
       </Tabs>
     </DrawerPanelContent>
