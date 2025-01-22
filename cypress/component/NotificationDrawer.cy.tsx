@@ -87,6 +87,7 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 describe('Notification Drawer', () => {
   beforeEach(() => {
     cy.viewport(1200, 800);
+    cy.mockUseChrome();
   });
   it('should toggle drawer', () => {
     cy.mount(<DrawerLayout />);
