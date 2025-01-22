@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+import config from '@redhat-cloud-services/frontend-components-config';
 
 /** @type { import("webpack").Configuration } */
 const JSConfig = {
@@ -81,4 +82,12 @@ const JSConfig = {
   ],
 };
 
-module.exports = JSConfig;
+const { config: webpackConfig, plugins } = config({
+  rootFolder: path.resolve(__dirname, '../'),
+});
+
+module.exports = {
+  ...JSConfig,
+  ...webpackConfig,
+  plugins,
+};

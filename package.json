@@ -64,6 +64,7 @@
     "@redhat-cloud-services/frontend-components-config": "^6.2.9",
     "@redhat-cloud-services/frontend-components-testing": "0.1.1",
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.8",
+    "@simonsmith/cypress-image-snapshot": "^8.1.2",
     "@swc/jest": "^0.2.31",
     "@testing-library/dom": "9.3.4",
     "@testing-library/jest-dom": "6.3.0",
