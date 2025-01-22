@@ -21,6 +21,7 @@ export default defineConfig({
         }
       });
       require('@cypress/code-coverage/task')(on, config);
+      config.port = 8002;
       return config;
     },
     video: false,
