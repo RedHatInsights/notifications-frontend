@@ -124,13 +124,9 @@ describe('Notification Drawer', () => {
   });
 
   it('should mark a single notification as read', () => {
-    cy.intercept(
-      'PUT',
-      '/api/notifications/v1/notifications/drawer/read',
-      {
-        statusCode: 200,
-      }
-    );
+    cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
+      statusCode: 200,
+    });
     cy.mount(
       <ScalprumProvider
         config={{ foo: { name: 'foo' } }}
@@ -148,13 +144,9 @@ describe('Notification Drawer', () => {
   });
 
   it('should mark a single notification as unread', () => {
-    cy.intercept(
-      'PUT',
-      '/api/notifications/v1/notifications/drawer/read',
-      {
-        statusCode: 200,
-      }
-    );
+    cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
+      statusCode: 200,
+    });
     cy.mount(
       <ScalprumProvider
         config={{ foo: { name: 'foo' } }}
@@ -171,13 +163,9 @@ describe('Notification Drawer', () => {
   });
 
   it('should mark all notifications as read', () => {
-    cy.intercept(
-      'PUT',
-      '/api/notifications/v1/notifications/drawer/read',
-      {
-        statusCode: 200,
-      }
-    );
+    cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
+      statusCode: 200,
+    });
     cy.mount(
       <ScalprumProvider
         config={{ foo: { name: 'foo' } }}
@@ -199,13 +187,9 @@ describe('Notification Drawer', () => {
   });
 
   it('should mark all notifications as unread', () => {
-    cy.intercept(
-      'PUT',
-      '/api/notifications/v1/notifications/drawer/read',
-      {
-        statusCode: 200,
-      }
-    );
+    cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
+      statusCode: 200,
+    });
     cy.mount(
       <ScalprumProvider
         config={{ foo: { name: 'foo' } }}
@@ -227,23 +211,19 @@ describe('Notification Drawer', () => {
   });
 
   it('should select console filter', () => {
-    cy.intercept(
-      'GET',
-      '/api/notifications/v1/notifications/facets/bundles',
-      {
-        statusCode: 200,
-        body: [
-          {
-            name: 'console',
-            displayName: 'Console',
-          },
-          {
-            name: 'openshift',
-            displayName: 'OpenShift',
-          },
-        ],
-      }
-    );
+    cy.intercept('GET', '/api/notifications/v1/notifications/facets/bundles', {
+      statusCode: 200,
+      body: [
+        {
+          name: 'console',
+          displayName: 'Console',
+        },
+        {
+          name: 'openshift',
+          displayName: 'OpenShift',
+        },
+      ],
+    });
     cy.mount(
       <ScalprumProvider
         config={{ foo: { name: 'foo' } }}
