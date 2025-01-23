@@ -16,6 +16,11 @@
 // https://on.cypress.io/configuration
 // ***********************************************************
 
+// Patternfly
+import '@patternfly/patternfly/patternfly.scss';
+// Patternfly utilities
+import '@patternfly/patternfly/patternfly-addons.scss';
+
 // Import commands.js using ES2015 syntax:
 import { mount } from 'cypress/react18'
 import '@cypress/code-coverage/support'
@@ -40,33 +45,16 @@ addMatchImageSnapshotCommand({
 declare global {
   interface Window {
     TestApp: unknown;
-    useChrome: typeof useChrome;
   }
   namespace Cypress {
     interface Chainable {
       mount: typeof mount
       matchImageSnapshot: () => void
       login(): Chainable<void>
-      mockUseChrome(): Chainable<void>
     }
   }
 }
 
-const fakeUseChrome = {
-  addWsEventListener: () => null,
-};
-
-
 Cypress.Commands.add('mount', mount)
 // Example use:
 // cy.mount(<MyComponent />)
-
-// Mock the useChrome hook
-Cypress.Commands.add('mockUseChrome', () => {
-  const useChrome = cy.stub(fakeUseChrome).as('useChrome');
-  useChrome.addWsEventListener = cy.stub().returns(null);
-  cy.window().then((win) => {
-    win.useChrome = useChrome;
-  });
-});
-// cy.stub(o, 'toString').callsFake(() => 'foo')

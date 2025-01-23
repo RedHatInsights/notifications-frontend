@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const path = require('path');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const { ModuleFederationPlugin } = require('webpack').container;
 import config from '@redhat-cloud-services/frontend-components-config';
 
 /** @type { import("webpack").Configuration } */
@@ -89,5 +90,17 @@ const { config: webpackConfig, plugins } = config({
 module.exports = {
   ...JSConfig,
   ...webpackConfig,
-  plugins,
+  plugins: [
+    ...plugins,
+    new ModuleFederationPlugin({
+      name: 'notifications',
+      filename: 'notifications.js',
+      shared: [
+        { react: { singleton: true, eager: true } },
+        { 'react-dom': { singleton: true, eager: true } },
+        { 'react-router-dom': { singleton: true } },
+        { '@patternfly/react-core': {} },
+      ],
+    }),
+  ],
 };

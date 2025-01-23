@@ -2,6 +2,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import DrawerPanel from '../../src/components/NotificationsDrawer/DrawerPanel';
 import { Page } from '@patternfly/react-core';
+import { ScalprumProvider } from '@scalprum/react-core';
+import { notificationDrawerDataAtom } from '../../src/state/atoms/notificationDrawerAtom';
+import { useSetAtom } from 'jotai';
 
 type NotificationData = {
   id: string;
@@ -47,7 +50,7 @@ const notificationDrawerData: NotificationData[] = [
 const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
   const drawerPanelRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [, setNotifications] = useState<NotificationData[]>([]);
+  const populateNotifications = useSetAtom(notificationDrawerDataAtom);
   const toggleDrawer = () => setIsExpanded((prev) => !prev);
   const notificationProps = {
     isOrgAdmin: true,
@@ -57,7 +60,7 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
   };
   useEffect(() => {
     return () => {
-      setNotifications([]);
+      populateNotifications([]);
       setIsExpanded(false);
     };
   }, []);
@@ -69,7 +72,7 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
       <button
         id="populate-notifications"
         onClick={() =>
-          setNotifications(
+          populateNotifications(
             notificationDrawerData.map((item) => ({ ...item, read: markAll }))
           )
         }
@@ -87,10 +90,17 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 describe('Notification Drawer', () => {
   beforeEach(() => {
     cy.viewport(1200, 800);
-    cy.mockUseChrome();
   });
+
   it('should toggle drawer', () => {
-    cy.mount(<DrawerLayout />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout />
+      </ScalprumProvider>
+    );
     cy.get('#drawer-toggle').click();
     cy.contains('No notifications found').should('be.visible');
     cy.get('#drawer-toggle').click();
@@ -98,7 +108,14 @@ describe('Notification Drawer', () => {
   });
 
   it('should populate notifications', () => {
-    cy.mount(<DrawerLayout />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout />
+      </ScalprumProvider>
+    );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     notificationDrawerData.forEach((notification) => {
@@ -109,12 +126,19 @@ describe('Notification Drawer', () => {
   it('should mark a single notification as read', () => {
     cy.intercept(
       'PUT',
-      'http://localhost:8080/api/notifications/v1/notifications/drawer/read',
+      '/api/notifications/v1/notifications/drawer/read',
       {
         statusCode: 200,
       }
     );
-    cy.mount(<DrawerLayout />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout />
+      </ScalprumProvider>
+    );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 0);
@@ -126,12 +150,19 @@ describe('Notification Drawer', () => {
   it('should mark a single notification as unread', () => {
     cy.intercept(
       'PUT',
-      'http://localhost:8080/api/notifications/v1/notifications/drawer/read',
+      '/api/notifications/v1/notifications/drawer/read',
       {
         statusCode: 200,
       }
     );
-    cy.mount(<DrawerLayout markAll />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout markAll />
+      </ScalprumProvider>
+    );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 3);
@@ -142,17 +173,24 @@ describe('Notification Drawer', () => {
   it('should mark all notifications as read', () => {
     cy.intercept(
       'PUT',
-      'http://localhost:8080/api/notifications/v1/notifications/drawer/read',
+      '/api/notifications/v1/notifications/drawer/read',
       {
         statusCode: 200,
       }
     );
-    cy.mount(<DrawerLayout />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout />
+      </ScalprumProvider>
+    );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 0);
     // select all notifications
-    cy.get('[data-ouia-component-id="BulkSelectCheckbox"]').click();
+    cy.get('[data-ouia-component-id="BulkSelect"]').click();
     cy.get('[data-ouia-component-id="BulkSelectList-select-all"]').click();
     // mark selected as read
     cy.get('#notifications-actions-toggle').click();
@@ -163,17 +201,24 @@ describe('Notification Drawer', () => {
   it('should mark all notifications as unread', () => {
     cy.intercept(
       'PUT',
-      'http://localhost:8080/api/notifications/v1/notifications/drawer/read',
+      '/api/notifications/v1/notifications/drawer/read',
       {
         statusCode: 200,
       }
     );
-    cy.mount(<DrawerLayout markAll />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout markAll />
+      </ScalprumProvider>
+    );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 3);
     // select all notifications
-    cy.get('[data-ouia-component-id="BulkSelectCheckbox"]').click();
+    cy.get('[data-ouia-component-id="BulkSelect"]').click();
     cy.get('[data-ouia-component-id="BulkSelectList-select-all"]').click();
     // mark selected as unread
     cy.get('#notifications-actions-toggle').click();
@@ -184,7 +229,7 @@ describe('Notification Drawer', () => {
   it('should select console filter', () => {
     cy.intercept(
       'GET',
-      'http://localhost:8080/api/notifications/v1/notifications/facets/bundles',
+      '/api/notifications/v1/notifications/facets/bundles',
       {
         statusCode: 200,
         body: [
@@ -199,7 +244,14 @@ describe('Notification Drawer', () => {
         ],
       }
     );
-    cy.mount(<DrawerLayout />);
+    cy.mount(
+      <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { addWsEventListener: () => () => {} } }}
+      >
+        <DrawerLayout />
+      </ScalprumProvider>
+    );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-v5-c-notification-drawer__list-item').should('have.length', 3);
