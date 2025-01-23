@@ -15,7 +15,10 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationsEmptyState } from '../../../components/Integrations/EmptyState';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
-import { IntegrationsTable } from '../../../components/Integrations/Table';
+import {
+  IntegrationRow,
+  IntegrationsTable,
+} from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
@@ -40,6 +43,14 @@ import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useFlag } from '@unleash/proxy-client-react';
 import DopeBox from '../../../components/Integrations/DopeBox';
+import { DataViewIntegrationsTable } from '../../../components/Integrations/IntegrationsTable';
+import { DataViewEventsProvider } from '@patternfly/react-data-view/dist/dynamic/DataViewEventsContext';
+import {
+  Drawer,
+  DrawerContent,
+  DrawerContentBody,
+} from '@patternfly/react-core';
+import IntegrationsDrawer from '../../../components/Integrations/IntegrationsDrawer';
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
   ...userIntegration,
@@ -59,10 +70,16 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 }: IntegrationListProps) => {
   const dispatch = useDispatch();
   const wizardEnabled = useFlag('insights.integrations.wizard');
+  const isBehaviorGroupsEnabled = useFlag(
+    'platform.integrations.behavior-groups-move'
+  );
   const { savedNotificationScope } = useSelector(selector);
   const [selectedIntegration, setSelectedIntegration] =
     useState<UserIntegration>();
   const [isTestModalOpen, setIsTestModalOpen] = useState(true);
+  const [focusedIntegration, setFocusedIntegration] =
+    useState<IntegrationRow>();
+  const drawerRef = React.useRef<HTMLDivElement>(null);
   const {
     rbac: { canWriteIntegrationsEndpoints },
   } = useContext(AppContext);
@@ -125,6 +142,19 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     dispatch,
     savedNotificationScope
   );
+
+  const focusedIntegrationEnabled = integrationRows.rows.find(
+    ({ id }) => id === focusedIntegration?.id
+  )?.isEnabled;
+
+  React.useEffect(() => {
+    if (focusedIntegration) {
+      setFocusedIntegration(
+        integrationRows.rows.find(({ id }) => id === focusedIntegration?.id)
+      );
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [focusedIntegrationEnabled]);
 
   const onAddIntegrationClicked = React.useCallback(() => {
     modalIsOpenActions.create();
@@ -277,20 +307,63 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
             pageChanged={pageData.changePage}
             perPageChanged={pageData.changeItemsPerPage}
           >
-            <IntegrationsTable
-              isLoading={integrationsQuery.loading}
-              loadingCount={loadingCount}
-              integrations={integrationRows.rows}
-              onCollapse={integrationRows.onCollapse}
-              onEnable={
-                canWriteIntegrationsEndpoints
-                  ? integrationRows.onEnable
-                  : undefined
-              }
-              actionResolver={actionResolver}
-              onSort={sort.onSort}
-              sortBy={sort.sortBy}
-            />
+            {!isBehaviorGroupsEnabled ? (
+              <IntegrationsTable
+                isLoading={integrationsQuery.loading}
+                loadingCount={loadingCount}
+                integrations={integrationRows.rows}
+                onCollapse={integrationRows.onCollapse}
+                onEnable={
+                  canWriteIntegrationsEndpoints
+                    ? integrationRows.onEnable
+                    : undefined
+                }
+                actionResolver={actionResolver}
+                onSort={sort.onSort}
+                sortBy={sort.sortBy}
+              />
+            ) : (
+              <DataViewEventsProvider>
+                <Drawer
+                  isExpanded={Boolean(focusedIntegration)}
+                  onExpand={() => drawerRef.current?.focus()}
+                  data-ouia-component-id="integration-detail-drawer"
+                >
+                  <DrawerContent
+                    panelContent={
+                      <IntegrationsDrawer
+                        actionResolver={actionResolver}
+                        selectedIndex={integrationRows.rows?.findIndex(
+                          ({ id }) =>
+                            focusedIntegration && id === focusedIntegration.id
+                        )}
+                        selectedIntegration={focusedIntegration}
+                        setSelectedIntegration={setFocusedIntegration}
+                      />
+                    }
+                  >
+                    <DrawerContentBody>
+                      <DataViewIntegrationsTable
+                        isLoading={integrationsQuery.loading}
+                        loadingCount={loadingCount}
+                        integrations={integrationRows.rows}
+                        onCollapse={integrationRows.onCollapse}
+                        onEnable={
+                          canWriteIntegrationsEndpoints
+                            ? integrationRows.onEnable
+                            : undefined
+                        }
+                        actionResolver={actionResolver}
+                        onSort={sort.onSort}
+                        sortBy={sort.sortBy}
+                        setFocusedIntegration={setFocusedIntegration}
+                        selectedIntegration={focusedIntegration}
+                      />
+                    </DrawerContentBody>
+                  </DrawerContent>
+                </Drawer>
+              </DataViewEventsProvider>
+            )}
           </IntegrationsToolbar>
         </>
       )}

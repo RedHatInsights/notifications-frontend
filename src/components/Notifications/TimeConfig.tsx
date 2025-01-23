@@ -28,10 +28,11 @@ import React, { useEffect, useMemo, useState } from 'react';
 import timezones from 'timezones.json';
 import { style } from 'typestyle';
 
-import { useGetTimePreference } from '../../services/Notifications/GetTimePreference';
-import { useUpdateTimePreference } from '../../services/Notifications/SaveTimePreference';
 import { useNotification } from '../../utils/AlertUtils';
-import axios from 'axios';
+import {
+  getTimeConfig,
+  setTimeConfig,
+} from '../../api/helpers/notifications/time-preference-helper';
 
 const alertClassName = style({
   marginTop: '12px',
@@ -51,23 +52,21 @@ interface TimeConfigState {
 
 export const TimeConfigComponent: React.FunctionComponent = () => {
   const [showCustomSelect, setShowCustomSelect] = React.useState(false);
-  const [timeSelect, setTimeSelect] = React.useState<TimeConfigState>();
+  const [timePref, setTimePref] = React.useState<string | null>();
+  const [timeSelect, setTimeSelect] = React.useState<TimeConfigState | null>(
+    null
+  );
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleRef = React.useRef<HTMLButtonElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
 
-  const getTimePreference = useGetTimePreference();
-  const saveTimePreference = useUpdateTimePreference();
   const { addSuccessNotification, addDangerNotification } = useNotification();
 
-  const timePref = useMemo(() => {
-    if (getTimePreference.error) {
-      return undefined;
-    }
-
-    return getTimePreference.payload?.value as string;
-  }, [getTimePreference.payload?.value, getTimePreference.error]);
+  React.useEffect(() => {
+    const timePreferenceLoad = async () => setTimePref(await getTimeConfig());
+    timePreferenceLoad();
+  }, []);
 
   const timeconfigTitle = useMemo(() => {
     return `Any daily digest emails you've opted into will be sent at ${
@@ -121,31 +120,24 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
       const targetTimezone = timezones.find((t) => t.text === textContent);
       if (targetTimezone) {
         setTimeSelect((prev) => {
-          if (prev?.baseCustomTime) {
-            const pieces = prev.baseCustomTime
-              .split(':')
-              .map((t) => parseInt(t));
-            const date = new Date();
-            date.setUTCHours(pieces[0], pieces[1]);
-            // Going from UTC to the timezone
-            const zonedDate = addHours(date, -targetTimezone.offset);
-            const utcHours = zonedDate
-              .getUTCHours()
-              .toString()
-              .padStart(2, '0');
-            const utcMinutes = zonedDate
-              .getUTCMinutes()
-              .toString()
-              .padStart(2, '0');
+          const pieces = (prev?.baseCustomTime || '00:00')
+            .split(':')
+            .map((t) => parseInt(t));
+          const date = new Date();
+          date.setUTCHours(pieces[0], pieces[1]);
+          // Going from UTC to the timezone
+          const zonedDate = addHours(date, -targetTimezone.offset);
+          const utcHours = zonedDate.getUTCHours().toString().padStart(2, '0');
+          const utcMinutes = zonedDate
+            .getUTCMinutes()
+            .toString()
+            .padStart(2, '0');
 
-            return {
-              ...prev,
-              utcTime: `${utcHours}:${utcMinutes}`,
-              timezoneText: targetTimezone.text,
-            };
-          }
-
-          return prev;
+          return {
+            baseCustomTime: prev?.baseCustomTime || '00:00',
+            utcTime: `${utcHours}:${utcMinutes}`,
+            timezoneText: targetTimezone.text,
+          };
         });
       }
     }
@@ -155,19 +147,10 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
   const handleButtonSave = React.useCallback(() => {
     if (timeSelect) {
-      const body = timeSelect.utcTime;
-      axios
-        .put(
-          '/api/notifications/v1.0/org-config/daily-digest/time-preference',
-          body,
-          {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          }
-        )
-        .then(() => {
+      setTimeConfig(`${timeSelect.utcTime}:00`)
+        .then(async () => {
           addSuccessNotification('Action settings saved', '');
+          setTimePref(await getTimeConfig());
         })
         .catch(() => {
           addDangerNotification('Failed to save action settings', '');
@@ -177,10 +160,17 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     setIsModalOpen(false);
   }, [addDangerNotification, addSuccessNotification, timeSelect]);
 
-  const isLoading = saveTimePreference.loading || getTimePreference.loading;
+  const isLoading = timeSelect === null || timePref === null;
 
   const handleModalToggle = () => {
     setIsModalOpen(!isModalOpen);
+    if (timePref) {
+      setTimeSelect({
+        baseCustomTime: timePref,
+        utcTime: timePref,
+        timezoneText: undefined,
+      });
+    }
   };
 
   return (
@@ -236,7 +226,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
           <SplitItem isFilled>
             <Stack hasGutter>
               <StackItem>
-                {getTimePreference.loading ? (
+                {timePref === null ? (
                   <Skeleton />
                 ) : (
                   <Radio
@@ -251,7 +241,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                 )}
               </StackItem>
               <StackItem>
-                {getTimePreference.loading ? (
+                {timePref === null ? (
                   <Skeleton />
                 ) : (
                   <Radio

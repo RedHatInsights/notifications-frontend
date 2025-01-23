@@ -62,6 +62,7 @@ export interface IntegrationBase<T extends IntegrationType> {
   isEnabled: boolean;
   status?: Schemas.EndpointStatus | undefined;
   serverErrors: number;
+  eventTypes?: Array<string> | undefined;
 }
 
 export interface IntegrationHttp
@@ -116,6 +117,21 @@ export interface IntegrationEmailSubscription
   groupId?: UUID;
 }
 
+export type NameDisplayName = {
+  name: string;
+  display_name: string;
+  id: string;
+};
+
+export type AssignedEventType = NameDisplayName & {
+  applications: (NameDisplayName & {
+    event_types: (NameDisplayName & {
+      application: string;
+      description: string;
+    })[];
+  })[];
+};
+
 export type Integration =
   | IntegrationHttp
   | IntegrationAnsible
@@ -128,7 +144,9 @@ export type TypedIntegration<T extends IntegrationType> = Extract<
   {
     type: T;
   }
->;
+> & {
+  event_types_group_by_bundles_and_applications?: AssignedEventType[];
+};
 
 // Integrations that the user can create in the Integrations page;
 export type UserIntegration = Extract<
