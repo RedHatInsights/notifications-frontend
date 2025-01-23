@@ -26,3 +26,6 @@ yalc.lock
 .cache
 .swc
 .cypress-cache
+cypress/screenshots
+
+.nyc_output

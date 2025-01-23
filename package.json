@@ -67,6 +67,7 @@
     "@redhat-cloud-services/tsc-transform-imports": "^1.0.8",
     "@redhat-cloud-services/integrations-client": "^3.2.0",
     "@redhat-cloud-services/notifications-client": "^2.5.3",
+    "@scalprum/react-core": "^0.9.3",
     "@simonsmith/cypress-image-snapshot": "^8.1.2",
     "@swc/jest": "^0.2.31",
     "@testing-library/dom": "9.3.4",
