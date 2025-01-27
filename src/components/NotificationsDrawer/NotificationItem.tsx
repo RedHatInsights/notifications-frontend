@@ -38,9 +38,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
 }) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const onCheckboxToggle = () => {
+  const onCheckboxToggle = () =>
     updateNotificationSelected(notification.id, !notification.selected);
-  };
 
   const onMarkAsRead = () => {
     axios
