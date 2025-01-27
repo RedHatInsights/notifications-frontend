@@ -1,4 +1,4 @@
-export const testData = [
+export const DrawerTestData = [
   {
     id: '1',
     title: 'Test Notification 1',
@@ -25,7 +25,7 @@ export const testData = [
   },
 ];
 
-export const readTestData = [
+export const DrawerReadTestData = [
   {
     id: '1',
     title: 'Read test notification 1',
