@@ -179,70 +179,72 @@ const DrawerPanelBase = ({
   const [filterConfig, setFilterConfig] = useState<FilterConfigItem[]>([]);
   const eventType: ChromeWsEventTypes =
     'com.redhat.console.notifications.drawer';
-  const handleWsEvent = (event: ChromeWsPayload<NotificationsPayload>) => {
-    console.log('new event');
+  const handleWsEvent = (event: ChromeWsPayload<NotificationData>) => {
     addNotification(event.data as unknown as NotificationData);
+  };
+
+  const getNotifications = async () => {
+    try {
+      const { data } = await axios.get<{ data: NotificationData[] }>(
+        `/api/notifications/v1/notifications/drawer`,
+        {
+          params: {
+            limit: 50,
+            sort_by: 'read:asc',
+            startDate: getSevenDaysAgo(),
+          },
+        }
+      );
+      populateNotifications(data?.data || []);
+    } catch (error) {
+      console.error('Unable to get Notifications ', error);
+    }
+  };
+
+  const fetchPermissions = async (mounted: boolean) => {
+    const permissions = await getUserPermissions?.('notifications');
+    if (mounted) {
+      setHasNotificationsPermissions(
+        permissions?.some((item) =>
+          [
+            'notifications:*:*',
+            'notifications:notifications:read',
+            'notifications:notifications:write',
+          ].includes((typeof item === 'string' && item) || item?.permission)
+        )
+      );
+    }
+  };
+
+  const fetchFilterConfig = async (mounted: boolean) => {
+    try {
+      const response = await axios.get<Bundle[]>(
+        '/api/notifications/v1/notifications/facets/bundles'
+      );
+      if (mounted) {
+        setFilterConfig(
+          response.data.map((bundle: Bundle) => ({
+            title: bundle.displayName,
+            value: bundle.name,
+          }))
+        );
+      }
+    } catch (error) {
+      console.error('Failed to fetch filter configuration:', error);
+    }
   };
 
   useEffect(() => {
     let mounted = true;
     const unregister = addWsEventListener(eventType, handleWsEvent);
-    const getNotifications = async () => {
-      try {
-        const { data } = await axios.get<{ data: NotificationData[] }>(
-          `/api/notifications/v1/notifications/drawer`,
-          {
-            params: {
-              limit: 50,
-              sort_by: 'read:asc',
-              startDate: getSevenDaysAgo(),
-            },
-          }
-        );
-        populateNotifications(data?.data || []);
-      } catch (error) {
-        console.error('Unable to get Notifications ', error);
-      }
-    };
-    const fetchPermissions = async () => {
-      const permissions = await getUserPermissions?.('notifications');
-      if (mounted) {
-        setHasNotificationsPermissions(
-          permissions?.some((item) =>
-            [
-              'notifications:*:*',
-              'notifications:notifications:read',
-              'notifications:notifications:write',
-            ].includes((typeof item === 'string' && item) || item?.permission)
-          )
-        );
-      }
-    };
-    const fetchFilterConfig = async () => {
-      try {
-        const response = await axios.get<Bundle[]>(
-          '/api/notifications/v1/notifications/facets/bundles'
-        );
-        if (mounted) {
-          setFilterConfig(
-            response.data.map((bundle: Bundle) => ({
-              title: bundle.displayName,
-              value: bundle.name,
-            }))
-          );
-        }
-      } catch (error) {
-        console.error('Failed to fetch filter configuration:', error);
-      }
-    };
     getNotifications();
-    fetchPermissions();
-    fetchFilterConfig();
+    fetchPermissions(mounted);
+    fetchFilterConfig(mounted);
     return () => {
       mounted = false;
       unregister();
     };
-  }, []);
+  }, [addWsEventListener, fetchPermissions, getNotifications, handleWsEvent]);
 
   const filteredNotifications = useMemo(
     () =>
@@ -310,18 +312,14 @@ const DrawerPanelBase = ({
     <DropdownItem key="actions" description="Actions" />,
     <DropdownItem
       key="read selected"
-      onClick={() => {
-        onUpdateSelectedStatus(true);
-      }}
+      onClick={() => onUpdateSelectedStatus(true)}
       isDisabled={notifications.length === 0}
     >
       Mark selected as read
     </DropdownItem>,
     <DropdownItem
       key="unread selected"
-      onClick={() => {
-        onUpdateSelectedStatus(false);
-      }}
+      onClick={() => onUpdateSelectedStatus(false)}
       isDisabled={notifications.length === 0}
     >
       Mark selected as unread
