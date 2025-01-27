@@ -23,14 +23,6 @@ module.exports = {
         'react/prop-types': 'off',
       },
     },
-    {
-      files: ['cypress/**/*.ts', 'cypress/**/*.tsx'],
-      parser: '@typescript-eslint/parser',
-      plugins: ['jest'],
-      rules: {
-        'jest/expect-expect': 'off',
-      },
-    },
   ],
   rules: {
     'sort-imports': [
