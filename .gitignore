@@ -25,3 +25,8 @@ yalc.lock
 .env
 .cache
 .swc
+
+# cypress output
+.cypress-cache
+cypress/screenshots
+.nyc_output
