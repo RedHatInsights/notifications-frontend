@@ -112,17 +112,22 @@ const DrawerPanelBase = ({
     };
   }, [addWsEventListener]);
 
-  const filteredNotifications = useMemo(
-    () =>
-      (activeFilters || []).reduce(
-        (acc: NotificationData[], chosenFilter: string) => [
-          ...acc,
-          ...notifications.filter(({ bundle }) => bundle === chosenFilter),
-        ],
-        []
-      ),
-    [activeFilters, notifications]
-  );
+  const filteredNotifications = useMemo(() => {
+    const notificationsByBundle = notifications.reduce((acc, notification) => {
+      if (!acc[notification.bundle]) {
+        acc[notification.bundle] = [];
+      }
+      acc[notification.bundle].push(notification);
+      return acc;
+    }, {});
+
+    return (activeFilters || []).reduce((acc, chosenFilter) => {
+      if (notificationsByBundle[chosenFilter]) {
+        acc.push(...notificationsByBundle[chosenFilter]);
+      }
+      return acc;
+    }, [] as NotificationData[]);
+  }, [activeFilters, notifications]);
 
   const onNotificationsDrawerClose = () => {
     setActiveFilters([]);
