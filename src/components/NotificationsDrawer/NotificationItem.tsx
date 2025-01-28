@@ -19,7 +19,7 @@ import {
 } from '@patternfly/react-core/dist/dynamic/components/Dropdown';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
-import { NotificationData } from '../../state/atoms/notificationDrawerAtom';
+import { NotificationData } from '../../store/types/NotificationDrawerTypes';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';

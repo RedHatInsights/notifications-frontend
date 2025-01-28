@@ -22,7 +22,7 @@ interface Bundle {
 export class DrawerSingleton {
   private static _instance: DrawerSingleton;
   private constructor() {
-    // To prevent direct instantiation
+    // To stop direct instantiation, thanks Google
   }
 
   public static get Instance() {
