@@ -2,7 +2,7 @@ import { useDispatch } from 'react-redux';
 import axios from 'axios';
 import { Access } from '@redhat-cloud-services/rbac-client';
 
-import { getSevenDaysAgo } from './components/UtcDate';
+import { getDateDaysAgo } from './components/UtcDate';
 
 import {
   setFilterConfigAction,
@@ -90,7 +90,7 @@ export class DrawerSingleton {
           params: {
             limit: 50,
             sort_by: 'read:asc',
-            startDate: getSevenDaysAgo(),
+            startDate: getDateDaysAgo(7),
           },
         }
       );
@@ -101,6 +101,7 @@ export class DrawerSingleton {
     }
   };
 
+  // need to not export this directly...
   public static DrawerSingletonInitializer = class {
     public static initialize(mounted: boolean, permissions: Access[]) {
       DrawerSingleton.Instance.initialize(mounted, permissions);
