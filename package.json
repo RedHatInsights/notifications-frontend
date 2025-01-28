@@ -29,7 +29,6 @@
     "formik": "2.2.9",
     "immer": "9.0.6",
     "in-browser-download": "2.0.0",
-    "jotai": "^2.10.1",
     "lodash": "4.17.21",
     "openapi2typescript": "0.2.0",
     "p-limit": "3.1.0",
