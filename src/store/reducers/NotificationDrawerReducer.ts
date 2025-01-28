@@ -1,6 +1,7 @@
 import {
   ADD_NOTIFICATION,
   SET_FILTERS,
+  SET_FILTER_CONFIG,
   SET_HAS_NOTIFICATIONS_PERMISSIONS,
   SET_NOTIFICATIONS,
   TOGGLE_DRAWER,
@@ -17,6 +18,7 @@ const initialState: NotificationDrawerState = {
   notificationData: [],
   count: 0,
   filters: [],
+  filterConfig: [],
   hasNotificationsPermissions: false,
 };
 
@@ -81,6 +83,11 @@ export const NotificationDrawerReducer = (state = initialState, action) => {
         ...state,
         notificationData: action.payload,
         count: action.payload.length,
+      };
+    case SET_FILTER_CONFIG:
+      return {
+        ...state,
+        filterConfig: action.payload,
       };
     default:
       return state;

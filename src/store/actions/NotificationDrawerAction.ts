@@ -1,4 +1,7 @@
-import { NotificationData } from '../types/NotificationDrawerTypes';
+import {
+  FilterConfigItem,
+  NotificationData,
+} from '../types/NotificationDrawerTypes';
 
 export const TOGGLE_DRAWER = 'TOGGLE_DRAWER';
 export const UPDATE_NOTIFICATIONS_STATUS = 'UPDATE_NOTIFICATIONS_STATUS';
@@ -10,6 +13,7 @@ export const SET_FILTERS = 'SET_FILTERS';
 export const SET_HAS_NOTIFICATIONS_PERMISSIONS =
   'SET_HAS_NOTIFICATIONS_PERMISSIONS';
 export const SET_NOTIFICATIONS = 'SET_NOTIFICATIONS';
+export const SET_FILTER_CONFIG = 'SET_FILTER_CONFIG';
 
 export const toggleDrawerAction = () => ({
   type: TOGGLE_DRAWER,
@@ -58,4 +62,9 @@ export const setHasNotificationsPermissionsAction = (
 export const setNotificationsAction = (notifications: NotificationData[]) => ({
   type: SET_NOTIFICATIONS,
   payload: notifications,
+});
+
+export const setFilterConfigAction = (filterConfig: FilterConfigItem[]) => ({
+  type: SET_FILTER_CONFIG,
+  payload: filterConfig,
 });

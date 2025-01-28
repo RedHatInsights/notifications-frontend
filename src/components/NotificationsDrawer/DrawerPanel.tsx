@@ -40,30 +40,13 @@ import { EmptyNotifications } from './EmptyNotifications';
 import {
   addNotificationAction,
   setFiltersAction,
-  setHasNotificationsPermissionsAction,
-  setNotificationsAction,
   updateNotificationReadAction,
   updateNotificationSelectedAction,
   updateNotificationsSelectedAction,
 } from '../../store/actions/NotificationDrawerAction';
-import {
-  NotificationData,
-  NotificationDrawerState,
-} from '../../store/types/NotificationDrawerTypes';
-import { getSevenDaysAgo } from '../UtcDate';
+import { NotificationData } from '../../store/types/NotificationDrawerTypes';
+import { notificationDrawerSelector as selector } from '../../store/selectors/NotificationDrawerSelector';
 import { useDispatch, useSelector } from 'react-redux';
-
-interface Bundle {
-  id: string;
-  name: string;
-  displayName: string;
-  children: Bundle[];
-}
-
-interface FilterConfigItem {
-  title: string;
-  value: string;
-}
 
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
@@ -75,42 +58,26 @@ export type DrawerPanelProps = {
   ) => Promise<Access[]>;
 };
 
-const selector = (state: NotificationDrawerState) => ({
-  notifications: state.notificationData,
-  activeFilters: state.filters,
-  selectedNotifications: state.notificationData.filter(
-    ({ selected }) => selected
-  ),
-  hasNotificationsPermissions: state.hasNotificationsPermissions,
-});
-
 const DrawerPanelBase = ({
   isOrgAdmin,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getUserPermissions,
   toggleDrawer,
 }: DrawerPanelProps) => {
   const { addWsEventListener } = useChrome();
   const dispatch = useDispatch();
+
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const {
     notifications,
     activeFilters,
+    filterConfig,
     selectedNotifications,
     hasNotificationsPermissions,
   } = useSelector(selector);
   const navigate = useNavigate();
 
-  const populateNotifications = useCallback(
-    (notifications: NotificationData[]) =>
-      dispatch(setNotificationsAction(notifications)),
-    [dispatch]
-  );
-  const addNotification = useCallback(
-    (notification: NotificationData) =>
-      dispatch(addNotificationAction(notification)),
-    [dispatch]
-  );
   const updateSelectedNotification = useCallback(
     (id: string, selected: boolean) =>
       dispatch(updateNotificationSelectedAction(id, selected)),
@@ -118,11 +85,6 @@ const DrawerPanelBase = ({
   );
   const setActiveFilters = useCallback(
     (filters: string[]) => dispatch(setFiltersAction(filters)),
-    [dispatch]
-  );
-  const setHasNotificationsPermissions = useCallback(
-    (permissions: boolean) =>
-      dispatch(setHasNotificationsPermissionsAction(permissions)),
     [dispatch]
   );
   const updateNotificationRead = useCallback(
@@ -136,80 +98,19 @@ const DrawerPanelBase = ({
     [dispatch]
   );
 
-  const [filterConfig, setFilterConfig] = useState<FilterConfigItem[]>([]);
   const eventType: ChromeWsEventTypes =
     'com.redhat.console.notifications.drawer';
 
   const handleWsEvent = (event: ChromeWsPayload<NotificationData>) => {
-    addNotification(event.data as unknown as NotificationData);
+    addNotificationAction(event.data as NotificationData);
   };
-
-  const getNotifications = async () => {
-    try {
-      const { data } = await axios.get<{ data: NotificationData[] }>(
-        `/api/notifications/v1/notifications/drawer`,
-        {
-          params: {
-            limit: 50,
-            sort_by: 'read:asc',
-            startDate: getSevenDaysAgo(),
-          },
-        }
-      );
-      populateNotifications(data?.data || []);
-    } catch (error) {
-      console.error('Unable to get Notifications ', error);
-    }
-  };
-
-  const fetchPermissions = async (mounted: boolean) => {
-    const permissions = await getUserPermissions?.('notifications');
-    if (mounted) {
-      setHasNotificationsPermissions(
-        permissions?.some((item) =>
-          [
-            'notifications:*:*',
-            'notifications:notifications:read',
-            'notifications:notifications:write',
-          ].includes((typeof item === 'string' && item) || item?.permission)
-        )
-      );
-    }
-  };
-
-  const fetchFilterConfig = async (mounted: boolean) => {
-    try {
-      const response = await axios.get<Bundle[]>(
-        '/api/notifications/v1/notifications/facets/bundles'
-      );
-      if (mounted) {
-        setFilterConfig(
-          response.data.map((bundle: Bundle) => ({
-            title: bundle.displayName,
-            value: bundle.name,
-          }))
-        );
-      }
-    } catch (error) {
-      console.error('Failed to fetch filter configuration:', error);
-    }
-  };
-
-  const init = useCallback(() => {
-    getNotifications();
-    fetchPermissions(true);
-    fetchFilterConfig(true);
-  }, [fetchPermissions, fetchFilterConfig, getNotifications]);
 
   useEffect(() => {
-    let mounted = true;
     const unregister = addWsEventListener(eventType, handleWsEvent);
-    init();
     return () => {
-      mounted = false;
       unregister();
     };
-  }, []);
+  }, [addWsEventListener]);
 
   const filteredNotifications = useMemo(
     () =>
@@ -220,7 +121,7 @@ const DrawerPanelBase = ({
         ],
         []
       ),
-    [activeFilters]
+    [activeFilters, notifications]
   );
 
   const onNotificationsDrawerClose = () => {

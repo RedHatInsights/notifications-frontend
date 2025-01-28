@@ -25,5 +25,11 @@ export type NotificationDrawerState = {
   notificationData: NotificationData[];
   count: number;
   filters: string[];
+  filterConfig: FilterConfigItem[];
   hasNotificationsPermissions: boolean;
 };
+
+export interface FilterConfigItem {
+  title: string;
+  value: string;
+}
