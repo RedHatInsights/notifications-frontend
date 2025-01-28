@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import { useAtom, useAtomValue, useSetAtom } from 'jotai';
 import axios from 'axios';
 import {
   ChromeWsEventTypes,
@@ -39,16 +38,20 @@ import { useNavigate } from 'react-router-dom';
 import NotificationItem from './NotificationItem';
 import { EmptyNotifications } from './EmptyNotifications';
 import {
+  addNotificationAction,
+  setFiltersAction,
+  setHasNotificationsPermissionsAction,
+  setNotificationsAction,
+  updateNotificationReadAction,
+  updateNotificationSelectedAction,
+  updateNotificationsSelectedAction,
+} from '../../store/actions/NotificationDrawerAction';
+import {
   NotificationData,
-  addNotificationAtom,
-  notificationDrawerDataAtom,
-  notificationDrawerFilterAtom,
-  notificationDrawerSelectedAtom,
-  updateNotificationReadAtom,
-  updateNotificationSelectedAtom,
-  updateNotificationsSelectedAtom,
-} from '../../state/atoms/notificationDrawerAtom';
+  NotificationDrawerState,
+} from '../../store/types/NotificationDrawerTypes';
 import { getSevenDaysAgo } from '../UtcDate';
+import { useDispatch, useSelector } from 'react-redux';
 
 interface Bundle {
   id: string;
@@ -72,29 +75,67 @@ export type DrawerPanelProps = {
   ) => Promise<Access[]>;
 };
 
+const selector = (state: NotificationDrawerState) => ({
+  notifications: state.notificationData,
+  activeFilters: state.filters,
+  selectedNotifications: state.notificationData.filter(
+    ({ selected }) => selected
+  ),
+  hasNotificationsPermissions: state.hasNotificationsPermissions,
+});
+
 const DrawerPanelBase = ({
   isOrgAdmin,
   getUserPermissions,
   toggleDrawer,
 }: DrawerPanelProps) => {
   const { addWsEventListener } = useChrome();
+  const dispatch = useDispatch();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
-  const [activeFilters, setActiveFilters] = useAtom(
-    notificationDrawerFilterAtom
-  );
+  const {
+    notifications,
+    activeFilters,
+    selectedNotifications,
+    hasNotificationsPermissions,
+  } = useSelector(selector);
   const navigate = useNavigate();
-  const populateNotifications = useSetAtom(notificationDrawerDataAtom);
-  const addNotification = useSetAtom(addNotificationAtom);
-  const notifications = useAtomValue(notificationDrawerDataAtom);
-  const selectedNotifications = useAtomValue(notificationDrawerSelectedAtom);
-  const updateSelectedNotification = useSetAtom(updateNotificationSelectedAtom);
-  const [hasNotificationsPermissions, setHasNotificationsPermissions] =
-    useState(false);
-  const updateNotificationRead = useSetAtom(updateNotificationReadAtom);
-  const updateAllNotificationsSelected = useSetAtom(
-    updateNotificationsSelectedAtom
+
+  const populateNotifications = useCallback(
+    (notifications: NotificationData[]) =>
+      dispatch(setNotificationsAction(notifications)),
+    [dispatch]
   );
+  const addNotification = useCallback(
+    (notification: NotificationData) =>
+      dispatch(addNotificationAction(notification)),
+    [dispatch]
+  );
+  const updateSelectedNotification = useCallback(
+    (id: string, selected: boolean) =>
+      dispatch(updateNotificationSelectedAction(id, selected)),
+    [dispatch]
+  );
+  const setActiveFilters = useCallback(
+    (filters: string[]) => dispatch(setFiltersAction(filters)),
+    [dispatch]
+  );
+  const setHasNotificationsPermissions = useCallback(
+    (permissions: boolean) =>
+      dispatch(setHasNotificationsPermissionsAction(permissions)),
+    [dispatch]
+  );
+  const updateNotificationRead = useCallback(
+    (id: string, read: boolean) =>
+      dispatch(updateNotificationReadAction(id, read)),
+    [dispatch]
+  );
+  const updateAllNotificationsSelected = useCallback(
+    (selected: boolean) =>
+      dispatch(updateNotificationsSelectedAction(selected)),
+    [dispatch]
+  );
+
   const [filterConfig, setFilterConfig] = useState<FilterConfigItem[]>([]);
   const eventType: ChromeWsEventTypes =
     'com.redhat.console.notifications.drawer';
