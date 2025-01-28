@@ -9,29 +9,11 @@ import BulkSelect from '@redhat-cloud-services/frontend-components/BulkSelect';
 import { Access } from '@redhat-cloud-services/rbac-client';
 
 import {
-  Flex,
-  FlexItem,
-} from '@patternfly/react-core/dist/dynamic/layouts/Flex';
-import {
-  Dropdown,
-  DropdownGroup,
-  DropdownItem,
-  DropdownList,
-} from '@patternfly/react-core/dist/dynamic/components/Dropdown';
-import {
-  MenuToggle,
-  MenuToggleElement,
-} from '@patternfly/react-core/dist/dynamic/components/MenuToggle';
-import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
-import {
   NotificationDrawerBody,
   NotificationDrawerHeader,
   NotificationDrawerList,
 } from '@patternfly/react-core/dist/dynamic/components/NotificationDrawer';
-import { PopoverPosition } from '@patternfly/react-core/dist/dynamic/components/Popover';
 import { Badge } from '@patternfly/react-core/dist/dynamic/components/Badge';
-import FilterIcon from '@patternfly/react-icons/dist/dynamic/icons/filter-icon';
-import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 
 import orderBy from 'lodash/orderBy';
 import { useNavigate } from 'react-router-dom';
@@ -47,6 +29,7 @@ import {
 import { NotificationData } from '../../store/types/NotificationDrawerTypes';
 import { notificationDrawerSelector as selector } from '../../store/selectors/NotificationDrawerSelector';
 import { useDispatch, useSelector } from 'react-redux';
+import { ActionDropdown, FilterDropdown } from './Dropdowns';
 
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
@@ -179,81 +162,9 @@ const DrawerPanelBase = ({
     onNotificationsDrawerClose();
   };
 
-  const dropdownItems = [
-    <DropdownItem key="actions" description="Actions" />,
-    <DropdownItem
-      key="read selected"
-      onClick={() => onUpdateSelectedStatus(true)}
-      isDisabled={notifications.length === 0}
-    >
-      Mark selected as read
-    </DropdownItem>,
-    <DropdownItem
-      key="unread selected"
-      onClick={() => onUpdateSelectedStatus(false)}
-      isDisabled={notifications.length === 0}
-    >
-      Mark selected as unread
-    </DropdownItem>,
-    <Divider key="divider" />,
-    <DropdownItem key="quick links" description="Quick links" />,
-    <DropdownItem
-      key="notifications log"
-      onClick={() => onNavigateTo('/settings/notifications/notificationslog')}
-    >
-      <Flex>
-        <FlexItem>View notifications log</FlexItem>
-      </Flex>
-    </DropdownItem>,
-    (isOrgAdmin || hasNotificationsPermissions) && (
-      <DropdownItem
-        key="notification settings"
-        onClick={() => onNavigateTo('/settings/notifications/configure-events')}
-      >
-        <Flex>
-          <FlexItem>Configure notification settings</FlexItem>
-        </Flex>
-      </DropdownItem>
-    ),
-    <DropdownItem
-      key="notification preferences"
-      onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
-    >
-      <Flex>
-        <FlexItem>Manage my notification preferences</FlexItem>
-      </Flex>
-    </DropdownItem>,
-  ];
+  const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  const filterDropdownItems = () => {
-    return [
-      <DropdownGroup key="filter-label" label="Show notifications for...">
-        <DropdownList>
-          {filterConfig.map((source) => (
-            <DropdownItem
-              key={source.value}
-              onClick={() => onFilterSelect(source.value)}
-              isDisabled={notifications.length === 0}
-              isSelected={activeFilters.includes(source.value)}
-              hasCheckbox
-            >
-              {source.title}
-            </DropdownItem>
-          ))}
-          <Divider />
-          <DropdownItem
-            key="reset-filters"
-            isDisabled={activeFilters.length === 0}
-            onClick={() => setActiveFilters([])}
-          >
-            Reset filters
-          </DropdownItem>
-        </DropdownList>
-      </DropdownGroup>,
-    ];
-  };
-
-  const renderNotifications = () => {
+  const RenderNotifications = () => {
     if (notifications.length === 0) {
       return (
         <EmptyNotifications
@@ -290,27 +201,15 @@ const DrawerPanelBase = ({
         {activeFilters.length > 0 && (
           <Badge isRead>{activeFilters.length}</Badge>
         )}
-        <Dropdown
-          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle
-              ref={toggleRef}
-              onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
-              id="notifications-filter-toggle"
-              variant="plain"
-              aria-label="Notifications filter"
-            >
-              <FilterIcon />
-            </MenuToggle>
-          )}
-          isOpen={isFilterDropdownOpen}
-          onOpenChange={setIsFilterDropdownOpen}
-          popperProps={{
-            position: PopoverPosition.right,
-          }}
-          id="notifications-filter-dropdown"
-        >
-          {filterDropdownItems()}
-        </Dropdown>
+        <FilterDropdown
+          filterConfig={filterConfig}
+          isDisabled={notifications.length === 0}
+          activeFilters={activeFilters}
+          setActiveFilters={setActiveFilters}
+          onFilterSelect={onFilterSelect}
+          isFilterDropdownOpen={isFilterDropdownOpen}
+          setIsFilterDropdownOpen={setIsFilterDropdownOpen}
+        />
         <BulkSelect
           id="notifications-bulk-select"
           items={[
@@ -340,31 +239,20 @@ const DrawerPanelBase = ({
             notifications.every(({ selected }) => selected)
           }
         />
-        <Dropdown
-          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle
-              ref={toggleRef}
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-              variant="plain"
-              id="notifications-actions-toggle"
-              aria-label="Notifications actions dropdown"
-              isFullWidth
-            >
-              <EllipsisVIcon />
-            </MenuToggle>
-          )}
-          isOpen={isDropdownOpen}
-          onOpenChange={setIsDropdownOpen}
-          popperProps={{
-            position: PopoverPosition.right,
-          }}
-          id="notifications-actions-dropdown"
-        >
-          <DropdownList>{dropdownItems}</DropdownList>
-        </Dropdown>
+        <ActionDropdown
+          isDropdownOpen={isDropdownOpen}
+          setIsDropdownOpen={toggleDropdown}
+          isDisabled={notifications.length === 0}
+          onUpdateSelectedStatus={onUpdateSelectedStatus}
+          onNavigateTo={onNavigateTo}
+          isOrgAdmin={isOrgAdmin}
+          hasNotificationsPermissions={hasNotificationsPermissions}
+        />
       </NotificationDrawerHeader>
       <NotificationDrawerBody>
-        <NotificationDrawerList>{renderNotifications()}</NotificationDrawerList>
+        <NotificationDrawerList>
+          <RenderNotifications />
+        </NotificationDrawerList>
       </NotificationDrawerBody>
     </>
   );
