@@ -69,7 +69,7 @@ const mockMaintenance = (isUp: boolean) => {
         status: 'MAINTENANCE',
       };
 
-  fetchMock.get('/api/notifications/v1.0/status', {
+  fetchMock.get('/api/notifications/v1.0/notifications/events', {
     status: 200,
     body: response,
   });
