@@ -61,13 +61,13 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
 const mockMaintenance = (isUp: boolean) => {
   const response = isUp
     ? {
-        status: 'UP',
+        data: [],
+        links: {},
+        meta: {
+          count: 0,
+        },
       }
-    : {
-        start_time: '2021-06-11T13:09:31.213141',
-        end_time: '2021-06-11T18:09:31.213141',
-        status: 'MAINTENANCE',
-      };
+    : {};
 
   fetchMock.get('/api/notifications/v1.0/notifications/events', {
     status: 200,

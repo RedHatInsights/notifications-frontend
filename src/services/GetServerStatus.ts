@@ -6,12 +6,20 @@ import {
 import { useQuery } from 'react-fetching-library';
 
 import { Operations } from '../generated/OpenapiNotifications';
-import { toServer } from '../types/adapters/ServerAdapter';
+import { toNotificationEvent } from '../types/adapters/NotificationEventAdapter';
 
 const adapter = validationResponseTransformer(
   (payload: Operations.EventResource$v1GetEvents.Payload) => {
     if (payload.status === 200) {
-      return validatedResponse('ServerStatus', 200, toServer(), payload.errors);
+      return validatedResponse(
+        'Events',
+        200,
+        {
+          ...payload.value,
+          data: payload.value.data.map(toNotificationEvent),
+        },
+        payload.errors
+      );
     }
 
     return payload;

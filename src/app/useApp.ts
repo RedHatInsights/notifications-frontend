@@ -7,7 +7,7 @@ import { useEffect, useState } from 'react';
 
 import Config from '../config/Config';
 import { useGetServerStatus } from '../services/GetServerStatus';
-import { Server } from '../types/Server';
+import { Server, ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
 
 export const useApp = (): Partial<AppContext> => {
@@ -32,8 +32,18 @@ export const useApp = (): Partial<AppContext> => {
   }, []);
 
   useEffect(() => {
-    if (serverStatus.payload?.type === 'ServerStatus') {
-      setServer(serverStatus.payload.value);
+    if (serverStatus.payload?.type === 'Events') {
+      if (serverStatus.payload?.status === 200) {
+        setServer({
+          status: ServerStatus.RUNNING,
+        });
+      } else {
+        setServer({
+          status: ServerStatus.MAINTENANCE,
+          from: new Date(),
+          to: new Date(),
+        });
+      }
     }
   }, [serverStatus.payload]);
 
