@@ -21,7 +21,6 @@ export type NotificationsPayload = {
 };
 
 export type NotificationDrawerState = {
-  isDrawerOpen: boolean;
   notificationData: NotificationData[];
   count: number;
   filters: string[];

@@ -10,13 +10,9 @@ import {
 } from './reducers/SavedNotificationScopeReducer';
 import { SavedNotificationScopeState } from './types/SavedNotificationScopeTypes';
 
-import { drawerInitialState } from './reducers/NotificationDrawerReducer';
-import { NotificationDrawerReducer } from './reducers/NotificationDrawerReducer';
-
 type State = {
   savedNotificationScope: SavedNotificationScopeState;
   notifications: PortalNotificationConfig[] | undefined;
-  notificationDrawer: typeof drawerInitialState;
 };
 
 export const getNotificationsRegistry = (...middleware: Middleware[]) => {
@@ -24,7 +20,6 @@ export const getNotificationsRegistry = (...middleware: Middleware[]) => {
     {
       savedNotificationScope: SNS_INITIAL_STATE,
       notifications: undefined,
-      notificationDrawer: drawerInitialState,
     },
     [promiseMiddleware(), ...middleware]
   );
@@ -33,7 +28,6 @@ export const getNotificationsRegistry = (...middleware: Middleware[]) => {
     savedNotificationScope: SavedNotificationScopeReducer,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     notifications: notifications as any,
-    notificationDrawer: NotificationDrawerReducer,
   });
 
   return registry;
