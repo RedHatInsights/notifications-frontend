@@ -49,9 +49,9 @@ module.exports = {
         __dirname,
         './src/pages/Integrations/Create/IntegrationWizard.tsx'
       ),
-      './NotificationsDrawer': path.resolve(
+      './RegisterDrawerModule': path.resolve(
         __dirname,
-        './src/components/NotificationsDrawer/DrawerPanel.tsx'
+        './src/components/NotificationsDrawer/RegisterDrawerModule.tsx'
       ),
     },
     exclude: ['react-router-dom'],

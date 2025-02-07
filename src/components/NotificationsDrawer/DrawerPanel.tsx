@@ -1,5 +1,4 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import axios from 'axios';
 import {
   ChromeWsEventTypes,
   ChromeWsPayload,
@@ -19,16 +18,8 @@ import orderBy from 'lodash/orderBy';
 import { useNavigate } from 'react-router-dom';
 import NotificationItem from './NotificationItem';
 import { EmptyNotifications } from './EmptyNotifications';
-import {
-  addNotificationAction,
-  setFiltersAction,
-  updateNotificationReadAction,
-  updateNotificationSelectedAction,
-  updateNotificationsSelectedAction,
-} from '../../store/actions/NotificationDrawerAction';
-import { NotificationData } from '../../store/types/NotificationDrawerTypes';
-import { notificationDrawerSelector as selector } from '../../store/selectors/NotificationDrawerSelector';
-import { useDispatch, useSelector } from 'react-redux';
+import { NotificationData } from '../../types/Drawer';
+import useNotificationsDrawer from '../../hooks/useNotificationsDrawer';
 import { ActionDropdown, FilterDropdown } from './Dropdowns';
 
 export type DrawerPanelProps = {
@@ -48,113 +39,83 @@ const DrawerPanelBase = ({
   toggleDrawer,
 }: DrawerPanelProps) => {
   const { addWsEventListener } = useChrome();
-  const dispatch = useDispatch();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const {
-    notifications,
-    activeFilters,
-    filterConfig,
-    selectedNotifications,
-    hasNotificationsPermissions,
-  } = useSelector(selector);
+    state,
+    addNotification,
+    updateNotificationRead,
+    updateSelectedStatus,
+    updateNotificationsSelected,
+    updateNotificationSelected,
+    setFilters,
+  } = useNotificationsDrawer();
   const navigate = useNavigate();
-
-  const updateSelectedNotification = useCallback(
-    (id: string, selected: boolean) =>
-      dispatch(updateNotificationSelectedAction(id, selected)),
-    [dispatch]
-  );
-  const setActiveFilters = useCallback(
-    (filters: string[]) => dispatch(setFiltersAction(filters)),
-    [dispatch]
-  );
-  const updateNotificationRead = useCallback(
-    (id: string, read: boolean) =>
-      dispatch(updateNotificationReadAction(id, read)),
-    [dispatch]
-  );
-  const updateAllNotificationsSelected = useCallback(
-    (selected: boolean) =>
-      dispatch(updateNotificationsSelectedAction(selected)),
-    [dispatch]
-  );
 
   const eventType: ChromeWsEventTypes =
     'com.redhat.console.notifications.drawer';
 
-  const handleWsEvent = (event: ChromeWsPayload<NotificationData>) => {
-    addNotificationAction(event.data as NotificationData);
-  };
+  const handleWsEvent = useCallback(
+    (event: ChromeWsPayload<NotificationData>) => {
+      addNotification(event.data as NotificationData);
+    },
+    [addNotification]
+  );
 
   useEffect(() => {
     const unregister = addWsEventListener(eventType, handleWsEvent);
     return () => {
       unregister();
     };
-  }, [addWsEventListener]);
+  }, [addWsEventListener, handleWsEvent]);
 
   const filteredNotifications = useMemo(() => {
-    const notificationsByBundle = notifications.reduce((acc, notification) => {
-      if (!acc[notification.bundle]) {
-        acc[notification.bundle] = [];
-      }
-      acc[notification.bundle].push(notification);
-      return acc;
-    }, {});
+    const notificationsByBundle = state.notificationData.reduce(
+      (acc, notification) => {
+        if (!acc[notification.bundle]) {
+          acc[notification.bundle] = [];
+        }
+        acc[notification.bundle].push(notification);
+        return acc;
+      },
+      {}
+    );
 
-    return (activeFilters || []).reduce((acc, chosenFilter) => {
+    return (state.filters || []).reduce((acc, chosenFilter) => {
       if (notificationsByBundle[chosenFilter]) {
         acc.push(...notificationsByBundle[chosenFilter]);
       }
       return acc;
     }, [] as NotificationData[]);
-  }, [activeFilters, notifications]);
+  }, [state.filters, state.notificationData]);
 
   const onNotificationsDrawerClose = () => {
-    setActiveFilters([]);
+    setFilters([]);
     toggleDrawer();
   };
 
   const onUpdateSelectedStatus = (read: boolean) => {
-    axios
-      .put('/api/notifications/v1/notifications/drawer/read', {
-        notification_ids: selectedNotifications.map(
-          (notification) => notification.id
-        ),
-        read_status: read,
-      })
-      .then(() => {
-        selectedNotifications.forEach((notification) =>
-          updateNotificationRead(notification.id, read)
-        );
-        setIsDropdownOpen(false);
-        updateAllNotificationsSelected(false);
-      })
-      .catch((e) => {
-        console.error('failed to update notification read status', e);
-      });
+    updateSelectedStatus(read);
+    setIsDropdownOpen(false);
   };
 
   const selectAllNotifications = (selected: boolean) => {
-    updateAllNotificationsSelected(selected);
+    updateNotificationsSelected(selected);
   };
 
   const selectVisibleNotifications = () => {
     const visibleNotifications =
-      activeFilters.length > 0 ? filteredNotifications : notifications;
+      state.filters.length > 0 ? filteredNotifications : state.notificationData;
     visibleNotifications.forEach((notification) =>
-      updateSelectedNotification(notification.id, true)
+      updateNotificationSelected(notification.id, true)
     );
   };
 
   const onFilterSelect = (chosenFilter: string) => {
-    activeFilters.includes(chosenFilter)
-      ? setActiveFilters(
-          activeFilters.filter((filter) => filter !== chosenFilter)
-        )
-      : setActiveFilters([...activeFilters, chosenFilter]);
+    state.filters.includes(chosenFilter)
+      ? setFilters(state.filters.filter((filter) => filter !== chosenFilter))
+      : setFilters([...state.filters, chosenFilter]);
   };
 
   const onNavigateTo = (link: string) => {
@@ -165,7 +126,7 @@ const DrawerPanelBase = ({
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
   const RenderNotifications = () => {
-    if (notifications.length === 0) {
+    if (state.notificationData.length === 0) {
       return (
         <EmptyNotifications
           isOrgAdmin={isOrgAdmin}
@@ -175,7 +136,9 @@ const DrawerPanelBase = ({
     }
 
     const sortedNotifications = orderBy(
-      activeFilters?.length > 0 ? filteredNotifications : notifications,
+      state.filters?.length > 0
+        ? filteredNotifications
+        : state.notificationData,
       ['read', 'created'],
       ['asc', 'asc']
     );
@@ -185,7 +148,7 @@ const DrawerPanelBase = ({
         key={notification.id}
         notification={notification}
         onNavigateTo={onNavigateTo}
-        updateNotificationSelected={updateSelectedNotification}
+        updateNotificationSelected={updateNotificationSelected}
         updateNotificationRead={updateNotificationRead}
       />
     ));
@@ -198,14 +161,14 @@ const DrawerPanelBase = ({
         title="Notifications"
         className="pf-u-align-items-center"
       >
-        {activeFilters.length > 0 && (
-          <Badge isRead>{activeFilters.length}</Badge>
+        {state.filters.length > 0 && (
+          <Badge isRead>{state.filters.length}</Badge>
         )}
         <FilterDropdown
-          filterConfig={filterConfig}
-          isDisabled={notifications.length === 0}
-          activeFilters={activeFilters}
-          setActiveFilters={setActiveFilters}
+          filterConfig={state.filterConfig}
+          isDisabled={state.notificationData.length === 0}
+          activeFilters={state.filters}
+          setActiveFilters={setFilters}
           onFilterSelect={onFilterSelect}
           isFilterDropdownOpen={isFilterDropdownOpen}
           setIsFilterDropdownOpen={setIsFilterDropdownOpen}
@@ -220,33 +183,35 @@ const DrawerPanelBase = ({
             },
             {
               title: `Select visible (${
-                activeFilters.length > 0
+                state.filters.length > 0
                   ? filteredNotifications.length
-                  : notifications.length
+                  : state.notificationData.length
               })`,
               key: 'select-visible',
               onClick: selectVisibleNotifications,
             },
             {
-              title: `Select all (${notifications.length})`,
+              title: `Select all (${state.notificationData.length})`,
               key: 'select-all',
               onClick: () => selectAllNotifications(true),
             },
           ]}
-          count={notifications.filter(({ selected }) => selected).length}
+          count={
+            state.notificationData.filter(({ selected }) => selected).length
+          }
           checked={
-            notifications.length > 0 &&
-            notifications.every(({ selected }) => selected)
+            state.notificationData.length > 0 &&
+            state.notificationData.every(({ selected }) => selected)
           }
         />
         <ActionDropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={toggleDropdown}
-          isDisabled={notifications.length === 0}
+          isDisabled={state.notificationData.length === 0}
           onUpdateSelectedStatus={onUpdateSelectedStatus}
           onNavigateTo={onNavigateTo}
           isOrgAdmin={isOrgAdmin}
-          hasNotificationsPermissions={hasNotificationsPermissions}
+          hasNotificationsPermissions={state.hasNotificationsPermissions}
         />
       </NotificationDrawerHeader>
       <NotificationDrawerBody>
@@ -268,5 +233,6 @@ const DrawerPanel = React.forwardRef(
     />
   )
 );
+DrawerPanel.displayName = 'DrawerPanel';
 
 export default DrawerPanel;
