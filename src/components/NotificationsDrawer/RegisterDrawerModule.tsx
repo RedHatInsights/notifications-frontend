@@ -5,8 +5,7 @@ import useNotificationsDrawer from '../../hooks/useNotificationsDrawer';
 import { DrawerContextProvider } from './DrawerContextProvider';
 import DrawerPanel from './DrawerPanel';
 
-const RegisterDrawerModule: React.FC = () => {
-  useEffect(() => {
+const RegisterDrawerModule = () => {
     const scope = getSharedScope();
     scope['@notif-module/drawer'] = {
       '1.0.0': {
@@ -18,8 +17,6 @@ const RegisterDrawerModule: React.FC = () => {
         }),
       },
     };
-  }, []);
-
   return null;
 };
 
