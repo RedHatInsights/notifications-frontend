@@ -19,6 +19,7 @@ const useNotificationsDrawer = () => {
     state,
     initialize: DrawerSingleton.Instance.initialize,
     addNotification: DrawerSingleton.Instance.addNotification,
+    hasUnreadNotifications: DrawerSingleton.Instance.hasUnreadNotifications,
     updateNotificationRead: DrawerSingleton.Instance.updateNotificationRead,
     updateSelectedStatus: DrawerSingleton.Instance.updateSelectedStatus,
     updateNotificationsSelected:

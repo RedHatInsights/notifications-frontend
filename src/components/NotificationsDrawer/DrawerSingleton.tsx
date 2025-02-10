@@ -138,6 +138,12 @@ export class DrawerSingleton {
   };
 
   // helpers
+  public hasUnreadNotifications = () => {
+    return DrawerSingleton._state.notificationData.some(
+      (notification) => !notification.read
+    );
+  };
+
   public addNotification = (notification: NotificationData) => {
     DrawerSingleton._state.notificationData.push(notification);
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
