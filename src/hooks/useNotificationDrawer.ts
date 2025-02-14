@@ -4,7 +4,7 @@ import { DrawerSingleton } from '../components/NotificationsDrawer/DrawerSinglet
 
 const useNotificationDrawer = () => {
   const [state, rerender] = useReducer(
-    () => DrawerSingleton.getState(),
+    () => ({ ...DrawerSingleton.getState() }),
     DrawerSingleton.getState()
   ); // rename to dispatch
   // rerenderer
