@@ -12,7 +12,7 @@ function initNotificationScope() {
         DrawerPanel,
         useNotificationDrawer,
         initialize: DrawerSingleton.Instance.initialize,
-        getState: DrawerSingleton.getState(),
+        getState: DrawerSingleton.getState,
       }),
     },
   };
