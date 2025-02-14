@@ -2,11 +2,12 @@ import { useEffect, useReducer } from 'react';
 
 import { DrawerSingleton } from '../components/NotificationsDrawer/DrawerSingleton';
 
-const useNotificationsDrawer = () => {
+const useNotificationDrawer = () => {
   const [state, rerender] = useReducer(
     () => DrawerSingleton.getState(),
     DrawerSingleton.getState()
-  );
+  ); // rename to dispatch
+  // rerenderer
 
   useEffect(() => {
     const subsId = DrawerSingleton.subscribe(rerender);
@@ -33,4 +34,4 @@ const useNotificationsDrawer = () => {
   };
 };
 
-export default useNotificationsDrawer;
+export default useNotificationDrawer;

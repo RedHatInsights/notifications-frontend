@@ -51,9 +51,9 @@ export class DrawerSingleton {
 
   // initialize function calls the three functions below
   public initialize = async (mounted: boolean, permissions: Access[]) => {
-    this.fetchFilterConfig(mounted);
-    this.getNotifications();
-    this.setNotificationsPermissions(mounted, permissions);
+    await this.fetchFilterConfig(mounted);
+    await this.getNotifications();
+    await this.setNotificationsPermissions(mounted, permissions);
   };
 
   public static getState() {
