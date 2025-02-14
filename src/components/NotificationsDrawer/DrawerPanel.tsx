@@ -5,7 +5,6 @@ import {
 } from '@redhat-cloud-services/types';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import BulkSelect from '@redhat-cloud-services/frontend-components/BulkSelect';
-import { Access } from '@redhat-cloud-services/rbac-client';
 
 import {
   NotificationDrawerBody,
@@ -19,25 +18,16 @@ import { useNavigate } from 'react-router-dom';
 import NotificationItem from './NotificationItem';
 import { EmptyNotifications } from './EmptyNotifications';
 import { NotificationData } from '../../types/Drawer';
-import useNotificationsDrawer from '../../hooks/useNotificationsDrawer';
+import useNotificationDrawer from '../../hooks/useNotificationDrawer';
 import { ActionDropdown, FilterDropdown } from './Dropdowns';
 
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
   isOrgAdmin: boolean;
   toggleDrawer: () => void;
-  getUserPermissions: (
-    applicationName?: string,
-    disableCache?: boolean
-  ) => Promise<Access[]>;
 };
 
-const DrawerPanelBase = ({
-  isOrgAdmin,
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  getUserPermissions,
-  toggleDrawer,
-}: DrawerPanelProps) => {
+const DrawerPanelBase = ({ isOrgAdmin, toggleDrawer }: DrawerPanelProps) => {
   const { addWsEventListener } = useChrome();
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -50,7 +40,7 @@ const DrawerPanelBase = ({
     updateNotificationsSelected,
     updateNotificationSelected,
     setFilters,
-  } = useNotificationsDrawer();
+  } = useNotificationDrawer();
   const navigate = useNavigate();
 
   const eventType: ChromeWsEventTypes =
@@ -228,7 +218,6 @@ const DrawerPanel = React.forwardRef(
     <DrawerPanelBase
       isOrgAdmin={props.isOrgAdmin}
       panelRef={panelRef}
-      getUserPermissions={props.getUserPermissions}
       toggleDrawer={props.toggleDrawer}
     />
   )

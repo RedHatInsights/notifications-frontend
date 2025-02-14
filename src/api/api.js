@@ -8,6 +8,8 @@ import {
 // Notifications endpoints
 import getBundleFacets from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetBundleFacets';
 import getEventTypes from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetEventTypes';
+import getDrawerEntries from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetDrawerEntries';
+import updateNotificationReadStatus from '@redhat-cloud-services/notifications-client/dist/DrawerResourceV1UpdateNotificationReadStatus';
 
 // Integrations endpoints
 import createEndpoint from '@redhat-cloud-services/integrations-client/dist/EndpointResourceV1CreateEndpoint';
@@ -33,6 +35,8 @@ const notificationsApi = new APIFactory(
     getBundleFacets,
     getEventTypes,
     getTimePreference,
+    getDrawerEntries,
+    updateNotificationReadStatus,
     putTimePreference,
   },
   { axios: axiosInstance }
