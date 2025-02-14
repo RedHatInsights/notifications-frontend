@@ -8,7 +8,7 @@ import {
 // Notifications endpoints
 import getBundleFacets from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetBundleFacets';
 import getEventTypes from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetEventTypes';
-import getDrawerEntries from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetDrawerEntries';
+import getDrawerEntries from '@redhat-cloud-services/notifications-client/dist/DrawerResourceV1GetDrawerEntries';
 import updateNotificationReadStatus from '@redhat-cloud-services/notifications-client/dist/DrawerResourceV1UpdateNotificationReadStatus';
 
 // Integrations endpoints
