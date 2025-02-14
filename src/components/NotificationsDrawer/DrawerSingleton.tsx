@@ -1,7 +1,10 @@
-import axios from 'axios';
 import { Access } from '@redhat-cloud-services/rbac-client';
 
 import { getDateDaysAgo } from '../UtcDate';
+
+import { getBundleFacets } from '../../api/helpers/notifications/bundle-facets-helper';
+import { getDrawerEntries } from '../../api/helpers/notifications/drawer-entries-helper';
+import { updateNotificationReadStatus } from '../../api/helpers/notifications/update-read-status-helper';
 
 import {
   FilterConfigItem,
@@ -82,9 +85,7 @@ export class DrawerSingleton {
       return;
     }
     try {
-      const response = await axios.get<Bundle[]>(
-        '/api/notifications/v1/notifications/facets/bundles'
-      );
+      const response = await getBundleFacets({});
       DrawerSingleton._state.filterConfig = response.data.map(
         (bundle: Bundle) => ({
           title: bundle.displayName,
@@ -100,16 +101,11 @@ export class DrawerSingleton {
 
   private getNotifications = async () => {
     try {
-      const { data } = await axios.get<{ data: NotificationData[] }>(
-        `/api/notifications/v1/notifications/drawer`,
-        {
-          params: {
-            limit: 50,
-            sort_by: 'read:asc',
-            startDate: getDateDaysAgo(7),
-          },
-        }
-      );
+      const data = await getDrawerEntries({
+        limit: 50,
+        sort_by: 'read:asc',
+        startDate: getDateDaysAgo(7),
+      });
       DrawerSingleton._state.notificationData = data.data || [];
       DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
     } catch (error) {
@@ -122,16 +118,14 @@ export class DrawerSingleton {
       const selected = DrawerSingleton._state.notificationData.filter(
         (notification) => notification.selected
       );
-      axios
-        .put('/api/notifications/v1/notifications/drawer/read', {
-          notification_ids: selected.map((notification) => notification.id),
-          read_status: read,
-        })
-        .then(() => {
-          selected.forEach((notification) =>
-            this.updateNotificationRead(notification.id, read)
-          );
-        });
+      await updateNotificationReadStatus({
+        notification_ids: selected.map((notification) => notification.id),
+        read_status: read,
+      }).then(() => {
+        selected.forEach((notification) =>
+          this.updateNotificationRead(notification.id, read)
+        );
+      });
     } catch (e) {
       console.error('failed to update notification read status', e);
     }

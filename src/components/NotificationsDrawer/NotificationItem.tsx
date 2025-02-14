@@ -20,9 +20,9 @@ import {
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { NotificationData } from '../../types/Drawer';
-import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { updateNotificationReadStatus } from '../../api/helpers/notifications/update-read-status-helper';
 
 interface NotificationItemProps {
   notification: NotificationData;
@@ -42,11 +42,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     updateNotificationSelected(notification.id, !notification.selected);
 
   const onMarkAsRead = () => {
-    axios
-      .put('/api/notifications/v1/notifications/drawer/read', {
-        notification_ids: [notification.id],
-        read_status: !notification.read,
-      })
+    updateNotificationReadStatus({
+      notification_ids: [notification.id],
+      read_status: !notification.read,
+    })
       .then(() => {
         updateNotificationRead(notification.id, !notification.read);
         setIsDropdownOpen(false);
