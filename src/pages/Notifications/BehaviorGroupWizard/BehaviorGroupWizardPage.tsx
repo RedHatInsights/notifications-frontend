@@ -94,24 +94,37 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<
 
       onClose(true);
     } else {
-      if (result.operation === SaveBehaviorGroupOperation.CREATE) {
+      if (
+        result.duplicate &&
+        result.operation === SaveBehaviorGroupOperation.CREATE
+      ) {
         addDangerNotification(
           'Behavior group failed to be created',
           <>
-            Failed to create group <b> {behaviorGroup.displayName}</b>.
-            <br />
-            Please try again.
+            A behavior group with display name{' '}
+            <b>{behaviorGroup.displayName}</b> already exists.
           </>
         );
       } else {
-        addDangerNotification(
-          'Behavior group failed to save',
-          <>
-            Failed to save group <b> {behaviorGroup.displayName}</b>.
-            <br />
-            Please try again.
-          </>
-        );
+        if (result.operation === SaveBehaviorGroupOperation.CREATE) {
+          addDangerNotification(
+            'Behavior group failed to be created',
+            <>
+              Failed to create group <b> {behaviorGroup.displayName}</b>.
+              <br />
+              Please try again.
+            </>
+          );
+        } else {
+          addDangerNotification(
+            'Behavior group failed to save',
+            <>
+              Failed to save group <b> {behaviorGroup.displayName}</b>.
+              <br />
+              Please try again.
+            </>
+          );
+        }
       }
     }
   }, [

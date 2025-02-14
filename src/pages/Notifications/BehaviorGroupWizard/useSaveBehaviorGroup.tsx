@@ -65,6 +65,7 @@ export enum SaveBehaviorGroupOperation {
 export interface SaveBehaviorGroupResponse {
   status: boolean;
   operation: SaveBehaviorGroupOperation;
+  duplicate?: boolean;
 }
 
 export const useSaveBehaviorGroup = (
@@ -198,6 +199,7 @@ export const useSaveBehaviorGroup = (
                 ? SaveBehaviorGroupOperation.CREATE
                 : SaveBehaviorGroupOperation.UPDATE,
             status: value.payload?.status === 200,
+            duplicate: value.error,
           };
         })
         .catch(() => {
@@ -207,6 +209,7 @@ export const useSaveBehaviorGroup = (
                 ? SaveBehaviorGroupOperation.CREATE
                 : SaveBehaviorGroupOperation.UPDATE,
             status: false,
+            duplicate: true,
           };
         });
     },
