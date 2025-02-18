@@ -33,6 +33,7 @@ export const eventTypesStep = () => ({
       name: EVENT_TYPES_TABLE,
       label: 'Selected event types',
       bundleFieldName: 'product-family',
+      validate: [{ type: 'required' }],
     },
   ],
 });
