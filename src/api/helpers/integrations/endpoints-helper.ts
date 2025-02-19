@@ -65,3 +65,7 @@ export async function updateEndpoint(
 export async function getEntpoint(id) {
   return await integrationsApi.getEndpoint(id);
 }
+
+export async function getEndpoints({ name }: { name?: string }) {
+  return await integrationsApi.getEndpoints({ name });
+}
