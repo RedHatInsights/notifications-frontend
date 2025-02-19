@@ -14,8 +14,11 @@ import {
   SPLUNK_DETAILS,
   TEAMS_DETAILS,
 } from './helpers';
+import { IntlShape } from 'react-intl';
+import { validated } from './Validated';
+import { asyncValidatorDebouncedWrapper } from './nameValidator';
 
-const commonFields = (isSlack: boolean, isEdit: boolean) => [
+const commonFields = (isSlack: boolean, isEdit: boolean, intl: IntlShape) => [
   {
     component: componentTypes.PLAIN_TEXT,
     name: 'integration-details-title',
@@ -37,10 +40,12 @@ const commonFields = (isSlack: boolean, isEdit: boolean) => [
     label: 'Integration name',
     isRequired: true,
     validate: [
+      (value, { id }) => asyncValidatorDebouncedWrapper(intl)(value, id, intl),
       {
         type: validatorTypes.REQUIRED,
       },
     ],
+    resolveProps: validated,
   },
   {
     component: componentTypes.TEXT_FIELD,
@@ -67,7 +72,8 @@ const sslAlert = {
 
 export const detailSteps = (
   isEdit: boolean,
-  isBehaviorGroupsEnabled: boolean
+  isBehaviorGroupsEnabled: boolean,
+  intl: IntlShape
 ) => {
   const title = `${isEdit ? 'Edit' : 'Enter'} details`;
   return [
@@ -78,7 +84,7 @@ export const detailSteps = (
       name: DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: [
-        ...commonFields(false, isEdit),
+        ...commonFields(false, isEdit, intl),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',
@@ -98,7 +104,7 @@ export const detailSteps = (
       name: SERVICE_NOW_DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: [
-        ...commonFields(false, isEdit),
+        ...commonFields(false, isEdit, intl),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',
@@ -191,7 +197,7 @@ export const detailSteps = (
       title: title,
       name: SLACK_DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
-      fields: commonFields(true, isEdit),
+      fields: commonFields(true, isEdit, intl),
     },
 
     // COMMUNICATIONS - GOOGLE CHAT
@@ -199,7 +205,7 @@ export const detailSteps = (
       title: title,
       name: GOOGLE_CHAT_DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
-      fields: commonFields(false, isEdit),
+      fields: commonFields(false, isEdit, intl),
     },
 
     // COMMUNICATIONS - TEAMS
@@ -207,7 +213,7 @@ export const detailSteps = (
       title: title,
       name: TEAMS_DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
-      fields: commonFields(false, isEdit),
+      fields: commonFields(false, isEdit, intl),
     },
 
     // COMMUNICATIONS - SPLUNK
@@ -216,7 +222,7 @@ export const detailSteps = (
       name: SPLUNK_DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: [
-        ...commonFields(false, isEdit),
+        ...commonFields(false, isEdit, intl),
         {
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',

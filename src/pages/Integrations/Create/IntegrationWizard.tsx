@@ -25,6 +25,7 @@ import {
 import { useNotification } from '../../../utils/AlertUtils';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
+import { useIntl } from 'react-intl';
 
 export interface IntegrationWizardProps {
   category: string;
@@ -70,6 +71,8 @@ export const IntegrationWizard: React.FunctionComponent<
     setWizardOpen(isOpen);
   }, [isOpen]);
 
+  const intl = useIntl();
+
   return (
     <React.Fragment>
       {wizardOpen && (
@@ -78,7 +81,8 @@ export const IntegrationWizard: React.FunctionComponent<
             category,
             isEdit,
             isBehaviorGroupsEnabled,
-            isPagerDutyEnabled
+            isPagerDutyEnabled,
+            intl
           )}
           componentMapper={{ ...componentMapper, ...mapperExtension }}
           onSubmit={({
