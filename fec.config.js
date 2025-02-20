@@ -49,6 +49,14 @@ module.exports = {
         __dirname,
         './src/pages/Integrations/Create/IntegrationWizard.tsx'
       ),
+      './initNotificationScope': path.resolve(
+        __dirname,
+        './src/components/NotificationsDrawer/initNotificationScope.tsx'
+      ),
+      './NotificationsDrawerBell': path.resolve(
+        __dirname,
+        './src/components/NotificationsDrawer/DrawerBell.tsx'
+      ),
     },
     exclude: ['react-router-dom'],
     shared: [
