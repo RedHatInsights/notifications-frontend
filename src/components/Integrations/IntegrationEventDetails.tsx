@@ -4,7 +4,7 @@ import {
   NameDisplayName,
   UserIntegration,
 } from '../../types/Integration';
-import { getEntpoint } from '../../api/helpers/integrations/endpoints-helper';
+import { getEndpoint } from '../../api/helpers/integrations/endpoints-helper';
 import { DataViewTable } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import {
   SkeletonTableBody,
@@ -34,7 +34,7 @@ const columns = [
 
 const ouiaId = 'Event-types';
 
-type EventTypes = AssignedEventType & {
+export type EventTypes = AssignedEventType & {
   application: NameDisplayName;
   bundle: NameDisplayName;
 };
@@ -129,7 +129,7 @@ const IntegrationEventDetails: React.FC<{
   });
   const fetchIntegration = React.useCallback(async () => {
     setActiveIntegration(undefined);
-    const data = await getEntpoint(id);
+    const data = await getEndpoint(id);
     if (data.event_types_group_by_bundles_and_applications) {
       const eventTypes = data.event_types_group_by_bundles_and_applications
         .flatMap(({ applications, ...bundle }) =>

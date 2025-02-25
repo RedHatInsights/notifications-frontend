@@ -15,6 +15,23 @@ import {
   EmptyStateIcon,
 } from '@patternfly/react-core';
 import CubesIcon from '@patternfly/react-icons/dist/dynamic/icons/cube-icon';
+import { getEndpoint } from '../../../../api/helpers/integrations/endpoints-helper';
+
+const BUNDLE_DEFAULTS = {
+  OpenShift: {},
+  'Red Hat Enterprise Linux': {},
+  Console: {},
+} as const;
+
+type EventBundle = keyof typeof BUNDLE_DEFAULTS;
+
+interface EventTypeMapping {
+  eventTypeDisplayName: string;
+  applicationDisplayName: string;
+  description: string;
+  id: string;
+  isSelected: boolean;
+}
 
 export interface TableRow {
   id: string;
@@ -49,12 +66,27 @@ export interface SelectableTableProps<T extends TableRow>
   skeletonRows?: number;
 }
 
+interface EventTypeFromGroup {
+  bundle: {
+    display_name: string;
+  };
+  display_name: string;
+  application: {
+    display_name: string;
+  };
+  description: string;
+  id: string;
+  isSelected: boolean;
+}
+
 const SelectableTable = (props) => {
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
   const { input } = useFieldApi<Record<string, unknown>>(props);
   let value: readonly EventType[] = [];
   const productFamily = getState().values[props.bundleFieldName];
+  const integrationId = getState().values['id'];
+
   useEffect(() => {
     const getAllBundles = async () => {
       const bundles: Facet[] = await getBundleFacets({
@@ -72,6 +104,56 @@ const SelectableTable = (props) => {
       input.value?.[currBundle?.displayName] || {}
     ) as readonly EventType[];
   }
+
+  const createEventTypeMapping = (
+    event: EventTypeFromGroup
+  ): EventTypeMapping => ({
+    eventTypeDisplayName: event.display_name,
+    applicationDisplayName: event.application.display_name,
+    description: event.description,
+    id: event.id,
+    isSelected: true,
+  });
+
+  const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
+    return events.reduce(
+      (acc, event) => {
+        const bundleName = event.bundle.display_name as EventBundle;
+        return {
+          ...acc,
+          [bundleName]: {
+            ...acc[bundleName],
+            [event.id]: createEventTypeMapping(event),
+          },
+        };
+      },
+      { ...BUNDLE_DEFAULTS }
+    );
+  };
+
+  React.useEffect(() => {
+    if (!integrationId) return;
+
+    const getEventData = async () => {
+      const data = await getEndpoint(integrationId);
+      const eventGroups = data.event_types_group_by_bundles_and_applications;
+
+      if (!eventGroups) {
+        input.onChange(BUNDLE_DEFAULTS);
+        return;
+      }
+
+      const eventTypes = eventGroups.flatMap(({ applications, ...bundle }) =>
+        applications.flatMap(({ event_types, ...application }) =>
+          event_types.map((event) => ({ ...event, application, bundle }))
+        )
+      );
+
+      input.onChange(mapEventTypesToInput(eventTypes));
+    };
+
+    getEventData();
+  }, [integrationId]);
 
   return currBundle ? (
     <AssociateEventTypesStep
