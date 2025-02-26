@@ -22,6 +22,7 @@ export const eventTypesStep = () => ({
       isVisibleOnReview: false,
       name: 'product-family',
       label: 'Product family',
+      initialValue: 'openshift',
       options: [
         { label: 'OpenShift', value: 'openshift' },
         { label: 'Red Hat Enterprise Linux', value: 'rhel' },
