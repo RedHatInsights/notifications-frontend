@@ -5,16 +5,18 @@ import { ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Tool
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 import BellIcon from '@patternfly/react-icons/dist/dynamic/icons/bell-icon';
 import { DrawerSingleton } from './DrawerSingleton';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 interface DrawerBellProps {
   isNotificationDrawerExpanded: boolean;
-  toggleDrawer: () => void;
 }
 
 const DrawerBell: React.ComponentType<DrawerBellProps> = ({
   isNotificationDrawerExpanded,
-  toggleDrawer,
 }) => {
+  const {
+    drawerActions: { toggleDrawerContent },
+  } = useChrome();
   return (
     <ToolbarItem className="pf-v6-u-mx-0">
       <Tooltip
@@ -31,7 +33,12 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({
               ? 'unread'
               : 'read'
           }
-          onClick={() => toggleDrawer()}
+          onClick={() => {
+            toggleDrawerContent({
+              scope: 'notifications',
+              module: './DrawerPanel',
+            });
+          }}
           aria-label="Notifications"
           isExpanded={isNotificationDrawerExpanded}
         >

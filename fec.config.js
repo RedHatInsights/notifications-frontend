@@ -57,6 +57,10 @@ module.exports = {
         __dirname,
         './src/components/NotificationsDrawer/DrawerBell.tsx'
       ),
+      './DrawerPanel': path.resolve(
+        __dirname,
+        './src/components/NotificationsDrawer/DrawerPanel.tsx'
+      ),
     },
     exclude: ['react-router-dom'],
     shared: [

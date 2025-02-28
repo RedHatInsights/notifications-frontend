@@ -23,14 +23,13 @@ import { ActionDropdown, FilterDropdown } from './Dropdowns';
 
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
-  isOrgAdmin: boolean;
   toggleDrawer: () => void;
 };
 
-const DrawerPanelBase = ({ isOrgAdmin, toggleDrawer }: DrawerPanelProps) => {
-  const { addWsEventListener } = useChrome();
-
+const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
+  const { addWsEventListener, auth } = useChrome();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const {
     state,
@@ -59,6 +58,14 @@ const DrawerPanelBase = ({ isOrgAdmin, toggleDrawer }: DrawerPanelProps) => {
       unregister();
     };
   }, [addWsEventListener, handleWsEvent]);
+
+  useEffect(() => {
+    auth.getUser().then((user) => {
+      if (user) {
+        setIsOrgAdmin(!!user.identity.user?.is_org_admin);
+      }
+    });
+  }, [auth]);
 
   const filteredNotifications = useMemo(() => {
     const notificationsByBundle = state.notificationData.reduce(
@@ -215,11 +222,7 @@ const DrawerPanelBase = ({ isOrgAdmin, toggleDrawer }: DrawerPanelProps) => {
 
 const DrawerPanel = React.forwardRef(
   (props: DrawerPanelProps, panelRef: React.Ref<unknown>) => (
-    <DrawerPanelBase
-      isOrgAdmin={props.isOrgAdmin}
-      panelRef={panelRef}
-      toggleDrawer={props.toggleDrawer}
-    />
+    <DrawerPanelBase panelRef={panelRef} toggleDrawer={props.toggleDrawer} />
   )
 );
 DrawerPanel.displayName = 'DrawerPanel';
