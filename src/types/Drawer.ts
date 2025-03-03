@@ -26,6 +26,7 @@ export type NotificationDrawerState = {
   filters: string[];
   filterConfig: FilterConfigItem[];
   hasNotificationsPermissions: boolean;
+  hasUnread: boolean;
 };
 
 export interface FilterConfigItem {

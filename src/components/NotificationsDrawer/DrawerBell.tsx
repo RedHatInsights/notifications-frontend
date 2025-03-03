@@ -4,8 +4,8 @@ import { NotificationBadge } from '@patternfly/react-core/dist/dynamic/component
 import { ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 import BellIcon from '@patternfly/react-icons/dist/dynamic/icons/bell-icon';
-import { DrawerSingleton } from './DrawerSingleton';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import useNotificationDrawer from '../../hooks/useNotificationDrawer';
 
 interface DrawerBellProps {
   isNotificationDrawerExpanded: boolean;
@@ -17,6 +17,9 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({
   const {
     drawerActions: { toggleDrawerContent },
   } = useChrome();
+  const {
+    state: { hasUnread },
+  } = useNotificationDrawer();
   return (
     <ToolbarItem className="pf-v6-u-mx-0">
       <Tooltip
@@ -28,11 +31,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({
       >
         <NotificationBadge
           className="chr-c-notification-badge"
-          variant={
-            DrawerSingleton.Instance.hasUnreadNotifications()
-              ? 'unread'
-              : 'read'
-          }
+          variant={hasUnread ? 'unread' : 'read'}
           onClick={() => {
             toggleDrawerContent({
               scope: 'notifications',
