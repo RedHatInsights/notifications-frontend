@@ -144,6 +144,7 @@ const SelectableTable = (props) => {
 
       if (!eventGroups) {
         input.onChange(BUNDLE_DEFAULTS);
+        setLoaded(true);
         return;
       }
 
