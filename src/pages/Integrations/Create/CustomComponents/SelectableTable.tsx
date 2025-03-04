@@ -83,6 +83,7 @@ const SelectableTable = (props) => {
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
   const { input } = useFieldApi<Record<string, unknown>>(props);
+  const [loaded, setLoaded] = useState<boolean>(false);
   let value: readonly EventType[] = [];
   const productFamily = getState().values[props.bundleFieldName];
   const integrationId = getState().values['id'];
@@ -132,7 +133,10 @@ const SelectableTable = (props) => {
   };
 
   React.useEffect(() => {
-    if (!integrationId) return;
+    if (!integrationId) {
+      setLoaded(true);
+      return;
+    }
 
     const getEventData = async () => {
       const data = await getEndpoint(integrationId);
@@ -150,12 +154,13 @@ const SelectableTable = (props) => {
       );
 
       input.onChange(mapEventTypesToInput(eventTypes));
+      setLoaded(true);
     };
 
     getEventData();
   }, [integrationId]);
 
-  return currBundle ? (
+  return currBundle && loaded ? (
     <AssociateEventTypesStep
       applications={currBundle.children as readonly Facet[]}
       bundle={currBundle}
