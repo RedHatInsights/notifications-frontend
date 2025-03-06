@@ -18,7 +18,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({
     drawerActions: { toggleDrawerContent },
   } = useChrome();
   const {
-    state: { hasUnread },
+    state: { hasUnread, ready },
   } = useNotificationDrawer();
   return (
     <ToolbarItem className="pf-v6-u-mx-0">
@@ -38,6 +38,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({
               module: './DrawerPanel',
             });
           }}
+          isDisabled={!ready}
           aria-label="Notifications"
           isExpanded={isNotificationDrawerExpanded}
         >

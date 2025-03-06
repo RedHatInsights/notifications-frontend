@@ -12,6 +12,7 @@ import {
   NotificationDrawerList,
 } from '@patternfly/react-core/dist/dynamic/components/NotificationDrawer';
 import { Badge } from '@patternfly/react-core/dist/dynamic/components/Badge';
+import Spinner from '@redhat-cloud-services/frontend-components/Spinner';
 
 import orderBy from 'lodash/orderBy';
 import { useNavigate } from 'react-router-dom';
@@ -32,7 +33,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const {
-    state,
+    state: { ready, ...state },
     addNotification,
     updateNotificationRead,
     updateSelectedStatus,
@@ -151,6 +152,10 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     ));
   };
 
+  if (!ready) {
+    return <Spinner centered />;
+  }
+
   return (
     <>
       <NotificationDrawerHeader
@@ -172,6 +177,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         />
         <BulkSelect
           id="notifications-bulk-select"
+          onSelect={(checked) => selectAllNotifications(checked)}
           items={[
             {
               title: 'Select none (0)',

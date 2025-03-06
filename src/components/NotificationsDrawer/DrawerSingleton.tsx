@@ -1,4 +1,5 @@
-import { Access } from '@redhat-cloud-services/rbac-client';
+import { Access, AccessApi } from '@redhat-cloud-services/rbac-client';
+import axios from 'axios';
 
 import { getDateDaysAgo } from '../UtcDate';
 
@@ -11,6 +12,8 @@ import {
   NotificationData,
   NotificationDrawerState,
 } from '../../types/Drawer';
+
+const rbacApi = new AccessApi(undefined, '/api/rbac/v1', axios.create());
 
 interface Bundle {
   id: string;
@@ -26,14 +29,29 @@ const initialState: NotificationDrawerState = {
   filterConfig: [],
   hasNotificationsPermissions: false,
   hasUnread: false,
+  ready: false,
+  initializing: false,
 };
 
 export class DrawerSingleton {
   private static _instance: DrawerSingleton;
   private static _subs: { id: string; rerenderer: () => void }[];
   private static _state: NotificationDrawerState = initialState;
+
   static subscribe(rerenderer: () => void) {
     const id = crypto.randomUUID();
+    // Run the init procedure if the state is not ready for subscriber
+    if (!DrawerSingleton._state.initializing && !DrawerSingleton._state.ready) {
+      DrawerSingleton._state.initializing = true;
+      rbacApi
+        .getPrincipalAccess('notifications', undefined, undefined, 1000)
+        .then(({ data: { data } }) => {
+          DrawerSingleton.Instance.initialize(true, data);
+          DrawerSingleton._state.initializing = false;
+          DrawerSingleton._state.ready = true;
+          DrawerSingleton._subs.push({ id, rerenderer });
+        });
+    }
     DrawerSingleton._subs.push({ id, rerenderer });
     return id;
   }
