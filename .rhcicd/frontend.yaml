@@ -1,3 +1,5 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/RedHatInsights/frontend-components/refs/heads/master/packages/config-utils/src/feo/spec/frontend-crd.schema.json
+
 apiVersion: v1
 kind: Template
 metadata:
@@ -10,6 +12,7 @@ objects:
     spec:
       envName: ${ENV_NAME}
       title: notifications
+      feoConfigEnabled: true
       deploymentRepo: https://github.com/RedHatInsights/notifications-frontend
       API:
         versions:
@@ -18,40 +21,75 @@ objects:
         paths:
           - /apps/notifications
       image: ${IMAGE}:${IMAGE_TAG}
-      navItems:
-        - title: "Notifications"
-          expandable: true
-          routes:
-            - appId: "notifications"
-              title: "Application Services"
-              href: "/settings/notifications/application-services"
-            - appId: "notifications"
-              title: "Openshift"
-              href: "/settings/notifications/openshift"
-            - appId: "notifications"
-              title: "Red Hat Enterprise Linux"
-              href: "/settings/notifications/rhel"
-            - appId: "notifications"
-              title: "Edge"
-              href: "/settings/notifications/edge"
-            - appId: "notifications"
-              title: "Console"
-              href: "/settings/notifications/console"
-        - appID: "notifications"
-          title: "Integrations"
-          href: "/settings/integrations"
-          product: "Red Hat Insights"
       module:
         manifestLocation: "/apps/notifications/fed-mods.json"
+        defaultDocumentTitle: Notifications | Settings
+        config:
+          supportCaseData:
+            product: Red Hat Insights
+            version: Notifications
+
         modules:
-          - id: "notifications"
-            module: "./RootApp"
-            routes:
-              - pathname: /settings/notifications
-          - id: "integrations"
-            module: "./RootApp"
-            routes:
-              - pathname: /settings/integrations
+        - id: notifications
+          module: "./RootApp"
+          routes:
+          - pathname: "/settings/notifications"
+          - pathname: "/settings/integrations/splunk-setup"
+
+      bundleSegments:
+        - segmentId: notifications-settings
+          bundleId: settings
+          navItems:
+            - title: Notifications
+              id: notifications
+              expandable: true
+              routes:
+              - id: notificationOverview
+                icon: PlaceholderIcon
+                title: Overview
+                href: "/settings/notifications"
+              - id: configureEvents
+                title: Configure Events
+                href: "/settings/notifications/configure-events"
+                permissions:
+                - method: loosePermissions
+                  args:
+                  - - integrations:*:*
+                    - integrations:endpoints:write
+              - id: eventLog
+                title: Event Log
+                href: "/settings/notifications/eventlog"
+                permissions:
+                - method: loosePermissions
+                  args:
+                  - - notifications:*:*
+                    - notifications:notifications:write
+              - id: myUserPreferences
+                title: Notification Preferences
+                href: "/settings/notifications/user-preferences"
+          position: 1000
+
+      searchEntries:
+        - id: notifications
+          title: Notifications
+          href: /settings/notifications
+          description: A standardized way of notifying users of events for supported services on the Hybrid Cloud Console.
+      
+      serviceTiles:
+        - section: integrations-notifications
+          group: settings
+          id: settings-notifications
+          href: /settings/notifications
+          title: Notifications
+          description: A standardized way of notifying users of events for supported services on the Hybrid Cloud Console.
+          icon: PlaceholderIcon
+        - section: systemConfiguration
+          group: settings
+          id: configurations-notifications
+          href: /settings/notifications
+          title: Notifications
+          description: A standardized way of notifying users of events for supported services on the Hybrid Cloud Console.
+          icon: PlaceholderIcon
 
 parameters:
   - name: ENV_NAME
