@@ -1,20 +1,10 @@
-import { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import DrawerPanel from '../../src/components/NotificationsDrawer/DrawerPanel';
 import { Page } from '@patternfly/react-core';
 import { ScalprumProvider } from '@scalprum/react-core';
 import { DrawerSingleton } from '../../src/components/NotificationsDrawer/DrawerSingleton';
-
-type NotificationData = {
-  id: string;
-  title: string;
-  description: string;
-  read: boolean;
-  selected?: boolean;
-  source: string;
-  bundle: string;
-  created: string;
-};
+import { NotificationData } from '../../src/types/Drawer';
 
 const notificationDrawerData: NotificationData[] = [
   {
@@ -46,21 +36,27 @@ const notificationDrawerData: NotificationData[] = [
   },
 ];
 
+const notificationPerms = [
+  {
+    resourceDefinitions: [],
+    permission: 'notifications:*:*',
+  },
+  {
+    resourceDefinitions: [],
+    permission: 'notifications:notifications:read',
+  },
+];
+
 const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
   const drawerPanelRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const addNotification = DrawerSingleton.Instance.addNotification;
+  const { initialize, addNotification } = DrawerSingleton.Instance;
   const toggleDrawer = () => setIsExpanded((prev) => !prev);
   const notificationProps = {
     panelRef: drawerPanelRef,
     toggleDrawer: toggleDrawer,
   };
-  useEffect(() => {
-    return () => {
-      addNotification(notificationDrawerData[0]);
-      setIsExpanded(false);
-    };
-  }, []);
+
   return (
     <ScalprumProvider
         config={{ foo: { name: 'foo' } }}
@@ -78,8 +74,10 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
         </button>
         <button
           id="populate-notifications"
-          onClick={() =>
-            notificationDrawerData.map((item) => addNotification({ ...item, read: markAll }))
+          onClick={async () => {
+              await initialize(true, notificationPerms);
+              notificationDrawerData.map((item) => addNotification({ ...item, read: markAll }))
+            }
           }
         >
           Populate notifications
@@ -96,6 +94,12 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 describe('Notification Drawer', () => {
   beforeEach(() => {
     cy.viewport(1200, 800);
+    cy.intercept('GET', ' /api/rbac/v1/access/?application=notifications&limit=1000', {
+      data: notificationPerms,
+    });
+    cy.intercept('GET', '/api/notifications/v1/notifications/drawer?limit=50&startDate=*', {
+      data: [],
+    });
   });
 
   it('should toggle drawer', () => {
@@ -159,7 +163,7 @@ describe('Notification Drawer', () => {
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 0);
     // select all notifications
-    cy.get('[data-ouia-component-id="BulkSelect"]').click();
+    cy.get('.pf-v5-c-menu-toggle__controls').click();
     cy.get('[data-ouia-component-id="BulkSelectList-select-all"]').click();
     // mark selected as read
     cy.get('#notifications-actions-toggle').click();
@@ -178,7 +182,7 @@ describe('Notification Drawer', () => {
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 3);
     // select all notifications
-    cy.get('[data-ouia-component-id="BulkSelect"]').click();
+    cy.get('.pf-v5-c-menu-toggle__controls').click();
     cy.get('[data-ouia-component-id="BulkSelectList-select-all"]').click();
     // mark selected as unread
     cy.get('#notifications-actions-toggle').click();
