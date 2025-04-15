@@ -1,10 +1,9 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import DrawerPanel from '../../src/components/NotificationsDrawer/DrawerPanel';
 import { Page } from '@patternfly/react-core';
 import { ScalprumProvider } from '@scalprum/react-core';
-import { notificationDrawerDataAtom } from '../../src/state/atoms/notificationDrawerAtom';
-import { useSetAtom } from 'jotai';
+import { DrawerSingleton } from '../../src/components/NotificationsDrawer/DrawerSingleton';
 
 type NotificationData = {
   id: string;
@@ -50,40 +49,47 @@ const notificationDrawerData: NotificationData[] = [
 const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
   const drawerPanelRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const populateNotifications = useSetAtom(notificationDrawerDataAtom);
+  const addNotification = DrawerSingleton.Instance.addNotification;
   const toggleDrawer = () => setIsExpanded((prev) => !prev);
   const notificationProps = {
-    isOrgAdmin: true,
-    getUserPermissions: () => Promise.resolve([]),
     panelRef: drawerPanelRef,
     toggleDrawer: toggleDrawer,
   };
   useEffect(() => {
     return () => {
-      populateNotifications([]);
+      addNotification(notificationDrawerData[0]);
       setIsExpanded(false);
     };
   }, []);
   return (
-    <BrowserRouter>
-      <button id="drawer-toggle" onClick={() => setIsExpanded((prev) => !prev)}>
-        Toggle drawer
-      </button>
-      <button
-        id="populate-notifications"
-        onClick={() =>
-          populateNotifications(
-            notificationDrawerData.map((item) => ({ ...item, read: markAll }))
-          )
-        }
+    <ScalprumProvider
+        config={{ foo: { name: 'foo' } }}
+        api={{ chrome: { 
+          addWsEventListener: () => () => {}, 
+          auth: {
+            getUser: () => Promise.resolve({ identity: { user: { is_org_admin: true } 
+          } 
+          }),
+        }} }}
       >
-        Populate notifications
-      </button>
-      <Page
-        isNotificationDrawerExpanded={isExpanded}
-        notificationDrawer={<DrawerPanel {...notificationProps} />}
-      ></Page>
-    </BrowserRouter>
+      <BrowserRouter>
+        <button id="drawer-toggle" onClick={() => setIsExpanded((prev) => !prev)}>
+          Toggle drawer
+        </button>
+        <button
+          id="populate-notifications"
+          onClick={() =>
+            notificationDrawerData.map((item) => addNotification({ ...item, read: markAll }))
+          }
+        >
+          Populate notifications
+        </button>
+        <Page
+          isNotificationDrawerExpanded={isExpanded}
+          notificationDrawer={<DrawerPanel {...notificationProps} />}
+        ></Page>
+      </BrowserRouter>
+    </ScalprumProvider>
   );
 };
 
@@ -94,12 +100,7 @@ describe('Notification Drawer', () => {
 
   it('should toggle drawer', () => {
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout />
-      </ScalprumProvider>
+      <DrawerLayout />
     );
     cy.get('#drawer-toggle').click();
     cy.contains('No notifications found').should('be.visible');
@@ -109,12 +110,7 @@ describe('Notification Drawer', () => {
 
   it('should populate notifications', () => {
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout />
-      </ScalprumProvider>
+      <DrawerLayout />
     );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
@@ -128,12 +124,7 @@ describe('Notification Drawer', () => {
       statusCode: 200,
     });
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout />
-      </ScalprumProvider>
+      <DrawerLayout />
     );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
@@ -148,12 +139,7 @@ describe('Notification Drawer', () => {
       statusCode: 200,
     });
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout markAll />
-      </ScalprumProvider>
+      <DrawerLayout markAll />
     );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
@@ -167,12 +153,7 @@ describe('Notification Drawer', () => {
       statusCode: 200,
     });
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout />
-      </ScalprumProvider>
+      <DrawerLayout />
     );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
@@ -191,12 +172,7 @@ describe('Notification Drawer', () => {
       statusCode: 200,
     });
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout markAll />
-      </ScalprumProvider>
+      <DrawerLayout markAll />
     );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
@@ -225,12 +201,7 @@ describe('Notification Drawer', () => {
       ],
     });
     cy.mount(
-      <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { addWsEventListener: () => () => {} } }}
-      >
-        <DrawerLayout />
-      </ScalprumProvider>
+      <DrawerLayout />
     );
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();

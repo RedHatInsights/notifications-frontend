@@ -3,7 +3,7 @@ import { defineConfig } from 'cypress';
 
 export default defineConfig({
   component: {
-    specPattern: 'cypress/component/**/*.cy.{js,jsx,ts,tsx}',
+    specPattern: 'cypress/components/**/*.cy.{js,jsx,ts,tsx}',
     excludeSpecPattern: ['/snapshots/*', '/image_snapshots/*', '/src/*'],
     setupNodeEvents(on, config) {
       on('before:browser:launch', (browser, launchOptions) => {
@@ -21,7 +21,6 @@ export default defineConfig({
         }
       });
       require('@cypress/code-coverage/task')(on, config);
-      config.port = 8002;
       return config;
     },
     video: false,
