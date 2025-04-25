@@ -1,0 +1,13 @@
+name: Close stale issues and PRs
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  call-reusable-workflow:
+    uses: RedHatInsights/shared-workflows/.github/workflows/stale.yml@master
+    with:
+      days-before-stale: 90
