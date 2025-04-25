@@ -22,11 +22,12 @@ export const eventTypesStep = () => ({
       isVisibleOnReview: false,
       name: 'product-family',
       label: 'Product family',
-      initialValue: 'openshift',
+      initialValue: 'rhel',
       options: [
-        { label: 'OpenShift', value: 'openshift' },
         { label: 'Red Hat Enterprise Linux', value: 'rhel' },
         { label: 'Console', value: 'console' },
+        { label: 'OpenShift', value: 'openshift' },
+        { label: 'Subscription Services', value: 'subscription-services' },
       ],
     },
     {
