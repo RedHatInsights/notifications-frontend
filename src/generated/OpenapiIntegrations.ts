@@ -190,7 +190,7 @@ export namespace Schemas {
     bearerAuthentication?: string | undefined | null;
     disableSslVerification: boolean;
     method: HttpType;
-    secretToken?: string | undefined | null;
+    secret_token?: string | undefined | null;
     url: string;
   };
 

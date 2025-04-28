@@ -75,7 +75,7 @@ const toIntegrationWebhook = (
   ...integrationBase,
   url: properties?.url ?? '',
   sslVerificationEnabled: !properties?.disableSslVerification,
-  secretToken: toSecretToken(properties?.secretToken),
+  secretToken: toSecretToken(properties?.secret_token),
   method: properties?.method ?? Schemas.HttpType.Enum.GET,
 });
 
@@ -86,7 +86,7 @@ const toIntegrationAnsible = (
   ...integrationBase,
   url: properties?.url ?? '',
   sslVerificationEnabled: !properties?.disableSslVerification,
-  secretToken: toSecretToken(properties?.secretToken),
+  secretToken: toSecretToken(properties?.secret_token),
   method: properties?.method ?? Schemas.HttpType.Enum.POST,
 });
 
