@@ -231,56 +231,58 @@ spec:
       workspaces:
       - name: basic-auth
         workspace: git-auth
-    - name: run-unit-tests
-      description: Validates frontend unit tests
+    - description: Validates frontend unit tests
+      name: run-unit-tests
       params:
-        - name: SOURCE_ARTIFACT
-          value: $(tasks.clone-repository-oci-ta.results.SOURCE_ARTIFACT)
+      - name: SOURCE_ARTIFACT
+        value: $(tasks.clone-repository-oci-ta.results.SOURCE_ARTIFACT)
       runAfter:
-        - clone-repository-oci-ta
+      - clone-repository-oci-ta
+      taskSpec:
+        metadata: {}
+        params:
+        - description: The Trusted Artifact URI pointing to the artifact with the
+            application source code.
+          name: SOURCE_ARTIFACT
+          type: string
+        spec: null
+        stepTemplate:
+          computeResources: {}
+          volumeMounts:
+          - mountPath: /var/workdir
+            name: workdir
+        steps:
+        - args:
+          - use
+          - $(params.SOURCE_ARTIFACT)=/var/workdir
+          computeResources: {}
+          image: quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:9b180776a41d9a22a1c51539f1647c60defbbd55b44bbebdd4130e33512d8b0d
+          name: use-trusted-artifact
+        - computeResources:
+            limits:
+              cpu: "2"
+              memory: 4Gi
+            requests:
+              cpu: "2"
+              memory: 4Gi
+          image: registry.access.redhat.com/ubi8/nodejs-20
+          name: unit-tests
+          script: |
+            #!/bin/bash
+            set -ex
+
+            npm install
+            npm run lint
+            npm test --  --runInBand --no-cache
+          securityContext:
+            runAsUser: 0
+          workingDir: /var/workdir
+        volumes:
+        - emptyDir: {}
+          name: workdir
       workspaces:
       - name: basic-auth
         workspace: git-auth
-      taskSpec:
-        params:
-          - description: The Trusted Artifact URI pointing to the artifact with the application source code.
-            name: SOURCE_ARTIFACT
-            type: string
-        volumes:
-          # New volume to store a copy of the source code accessible only to this Task.
-          - name: workdir
-            emptyDir: {}
-        stepTemplate:
-          volumeMounts:
-            - mountPath: /var/workdir
-              name: workdir
-              readOnly: false
-        sidecars:
-        steps:
-          - name: use-trusted-artifact
-            image: quay.io/redhat-appstudio/build-trusted-artifacts:latest@sha256:9b180776a41d9a22a1c51539f1647c60defbbd55b44bbebdd4130e33512d8b0d
-            args:
-              - use
-              - $(params.SOURCE_ARTIFACT)=/var/workdir
-          - image: registry.access.redhat.com/ubi8/nodejs-20
-            workingDir: /var/workdir
-            name: unit-tests
-            computeResources:
-              requests:
-                memory: 4Gi
-                cpu: 2000m
-              limits:
-                memory: 4Gi
-                cpu: 2000m
-            securityContext:
-              runAsUser: 0
-            script: |
-              #!/bin/bash
-              set -ex
-              
-              npm install
-              npm run lint
-              npm test --  --runInBand --no-cache
     - name: build-container
       params:
       - name: IMAGE
@@ -603,7 +605,8 @@ spec:
       optional: true
     - name: netrc
       optional: true
-  taskRunTemplate: {}
+  taskRunTemplate:
+    serviceAccountName: build-pipeline-notifications-frontend
   workspaces:
   - name: workspace
     volumeClaimTemplate:
