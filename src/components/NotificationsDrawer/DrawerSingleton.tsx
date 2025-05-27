@@ -1,6 +1,5 @@
 import { Access, AccessApi } from '@redhat-cloud-services/rbac-client';
 import axios from 'axios';
-
 import { getDateDaysAgo } from '../UtcDate';
 
 import { getBundleFacets } from '../../api/helpers/notifications/bundle-facets-helper';
@@ -11,6 +10,7 @@ import {
   FilterConfigItem,
   NotificationData,
   NotificationDrawerState,
+  isNotificationData,
 } from '../../types/Drawer';
 
 const rbacApi = new AccessApi(undefined, '/api/rbac/v1', axios.create());
@@ -76,6 +76,16 @@ export class DrawerSingleton {
     await this.fetchFilterConfig(mounted);
     await this.getNotifications();
     await this.setNotificationsPermissions(mounted, permissions);
+    // We can't use hooks here, so we need to use the public chrome API to subscribe to events
+    // eslint-disable-next-line rulesdir/no-chrome-api-call-from-window
+    window.insights.chrome.addWsEventListener(
+      'com.redhat.console.notifications.drawer',
+      (event) => {
+        if (isNotificationData(event.data)) {
+          this.addNotification(event.data);
+        }
+      }
+    );
   };
 
   public static getState() {
