@@ -35,3 +35,15 @@ export interface FilterConfigItem {
   title: string;
   value: string;
 }
+
+export function isNotificationData(data: unknown): data is NotificationData {
+  return (
+    typeof data === 'object' &&
+    data !== null &&
+    'id' in data &&
+    'title' in data &&
+    'description' in data &&
+    'source' in data &&
+    'created' in data
+  );
+}
