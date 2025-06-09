@@ -18,5 +18,3 @@ export const join: JoinType = (elements, GlueComponent) => {
     return joined;
   }, initialValue);
 };
-
-export const joinClasses = (...args: string[]) => args.join(' ');

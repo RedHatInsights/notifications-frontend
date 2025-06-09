@@ -9,12 +9,6 @@ type UseDebouncedStateReturn<T> = [
   () => boolean | null
 ];
 
-export type UseDebouncedStateType<T> = (
-  initialValue: T,
-  ms: number,
-  useStateHook?: UseStateType
-) => UseDebouncedStateReturn<T>;
-
 export const useDebouncedState = <T>(
   initialValue: T,
   ms: number,

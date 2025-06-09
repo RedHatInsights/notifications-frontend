@@ -58,18 +58,4 @@ interface Window {
 
 declare const window: Window;
 
-let insights: InsightsType | undefined = undefined;
-
-export const waitForInsights = async (): Promise<InsightsType> => {
-  if (!insights) {
-    while (!Object.prototype.hasOwnProperty.call(window, 'insights')) {
-      await new Promise((timeout) => setTimeout(timeout, 250));
-    }
-
-    insights = window.insights;
-  }
-
-  return insights;
-};
-
 export const getInsights = (): InsightsType => window.insights;

@@ -9,13 +9,6 @@ export type UseUrlStateResponse<T> = [
 export type Serializer<T> = (value: T | undefined) => string | undefined;
 export type Deserializer<T> = (value: string | undefined) => T | undefined;
 
-export type UseUrlStateType<T> = (
-  name: string,
-  serializer: Serializer<T>,
-  deserializer: Deserializer<T>,
-  initialValue?: T
-) => UseUrlStateResponse<T>;
-
 export const useUrlState = <T>(
   name: string,
   serializer: Serializer<T>,
@@ -106,9 +99,5 @@ const serializer = (value: string | undefined) =>
 const deserializer = (value: string | undefined) =>
   value === undefined ? '' : value;
 
-export type UseUrlStateStringType = (
-  name: string,
-  initialValue?: string
-) => UseUrlStateResponse<string>;
 export const useUrlStateString = (name: string, initialValue?: string) =>
   useUrlState<string>(name, serializer, deserializer, initialValue);
