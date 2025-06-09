@@ -11,7 +11,6 @@ import {
   UUID,
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
-import { format } from 'react-string-format';
 import { useNotification } from '../../../utils/AlertUtils';
 
 export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {

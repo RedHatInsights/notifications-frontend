@@ -10,15 +10,15 @@ const transformPayload = <FROM, TO>(
     return adapter(payload, status);
   }
 
-  return payload as any;
+  return payload as TO | undefined;
 };
 
 type ExpectedQueryResponse<FROM> = QueryResponse<FROM> & {
-  query: (...args: Array<any>) => Promise<QueryResponse<FROM>>;
+  query: (...args: Array<never>) => Promise<QueryResponse<FROM>>;
 };
 
 type ExpectedMutateResponse<FROM> = QueryResponse<FROM> & {
-  mutate: (...args: Array<any>) => Promise<QueryResponse<FROM>>;
+  mutate: (...args: Array<never>) => Promise<QueryResponse<FROM>>;
 };
 
 type UseTransformQueryResponseTypeQuery<
@@ -55,11 +55,11 @@ interface UseTransformQueryResponseType {
 }
 
 const isQuery = <T>(response): response is ExpectedQueryResponse<T> => {
-  return response.hasOwnProperty('query');
+  return Object.prototype.hasOwnProperty.call(response, 'query');
 };
 
 const isMutate = <T>(response): response is ExpectedMutateResponse<T> => {
-  return response.hasOwnProperty('mutate');
+  return Object.prototype.hasOwnProperty.call(response, 'mutate');
 };
 
 export const useTransformQueryResponse: UseTransformQueryResponseType = <

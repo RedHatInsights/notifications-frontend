@@ -11,10 +11,7 @@ export const useSyncInterval = (
     let handler;
     let destructorCalled = false;
     const repeatLoop = async () => {
-      const response = callback();
-      if (response && (response as any).then) {
-        await response;
-      }
+      await callback();
 
       if (!destructorCalled) {
         handler = setTimeout(repeatLoop, ms);

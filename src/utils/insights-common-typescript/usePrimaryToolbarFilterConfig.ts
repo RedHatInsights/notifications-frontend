@@ -11,7 +11,6 @@ import {
   SetFilters,
   StandardFilterEnum,
 } from './Filters';
-import { FilterChipGroup } from '@redhat-cloud-services/frontend-components/FilterChips/FilterChips';
 
 const getFilterItemType = <FilterColumn extends StandardFilterEnum<never>>(
   column: EnumElement<FilterColumn>,

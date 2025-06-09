@@ -31,7 +31,7 @@ export const useEnvironmentFlag: EnvironmentFlagSignature = <T>(
 
   // Both elements can't be undefined because we are guarded by EnvironmentFlagSignature.
   // But we have to typecast because current declaration has both as possible undefined.
-  return useFeatureFlag(resolver, ifTrue, ifFalse as any);
+  return useFeatureFlag(resolver, ifTrue, ifFalse as FeatureFlagCallback<T>);
 };
 
 type InsightsEnvironmentFlagSignature = {

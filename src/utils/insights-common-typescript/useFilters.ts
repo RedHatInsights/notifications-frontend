@@ -86,11 +86,14 @@ export const useFilters = <FilterColumn extends StandardFilterEnum<never>>(
         if (setFilters[column]) {
           setFilters[column]((prev) => {
             if (typeof prev === 'string') {
-              if ((value as any).includes(prev)) {
+              if (
+                (typeof value === 'string' || Array.isArray(value)) &&
+                value.includes(prev)
+              ) {
                 return '';
               }
-            } else {
-              return prev.filter((p) => !(value as any).includes(p));
+            } else if (typeof value === 'string' || Array.isArray(value)) {
+              return prev.filter((p) => !value.includes(p));
             }
           });
         } else {
