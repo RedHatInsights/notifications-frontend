@@ -1,4 +1,3 @@
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import {
   validatedResponse,
   validationResponseTransformer,
@@ -7,6 +6,7 @@ import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { BehaviorGroup, UUID } from '../../types/Notification';
+import { useTransformQueryResponse } from '../../utils/insights-common-typescript';
 
 type Payload =
   | Operations.NotificationResource$v1CreateBehaviorGroup.Payload

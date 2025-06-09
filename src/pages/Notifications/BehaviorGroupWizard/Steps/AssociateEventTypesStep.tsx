@@ -1,5 +1,4 @@
 import { Text, TextContent, Title } from '@patternfly/react-core';
-import { Form, Page } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import produce from 'immer';
 import * as React from 'react';
@@ -21,6 +20,7 @@ import {
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType, Facet } from '../../../../types/Notification';
 import { useEventTypesPage } from '../../hooks/useEventTypesPage';
+import { Form, Page } from '../../../../utils/insights-common-typescript';
 
 const title = 'Associate event types';
 

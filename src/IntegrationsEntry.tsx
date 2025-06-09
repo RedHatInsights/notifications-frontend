@@ -1,8 +1,4 @@
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
-import {
-  createFetchingClient,
-  getInsights,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { enableMapSet } from 'immer';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import React from 'react';
@@ -13,6 +9,8 @@ import messages from '../locales/data.json';
 import IntegrationsApp from './app/IntegrationsApp';
 import { AppEntryProps } from './AppEntry';
 import { getNotificationsRegistry } from './store/Store';
+import { getInsights } from './utils/insights-common-typescript/InsightsType';
+import { createFetchingClient } from './utils/insights-common-typescript';
 
 enableMapSet();
 

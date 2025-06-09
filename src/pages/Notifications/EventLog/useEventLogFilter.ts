@@ -1,12 +1,12 @@
-import {
-  useFilters,
-  useUrlStateMultipleOptions,
-  useUrlStateString,
-} from '@redhat-cloud-services/insights-common-typescript';
 import assertNever from 'assert-never';
 import { useMemo } from 'react';
 
 import { EventLogFilterColumn } from '../../../components/Notifications/EventLog/EventLogFilter';
+import {
+  useFilters,
+  useUrlStateMultipleOptions,
+  useUrlStateString,
+} from '../../../utils/insights-common-typescript';
 
 const DEBOUNCE_MS = 250;
 

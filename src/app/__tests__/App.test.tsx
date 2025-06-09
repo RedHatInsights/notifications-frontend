@@ -1,9 +1,5 @@
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
-import {
-  Rbac,
-  fetchRBAC,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
@@ -16,6 +12,7 @@ import {
 } from '../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
+import { Rbac, fetchRBAC } from '../../utils/insights-common-typescript';
 
 jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
   const real = jest.requireActual(

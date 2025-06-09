@@ -2,7 +2,7 @@ import {
   ClearFilters,
   Filters,
   SetFilters,
-} from '@redhat-cloud-services/insights-common-typescript';
+} from '../../../utils/insights-common-typescript/Filters';
 
 export enum EventLogFilterColumn {
   EVENT = 'event',

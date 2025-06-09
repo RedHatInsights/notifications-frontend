@@ -1,12 +1,12 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { IntegrationConnectionAttempt } from '../../../types/Integration';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { ConnectionAttempt, ConnectionAttemptType } from './ConnectionAttempt';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
-interface ConnectionAlertProps extends OuiaComponentProps {
+interface ConnectionAlertProps extends OuiaProps {
   attempts: Array<IntegrationConnectionAttempt>;
   alertVariant: AlertVariant;
   description: string;

@@ -1,0 +1,1 @@
+export { mockInsights } from './MockInsights';

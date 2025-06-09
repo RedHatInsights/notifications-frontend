@@ -1,9 +1,3 @@
-import {
-  Filter,
-  Operator,
-  arrayValue,
-  stringValue,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback } from 'react';
 
 import {
@@ -11,6 +5,12 @@ import {
   NotificationFilters,
 } from '../../../components/Notifications/Filter';
 import { Facet } from '../../../types/Notification';
+import {
+  Filter,
+  Operator,
+  arrayValue,
+  stringValue,
+} from '../../../utils/insights-common-typescript';
 
 export const useEventTypesFilterBuilder = (
   bundle: Facet,

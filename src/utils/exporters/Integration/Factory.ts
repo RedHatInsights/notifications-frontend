@@ -1,12 +1,9 @@
-import {
-  Exporter,
-  ExporterType,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 
 import { UserIntegration } from '../../../types/Integration';
 import { IntegrationExporterCsv } from './Csv';
 import { IntegrationExporterJson } from './Json';
+import { Exporter, ExporterType } from '../../insights-common-typescript';
 
 export const integrationExporterFactory = (
   type: ExporterType

@@ -1,5 +1,4 @@
 import { Text, TextContent, Title } from '@patternfly/react-core';
-import { Form } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
@@ -8,6 +7,7 @@ import { EditBehaviorGroupForm } from '../../../../components/Notifications/Beha
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { ActionsArray } from '../../../../schemas/Integrations/Notifications';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
+import { Form } from '../../../../utils/insights-common-typescript';
 
 const title = 'Actions and recipients';
 
