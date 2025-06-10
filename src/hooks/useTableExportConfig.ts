@@ -2,7 +2,7 @@ import * as React from 'react';
 import {
   ExporterType,
   exporterTypeFromString,
-} from '../utils/insights-common-typescript/Exporters';
+} from '../utils/insights-common-typescript';
 
 type OnExport = (type: ExporterType) => void;
 

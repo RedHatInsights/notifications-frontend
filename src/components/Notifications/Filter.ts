@@ -2,7 +2,7 @@ import {
   ClearFilters,
   Filters,
   SetFilters,
-} from '../../utils/insights-common-typescript/Filters';
+} from '../../utils/insights-common-typescript';
 
 export enum NotificationFilterColumn {
   NAME = 'name',

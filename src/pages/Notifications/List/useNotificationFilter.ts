@@ -6,7 +6,7 @@ import {
   useUrlStateMultipleOptions,
   useUrlStateString,
 } from '../../../utils/insights-common-typescript';
-import { useFilters } from '../../../utils/insights-common-typescript/useFilters';
+import { useFilters } from '../../../utils/insights-common-typescript';
 
 const DEBOUNCE_MS = 250;
 

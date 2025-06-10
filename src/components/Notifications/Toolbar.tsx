@@ -19,11 +19,11 @@ import {
 } from './Filter';
 import {
   ExporterType,
+  OptionalColumnsMetada,
   getInsights,
   useInsightsEnvironmentFlag,
   usePrimaryToolbarFilterConfig,
 } from '../../utils/insights-common-typescript';
-import { OptionalColumnsMetada } from '../../utils/insights-common-typescript/usePrimaryToolbarFilterConfig';
 
 export enum SelectionCommand {
   NONE,

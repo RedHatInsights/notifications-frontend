@@ -9,8 +9,10 @@ import messages from '../locales/data.json';
 import IntegrationsApp from './app/IntegrationsApp';
 import { AppEntryProps } from './AppEntry';
 import { getNotificationsRegistry } from './store/Store';
-import { getInsights } from './utils/insights-common-typescript/InsightsType';
-import { createFetchingClient } from './utils/insights-common-typescript';
+import {
+  createFetchingClient,
+  getInsights,
+} from './utils/insights-common-typescript';
 
 enableMapSet();
 

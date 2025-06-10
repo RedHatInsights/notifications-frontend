@@ -20,7 +20,7 @@ import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
-import { getInsights } from '../src/utils/insights-common-typescript/InsightsType';
+import { getInsights } from '../src/utils/insights-common-typescript';
 
 let setup = false;
 let client;
