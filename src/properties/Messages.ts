@@ -43,7 +43,7 @@ const MutableMessages = {
           'Configure the integration between your Splunk instance' +
           ' and Red Hat Insights to allow you to receive events from Insights.',
         helpUrl:
-          'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2022/html-single' +
+          'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest' +
           '/configuring_notifications_and_integrations_on_the_red_hat_hybrid_cloud_console',
       },
     },
