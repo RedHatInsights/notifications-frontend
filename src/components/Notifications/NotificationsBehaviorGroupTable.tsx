@@ -154,4 +154,4 @@ export const NotificationsBehaviorGroupTable =
         </Tbody>
       </TableComposable>
     );
-  }, 'Notifications/Table');
+  }, 'Notifications/Notifications/Table');

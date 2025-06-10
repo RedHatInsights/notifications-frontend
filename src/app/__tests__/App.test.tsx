@@ -14,10 +14,8 @@ import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
 import { Rbac, fetchRBAC } from '../../utils/insights-common-typescript';
 
-jest.mock('@redhat-cloud-services/insights-common-typescript', () => {
-  const real = jest.requireActual(
-    '@redhat-cloud-services/insights-common-typescript'
-  );
+jest.mock('../../utils/insights-common-typescript', () => {
+  const real = jest.requireActual('../../utils/insights-common-typescript');
   return {
     ...real,
     fetchRBAC: jest.fn(real.fetchRBAC),

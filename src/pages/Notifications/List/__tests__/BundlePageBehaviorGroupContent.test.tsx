@@ -26,6 +26,8 @@ import EventType = Schemas.EventType;
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import userEvent from '@testing-library/user-event';
 import Endpoint = Schemas.Endpoint;
+import { Provider } from 'react-redux';
+import { getNotificationsRegistry } from '../../../../store/Store';
 
 beforeEach(() => {
   jest.mock('react-router-dom', () => ({
@@ -371,15 +373,18 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
   });
 
   it('Opens in the correct tab if parameter is present', async () => {
+    const store = getNotificationsRegistry().getStore();
     render(
-      <MemoryRouter
-        initialEntries={['/settings/notifications?activeTab=behaviorGroups']}
-      >
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />
-      </MemoryRouter>
+      <Provider store={store}>
+        <MemoryRouter
+          initialEntries={['/settings/notifications?activeTab=behaviorGroups']}
+        >
+          <BundlePageBehaviorGroupContent
+            applications={applications}
+            bundle={bundle}
+          />
+        </MemoryRouter>
+      </Provider>
     );
 
     expect(screen.getByText('Behavior groups')).toBeInTheDocument();
