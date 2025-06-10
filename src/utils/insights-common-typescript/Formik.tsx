@@ -55,18 +55,6 @@ export const onChangePFAdapter = <T = React.FormEvent<HTMLInputElement>,>(
   };
 };
 
-type HandleChangeType = (
-  e: boolean | React.ChangeEvent<unknown>,
-  maybePath?: string
-) => void;
-
-export const onChangePFAdapterCheckbox = (field: FieldInputProps<boolean>) => {
-  return (value: boolean, e: React.FormEvent<HTMLInputElement>) => {
-    const onChange: HandleChangeType = field.onChange;
-    return onChange(value, (e.target as HTMLInputElement).name);
-  };
-};
-
 export const FormTextInput: React.FunctionComponent<FormTextInputProps> = (
   props
 ) => {
