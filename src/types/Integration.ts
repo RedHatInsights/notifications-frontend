@@ -29,7 +29,7 @@ export const UserIntegrationType = {
 
 export enum IntegrationCategory {
   COMMUNICATIONS = 'Communications',
-  REPORTING = 'Reporting',
+  REPORTING = 'Reporting & automation',
   WEBHOOKS = 'Webhooks',
 }
 
