@@ -1,4 +1,3 @@
-import { ActionModalError } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
@@ -22,6 +21,7 @@ import {
 } from '../../../types/Integration';
 import { IntegrationRef } from '../../../types/Notification';
 import { useNotification } from '../../../utils/AlertUtils';
+import { ActionModalError } from '../../../utils/insights-common-typescript';
 
 interface CreatePageProps {
   isEdit: boolean;

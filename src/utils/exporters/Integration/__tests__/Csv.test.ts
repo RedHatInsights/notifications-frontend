@@ -1,8 +1,7 @@
-import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
-
 import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { IntegrationType } from '../../../../types/Integration';
 import { IntegrationExporterCsv } from '../Csv';
+import { ExporterType } from '../../../insights-common-typescript';
 
 describe('src/utils/exporters/Policy/Csv', () => {
   it('has csv type', () => {

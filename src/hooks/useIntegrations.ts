@@ -1,10 +1,9 @@
+import { getIntegrationActions } from '../config/Config';
+import { IntegrationCategory, UserIntegrationType } from '../types/Integration';
 import {
   getInsights,
   getInsightsEnvironment,
-} from '@redhat-cloud-services/insights-common-typescript';
-
-import { getIntegrationActions } from '../config/Config';
-import { IntegrationCategory, UserIntegrationType } from '../types/Integration';
+} from '../utils/insights-common-typescript';
 
 export const useIntegrations = (
   category?: IntegrationCategory

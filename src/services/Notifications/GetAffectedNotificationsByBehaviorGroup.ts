@@ -1,4 +1,3 @@
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import {
   validatedResponse,
   validationResponseTransformer,
@@ -8,6 +7,7 @@ import { useQuery } from 'react-fetching-library';
 import { Operations } from '../../generated/OpenapiNotifications';
 import { toNotifications } from '../../types/adapters/NotificationAdapter';
 import { UUID } from '../../types/Notification';
+import { useTransformQueryResponse } from '../../utils/insights-common-typescript';
 
 const getAffectedNotificationsByBehaviorGroupAction = (id: UUID) => {
   return Operations.NotificationResource$v1GetEventTypesAffectedByRemovalOfBehaviorGroup.actionCreator(

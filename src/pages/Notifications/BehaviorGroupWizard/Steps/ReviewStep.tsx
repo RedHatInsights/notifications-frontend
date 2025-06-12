@@ -10,7 +10,6 @@ import {
   TextVariants,
   Title,
 } from '@patternfly/react-core';
-import { Form } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 
@@ -18,6 +17,7 @@ import { BehaviorGroupActionsSummary } from '../../../../components/Notification
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType } from '../../../../types/Notification';
+import { Form } from '../../../../utils/insights-common-typescript';
 
 const title = 'Review';
 

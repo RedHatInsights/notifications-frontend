@@ -1,4 +1,3 @@
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import {
   validatedResponse,
   validationResponseTransformer,
@@ -7,6 +6,7 @@ import { useParameterizedQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { toBehaviorGroup } from '../../types/adapters/BehaviorGroupAdapter';
+import { useTransformQueryResponse } from '../../utils/insights-common-typescript';
 
 const behaviorGroupsForEndpointActionCreator = (integrationId: string) => {
   return Operations.NotificationResource$v1GetBehaviorGroupsAffectedByRemovalOfEndpoint.actionCreator(

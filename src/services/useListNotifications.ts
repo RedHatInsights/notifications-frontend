@@ -1,8 +1,4 @@
 import {
-  Page,
-  useTransformQueryResponse,
-} from '@redhat-cloud-services/insights-common-typescript';
-import {
   validatedResponse,
   validationResponseTransformer,
 } from 'openapi2typescript';
@@ -13,6 +9,10 @@ import { Operations } from '../generated/OpenapiNotifications';
 import { toNotifications } from '../types/adapters/NotificationAdapter';
 import { useEffect, useState } from 'react';
 import { getEventTypes } from '../api/helpers/notifications/event-types-helper';
+import {
+  Page,
+  useTransformQueryResponse,
+} from '../utils/insights-common-typescript';
 
 export const listNotificationsActionCreator = (pager?: Page) => {
   const query = (pager ?? Page.defaultPage()).toQuery();

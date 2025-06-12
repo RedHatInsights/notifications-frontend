@@ -8,16 +8,16 @@ import {
   Stack,
   StackItem,
 } from '@patternfly/react-core';
-import {
-  ActionModalProps,
-  DeleteModal,
-  DeleteModalProps,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { useOnDeleteWrapper } from '../../../hooks/useOnDeleteWrapper';
 import { OnDelete } from '../../../types/Callbacks';
 import { BehaviorGroup, Notification } from '../../../types/Notification';
+import {
+  ActionModalProps,
+  DeleteModal,
+  DeleteModalProps,
+} from '../../../utils/insights-common-typescript';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 

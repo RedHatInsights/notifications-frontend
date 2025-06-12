@@ -17,7 +17,7 @@ import {
   KebabToggle,
 } from '@patternfly/react-core/deprecated';
 import { LockIcon } from '@patternfly/react-icons';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import * as React from 'react';
 import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
@@ -30,7 +30,7 @@ const cardClassName = style({
   height: '100%',
 });
 
-export interface BehaviorGroupProps extends OuiaComponentProps {
+export interface BehaviorGroupProps extends OuiaProps {
   behaviorGroup?: BehaviorGroup;
   onEdit?: (behaviorGroup: BehaviorGroup) => void;
   onDelete?: (behaviorGroup: BehaviorGroup) => void;

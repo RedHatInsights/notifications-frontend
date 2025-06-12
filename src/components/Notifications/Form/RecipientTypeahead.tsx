@@ -6,7 +6,6 @@ import {
   SelectOptionObject,
   SelectVariant,
 } from '@patternfly/react-core/deprecated';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
@@ -21,8 +20,9 @@ import { useRecipientContext } from '../RecipientContext';
 import { RecipientOption } from './RecipientOption';
 import { useRecipientOptionMemo } from './useRecipientOptionMemo';
 import { useTypeaheadReducer } from './useTypeaheadReducer';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
-export interface RecipientTypeaheadProps extends OuiaComponentProps {
+export interface RecipientTypeaheadProps extends OuiaProps {
   selected: ReadonlyArray<BaseNotificationRecipient>;
   onSelected: (value: RecipientOption) => void;
   isDisabled?: boolean;

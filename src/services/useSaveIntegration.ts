@@ -1,4 +1,3 @@
-import { useTransformQueryResponse } from '@redhat-cloud-services/insights-common-typescript';
 import { useMutation } from 'react-fetching-library';
 import { Operations, Schemas } from '../generated/OpenapiIntegrations';
 import {
@@ -10,6 +9,7 @@ import {
   NewIntegration,
   UserIntegration,
 } from '../types/Integration';
+import { useTransformQueryResponse } from '../utils/insights-common-typescript';
 
 export const createIntegrationActionCreator = (integration: NewIntegration) => {
   return Operations.EndpointResource$v1CreateEndpoint.actionCreator({

@@ -1,4 +1,3 @@
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
 import {
@@ -12,8 +11,9 @@ import { IntegrationTypeGoogleChatForm } from './IntegrationTypeGoogleChatForm';
 import { IntegrationTypeHttpForm } from './IntegrationTypeHttpForm';
 import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
 import { IntegrationTypeTeamsForm } from './IntegrationTypeTeamsForm';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
-export interface IntegrationTypeForm extends OuiaComponentProps {
+export interface IntegrationTypeForm extends OuiaProps {
   type: UserIntegrationType;
 }
 

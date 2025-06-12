@@ -1,4 +1,3 @@
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { style } from 'typestyle';
 
@@ -14,13 +13,14 @@ import { IntegrationExpandedContent } from './ExpandedContent/IntegrationExpande
 import { SlackExpandedContent } from './ExpandedContent/SlackExpandedContent';
 import { TeamsExpandedContent } from './ExpandedContent/TeamsExpandedContent';
 import { PagerDutyExpandedContent } from './ExpandedContent/PagerDutyExpandedContent';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
 export const expandedContentTitleClass = style({
   fontWeight: 400,
 });
 
 export interface ExpandedContentProps<T extends IntegrationType>
-  extends OuiaComponentProps {
+  extends OuiaProps {
   integration: TypedIntegration<T>;
 }
 

@@ -1,8 +1,3 @@
-import {
-  Filter,
-  Operator,
-  Page,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useContext } from 'react';
 import { ClientContext } from 'react-fetching-library';
@@ -14,6 +9,7 @@ import {
 import { UserIntegrationType } from '../../types/Integration';
 import { IntegrationRef } from '../../types/Notification';
 import { GetIntegrations } from './RecipientContext';
+import { Filter, Operator, Page } from '../../utils/insights-common-typescript';
 
 export const useGetIntegrations = (): GetIntegrations => {
   const { query } = useContext(ClientContext);

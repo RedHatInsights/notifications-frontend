@@ -1,8 +1,4 @@
 import {
-  Page,
-  useTransformQueryResponse,
-} from '@redhat-cloud-services/insights-common-typescript';
-import {
   validatedResponse,
   validationResponseTransformer,
 } from 'openapi2typescript';
@@ -11,6 +7,10 @@ import { useParameterizedQuery, useQuery } from 'react-fetching-library';
 import { Operations } from '../generated/OpenapiIntegrations';
 import { toIntegrations } from '../types/adapters/IntegrationAdapter';
 import { IntegrationType, UserIntegration } from '../types/Integration';
+import {
+  Page,
+  useTransformQueryResponse,
+} from '../utils/insights-common-typescript';
 
 export const listIntegrationsActionCreator = (pager?: Page) => {
   const query = (pager ?? Page.defaultPage()).toQuery();

@@ -1,11 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, testing-library/prefer-screen-queries */
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
 import {
-  Environment,
-  InsightsType,
-  getInsights,
-} from '@redhat-cloud-services/insights-common-typescript';
-import {
   getAllByLabelText,
   getAllByRole,
   getAllByText,
@@ -15,9 +10,13 @@ import {
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { mockInsights } from 'insights-common-typescript-dev';
 import * as React from 'react';
 import { MemoryRouterProps, RouteProps } from 'react-router';
+import {
+  Environment,
+  InsightsType,
+  getInsights,
+} from '../../../../utils/insights-common-typescript';
 
 import {
   appWrapperCleanup,
@@ -32,6 +31,7 @@ import { NotificationsListPage } from '../Page';
 import Facet = Schemas.Facet;
 import EventType = Schemas.EventType;
 import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupContent';
+import { mockInsights } from '../../../../utils/insights-common-typescript';
 
 type RouterAndRoute = {
   router: MemoryRouterProps;

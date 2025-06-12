@@ -3,12 +3,6 @@ import './App.scss';
 import { Switch } from '@patternfly/react-core';
 import Maintenance from '@redhat-cloud-services/frontend-components/Maintenance';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import {
-  InsightsEnvDetector,
-  RenderIfTrue,
-  getInsights,
-  toUtc,
-} from '@redhat-cloud-services/insights-common-typescript';
 import format from 'date-fns/format';
 import * as React from 'react';
 
@@ -20,6 +14,12 @@ import { AppContext } from './AppContext';
 import { AppSkeleton } from './AppSkeleton';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
+import {
+  InsightsEnvDetector,
+  RenderIfTrue,
+  getInsights,
+  toUtc,
+} from '../utils/insights-common-typescript';
 
 const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';

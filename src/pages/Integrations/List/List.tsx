@@ -1,12 +1,3 @@
-import {
-  ExporterType,
-  Filter,
-  Operator,
-  Page,
-  addDangerNotification,
-  stringValue,
-  useSort,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { format } from 'date-fns';
 import inBrowserDownload from 'in-browser-download';
 import * as React from 'react';
@@ -51,6 +42,15 @@ import {
   DrawerContentBody,
 } from '@patternfly/react-core';
 import IntegrationsDrawer from '../../../components/Integrations/IntegrationsDrawer';
+import { useNotification } from '../../../utils/AlertUtils';
+import {
+  ExporterType,
+  Filter,
+  Operator,
+  Page,
+  stringValue,
+  useSort,
+} from '../../../utils/insights-common-typescript';
 
 const userIntegrationCopier = (userIntegration: Partial<UserIntegration>) => ({
   ...userIntegration,
@@ -84,6 +84,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     rbac: { canWriteIntegrationsEndpoints },
   } = useContext(AppContext);
 
+  const { addDangerNotification } = useNotification();
   const integrationFilter = useIntegrationFilter();
   const userIntegrations = useIntegrations(category);
   const integrationFilterBuilder = React.useCallback(
