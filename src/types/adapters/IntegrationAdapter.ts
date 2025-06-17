@@ -113,9 +113,10 @@ const toIntegrationEmail = (
   properties: Schemas.SystemSubscriptionProperties
 ): IntegrationEmailSubscription => ({
   ...integrationBase,
-  ignorePreferences: properties.ignorePreferences,
-  groupId: properties.groupId === null ? undefined : properties.groupId,
-  onlyAdmin: properties.onlyAdmins === null ? undefined : properties.onlyAdmins,
+  ignorePreferences: properties.ignore_preferences,
+  groupId: properties.group_id === null ? undefined : properties.group_id,
+  onlyAdmin:
+    properties.only_admins === null ? undefined : properties.only_admins,
 });
 
 const toIntegrationDrawer = (
@@ -123,9 +124,9 @@ const toIntegrationDrawer = (
   properties: Schemas.SystemSubscriptionProperties
 ): IntegrationDrawer => ({
   ...integrationBase,
-  ignorePreferences: properties.ignorePreferences,
-  groupId: properties.groupId === null ? undefined : properties.groupId,
-  onlyAdmin: properties.onlyAdmins,
+  ignorePreferences: properties.ignore_preferences,
+  groupId: properties.group_id === null ? undefined : properties.group_id,
+  onlyAdmin: properties.only_admins,
 });
 
 const toIntegrationPagerDuty = (
@@ -243,18 +244,18 @@ export const toIntegrationProperties = (
       const integrationEmail: IntegrationEmailSubscription =
         integration as IntegrationEmailSubscription;
       return {
-        onlyAdmins: integrationEmail.onlyAdmin,
-        groupId: integrationEmail.groupId,
-        ignorePreferences: integrationEmail.ignorePreferences,
+        only_admins: integrationEmail.onlyAdmin,
+        group_id: integrationEmail.groupId,
+        ignore_preferences: integrationEmail.ignorePreferences,
       };
     }
     case IntegrationType.DRAWER: {
       const integrationDrawer: IntegrationDrawer =
         integration as IntegrationDrawer;
       return {
-        onlyAdmins: integrationDrawer.onlyAdmin,
-        groupId: integrationDrawer.groupId,
-        ignorePreferences: integrationDrawer.ignorePreferences,
+        only_admins: integrationDrawer.onlyAdmin,
+        group_id: integrationDrawer.groupId,
+        ignore_preferences: integrationDrawer.ignorePreferences,
       };
     }
     case IntegrationType.PAGERDUTY: {

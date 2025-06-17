@@ -135,7 +135,7 @@ export const EventLogPage: React.FunctionComponent = () => {
           case 'drawer': {
             const properties = endpoint.payload.value
               .properties as Schemas.SystemSubscriptionProperties;
-            if (properties.onlyAdmins) {
+            if (properties.only_admins) {
               return 'Users: Admin';
             }
 
