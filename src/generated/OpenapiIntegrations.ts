@@ -176,9 +176,9 @@ export namespace Schemas {
   export const SystemSubscriptionProperties =
     zodSchemaSystemSubscriptionProperties();
   export type SystemSubscriptionProperties = {
-    groupId?: UUID | undefined | null;
-    ignorePreferences?: boolean | undefined | null;
-    onlyAdmins?: boolean | undefined | null;
+    group_id?: UUID | undefined | null;
+    ignore_preferences?: boolean | undefined | null;
+    only_admins?: boolean | undefined | null;
   };
 
   export const UUID = zodSchemaUUID();
