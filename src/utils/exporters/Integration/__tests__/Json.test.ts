@@ -1,6 +1,5 @@
-import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
-
 import { IntegrationExporterJson } from '../Json';
+import { ExporterType } from '../../../insights-common-typescript';
 
 describe('src/utils/exporters/Policy/Json', () => {
   it('has json type', () => {

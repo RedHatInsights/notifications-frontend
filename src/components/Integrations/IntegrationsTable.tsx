@@ -13,12 +13,6 @@ import {
   SkeletonTableHead,
 } from '@patternfly/react-component-groups';
 
-import {
-  Direction,
-  OuiaComponentProps,
-  Sort,
-  UseSortReturn,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useIntl } from 'react-intl';
 
@@ -37,6 +31,12 @@ import {
 } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import { getIntegrationIcon } from './IntegrationDetails';
 import { Split, SplitItem } from '@patternfly/react-core';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+import {
+  Direction,
+  Sort,
+  UseSortReturn,
+} from '../../utils/insights-common-typescript';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -44,7 +44,7 @@ export type OnEnable = (
   isChecked: boolean
 ) => void;
 
-interface IntegrationsTableProps extends OuiaComponentProps {
+interface IntegrationsTableProps extends OuiaProps {
   isLoading: boolean;
   loadingCount?: number;
   integrations: IntegrationRow[];

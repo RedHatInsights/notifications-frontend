@@ -1,7 +1,3 @@
-import {
-  Direction,
-  Sort,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { NotificationsTableColumns } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
@@ -11,6 +7,7 @@ import { Facet } from '../../../types/Notification';
 import { SortDirection } from '../../../types/SortDirection';
 import { useNotificationFilter } from '../List/useNotificationFilter';
 import { useEventTypesFilterBuilder } from './useEventTypesFilterBuilder';
+import { Direction, Sort } from '../../../utils/insights-common-typescript';
 
 export const useEventTypesPage = (
   bundle: Facet,

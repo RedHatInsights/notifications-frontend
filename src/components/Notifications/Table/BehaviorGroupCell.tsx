@@ -14,7 +14,6 @@ import {
 } from '@patternfly/react-core/deprecated';
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
-import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
@@ -24,6 +23,7 @@ import {
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
+import { join } from '../../../utils/insights-common-typescript';
 
 interface BehaviorGroupCellProps {
   id: string;

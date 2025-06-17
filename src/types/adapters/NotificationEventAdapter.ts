@@ -1,9 +1,8 @@
-import { fromUtc } from '@redhat-cloud-services/insights-common-typescript';
-
 import { Schemas } from '../../generated/OpenapiNotifications';
 import { NotificationEvent, NotificationEventAction } from '../Event';
 import { UUID } from '../Notification';
 import { getIntegrationType } from './IntegrationAdapter';
+import { fromUtc } from '../../utils/insights-common-typescript';
 
 type ServerEvent = Schemas.EventLogEntry;
 

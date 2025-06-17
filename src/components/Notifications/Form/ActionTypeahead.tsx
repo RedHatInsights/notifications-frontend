@@ -4,7 +4,6 @@ import {
   SelectOptionObject,
   SelectVariant,
 } from '@patternfly/react-core/deprecated/';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -20,6 +19,7 @@ import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { ActionOption } from './ActionOption';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
 const getSelectOptions = (
   availableNotificationTypes: ReadonlyArray<NotificationType>,
@@ -78,7 +78,7 @@ const NoIntegrationConfigured: React.FunctionComponent<
   </>
 );
 
-export interface ActionTypeaheadProps extends OuiaComponentProps {
+export interface ActionTypeaheadProps extends OuiaProps {
   selectedNotifications: ReadonlyArray<NotificationType>;
   action?: Action;
   isDisabled?: boolean;

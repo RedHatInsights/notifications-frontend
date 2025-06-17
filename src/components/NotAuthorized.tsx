@@ -3,7 +3,6 @@ import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
 import NotAuthorized from '@redhat-cloud-services/frontend-components/NotAuthorized';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import { localUrl } from '@redhat-cloud-services/insights-common-typescript';
 import { default as React, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useLocation, useParams } from 'react-router-dom';
@@ -13,6 +12,7 @@ import messages from '../properties/DefinedMessages';
 import { linkTo } from '../Routes';
 import { useGetBundles } from '../services/Notifications/GetBundles';
 import { Facet } from '../types/Notification';
+import { localUrl } from '../utils/insights-common-typescript';
 
 const eventLogService = 'Event Log';
 

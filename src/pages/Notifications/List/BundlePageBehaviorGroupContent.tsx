@@ -1,5 +1,4 @@
 import { Tab, TabTitleText, Tabs } from '@patternfly/react-core';
-import { ExporterType } from '@redhat-cloud-services/insights-common-typescript';
 import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useCallback, useEffect, useMemo } from 'react';
 
@@ -17,6 +16,7 @@ import { useEventTypesPage } from '../hooks/useEventTypesPage';
 import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import { useBehaviorGroupContent } from './useBehaviorGroupContent';
 import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotificationRows';
+import { ExporterType } from '../../../utils/insights-common-typescript';
 
 interface BundlePageBehaviorGroupContentProps {
   applications: Array<Facet>;

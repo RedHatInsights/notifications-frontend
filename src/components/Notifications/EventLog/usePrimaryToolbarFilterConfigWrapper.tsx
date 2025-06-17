@@ -1,7 +1,3 @@
-import {
-  ColumnsMetada,
-  usePrimaryToolbarFilterConfig,
-} from '@redhat-cloud-services/insights-common-typescript';
 import produce from 'immer';
 import React from 'react';
 
@@ -14,6 +10,10 @@ import {
   SetEventLogFilters,
 } from './EventLogFilter';
 import { EventLogTreeFilter } from './EventLogTreeFilter';
+import {
+  ColumnsMetada,
+  usePrimaryToolbarFilterConfig,
+} from '../../../utils/insights-common-typescript';
 
 export interface EventLogCustomFilter {
   bundleId: string;

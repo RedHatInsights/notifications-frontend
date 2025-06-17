@@ -1,10 +1,10 @@
-import { useSyncInterval } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useState } from 'react';
 import { useClient } from 'react-fetching-library';
 
 import { getRbacGroupsAction } from '../../services/Rbac/GetGroups';
 import { RbacGroup, RbacGroupContext } from './RbacGroupContext';
+import { useSyncInterval } from '../../utils/insights-common-typescript';
 
 const SYNC_INTERVAL = 2 * 60 * 1000;
 const LIMIT = 100;

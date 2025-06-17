@@ -1,13 +1,13 @@
 import { Grid } from '@patternfly/react-core';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { FieldArray } from 'formik';
 import * as React from 'react';
 
 import { BehaviorGroup } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { BehaviorGroupFormActionsTable } from './BehaviorGroupFormActionsTable';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
-export interface EditBehaviorGroupProps extends OuiaComponentProps {
+export interface EditBehaviorGroupProps extends OuiaProps {
   behaviorGroup?: Partial<BehaviorGroup>;
 }
 

@@ -1,8 +1,3 @@
-import {
-  ActionModalError,
-  SaveModal,
-  SaveModalProps,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { Formik, useFormikContext } from 'formik';
 import * as React from 'react';
 
@@ -15,6 +10,11 @@ import {
   isCamelIntegrationType,
 } from '../../types/Integration';
 import { IntegrationsForm } from './Form';
+import {
+  ActionModalError,
+  SaveModal,
+  SaveModalProps,
+} from '../../utils/insights-common-typescript';
 
 type PartialIntegration = Partial<UserIntegration>;
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';

@@ -1,7 +1,3 @@
-import {
-  ActionModalError,
-  OuiaComponentProps,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteModal';
@@ -9,8 +5,10 @@ import { useGetAffectedBehaviorGroupsByEndpoint } from '../../../services/Notifi
 import { useDeleteIntegration } from '../../../services/useDeleteIntegration';
 import { UserIntegration } from '../../../types/Integration';
 import { useNotification } from '../../../utils/AlertUtils';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+import { ActionModalError } from '../../../utils/insights-common-typescript';
 
-interface IntegrationDeleteModalPageProps extends OuiaComponentProps {
+interface IntegrationDeleteModalPageProps extends OuiaProps {
   onClose: (deleted: boolean) => void;
   integration: UserIntegration;
 }

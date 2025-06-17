@@ -1,4 +1,3 @@
-import { Environment } from '@redhat-cloud-services/insights-common-typescript';
 import { DeepReadonly } from 'ts-essentials';
 
 import {
@@ -15,6 +14,7 @@ import {
   UserIntegrationType,
 } from '../types/Integration';
 import { NotificationType } from '../types/Notification';
+import { Environment } from '../utils/insights-common-typescript';
 
 const apiVersion = 'v1.0';
 const apiBaseUrl = `/api/notifications/${apiVersion}`;

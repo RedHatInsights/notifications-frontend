@@ -1,7 +1,6 @@
 import { NotificationPortal as NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications/NotificationPortal';
 import { clearNotifications as createClearNotificationsAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
-import { getInsights } from '@redhat-cloud-services/insights-common-typescript';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import fetchMock from 'fetch-mock';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
@@ -21,6 +20,7 @@ import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
+import { getInsights } from '../src/utils/insights-common-typescript';
 
 let setup = false;
 let client;

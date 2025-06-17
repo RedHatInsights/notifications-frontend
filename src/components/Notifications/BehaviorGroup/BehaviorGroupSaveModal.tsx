@@ -1,14 +1,14 @@
 import { ModalVariant } from '@patternfly/react-core';
-import {
-  SaveModal,
-  SaveModalProps,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { Formik, useFormikContext } from 'formik';
 import * as React from 'react';
 
 import { BehaviorGroupSchema } from '../../../schemas/Integrations/Notifications';
 import { BehaviorGroup, areActionsEqual } from '../../../types/Notification';
 import { EditBehaviorGroupForm } from './BehaviorGroupForm';
+import {
+  SaveModal,
+  SaveModalProps,
+} from '../../../utils/insights-common-typescript';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
 export type BehaviorGroupSaveModalProps = Omit<SaveModalProps, UsedProps> & {

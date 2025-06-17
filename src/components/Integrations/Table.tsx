@@ -26,12 +26,6 @@ import {
   sortable,
 } from '@patternfly/react-table';
 import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTable';
-import {
-  Direction,
-  OuiaComponentProps,
-  Sort,
-  UseSortReturn,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import { important } from 'csx';
 import * as React from 'react';
@@ -56,6 +50,12 @@ import { ConnectionFailed } from './Table/ConnectionFailed';
 import { ExpandedContent } from './Table/ExpandedContent';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { LastConnectionHelpTable } from './Table/LastConnectionHelpTable';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+import {
+  Direction,
+  Sort,
+  UseSortReturn,
+} from '../../utils/insights-common-typescript';
 
 export type OnEnable = (
   integration: IntegrationRow,
@@ -63,7 +63,7 @@ export type OnEnable = (
   isChecked: boolean
 ) => void;
 
-interface IntegrationsTableProps extends OuiaComponentProps {
+interface IntegrationsTableProps extends OuiaProps {
   isLoading: boolean;
   loadingCount?: number;
   integrations: Array<IntegrationRow>;

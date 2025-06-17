@@ -4,14 +4,14 @@ import {
   ListItem,
   Skeleton,
 } from '@patternfly/react-core';
-import {
-  DeleteModal,
-  DeleteModalProps,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { UserIntegration } from '../../types/Integration';
 import { BehaviorGroup } from '../../types/Notification';
+import {
+  DeleteModal,
+  DeleteModalProps,
+} from '../../utils/insights-common-typescript';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 

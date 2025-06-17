@@ -1,11 +1,8 @@
-import {
-  FormTextInput,
-  ouiaIdConcat,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
-import { getOuiaProps } from '../../../utils/getOuiaProps';
+import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
+import { FormTextInput } from '../../../utils/insights-common-typescript';
 
 export const IntegrationTypeSlackForm: React.FunctionComponent<
   IntegrationTypeForm
