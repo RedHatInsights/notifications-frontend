@@ -115,7 +115,8 @@ const toIntegrationEmail = (
   ...integrationBase,
   ignorePreferences: properties.ignore_preferences,
   groupId: properties.group_id === null ? undefined : properties.group_id,
-  onlyAdmin: properties.only_admins === null ? undefined : properties.only_admins,
+  onlyAdmin:
+    properties.only_admins === null ? undefined : properties.only_admins,
 });
 
 const toIntegrationDrawer = (
