@@ -5,12 +5,14 @@ import {
   Tab,
   TabTitleText,
   Tabs,
+  Text,
+  TextVariants,
 } from '@patternfly/react-core';
 import { global_spacer_lg } from '@patternfly/react-tokens';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
-import { default as React, useEffect, useMemo } from 'react';
+import { default as React, useEffect, useMemo, useState } from 'react';
 import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
@@ -34,9 +36,19 @@ interface NotificationListBundlePageProps {
 export const NotificationListBundlePage: React.FunctionComponent<
   React.PropsWithChildren<NotificationListBundlePageProps>
 > = (props) => {
-  const { updateDocumentTitle } = useChrome();
+  const { updateDocumentTitle, auth } = useChrome();
   const navigate = useNavigate();
   const location = useLocation();
+
+  const [isOrgAdmin, setIsOrgAdmin] = useState(false);
+
+  useEffect(() => {
+    auth.getUser().then((user) => {
+      if (user) {
+        setIsOrgAdmin(!!user.identity.user?.is_org_admin);
+      }
+    });
+  }, [auth]);
 
   const bundle = useMemo(
     () => new URLSearchParams(location.search).get('bundle') ?? 'rhel',
@@ -126,10 +138,34 @@ export const NotificationListBundlePage: React.FunctionComponent<
         <PageHeader
           title={pageTitle()}
           subtitle={
-            <span>
-              Configure which event notifications different users within your
-              organization are entitled to receive.
-            </span>
+            isOrgAdmin ? (
+              <span>
+                Configure which event notifications different users within your
+                organization are entitled to receive. To manage your own
+                personal notification settings, go to{' '}
+                <Text
+                  component={TextVariants.a}
+                  href="/settings/notifications/user-preferences/"
+                >
+                  Notification Preferences
+                </Text>
+                .
+              </span>
+            ) : (
+              <span>
+                View how notifications are configured by your organization
+                admin. Contact your organization admin if you need access to
+                edit these configurations. To manage your own personal
+                notification settings, go to{' '}
+                <Text
+                  component={TextVariants.a}
+                  href="/settings/notifications/user-preferences/"
+                >
+                  Notification Preferences
+                </Text>
+                .
+              </span>
+            )
           }
           action={eventLogButton()}
         />
