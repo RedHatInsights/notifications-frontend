@@ -17,7 +17,6 @@ import {
   SortDirection,
   sortDirectionFromString,
 } from '../../types/SortDirection';
-import { ouia } from '../Ouia';
 import EmptyTableState from './EmptyTableState';
 import {
   Callbacks,
@@ -25,6 +24,7 @@ import {
   OnBehaviorGroupLinkUpdated,
   OnNotificationIdHandler,
 } from './NotificationsBehaviorGroupRow';
+import WithOuia from '@redhat-cloud-services/frontend-components/Ouia/WithOuia';
 
 // The value has to be the order on which the columns appear on the table
 export enum NotificationsTableColumns {
@@ -47,7 +47,7 @@ export interface NotificationsBehaviorGroupTableProps {
 }
 
 export const NotificationsBehaviorGroupTable =
-  ouia<NotificationsBehaviorGroupTableProps>((props) => {
+  WithOuia<NotificationsBehaviorGroupTableProps>((props) => {
     const callbacks: Callbacks | undefined = React.useMemo(() => {
       if (
         props.onStartEditing &&
@@ -154,4 +154,4 @@ export const NotificationsBehaviorGroupTable =
         </Tbody>
       </TableComposable>
     );
-  }, 'Notifications/Table');
+  }, 'Notifications/Notifications/Table');

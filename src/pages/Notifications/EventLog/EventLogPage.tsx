@@ -1,8 +1,4 @@
 import { ButtonVariant } from '@patternfly/react-core';
-import {
-  Direction,
-  Sort,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
@@ -31,6 +27,7 @@ import { EventPeriod } from '../../../types/Event';
 import { UUID } from '../../../types/Notification';
 import { useEventLogFilter } from './useEventLogFilter';
 import { useFilterBuilder } from './useFilterBuilder';
+import { Direction, Sort } from '../../../utils/insights-common-typescript';
 
 const RETENTION_DAYS = 14;
 

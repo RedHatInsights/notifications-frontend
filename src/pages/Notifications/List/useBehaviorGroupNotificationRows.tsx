@@ -1,4 +1,3 @@
-import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import produce, { castDraft } from 'immer';
 import * as React from 'react';
 import { ClientContext } from 'react-fetching-library';
@@ -12,6 +11,7 @@ import {
   UUID,
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
+import { useNotification } from '../../../utils/AlertUtils';
 
 export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
   readonly loadingActionStatus: 'loading' | 'done' | 'error';
@@ -45,6 +45,7 @@ export const useBehaviorGroupNotificationRows = (
   notifications: Array<Notification>,
   behaviorGroups: ReadonlyArray<BehaviorGroup> | undefined
 ) => {
+  const { addDangerNotification } = useNotification();
   const [notificationRows, setNotificationRows] = React.useState<
     Array<BehaviorGroupNotificationRow>
   >([]);

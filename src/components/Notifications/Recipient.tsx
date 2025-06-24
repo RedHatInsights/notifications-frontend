@@ -1,7 +1,6 @@
 import { Skeleton, Tooltip } from '@patternfly/react-core';
 import { BanIcon, LockIcon } from '@patternfly/react-icons';
 
-import { join } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 
 import { Action, NotificationType } from '../../types/Notification';
@@ -10,6 +9,7 @@ import {
   NotificationUserRecipient,
 } from '../../types/Recipient';
 import { GroupNotFound } from './Rbac/GroupNotFound';
+import { join } from '../../utils/insights-common-typescript';
 
 interface RecipientProps {
   action: Action;

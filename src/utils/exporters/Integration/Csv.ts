@@ -1,9 +1,5 @@
-import {
-  ExporterCsv,
-  ExporterHeaders,
-} from '@redhat-cloud-services/insights-common-typescript';
-
 import { UserIntegration } from '../../../types/Integration';
+import { ExporterCsv, ExporterHeaders } from '../../insights-common-typescript';
 
 export class IntegrationExporterCsv extends ExporterCsv<UserIntegration> {
   public serialize(integration: UserIntegration) {

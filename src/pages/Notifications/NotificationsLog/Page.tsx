@@ -1,10 +1,5 @@
 import { Card } from '@patternfly/react-core';
 import Main from '@redhat-cloud-services/frontend-components/Main';
-import {
-  Filter,
-  Operator,
-  toUtc,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { format, sub, toDate } from 'date-fns';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 
@@ -16,6 +11,11 @@ import NotificationsLogTable, {
 import NotificationsLogToolbar from '../../../components/Notifications/NotificationsLog/NotificationsLogToolbar';
 import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
+import {
+  Filter,
+  Operator,
+  toUtc,
+} from '../../../utils/insights-common-typescript';
 
 export type NotificationsPeriod = [Date | undefined, Date | undefined];
 

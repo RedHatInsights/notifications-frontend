@@ -1,15 +1,8 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
-import {
-  ExporterType,
-  OptionalColumnsMetada,
-  OuiaComponentProps,
-  getInsights,
-  useInsightsEnvironmentFlag,
-  usePrimaryToolbarFilterConfig,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -24,6 +17,13 @@ import {
   NotificationFilters,
   SetNotificationFilters,
 } from './Filter';
+import {
+  ExporterType,
+  OptionalColumnsMetada,
+  getInsights,
+  useInsightsEnvironmentFlag,
+  usePrimaryToolbarFilterConfig,
+} from '../../utils/insights-common-typescript';
 
 export enum SelectionCommand {
   NONE,
@@ -31,7 +31,7 @@ export enum SelectionCommand {
   ALL,
 }
 
-export interface NotificationsToolbarProps extends OuiaComponentProps {
+export interface NotificationsToolbarProps extends OuiaProps {
   filters: NotificationFilters;
   setFilters: SetNotificationFilters;
   clearFilter: ClearNotificationFilters;

@@ -12,10 +12,6 @@ import {
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
-import {
-  ColumnsMetada,
-  OuiaComponentProps,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
@@ -37,8 +33,10 @@ import {
   SetEventLogFilters,
 } from './EventLogFilter';
 import { usePrimaryToolbarFilterConfigWrapper } from './usePrimaryToolbarFilterConfigWrapper';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+import { ColumnsMetada } from '../../../utils/insights-common-typescript';
 
-interface EventLogToolbarProps extends OuiaComponentProps {
+interface EventLogToolbarProps extends OuiaProps {
   filters: EventLogFilters;
   setFilters: SetEventLogFilters;
   clearFilter: ClearEventLogFilters;

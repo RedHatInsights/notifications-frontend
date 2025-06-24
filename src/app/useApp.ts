@@ -1,14 +1,11 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import {
-  Rbac,
-  fetchRBAC,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { useEffect, useState } from 'react';
 
 import Config from '../config/Config';
 import { useGetServerStatus } from '../services/GetServerStatus';
 import { Server, ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
+import { Rbac, fetchRBAC } from '../utils/insights-common-typescript';
 
 export const useApp = (): Partial<AppContext> => {
   const chrome = useChrome();

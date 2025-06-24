@@ -1,10 +1,9 @@
+import { getNotificationActions } from '../config/Config';
+import { NotificationType } from '../types/Notification';
 import {
   getInsights,
   getInsightsEnvironment,
-} from '@redhat-cloud-services/insights-common-typescript';
-
-import { getNotificationActions } from '../config/Config';
-import { NotificationType } from '../types/Notification';
+} from '../utils/insights-common-typescript';
 
 export const useNotifications = (): ReadonlyArray<NotificationType> => {
   const insights = getInsights();

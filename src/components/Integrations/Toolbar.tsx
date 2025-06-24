@@ -2,12 +2,6 @@ import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
-import {
-  ColumnsMetada,
-  ExporterType,
-  OuiaComponentProps,
-  usePrimaryToolbarFilterConfig,
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { cssRaw, style } from 'typestyle';
 
@@ -21,6 +15,12 @@ import {
   IntegrationFilters,
   SetIntegrationFilters,
 } from './Filters';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+import {
+  ColumnsMetada,
+  ExporterType,
+  usePrimaryToolbarFilterConfig,
+} from '../../utils/insights-common-typescript';
 
 cssRaw(`
     @media only screen and (max-width: 768px) {
@@ -30,7 +30,7 @@ cssRaw(`
     }
 `);
 
-interface IntegrationsToolbarProps extends OuiaComponentProps {
+interface IntegrationsToolbarProps extends OuiaProps {
   onAddIntegration?: () => void;
   onExport: (type: ExporterType) => void;
   filters: IntegrationFilters;

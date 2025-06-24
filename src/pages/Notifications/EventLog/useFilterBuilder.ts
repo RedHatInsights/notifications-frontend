@@ -1,8 +1,3 @@
-import {
-  Filter,
-  Operator,
-  toUtc,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { format, sub, toDate } from 'date-fns';
 import { useCallback } from 'react';
 
@@ -10,6 +5,11 @@ import { EventLogDateFilterValue } from '../../../components/Notifications/Event
 import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
 import { EventPeriod } from '../../../types/Event';
 import { Facet } from '../../../types/Notification';
+import {
+  Filter,
+  Operator,
+  toUtc,
+} from '../../../utils/insights-common-typescript';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 

@@ -147,8 +147,8 @@ const IntegrationEventDetails: React.FC<{
     }
   }, [id]);
   React.useEffect(() => {
-    fetchIntegration();
-  }, [id]);
+    void fetchIntegration();
+  }, [id, fetchIntegration]);
 
   return (
     <DataView

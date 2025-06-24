@@ -1,7 +1,3 @@
-import {
-  addDangerNotification,
-  fromUtc,
-} from '@redhat-cloud-services/insights-common-typescript';
 import pLimit from 'p-limit';
 import { useCallback, useContext, useEffect, useState } from 'react';
 import { ClientContext } from 'react-fetching-library';
@@ -20,6 +16,8 @@ import {
   Status,
 } from '../../../store/types/SavedNotificationScopeTypes';
 import { UserIntegration } from '../../../types/Integration';
+import { fromUtc } from '../../../utils/insights-common-typescript';
+import { useNotification } from '../../../utils/AlertUtils';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
@@ -34,6 +32,8 @@ export const useIntegrationRows = (
   reduxDispatch: Dispatch,
   savedNotificationScope: SavedNotificationScopeState
 ) => {
+  const { addDangerNotification } = useNotification();
+
   const [integrationRows, setIntegrationRows] = useState<Array<IntegrationRow>>(
     []
   );
@@ -188,6 +188,7 @@ export const useIntegrationRows = (
               format(message.description, _integration.name),
               true
             );
+
             setIntegrationRowByIndex(index, {
               isEnabled: _integration.isEnabled,
               isEnabledLoading: false,

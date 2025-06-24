@@ -1,7 +1,6 @@
 import { Spinner } from '@patternfly/react-core';
 import { EnvelopeIcon } from '@patternfly/react-icons';
 import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
 
@@ -9,8 +8,9 @@ import Config from '../../config/Config';
 import { Action, NotificationType } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { WebhookIcon } from '../Icons/WebhookIcon';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
-export interface ActionComponentText extends OuiaComponentProps {
+export interface ActionComponentText extends OuiaProps {
   action: Action | undefined;
   loading?: boolean;
   hasError?: boolean;

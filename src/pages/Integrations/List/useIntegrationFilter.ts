@@ -1,11 +1,11 @@
+import { assertNever } from 'assert-never';
+
+import { IntegrationFilterColumn } from '../../../components/Integrations/Filters';
 import {
   useFilters,
   useUrlStateMultipleOptions,
   useUrlStateString,
-} from '@redhat-cloud-services/insights-common-typescript';
-import { assertNever } from 'assert-never';
-
-import { IntegrationFilterColumn } from '../../../components/Integrations/Filters';
+} from '../../../utils/insights-common-typescript';
 
 const DEBOUNCE_MS = 250;
 

@@ -23,7 +23,6 @@ import {
   ExclamationCircleIcon,
   HelpIcon,
 } from '@patternfly/react-icons';
-import { addDangerNotification } from '@redhat-cloud-services/insights-common-typescript';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { string } from 'yup';
 
@@ -33,6 +32,7 @@ import {
   SPLUNK_CLOUD_HEC_DOC,
 } from './Constants';
 import { useSplunkSetup } from './useSplunkSetup';
+import { useNotification } from '../../../utils/AlertUtils';
 
 interface SplunkSetupFormProps {
   setStep: Dispatch<SetStateAction<number>>;
@@ -79,6 +79,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
   setAutomationLogs,
   setError,
 }) => {
+  const { addDangerNotification } = useNotification();
   const startSplunkAutomation = useSplunkSetup();
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
   const [validatedServerHostname, setValidatedServerHostname] =

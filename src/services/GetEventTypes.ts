@@ -1,8 +1,4 @@
-import {
-  Direction,
-  Page,
-  Sort,
-} from '@redhat-cloud-services/insights-common-typescript';
+import { Direction, Page, Sort } from '../utils/insights-common-typescript';
 import { useClient } from 'react-fetching-library';
 
 import { Schemas } from '../generated/OpenapiNotifications';

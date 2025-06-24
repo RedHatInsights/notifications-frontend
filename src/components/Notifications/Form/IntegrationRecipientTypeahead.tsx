@@ -1,4 +1,3 @@
-import { OuiaComponentProps } from '@redhat-cloud-services/insights-common-typescript';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import { DeepPartial } from 'ts-essentials';
@@ -25,12 +24,13 @@ import {
   TextInputGroup,
   TextInputGroupMain,
 } from '@patternfly/react-core';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
 function isRecipientOption(option: unknown): option is RecipientOption {
   return (option as RecipientOption).recipient !== undefined;
 }
 
-export interface IntegrationRecipientTypeaheadProps extends OuiaComponentProps {
+export interface IntegrationRecipientTypeaheadProps extends OuiaProps {
   selected: Partial<IntegrationRef> | undefined;
   integrationType: UserIntegrationType;
   isDisabled?: boolean;

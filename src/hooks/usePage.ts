@@ -1,10 +1,6 @@
-import {
-  Filter,
-  Page,
-  Sort,
-} from '@redhat-cloud-services/insights-common-typescript';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IntegrationCategory } from '../types/Integration';
+import { Filter, Page, Sort } from '../utils/insights-common-typescript';
 
 export interface PageAdapter {
   page: Page;

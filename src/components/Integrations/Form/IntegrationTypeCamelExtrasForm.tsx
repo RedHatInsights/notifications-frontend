@@ -4,15 +4,14 @@ import {
   HelperText,
   HelperTextItem,
 } from '@patternfly/react-core';
+import * as React from 'react';
+
+import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
+import { IntegrationTypeForm } from './IntegrationTypeForm';
 import {
   Checkbox,
   FormTextInput,
-  ouiaIdConcat,
-} from '@redhat-cloud-services/insights-common-typescript';
-import * as React from 'react';
-
-import { getOuiaProps } from '../../../utils/getOuiaProps';
-import { IntegrationTypeForm } from './IntegrationTypeForm';
+} from '../../../utils/insights-common-typescript';
 
 interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
   secretTokenDescription: string;
