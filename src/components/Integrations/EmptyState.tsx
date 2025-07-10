@@ -40,25 +40,25 @@ const EmptyIntegrationCard: React.FunctionComponent<{
       style={{ maxWidth: isOrgAdmin ? '106ch' : '70ch' }}
     >
       <CardHeader>
-        <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-lg">
-          <TitleIcon className="pf-v5-u-link-color" />
+        <Icon className="pf-v6-u-pl-sm pf-v6-u-pr-lg">
+          <TitleIcon className="pf-v6-u-link-color" />
         </Icon>
         <Content>
           <Content component={ContentVariants.h4}>{title}</Content>
         </Content>
       </CardHeader>
-      <CardBody className="pf-v5-u-display-flex">
-        <Content className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
+      <CardBody className="pf-v6-u-display-flex">
+        <Content className="pf-v6-u-display-flex pf-v6-u-flex-direction-column pf-v6-u-align-self-stretch">
           <Content
             component={ContentVariants.p}
-            className="pf-v5-u-flex-grow-1"
+            className="pf-v6-u-flex-grow-1"
           >
             {body}
           </Content>
           <Content component={ContentVariants.p}>
             <Link to={link} target="_blank">
               Learn more
-              <Icon className="pf-v5-u-ml-sm" isInline>
+              <Icon className="pf-v6-u-ml-sm" isInline>
                 <ArrowRightIcon />
               </Icon>
             </Link>
@@ -74,7 +74,7 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
 }> = ({ onAddIntegration }) => {
   const { isOrgAdmin } = useAppContext();
   return (
-    <div className="pf-v5-l-flex pf-m-justify-content-center">
+    <div className="pf-v6-l-flex pf-m-justify-content-center">
       <EmptyState
         headingLevel={ContentVariants.h4}
         icon={CubesIcon}
@@ -85,7 +85,7 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
             aria-label="Card container"
             minWidths={{ default: '100%', md: isOrgAdmin ? '30%' : '40%' }}
             hasGutter
-            className="pf-v5-u-text-align-left"
+            className="pf-v6-u-text-align-left"
           >
             <EmptyIntegrationCard
               isOrgAdmin={isOrgAdmin}

@@ -49,7 +49,7 @@ export const SplunkSetupFinishedFailure: React.FunctionComponent<{
     titleText="Configuration failed"
   >
     <EmptyStateBody>
-      <p className="pf-v5-u-mb-md">
+      <p className="pf-v6-u-mb-md">
         There was a problem processing the request. Please try again. If the
         problem persists, contact Red Hat support by opening the ticket.
       </p>

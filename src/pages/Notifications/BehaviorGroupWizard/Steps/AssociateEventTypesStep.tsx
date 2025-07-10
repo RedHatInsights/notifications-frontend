@@ -195,7 +195,7 @@ export const AssociateEventTypesStep: React.FunctionComponent<
         <Title headingLevel="h4" size="xl">
           {title}
         </Title>
-        <Content className="pf-v5-u-pt-sm">
+        <Content className="pf-v6-u-pt-sm">
           <Content component="p">
             Select event types you would like to assign this behavior group to.
           </Content>

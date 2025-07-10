@@ -21,9 +21,9 @@ export const TabComponent: React.FunctionComponent<
   };
 
   return (
-    <div className="pf-v5-u-background-color-100">
+    <div className="pf-v6-u-background-color-100">
       <Tabs
-        className="pf-v5-u-pl-lg"
+        className="pf-v6-u-pl-lg"
         activeKey={activeTabKey}
         role="region"
         onSelect={handleTabSelect}

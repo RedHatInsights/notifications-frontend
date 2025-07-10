@@ -100,7 +100,7 @@ const actionStatusMetadata = [
     chipValue: 'Warning',
     label: (
       <span>
-        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100" />{' '}
+        <ExclamationTriangleIcon className="pf-v6-u-warning-color-100" />{' '}
         Warning{' '}
       </span>
     ),

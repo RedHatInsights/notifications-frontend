@@ -141,7 +141,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
 
   return (
     <Tabs
-      className="pf-v5-u-background-color-100 pf-v5-u-pl-lg"
+      className="pf-v6-u-background-color-100 pf-v6-u-pl-lg"
       activeKey={tabMapping[tab]}
       onSelect={(event, tabIndex) => {
         const newSearchParams = new URLSearchParams(location.search);
@@ -184,7 +184,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
         </NotificationsToolbar>
       </Tab>
       <Tab eventKey={1} title={<TabTitleText>Behavior Groups</TabTitleText>}>
-        <div className="pf-v5-u-mb-xl">
+        <div className="pf-v6-u-mb-xl">
           <BehaviorGroupsSection
             bundle={props.bundle}
             applications={props.applications}

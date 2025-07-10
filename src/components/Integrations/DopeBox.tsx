@@ -85,14 +85,14 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <Content>
           <Content
             component="p"
-            className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover"
+            className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-link-color-hover"
           >
-            <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-              <CogIcon className="pf-v5-u-primary-color-100" />
+            <Icon size="md" className="pf-v6-u-pl-sm pf-v6-u-pr-md">
+              <CogIcon className="pf-v6-u-primary-color-100" />
             </Icon>
             Configure applications
           </Content>
-          <Content component="p" className="pf-v5-u-font-size-sm">
+          <Content component="p" className="pf-v6-u-font-size-sm">
             To prepare for integration with the Hybrid Cloud Console, you must
             configure incoming webhooks in your third-party applications.
           </Content>
@@ -103,7 +103,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
           {category === IntegrationCategory.COMMUNICATIONS && (
             <Content
               component="ul"
-              className="pf-v5-u-font-size-sm pf-v5-u-link-color pf-v5-u-ml-0"
+              className="pf-v6-u-font-size-sm pf-v6-u-link-color pf-v6-u-ml-0"
             >
               {communicationsDetails.map((communication) => (
                 <Content component="li" key={communication.id}>
@@ -127,7 +127,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
           {category === IntegrationCategory.REPORTING && (
             <Content
               component="ul"
-              className="pf-v5-u-font-size-sm pf-v5-u-link-color pf-v5-u-ml-0"
+              className="pf-v6-u-font-size-sm pf-v6-u-link-color pf-v6-u-ml-0"
             >
               {reportingDetails.map((reporting) => (
                 <Content component="li" key={reporting.id}>
@@ -148,7 +148,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
                   target="_blank"
                 >
                   Learn more
-                  <Icon className="pf-v5-u-ml-sm" isInline>
+                  <Icon className="pf-v6-u-ml-sm" isInline>
                     <ArrowRightIcon />
                   </Icon>
                 </Link>
@@ -159,18 +159,18 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
       </CardFooter>
     </Card>,
     <Card isFullHeight isPlain key="card-2">
-      <CardBody className="pf-v5-u-pt-3xl-on-md">
+      <CardBody className="pf-v6-u-pt-3xl-on-md">
         <Content>
           <Content
             component="p"
-            className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover"
+            className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-link-color-hover"
           >
-            <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-              <LockIcon className="pf-v5-u-primary-color-100" />
+            <Icon size="md" className="pf-v6-u-pl-sm pf-v6-u-pr-md">
+              <LockIcon className="pf-v6-u-primary-color-100" />
             </Icon>
             Configure user access
           </Content>
-          <Content component="p" className="pf-v5-u-font-size-sm">
+          <Content component="p" className="pf-v6-u-font-size-sm">
             To configure notifications and integration settings, you must be a
             member of a group with the Notifications administrator role. This
             group must be configured in User Access by an Organization
@@ -186,7 +186,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
               target="_blank"
             >
               Learn more
-              <Icon className="pf-v5-u-ml-sm" isInline>
+              <Icon className="pf-v6-u-ml-sm" isInline>
                 <ArrowRightIcon />
               </Icon>
             </Link>
@@ -206,14 +206,14 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             <Content>
               <Content
                 component="p"
-                className="pf-v5-u-font-size-sm pf-v5-u-font-weight-bold pf-v5-u-mb-sm pf-v5-u-link-color-hover"
+                className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-link-color-hover"
               >
-                <Icon size="md" className="pf-v5-u-pl-sm pf-v5-u-pr-md">
-                  <BellIcon className="pf-v5-u-primary-color-100" />
+                <Icon size="md" className="pf-v6-u-pl-sm pf-v6-u-pr-md">
+                  <BellIcon className="pf-v6-u-primary-color-100" />
                 </Icon>
                 Configure notifications portal
               </Content>
-              <Content component="p" className="pf-v5-u-font-size-sm">
+              <Content component="p" className="pf-v6-u-font-size-sm">
                 You can configure the Hybrid Cloud Console to send event
                 notifications to all users on a new or existing channel in
                 Slack, Google Chat, or Microsoft Teams.
@@ -228,7 +228,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
                   target="_blank"
                 >
                   Learn more
-                  <Icon className="pf-v5-u-ml-sm" isInline>
+                  <Icon className="pf-v6-u-ml-sm" isInline>
                     <ArrowRightIcon />
                   </Icon>
                 </Link>
@@ -242,7 +242,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
   ];
 
   return (
-    <PageSection hasBodyWrapper={false} className="pf-v5-u-px-0">
+    <PageSection hasBodyWrapper={false} className="pf-v6-u-px-0">
       <MultiContentCard
         isExpandable
         defaultExpanded

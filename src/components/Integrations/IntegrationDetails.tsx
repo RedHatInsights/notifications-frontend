@@ -36,7 +36,7 @@ export const getIntegrationIcon = (type: string): React.ReactElement | null => {
         width="16px"
         src={integrationType.icon_url}
         alt={integrationType.product_name}
-        className="pf-v5-u-mr-sm"
+        className="pf-v6-u-mr-sm"
       />
     </>
   );
@@ -69,7 +69,7 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
   };
 
   return (
-    <DescriptionList isHorizontal className="pf-v5-u-p-sm pf-v5-u-m-sm">
+    <DescriptionList isHorizontal className="pf-v6-u-p-sm pf-v6-u-m-sm">
       <DescriptionListGroup>
         <DescriptionListTerm>
           {' '}

@@ -118,7 +118,7 @@ const SelectableEventTypeTableRow: React.FunctionComponent<{
         <Tr>
           <Td colSpan={2} />
           <Td colSpan={2}>
-            <Content component="p" className="pf-v5-u-color-200 pf-v5-u-p-0">
+            <Content component="p" className="pf-v6-u-color-200 pf-v6-u-p-0">
               {event.description}
             </Content>
           </Td>

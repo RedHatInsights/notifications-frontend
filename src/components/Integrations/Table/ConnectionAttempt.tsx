@@ -42,7 +42,7 @@ export const ConnectionAttempt: React.FunctionComponent<
   return (
     <>
       {getIcon(props.type)}
-      <span className="pf-v5-u-ml-xs">
+      <span className="pf-v6-u-ml-xs">
         <DateFormat type="relative" date={props.date} />
       </span>
     </>

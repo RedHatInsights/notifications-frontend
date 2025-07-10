@@ -47,7 +47,7 @@ const BehaviorGroupaCrdListImpl: React.FunctionComponent<
   return (
     <BehaviorGroupCardListLayout>
       {props.behaviorGroups.map((behaviorGroup) => (
-        <FlexItem key={behaviorGroup.id} className="pf-v5-u-pb-md">
+        <FlexItem key={behaviorGroup.id} className="pf-v6-u-pb-md">
           <BehaviorGroupCard
             behaviorGroup={behaviorGroup}
             onEdit={props.onEdit}
@@ -65,7 +65,7 @@ const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
       {[...Array(skeletonBehaviorGroupCount).values()].map((_unused, index) => (
         <FlexItem
           key={`behavior-group-card-skeleton-${index}`}
-          className="pf-v5-u-pb-md"
+          className="pf-v6-u-pb-md"
         >
           <BehaviorGroupCard />
         </FlexItem>

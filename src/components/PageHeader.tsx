@@ -13,16 +13,16 @@ export const PageHeader: React.FunctionComponent<
   React.PropsWithChildren<PageHeaderProps>
 > = (props) => {
   return (
-    <PageHeaderFC className="pf-v5-u-pb-md">
+    <PageHeaderFC className="pf-v6-u-pb-md">
       <Split>
         <SplitItem isFilled>
           <PageHeaderTitle title={props.title} />
-          <Content className="pf-v5-u-pt-sm">
+          <Content className="pf-v6-u-pt-sm">
             <Content component="p">{props.subtitle}</Content>
           </Content>
         </SplitItem>
         {props.action && (
-          <SplitItem className="pf-v5-u-ml-3xl">{props.action}</SplitItem>
+          <SplitItem className="pf-v6-u-ml-3xl">{props.action}</SplitItem>
         )}
       </Split>
     </PageHeaderFC>

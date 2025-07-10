@@ -58,12 +58,12 @@ export const EmptyNotifications = ({
       ) : (
         <>
           <Stack>
-            <StackItem className="pf-v5-u-pl-lg pf-v5-u-pb-sm">
+            <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
               <Content component="p">
                 There are currently no notifications for you.
               </Content>
             </StackItem>
-            <StackItem className="pf-v5-u-pl-lg pf-v5-u-pb-sm">
+            <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
               <Link
                 onClick={onLinkClick}
                 to="/settings/notifications/user-preferences"
@@ -71,7 +71,7 @@ export const EmptyNotifications = ({
                 Check your Notification Preferences
               </Link>
             </StackItem>
-            <StackItem className="pf-v5-u-pl-lg pf-v5-u-pb-sm">
+            <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
               <Link
                 onClick={onLinkClick}
                 to="/settings/notifications/notificationslog"
@@ -79,7 +79,7 @@ export const EmptyNotifications = ({
                 View the Event log to see all fired events
               </Link>
             </StackItem>
-            <StackItem className="pf-v5-u-pl-lg pf-v5-u-pb-sm">
+            <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
               <Content component="p">
                 Contact your organization administrator
               </Content>

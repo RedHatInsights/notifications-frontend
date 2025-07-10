@@ -54,7 +54,7 @@ const NotificationsLogToolbar: React.FC<{
               period={props.period}
             />
           </ToolbarItem>
-          <ToolbarItem className="pf-v5-u-ml-auto">
+          <ToolbarItem className="pf-v6-u-ml-auto">
             <Pagination
               itemCount={pagination.count}
               perPage={pagination.limit}

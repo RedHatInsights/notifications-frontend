@@ -58,14 +58,14 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<
         </Button>
       )}
       {props.isLoading ? (
-        <div className="pf-v5-u-mt-auto pf-v5-u-mb-md">
+        <div className="pf-v6-u-mt-auto pf-v6-u-mb-md">
           <Spinner size="md" />
         </div>
       ) : (
         props.error && (
           <Split>
             <SplitItem>
-              <Icon status="danger" className="pf-v5-u-mr-xs">
+              <Icon status="danger" className="pf-v6-u-mr-xs">
                 <ExclamationCircleIcon />
               </Icon>
             </SplitItem>

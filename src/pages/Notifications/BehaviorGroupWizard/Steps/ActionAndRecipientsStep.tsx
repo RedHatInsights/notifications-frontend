@@ -20,7 +20,7 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
         <Title headingLevel="h4" size="xl">
           {title}
         </Title>
-        <Content className="pf-v5-u-pt-sm">
+        <Content className="pf-v6-u-pt-sm">
           <Content component="p">
             Select action and recipient pairs to assign to your notification
             events.

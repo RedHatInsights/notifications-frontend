@@ -109,10 +109,10 @@ export const BehaviorGroupCell: React.FunctionComponent<
     >
       {sortedSelected.length === 0 ? (
         <>
-          <span className="pf-v5-u-disabled-color-100">
+          <span className="pf-v6-u-disabled-color-100">
             Select behavior group
           </span>
-          <Badge className="pf-v5-u-ml-xs" isRead>
+          <Badge className="pf-v6-u-ml-xs" isRead>
             {sortedSelected.length}
           </Badge>
         </>
@@ -128,7 +128,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
               />
             ))}
           </LabelGroup>
-          <Badge className="pf-v5-u-ml-xs" isRead>
+          <Badge className="pf-v6-u-ml-xs" isRead>
             {sortedSelected.length}
           </Badge>
         </>
@@ -140,7 +140,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
     if (sortedSelected.length === 0) {
       return (
         <span>
-          <Icon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" isInline>
+          <Icon className="pf-v6-u-mr-sm pf-v6-u-disabled-color-100" isInline>
             <BellSlashIcon />
           </Icon>
           Mute
@@ -156,7 +156,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
               content={`${b.displayName} behavior is attached to this event and cannot be changed.
                 Add additional behavior groups to assign different actions or recipients.`}
             >
-              <LockIcon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" />
+              <LockIcon className="pf-v6-u-mr-sm pf-v6-u-disabled-color-100" />
             </Tooltip>
           )}{' '}
           <Label isCompact>{b.displayName}</Label>
@@ -183,7 +183,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
         <SelectOption isDisabled>Loading...</SelectOption>
       ) : props.behaviorGroupContent.content.length === 0 ? (
         <SelectOption isDisabled>
-          <span className="pf-v5-u-text-align-left">
+          <span className="pf-v6-u-text-align-left">
             You have no behavior groups. <br />
             Create a new group by clicking on the <br />
             &apos;Create new group&apos; button above.
@@ -199,7 +199,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
               isDisabled={bg.isDefault}
               checked={isChecked}
             >
-              {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
+              {bg.isDefault && <LockIcon className="pf-v6-u-mr-sm" />}{' '}
               {bg.displayName}
             </SelectOption>
           );

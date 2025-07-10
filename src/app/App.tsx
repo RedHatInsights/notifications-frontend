@@ -87,7 +87,7 @@ const App: React.ComponentType = () => {
         <InsightsEnvDetector insights={insights} onEnvironment={staging}>
           <RenderIfTrue>
             <Switch
-              className="pf-v5-u-p-sm"
+              className="pf-v6-u-p-sm"
               isChecked={usingExperimental}
               onChange={toggleExperimental}
               label="Disable experimental features"

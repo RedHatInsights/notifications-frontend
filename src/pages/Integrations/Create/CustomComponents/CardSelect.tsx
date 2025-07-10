@@ -149,7 +149,7 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
       label={(!hideLabel && label) as ReactNode}
       fieldId={input.name}
     >
-      <Grid hasGutter className="pf-v5-u-mb-md">
+      <Grid hasGutter className="pf-v6-u-mb-md">
         {prepareCards()}
       </Grid>
       <FormHelperText>

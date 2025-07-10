@@ -167,7 +167,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
           />
         ),
         integration.isEnabledLoading ? (
-          <Spinner className="pf-v5-u-ml-sm" size="md" />
+          <Spinner className="pf-v6-u-ml-sm" size="md" />
         ) : (
           <Switch
             id={`table-row-switch-id-${integration.id}`}

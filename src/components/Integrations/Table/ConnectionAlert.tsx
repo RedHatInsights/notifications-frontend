@@ -19,11 +19,11 @@ export const ConnectionAlert: React.FunctionComponent<ConnectionAlertProps> = (
   return (
     <div {...getOuiaProps('ConnectionAlert', props)}>
       <Alert title={props.title} variant={props.alertVariant} isInline>
-        <p className="pf-v5-u-mt-sm">{props.description}</p>
-        <p className="pf-v5-u-mt-sm">
+        <p className="pf-v6-u-mt-sm">{props.description}</p>
+        <p className="pf-v6-u-mt-sm">
           Last attempts:{' '}
           {props.attempts.map((attempt, index) => (
-            <span key={index} className="pf-v5-u-ml-sm">
+            <span key={index} className="pf-v6-u-ml-sm">
               <ConnectionAttempt
                 type={
                   attempt.isSuccess

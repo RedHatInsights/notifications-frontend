@@ -16,7 +16,7 @@ export const GroupNotFound: React.FunctionComponent<GroupNotFoundProps> = (
           {text}
         </Label>
       ) : (
-        <span className="pf-v5-u-color-300"> {text} </span>
+        <span className="pf-v6-u-color-300"> {text} </span>
       )}
     </Tooltip>
   );

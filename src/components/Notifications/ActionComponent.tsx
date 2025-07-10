@@ -65,7 +65,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (
   if (!props.action) {
     return (
       <ActionComponentWrapper {...props}>
-        <span className="pf-v5-u-color-200">
+        <span className="pf-v6-u-color-200">
           <div>No actions.</div>
           <div>Users will not be notified.</div>
         </span>
@@ -76,7 +76,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (
   return (
     <ActionComponentWrapper {...props}>
       <ActionTypeToIcon actionType={props.action.type} />
-      <span className="pf-v5-u-ml-sm">
+      <span className="pf-v6-u-ml-sm">
         {Config.notifications.types[props.action.type].name}
       </span>
       {props.action.type === NotificationType.INTEGRATION && (

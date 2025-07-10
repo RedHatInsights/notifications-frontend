@@ -185,7 +185,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
         }
       />
       <Modal
-        className="pf-v5-u-pl-xl"
+        className="pf-v6-u-pl-xl"
         variant={ModalVariant.small}
         isOpen={isModalOpen}
         onClose={handleModalToggle}
@@ -256,7 +256,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
               </StackItem>
               {showCustomSelect && (
                 <>
-                  <StackItem className="pf-v5-u-pl-lg">
+                  <StackItem className="pf-v6-u-pl-lg">
                     <Content component={ContentVariants.h6}>Time</Content>
                     <TimePicker
                       onChange={handleTimePrefSelect}
@@ -267,7 +267,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                       is24Hour
                     />
                   </StackItem>
-                  <StackItem className="pf-v5-u-pl-lg">
+                  <StackItem className="pf-v6-u-pl-lg">
                     <Content component={ContentVariants.h6}>Time zone</Content>
                     <MenuContainer
                       isOpen={isOpen}

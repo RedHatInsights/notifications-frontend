@@ -92,13 +92,13 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
       return null;
     case AggregatedConnectionAttemptStatus.ERROR:
       return (
-        <div className="pf-v5-u-pb-md">
+        <div className="pf-v6-u-pb-md">
           <ConnectionFailed attempts={attempts} />
         </div>
       );
     case AggregatedConnectionAttemptStatus.WARNING:
       return (
-        <div className="pf-v5-u-pb-md">
+        <div className="pf-v6-u-pb-md">
           <ConnectionDegraded attempts={attempts} />
         </div>
       );
@@ -147,7 +147,7 @@ const toTableRows = (
           title: (
             <>
               {integration.isEnabledLoading ? (
-                <Spinner className="pf-v5-u-ml-sm" size="md" />
+                <Spinner className="pf-v6-u-ml-sm" size="md" />
               ) : (
                 <Switch
                   id={`table-row-switch-id-${integration.id}`}
@@ -174,7 +174,7 @@ const toTableRows = (
             <>
               {integration.lastConnectionAttempts !== undefined &&
                 getConnectionAlert(integration.lastConnectionAttempts)}
-              <div className="pf-v5-u-pl-0 pf-v5-u-pb-0">
+              <div className="pf-v6-u-pl-0 pf-v6-u-pb-0">
                 <ExpandedContent
                   integration={integration}
                   ouiaId={integration.id}
@@ -268,7 +268,7 @@ const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
       ref={
         trRef as any /* eslint-disable-line @typescript-eslint/no-explicit-any */
       }
-      className={css('pf-v5-c-table__tr', className)}
+      className={css('pf-v6-c-table__tr', className)}
       hidden={row?.isExpanded !== undefined && !row.isExpanded}
     >
       {props.children}

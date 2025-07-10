@@ -122,12 +122,12 @@ export const EventLogActionPopoverContent: React.FunctionComponent<
           <Td>
             <div>{toDisplayStatus(props.action.status)}</div>
             {props.action.successCount > 1 && (
-              <div className="pf-v5-u-color-300">
+              <div className="pf-v6-u-color-300">
                 {props.action.successCount} {succeeded(props.action)}{' '}
               </div>
             )}
             {props.action.errorCount > 1 && (
-              <div className="pf-v5-u-color-300">
+              <div className="pf-v6-u-color-300">
                 {props.action.errorCount} {failed(props.action)}{' '}
               </div>
             )}

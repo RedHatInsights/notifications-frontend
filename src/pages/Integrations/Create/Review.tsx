@@ -36,10 +36,10 @@ const valueMapper = (category, value) => {
       value: (
         <Grid>
           <GridItem span={6}>
-            <div className="pf-v5-u-font-weight-bold">Event type</div>
+            <div className="pf-v6-u-font-weight-bold">Event type</div>
           </GridItem>
           <GridItem span={6}>
-            <div className="pf-v5-u-font-weight-bold">Application</div>
+            <div className="pf-v6-u-font-weight-bold">Application</div>
           </GridItem>
           {Object.values(value).map((item, index) => (
             <Fragment key={index}>
