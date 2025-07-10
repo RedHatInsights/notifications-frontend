@@ -1,10 +1,9 @@
 import {
+  Content,
+  ContentVariants,
   Grid,
   GridItem,
   Skeleton,
-  Text,
-  TextContent,
-  TextVariants,
 } from '@patternfly/react-core';
 import * as React from 'react';
 
@@ -27,14 +26,14 @@ const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<
   return (
     <Grid>
       <GridItem span={6}>
-        <TextContent>
-          <Text component={TextVariants.h6}>Action</Text>
-        </TextContent>
+        <Content>
+          <Content component={ContentVariants.h6}>Action</Content>
+        </Content>
       </GridItem>
       <GridItem span={6}>
-        <TextContent>
-          <Text component={TextVariants.h6}>Recipient</Text>
-        </TextContent>
+        <Content>
+          <Content component={ContentVariants.h6}>Recipient</Content>
+        </Content>
       </GridItem>
       {props.children}
     </Grid>

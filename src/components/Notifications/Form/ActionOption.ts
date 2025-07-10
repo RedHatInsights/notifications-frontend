@@ -1,52 +1,30 @@
-import { SelectOptionObject } from '@patternfly/react-core/deprecated';
-
 import Config from '../../../config/Config';
 import { UserIntegrationType } from '../../../types/Integration';
-import { NotificationType } from '../../../types/Notification';
 
-type ActionTypeOrIntegration =
-  | {
-      kind: 'integration';
-      type: UserIntegrationType;
-    }
-  | {
-      kind: 'notification';
-      type: NotificationType;
-    };
+export class ActionOption {
+  readonly kind: 'notification' | 'integration';
+  readonly type: string;
 
-export class ActionOption implements SelectOptionObject {
-  readonly integrationType: UserIntegrationType | undefined;
-  readonly notificationType: NotificationType;
-
-  constructor(type: ActionTypeOrIntegration) {
-    if (type.kind === 'integration') {
-      this.notificationType = NotificationType.INTEGRATION;
-      this.integrationType = type.type;
-    } else {
-      this.notificationType = type.type;
-      this.integrationType = undefined;
-    }
+  constructor(props: {
+    kind: 'notification' | 'integration';
+    type: string;
+  }) {
+    this.kind = props.kind;
+    this.type = props.type;
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  compareTo(selectOption: any): boolean {
-    if (selectOption instanceof ActionOption) {
-      return (
-        selectOption.notificationType === this.notificationType &&
-        selectOption.integrationType === this.integrationType
-      );
-    }
 
-    return false;
+  get integrationType(): UserIntegrationType | undefined {
+    if (this.kind === 'integration') {
+      return this.type as UserIntegrationType;
+    }
+    return undefined;
   }
 
   toString(): string {
-    const actionName = Config.notifications.types[this.notificationType].name;
-    if (this.integrationType) {
-      const integrationName =
-        Config.integrations.types[this.integrationType].name;
-      return `${actionName}: ${integrationName}`;
+    if (this.kind === 'notification') {
+      return this.type;
     }
 
-    return actionName;
+    return Config.integrations.types[this.type as UserIntegrationType]?.name ?? this.type;
   }
 }

@@ -1,15 +1,16 @@
 import { Skeleton } from '@patternfly/react-core';
-import { SelectOption } from '@patternfly/react-core/deprecated';
+import { SelectOption } from '@patternfly/react-core';
 import assertNever from 'assert-never';
 import * as React from 'react';
 
-import { Recipient } from '../../../types/Recipient';
-import { ReducerState } from './useTypeaheadReducer';
+import { BaseNotificationRecipient } from '../../../types/Recipient';
+import { RecipientOption } from './RecipientOption';
+import { TypeaheadState } from './useTypeaheadReducer';
 
 type Mapper<R> = (recipients: ReadonlyArray<R>) => React.ReactElement[];
 type LoadingMapper = () => React.ReactElement[];
 
-const getOptions = <R extends Recipient>(
+const getOptions = <R extends BaseNotificationRecipient>(
   values: ReadonlyArray<R>,
   mapper: Mapper<R>,
   isLoading: boolean,
@@ -28,8 +29,8 @@ const getOptions = <R extends Recipient>(
   return mapper(values);
 };
 
-export const useRecipientOptionMemo = <R extends Recipient>(
-  state: ReducerState<R>,
+export const useRecipientOptionMemo = <R extends BaseNotificationRecipient>(
+  state: TypeaheadState<R>,
   mapper: Mapper<R>,
   loadingMapper?: LoadingMapper
 ) => {

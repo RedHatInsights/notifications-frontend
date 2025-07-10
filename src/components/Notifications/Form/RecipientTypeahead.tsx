@@ -1,11 +1,12 @@
-import { Chip, ChipGroup, Skeleton } from '@patternfly/react-core';
+import { Label, LabelGroup, Skeleton } from '@patternfly/react-core';
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectGroup,
+  SelectList,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+} from '@patternfly/react-core';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
@@ -44,7 +45,7 @@ const renderSelectGroup = (
       {options.map((r) => {
         if (r instanceof NotificationRbacGroupRecipient && r.isLoading) {
           return (
-            <SelectOption key={r.getKey()} isNoResultsOption>
+            <SelectOption key={r.getKey()} isDisabled>
               <Skeleton width="100%" />
             </SelectOption>
           );
@@ -55,7 +56,9 @@ const renderSelectGroup = (
             key={r.getKey()}
             value={new RecipientOption(r)}
             description={r.description}
-          />
+          >
+            {r.displayName}
+          </SelectOption>
         );
       })}
     </SelectGroup>
@@ -72,7 +75,7 @@ const recipientMapper = (
 const loadingMapper = () => {
   return [
     <SelectGroup key={rbacGroupKey} label={rbacGroupLabel}>
-      <SelectOption key="loading-group" isNoResultsOption={true}>
+      <SelectOption key="loading-group" isDisabled>
         <Skeleton width="100%" />
       </SelectOption>
     </SelectGroup>,
@@ -152,7 +155,10 @@ export const RecipientTypeahead: React.FunctionComponent<
   }, [props.selected]);
 
   const onSelect = React.useCallback(
-    (_event, value: string | SelectOptionObject) => {
+    (
+      _event: React.MouseEvent | undefined,
+      value: string | number | RecipientOption | undefined
+    ) => {
       const onSelected = props.onSelected;
       if (value instanceof RecipientOption) {
         onSelected(value);
@@ -174,9 +180,9 @@ export const RecipientTypeahead: React.FunctionComponent<
       if (value.recipient instanceof NotificationRbacGroupRecipient) {
         if (value.recipient.isLoading) {
           return (
-            <Chip key={key} onClick={unselect(value)}>
+            <Label variant="outline" key={key} onClose={unselect(value)}>
               <Skeleton data-testid="loading-group" width="40px" />
-            </Chip>
+            </Label>
           );
         } else if (value.recipient.hasError) {
           return <GroupNotFound key={key} onClose={unselect(value)} />;
@@ -184,9 +190,9 @@ export const RecipientTypeahead: React.FunctionComponent<
       }
 
       return (
-        <Chip onClick={unselect(value)} key={key}>
+        <Label variant="outline" onClose={unselect(value)} key={key}>
           {value.recipient.displayName}
-        </Chip>
+        </Label>
       );
     });
   }, [selection, onSelect]);
@@ -194,23 +200,23 @@ export const RecipientTypeahead: React.FunctionComponent<
   return (
     <div {...getOuiaProps('RecipientTypeahead', props)}>
       <Select
-        maxHeight={400}
-        variant={SelectVariant.checkbox}
-        selections={selection}
+        toggle={(toggleRef: React.RefObject<MenuToggleElement>) => (
+          <MenuToggle
+            ref={toggleRef}
+            onClick={() => toggle(!isOpen)}
+            isExpanded={isOpen}
+            isDisabled={props.isDisabled}
+            status={props.error ? 'danger' : undefined}
+          >
+            <LabelGroup>{selectContent}</LabelGroup>
+          </MenuToggle>
+        )}
         onSelect={onSelect}
-        onToggle={(_e, val) => toggle(val)}
+        onOpenChange={(isOpen) => toggle(isOpen)}
         isOpen={isOpen}
-        menuAppendTo={document.body}
-        isDisabled={props.isDisabled}
-        onClear={props.onClear}
-        validated={props.error ? 'error' : undefined}
-        isGrouped
-        isCheckboxSelectionBadgeHidden
-        // hasInlineFilter // Disabled filter. see: https://github.com/patternfly/patternfly-react/issues/7134
-        isInputValuePersisted
-        placeholderText={<ChipGroup>{selectContent}</ChipGroup>}
+        popperProps={{ appendTo: document.body, maxWidth: '400px' }}
       >
-        {options}
+        <SelectList>{options}</SelectList>
       </Select>
     </div>
   );

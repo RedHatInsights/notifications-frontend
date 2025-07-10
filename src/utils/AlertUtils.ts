@@ -1,8 +1,6 @@
 import { AlertProps } from '@patternfly/react-core';
-import { addNotification as createNotificationAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
-import { clearNotifications as createClearNotificationsAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
+import { createStore } from '@redhat-cloud-services/frontend-components-notifications';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 export type NotificationType = AlertProps['variant'];
 type ExplicitNotificationFunction = (
@@ -11,9 +9,11 @@ type ExplicitNotificationFunction = (
   dismissable?: boolean
 ) => void;
 
+// Create a notification store instance
+const notificationStore = createStore();
+
 // Todo: Create a PR over frontend-components with a similar hook
 export const useNotification = () => {
-  const dispatch = useDispatch();
   return useMemo(() => {
     const addNotification = (
       variant: NotificationType,
@@ -21,14 +21,12 @@ export const useNotification = () => {
       description: React.ReactNode,
       dismissable?: boolean
     ) =>
-      dispatch(
-        createNotificationAction({
-          variant,
-          title,
-          description,
-          dismissable,
-        })
-      );
+      notificationStore.addNotification({
+        variant,
+        title,
+        description,
+        dismissable,
+      });
 
     const addSuccessNotification: ExplicitNotificationFunction = (...args) =>
       addNotification('success', ...args);
@@ -38,7 +36,7 @@ export const useNotification = () => {
       addNotification('info', ...args);
     const addWarningNotification: ExplicitNotificationFunction = (...args) =>
       addNotification('warning', ...args);
-    const clearNotifications = () => dispatch(createClearNotificationsAction());
+    const clearNotifications = () => notificationStore.clearNotifications();
 
     return {
       addNotification,
@@ -48,5 +46,5 @@ export const useNotification = () => {
       addWarningNotification,
       clearNotifications,
     };
-  }, [dispatch]);
+  }, []);
 };

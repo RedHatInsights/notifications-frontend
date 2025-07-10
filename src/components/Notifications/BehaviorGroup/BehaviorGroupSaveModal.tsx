@@ -1,4 +1,4 @@
-import { ModalVariant } from '@patternfly/react-core';
+import { ModalVariant } from '@patternfly/react-core/deprecated';
 import { Formik, useFormikContext } from 'formik';
 import * as React from 'react';
 

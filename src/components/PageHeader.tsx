@@ -1,4 +1,4 @@
-import { Split, SplitItem, Text, TextContent } from '@patternfly/react-core';
+import { Content, Split, SplitItem } from '@patternfly/react-core';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
 import PageHeaderFC from '@redhat-cloud-services/frontend-components/PageHeader';
 import * as React from 'react';
@@ -17,9 +17,9 @@ export const PageHeader: React.FunctionComponent<
       <Split>
         <SplitItem isFilled>
           <PageHeaderTitle title={props.title} />
-          <TextContent className="pf-v5-u-pt-sm">
-            <Text>{props.subtitle}</Text>
-          </TextContent>
+          <Content className="pf-v5-u-pt-sm">
+            <Content component="p">{props.subtitle}</Content>
+          </Content>
         </SplitItem>
         {props.action && (
           <SplitItem className="pf-v5-u-ml-3xl">{props.action}</SplitItem>

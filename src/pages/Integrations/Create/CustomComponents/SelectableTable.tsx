@@ -7,13 +7,7 @@ import { EventType, Facet } from '../../../../types/Notification';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 import FormSpy from '@data-driven-forms/react-form-renderer/form-spy';
 import { getBundleFacets } from '../../../../api/helpers/notifications/bundle-facets-helper';
-import {
-  Bullseye,
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
-} from '@patternfly/react-core';
+import { Bullseye, EmptyState, EmptyStateBody } from '@patternfly/react-core';
 import CubesIcon from '@patternfly/react-icons/dist/dynamic/icons/cube-icon';
 import { getEndpoint } from '../../../../api/helpers/integrations/endpoints-helper';
 
@@ -177,12 +171,11 @@ const SelectableTable = (props) => {
     />
   ) : (
     <Bullseye>
-      <EmptyState>
-        <EmptyStateHeader
-          titleText="Select product family"
-          headingLevel="h4"
-          icon={<EmptyStateIcon icon={CubesIcon} />}
-        />
+      <EmptyState
+        headingLevel="h4"
+        icon={CubesIcon}
+        titleText="Select product family"
+      >
         <EmptyStateBody>
           Before you can assign events to integration you have to select from
           which bundle events should be assignable.

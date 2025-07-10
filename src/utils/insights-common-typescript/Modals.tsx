@@ -11,7 +11,7 @@ import {
   Modal,
   ModalProps,
   ModalVariant,
-} from '@patternfly/react-core/dist/dynamic/components/Modal';
+} from '@patternfly/react-core/dist/dynamic/deprecated/components/Modal';
 import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
 
 // Partial all but specified properties

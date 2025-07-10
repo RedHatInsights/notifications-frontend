@@ -1,17 +1,14 @@
+/* eslint-disable testing-library/await-async-queries */
 import {
   Badge,
-  Chip,
-  ChipGroup,
   Icon,
   Label,
-  MenuItem,
+  LabelGroup,
+  MenuToggle,
+  Select,
+  SelectOption,
   Tooltip,
 } from '@patternfly/react-core';
-import {
-  OptionsMenu,
-  OptionsMenuItem,
-  OptionsMenuToggle,
-} from '@patternfly/react-core/deprecated';
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
 import * as React from 'react';
@@ -22,7 +19,6 @@ import {
   NotificationBehaviorGroup,
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
-import { emptyImmutableObject } from '../../../utils/Immutable';
 import { join } from '../../../utils/insights-common-typescript';
 
 interface BehaviorGroupCellProps {
@@ -38,7 +34,7 @@ interface BehaviorGroupCellProps {
   isEditMode: boolean;
 }
 
-interface BehaviorGroupChip {
+interface BehaviorGroupChipProps {
   behaviorGroup: BehaviorGroup;
   notification: BehaviorGroupCellProps['notification'];
   onSelect?: BehaviorGroupCellProps['onSelect'];
@@ -46,7 +42,7 @@ interface BehaviorGroupChip {
 
 const CommaSeparator: React.FunctionComponent = () => <span>, </span>;
 
-const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (
+const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChipProps> = (
   props
 ) => {
   const unlink = React.useCallback(() => {
@@ -57,9 +53,9 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (
   }, [props.onSelect, props.behaviorGroup, props.notification]);
 
   return (
-    <Chip onClick={unlink} isReadOnly={props.behaviorGroup.isDefault}>
+    <Label variant="outline" onClose={unlink}>
       {props.behaviorGroup.displayName}
-    </Chip>
+    </Label>
   );
 };
 
@@ -68,33 +64,24 @@ export const BehaviorGroupCell: React.FunctionComponent<
 > = (props) => {
   const [isOpen, setOpen] = React.useState(false);
 
-  const onSelected = React.useCallback(
+  const onSelectHandler = React.useCallback(
     (
-      event?: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent,
-      behaviorGroupId?: string
+      _event: React.MouseEvent | React.ChangeEvent | undefined,
+      selection: string | number | undefined
     ) => {
-      const dataset =
-        (event?.currentTarget?.firstChild as HTMLElement)?.dataset ??
-        emptyImmutableObject;
       const onSelect = props.onSelect;
       if (
+        selection &&
         !props.behaviorGroupContent.isLoading &&
         !props.behaviorGroupContent.hasError &&
         onSelect
       ) {
-        let found;
-        if (dataset.behaviorGroupId || behaviorGroupId) {
-          found = props.behaviorGroupContent.content.find(
-            // eslint-disable-next-line testing-library/await-async-queries
-            findById(
-              (dataset.behaviorGroupId as string) || (behaviorGroupId as string)
-            )
-          );
-          if (found) {
-            // eslint-disable-next-line testing-library/await-async-queries
-            const isSelected = !!props.selected.find(findById(found.id));
-            onSelect(props.notification, found, !isSelected);
-          }
+        const found = props.behaviorGroupContent.content.find(
+          findById(selection as string)
+        );
+        if (found) {
+          const isCurrentlySelected = !!props.selected.find(findById(found.id));
+          onSelect(props.notification, found, !isCurrentlySelected);
         }
       }
     },
@@ -106,58 +93,6 @@ export const BehaviorGroupCell: React.FunctionComponent<
     ]
   );
 
-  const items = React.useMemo(() => {
-    if (
-      props.behaviorGroupContent.isLoading ||
-      props.behaviorGroupContent.hasError
-    ) {
-      return [
-        <OptionsMenuItem key="is-loading" isDisabled>
-          Loading
-        </OptionsMenuItem>,
-      ];
-    }
-
-    if (props.behaviorGroupContent.content.length === 0) {
-      return [
-        <OptionsMenuItem key="empty" isDisabled>
-          <span className="pf-v5-u-text-align-left">
-            You have no behavior groups. <br />
-            Create a new group by clicking on the <br />
-            &apos;Create new group&apos; button above.
-          </span>
-        </OptionsMenuItem>,
-      ];
-    }
-
-    const behaviorGroups = [
-      ...props.selected.filter((b) => b.isDefault),
-      ...props.behaviorGroupContent.content.filter((b) => !b.isDefault),
-    ];
-
-    return [
-      behaviorGroups.map((bg) => {
-        // eslint-disable-next-line testing-library/await-async-queries
-        const selected = !!props.selected.find(findById(bg.id));
-
-        return (
-          <MenuItem
-            key={bg.id}
-            hasCheckbox
-            onClick={(event) => onSelected(event, bg.id)}
-            data-behavior-group-id={bg.id}
-            isSelected={selected}
-            isDisabled={bg.isDefault}
-            className="pf-v5-u-ml-sm"
-          >
-            {bg.isDefault && <LockIcon className="pf-v5-u-ml-sm" />}{' '}
-            <span className="pf-v5-u-ml-sm"> {bg.displayName}</span>
-          </MenuItem>
-        );
-      }),
-    ];
-  }, [props.behaviorGroupContent, props.selected, onSelected]);
-
   const sortedSelected = React.useMemo(
     () => [
       ...props.selected.filter((b) => b.isDefault),
@@ -166,41 +101,40 @@ export const BehaviorGroupCell: React.FunctionComponent<
     [props.selected]
   );
 
-  const toggle = React.useMemo(() => {
-    return (
-      <OptionsMenuToggle
-        onToggle={(_e, isOpen) => setOpen(isOpen)}
-        toggleTemplate={
-          sortedSelected.length === 0 ? (
-            <>
-              <span className="pf-v5-u-disabled-color-100">
-                Select behavior group
-              </span>
-              <Badge className="pf-v5-u-ml-xs" isRead>
-                {sortedSelected.length}
-              </Badge>
-            </>
-          ) : (
-            <>
-              <ChipGroup>
-                {sortedSelected.map((value) => (
-                  <BehaviorGroupChip
-                    key={value.id}
-                    behaviorGroup={value}
-                    notification={props.notification}
-                    onSelect={props.onSelect}
-                  />
-                ))}
-              </ChipGroup>
-              <Badge className="pf-v5-u-ml-xs" isRead>
-                {sortedSelected.length}
-              </Badge>
-            </>
-          )
-        }
-      />
-    );
-  }, [sortedSelected, props.notification, props.onSelect]);
+  const toggle = (toggleRef: React.Ref<HTMLButtonElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={() => setOpen(!isOpen)}
+      isExpanded={isOpen}
+    >
+      {sortedSelected.length === 0 ? (
+        <>
+          <span className="pf-v5-u-disabled-color-100">
+            Select behavior group
+          </span>
+          <Badge className="pf-v5-u-ml-xs" isRead>
+            {sortedSelected.length}
+          </Badge>
+        </>
+      ) : (
+        <>
+          <LabelGroup>
+            {sortedSelected.map((value) => (
+              <BehaviorGroupChip
+                key={value.id}
+                behaviorGroup={value}
+                notification={props.notification}
+                onSelect={props.onSelect}
+              />
+            ))}
+          </LabelGroup>
+          <Badge className="pf-v5-u-ml-xs" isRead>
+            {sortedSelected.length}
+          </Badge>
+        </>
+      )}
+    </MenuToggle>
+  );
 
   const readonlyText = React.useMemo(() => {
     if (sortedSelected.length === 0) {
@@ -237,13 +171,40 @@ export const BehaviorGroupCell: React.FunctionComponent<
   }
 
   return (
-    <OptionsMenu
+    <Select
       id={props.id}
-      direction="down"
-      menuItems={items}
-      toggle={toggle}
       isOpen={isOpen}
-      menuAppendTo={document.body}
-    />
+      onOpenChange={(isOpen) => setOpen(isOpen)}
+      onSelect={onSelectHandler}
+      toggle={toggle}
+    >
+      {props.behaviorGroupContent.isLoading ||
+      props.behaviorGroupContent.hasError ? (
+        <SelectOption isDisabled>Loading...</SelectOption>
+      ) : props.behaviorGroupContent.content.length === 0 ? (
+        <SelectOption isDisabled>
+          <span className="pf-v5-u-text-align-left">
+            You have no behavior groups. <br />
+            Create a new group by clicking on the <br />
+            &apos;Create new group&apos; button above.
+          </span>
+        </SelectOption>
+      ) : (
+        props.behaviorGroupContent.content.map((bg) => {
+          const isChecked = props.selected.some((s) => s.id === bg.id);
+          return (
+            <SelectOption
+              key={bg.id}
+              value={bg.id}
+              isDisabled={bg.isDefault}
+              checked={isChecked}
+            >
+              {bg.isDefault && <LockIcon className="pf-v5-u-mr-sm" />}{' '}
+              {bg.displayName}
+            </SelectOption>
+          );
+        })
+      )}
+    </Select>
   );
 };

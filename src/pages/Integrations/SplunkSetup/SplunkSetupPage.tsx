@@ -43,12 +43,11 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
             }
           >
             <Button
+              icon={<HelpIcon />}
               variant="plain"
               aria-label="Help description"
               className="title-help-label"
-            >
-              <HelpIcon />
-            </Button>
+            />
           </Popover>
         </>
       }

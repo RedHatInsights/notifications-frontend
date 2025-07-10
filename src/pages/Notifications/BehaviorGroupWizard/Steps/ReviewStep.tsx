@@ -1,13 +1,12 @@
 import {
+  Content,
+  ContentVariants,
   DescriptionList,
   DescriptionListDescription,
   DescriptionListGroup,
   DescriptionListTerm,
   Grid,
   GridItem,
-  Text,
-  TextContent,
-  TextVariants,
   Title,
 } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
@@ -31,14 +30,14 @@ const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = (
   return (
     <Grid>
       <GridItem span={6}>
-        <TextContent>
-          <Text component={TextVariants.h6}>Event type</Text>
-        </TextContent>
+        <Content>
+          <Content component={ContentVariants.h6}>Event type</Content>
+        </Content>
       </GridItem>
       <GridItem span={6}>
-        <TextContent>
-          <Text component={TextVariants.h6}>Application</Text>
-        </TextContent>
+        <Content>
+          <Content component={ContentVariants.h6}>Application</Content>
+        </Content>
       </GridItem>
       {props.events.map((event) => (
         <React.Fragment key={event.id}>

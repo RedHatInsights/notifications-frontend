@@ -1,20 +1,23 @@
 import {
   DatePicker,
   DatePickerRef,
+} from '@patternfly/react-core/dist/dynamic/components/DatePicker';
+import {
   Split,
   SplitItem,
-  TextInputProps,
-} from '@patternfly/react-core';
+} from '@patternfly/react-core/dist/dynamic/layouts/Split';
+import { TextInputProps } from '@patternfly/react-core/dist/dynamic/components/TextInput';
 import {
   Select,
+  SelectList,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+  MenuToggle,
+  MenuToggleElement,
+} from '@patternfly/react-core';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
-import React, { useMemo, useState } from 'react';
+import * as React from 'react';
 import { Dispatch, useRef } from 'react';
 import { SetStateAction } from 'react';
 import { style } from 'typestyle';
@@ -42,30 +45,23 @@ const datePickerClassName = style({
   cursor: 'pointer',
   $nest: {
     '&::placeholder': {
-      color: important('var(--pf-v5-global--palette--black-1000)'),
+      color: important("var(--pf-t--temp--dev--tbd)"/* CODEMODS: original v5 color was --pf-v5-global--palette--black-1000 */),
     },
     '&:hover': {
-      borderBottomColor: 'var(--pf-v5-global--active-color--100)',
+      borderBottomColor: "var(--pf-t--temp--dev--tbd)"/* CODEMODS: original v5 color was --pf-v5-global--active-color--100 */,
     },
   },
 });
 
-class EventLogSelectObject implements SelectOptionObject {
+class EventLogSelectObject {
   readonly value: NotificationsLogDateFilterValue;
 
   constructor(value: NotificationsLogDateFilterValue) {
     this.value = value;
   }
 
-  toString(): string {
-    return labels[this.value];
-  }
-  compareTo(selectOption: unknown): boolean {
-    if (selectOption instanceof EventLogSelectObject) {
-      return selectOption.value === this.value;
-    }
-
-    return false;
+  toString() {
+    return this.value;
   }
 }
 
@@ -112,8 +108,8 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = ({
   period,
   setPeriod,
 }) => {
-  const maxDate = useMemo(() => new Date(), []);
-  const minDate = useMemo(
+  const maxDate = React.useMemo(() => new Date(), []);
+  const minDate = React.useMemo(
     () =>
       add(maxDate, {
         days: -14,
@@ -181,6 +177,32 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = ({
   );
 };
 
+interface RangeFilterOptionModel {
+  value: string;
+  label: string;
+}
+
+const RangeFilterOption = (model: RangeFilterOptionModel) => model;
+
+const rangeFilterOptions = [
+  RangeFilterOption({
+    value: 'last_24_hours',
+    label: 'Last 24 hours',
+  }),
+  RangeFilterOption({
+    value: 'last_7_days',
+    label: 'Last 7 days',
+  }),
+  RangeFilterOption({
+    value: 'last_30_days',
+    label: 'Last 30 days',
+  }),
+  RangeFilterOption({
+    value: 'custom',
+    label: 'Custom range',
+  }),
+];
+
 export interface NotificationsLogDateFilterProps {
   value: NotificationsLogDateFilterValue;
   setValue: (value: NotificationsLogDateFilterValue) => void;
@@ -192,30 +214,38 @@ export interface NotificationsLogDateFilterProps {
 export const NotificationsLogDateFilter: React.FunctionComponent<
   NotificationsLogDateFilterProps
 > = ({ value, setValue, period, setPeriod, retentionDays }) => {
-  const [isOpen, setOpen] = useState(false);
-  const val = useMemo(() => new EventLogSelectObject(value), [value]);
+  const [isOpen, setOpen] = React.useState(false);
+  const val = React.useMemo(() => new EventLogSelectObject(value), [value]);
 
   return (
-    <Split>
-      <SplitItem>
+    <Split hasGutter>
+      <SplitItem isFilled>
         <Select
+          toggle={(toggleRef: React.RefObject<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              onClick={() => setOpen(!isOpen)}
+              isExpanded={isOpen}
+            >
+              {val.toString()}
+            </MenuToggle>
+          )}
           isOpen={isOpen}
-          variant={SelectVariant.single}
-          onToggle={() => setOpen((prev) => !prev)}
-          selections={val}
-          onSelect={(
-            _e: unknown,
-            selectObject: SelectOptionObject | string
-          ) => {
-            if (selectObject instanceof EventLogSelectObject) {
-              setValue(selectObject.value);
+          onOpenChange={(isOpen) => setOpen(isOpen)}
+          onSelect={(_e: React.MouseEvent | undefined, selectObject: string | number | undefined) => {
+            if (typeof selectObject === 'string') {
+              setValue(selectObject as NotificationsLogDateFilterValue);
               setOpen(false);
             }
           }}
         >
-          {Object.values(NotificationsLogDateFilterValue).map((v) => (
-            <SelectOption key={v} value={new EventLogSelectObject(v)} />
-          ))}
+          <SelectList>
+            {rangeFilterOptions.map((option) => (
+              <SelectOption key={option.value} value={option.value}>
+                {option.label}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       </SplitItem>
       {value === NotificationsLogDateFilterValue.CUSTOM && (

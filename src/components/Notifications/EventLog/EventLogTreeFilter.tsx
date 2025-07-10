@@ -1,5 +1,5 @@
 import { TreeView, TreeViewDataItem } from '@patternfly/react-core';
-import { Dropdown, DropdownToggle } from '@patternfly/react-core/deprecated';
+import { Dropdown, DropdownList, MenuToggle, MenuToggleElement } from '@patternfly/react-core';
 import { TreeViewCheckProps } from '@patternfly/react-core/dist/esm/components/TreeView/TreeViewListItem';
 import { AngleDownIcon } from '@patternfly/react-icons';
 import produce from 'immer';
@@ -250,23 +250,30 @@ export const EventLogTreeFilter: React.FunctionComponent<
     );
   };
 
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle
+      ref={toggleRef}
+      onClick={() => setIsToggled(!isToggled)}
+      isExpanded={isToggled}
+      icon={<AngleDownIcon />}
+    >
+      {placeholder}
+    </MenuToggle>
+  );
+
   return (
     <Dropdown
-      toggle={
-        <DropdownToggle
-          onToggle={() => setIsToggled(!isToggled)}
-          toggleIndicator={AngleDownIcon}
-        >
-          {placeholder}
-        </DropdownToggle>
-      }
+      toggle={toggle}
       isOpen={isToggled}
+      onOpenChange={(isOpen) => setIsToggled(isOpen)}
     >
-      <TreeView
-        data={treeDataArray}
-        hasCheckboxes={true}
-        onCheck={onCheckWrapper}
-      />
+      <DropdownList>
+        <TreeView
+          data={treeDataArray}
+          hasCheckboxes={true}
+          onCheck={onCheckWrapper}
+        />
+      </DropdownList>
     </Dropdown>
   );
 };

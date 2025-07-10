@@ -2,20 +2,17 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Content,
+  ContentVariants,
+  Dropdown,
+  DropdownItem,
+  DropdownList,
+  MenuToggle,
   Skeleton,
   Split,
   SplitItem,
-  Text,
-  TextContent,
-  TextVariants,
   Tooltip,
 } from '@patternfly/react-core';
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  KebabToggle,
-} from '@patternfly/react-core/deprecated';
 import { LockIcon } from '@patternfly/react-icons';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import * as React from 'react';
@@ -55,7 +52,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
   );
 
   return (
-    <Card isFlat className={cardClassName}>
+    <Card className={cardClassName}>
       <CardHeader
         actions={{
           actions: (
@@ -63,18 +60,21 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
               {!props.isDefaultBehavior && (
                 <Dropdown
                   onSelect={switchOpen}
-                  toggle={
-                    <KebabToggle
-                      onToggle={(_e, isOpen) => setOpen(isOpen)}
+                  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                  toggle={(toggleRef: React.RefObject<any>) => (
+                    <MenuToggle
+                      ref={toggleRef}
+                      onClick={switchOpen}
                       isDisabled={!props.dropdownItems}
+                      variant="plain"
                     />
-                  }
+                  )}
                   isOpen={isOpen}
-                  isPlain
-                  dropdownItems={props.dropdownItems}
-                  position={DropdownPosition.right}
-                  menuAppendTo={() => document.body}
-                />
+                  onOpenChange={(isOpen: boolean) => setOpen(isOpen)}
+                  popperProps={{ position: 'right' }}
+                >
+                  <DropdownList>{props.dropdownItems}</DropdownList>
+                </Dropdown>
               )}
             </>
           ),
@@ -106,9 +106,12 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                 )}
               </SplitItem>
               <SplitItem>
-                <TextContent>
-                  <Text component={TextVariants.h4}> {props.title} </Text>
-                </TextContent>
+                <Content>
+                  <Content component={ContentVariants.h4}>
+                    {' '}
+                    {props.title}{' '}
+                  </Content>
+                </Content>
               </SplitItem>
             </Split>
           </>
@@ -143,16 +146,14 @@ const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = (
         onClick={onClickEdit}
         isDisabled={!onClickEdit}
       >
-        {' '}
-        Edit{' '}
+        Edit
       </DropdownItem>,
       <DropdownItem
         key="on-delete"
         onClick={onClickDelete}
         isDisabled={!onClickDelete}
       >
-        {' '}
-        Delete{' '}
+        Delete
       </DropdownItem>,
     ],
     [onClickEdit, onClickDelete]

@@ -1,4 +1,4 @@
-import { Skeleton, Spinner, Text } from '@patternfly/react-core';
+import { Content, Skeleton, Spinner } from '@patternfly/react-core';
 import {
   Table as TableComposable,
   TableVariant,
@@ -118,9 +118,9 @@ const SelectableEventTypeTableRow: React.FunctionComponent<{
         <Tr>
           <Td colSpan={2} />
           <Td colSpan={2}>
-            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
+            <Content component="p" className="pf-v5-u-color-200 pf-v5-u-p-0">
               {event.description}
-            </Text>
+            </Content>
           </Td>
         </Tr>
       )}

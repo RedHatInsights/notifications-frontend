@@ -1,4 +1,4 @@
-import { Popover, Text, TextContent } from '@patternfly/react-core';
+import { Content, Popover } from '@patternfly/react-core';
 import * as React from 'react';
 import { TableHelp } from './TableHelp';
 
@@ -10,9 +10,9 @@ export interface TableHelpPopoverProps {
 const getHeaderContent = (title: string | React.ReactNode): React.ReactNode => {
   if (typeof title === 'string') {
     return (
-      <TextContent>
-        <Text component="h6">{title}</Text>
-      </TextContent>
+      <Content>
+        <Content component="h6">{title}</Content>
+      </Content>
     );
   }
 

@@ -8,11 +8,12 @@ import {
 } from '@patternfly/react-core/dist/dynamic/layouts/Split';
 import { TextInputProps } from '@patternfly/react-core/dist/dynamic/components/TextInput';
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+} from '@patternfly/react-core';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
@@ -47,30 +48,10 @@ const datePickerClassName = style({
       color: important('black'),
     },
     '&:hover': {
-      borderBottomColor: 'var(--pf-v5-global--active-color--100)',
+      borderBottomColor: 'var(-pf-v6-global--active-color--100)',
     },
   },
 });
-
-class EventLogSelectObject implements SelectOptionObject {
-  readonly value: EventLogDateFilterValue;
-
-  constructor(value: EventLogDateFilterValue) {
-    this.value = value;
-  }
-
-  toString(): string {
-    return labels[this.value];
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  compareTo(selectOption: any): boolean {
-    if (selectOption instanceof EventLogSelectObject) {
-      return selectOption.value === this.value;
-    }
-
-    return false;
-  }
-}
 
 const dateInputProps: TextInputProps = {
   readOnly: true,
@@ -233,29 +214,27 @@ export interface EventLogDateFilterProps {
 export const EventLogDateFilter: React.FunctionComponent<
   EventLogDateFilterProps
 > = (props) => {
-  const options = React.useMemo(
-    () =>
-      Object.values(EventLogDateFilterValue).map((v) => (
-        <SelectOption key={v} value={new EventLogSelectObject(v)} />
-      )),
-    []
-  );
   const [isOpen, setOpen] = React.useState(false);
+
   const onToggle = React.useCallback(() => setOpen((prev) => !prev), [setOpen]);
-  const value = React.useMemo(
-    () => new EventLogSelectObject(props.value),
-    [props.value]
-  );
+
   const onSelect = React.useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (_e: any, selectObject: SelectOptionObject | string) => {
-      const setValue = props.setValue;
-      if (selectObject instanceof EventLogSelectObject) {
-        setValue(selectObject.value);
+    (
+      _event: React.MouseEvent<Element, MouseEvent> | undefined,
+      value: string | number | undefined
+    ) => {
+      if (value && typeof value === 'string') {
+        props.setValue(value as EventLogDateFilterValue);
         setOpen(false);
       }
     },
     [props.setValue]
+  );
+
+  const toggle = (toggleRef: React.Ref<MenuToggleElement>) => (
+    <MenuToggle ref={toggleRef} onClick={onToggle} isExpanded={isOpen}>
+      {labels[props.value]}
+    </MenuToggle>
   );
 
   return (
@@ -263,12 +242,18 @@ export const EventLogDateFilter: React.FunctionComponent<
       <SplitItem>
         <Select
           isOpen={isOpen}
-          variant={SelectVariant.single}
-          onToggle={onToggle}
-          selections={value}
+          selected={props.value}
           onSelect={onSelect}
+          onOpenChange={(isOpen) => setOpen(isOpen)}
+          toggle={toggle}
         >
-          {options}
+          <SelectList>
+            {Object.values(EventLogDateFilterValue).map((value) => (
+              <SelectOption key={value} value={value}>
+                {labels[value]}
+              </SelectOption>
+            ))}
+          </SelectList>
         </Select>
       </SplitItem>
       {props.value === EventLogDateFilterValue.CUSTOM && (

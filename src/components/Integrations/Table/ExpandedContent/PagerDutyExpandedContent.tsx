@@ -1,10 +1,4 @@
-import {
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-} from '@patternfly/react-core';
+import { Content, ContentVariants } from '@patternfly/react-core';
 import * as React from 'react';
 import { UserIntegrationType } from '../../../../types/Integration';
 import { getOuiaProps } from '../../../../utils/getOuiaProps';
@@ -17,39 +11,39 @@ export const PagerDutyExpandedContent: React.FunctionComponent<
   ExpandedContentProps<UserIntegrationType>
 > = (props) => {
   return (
-    <TextContent
+    <Content
       {...getOuiaProps('Integrations/Table/PagerDutyExpandedContent', props)}
     >
-      <TextList component={TextListVariants.dl}>
+      <Content component={ContentVariants.dl}>
         {'secretToken' in props.integration && (
           <>
-            <TextListItem
+            <Content
               className={expandedContentTitleClass}
-              component={TextListItemVariants.dt}
+              component={ContentVariants.dt}
             >
               Integration Key
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
+            </Content>
+            <Content component={ContentVariants.dd}>
               {props.integration.secretToken !== undefined
                 ? 'Secret token'
                 : 'None'}
-            </TextListItem>
+            </Content>
           </>
         )}
         {props.integration['severity'] && (
           <>
-            <TextListItem
+            <Content
               className={expandedContentTitleClass}
-              component={TextListItemVariants.dt}
+              component={ContentVariants.dt}
             >
               Severity
-            </TextListItem>
-            <TextListItem component={TextListItemVariants.dd}>
+            </Content>
+            <Content component={ContentVariants.dd}>
               {props.integration['severity']}
-            </TextListItem>
+            </Content>
           </>
         )}
-      </TextList>
-    </TextContent>
+      </Content>
+    </Content>
   );
 };

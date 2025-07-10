@@ -247,9 +247,11 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<
           {
             key: 'delete',
             title: (
-              <Button aria-label="delete-action" variant={ButtonVariant.plain}>
-                <MinusCircleIcon />
-              </Button>
+              <Button
+                icon={<MinusCircleIcon />}
+                aria-label="delete-action"
+                variant={ButtonVariant.plain}
+              />
             ),
             isOutsideDropdown: true,
             onClick: handleRemove(rowData.id),

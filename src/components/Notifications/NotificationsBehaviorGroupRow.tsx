@@ -1,21 +1,16 @@
 import {
   Button,
   ButtonVariant,
+  Content,
   Icon,
   Skeleton,
-  Text,
 } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
+import { Td, Tr } from '@patternfly/react-table/dist/dynamic/components/Table';
 import {
-  CustomActionsToggleProps,
-  IActions,
-  Td,
-  Tr,
-} from '@patternfly/react-table/dist/dynamic/components/Table';
-import {
-  global_active_color_100,
-  global_disabled_color_100,
-  global_palette_black_600,
+  t_temp_dev_tbd as global_active_color_100,
+  t_temp_dev_tbd as global_disabled_color_100,
+  t_temp_dev_tbd as global_palette_black_600,
 } from '@patternfly/react-tokens';
 import * as React from 'react';
 
@@ -28,11 +23,8 @@ import {
 } from '../../types/Notification';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
-import {
-  DropdownDirection,
-  DropdownPosition,
-} from '@patternfly/react-core/dist/dynamic/deprecated/components/Dropdown';
 
+// These types remain the same
 export type OnNotificationIdHandler = (notificationId: UUID) => void;
 
 export type Callbacks = {
@@ -47,111 +39,6 @@ export type OnBehaviorGroupLinkUpdated = (
   behaviorGroup: BehaviorGroup,
   isLinked: boolean
 ) => void;
-
-export interface TdActionsType {
-  /** The row index */
-  rowIndex?: number;
-  /** Cell actions */
-  items: IActions;
-  /** Whether the actions are disabled */
-  isDisabled?: boolean;
-  /** Actions dropdown position */
-  dropdownPosition?: DropdownPosition;
-  /** Actions dropdown direction */
-  dropdownDirection?: DropdownDirection;
-  /** The container to append the dropdown menu to. Defaults to 'inline'.
-   * If your menu is being cut off you can append it to an element higher up the DOM tree.
-   * Some examples:
-   * menuAppendTo="parent"
-   * menuAppendTo={() => document.body}
-   * menuAppendTo={document.getElementById('target')}
-   */
-  menuAppendTo?: HTMLElement | (() => HTMLElement) | 'inline' | 'parent';
-  /** Custom toggle for the actions menu */
-  actionsToggle?: (props: CustomActionsToggleProps) => React.ReactNode;
-}
-
-const HiddenActionsToggle = () => <React.Fragment />;
-
-const getActions = (
-  notification: BehaviorGroupNotificationRow,
-  callbacks?: Callbacks
-): TdActionsType => {
-  const isDisabled = notification.loadingActionStatus !== 'done';
-
-  if (!notification.isEditMode) {
-    return {
-      actionsToggle: HiddenActionsToggle,
-      items: [
-        {
-          key: 'edit',
-          title: (
-            <Button
-              aria-label="edit"
-              variant={ButtonVariant.plain}
-              isDisabled={isDisabled}
-            >
-              <PencilAltIcon />
-            </Button>
-          ),
-          isOutsideDropdown: true,
-          onClick: () => callbacks?.onStartEditing(notification.id),
-          isDisabled: isDisabled || !callbacks,
-        },
-      ],
-    };
-  }
-
-  return {
-    actionsToggle: HiddenActionsToggle,
-    items: [
-      {
-        key: 'done',
-        title: (
-          <Button
-            aria-label="done"
-            variant={ButtonVariant.plain}
-            isDisabled={isDisabled}
-          >
-            <Icon
-              color={
-                isDisabled
-                  ? global_disabled_color_100.value
-                  : global_active_color_100.value
-              }
-            >
-              <CheckIcon />
-            </Icon>
-          </Button>
-        ),
-        isOutsideDropdown: true,
-        onClick: () => callbacks?.onFinishEditing(notification.id),
-        isDisabled: isDisabled || !callbacks,
-      },
-      {
-        key: 'cancel',
-        title: (
-          <Button
-            aria-label="cancel"
-            variant={ButtonVariant.plain}
-            isDisabled={isDisabled}
-          >
-            <CloseIcon
-              color={
-                isDisabled
-                  ? global_disabled_color_100.value
-                  : global_palette_black_600.value
-              }
-            />
-          </Button>
-        ),
-        isOutsideDropdown: true,
-        onClick: () => callbacks?.onCancelEditing(notification.id),
-        isDisabled: isDisabled || !callbacks,
-      },
-    ],
-  };
-};
 
 export interface NotificationsBehaviorGroupRowProps {
   rowIndex: number;
@@ -173,6 +60,8 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
   callbacks,
 }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+  const isDisabled = notification.loadingActionStatus !== 'done';
+
   return (
     <>
       <Tr key={notification.id}>
@@ -204,15 +93,60 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
             />
           )}
         </Td>
-        <Td actions={getActions(notification, callbacks)} />
+        <Td isActionCell>
+          {isEditMode ? (
+            <>
+              <Button
+                icon={
+                  <Icon
+                    color={
+                      isDisabled
+                        ? global_disabled_color_100.value
+                        : global_active_color_100.value
+                    }
+                  >
+                    <CheckIcon />
+                  </Icon>
+                }
+                aria-label="done"
+                variant={ButtonVariant.plain}
+                isDisabled={isDisabled}
+                onClick={() => callbacks?.onFinishEditing(notification.id)}
+              />
+              <Button
+                icon={
+                  <CloseIcon
+                    color={
+                      isDisabled
+                        ? global_disabled_color_100.value
+                        : global_palette_black_600.value
+                    }
+                  />
+                }
+                aria-label="cancel"
+                variant={ButtonVariant.plain}
+                isDisabled={isDisabled}
+                onClick={() => callbacks?.onCancelEditing(notification.id)}
+              />
+            </>
+          ) : (
+            <Button
+              icon={<PencilAltIcon />}
+              aria-label="edit"
+              variant={ButtonVariant.plain}
+              isDisabled={isDisabled}
+              onClick={() => callbacks?.onStartEditing(notification.id)}
+            />
+          )}
+        </Td>
       </Tr>
       {notification.description && isExpanded && (
         <Tr>
           <Td />
           <Td colSpan={4}>
-            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
+            <Content component="p" className="pf-v5-u-color-200 pf-v5-u-p-0">
               {notification.description}
-            </Text>
+            </Content>
           </Td>
         </Tr>
       )}
