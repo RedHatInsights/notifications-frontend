@@ -1,4 +1,10 @@
-import { FormHelperText, Select, SelectList, MenuToggle, MenuToggleElement } from '@patternfly/react-core';
+import {
+  FormHelperText,
+  MenuToggle,
+  MenuToggleElement,
+  Select,
+  SelectList,
+} from '@patternfly/react-core';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
@@ -22,8 +28,6 @@ interface RecipientFormProps {
   error?: string;
 }
 
-const dummyOnToggle = () => false;
-
 export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
   props
 ) => {
@@ -37,11 +41,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
           onSelect={() => {}}
           onOpenChange={() => {}}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle
-              ref={toggleRef}
-              isDisabled
-              isExpanded={false}
-            >
+            <MenuToggle ref={toggleRef} isDisabled isExpanded={false}>
               Select recipients...
             </MenuToggle>
           )}

@@ -1,9 +1,9 @@
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectList,
   SelectOption,
-  MenuToggle,
-  MenuToggleElement,
 } from '@patternfly/react-core';
 import produce from 'immer';
 import * as React from 'react';
@@ -204,9 +204,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
           </MenuToggle>
         )}
       >
-        <SelectList>
-          {selectableOptions}
-        </SelectList>
+        <SelectList>{selectableOptions}</SelectList>
       </Select>
     </div>
   );

@@ -1,4 +1,11 @@
-import { TreeView, TreeViewDataItem, Menu, MenuList, MenuToggle, Popper } from '@patternfly/react-core';
+import {
+  Menu,
+  MenuList,
+  MenuToggle,
+  Popper,
+  TreeView,
+  TreeViewDataItem,
+} from '@patternfly/react-core';
 import { TreeViewCheckProps } from '@patternfly/react-core/dist/esm/components/TreeView/TreeViewListItem';
 import { AngleDownIcon } from '@patternfly/react-icons';
 import produce from 'immer';
