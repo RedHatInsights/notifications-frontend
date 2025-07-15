@@ -6,11 +6,11 @@ import {
   TextInputProps,
 } from '@patternfly/react-core';
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectList,
   SelectOption,
-  MenuToggle,
-  MenuToggleElement,
 } from '@patternfly/react-core';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
@@ -43,10 +43,10 @@ const datePickerClassName = style({
   cursor: 'pointer',
   $nest: {
     '&::placeholder': {
-      color: important("var(--pf-t--temp--dev--tbd)"/* CODEMODS: original v5 color was --pf-v5-global--palette--black-1000 */),
+      color: important('var(--pf-v6-global--palette--black-1000)'),
     },
     '&:hover': {
-      borderBottomColor: "var(--pf-t--temp--dev--tbd)"/* CODEMODS: original v5 color was --pf-v5-global--active-color--100 */,
+      borderBottomColor: 'var(--pf-v6-global--active-color--100)',
     },
   },
 });
@@ -202,10 +202,7 @@ export const NotificationsLogDateFilter: React.FunctionComponent<
         <Select
           isOpen={isOpen}
           selected={val}
-          onSelect={(
-            _e: unknown,
-            selectObject: any
-          ) => {
+          onSelect={(_e: unknown, selectObject: unknown) => {
             if (selectObject instanceof EventLogSelectObject) {
               setValue(selectObject.value);
               setOpen(false);

@@ -1,4 +1,3 @@
-import { NotificationPortal as NotificationsPortal } from '@redhat-cloud-services/frontend-components-notifications/NotificationPortal';
 import { clearNotifications as createClearNotificationsAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
@@ -21,6 +20,7 @@ import { AppContext } from '../src/app/AppContext';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
 import { getInsights } from '../src/utils/insights-common-typescript';
+import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 
 let setup = false;
 let client;
@@ -144,7 +144,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
           <Router {...props.router}>
             <ClientContextProvider client={client}>
               <AppContext.Provider value={completeAppContext}>
-                <NotificationsPortal />
+                <NotificationsProvider />
                 <InternalWrapper {...props}>
                   <DomRoutes>
                     {(props.router?.initialEntries?.length || 0) > 0 ? (

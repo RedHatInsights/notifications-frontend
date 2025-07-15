@@ -117,11 +117,11 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
       />
     );
 
-    expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /delete/i })).toBeDisabled();
     await userEvent.click(screen.getByText(/this action cannot be undone/i));
-    expect(screen.getByText(/delete/i, { selector: 'button' })).toBeEnabled();
+    expect(screen.getByRole('button', { name: /delete/i })).toBeEnabled();
     await userEvent.click(screen.getByText(/this action cannot be undone/i));
-    expect(screen.getByText(/delete/i, { selector: 'button' })).toBeDisabled();
+    expect(screen.getByRole('button', { name: /delete/i })).toBeDisabled();
   });
 
   it('On delete with the behavior is called when clicking Delete button', async () => {
@@ -137,7 +137,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
     );
 
     await userEvent.click(screen.getByText(/this action cannot be undone/i));
-    await userEvent.click(screen.getByText(/delete/i, { selector: 'button' }));
+    await userEvent.click(screen.getByRole('button', { name: /delete/i }));
     expect(onDelete).toHaveBeenCalledWith(commonBehaviorGroup);
   });
 
@@ -153,7 +153,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
       />
     );
 
-    await userEvent.click(screen.getByText(/cancel/i, { selector: 'button' }));
+    await userEvent.click(screen.getByRole('button', { name: /cancel/i }));
     expect(onClose).toHaveBeenCalled();
   });
 });

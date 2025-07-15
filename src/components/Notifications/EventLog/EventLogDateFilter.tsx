@@ -8,11 +8,11 @@ import {
 } from '@patternfly/react-core/dist/dynamic/layouts/Split';
 import { TextInputProps } from '@patternfly/react-core/dist/dynamic/components/TextInput';
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
   SelectList,
   SelectOption,
-  MenuToggle,
-  MenuToggleElement,
 } from '@patternfly/react-core';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
@@ -48,7 +48,8 @@ const datePickerClassName = style({
       color: important('black'),
     },
     '&:hover': {
-      borderBottomColor: "var(--pf-t--temp--dev--tbd)"/* CODEMODS: original v5 color was --pf-v5-global--active-color--100 */,
+      borderBottomColor:
+        'var(--pf-t--temp--dev--tbd)' /* CODEMODS: original v5 color was --pf-v5-global--active-color--100 */,
     },
   },
 });
@@ -268,18 +269,12 @@ export const EventLogDateFilter: React.FunctionComponent<
           onSelect={onSelect}
           onOpenChange={(isOpen) => setOpen(isOpen)}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle
-              ref={toggleRef}
-              onClick={onToggle}
-              isExpanded={isOpen}
-            >
+            <MenuToggle ref={toggleRef} onClick={onToggle} isExpanded={isOpen}>
               {value.toString()}
             </MenuToggle>
           )}
         >
-          <SelectList>
-            {options}
-          </SelectList>
+          <SelectList>{options}</SelectList>
         </Select>
       </SplitItem>
       {props.value === EventLogDateFilterValue.CUSTOM && (

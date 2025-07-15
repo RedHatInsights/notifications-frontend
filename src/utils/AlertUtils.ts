@@ -1,6 +1,6 @@
 import { AlertProps } from '@patternfly/react-core';
-import { addNotification as createNotificationAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
-import { clearNotifications as createClearNotificationsAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
+import createNotificationAction from '@redhat-cloud-services/frontend-components-notifications/createNotificationAction';
+import createClearNotificationsAction from '@redhat-cloud-services/frontend-components-notifications/createClearNotificationsAction';
 import { useMemo } from 'react';
 import { useDispatch } from 'react-redux';
 
@@ -11,7 +11,6 @@ type ExplicitNotificationFunction = (
   dismissable?: boolean
 ) => void;
 
-// Todo: Create a PR over frontend-components with a similar hook
 export const useNotification = () => {
   const dispatch = useDispatch();
   return useMemo(() => {

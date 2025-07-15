@@ -1,8 +1,8 @@
-import { SelectOptionObject } from '@patternfly/react-core/deprecated';
+import { SelectOptionProps } from '@patternfly/react-core/deprecated';
 
 import { Recipient } from '../../../types/Recipient';
 
-export class RecipientOption implements SelectOptionObject {
+export class RecipientOption implements SelectOptionProps {
   readonly recipient: Recipient;
 
   constructor(recipient: Recipient) {
