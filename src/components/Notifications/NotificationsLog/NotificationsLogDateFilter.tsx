@@ -39,14 +39,14 @@ const labels: Record<NotificationsLogDateFilterValue, string> = {
 };
 
 const datePickerClassName = style({
-  backgroundColor: important('var(-pf-v5-global--BackgroundColor--100)'),
+  backgroundColor: important('var(-pf-v6-global--BackgroundColor--100)'),
   cursor: 'pointer',
   $nest: {
     '&::placeholder': {
-      color: important('var(--pf-v6-global--palette--black-1000)'),
+      color: important('var(--pf-t-color-black)'),
     },
     '&:hover': {
-      borderBottomColor: 'var(--pf-v6-global--active-color--100)',
+      borderBottomColor: 'var(--pf-t--global--border--color-100)',
     },
   },
 });
