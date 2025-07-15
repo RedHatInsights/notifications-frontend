@@ -1,5 +1,4 @@
-import { FormHelperText } from '@patternfly/react-core';
-import { Select, SelectVariant } from '@patternfly/react-core/deprecated';
+import { FormHelperText, Select, SelectList, MenuToggle, MenuToggleElement } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { IntegrationType } from '../../../types/Integration';
@@ -34,11 +33,23 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
     recipient = (
       <div>
         <Select
-          variant={SelectVariant.typeahead}
-          isDisabled
-          onToggle={dummyOnToggle}
           isOpen={false}
-        />
+          onSelect={() => {}}
+          onOpenChange={() => {}}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              isDisabled
+              isExpanded={false}
+            >
+              Select recipients...
+            </MenuToggle>
+          )}
+        >
+          <SelectList>
+            <div></div>
+          </SelectList>
+        </Select>
       </div>
     );
   } else if (props.action.type === NotificationType.INTEGRATION) {

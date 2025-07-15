@@ -1,9 +1,8 @@
 import {
   Button,
   ButtonVariant,
-  Icon,
+  Content,
   Skeleton,
-  Text,
 } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
 import {
@@ -12,11 +11,6 @@ import {
   Td,
   Tr,
 } from '@patternfly/react-table/dist/dynamic/components/Table';
-import {
-  global_active_color_100,
-  global_disabled_color_100,
-  global_palette_black_600,
-} from '@patternfly/react-tokens';
 import * as React from 'react';
 
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
@@ -28,10 +22,6 @@ import {
 } from '../../types/Notification';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
-import {
-  DropdownDirection,
-  DropdownPosition,
-} from '@patternfly/react-core/dist/dynamic/deprecated/components/Dropdown';
 
 export type OnNotificationIdHandler = (notificationId: UUID) => void;
 
@@ -55,10 +45,6 @@ export interface TdActionsType {
   items: IActions;
   /** Whether the actions are disabled */
   isDisabled?: boolean;
-  /** Actions dropdown position */
-  dropdownPosition?: DropdownPosition;
-  /** Actions dropdown direction */
-  dropdownDirection?: DropdownDirection;
   /** The container to append the dropdown menu to. Defaults to 'inline'.
    * If your menu is being cut off you can append it to an element higher up the DOM tree.
    * Some examples:
@@ -87,12 +73,11 @@ const getActions = (
           key: 'edit',
           title: (
             <Button
+              icon={<PencilAltIcon />}
               aria-label="edit"
               variant={ButtonVariant.plain}
               isDisabled={isDisabled}
-            >
-              <PencilAltIcon />
-            </Button>
+            />
           ),
           isOutsideDropdown: true,
           onClick: () => callbacks?.onStartEditing(notification.id),
@@ -109,20 +94,11 @@ const getActions = (
         key: 'done',
         title: (
           <Button
+            icon={<CheckIcon />}
             aria-label="done"
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
-          >
-            <Icon
-              color={
-                isDisabled
-                  ? global_disabled_color_100.value
-                  : global_active_color_100.value
-              }
-            >
-              <CheckIcon />
-            </Icon>
-          </Button>
+          />
         ),
         isOutsideDropdown: true,
         onClick: () => callbacks?.onFinishEditing(notification.id),
@@ -132,18 +108,11 @@ const getActions = (
         key: 'cancel',
         title: (
           <Button
-            aria-label="cancel"
+            icon={<CloseIcon />}
+            aria-label="done"
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
-          >
-            <CloseIcon
-              color={
-                isDisabled
-                  ? global_disabled_color_100.value
-                  : global_palette_black_600.value
-              }
-            />
-          </Button>
+          />
         ),
         isOutsideDropdown: true,
         onClick: () => callbacks?.onCancelEditing(notification.id),
@@ -210,9 +179,9 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
         <Tr>
           <Td />
           <Td colSpan={4}>
-            <Text className="pf-v5-u-color-200 pf-v5-u-p-0">
+            <Content component="p" className="pf-v5-u-color-200 pf-v5-u-p-0">
               {notification.description}
-            </Text>
+            </Content>
           </Td>
         </Tr>
       )}

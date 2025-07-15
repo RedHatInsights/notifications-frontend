@@ -1,4 +1,4 @@
-import { Text, TextContent, Title } from '@patternfly/react-core';
+import { Content, Title } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import produce from 'immer';
 import * as React from 'react';
@@ -195,11 +195,11 @@ export const AssociateEventTypesStep: React.FunctionComponent<
         <Title headingLevel="h4" size="xl">
           {title}
         </Title>
-        <TextContent className="pf-v5-u-pt-sm">
-          <Text>
+        <Content className="pf-v5-u-pt-sm">
+          <Content component="p">
             Select event types you would like to assign this behavior group to.
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       </div>
       <NotificationsToolbar
         filters={eventTypePage.filters}

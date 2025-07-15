@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import {
-  Button,
-  ButtonVariant,
-  Modal,
-  ModalVariant,
-  TextInput,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, TextInput } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { useNotification } from '../../../utils/AlertUtils';
 import { integrationTypes } from '../../../config/Config';
 import { Link } from 'react-router-dom';

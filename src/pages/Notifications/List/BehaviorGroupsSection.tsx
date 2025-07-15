@@ -2,14 +2,13 @@ import {
   Button,
   ButtonProps,
   ButtonVariant,
+  Content,
+  ContentVariants,
   SearchInput,
   Split,
   SplitItem,
   Stack,
   StackItem,
-  Text,
-  TextContent,
-  TextVariants,
   Tooltip,
 } from '@patternfly/react-core';
 
@@ -162,21 +161,21 @@ export const BehaviorGroupsSection: React.FunctionComponent<
       <div className="pf-v5-u-background-color-100 pf-v5-u-pt-lg pf-v5-u-px-lg">
         <Split className="pf-v5-u-mb-md" hasGutter>
           <SplitItem>
-            <TextContent>
-              <Text component={TextVariants.p}>
+            <Content>
+              <Content component={ContentVariants.p}>
                 <b>Behavior groups</b> are made up of action/recipient pairings
                 that allow you to configure which notification actions different
                 users will be able to receive. Once you&apos;ve created a
                 behavior group, you can assign it to an event using the Events
                 table below.
                 <br></br>
-                <Text component={TextVariants.p}>
+                <Content component={ContentVariants.p}>
                   You may also prevent users from changing assigned actions by
                   locking action/recipient pairings when creating or editing
                   behavior groups.
-                </Text>
-              </Text>
-            </TextContent>
+                </Content>
+              </Content>
+            </Content>
           </SplitItem>
         </Split>
         <Stack hasGutter>

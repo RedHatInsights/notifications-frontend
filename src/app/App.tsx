@@ -90,7 +90,6 @@ const App: React.ComponentType = () => {
               className="pf-v5-u-p-sm"
               isChecked={usingExperimental}
               onChange={toggleExperimental}
-              labelOff="Enable experimental features"
               label="Disable experimental features"
             />
           </RenderIfTrue>

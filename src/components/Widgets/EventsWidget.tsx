@@ -13,7 +13,6 @@ import {
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
-  EmptyStateIcon,
   EmptyStateVariant,
   Stack,
   StackItem,
@@ -71,11 +70,15 @@ const EventsWidget: React.FunctionComponent = () => {
   return (
     <>
       {notifications.length === 0 ? (
-        <EmptyState variant={EmptyStateVariant.full}>
-          <EmptyStateIcon icon={EmptyStateBellIcon} />
-          <Title headingLevel="h4" size="lg">
-            {intl.formatMessage(messages.noFiredEventsTitle)}
-          </Title>
+        <EmptyState
+          titleText={
+            <Title headingLevel="h4" size="lg">
+              {intl.formatMessage(messages.noFiredEventsTitle)}
+            </Title>
+          }
+          icon={EmptyStateBellIcon}
+          variant={EmptyStateVariant.full}
+        >
           <EmptyStateBody>
             <Stack>
               <StackItem>

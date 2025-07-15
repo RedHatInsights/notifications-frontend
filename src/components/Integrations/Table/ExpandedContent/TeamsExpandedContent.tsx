@@ -1,10 +1,4 @@
-import {
-  TextContent,
-  TextList,
-  TextListItem,
-  TextListItemVariants,
-  TextListVariants,
-} from '@patternfly/react-core';
+import { Content, ContentVariants } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { CamelIntegrationType } from '../../../../types/Integration';
@@ -18,20 +12,20 @@ export const TeamsExpandedContent: React.FunctionComponent<
   ExpandedContentProps<CamelIntegrationType>
 > = (props) => {
   return (
-    <TextContent
+    <Content
       {...getOuiaProps('Integrations/Table/TeamsExpandedContent', props)}
     >
-      <TextList component={TextListVariants.dl}>
-        <TextListItem
+      <Content component={ContentVariants.dl}>
+        <Content
           className={expandedContentTitleClass}
-          component={TextListItemVariants.dt}
+          component={ContentVariants.dt}
         >
           Endpoint URL
-        </TextListItem>
-        <TextListItem component={TextListItemVariants.dd}>
+        </Content>
+        <Content component={ContentVariants.dd}>
           {props.integration.url}
-        </TextListItem>
-      </TextList>
-    </TextContent>
+        </Content>
+      </Content>
+    </Content>
   );
 };

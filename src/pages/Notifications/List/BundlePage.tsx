@@ -1,14 +1,14 @@
 import {
   ButtonVariant,
+  Content,
+  ContentVariants,
   Flex,
   FlexItem,
   Tab,
   TabTitleText,
   Tabs,
-  Text,
-  TextVariants,
 } from '@patternfly/react-core';
-import { global_spacer_lg } from '@patternfly/react-tokens';
+import { t_global_spacer_lg } from '@patternfly/react-tokens';
 import Main from '@redhat-cloud-services/frontend-components/Main';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
@@ -76,7 +76,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
   );
 
   const paddingLeftClassName = style({
-    paddingLeft: global_spacer_lg.value,
+    paddingLeft: t_global_spacer_lg.value,
   });
 
   const eventLogButton = () => {
@@ -143,12 +143,12 @@ export const NotificationListBundlePage: React.FunctionComponent<
                 Configure which event notifications different users within your
                 organization are entitled to receive. To manage your own
                 personal notification settings, go to{' '}
-                <Text
-                  component={TextVariants.a}
+                <Content
+                  component={ContentVariants.a}
                   href="/settings/notifications/user-preferences/"
                 >
                   Notification Preferences
-                </Text>
+                </Content>
                 .
               </span>
             ) : (
@@ -157,12 +157,12 @@ export const NotificationListBundlePage: React.FunctionComponent<
                 admin. Contact your organization admin if you need access to
                 edit these configurations. To manage your own personal
                 notification settings, go to{' '}
-                <Text
-                  component={TextVariants.a}
+                <Content
+                  component={ContentVariants.a}
                   href="/settings/notifications/user-preferences/"
                 >
                   Notification Preferences
-                </Text>
+                </Content>
                 .
               </span>
             )

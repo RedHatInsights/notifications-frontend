@@ -172,7 +172,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
         <Form className="pf-v5-u-mr-md">
           <FormGroup
             label="Splunk HEC URL"
-            labelIcon={
+            labelHelp={
               <Popover
                 headerContent={
                   <div>

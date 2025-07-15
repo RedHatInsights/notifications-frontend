@@ -1,5 +1,4 @@
-import { Skeleton } from '@patternfly/react-core';
-import { SelectOption } from '@patternfly/react-core/deprecated';
+import { Skeleton, SelectOption } from '@patternfly/react-core';
 import assertNever from 'assert-never';
 import * as React from 'react';
 
@@ -19,7 +18,7 @@ const getOptions = <R extends Recipient>(
     return loadingMapper
       ? loadingMapper()
       : [
-          <SelectOption key="loading-option" isNoResultsOption={true}>
+          <SelectOption key="loading-option" isDisabled>
             <Skeleton width="100%" />
           </SelectOption>,
         ];

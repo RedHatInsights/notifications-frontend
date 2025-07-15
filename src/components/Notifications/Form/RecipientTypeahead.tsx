@@ -1,11 +1,11 @@
-import { Chip, ChipGroup, Skeleton } from '@patternfly/react-core';
 import {
+  Label,
+  LabelGroup,
   Select,
   SelectGroup,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+  Skeleton,
+} from '@patternfly/react-core';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
@@ -44,7 +44,7 @@ const renderSelectGroup = (
       {options.map((r) => {
         if (r instanceof NotificationRbacGroupRecipient && r.isLoading) {
           return (
-            <SelectOption key={r.getKey()} isNoResultsOption>
+            <SelectOption key={r.getKey()}>
               <Skeleton width="100%" />
             </SelectOption>
           );
@@ -72,7 +72,7 @@ const recipientMapper = (
 const loadingMapper = () => {
   return [
     <SelectGroup key={rbacGroupKey} label={rbacGroupLabel}>
-      <SelectOption key="loading-group" isNoResultsOption={true}>
+      <SelectOption key="loading-group">
         <Skeleton width="100%" />
       </SelectOption>
     </SelectGroup>,
@@ -152,7 +152,7 @@ export const RecipientTypeahead: React.FunctionComponent<
   }, [props.selected]);
 
   const onSelect = React.useCallback(
-    (_event, value: string | SelectOptionObject) => {
+    (_event, value: any) => {
       const onSelected = props.onSelected;
       if (value instanceof RecipientOption) {
         onSelected(value);
@@ -174,9 +174,9 @@ export const RecipientTypeahead: React.FunctionComponent<
       if (value.recipient instanceof NotificationRbacGroupRecipient) {
         if (value.recipient.isLoading) {
           return (
-            <Chip key={key} onClick={unselect(value)}>
+            <Label variant="outline" key={key} onClose={unselect(value)}>
               <Skeleton data-testid="loading-group" width="40px" />
-            </Chip>
+            </Label>
           );
         } else if (value.recipient.hasError) {
           return <GroupNotFound key={key} onClose={unselect(value)} />;
@@ -184,34 +184,26 @@ export const RecipientTypeahead: React.FunctionComponent<
       }
 
       return (
-        <Chip onClick={unselect(value)} key={key}>
+        <Label variant="outline" onClose={unselect(value)} key={key}>
           {value.recipient.displayName}
-        </Chip>
+        </Label>
       );
     });
   }, [selection, onSelect]);
 
   return (
     <div {...getOuiaProps('RecipientTypeahead', props)}>
-      <Select
-        maxHeight={400}
-        variant={SelectVariant.checkbox}
-        selections={selection}
-        onSelect={onSelect}
-        onToggle={(_e, val) => toggle(val)}
-        isOpen={isOpen}
-        menuAppendTo={document.body}
-        isDisabled={props.isDisabled}
-        onClear={props.onClear}
-        validated={props.error ? 'error' : undefined}
-        isGrouped
-        isCheckboxSelectionBadgeHidden
-        // hasInlineFilter // Disabled filter. see: https://github.com/patternfly/patternfly-react/issues/7134
-        isInputValuePersisted
-        placeholderText={<ChipGroup>{selectContent}</ChipGroup>}
+      <div
+        style={{
+          border: '1px solid #ccc',
+          padding: '8px',
+          borderRadius: '4px',
+        }}
       >
-        {options}
-      </Select>
+        {/* TODO: This component needs comprehensive rewrite for PF6 multi-select patterns */}
+        <div>Multi-select RecipientTypeahead - PF6 migration required</div>
+        {selectContent && <LabelGroup>{selectContent}</LabelGroup>}
+      </div>
     </div>
   );
 };

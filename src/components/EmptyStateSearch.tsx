@@ -1,8 +1,6 @@
 import {
   EmptyState,
   EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
   EmptyStateVariant,
 } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
@@ -23,14 +21,12 @@ export const EmptyStateSearch: React.FunctionComponent<
 > = (props) => {
   return (
     <EmptyState
+      headingLevel={props.headingLevel ?? 'h3'}
+      icon={props.icon ?? SearchIcon}
+      titleText={<>{props.title}</>}
       className={`pf-v5-u-background-color-100 ${props.className}`}
       variant={props.variant}
     >
-      <EmptyStateHeader
-        titleText={<>{props.title}</>}
-        icon={<EmptyStateIcon icon={props.icon ?? SearchIcon} />}
-        headingLevel={props.headingLevel ?? 'h3'}
-      />
       <EmptyStateBody>{props.description}</EmptyStateBody>
     </EmptyState>
   );

@@ -4,8 +4,6 @@ import {
   EmptyStateActions,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
 } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
@@ -30,17 +28,11 @@ export const SplunkSetupFinished: React.FunctionComponent<
   );
 
 export const SplunkSetupFinishedSuccess: React.FunctionComponent = () => (
-  <EmptyState>
-    <EmptyStateHeader
-      titleText="Splunk integration in Insights completed"
-      icon={
-        <EmptyStateIcon
-          icon={CheckCircleIcon}
-          color="var(--pf-global--success-color--100)"
-        />
-      }
-      headingLevel="h4"
-    />
+  <EmptyState
+    headingLevel="h4"
+    icon={CheckCircleIcon}
+    titleText="Splunk integration in Insights completed"
+  >
     <EmptyStateBody>
       Splunk integration in Insights was completed. To confirm these changes,{' '}
       <strong>go back to Splunk application</strong>.
@@ -51,17 +43,11 @@ export const SplunkSetupFinishedSuccess: React.FunctionComponent = () => (
 export const SplunkSetupFinishedFailure: React.FunctionComponent<{
   error: Error | undefined;
 }> = ({ error }) => (
-  <EmptyState>
-    <EmptyStateHeader
-      titleText="Configuration failed"
-      icon={
-        <EmptyStateIcon
-          icon={ExclamationCircleIcon}
-          color="var(--pf-global--danger-color--100)"
-        />
-      }
-      headingLevel="h4"
-    />
+  <EmptyState
+    headingLevel="h4"
+    icon={ExclamationCircleIcon}
+    titleText="Configuration failed"
+  >
     <EmptyStateBody>
       <p className="pf-v5-u-mb-md">
         There was a problem processing the request. Please try again. If the

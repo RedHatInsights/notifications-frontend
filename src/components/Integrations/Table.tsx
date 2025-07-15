@@ -1,9 +1,6 @@
 import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
 import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
-import {
-  Text,
-  TextContent,
-} from '@patternfly/react-core/dist/dynamic/components/Text';
+import { Content } from '@patternfly/react-core/dist/dynamic/components/Content';
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
@@ -213,11 +210,11 @@ const columns: Array<ICell> = [
         popoverProps: {
           hasAutoWidth: true,
           headerContent: (
-            <TextContent>
-              <Text component="h6">
+            <Content>
+              <Content component="h6">
                 Last connection attempt status meanings
-              </Text>
-            </TextContent>
+              </Content>
+            </Content>
           ),
         },
       }),
