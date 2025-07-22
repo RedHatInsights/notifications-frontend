@@ -174,7 +174,9 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
               />
             )
           }
-        />
+        >
+          {o.toString()}
+        </SelectOption>
       );
     });
   }, [

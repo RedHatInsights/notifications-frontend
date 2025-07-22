@@ -109,7 +109,7 @@ const getActions = (
         title: (
           <Button
             icon={<CloseIcon />}
-            aria-label="done"
+            aria-label="cancel"
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
           />

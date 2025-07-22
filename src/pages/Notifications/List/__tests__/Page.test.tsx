@@ -503,7 +503,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
       const table = ouiaSelectors
         .getByOuia('Notifications/Notifications/Table')
-        .getByOuia('PF5/Table');
+        .getByOuia('PF6/Table');
 
       await userEvent.click(getAllByLabelText(table, /edit/i)[0]);
 
@@ -541,7 +541,7 @@ describe('src/pages/Notifications/List/Page', () => {
       await waitForAsyncEvents();
       const table = ouiaSelectors
         .getByOuia('Notifications/Notifications/Table')
-        .getByOuia('PF5/Table');
+        .getByOuia('PF6/Table');
 
       await userEvent.click(getAllByLabelText(table, /edit/i)[0]);
 
@@ -590,7 +590,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
       const table = ouiaSelectors
         .getByOuia('Notifications/Notifications/Table')
-        .getByOuia('PF5/Table');
+        .getByOuia('PF6/Table');
 
       await userEvent.click(getAllByLabelText(table, /edit/i)[0]);
 

@@ -1,4 +1,3 @@
-/* eslint-disable testing-library/prefer-screen-queries, testing-library/no-node-access, testing-library/prefer-presence-queries, @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
 import { getByRole, getByText, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
@@ -139,8 +138,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     await waitForAsyncEvents();
 
     expect(screen.queryByText(/send an email/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/integration: webhook/i)).toBeInTheDocument();
-    expect(screen.queryByText(/integration: splunk/i)).toBeInTheDocument();
+    expect(screen.getByText(/integration: webhook/i)).toBeInTheDocument();
+    expect(screen.getByText(/integration: splunk/i)).toBeInTheDocument();
   });
 
   it('Calls actionSelected when selecting any action', async () => {

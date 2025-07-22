@@ -36,6 +36,9 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<
         type="submit"
         onClick={onNext}
         isDisabled={props.isLoading || !wizardContext.activeStep.enableNext}
+        {...((props.isLoading || !wizardContext.activeStep.enableNext) && {
+          'aria-disabled': 'true',
+        })}
       >
         {wizardContext.activeStep.nextButtonText ?? 'Next'}
       </Button>

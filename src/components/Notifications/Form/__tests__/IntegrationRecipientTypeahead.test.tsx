@@ -77,7 +77,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await waitForAsyncEvents();
-    expect(ouiaSelectors.getByOuia('PF5/typeahead')).toBeVisible();
+    expect(ouiaSelectors.getByOuia('PF6/typeahead')).toBeVisible();
   });
 
   it('Renders with existing notifications that are not Integrations', async () => {
@@ -105,7 +105,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     );
 
     await waitForAsyncEvents();
-    expect(ouiaSelectors.getByOuia('PF5/typeahead')).toBeVisible();
+    expect(ouiaSelectors.getByOuia('PF6/typeahead')).toBeVisible();
   });
 
   it('Renders disabled if isDisabled', async () => {

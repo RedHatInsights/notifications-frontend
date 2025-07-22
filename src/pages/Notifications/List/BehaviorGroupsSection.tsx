@@ -55,8 +55,9 @@ const BehaviorGroupAddButton: React.FunctionComponent<
   const button = (
     <Button
       {...buttonProps}
-      isAriaDisabled={isDisabled}
+      isDisabled={isDisabled}
       variant={ButtonVariant.primary}
+      aria-disabled={isDisabled ? "true" : "false"}
     >
       Create new group
     </Button>

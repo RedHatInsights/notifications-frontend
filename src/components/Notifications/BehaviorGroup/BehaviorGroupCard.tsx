@@ -66,6 +66,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                       onClick={() => setOpen(!isOpen)}
                       isExpanded={isOpen}
                       icon={<span>&#8942;</span>}
+                      aria-label="Actions"
                     />
                   }
                   popper={

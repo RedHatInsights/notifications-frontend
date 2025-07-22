@@ -257,7 +257,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       innerRef={toggleRef}
       isExpanded={isOpen}
       isFullWidth
-      data-ouia-component-type="PF5/typeahead"
+      data-ouia-component-type="PF6/typeahead"
     >
       <TextInputGroup isPlain isDisabled={isDisabled}>
         <TextInputGroupMain
