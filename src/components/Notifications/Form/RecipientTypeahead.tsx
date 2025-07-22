@@ -1,11 +1,15 @@
 import {
-  Label,
-  LabelGroup,
-  Select,
-  SelectGroup,
-  SelectOption,
-  Skeleton,
+	Label, LabelGroup, Skeleton
 } from '@patternfly/react-core';
+import {
+	Select,
+	SelectGroup,
+	SelectOption,
+	SelectOptionObject,
+	SelectVariant,
+	
+	
+} from '@patternfly/react-core/deprecated';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
 
@@ -44,7 +48,7 @@ const renderSelectGroup = (
       {options.map((r) => {
         if (r instanceof NotificationRbacGroupRecipient && r.isLoading) {
           return (
-            <SelectOption key={r.getKey()}>
+            <SelectOption key={r.getKey()} isNoResultsOption>
               <Skeleton width="100%" />
             </SelectOption>
           );
@@ -72,7 +76,7 @@ const recipientMapper = (
 const loadingMapper = () => {
   return [
     <SelectGroup key={rbacGroupKey} label={rbacGroupLabel}>
-      <SelectOption key="loading-group">
+      <SelectOption key="loading-group" isNoResultsOption={true}>
         <Skeleton width="100%" />
       </SelectOption>
     </SelectGroup>,
@@ -152,7 +156,7 @@ export const RecipientTypeahead: React.FunctionComponent<
   }, [props.selected]);
 
   const onSelect = React.useCallback(
-    (_event, value: any) => {
+    (_event, value: string | SelectOptionObject) => {
       const onSelected = props.onSelected;
       if (value instanceof RecipientOption) {
         onSelected(value);
@@ -193,17 +197,25 @@ export const RecipientTypeahead: React.FunctionComponent<
 
   return (
     <div {...getOuiaProps('RecipientTypeahead', props)}>
-      <div
-        style={{
-          border: '1px solid #ccc',
-          padding: '8px',
-          borderRadius: '4px',
-        }}
+      <Select
+        maxHeight={400}
+        variant={SelectVariant.checkbox}
+        selections={selection}
+        onSelect={onSelect}
+        onToggle={(_e, val) => toggle(val)}
+        isOpen={isOpen}
+        menuAppendTo={document.body}
+        isDisabled={props.isDisabled}
+        onClear={props.onClear}
+        validated={props.error ? 'error' : undefined}
+        isGrouped
+        isCheckboxSelectionBadgeHidden
+        // hasInlineFilter // Disabled filter. see: https://github.com/patternfly/patternfly-react/issues/7134
+        isInputValuePersisted
+        placeholderText={<LabelGroup>{selectContent}</LabelGroup>}
       >
-        {/* TODO: This component needs comprehensive rewrite for PF6 multi-select patterns */}
-        <div>Multi-select RecipientTypeahead - PF6 migration required</div>
-        {selectContent && <LabelGroup>{selectContent}</LabelGroup>}
-      </div>
+        {options}
+      </Select>
     </div>
   );
 };
