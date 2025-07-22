@@ -1,4 +1,3 @@
-import { clearNotifications as createClearNotificationsAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import fetchMock from 'fetch-mock';
@@ -37,8 +36,6 @@ export const appWrapperSetup = () => {
   client = createClient({
     responseInterceptors: [validateSchemaResponseInterceptor],
   });
-
-  getNotificationsRegistry().store.dispatch(createClearNotificationsAction());
 };
 
 export const appWrapperCleanup = () => {

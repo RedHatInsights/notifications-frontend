@@ -1,5 +1,5 @@
 import { AlertProps } from '@patternfly/react-core';
-import { useAddNotification } from '@redhat-cloud-services/frontend-components-notifications/hooks/useNotifications';
+import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications/hooks';
 import { useMemo } from 'react';
 
 export type NotificationType = AlertProps['variant'];
@@ -10,7 +10,7 @@ type ExplicitNotificationFunction = (
 ) => void;
 
 export const useNotification = () => {
-  const addNotification = useAddNotification();
+  const { addNotification, clearNotifications } = useNotifications();
 
   return useMemo(() => {
     const addSuccessNotification: ExplicitNotificationFunction = (
@@ -61,12 +61,16 @@ export const useNotification = () => {
         dismissable,
       });
 
+    const clearAllNotifications: ExplicitNotificationFunction = () =>
+      clearNotifications();
+
     return {
       addNotification,
       addSuccessNotification,
       addDangerNotification,
       addInfoNotification,
       addWarningNotification,
+      clearAllNotifications,
     };
-  }, [addNotification]);
+  }, [addNotification, clearNotifications]);
 };

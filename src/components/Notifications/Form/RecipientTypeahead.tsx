@@ -1,14 +1,10 @@
+import { Label, LabelGroup, Skeleton } from '@patternfly/react-core';
 import {
-	Label, LabelGroup, Skeleton
-} from '@patternfly/react-core';
-import {
-	Select,
-	SelectGroup,
-	SelectOption,
-	SelectOptionObject,
-	SelectVariant,
-	
-	
+  Select,
+  SelectGroup,
+  SelectOption,
+  SelectOptionObject,
+  SelectVariant,
 } from '@patternfly/react-core/deprecated';
 import * as React from 'react';
 import { usePrevious } from 'react-use';
