@@ -153,7 +153,7 @@ const SelectableTable = (props) => {
     };
 
     getEventData();
-  }, [integrationId]);
+  }, [input, integrationId, mapEventTypesToInput]);
 
   return currBundle && loaded ? (
     <AssociateEventTypesStep

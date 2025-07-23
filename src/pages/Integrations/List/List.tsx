@@ -228,7 +228,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
         );
       }
     },
-    [exportIntegrationsQuery]
+    [addDangerNotification, exportIntegrationsQuery.query]
   );
 
   const actionResolver = useActionResolver({

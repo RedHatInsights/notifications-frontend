@@ -184,7 +184,7 @@ export const useBehaviorGroupNotificationRows = (
         );
       }
     },
-    [setNotificationRows, notificationRows, query]
+    [notificationRows, query, addDangerNotification]
   );
 
   const startEditMode = React.useCallback(

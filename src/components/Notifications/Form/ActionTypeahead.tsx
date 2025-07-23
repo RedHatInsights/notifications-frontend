@@ -120,7 +120,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
   );
 
   const onSelect = React.useCallback(
-    (_event, value: any) => {
+    (_event, value) => {
       const actionSelected = props.onSelected;
       if (value instanceof ActionOption) {
         actionSelected(value);
@@ -162,6 +162,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
         !hasIntegrations[o.integrationType];
       return (
         <SelectOption
+          aria-disabled={isDisabled ? 'true' : 'false'}
           isDisabled={isDisabled}
           key={o.toString()}
           value={o}

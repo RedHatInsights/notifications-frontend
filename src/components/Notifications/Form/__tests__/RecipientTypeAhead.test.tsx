@@ -185,12 +185,12 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     await userEvent.click(
       screen.getByRole('button', {
-        name: /Label group category/,
+        name: /Label group category/
       })
     );
-    await screen.findAllByRole('checkbox');
+    await screen.findAllByRole('option');
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await userEvent.click(screen.getAllByRole('checkbox')[0]);
+    await userEvent.click(screen.getAllByRole('option')[0]);
     await waitFor(() => expect(onSelected).toHaveBeenCalled());
   });
 

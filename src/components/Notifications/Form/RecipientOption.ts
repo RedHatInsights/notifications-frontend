@@ -6,7 +6,7 @@ export class RecipientOption {
   constructor(recipient: Recipient) {
     this.recipient = recipient;
   }
-  
+
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   compareTo(selectOption: any): boolean {
     if (selectOption instanceof RecipientOption) {
