@@ -185,7 +185,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     await userEvent.click(
       screen.getByRole('button', {
-        name: /Label group category/
+        name: /Label group category/,
       })
     );
     await screen.findAllByRole('option');
