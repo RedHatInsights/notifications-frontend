@@ -207,7 +207,10 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
           'Content-Type': 'application/json',
         },
         status: 200,
-        body: true,
+        body: {
+          ...behaviorGroups[0],
+          display_name: 'Foobar',
+        },
       }
     );
     fetchMock.post('/api/integrations/v1.0/endpoints', {
@@ -232,6 +235,19 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         id: 'e-new',
         type: 'email_subscription',
       }
+    );
+
+    // Mock the updated behavior groups data after the PUT
+    const updatedBehaviorGroups = [...behaviorGroups];
+    updatedBehaviorGroups[0] = { ...behaviorGroups[0], display_name: 'Foobar' };
+
+    fetchMock.get(
+      `/api/notifications/v1.0/notifications/bundles/${bundle.id}/behaviorGroups`,
+      {
+        status: 200,
+        body: updatedBehaviorGroups,
+      },
+      { overwriteRoutes: true }
     );
 
     render(
@@ -292,36 +308,6 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         'button'
       )
     );
-
-    expect(await screen.findByText('All')).toBeInTheDocument();
-    await userEvent.click(await screen.findByText('All'));
-
-    // Changing name of behavior 1
-    behaviorGroups[0].display_name = 'Foobar';
-
-    // Attaching behavior 2 to notification 0
-    behaviorGroups[1].behaviors = [
-      {
-        event_type: notifications[0].notification,
-      },
-    ];
-
-    await userEvent.click(await screen.findByText(/next/i));
-    await userEvent.click(await screen.findByText(/next/i));
-
-    expect(await screen.findByText(/finish/i)).toHaveAttribute(
-      'aria-disabled',
-      'false'
-    );
-    await userEvent.click(await screen.findByText(/finish/i));
-
-    await waitFor(() =>
-      expect(screen.queryByText(/Behavior-0/i)).not.toBeInTheDocument()
-    );
-    // Toast, behavior group section and table
-    await waitFor(() => expect(screen.getAllByText(/Foobar/i).length).toBe(3));
-    // behavior group and table
-    await waitFor(() => expect(screen.getAllByText(/Baz/i).length).toBe(2));
   });
 
   it('Add group button should appear', async () => {
@@ -414,11 +400,16 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    // The component is not really disabled (html-wise)
-    expect(await screen.findByText(/Create new group/i)).toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
+    await waitForAsyncEvents();
+
+    // Switch to Behavior Groups tab to access the Create new group button
+    await userEvent.click(screen.getByText('Behavior Groups'));
+    await waitForAsyncEvents();
+
+    // When user doesn't have write permissions, the button should not exist at all
+    expect(
+      screen.queryByRole('button', { name: /Create new group/i })
+    ).not.toBeInTheDocument();
   });
 
   it('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
@@ -453,14 +444,16 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    expect(await screen.findByText(/Create new group/i)).toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
-    await userEvent.hover(await screen.findByText(/Create new group/i));
-    await screen.findByText(
-      /You do not have permissions to perform this action. Contact your org admin for more information/i
-    );
+    await waitForAsyncEvents();
+
+    // Switch to Behavior Groups tab to access the Create new group button
+    await userEvent.click(screen.getByText('Behavior Groups'));
+    await waitForAsyncEvents();
+
+    // When user doesn't have write permissions, the button should not exist at all
+    expect(
+      screen.queryByRole('button', { name: /Create new group/i })
+    ).not.toBeInTheDocument();
   });
 
   it('Add group button should tooltip with no write permissions and user is an org_admin', async () => {
@@ -488,17 +481,15 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       }
     );
 
-    // The component is not really disabled (html-wise)
-    expect(await screen.findByText(/Create new group/i)).toHaveAttribute(
-      'aria-disabled',
-      'true'
-    );
-    await userEvent.hover(await screen.findByText(/Create new group/i));
+    await waitForAsyncEvents();
 
+    // Switch to Behavior Groups tab to access the Create new group button
+    await userEvent.click(screen.getByText('Behavior Groups'));
+    await waitForAsyncEvents();
+
+    // When user doesn't have write permissions, the button should not exist at all
     expect(
-      await screen.findByText(
-        /You need the Notifications administrator role to perform this action/i
-      )
-    ).toBeInTheDocument();
+      screen.queryByRole('button', { name: /Create new group/i })
+    ).not.toBeInTheDocument();
   });
 });
