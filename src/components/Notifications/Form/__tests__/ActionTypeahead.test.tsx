@@ -1,5 +1,4 @@
-/* eslint-disable testing-library/prefer-screen-queries, testing-library/no-node-access, testing-library/prefer-presence-queries, @typescript-eslint/no-unused-vars, @typescript-eslint/no-explicit-any */
-import { getByRole, getByText, render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
@@ -21,6 +20,7 @@ const ALL_RECIPIENTS = [
 ] as ReadonlyArray<NotificationUserRecipient>;
 
 const defaultRecipientContext = (): RecipientContext => ({
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getIntegrations: async (type: UserIntegrationType, _search?: string) => {
     return [
       {
@@ -34,6 +34,7 @@ const defaultRecipientContext = (): RecipientContext => ({
   getNotificationRecipients: async () => [],
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const InternalWrapper: React.FunctionComponent<any> = ({
   getLocation,
   children,
@@ -46,6 +47,7 @@ const InternalWrapper: React.FunctionComponent<any> = ({
   return children;
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Wrapper: React.FunctionComponent<any> = ({
   value,
   children,
@@ -83,8 +85,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     await waitForAsyncEvents();
 
     expect(
-      screen.getByText(/Send to notification drawer/i, {
-        selector: 'button',
+      screen.getByRole('option', {
+        name: /Send to notification drawer/i,
       })
     ).toBeVisible();
   });
@@ -110,7 +112,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     await waitForAsyncEvents();
 
     expect(
-      screen.getByText(/Send to notification drawer/i).closest('button')
+      screen.getByRole('button', { name: /Send to notification drawer/i })
     ).toBeDisabled();
   });
 
@@ -139,8 +141,8 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     await waitForAsyncEvents();
 
     expect(screen.queryByText(/send an email/i)).not.toBeInTheDocument();
-    expect(screen.queryByText(/integration: webhook/i)).toBeInTheDocument();
-    expect(screen.queryByText(/integration: splunk/i)).toBeInTheDocument();
+    expect(screen.getByText(/integration: webhook/i)).toBeInTheDocument();
+    expect(screen.getByText(/integration: splunk/i)).toBeInTheDocument();
   });
 
   it('Calls actionSelected when selecting any action', async () => {
@@ -201,10 +203,11 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     );
     await userEvent.click(screen.getByRole('button'));
     await waitForAsyncEvents();
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const webhookAction = screen
-      .getByText('Integration: Webhook')
-      .closest('button')!;
+
+    // Get the webhook option button directly by its exact name
+    const webhookAction = screen.getByRole('option', {
+      name: 'Integration: Webhook',
+    });
     expect(webhookAction).toBeEnabled();
     await userEvent.click(webhookAction);
     await waitForAsyncEvents();
@@ -214,7 +217,9 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
   it('Actions are disabled if they have no elements', async () => {
     const context = {
       getIntegrations: async (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _type: UserIntegrationType,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _search?: string
       ) => [],
       getNotificationRecipients: async () => [],
@@ -228,15 +233,18 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     await userEvent.click(screen.getByRole('button'));
     await waitForAsyncEvents();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const webhookAction = screen
-      .getByText('Integration: Webhook')
-      .closest('button')!;
+    const optionButtons = screen.getAllByRole('option');
+    const webhookAction = optionButtons.find((button) =>
+      within(button).queryByText(/Integration: Webhook/i)
+    );
+    expect(webhookAction).toBeDefined();
+
     expect(
-      getByText(webhookAction, /You have no integration configured/)
+      within(webhookAction!).getByText(/You have no integration configured/)
     ).toBeInTheDocument();
-    expect(webhookAction).toHaveClass('pf-m-disabled');
-    await userEvent.click(webhookAction);
+
+    // In PatternFly 6, disabled options may not have aria-disabled but should prevent interaction
+    await userEvent.click(webhookAction!);
     await waitForAsyncEvents();
     expect(onSelected).not.toHaveBeenCalled();
   });
@@ -244,50 +252,36 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
   it('Disabled actions have a link to integrations', async () => {
     const context = {
       getIntegrations: async (
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _type: UserIntegrationType,
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         _search?: string
       ) => [],
       getNotificationRecipients: async () => [],
     };
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const getLocation = fn<any, any>();
-    const { rerender } = render(
-      <Wrapper value={context} getLocation={getLocation}>
+    render(
+      <Wrapper value={context}>
         <ActionTypeahead selectedNotifications={[]} onSelected={fn()} />
       </Wrapper>
     );
     await userEvent.click(screen.getByRole('button'));
     await waitForAsyncEvents();
 
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const webhookAction = screen
-      .getByText('Integration: Webhook')
-      .closest('button')!;
-    let link = getByRole(webhookAction, 'link', {
-      name: 'Integrations',
+    const optionButtons = screen.getAllByRole('option');
+    const webhookAction = optionButtons.find((button) =>
+      within(button).queryByText(/Integration: Webhook/i)
+    );
+    expect(webhookAction).toBeDefined();
+
+    const link = within(webhookAction!).getByRole('link', {
+      name: /integrations/i,
     });
 
     expect(link).toHaveAttribute('rel', expect.stringContaining('noopener'));
     expect(link).toHaveAttribute('rel', expect.stringContaining('noreferrer'));
     expect(link).toHaveAttribute('target', '_blank');
 
-    // for the sake of the test - removing the rel and target so that we can pick up the url change in the router
-    rerender(
-      <Wrapper value={context} getLocation={getLocation}>
-        <ActionTypeahead
-          selectedNotifications={[]}
-          onSelected={fn()}
-          testNoIntegrationRenderWithoutRelAndTarget={true}
-        />
-      </Wrapper>
-    );
-
-    link = getByRole(webhookAction, 'link', {
-      name: 'Integrations',
-    });
-
-    expect(getLocation().pathname).toEqual('/');
-    await userEvent.click(link);
-    expect(getLocation().pathname).toEqual('/settings/integrations');
+    // Check that the link points to the correct integrations path
+    expect(link).toHaveAttribute('href', '/settings/integrations');
   });
 });

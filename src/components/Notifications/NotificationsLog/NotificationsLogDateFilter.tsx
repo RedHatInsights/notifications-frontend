@@ -6,11 +6,12 @@ import {
   TextInputProps,
 } from '@patternfly/react-core';
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+} from '@patternfly/react-core';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
@@ -38,19 +39,19 @@ const labels: Record<NotificationsLogDateFilterValue, string> = {
 };
 
 const datePickerClassName = style({
-  backgroundColor: important('var(-pf-v5-global--BackgroundColor--100)'),
+  backgroundColor: important('var(-pf-v6-global--BackgroundColor--100)'),
   cursor: 'pointer',
   $nest: {
     '&::placeholder': {
-      color: important('var(--pf-v5-global--palette--black-1000)'),
+      color: important('var(--pf-t-color-black)'),
     },
     '&:hover': {
-      borderBottomColor: 'var(--pf-v5-global--active-color--100)',
+      borderBottomColor: 'var(--pf-t--global--border--color-100)',
     },
   },
 });
 
-class EventLogSelectObject implements SelectOptionObject {
+class EventLogSelectObject {
   readonly value: NotificationsLogDateFilterValue;
 
   constructor(value: NotificationsLogDateFilterValue) {
@@ -200,22 +201,29 @@ export const NotificationsLogDateFilter: React.FunctionComponent<
       <SplitItem>
         <Select
           isOpen={isOpen}
-          variant={SelectVariant.single}
-          onToggle={() => setOpen((prev) => !prev)}
-          selections={val}
-          onSelect={(
-            _e: unknown,
-            selectObject: SelectOptionObject | string
-          ) => {
+          selected={val}
+          onSelect={(_e: unknown, selectObject: unknown) => {
             if (selectObject instanceof EventLogSelectObject) {
               setValue(selectObject.value);
               setOpen(false);
             }
           }}
+          onOpenChange={(isOpen) => setOpen(isOpen)}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              onClick={() => setOpen((prev) => !prev)}
+              isExpanded={isOpen}
+            >
+              {val.toString()}
+            </MenuToggle>
+          )}
         >
-          {Object.values(NotificationsLogDateFilterValue).map((v) => (
-            <SelectOption key={v} value={new EventLogSelectObject(v)} />
-          ))}
+          <SelectList>
+            {Object.values(NotificationsLogDateFilterValue).map((v) => (
+              <SelectOption key={v} value={new EventLogSelectObject(v)} />
+            ))}
+          </SelectList>
         </Select>
       </SplitItem>
       {value === NotificationsLogDateFilterValue.CUSTOM && (

@@ -63,21 +63,15 @@ export const useFilters = <FilterColumn extends StandardFilterEnum<never>>(
   }
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const filters = useMemo(
-    () => elements.filters,
-    [...Object.values(elements.filters)]
-  );
+  const filters = useMemo(() => elements.filters, [elements.filters]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const setFilters = useMemo(
-    () => elements.setFilters,
-    [...Object.values(elements.setFilters)]
-  );
+  const setFilters = useMemo(() => elements.setFilters, [elements.setFilters]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedFilters = useMemo(
     () => elements.debouncedFilters,
-    [...Object.values(elements.debouncedFilters)]
+    [elements.debouncedFilters]
   );
 
   const clearFilter: ClearFilters<FilterColumn> = useCallback(

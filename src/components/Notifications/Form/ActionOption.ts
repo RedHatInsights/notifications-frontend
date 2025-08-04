@@ -1,5 +1,3 @@
-import { SelectOptionObject } from '@patternfly/react-core/deprecated';
-
 import Config from '../../../config/Config';
 import { UserIntegrationType } from '../../../types/Integration';
 import { NotificationType } from '../../../types/Notification';
@@ -14,7 +12,7 @@ type ActionTypeOrIntegration =
       type: NotificationType;
     };
 
-export class ActionOption implements SelectOptionObject {
+export class ActionOption {
   readonly integrationType: UserIntegrationType | undefined;
   readonly notificationType: NotificationType;
 

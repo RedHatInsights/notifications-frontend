@@ -8,11 +8,12 @@ import {
 } from '@patternfly/react-core/dist/dynamic/layouts/Split';
 import { TextInputProps } from '@patternfly/react-core/dist/dynamic/components/TextInput';
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated';
+} from '@patternfly/react-core';
 import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
@@ -47,12 +48,13 @@ const datePickerClassName = style({
       color: important('black'),
     },
     '&:hover': {
-      borderBottomColor: 'var(--pf-v5-global--active-color--100)',
+      borderBottomColor:
+        'var(--pf-t--temp--dev--tbd)' /* CODEMODS: original v5 color was --pf-v5-global--active-color--100 */,
     },
   },
 });
 
-class EventLogSelectObject implements SelectOptionObject {
+class EventLogSelectObject {
   readonly value: EventLogDateFilterValue;
 
   constructor(value: EventLogDateFilterValue) {
@@ -248,7 +250,7 @@ export const EventLogDateFilter: React.FunctionComponent<
   );
   const onSelect = React.useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (_e: any, selectObject: SelectOptionObject | string) => {
+    (_e: any, selectObject: any) => {
       const setValue = props.setValue;
       if (selectObject instanceof EventLogSelectObject) {
         setValue(selectObject.value);
@@ -263,12 +265,16 @@ export const EventLogDateFilter: React.FunctionComponent<
       <SplitItem>
         <Select
           isOpen={isOpen}
-          variant={SelectVariant.single}
-          onToggle={onToggle}
-          selections={value}
+          selected={value}
           onSelect={onSelect}
+          onOpenChange={(isOpen) => setOpen(isOpen)}
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle ref={toggleRef} onClick={onToggle} isExpanded={isOpen}>
+              {value.toString()}
+            </MenuToggle>
+          )}
         >
-          {options}
+          <SelectList>{options}</SelectList>
         </Select>
       </SplitItem>
       {props.value === EventLogDateFilterValue.CUSTOM && (

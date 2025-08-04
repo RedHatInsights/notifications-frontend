@@ -1,9 +1,10 @@
 import {
+  MenuToggle,
+  MenuToggleElement,
   Select,
+  SelectList,
   SelectOption,
-  SelectOptionObject,
-  SelectVariant,
-} from '@patternfly/react-core/deprecated/';
+} from '@patternfly/react-core';
 import produce from 'immer';
 import * as React from 'react';
 import { Link } from 'react-router-dom';
@@ -119,7 +120,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
   );
 
   const onSelect = React.useCallback(
-    (_event, value: string | SelectOptionObject) => {
+    (_event, value) => {
       const actionSelected = props.onSelected;
       if (value instanceof ActionOption) {
         actionSelected(value);
@@ -161,6 +162,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
         !hasIntegrations[o.integrationType];
       return (
         <SelectOption
+          aria-disabled={isDisabled ? 'true' : 'false'}
           isDisabled={isDisabled}
           key={o.toString()}
           value={o}
@@ -173,7 +175,9 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
               />
             )
           }
-        />
+        >
+          {o.toString()}
+        </SelectOption>
       );
     });
   }, [
@@ -187,18 +191,23 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
   return (
     <div {...getOuiaProps('ActionTypeahead', props)}>
       <Select
-        maxHeight={400}
-        variant={SelectVariant.single}
         aria-label="Select action"
-        placeholderText="Select action"
-        selections={selectedOption}
-        onToggle={(_e, val) => toggle(val)}
-        isOpen={isOpen}
+        selected={selectedOption}
         onSelect={onSelect}
-        menuAppendTo={document.body}
-        isDisabled={props.isDisabled}
+        onOpenChange={(isOpen) => setOpen(isOpen)}
+        isOpen={isOpen}
+        toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+          <MenuToggle
+            ref={toggleRef}
+            onClick={() => toggle(!isOpen)}
+            isExpanded={isOpen}
+            isDisabled={props.isDisabled}
+          >
+            {selectedOption ? selectedOption.toString() : 'Select action'}
+          </MenuToggle>
+        )}
       >
-        {selectableOptions}
+        <SelectList>{selectableOptions}</SelectList>
       </Select>
     </div>
   );

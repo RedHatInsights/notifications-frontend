@@ -64,7 +64,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         selected={SELECTED_ALL}
         onSelected={fn()}
         onClear={fn()}
-        isDisabled={true}
+        isDisabled
       />,
       {
         wrapper: getConfiguredWrapper(),
@@ -73,7 +73,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
     await waitFor(() =>
       expect(
         screen.getByRole('button', {
-          name: 'Options menu',
+          name: /Label group category/,
         })
       ).toBeDisabled()
     );
@@ -108,13 +108,13 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
     await waitFor(() => expect(screen.getByText('All')).toBeVisible());
   });
 
-  it('Clicking clear button will call onClear', async () => {
-    const onClear = fn();
+  it('Clicking close button will call onSelected for removal', async () => {
+    const onSelected = fn();
     render(
       <RecipientTypeahead
         selected={SELECTED_ALL}
-        onSelected={fn()}
-        onClear={onClear}
+        onSelected={onSelected}
+        onClear={fn()}
       />,
       {
         wrapper: getConfiguredWrapper(createDefaultGetMock()),
@@ -123,10 +123,10 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     await userEvent.click(
       screen.getByRole('button', {
-        name: /Clear all/i,
+        name: /Close All/i,
       })
     );
-    await waitFor(() => expect(onClear).toHaveBeenCalled());
+    await waitFor(() => expect(onSelected).toHaveBeenCalled());
   });
 
   it('Clicking will show the options', async () => {
@@ -143,7 +143,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     await userEvent.click(
       screen.getByRole('button', {
-        name: /Options menu/i,
+        name: /Label group category/,
       })
     );
     await waitFor(() =>
@@ -185,12 +185,12 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
     await userEvent.click(
       screen.getByRole('button', {
-        name: /Options menu/i,
+        name: /Label group category/,
       })
     );
-    await screen.findAllByRole('checkbox');
+    await screen.findAllByRole('option');
     // eslint-disable-next-line testing-library/no-unnecessary-act
-    await userEvent.click(screen.getAllByRole('checkbox')[0]);
+    await userEvent.click(screen.getAllByRole('option')[0]);
     await waitFor(() => expect(onSelected).toHaveBeenCalled());
   });
 

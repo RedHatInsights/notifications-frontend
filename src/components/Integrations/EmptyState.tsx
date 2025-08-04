@@ -4,16 +4,13 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Content,
+  ContentVariants,
   EmptyState,
   EmptyStateBody,
   EmptyStateFooter,
-  EmptyStateHeader,
-  EmptyStateIcon,
   Gallery,
   Icon,
-  Text,
-  TextContent,
-  TextVariants,
 } from '@patternfly/react-core';
 import {
   ArrowRightIcon,
@@ -46,24 +43,27 @@ const EmptyIntegrationCard: React.FunctionComponent<{
         <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-lg">
           <TitleIcon className="pf-v5-u-link-color" />
         </Icon>
-        <TextContent>
-          <Text component={TextVariants.h4}>{title}</Text>
-        </TextContent>
+        <Content>
+          <Content component={ContentVariants.h4}>{title}</Content>
+        </Content>
       </CardHeader>
       <CardBody className="pf-v5-u-display-flex">
-        <TextContent className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
-          <Text component={TextVariants.p} className="pf-v5-u-flex-grow-1">
+        <Content className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
+          <Content
+            component={ContentVariants.p}
+            className="pf-v5-u-flex-grow-1"
+          >
             {body}
-          </Text>
-          <Text component={TextVariants.p}>
+          </Content>
+          <Content component={ContentVariants.p}>
             <Link to={link} target="_blank">
               Learn more
               <Icon className="pf-v5-u-ml-sm" isInline>
                 <ArrowRightIcon />
               </Icon>
             </Link>
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       </CardBody>
     </Card>
   );
@@ -75,12 +75,11 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
   const { isOrgAdmin } = useAppContext();
   return (
     <div className="pf-v5-l-flex pf-m-justify-content-center">
-      <EmptyState>
-        <EmptyStateHeader
-          titleText="No integrations yet"
-          icon={<EmptyStateIcon icon={CubesIcon} />}
-          headingLevel={TextVariants.h4}
-        />
+      <EmptyState
+        headingLevel={ContentVariants.h4}
+        icon={CubesIcon}
+        titleText="No integrations yet"
+      >
         <EmptyStateBody>
           <Gallery
             aria-label="Card container"

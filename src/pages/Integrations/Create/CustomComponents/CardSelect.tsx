@@ -6,8 +6,8 @@ import {
   GridItem,
   HelperText,
   HelperTextItem,
-  Tile,
 } from '@patternfly/react-core';
+import { Tile } from '@patternfly/react-core/deprecated';
 
 import useFieldApi, {
   UseFieldApiProps,

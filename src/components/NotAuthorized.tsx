@@ -1,7 +1,7 @@
 import { Split, SplitItem, StackItem } from '@patternfly/react-core';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
-import NotAuthorized from '@redhat-cloud-services/frontend-components/NotAuthorized';
+import UnauthorizedAccess from '@patternfly/react-component-groups/dist/dynamic/UnauthorizedAccess';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { default as React, useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -96,8 +96,8 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
           </SplitItem>
         </Split>
       </PageHeader>
-      <NotAuthorized
-        description={
+      <UnauthorizedAccess
+        bodyText={
           <>
             Contact your organization administrator for more information or
             visit

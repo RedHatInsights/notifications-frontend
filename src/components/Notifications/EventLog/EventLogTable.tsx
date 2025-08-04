@@ -217,9 +217,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (
           <Th>
             Action taken{' '}
             <ActionsHelpPopover>
-              <Button variant={ButtonVariant.plain}>
-                <HelpIcon />
-              </Button>
+              <Button icon={<HelpIcon />} variant={ButtonVariant.plain} />
             </ActionsHelpPopover>
           </Th>
           <Th sort={sortOptions[EventLogTableColumns.DATE]}>Date and time</Th>

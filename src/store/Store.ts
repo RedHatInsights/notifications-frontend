@@ -1,4 +1,3 @@
-import { notifications } from '@redhat-cloud-services/frontend-components-notifications/redux/reducers/notifications';
 import { PortalNotificationConfig } from '@redhat-cloud-services/frontend-components-notifications/Portal';
 import { getRegistry } from '@redhat-cloud-services/frontend-components-utilities/Registry';
 import { Middleware } from 'redux';
@@ -26,8 +25,6 @@ export const getNotificationsRegistry = (...middleware: Middleware[]) => {
 
   registry.register({
     savedNotificationScope: SavedNotificationScopeReducer,
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    notifications: notifications as any,
   });
 
   return registry;

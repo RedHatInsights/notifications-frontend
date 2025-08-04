@@ -94,7 +94,7 @@ describe('components/Integrations/Table', () => {
     );
 
     const input = ouiaSelectors
-      .getByOuia('PF5/Switch', 'enabled-integration-id')
+      .getByOuia('PF6/Switch', 'enabled-integration-id')
       .querySelector('input');
     expect(input).toBeChecked();
   });
@@ -111,7 +111,7 @@ describe('components/Integrations/Table', () => {
     );
 
     const input = ouiaSelectors
-      .getByOuia('PF5/Switch', 'enabled-integration-id')
+      .getByOuia('PF6/Switch', 'enabled-integration-id')
       .querySelector('input');
     expect(input).not.toBeChecked();
   });
@@ -706,7 +706,7 @@ describe('components/Integrations/Table', () => {
     );
 
     await userEvent.click(
-      ouiaSelectors.getByOuia('PF5/Switch', 'enabled-integration-id')
+      ouiaSelectors.getByOuia('PF6/Switch', 'enabled-integration-id')
     );
 
     await waitForAsyncEvents();

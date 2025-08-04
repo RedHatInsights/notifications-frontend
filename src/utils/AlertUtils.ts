@@ -1,44 +1,68 @@
 import { AlertProps } from '@patternfly/react-core';
-import { addNotification as createNotificationAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
-import { clearNotifications as createClearNotificationsAction } from '@redhat-cloud-services/frontend-components-notifications/redux/actions/notifications';
+import { useNotifications } from '@redhat-cloud-services/frontend-components-notifications/hooks';
 import { useMemo } from 'react';
-import { useDispatch } from 'react-redux';
 
 export type NotificationType = AlertProps['variant'];
 type ExplicitNotificationFunction = (
   title: string,
-  description: React.ReactNode,
+  description?: React.ReactNode,
   dismissable?: boolean
 ) => void;
 
-// Todo: Create a PR over frontend-components with a similar hook
 export const useNotification = () => {
-  const dispatch = useDispatch();
-  return useMemo(() => {
-    const addNotification = (
-      variant: NotificationType,
-      title: string,
-      description: React.ReactNode,
-      dismissable?: boolean
-    ) =>
-      dispatch(
-        createNotificationAction({
-          variant,
-          title,
-          description,
-          dismissable,
-        })
-      );
+  const { addNotification, clearNotifications } = useNotifications();
 
-    const addSuccessNotification: ExplicitNotificationFunction = (...args) =>
-      addNotification('success', ...args);
-    const addDangerNotification: ExplicitNotificationFunction = (...args) =>
-      addNotification('danger', ...args);
-    const addInfoNotification: ExplicitNotificationFunction = (...args) =>
-      addNotification('info', ...args);
-    const addWarningNotification: ExplicitNotificationFunction = (...args) =>
-      addNotification('warning', ...args);
-    const clearNotifications = () => dispatch(createClearNotificationsAction());
+  return useMemo(() => {
+    const addSuccessNotification: ExplicitNotificationFunction = (
+      title,
+      description,
+      dismissable = true
+    ) =>
+      addNotification({
+        variant: 'success',
+        title,
+        description,
+        dismissable,
+      });
+
+    const addDangerNotification: ExplicitNotificationFunction = (
+      title,
+      description,
+      dismissable = true
+    ) =>
+      addNotification({
+        variant: 'danger',
+        title,
+        description,
+        dismissable,
+      });
+
+    const addInfoNotification: ExplicitNotificationFunction = (
+      title,
+      description,
+      dismissable = true
+    ) =>
+      addNotification({
+        variant: 'info',
+        title,
+        description,
+        dismissable,
+      });
+
+    const addWarningNotification: ExplicitNotificationFunction = (
+      title,
+      description,
+      dismissable = true
+    ) =>
+      addNotification({
+        variant: 'warning',
+        title,
+        description,
+        dismissable,
+      });
+
+    const clearAllNotifications: ExplicitNotificationFunction = () =>
+      clearNotifications();
 
     return {
       addNotification,
@@ -46,7 +70,7 @@ export const useNotification = () => {
       addDangerNotification,
       addInfoNotification,
       addWarningNotification,
-      clearNotifications,
+      clearAllNotifications,
     };
-  }, [dispatch]);
+  }, [addNotification, clearNotifications]);
 };

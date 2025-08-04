@@ -6,7 +6,6 @@ import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import format from 'date-fns/format';
 import * as React from 'react';
 
-import { NotificationsPortal } from '../components/Store/NotificationsPortal';
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
@@ -20,6 +19,7 @@ import {
   getInsights,
   toUtc,
 } from '../utils/insights-common-typescript';
+import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 
 const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';
@@ -83,14 +83,13 @@ const App: React.ComponentType = () => {
       }}
     >
       <RbacGroupContextProvider>
-        <NotificationsPortal />
+        <NotificationsProvider />
         <InsightsEnvDetector insights={insights} onEnvironment={staging}>
           <RenderIfTrue>
             <Switch
               className="pf-v5-u-p-sm"
               isChecked={usingExperimental}
               onChange={toggleExperimental}
-              labelOff="Enable experimental features"
               label="Disable experimental features"
             />
           </RenderIfTrue>

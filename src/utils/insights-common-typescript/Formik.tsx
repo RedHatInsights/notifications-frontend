@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { FieldInputProps, useField } from 'formik';
 import {
-  Text,
-  TextVariants,
-} from '@patternfly/react-core/dist/dynamic/components/Text';
+  Content,
+  ContentVariants,
+} from '@patternfly/react-core/dist/dynamic/components/Content';
 import {
   TextInput as PFTextInput,
   TextInputProps,
@@ -76,7 +76,7 @@ export const FormTextInput: React.FunctionComponent<FormTextInputProps> = (
         value={field.value !== undefined ? field.value.toString() : ''}
         onChange={onChangePFAdapter<React.FormEvent<HTMLInputElement>>(field)}
       />
-      {hint && <Text component={TextVariants.small}>{hint}</Text>}
+      {hint && <Content component={ContentVariants.small}>{hint}</Content>}
       {meta.error && (
         <FormHelperText>
           <HelperText>

@@ -3,13 +3,13 @@ import './App.scss';
 import { Bullseye, Spinner } from '@patternfly/react-core';
 import * as React from 'react';
 
-import { NotificationsPortal } from '../components/Store/NotificationsPortal';
 import IntegrationsList from '../pages/Integrations/List/List';
 import { IntegrationCategory } from '../types/Integration';
 import { AppContext } from './AppContext';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 import { AppEntryProps } from '../AppEntry';
+import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 
 interface IntegrationsAppProps {
   activeCategory?: string;
@@ -37,7 +37,7 @@ const IntegrationsApp: React.ComponentType<
       }}
     >
       <RbacGroupContextProvider>
-        <NotificationsPortal />
+        <NotificationsProvider />
         <IntegrationsList category={category} {...props} />
       </RbacGroupContextProvider>
     </AppContext.Provider>

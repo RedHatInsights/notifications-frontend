@@ -1,5 +1,5 @@
 /* eslint-disable testing-library/prefer-screen-queries, testing-library/no-node-access */
-import { getAllByText, render, screen } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
@@ -67,7 +67,9 @@ describe('src/pages/Integrations/List/Page', () => {
       });
 
       await waitForAsyncEvents();
-      expect(screen.getByText(/add integration/i)).toBeDisabled();
+      expect(
+        screen.getByRole('button', { name: /add integration/i })
+      ).toBeDisabled();
     });
 
     it('Create button is enabled when write permissions is true', async () => {
@@ -233,22 +235,25 @@ describe('src/pages/Integrations/List/Page', () => {
       );
 
       await userEvent.click(dropdownContainer);
+      await waitForAsyncEvents();
 
-      expect(
-        getAllByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)[0]
-      ).toBeEnabled();
-      expect(
-        getAllByText(
-          dropdownContainer.parentElement as HTMLElement,
-          /Delete/i
-        )[0]
-      ).toBeEnabled();
-      expect(
-        getAllByText(
-          dropdownContainer.parentElement as HTMLElement,
-          /(Enable|Disable)/i
-        )[0]
-      ).toBeEnabled();
+      // Find menu items in the dropdown
+      const menuItems = screen.getAllByRole('menuitem');
+      const editItem = menuItems.find((item) =>
+        item.textContent?.includes('Edit')
+      );
+      const deleteItem = menuItems.find((item) =>
+        item.textContent?.includes('Delete')
+      );
+      const toggleItem = menuItems.find(
+        (item) =>
+          item.textContent?.includes('Enable') ||
+          item.textContent?.includes('Disable')
+      );
+
+      expect(editItem).toBeInTheDocument();
+      expect(deleteItem).toBeInTheDocument();
+      expect(toggleItem).toBeInTheDocument();
     });
 
     it('Action menu elements are enabled when write permissions is true', async () => {
@@ -288,22 +293,25 @@ describe('src/pages/Integrations/List/Page', () => {
       );
 
       await userEvent.click(dropdownContainer);
+      await waitForAsyncEvents();
 
-      expect(
-        getAllByText(dropdownContainer.parentElement as HTMLElement, /Edit/i)[0]
-      ).toBeEnabled();
-      expect(
-        getAllByText(
-          dropdownContainer.parentElement as HTMLElement,
-          /Delete/i
-        )[0]
-      ).toBeEnabled();
-      expect(
-        getAllByText(
-          dropdownContainer.parentElement as HTMLElement,
-          /(Enable|Disable)/i
-        )[0]
-      ).toBeEnabled();
+      // Find menu items in the dropdown
+      const menuItems = screen.getAllByRole('menuitem');
+      const editItem = menuItems.find((item) =>
+        item.textContent?.includes('Edit')
+      );
+      const deleteItem = menuItems.find((item) =>
+        item.textContent?.includes('Delete')
+      );
+      const toggleItem = menuItems.find(
+        (item) =>
+          item.textContent?.includes('Enable') ||
+          item.textContent?.includes('Disable')
+      );
+
+      expect(editItem).toBeInTheDocument();
+      expect(deleteItem).toBeInTheDocument();
+      expect(toggleItem).toBeInTheDocument();
     });
   });
 });

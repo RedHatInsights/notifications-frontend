@@ -1,4 +1,4 @@
-import { Text, TextContent, Title } from '@patternfly/react-core';
+import { Content, Title } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
@@ -20,12 +20,12 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
         <Title headingLevel="h4" size="xl">
           {title}
         </Title>
-        <TextContent className="pf-v5-u-pt-sm">
-          <Text>
+        <Content className="pf-v5-u-pt-sm">
+          <Content component="p">
             Select action and recipient pairs to assign to your notification
             events.
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
         <EditBehaviorGroupForm behaviorGroup={values} />
       </div>
     </Form>

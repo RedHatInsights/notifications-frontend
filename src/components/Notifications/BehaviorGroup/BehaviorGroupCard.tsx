@@ -2,20 +2,18 @@ import {
   Card,
   CardBody,
   CardHeader,
+  Content,
+  ContentVariants,
+  Menu,
+  MenuItem,
+  MenuList,
+  MenuToggle,
+  Popper,
   Skeleton,
   Split,
   SplitItem,
-  Text,
-  TextContent,
-  TextVariants,
   Tooltip,
 } from '@patternfly/react-core';
-import {
-  Dropdown,
-  DropdownItem,
-  DropdownPosition,
-  KebabToggle,
-} from '@patternfly/react-core/deprecated';
 import { LockIcon } from '@patternfly/react-icons';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import * as React from 'react';
@@ -40,7 +38,12 @@ type BehaviorGroupImplProps = MarkRequired<BehaviorGroupProps, 'behaviorGroup'>;
 
 export interface BehaviorGroupCardLayout {
   title: React.ReactNode;
-  dropdownItems?: Array<React.ReactNode>;
+  menuItems?: Array<{
+    key: string;
+    label: string;
+    onClick: () => void;
+    isDisabled: boolean;
+  }>;
   isDefaultBehavior?: boolean;
 }
 
@@ -49,31 +52,40 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
 > = (props) => {
   const [isOpen, setOpen] = React.useState(false);
 
-  const switchOpen = React.useCallback(
-    () => setOpen((prev) => !prev),
-    [setOpen]
-  );
-
   return (
-    <Card isFlat className={cardClassName}>
+    <Card className={cardClassName}>
       <CardHeader
         actions={{
           actions: (
             <>
-              {!props.isDefaultBehavior && (
-                <Dropdown
-                  onSelect={switchOpen}
-                  toggle={
-                    <KebabToggle
-                      onToggle={(_e, isOpen) => setOpen(isOpen)}
-                      isDisabled={!props.dropdownItems}
+              {!props.isDefaultBehavior && props.menuItems && (
+                <Popper
+                  trigger={
+                    <MenuToggle
+                      variant="plain"
+                      onClick={() => setOpen(!isOpen)}
+                      isExpanded={isOpen}
+                      icon={<span>&#8942;</span>}
+                      aria-label="Actions"
                     />
                   }
-                  isOpen={isOpen}
-                  isPlain
-                  dropdownItems={props.dropdownItems}
-                  position={DropdownPosition.right}
-                  menuAppendTo={() => document.body}
+                  popper={
+                    <Menu>
+                      <MenuList>
+                        {props.menuItems.map((item) => (
+                          <MenuItem
+                            key={item.key}
+                            onClick={item.onClick}
+                            isDisabled={item.isDisabled}
+                          >
+                            {item.label}
+                          </MenuItem>
+                        ))}
+                      </MenuList>
+                    </Menu>
+                  }
+                  isVisible={isOpen}
+                  appendTo={() => document.body}
                 />
               )}
             </>
@@ -106,9 +118,12 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                 )}
               </SplitItem>
               <SplitItem>
-                <TextContent>
-                  <Text component={TextVariants.h4}> {props.title} </Text>
-                </TextContent>
+                <Content>
+                  <Content component={ContentVariants.h4}>
+                    {' '}
+                    {props.title}{' '}
+                  </Content>
+                </Content>
               </SplitItem>
             </Split>
           </>
@@ -136,24 +151,20 @@ const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = (
     }
   }, [props.behaviorGroup, props.onDelete]);
 
-  const dropdownItems = React.useMemo(
+  const menuItems = React.useMemo(
     () => [
-      <DropdownItem
-        key="on-edit"
-        onClick={onClickEdit}
-        isDisabled={!onClickEdit}
-      >
-        {' '}
-        Edit{' '}
-      </DropdownItem>,
-      <DropdownItem
-        key="on-delete"
-        onClick={onClickDelete}
-        isDisabled={!onClickDelete}
-      >
-        {' '}
-        Delete{' '}
-      </DropdownItem>,
+      {
+        key: 'on-edit',
+        label: 'Edit',
+        onClick: onClickEdit,
+        isDisabled: !onClickEdit,
+      },
+      {
+        key: 'on-delete',
+        label: 'Delete',
+        onClick: onClickDelete,
+        isDisabled: !onClickDelete,
+      },
     ],
     [onClickEdit, onClickDelete]
   );
@@ -161,7 +172,7 @@ const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = (
   return (
     <BehaviorGroupCardLayout
       title={props.behaviorGroup.displayName}
-      dropdownItems={dropdownItems}
+      menuItems={menuItems}
       isDefaultBehavior={props.behaviorGroup.isDefault}
     >
       <BehaviorGroupActionsSummary actions={props.behaviorGroup.actions} />

@@ -103,7 +103,6 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
               aria-labelledby="item1 action1"
               id="action1"
               aria-label="Actions"
-              isPlainButtonAction
             >
               <Button
                 component="a"

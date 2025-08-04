@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 import DrawerPanel from '../../src/components/NotificationsDrawer/DrawerPanel';
 import { Page } from '@patternfly/react-core';
@@ -59,26 +59,32 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 
   return (
     <ScalprumProvider
-        config={{ foo: { name: 'foo' } }}
-        api={{ chrome: { 
-          addWsEventListener: () => () => {}, 
+      config={{ foo: { name: 'foo' } }}
+      api={{
+        chrome: {
+          addWsEventListener: () => () => {},
           auth: {
-            getUser: () => Promise.resolve({ identity: { user: { is_org_admin: true } 
-          } 
-          }),
-        }} }}
-      >
+            getUser: () =>
+              Promise.resolve({ identity: { user: { is_org_admin: true } } }),
+          },
+        },
+      }}
+    >
       <BrowserRouter>
-        <button id="drawer-toggle" onClick={() => setIsExpanded((prev) => !prev)}>
+        <button
+          id="drawer-toggle"
+          onClick={() => setIsExpanded((prev) => !prev)}
+        >
           Toggle drawer
         </button>
         <button
           id="populate-notifications"
           onClick={async () => {
-              await initialize(true, notificationPerms);
-              notificationDrawerData.map((item) => addNotification({ ...item, read: markAll }))
-            }
-          }
+            await initialize(true, notificationPerms);
+            notificationDrawerData.map((item) =>
+              addNotification({ ...item, read: markAll })
+            );
+          }}
         >
           Populate notifications
         </button>
@@ -94,18 +100,24 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 describe('Notification Drawer', () => {
   beforeEach(() => {
     cy.viewport(1200, 800);
-    cy.intercept('GET', ' /api/rbac/v1/access/?application=notifications&limit=1000', {
-      data: notificationPerms,
-    });
-    cy.intercept('GET', '/api/notifications/v1/notifications/drawer?limit=50&startDate=*', {
-      data: [],
-    });
+    cy.intercept(
+      'GET',
+      ' /api/rbac/v1/access/?application=notifications&limit=1000',
+      {
+        data: notificationPerms,
+      }
+    );
+    cy.intercept(
+      'GET',
+      '/api/notifications/v1/notifications/drawer?limit=50&startDate=*',
+      {
+        data: [],
+      }
+    );
   });
 
   it('should toggle drawer', () => {
-    cy.mount(
-      <DrawerLayout />
-    );
+    cy.mount(<DrawerLayout />);
     cy.get('#drawer-toggle').click();
     cy.contains('No notifications found').should('be.visible');
     cy.get('#drawer-toggle').click();
@@ -113,9 +125,7 @@ describe('Notification Drawer', () => {
   });
 
   it('should populate notifications', () => {
-    cy.mount(
-      <DrawerLayout />
-    );
+    cy.mount(<DrawerLayout />);
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     notificationDrawerData.forEach((notification) => {
@@ -127,9 +137,7 @@ describe('Notification Drawer', () => {
     cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
       statusCode: 200,
     });
-    cy.mount(
-      <DrawerLayout />
-    );
+    cy.mount(<DrawerLayout />);
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 0);
@@ -142,9 +150,7 @@ describe('Notification Drawer', () => {
     cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
       statusCode: 200,
     });
-    cy.mount(
-      <DrawerLayout markAll />
-    );
+    cy.mount(<DrawerLayout markAll />);
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 3);
@@ -156,14 +162,12 @@ describe('Notification Drawer', () => {
     cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
       statusCode: 200,
     });
-    cy.mount(
-      <DrawerLayout />
-    );
+    cy.mount(<DrawerLayout />);
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 0);
     // select all notifications
-    cy.get('.pf-v5-c-menu-toggle__controls').click();
+    cy.get('.pf-v6-c-menu-toggle__controls').click();
     cy.get('[data-ouia-component-id="BulkSelectList-select-all"]').click();
     // mark selected as read
     cy.get('#notifications-actions-toggle').click();
@@ -175,14 +179,12 @@ describe('Notification Drawer', () => {
     cy.intercept('PUT', '/api/notifications/v1/notifications/drawer/read', {
       statusCode: 200,
     });
-    cy.mount(
-      <DrawerLayout markAll />
-    );
+    cy.mount(<DrawerLayout markAll />);
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
     cy.get('.pf-m-read').should('have.length', 3);
     // select all notifications
-    cy.get('.pf-v5-c-menu-toggle__controls').click();
+    cy.get('.pf-v6-c-menu-toggle__controls').click();
     cy.get('[data-ouia-component-id="BulkSelectList-select-all"]').click();
     // mark selected as unread
     cy.get('#notifications-actions-toggle').click();
@@ -204,16 +206,14 @@ describe('Notification Drawer', () => {
         },
       ],
     });
-    cy.mount(
-      <DrawerLayout />
-    );
+    cy.mount(<DrawerLayout />);
     cy.get('#populate-notifications').click();
     cy.get('#drawer-toggle').click();
-    cy.get('.pf-v5-c-notification-drawer__list-item').should('have.length', 3);
+    cy.get('.pf-v6-c-notification-drawer__list-item').should('have.length', 3);
     cy.get('#notifications-filter-toggle').click();
     cy.contains('Console').click();
-    cy.get('.pf-v5-c-notification-drawer__list-item').should('have.length', 2);
+    cy.get('.pf-v6-c-notification-drawer__list-item').should('have.length', 2);
     cy.contains('Reset filter').click();
-    cy.get('.pf-v5-c-notification-drawer__list-item').should('have.length', 3);
+    cy.get('.pf-v6-c-notification-drawer__list-item').should('have.length', 3);
   });
 });

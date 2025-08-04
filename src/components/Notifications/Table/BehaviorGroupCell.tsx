@@ -1,17 +1,15 @@
 import {
   Badge,
-  Chip,
-  ChipGroup,
   Icon,
   Label,
+  LabelGroup,
+  Menu,
   MenuItem,
+  MenuList,
+  MenuToggle,
+  Popper,
   Tooltip,
 } from '@patternfly/react-core';
-import {
-  OptionsMenu,
-  OptionsMenuItem,
-  OptionsMenuToggle,
-} from '@patternfly/react-core/deprecated';
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
 import * as React from 'react';
@@ -57,9 +55,9 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (
   }, [props.onSelect, props.behaviorGroup, props.notification]);
 
   return (
-    <Chip onClick={unlink} isReadOnly={props.behaviorGroup.isDefault}>
+    <Label variant="outline" onClose={unlink}>
       {props.behaviorGroup.displayName}
-    </Chip>
+    </Label>
   );
 };
 
@@ -112,21 +110,21 @@ export const BehaviorGroupCell: React.FunctionComponent<
       props.behaviorGroupContent.hasError
     ) {
       return [
-        <OptionsMenuItem key="is-loading" isDisabled>
+        <MenuItem key="is-loading" isDisabled>
           Loading
-        </OptionsMenuItem>,
+        </MenuItem>,
       ];
     }
 
     if (props.behaviorGroupContent.content.length === 0) {
       return [
-        <OptionsMenuItem key="empty" isDisabled>
+        <MenuItem key="empty" isDisabled>
           <span className="pf-v5-u-text-align-left">
             You have no behavior groups. <br />
             Create a new group by clicking on the <br />
             &apos;Create new group&apos; button above.
           </span>
-        </OptionsMenuItem>,
+        </MenuItem>,
       ];
     }
 
@@ -166,39 +164,32 @@ export const BehaviorGroupCell: React.FunctionComponent<
     [props.selected]
   );
 
-  const toggle = React.useMemo(() => {
-    return (
-      <OptionsMenuToggle
-        onToggle={(_e, isOpen) => setOpen(isOpen)}
-        toggleTemplate={
-          sortedSelected.length === 0 ? (
-            <>
-              <span className="pf-v5-u-disabled-color-100">
-                Select behavior group
-              </span>
-              <Badge className="pf-v5-u-ml-xs" isRead>
-                {sortedSelected.length}
-              </Badge>
-            </>
-          ) : (
-            <>
-              <ChipGroup>
-                {sortedSelected.map((value) => (
-                  <BehaviorGroupChip
-                    key={value.id}
-                    behaviorGroup={value}
-                    notification={props.notification}
-                    onSelect={props.onSelect}
-                  />
-                ))}
-              </ChipGroup>
-              <Badge className="pf-v5-u-ml-xs" isRead>
-                {sortedSelected.length}
-              </Badge>
-            </>
-          )
-        }
-      />
+  const toggleContent = React.useMemo(() => {
+    return sortedSelected.length === 0 ? (
+      <>
+        <span className="pf-v5-u-disabled-color-100">
+          Select behavior group
+        </span>
+        <Badge className="pf-v5-u-ml-xs" isRead>
+          {sortedSelected.length}
+        </Badge>
+      </>
+    ) : (
+      <>
+        <LabelGroup>
+          {sortedSelected.map((value) => (
+            <BehaviorGroupChip
+              key={value.id}
+              behaviorGroup={value}
+              notification={props.notification}
+              onSelect={props.onSelect}
+            />
+          ))}
+        </LabelGroup>
+        <Badge className="pf-v5-u-ml-xs" isRead>
+          {sortedSelected.length}
+        </Badge>
+      </>
     );
   }, [sortedSelected, props.notification, props.onSelect]);
 
@@ -237,13 +228,23 @@ export const BehaviorGroupCell: React.FunctionComponent<
   }
 
   return (
-    <OptionsMenu
-      id={props.id}
-      direction="down"
-      menuItems={items}
-      toggle={toggle}
-      isOpen={isOpen}
-      menuAppendTo={document.body}
+    <Popper
+      trigger={
+        <MenuToggle
+          onClick={() => setOpen(!isOpen)}
+          isExpanded={isOpen}
+          variant="plain"
+        >
+          {toggleContent}
+        </MenuToggle>
+      }
+      popper={
+        <Menu>
+          <MenuList>{items}</MenuList>
+        </Menu>
+      }
+      isVisible={isOpen}
+      appendTo={() => document.body}
     />
   );
 };

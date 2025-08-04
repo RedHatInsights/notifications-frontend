@@ -197,7 +197,13 @@ export const useIntegrationRows = (
         }
       );
     },
-    [setIntegrationRowByIndex, query, reduxDispatch, savedNotificationScope]
+    [
+      setIntegrationRowByIndex,
+      savedNotificationScope,
+      query,
+      reduxDispatch,
+      addDangerNotification,
+    ]
   );
 
   useEffect(() => {

@@ -1,29 +1,22 @@
-import {
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateHeader,
-  EmptyStateIcon,
-  Text,
-  TextContent,
-} from '@patternfly/react-core';
+import { Content, EmptyState, EmptyStateBody } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
 
 const EmptyTableState = () => {
   return (
-    <EmptyState variant="full">
-      <EmptyStateHeader
-        titleText="No results found"
-        icon={<EmptyStateIcon className="pf-v5-u-mb-xl" icon={SearchIcon} />}
-        headingLevel="h2"
-      />
+    <EmptyState
+      headingLevel="h2"
+      icon={SearchIcon}
+      titleText="No results found"
+      variant="full"
+    >
       <EmptyStateBody>
-        <TextContent>
-          <Text>
+        <Content>
+          <Content component="p">
             No notifications match your filter choices above. Try removing or
             changing the filters to see results.
-          </Text>
-        </TextContent>
+          </Content>
+        </Content>
       </EmptyStateBody>
     </EmptyState>
   );

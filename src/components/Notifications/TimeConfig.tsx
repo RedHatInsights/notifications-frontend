@@ -1,6 +1,8 @@
 import {
   AlertActionLink,
   Button,
+  Content,
+  ContentVariants,
   HelperText,
   HelperTextItem,
   Menu,
@@ -9,19 +11,16 @@ import {
   MenuItem,
   MenuList,
   MenuToggle,
-  Modal,
-  ModalVariant,
   Radio,
   Skeleton,
   Split,
   SplitItem,
   Stack,
   StackItem,
-  Text,
-  TextVariants,
   TimePicker,
   Title,
 } from '@patternfly/react-core';
+import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { Alert } from '@patternfly/react-core';
 import { addHours } from 'date-fns';
 import React, { useEffect, useMemo, useState } from 'react';
@@ -212,7 +211,9 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
             <Title headingLevel="h2">Action settings</Title>
           </StackItem>
           <StackItem>
-            <Text component={TextVariants.p}>Daily digest email receipt</Text>
+            <Content component={ContentVariants.p}>
+              Daily digest email receipt
+            </Content>
             <HelperText>
               <HelperTextItem variant="indeterminate">
                 Schedule the time at which to send your account&apos;s daily
@@ -256,7 +257,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
               {showCustomSelect && (
                 <>
                   <StackItem className="pf-v5-u-pl-lg">
-                    <Text component={TextVariants.h6}>Time</Text>
+                    <Content component={ContentVariants.h6}>Time</Content>
                     <TimePicker
                       onChange={handleTimePrefSelect}
                       time={timeSelect?.baseCustomTime}
@@ -267,7 +268,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                     />
                   </StackItem>
                   <StackItem className="pf-v5-u-pl-lg">
-                    <Text component={TextVariants.h6}>Time zone</Text>
+                    <Content component={ContentVariants.h6}>Time zone</Content>
                     <MenuContainer
                       isOpen={isOpen}
                       onOpenChange={(isOpen) => setIsOpen(isOpen)}
