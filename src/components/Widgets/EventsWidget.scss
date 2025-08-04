@@ -1,4 +1,4 @@
-.notifications-notificationsEvents {
+.notifications-notificationsEvents, [class*="notifications-notifications-./DashboardWidget"] {
   overflow-y: auto;
 }
 .pf-v5-c-empty-state {
