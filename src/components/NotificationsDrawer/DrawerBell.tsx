@@ -3,7 +3,6 @@ import React from 'react';
 import { NotificationBadge } from '@patternfly/react-core/dist/dynamic/components/NotificationBadge';
 import { ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
-import BellIcon from '@patternfly/react-icons/dist/dynamic/icons/bell-icon';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import useNotificationDrawer from '../../hooks/useNotificationDrawer';
 
@@ -41,9 +40,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({
           isDisabled={!ready}
           aria-label="Notifications"
           isExpanded={isNotificationDrawerExpanded}
-        >
-          <BellIcon />
-        </NotificationBadge>
+        ></NotificationBadge>
       </Tooltip>
     </ToolbarItem>
   );
