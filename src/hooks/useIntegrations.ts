@@ -1,11 +1,15 @@
-import { getInsights, getInsightsEnvironment } from '@redhat-cloud-services/insights-common-typescript';
-
 import { getIntegrationActions } from '../config/Config';
-import { UserIntegrationType } from '../types/Integration';
+import { IntegrationCategory, UserIntegrationType } from '../types/Integration';
+import {
+  getInsights,
+  getInsightsEnvironment,
+} from '../utils/insights-common-typescript';
 
-export const useIntegrations = (): ReadonlyArray<UserIntegrationType> => {
-    const insights = getInsights();
-    const environment = getInsightsEnvironment(insights);
+export const useIntegrations = (
+  category?: IntegrationCategory
+): ReadonlyArray<UserIntegrationType> => {
+  const insights = getInsights();
+  const environment = getInsightsEnvironment(insights);
 
-    return getIntegrationActions(environment);
+  return getIntegrationActions(environment, category);
 };

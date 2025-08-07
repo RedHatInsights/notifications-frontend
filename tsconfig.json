@@ -14,15 +14,11 @@
     "esModuleInterop": true,
     "noImplicitAny": false,
     "sourceMap": true,
-    "resolveJsonModule" : true
+    "resolveJsonModule" : true,
+    "types": ["node", "jest", "@testing-library/jest-dom"],
   },
   "include": [
-    "./src/**/*"
-  ],
-  "exclude": [
-    "./node_modules/*",
-    "**/*.js",
-    "./test/**/*",
-    "./src/**/__tests__/**/*"
+    "./src/**/**.*",
+    "./config/setupTests.ts"
   ]
 }
