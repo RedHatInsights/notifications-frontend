@@ -130,40 +130,40 @@ export const defaultIconList = {
     [UserIntegrationType.GOOGLE_CHAT]: <IntegrationIcon>{
       name: IntegrationType.GOOGLE_CHAT,
       product_name: 'Google Chat',
-      icon_url: '/apps/frontend-assets/sources-integrations/google-chat.svg',
+      icon_url: '/apps/frontend-assets/partners-icons/google-chat.svg',
     },
     [UserIntegrationType.TEAMS]: <IntegrationIcon>{
       name: IntegrationType.TEAMS,
       product_name: 'Microsoft Office Teams',
       icon_url:
-        '/apps/frontend-assets/sources-integrations/microsoft-office-teams.svg',
+        '/apps/frontend-assets/partners-icons/microsoft-office-teams.svg',
     },
     [UserIntegrationType.SLACK]: <IntegrationIcon>{
       name: IntegrationType.SLACK,
       product_name: 'Slack',
-      icon_url: '/apps/frontend-assets/sources-integrations/slack.svg',
+      icon_url: '/apps/frontend-assets/partners-icons/slack.svg',
     },
   },
   [IntegrationCategory.REPORTING]: <IntegrationIconTypes>{
     [UserIntegrationType.SERVICE_NOW]: <IntegrationIcon>{
       name: IntegrationType.SERVICE_NOW,
       product_name: 'ServiceNow',
-      icon_url: '/apps/frontend-assets/sources-integrations/service-now.svg',
+      icon_url: '/apps/frontend-assets/partners-icons/service-now-logomark.svg',
     },
     [UserIntegrationType.SPLUNK]: <IntegrationIcon>{
       name: IntegrationType.SPLUNK,
       product_name: 'Splunk',
-      icon_url: '/apps/frontend-assets/sources-integrations/splunk.svg',
+      icon_url: '/apps/frontend-assets/partners-icons/splunk-logomark.svg',
     },
     [UserIntegrationType.ANSIBLE]: <IntegrationIcon>{
       name: IntegrationType.ANSIBLE,
       product_name: 'Event-Driven Ansible',
-      icon_url: '/apps/frontend-assets/sources-integrations/ansible.svg',
+      icon_url: '/apps/frontend-assets/technology-icons/ansible-tower-red.svg',
     },
     [UserIntegrationType.PAGERDUTY]: <IntegrationIcon>{
       name: IntegrationType.PAGERDUTY,
       product_name: 'PagerDuty',
-      icon_url: '/apps/frontend-assets/sources-integrations/pagerduty.svg',
+      icon_url: '/apps/frontend-assets/partners-icons/pagerduty-short.svg',
     },
   },
 };
