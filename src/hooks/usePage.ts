@@ -19,15 +19,18 @@ export const usePage = <T>(
 ): PageAdapter => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(defaultPerPage);
+  const filterValues = filters ? Object.values(filters) : [];
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [filters, setCurrentPage, itemsPerPage, category]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [...filterValues, setCurrentPage, itemsPerPage, category]);
 
   const page = useMemo(() => {
-    const filter = filterBuilder ? filterBuilder(filters) : undefined;
+    const filter = filterBuilder?.(filters);
     return Page.of(currentPage, itemsPerPage, filter, sort);
-  }, [currentPage, itemsPerPage, filters, sort, filterBuilder]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentPage, itemsPerPage, ...filterValues, sort, filterBuilder]);
 
   const changePage = useCallback(
     (page: number) => {
