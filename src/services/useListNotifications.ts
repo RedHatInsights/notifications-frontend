@@ -63,12 +63,12 @@ export const useListNotifications = (pager?: Page) => {
   const [response, setResponse] = useState<any>(null);
   const [error, setError] = useState<Error | null>(null);
 
+  const query = (pager ?? Page.defaultPage()).toQuery();
+
   const fetchNotifications = async () => {
     setLoading(true);
     setError(null);
-
     try {
-      const query = (pager ?? Page.defaultPage()).toQuery();
       const params = {
         limit: +query.limit,
         offset: +query.offset,
@@ -77,7 +77,6 @@ export const useListNotifications = (pager?: Page) => {
         bundleId: query.filterBundleId,
         sortBy: `${query.sortColumn}:${query.sortDirection}`,
       };
-
       const response = await getEventTypes(params);
       setResponse({ ...response, data: toNotifications(response.data) ?? [] });
     } catch (err) {
@@ -90,7 +89,13 @@ export const useListNotifications = (pager?: Page) => {
   useEffect(() => {
     fetchNotifications();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pager]);
+  }, [
+    query.offset,
+    query.limit,
+    query.filterBundleId,
+    query.filterApplicationId,
+    query.filterEventFilterName,
+  ]);
 
   return { loading, response, refresh: fetchNotifications, error };
 };
