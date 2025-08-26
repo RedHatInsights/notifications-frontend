@@ -41,11 +41,15 @@ interface SplunkEventsDef {
 const DEFAULT_SPLUNK_EVENTS: SplunkEventsDef = {
   advisor: '*',
   policies: '*',
-  drift: '*',
   compliance: '*',
   'malware-detection': '*',
   patch: '*',
+  ros: '*',
   vulnerability: '*',
+  inventory: '*',
+  'resource-optimization': '*',
+  'image-builder': '*',
+  tasks: '*',
 };
 
 export const useSplunkSetup = () => {
