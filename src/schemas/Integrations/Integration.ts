@@ -101,22 +101,26 @@ export const IntegrationCamelSchema: Yup.SchemaOf<
     extras: Yup.mixed()
       .default({})
       .transform((s) => {
-        console.log(s);
-        try {
-          if (typeof s === 'string') {
+        if (typeof s === 'string') {
+          if (!s.trim()) return {};
+          try {
             return JSON.parse(s);
+          } catch (e) {
+            throw new Yup.ValidationError(
+              `Invalid JSON in extras: ${
+                e instanceof Error ? e.message : String(e)
+              }. Input: "${s}"`,
+              s,
+              'extras'
+            );
           }
-
-          return s;
-        } catch (e) {
-          console.error(e);
-          return null;
         }
+        return s;
       })
       .test(
-        'valid-json-object',
-        'Provide a valid json object',
-        (extras) => extras && typeof extras === 'object'
+        'valid-object',
+        'Extras must be a valid object',
+        (value) => value !== null && typeof value === 'object'
       ),
   })
 );
