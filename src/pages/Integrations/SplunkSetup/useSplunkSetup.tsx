@@ -115,15 +115,31 @@ const useCreateSplunkIntegration = () => {
       eventTypes: eventTypeList,
     };
 
+    console.log('Creating Splunk integration with payload:', newIntegration);
+
     const { payload, error, errorObject } = await mutate(newIntegration);
+
     if (errorObject) {
-      throw errorObject;
+      console.error(
+        'Integration creation failed with errorObject:',
+        errorObject
+      );
+      // Enhance error with more details
+      const enhancedError = new Error(
+        `Integration creation failed: ${errorObject.message || 'Unknown error'}`
+      );
+      enhancedError.stack = errorObject.stack;
+      throw enhancedError;
     }
 
     if (error) {
-      throw new Error(`Error when creating integration ${integrationName}`);
+      console.error('Integration creation failed with error:', error);
+      throw new Error(
+        `Error when creating integration ${integrationName}: ${error}`
+      );
     }
 
+    console.log('Integration created successfully:', payload);
     return payload?.value as Integration;
   };
 };
