@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import useFieldApi, {
   UseFieldApiProps,
 } from '@data-driven-forms/react-form-renderer/use-field-api';
-import { AssociateEventTypesStep } from '../../../Notifications/BehaviorGroupWizard/Steps/AssociateEventTypesStep';
 import { EventType, Facet } from '../../../../types/Notification';
 import useFormApi from '@data-driven-forms/react-form-renderer/use-form-api';
 import FormSpy from '@data-driven-forms/react-form-renderer/form-spy';
@@ -10,6 +9,7 @@ import { getBundleFacets } from '../../../../api/helpers/notifications/bundle-fa
 import { Bullseye, EmptyState, EmptyStateBody } from '@patternfly/react-core';
 import CubesIcon from '@patternfly/react-icons/dist/dynamic/icons/cube-icon';
 import { getEndpoint } from '../../../../api/helpers/integrations/endpoints-helper';
+import EventTypes from '../../../../components/Integrations/EventTypes';
 
 const BUNDLE_DEFAULTS = {
   OpenShift: {},
@@ -156,10 +156,11 @@ const SelectableTable = (props) => {
   }, [integrationId]);
 
   return currBundle && loaded ? (
-    <AssociateEventTypesStep
+    <EventTypes
       applications={currBundle.children as readonly Facet[]}
-      bundle={currBundle}
-      setValues={(events) => {
+      currBundle={currBundle}
+      selectedEvents={value}
+      setSelectedEvents={(events) => {
         input.onChange({
           ...input.value,
           [currBundle?.displayName]: {
@@ -167,7 +168,6 @@ const SelectableTable = (props) => {
           },
         });
       }}
-      values={{ events: value }}
     />
   ) : (
     <Bullseye>
