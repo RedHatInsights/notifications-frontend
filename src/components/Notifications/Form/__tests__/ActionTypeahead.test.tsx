@@ -1,4 +1,9 @@
-import { render, screen, within } from '@testing-library/react';
+import {
+  render,
+  screen,
+  waitForElementToBeRemoved,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
@@ -188,8 +193,10 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
 
     await userEvent.click(screen.getByRole('button'));
     await waitForAsyncEvents();
-    await userEvent.click(screen.getAllByRole('option')[0]);
-    await waitForAsyncEvents();
+    const options = screen.getAllByRole('option');
+    await userEvent.click(options[0]);
+    await waitForElementToBeRemoved(() => screen.queryAllByRole('option'));
+
     expect(screen.queryByRole('option')).not.toBeInTheDocument();
   });
 
