@@ -1,7 +1,7 @@
 import awesomeDebouncePromise from 'awesome-debounce-promise';
 import { getEndpoints } from '../../../api/helpers/integrations/endpoints-helper';
 
-const debouncePromise = (
+export const debouncePromise = (
   asyncFunction,
   debounceTime = 250,
   options = { onlyResolvesLast: false }
