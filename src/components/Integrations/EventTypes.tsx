@@ -47,7 +47,7 @@ interface EventTypeFilters {
   filterApplicationId?: string[];
 }
 
-interface RepositoryDetailProps {
+interface EventTypesProps {
   selectedEvents?: readonly EventType[];
   setSelectedEvents?: React.Dispatch<
     React.SetStateAction<EventType[] | undefined>
@@ -56,7 +56,7 @@ interface RepositoryDetailProps {
   applications?: readonly Facet[];
 }
 
-const EventTypes: React.FC<RepositoryDetailProps> = ({
+const EventTypes: React.FC<EventTypesProps> = ({
   selectedEvents,
   setSelectedEvents,
   currBundle,
@@ -186,6 +186,7 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
           }
         >
           <DataViewToolbar
+            aria-label="Events type top toolbar"
             ouiaId="LayoutExampleHeader"
             clearAllFilters={() => {
               fetchNotifications(
@@ -199,6 +200,7 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
             }}
             bulkSelect={
               <BulkSelect
+                aria-label="Event types bulk select"
                 canSelectAll
                 pageCount={response.data?.length || 0}
                 totalCount={response.meta?.count}
@@ -216,6 +218,7 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
             }
             filters={
               <DataViewFilters
+                aria-label="Event types filters"
                 onChange={(_e, values) => {
                   if (
                     values.filterEventFilterName !==
@@ -242,11 +245,13 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
                 values={filters}
               >
                 <DataViewTextFilter
+                  aria-label="Filter by event type"
                   filterId="filterEventFilterName"
                   title="Event type"
                   placeholder="Filter by event type"
                 />
                 <DataViewCheckboxFilter
+                  aria-label="Filter by event Service"
                   filterId="filterApplicationId"
                   title="Service"
                   placeholder="Filter by service"
@@ -261,6 +266,7 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
             }
             pagination={
               <Pagination
+                aria-label="Event types top pagination"
                 isCompact
                 perPageOptions={perPageOptions}
                 itemCount={response.meta?.count}
@@ -290,11 +296,11 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
               />
             }
           />
-          <Table variant={'compact'}>
+          <Table variant={'compact'} aria-label="Event types table">
             {loading ? (
               <SkeletonTableHead columns={['Event type', 'Service']} />
             ) : (
-              <Thead>
+              <Thead aria-label="Event types table head">
                 <Tr>
                   <Th screenReaderText="Row selection" />
                   <Th screenReaderText="Row expansion" />
@@ -308,8 +314,18 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
             ) : (
               response.data?.map((row: EventType, index) => (
                 <Tbody key={index}>
-                  <Tr isContentExpanded={isEventExpanded(row)}>
+                  <Tr
+                    aria-label={`Event type ${row.id}`}
+                    isContentExpanded={isEventExpanded(row)}
+                  >
                     <Td
+                      aria-label={
+                        row.description
+                          ? `Expandable row - ${
+                              isEventExpanded(row) ? 'expanded' : 'collapsed'
+                            }`
+                          : 'Non expandable row'
+                      }
                       expand={
                         row.description
                           ? {
@@ -323,6 +339,11 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
                       }
                     />
                     <Td
+                      aria-label={`Selectable row - ${
+                        selected.find(({ id }) => id === row.id)
+                          ? 'selected'
+                          : 'not selected'
+                      }`}
                       select={{
                         rowIndex: index,
                         onSelect: (_event, isSelecting) =>
@@ -334,8 +355,11 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
                     <Td dataLabel="service">{row.eventTypeDisplayName}</Td>
                   </Tr>
                   {row.description ? (
-                    <Tr isExpanded={isEventExpanded(row)}>
-                      <Td dataLabel="Repo detail 2" colSpan={4}>
+                    <Tr
+                      aria-label="Event type description"
+                      isExpanded={isEventExpanded(row)}
+                    >
+                      <Td dataLabel="Event type description" colSpan={4}>
                         <ExpandableRowContent>
                           {row.description}
                         </ExpandableRowContent>
@@ -347,9 +371,11 @@ const EventTypes: React.FC<RepositoryDetailProps> = ({
             )}
           </Table>
           <DataViewToolbar
-            ouiaId="LayoutExampleFooter"
+            ouiaId="EventTypesFooter"
+            aria-label="Event types footer"
             pagination={
               <Pagination
+                aria-label="Event types footer pagination"
                 perPageOptions={perPageOptions}
                 itemCount={response.meta?.count}
                 page={page}
