@@ -25,6 +25,7 @@ export const UserIntegrationType = {
   TEAMS: IntegrationType.TEAMS,
   GOOGLE_CHAT: IntegrationType.GOOGLE_CHAT,
   PAGERDUTY: IntegrationType.PAGERDUTY,
+  EMAIL: IntegrationType.EMAIL_SUBSCRIPTION,
 } as const;
 
 export enum IntegrationCategory {

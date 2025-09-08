@@ -6,7 +6,11 @@ import {
   DescriptionListTerm,
   Icon,
 } from '@patternfly/react-core';
-import { IntegrationIcon, IntegrationType } from '../../types/Integration';
+import {
+  IntegrationCategory,
+  IntegrationIcon,
+  IntegrationType,
+} from '../../types/Integration';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { IntegrationRow } from './Table';
 import Config, { defaultIconList } from '../../config/Config';
@@ -17,12 +21,28 @@ import {
   PagerDutyContent,
   SlackContent,
 } from './IntegrationDetailsContent';
-import { CheckCircleIcon, StopCircleIcon } from '@patternfly/react-icons';
+import {
+  CheckCircleIcon,
+  EnvelopeIcon,
+  StopCircleIcon,
+} from '@patternfly/react-icons';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
+  // Special case for Email integration - use PatternFly icon
+  if (type === IntegrationType.EMAIL_SUBSCRIPTION) {
+    return (
+      <EnvelopeIcon
+        width="16px"
+        height="16px"
+        className="pf-v5-u-mr-sm"
+        style={{ verticalAlign: 'middle' }}
+      />
+    );
+  }
+
   const allIcons = {
-    ...defaultIconList['Communications'],
-    ...defaultIconList['Reporting'],
+    ...defaultIconList[IntegrationCategory.COMMUNICATIONS],
+    ...defaultIconList[IntegrationCategory.REPORTING],
   };
   const integrationType: IntegrationIcon | undefined = Object.values(
     allIcons
