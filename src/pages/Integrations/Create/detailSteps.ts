@@ -255,7 +255,9 @@ export const detailSteps = (
         {
           component: componentTypes.PLAIN_TEXT,
           name: 'email-config-subtitle',
-          label: `${isEdit ? 'Edit' : 'Configure'} additional settings for your email integration.`,
+          label: `${
+            isEdit ? 'Edit' : 'Configure'
+          } additional settings for your email integration.`,
           variant: 'p',
         },
         // Add your custom email configuration fields here
@@ -264,7 +266,8 @@ export const detailSteps = (
           name: 'sender-email',
           type: 'email',
           label: 'Sender email address',
-          helperText: 'Email address that will appear as the sender of notifications',
+          helperText:
+            'Email address that will appear as the sender of notifications',
           isRequired: false,
         },
         {
