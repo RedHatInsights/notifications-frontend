@@ -260,24 +260,6 @@ export const detailSteps = (
           } additional settings for your email integration.`,
           variant: 'p',
         },
-        // Add your custom email configuration fields here
-        {
-          component: componentTypes.TEXT_FIELD,
-          name: 'sender-email',
-          type: 'email',
-          label: 'Sender email address',
-          helperText:
-            'Email address that will appear as the sender of notifications',
-          isRequired: false,
-        },
-        {
-          component: componentTypes.TEXT_FIELD,
-          name: 'subject-prefix',
-          type: 'text',
-          label: 'Subject prefix',
-          helperText: 'Optional prefix to add to all email subjects',
-          isRequired: false,
-        },
       ],
     },
 
