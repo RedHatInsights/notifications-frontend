@@ -65,7 +65,7 @@ describe('src/types/Integration', () => {
     expect(isUserIntegrationType(IntegrationType.WEBHOOK)).toBe(true);
     expect(isUserIntegrationType(IntegrationType.ANSIBLE)).toBe(true);
     expect(isUserIntegrationType(IntegrationType.EMAIL_SUBSCRIPTION)).toBe(
-      false
+      true
     );
     expect(isUserIntegrationType(IntegrationType.SPLUNK)).toBe(true);
     expect(isUserIntegrationType(IntegrationType.SLACK)).toBe(true);

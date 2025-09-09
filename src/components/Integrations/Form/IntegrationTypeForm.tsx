@@ -53,6 +53,8 @@ export const IntegrationTypeForm: React.FunctionComponent<
       return <IntegrationTypeHttpForm {...props} />;
     case IntegrationType.PAGERDUTY:
       return null;
+    case UserIntegrationType.EMAIL:
+      return null; // Email integrations don't need a configuration form
     default:
       assertNever(props.type);
   }
