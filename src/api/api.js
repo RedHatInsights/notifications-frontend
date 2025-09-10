@@ -10,6 +10,7 @@ import getBundleFacets from '@redhat-cloud-services/notifications-client/dist/No
 import getEventTypes from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetEventTypes';
 import getDrawerEntries from '@redhat-cloud-services/notifications-client/dist/DrawerResourceV1GetDrawerEntries';
 import updateNotificationReadStatus from '@redhat-cloud-services/notifications-client/dist/DrawerResourceV1UpdateNotificationReadStatus';
+import getApplications from '@redhat-cloud-services/notifications-client/dist/NotificationResourceV1GetApplicationsFacets';
 
 // Integrations endpoints
 import createEndpoint from '@redhat-cloud-services/integrations-client/dist/EndpointResourceV1CreateEndpoint';
@@ -22,7 +23,11 @@ import getTimePreference from '@redhat-cloud-services/notifications-client/dist/
 import putTimePreference from '@redhat-cloud-services/notifications-client/dist/OrgConfigResourceV1SaveDailyDigestTimePreference';
 
 import { APIFactory } from '@redhat-cloud-services/javascript-clients-shared';
-import { INTEGRATIONS_API_BASE, NOTIFICATIONS_API_BASE } from './constants';
+import {
+  INTEGRATIONS_API_BASE,
+  NOTIFICATIONS_API_BASE,
+  NOTIFICATIONS_v2_API_BASE,
+} from './constants';
 
 const axiosInstance = axios.create();
 
@@ -39,6 +44,15 @@ const notificationsApi = new APIFactory(
     getDrawerEntries,
     updateNotificationReadStatus,
     putTimePreference,
+    getApplications,
+  },
+  { axios: axiosInstance }
+);
+
+const v2NotificationsApi = new APIFactory(
+  NOTIFICATIONS_v2_API_BASE,
+  {
+    getEventTypes,
   },
   { axios: axiosInstance }
 );
@@ -61,4 +75,8 @@ export function getNotificationsApi() {
 
 export function getIntegrationsApi() {
   return integrationsApi;
+}
+
+export function getV2NotificationsApi() {
+  return v2NotificationsApi;
 }
