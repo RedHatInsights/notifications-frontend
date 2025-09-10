@@ -67,9 +67,9 @@ const EventTypes: React.FC<EventTypesProps> = ({
     meta?: { count: number };
     data?: EventType[];
   }>({});
-  const [expanded, SetExpanded] = useState<string[]>([]);
+  const [expanded, setExpanded] = useState<string[]>([]);
   const setEventExpanded = (event: EventType, isExpanding = true) =>
-    SetExpanded((prevExpanded) => {
+    setExpanded((prevExpanded) => {
       const otherExpanded = prevExpanded.filter((r) => r !== event.id);
       return isExpanding ? [...otherExpanded, event.id] : otherExpanded;
     });
