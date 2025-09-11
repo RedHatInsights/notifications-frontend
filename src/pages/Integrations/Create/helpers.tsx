@@ -2,9 +2,7 @@ import React from 'react';
 import {
   IntegrationIcon,
   IntegrationIconTypes,
-  IntegrationType,
 } from '../../../types/Integration';
-import { EnvelopeIcon } from '@patternfly/react-icons';
 
 export const INTEGRATION_TYPE = 'type';
 export const EVENT_TYPES_TABLE = 'event-types-table';
@@ -29,14 +27,6 @@ export const TABLE_TOOLBAR = 'table-toolbar';
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>
   (name: string): React.FunctionComponent | null => {
-    // Special case for Email integration - use PatternFly icon
-    if (name === IntegrationType.EMAIL_SUBSCRIPTION) {
-      const EmailIcon = () => (
-        <EnvelopeIcon className="src-c-wizard__icon pf-v5-u-mb-sm" />
-      );
-      return EmailIcon;
-    }
-
     if (!integrationTypes) {
       return null;
     }

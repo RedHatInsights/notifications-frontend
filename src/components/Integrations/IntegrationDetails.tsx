@@ -21,25 +21,9 @@ import {
   PagerDutyContent,
   SlackContent,
 } from './IntegrationDetailsContent';
-import {
-  CheckCircleIcon,
-  EnvelopeIcon,
-  StopCircleIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon, StopCircleIcon } from '@patternfly/react-icons';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
-  // Special case for Email integration - use PatternFly icon
-  if (type === IntegrationType.EMAIL_SUBSCRIPTION) {
-    return (
-      <EnvelopeIcon
-        width="16px"
-        height="16px"
-        className="pf-v5-u-mr-sm"
-        style={{ verticalAlign: 'middle' }}
-      />
-    );
-  }
-
   const allIcons = {
     ...defaultIconList[IntegrationCategory.COMMUNICATIONS],
     ...defaultIconList[IntegrationCategory.REPORTING],
