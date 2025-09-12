@@ -14,7 +14,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
     expect(result.type).toEqual('text/csv');
   });
 
-  it('has 7 columns', () => {
+  it('has 8 columns', () => {
     const result = new IntegrationExporterCsv().export([
       {
         id: '12345',
@@ -36,7 +36,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
         try {
           const text = (reader.result as string).split('\r');
           expect(text[0]).toEqual(
-            'id,name,isEnabled,type,secretToken,status,serverErrors'
+            'id,name,isEnabled,type,status,serverErrors,eventTypes,secretToken'
           );
           done();
         } catch (ex) {

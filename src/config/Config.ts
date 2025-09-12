@@ -127,6 +127,11 @@ export const sortedIntegrationList = (
 
 export const defaultIconList = {
   [IntegrationCategory.COMMUNICATIONS]: <IntegrationIconTypes>{
+    [UserIntegrationType.EMAIL]: <IntegrationIcon>{
+      name: IntegrationType.EMAIL_SUBSCRIPTION,
+      product_name: 'Email',
+      icon_url: '/apps/frontend-assets/patternfly-icons/mail.svg',
+    },
     [UserIntegrationType.GOOGLE_CHAT]: <IntegrationIcon>{
       name: IntegrationType.GOOGLE_CHAT,
       product_name: 'Google Chat',
@@ -170,6 +175,7 @@ export const defaultIconList = {
 
 const defaultIntegrationList = {
   [IntegrationCategory.COMMUNICATIONS]: sortedIntegrationList([
+    UserIntegrationType.EMAIL,
     UserIntegrationType.GOOGLE_CHAT,
     UserIntegrationType.TEAMS,
     UserIntegrationType.SLACK,
@@ -185,6 +191,7 @@ const defaultIntegrationList = {
   ]),
   all: sortedIntegrationList([
     UserIntegrationType.ANSIBLE,
+    UserIntegrationType.EMAIL,
     UserIntegrationType.GOOGLE_CHAT,
     UserIntegrationType.PAGERDUTY,
     UserIntegrationType.TEAMS,

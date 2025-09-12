@@ -5,6 +5,7 @@ import {
 import {
   CARD_SELECT,
   DETAILS,
+  EMAIL_DETAILS,
   GOOGLE_CHAT_DETAILS,
   INTEGRATION_TYPE,
   PAGERDUTY_DETAILS,
@@ -62,6 +63,7 @@ export const integrationTypeStep = (
   nextStep: {
     when: INTEGRATION_TYPE,
     stepMapper: {
+      [IntegrationType.EMAIL_SUBSCRIPTION]: EMAIL_DETAILS,
       [IntegrationType.SLACK]: SLACK_DETAILS,
       [IntegrationType.GOOGLE_CHAT]: GOOGLE_CHAT_DETAILS,
       [IntegrationType.TEAMS]: TEAMS_DETAILS,

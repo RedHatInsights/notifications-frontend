@@ -4,6 +4,8 @@ import {
 } from '@data-driven-forms/react-form-renderer';
 import {
   DETAILS,
+  EMAIL_CONFIG,
+  EMAIL_DETAILS,
   EVENT_TYPES,
   GOOGLE_CHAT_DETAILS,
   INLINE_ALERT,
@@ -198,6 +200,67 @@ export const detailSteps = (
       name: SLACK_DETAILS,
       nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
       fields: commonFields(true, isEdit, intl),
+    },
+
+    // COMMUNICATIONS - EMAIL
+    {
+      title: title,
+      name: EMAIL_DETAILS,
+      nextStep: EMAIL_CONFIG,
+      fields: [
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'integration-details-title',
+          label: `${isEdit ? 'Edit' : 'Enter'} integration details`,
+          variant: 'h3',
+        },
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'integration-details-subtitle',
+          label: `${isEdit ? 'Edit' : 'Enter'} the details ${
+            isEdit ? 'of' : 'for'
+          } your email integration.`,
+          variant: 'p',
+        },
+        {
+          component: componentTypes.TEXT_FIELD,
+          name: 'name',
+          type: 'text',
+          label: 'Integration name',
+          isRequired: true,
+          validate: [
+            (value, { id }) =>
+              asyncValidatorDebouncedWrapper(intl)(value, id, intl),
+            {
+              type: validatorTypes.REQUIRED,
+            },
+          ],
+          resolveProps: validated,
+        },
+      ],
+    },
+
+    // COMMUNICATIONS - EMAIL CONFIG
+    {
+      title: 'Configure email settings',
+      name: EMAIL_CONFIG,
+      nextStep: isBehaviorGroupsEnabled ? EVENT_TYPES : REVIEW,
+      fields: [
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'email-config-title',
+          label: `${isEdit ? 'Edit' : 'Configure'} email settings`,
+          variant: 'h3',
+        },
+        {
+          component: componentTypes.PLAIN_TEXT,
+          name: 'email-config-subtitle',
+          label: `${
+            isEdit ? 'Edit' : 'Configure'
+          } additional settings for your email integration.`,
+          variant: 'p',
+        },
+      ],
     },
 
     // COMMUNICATIONS - GOOGLE CHAT

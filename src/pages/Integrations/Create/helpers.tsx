@@ -13,6 +13,8 @@ export const TEAMS_DETAILS = 'teams-details';
 export const SPLUNK_DETAILS = 'splunk-details';
 export const SERVICE_NOW_DETAILS = 'service-now-details';
 export const PAGERDUTY_DETAILS = 'pagerduty-details';
+export const EMAIL_DETAILS = 'email-details';
+export const EMAIL_CONFIG = 'email-config';
 export const DETAILS = 'details';
 
 export const EVENT_TYPES = 'event-types';
