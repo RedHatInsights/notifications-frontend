@@ -75,7 +75,10 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                         {props.menuItems.map((item) => (
                           <MenuItem
                             key={item.key}
-                            onClick={item.onClick}
+                            onClick={() => {
+                              item.onClick();
+                              setOpen(false);
+                            }}
                             isDisabled={item.isDisabled}
                           >
                             {item.label}
