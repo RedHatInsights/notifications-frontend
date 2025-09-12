@@ -47,6 +47,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<
           variant={ButtonVariant.secondary}
           onClick={onBack}
           isDisabled={wizardContext.activeStep.id === 0 || props.isLoading}
+          className="pf-v5-u-ml-xs"
         >
           Back
         </Button>
