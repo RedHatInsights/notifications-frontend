@@ -160,12 +160,16 @@ const SelectableTable = (props) => {
       applications={currBundle.children as readonly Facet[]}
       currBundle={currBundle}
       selectedEvents={value}
-      setSelectedEvents={(events) => {
+      setSelectedEvents={(events = []) => {
         input.onChange({
           ...input.value,
-          [currBundle?.displayName]: {
-            ...events,
-          },
+          [currBundle?.displayName]: (events as EventType[]).reduce(
+            (acc, curr) => ({
+              ...acc,
+              [curr.id]: curr,
+            }),
+            {}
+          ),
         });
       }}
     />
