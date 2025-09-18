@@ -11,8 +11,8 @@ export const getRbacGroupsAction = (params: GetGroupsParams) => {
   return Operations.ListGroups.actionCreator({
     limit: params.limit,
     offset: params.offset,
-    platformDefault: false,
-    adminDefault: false,
+    // Include all groups (default and custom) like the Red Hat Console
+    // Removed platformDefault: false and adminDefault: false filters
   });
 };
 

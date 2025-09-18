@@ -3,6 +3,10 @@ import { createContext, useContext } from 'react';
 export interface RbacGroup {
   id: string;
   name: string;
+  principalCount?: number;
+  admin_default?: boolean;
+  platform_default?: boolean;
+  system?: boolean;
 }
 
 export interface RbacGroupContext {
