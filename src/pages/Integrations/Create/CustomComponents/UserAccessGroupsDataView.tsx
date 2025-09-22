@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   DataView,
   DataViewTextFilter,
@@ -60,6 +60,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
   const { query } = useClient();
+  const [isPopoverVisible, setPopoverVisible] = React.useState(false);
+  const popoverRootRef = useRef<HTMLSpanElement>(null);
 
   // Drawer state
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
@@ -203,27 +205,16 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
       // Add visual indicator for default groups
       const getGroupDisplayName = (group) => {
         if (group.admin_default) {
-          return `${group.name} (Default admin access)`;
+          return `${group.name}`;
         }
         if (group.platform_default) {
-          return `${group.name} (Custom default access)`;
+          return `${group.name}`;
         }
         return group.name;
       };
 
       // Determine if this is a default group that should have a popover
       const isDefaultGroup = group.admin_default || group.platform_default;
-
-      // Get popover content for default groups
-      const getPopoverContent = (group) => {
-        if (group.admin_default) {
-          return 'This is a system default group for admin access. All organization administrators are automatically included in this group.';
-        }
-        if (group.platform_default) {
-          return 'This is a custom default access group created by your organization. Members are managed separately.';
-        }
-        return '';
-      };
 
       return {
         row: [
@@ -252,12 +243,19 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             {isDefaultGroup && (
               <Popover
                 position="right"
-                bodyContent={getPopoverContent(group)}
-                aria-label="Group information"
+                isVisible={isPopoverVisible}
+                shouldClose={() => setPopoverVisible(false)}
+                bodyContent={
+                  group.admin_default
+                    ? 'This is a system default group for admin access. All organization administrators are automatically included in this group.'
+                    : 'This is a custom default access group created by your organization. Members are managed separately.'
+                }
+                aria-label="user-group-popover"
+                hideOnOutsideClick
+                appendTo={popoverRootRef.current || undefined}
               >
                 <OutlinedQuestionCircleIcon
-                  className="pf-v6-u-color-300 pf-v6-u-cursor-pointer pf-v6-u-ml-xs"
-                  style={{ cursor: 'pointer' }}
+                  onClick={() => setPopoverVisible(!isPopoverVisible)}
                 />
               </Popover>
             )}
@@ -284,7 +282,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
         },
       };
     });
-  }, [paginatedData, isSelected, onSelect, handleViewUsers]);
+  }, [paginatedData, isSelected, isPopoverVisible, onSelect, handleViewUsers]);
 
   const emptyState = (
     <EmptyState>
