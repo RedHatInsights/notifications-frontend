@@ -54,7 +54,7 @@ interface UserAccessGroupsDataViewProps {
 
 const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   name,
-  label = 'User Access Groups',
+  label,
   isRequired = true,
 }) => {
   const { input, meta } = useFieldApi({ name });
