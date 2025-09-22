@@ -17,12 +17,41 @@ const formatError = (error: any): string => {
 };
 
 export async function createEndpoint(
-  config: Endpoint,
+  config: Endpoint & { user_access_groups }, // Allow user_access_groups for email integrations
   notifications?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
   afterSubmit?: () => void
 ) {
   try {
-    await integrationsApi.createEndpoint(config);
+    // Handle email subscription integrations with special endpoint
+    if (config.type === 'email_subscription') {
+      const emailData = {
+        only_admins: false, // Default to false, could be made configurable
+        group_id: config.user_access_groups?.[0]?.id, // Use the first selected group's ID
+      };
+
+      // Use the email subscription specific API
+      const response = await fetch(
+        '/api/integrations/v1.0/endpoints/system/email_subscription',
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(emailData),
+        }
+      );
+
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(
+          `Failed to create email subscription: ${response.status} - ${error}`
+        );
+      }
+    } else {
+      // Use standard endpoint for other integrations
+      await integrationsApi.createEndpoint(config);
+    }
+
     notifications.addSuccessNotification(
       'Integration created',
       `The integration ${

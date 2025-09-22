@@ -8,13 +8,24 @@ import {
 } from '@patternfly/react-data-view';
 import { DataViewTable } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import {
+  Button,
   Checkbox,
+  Drawer,
+  DrawerActions,
+  DrawerCloseButton,
+  DrawerContent,
+  DrawerContentBody,
+  DrawerHead,
+  DrawerPanelContent,
   EmptyState,
   EmptyStateBody,
   Label,
   LabelGroup,
+  List,
+  ListItem,
   Pagination,
   Popover,
+  Spinner,
   Title,
 } from '@patternfly/react-core';
 import {
@@ -22,10 +33,12 @@ import {
   SkeletonTableHead,
 } from '@patternfly/react-component-groups';
 import { useFieldApi } from '@data-driven-forms/react-form-renderer';
+import { useClient } from 'react-fetching-library';
 import { perPageOptions } from '../../../../config/Config';
 import { useRbacGroups } from '../../../../app/rbac/RbacGroupContext';
 import { NotificationRbacGroupRecipient } from '../../../../types/Recipient';
-import { OutlinedQuestionCircleIcon } from '@patternfly/react-icons';
+import { OutlinedQuestionCircleIcon, UsersIcon } from '@patternfly/react-icons';
+import { Operations } from '../../../../generated/OpenapiRbac';
 
 const columns = [
   { label: '', key: 'select' }, // Checkbox column
@@ -46,6 +59,52 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
 }) => {
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
+  const { query } = useClient();
+
+  // Drawer state
+  const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
+  const [selectedGroup, setSelectedGroup] = React.useState<
+    (typeof userAccessGroups)[0] | null
+  >(null);
+  const [groupUsers, setGroupUsers] = React.useState<
+    Array<{ username: string }>
+  >([]);
+  const [isLoadingUsers, setIsLoadingUsers] = React.useState(false);
+
+  // Function to fetch and open drawer with user list
+  const handleViewUsers = React.useCallback(
+    async (group: (typeof userAccessGroups)[0]) => {
+      setSelectedGroup(group);
+      setIsDrawerOpen(true);
+      setIsLoadingUsers(true);
+      setGroupUsers([]);
+
+      try {
+        const response = await query(
+          Operations.GetPrincipalsFromGroup.actionCreator({ uuid: group.id })
+        );
+
+        if (response.payload?.type === 'PrincipalPagination') {
+          const principals = response.payload.value.data;
+          setGroupUsers(
+            principals.map((principal) => ({ username: principal.username }))
+          );
+        }
+      } catch (error) {
+        console.error('Failed to fetch group users:', error);
+        // Handle error - could set an error state here if needed
+      } finally {
+        setIsLoadingUsers(false);
+      }
+    },
+    [query]
+  );
+
+  const handleCloseDrawer = React.useCallback(() => {
+    setIsDrawerOpen(false);
+    setSelectedGroup(null);
+    setGroupUsers([]);
+  }, []);
 
   // Convert RBAC groups to enhanced format with user count and sort by priority
   const userAccessGroups = React.useMemo(() => {
@@ -203,19 +262,29 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               </Popover>
             )}
           </div>,
-          // Third column: User count or special text for default groups
-          group.admin_default
-            ? 'All org admins'
-            : group.platform_default
-            ? 'All'
-            : `${group.userCount} user${group.userCount !== 1 ? 's' : ''}`,
+          // Third column: User count with icon or special text for default groups
+          group.admin_default ? (
+            'All org admins'
+          ) : group.platform_default ? (
+            'All'
+          ) : (
+            <Button
+              variant="link"
+              isInline
+              className="pf-v6-u-display-flex pf-v6-u-align-items-center"
+              onClick={() => handleViewUsers(group)}
+              icon={<UsersIcon />}
+            >
+              View ({group.userCount}) user{group.userCount !== 1 ? 's' : ''}
+            </Button>
+          ),
         ],
         props: {
           key: group.id,
         },
       };
     });
-  }, [paginatedData, isSelected, onSelect]);
+  }, [paginatedData, isSelected, onSelect, handleViewUsers]);
 
   const emptyState = (
     <EmptyState>
@@ -241,106 +310,151 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
 
   return (
     <div>
-      <div className="pf-v6-c-form__group">
-        <div className="pf-v6-c-form__label">
-          <label className="pf-v6-c-form__label-text">
-            {label}
-            {isRequired && (
-              <span className="pf-v6-c-form__label-required"> *</span>
-            )}
-          </label>
-        </div>
-        <DataView
-          activeState={
-            isLoading
-              ? 'loading'
-              : filteredData.length === 0
-              ? 'empty'
-              : undefined
+      <Drawer isExpanded={isDrawerOpen} onExpand={() => setIsDrawerOpen(true)}>
+        <DrawerContent
+          panelContent={
+            <DrawerPanelContent>
+              <DrawerHead>
+                <Title headingLevel="h2" size="lg">
+                  {selectedGroup?.name}
+                </Title>
+                <DrawerActions>
+                  <DrawerCloseButton onClick={handleCloseDrawer} />
+                </DrawerActions>
+              </DrawerHead>
+              <div className="pf-v6-u-p-md">
+                <Title headingLevel="h3" size="md" className="pf-v6-u-mb-md">
+                  Users
+                </Title>
+                {isLoadingUsers ? (
+                  <div className="pf-v6-u-text-align-center pf-v6-u-p-lg">
+                    <Spinner size="lg" />
+                    <div className="pf-v6-u-mt-sm">Loading users...</div>
+                  </div>
+                ) : groupUsers.length > 0 ? (
+                  <List isBordered isPlain>
+                    {groupUsers.map((user, index) => (
+                      <ListItem key={index}>{user.username}</ListItem>
+                    ))}
+                  </List>
+                ) : (
+                  <EmptyState>
+                    <Title headingLevel="h4">No users found</Title>
+                    <EmptyStateBody>
+                      This group currently has no users assigned.
+                    </EmptyStateBody>
+                  </EmptyState>
+                )}
+              </div>
+            </DrawerPanelContent>
           }
         >
-          <DataViewToolbar
-            clearAllFilters={searchTerm ? () => setSearchTerm('') : undefined}
-            filters={
-              <DataViewTextFilter
-                filterId="filterGroupName"
-                title="Group name"
-                placeholder="Filter by group name..."
-                value={searchTerm}
-                onChange={(_event, value) => setSearchTerm(value)}
-                onClear={() => setSearchTerm('')}
-              />
-            }
-            pagination={
-              <Pagination
-                perPageOptions={perPageOptions}
-                itemCount={filteredData.length}
-                {...pagination}
-              />
-            }
-            actions={undefined}
-          />
-
-          {selected.length > 0 && (
-            <div className="pf-v6-u-mb-md pf-v6-u-mt-sm">
-              <LabelGroup
-                categoryName="Selected groups"
-                numLabels={10}
-                isClosable
-                className="pf-v6-u-mb-sm"
+          <DrawerContentBody>
+            <div className="pf-v6-c-form__group">
+              <div className="pf-v6-c-form__label">
+                <label className="pf-v6-c-form__label-text">
+                  {label}
+                  {isRequired && (
+                    <span className="pf-v6-c-form__label-required"> *</span>
+                  )}
+                </label>
+              </div>
+              <DataView
+                activeState={
+                  isLoading
+                    ? 'loading'
+                    : filteredData.length === 0
+                    ? 'empty'
+                    : undefined
+                }
               >
-                {selected.map((group) => (
-                  <Label
-                    key={group.id}
-                    onClose={() => onSelect(false, group)}
-                    closeBtnAriaLabel={`Remove ${group.name}`}
-                    variant="filled"
-                    color="grey"
-                    isCompact
-                  >
-                    {group.name}
-                  </Label>
-                ))}
-              </LabelGroup>
+                <DataViewToolbar
+                  clearAllFilters={
+                    searchTerm ? () => setSearchTerm('') : undefined
+                  }
+                  filters={
+                    <DataViewTextFilter
+                      filterId="filterGroupName"
+                      title="Group name"
+                      placeholder="Filter by group name..."
+                      value={searchTerm}
+                      onChange={(_event, value) => setSearchTerm(value)}
+                      onClear={() => setSearchTerm('')}
+                    />
+                  }
+                  pagination={
+                    <Pagination
+                      perPageOptions={perPageOptions}
+                      itemCount={filteredData.length}
+                      {...pagination}
+                    />
+                  }
+                  actions={undefined}
+                />
+
+                {selected.length > 0 && (
+                  <div className="pf-v6-u-mb-md pf-v6-u-mt-sm">
+                    <LabelGroup
+                      categoryName="Selected groups"
+                      numLabels={10}
+                      isClosable
+                      className="pf-v6-u-mb-sm"
+                    >
+                      {selected.map((group) => (
+                        <Label
+                          key={group.id}
+                          onClose={() => onSelect(false, group)}
+                          closeBtnAriaLabel={`Remove ${group.name}`}
+                          variant="filled"
+                          color="grey"
+                          isCompact
+                        >
+                          {group.name}
+                        </Label>
+                      ))}
+                    </LabelGroup>
+                  </div>
+                )}
+
+                <DataViewTable
+                  aria-label="User Access Groups"
+                  variant="compact"
+                  columns={columns.map((column, index) => ({
+                    cell: column.label,
+                    props: {
+                      width: index === 0 ? 10 : index === 1 ? 60 : 30,
+                      ...(index === 0 && { modifier: 'fitContent' }),
+                    },
+                  }))}
+                  rows={rows}
+                  headStates={{ loading: loadingStateHeader }}
+                  bodyStates={{
+                    loading: loadingStateBody,
+                    empty: emptyState,
+                  }}
+                />
+
+                <DataViewToolbar
+                  pagination={
+                    <Pagination
+                      isCompact
+                      perPageOptions={perPageOptions}
+                      itemCount={filteredData.length}
+                      {...pagination}
+                    />
+                  }
+                />
+              </DataView>
+
+              {meta.error && (
+                <div className="pf-v6-c-form__helper-text pf-m-error">
+                  {meta.error}
+                </div>
+              )}
             </div>
-          )}
-
-          <DataViewTable
-            aria-label="User Access Groups"
-            variant="compact"
-            columns={columns.map((column, index) => ({
-              cell: column.label,
-              props: {
-                width: index === 0 ? 10 : index === 1 ? 60 : 30,
-                ...(index === 0 && { modifier: 'fitContent' }),
-              },
-            }))}
-            rows={rows}
-            headStates={{ loading: loadingStateHeader }}
-            bodyStates={{
-              loading: loadingStateBody,
-              empty: emptyState,
-            }}
-          />
-
-          <DataViewToolbar
-            pagination={
-              <Pagination
-                isCompact
-                perPageOptions={perPageOptions}
-                itemCount={filteredData.length}
-                {...pagination}
-              />
-            }
-          />
-        </DataView>
-
-        {meta.error && (
-          <div className="pf-v6-c-form__helper-text pf-m-error">
-            {meta.error}
-          </div>
-        )}
-      </div>
+          </DrawerContentBody>
+        </DrawerContent>
+      </Drawer>
     </div>
   );
 };

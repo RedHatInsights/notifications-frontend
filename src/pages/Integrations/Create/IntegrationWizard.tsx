@@ -94,6 +94,7 @@ export const IntegrationWizard: React.FunctionComponent<
             name,
             'secret-token': secret_token,
             'event-types-table': event_types,
+            'user-access-groups': userAccessGroups,
             severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
@@ -115,6 +116,11 @@ export const IntegrationWizard: React.FunctionComponent<
                   ? Object.values(event_types as object).flatMap(Object.keys)
                   : [],
               }),
+              // Add user access groups for email integrations
+              ...(type === 'email_subscription' &&
+                userAccessGroups && {
+                  user_access_groups: userAccessGroups,
+                }),
             };
             isEdit && template?.id
               ? updateEndpoint(
