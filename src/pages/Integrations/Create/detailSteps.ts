@@ -264,7 +264,7 @@ export const detailSteps = (
         {
           component: USER_ACCESS_GROUPS_DATAVIEW,
           name: 'user-access-groups',
-          label: 'User Access groups',
+          label: 'User Access Groups',
           isRequired: true,
           validate: [
             {

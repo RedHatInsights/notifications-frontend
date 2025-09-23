@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import { useIntl } from 'react-intl';
+import messages from '../../messages';
 import {
   DataView,
   DataViewTextFilter,
@@ -40,11 +42,7 @@ import { NotificationRbacGroupRecipient } from '../../../../types/Recipient';
 import { OutlinedQuestionCircleIcon, UsersIcon } from '@patternfly/react-icons';
 import { Operations } from '../../../../generated/OpenapiRbac';
 
-const columns = [
-  { label: '', key: 'select' }, // Checkbox column
-  { label: 'Name', key: 'name' },
-  { label: 'Users', key: 'users' },
-];
+// Column configuration will be dynamic based on intl
 
 interface UserAccessGroupsDataViewProps {
   name: string;
@@ -57,6 +55,16 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   label,
   isRequired = true,
 }) => {
+  const intl = useIntl();
+
+  const columns = React.useMemo(
+    () => [
+      { label: '', key: 'select' }, // Checkbox column
+      { label: intl.formatMessage(messages.nameColumnLabel), key: 'name' },
+      { label: intl.formatMessage(messages.usersColumnLabel), key: 'users' },
+    ],
+    [intl]
+  );
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
   const { query } = useClient();
@@ -226,7 +234,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             onChange={(event, checked) => {
               onSelect(checked, group);
             }}
-            aria-label={`Select ${getGroupDisplayName(group)}`}
+            aria-label={intl.formatMessage(messages.selectGroup, {
+              groupName: getGroupDisplayName(group),
+            })}
           />,
           // Second column: Group name with popover for default groups
           <div
@@ -247,8 +257,10 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 shouldClose={() => setPopoverVisible(false)}
                 bodyContent={
                   group.admin_default
-                    ? 'This is a system default group for admin access. All organization administrators are automatically included in this group.'
-                    : 'This is a custom default access group created by your organization. Members are managed separately.'
+                    ? intl.formatMessage(messages.adminDefaultGroupDescription)
+                    : intl.formatMessage(
+                        messages.platformDefaultGroupDescription
+                      )
                 }
                 aria-label="user-group-popover"
                 hideOnOutsideClick
@@ -262,9 +274,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
           </div>,
           // Third column: User count with icon or special text for default groups
           group.admin_default ? (
-            'All org admins'
+            intl.formatMessage(messages.allOrgAdmins)
           ) : group.platform_default ? (
-            'All'
+            intl.formatMessage(messages.allUsers)
           ) : (
             <Button
               variant="link"
@@ -273,7 +285,10 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               onClick={() => handleViewUsers(group)}
               icon={<UsersIcon />}
             >
-              View ({group.userCount}) user{group.userCount !== 1 ? 's' : ''}
+              {intl.formatMessage(messages.viewUsers)} ({group.userCount}){' '}
+              {group.userCount !== 1
+                ? intl.formatMessage(messages.userPlural)
+                : intl.formatMessage(messages.userSingular)}
             </Button>
           ),
         ],
@@ -282,19 +297,26 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
         },
       };
     });
-  }, [paginatedData, isSelected, isPopoverVisible, onSelect, handleViewUsers]);
+  }, [
+    paginatedData,
+    isSelected,
+    isPopoverVisible,
+    onSelect,
+    handleViewUsers,
+    intl,
+  ]);
 
   const emptyState = (
     <EmptyState>
       <Title headingLevel="h4">
         {searchTerm.trim()
-          ? 'No matching User Access Groups'
-          : 'No User Access Groups'}
+          ? intl.formatMessage(messages.noMatchingUserAccessGroups)
+          : intl.formatMessage(messages.noUserAccessGroups)}
       </Title>
       <EmptyStateBody>
         {searchTerm.trim()
-          ? 'No User Access Groups match the current search criteria. Try adjusting your search term.'
-          : 'No User Access Groups are available. Contact your administrator to set up access groups.'}
+          ? intl.formatMessage(messages.noMatchingGroupsMessage)
+          : intl.formatMessage(messages.noGroupsAvailableMessage)}
       </EmptyStateBody>
     </EmptyState>
   );
@@ -322,12 +344,14 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               </DrawerHead>
               <div className="pf-v6-u-p-md">
                 <Title headingLevel="h3" size="md" className="pf-v6-u-mb-md">
-                  Users
+                  {intl.formatMessage(messages.usersDrawerTitle)}
                 </Title>
                 {isLoadingUsers ? (
                   <div className="pf-v6-u-text-align-center pf-v6-u-p-lg">
                     <Spinner size="lg" />
-                    <div className="pf-v6-u-mt-sm">Loading users...</div>
+                    <div className="pf-v6-u-mt-sm">
+                      {intl.formatMessage(messages.loadingUsers)}
+                    </div>
                   </div>
                 ) : groupUsers.length > 0 ? (
                   <List isBordered isPlain>
@@ -337,9 +361,11 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                   </List>
                 ) : (
                   <EmptyState>
-                    <Title headingLevel="h4">No users found</Title>
+                    <Title headingLevel="h4">
+                      {intl.formatMessage(messages.noUsersFound)}
+                    </Title>
                     <EmptyStateBody>
-                      This group currently has no users assigned.
+                      {intl.formatMessage(messages.noUsersAssigned)}
                     </EmptyStateBody>
                   </EmptyState>
                 )}
@@ -373,8 +399,10 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                   filters={
                     <DataViewTextFilter
                       filterId="filterGroupName"
-                      title="Group name"
-                      placeholder="Filter by group name..."
+                      title={intl.formatMessage(messages.groupNameFilter)}
+                      placeholder={intl.formatMessage(
+                        messages.filterByGroupNamePlaceholder
+                      )}
                       value={searchTerm}
                       onChange={(_event, value) => setSearchTerm(value)}
                       onClear={() => setSearchTerm('')}
@@ -393,7 +421,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 {selected.length > 0 && (
                   <div className="pf-v6-u-mb-md pf-v6-u-mt-sm">
                     <LabelGroup
-                      categoryName="Selected groups"
+                      categoryName={intl.formatMessage(messages.selectedGroups)}
                       numLabels={10}
                       isClosable
                       className="pf-v6-u-mb-sm"
@@ -402,7 +430,10 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                         <Label
                           key={group.id}
                           onClose={() => onSelect(false, group)}
-                          closeBtnAriaLabel={`Remove ${group.name}`}
+                          closeBtnAriaLabel={intl.formatMessage(
+                            messages.removeGroup,
+                            { groupName: group.name }
+                          )}
                           variant="filled"
                           color="grey"
                           isCompact
@@ -415,7 +446,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 )}
 
                 <DataViewTable
-                  aria-label="User Access Groups"
+                  aria-label={intl.formatMessage(
+                    messages.userAccessGroupsTableLabel
+                  )}
                   variant="compact"
                   columns={columns.map((column, index) => ({
                     cell: column.label,
