@@ -11,8 +11,6 @@ export const getRbacGroupsAction = (params: GetGroupsParams) => {
   return Operations.ListGroups.actionCreator({
     limit: params.limit,
     offset: params.offset,
-    platformDefault: false,
-    adminDefault: false,
   });
 };
 

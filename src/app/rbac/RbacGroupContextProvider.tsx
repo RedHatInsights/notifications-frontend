@@ -31,6 +31,10 @@ const getPage = async (
       groups.payload.value.data.map((value) => ({
         id: value.uuid,
         name: value.name,
+        principalCount: value.principalCount ?? undefined,
+        admin_default: value.admin_default ?? undefined,
+        platform_default: value.platform_default ?? undefined,
+        system: value.system ?? undefined,
       })),
       hasMore,
     ];

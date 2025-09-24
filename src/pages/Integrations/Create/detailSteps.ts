@@ -15,6 +15,7 @@ import {
   SLACK_DETAILS,
   SPLUNK_DETAILS,
   TEAMS_DETAILS,
+  USER_ACCESS_GROUPS_DATAVIEW,
 } from './helpers';
 import { IntlShape } from 'react-intl';
 import { validated } from './Validated';
@@ -259,6 +260,23 @@ export const detailSteps = (
             isEdit ? 'Edit' : 'Configure'
           } additional settings for your email integration.`,
           variant: 'p',
+        },
+        {
+          component: USER_ACCESS_GROUPS_DATAVIEW,
+          name: 'user-access-groups',
+          label: 'User Access Groups',
+          isRequired: true,
+          validate: [
+            {
+              type: validatorTypes.REQUIRED,
+            },
+            (value) => {
+              if (!value || !Array.isArray(value) || value.length === 0) {
+                return 'Please select at least one User Access Group';
+              }
+              return undefined;
+            },
+          ],
         },
       ],
     },

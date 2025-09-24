@@ -23,6 +23,7 @@ export const CARD_SELECT = 'card-select';
 export const INLINE_ALERT = 'inline-alert';
 export const SELECTABLE_TABLE = 'selectable-table';
 export const TABLE_TOOLBAR = 'table-toolbar';
+export const USER_ACCESS_GROUPS_DATAVIEW = 'user-access-groups-dataview';
 
 export const iconMapper =
   (integrationTypes: IntegrationIconTypes | undefined) =>

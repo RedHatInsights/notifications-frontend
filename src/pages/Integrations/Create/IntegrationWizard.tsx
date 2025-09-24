@@ -6,6 +6,7 @@ import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
 import SelectableTable from './CustomComponents/SelectableTable';
+import UserAccessGroupsDataView from './CustomComponents/UserAccessGroupsDataView';
 import { schema } from './schema';
 import {
   CARD_SELECT,
@@ -14,6 +15,7 @@ import {
   REVIEW,
   SELECTABLE_TABLE,
   TABLE_TOOLBAR,
+  USER_ACCESS_GROUPS_DATAVIEW,
 } from './helpers';
 import { Integration } from '../../../types/Integration';
 import TableToolbar from './CustomComponents/TableToolbar';
@@ -61,6 +63,7 @@ export const IntegrationWizard: React.FunctionComponent<
     [INLINE_ALERT]: InlineAlert,
     [SELECTABLE_TABLE]: SelectableTable,
     [TABLE_TOOLBAR]: TableToolbar,
+    [USER_ACCESS_GROUPS_DATAVIEW]: UserAccessGroupsDataView,
   };
   const isBehaviorGroupsEnabled = useFlag(
     'platform.integrations.behavior-groups-move'
@@ -92,6 +95,7 @@ export const IntegrationWizard: React.FunctionComponent<
             name,
             'secret-token': secret_token,
             'event-types-table': event_types,
+            'user-access-groups': userAccessGroups,
             severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
@@ -113,6 +117,11 @@ export const IntegrationWizard: React.FunctionComponent<
                   ? Object.values(event_types as object).flatMap(Object.keys)
                   : [],
               }),
+              // Add user access groups for email integrations
+              ...(type === 'email_subscription' &&
+                userAccessGroups && {
+                  user_access_groups: userAccessGroups,
+                }),
             };
             isEdit && template?.id
               ? updateEndpoint(
