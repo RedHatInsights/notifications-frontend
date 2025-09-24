@@ -1,0 +1,14 @@
+.ddorg__pf4-component-mapper__select-toggle {
+  box-shadow: none;
+  border: 1px solid var(--pf-v6-global--BorderColor--100);
+}
+.pf-v6-c-menu-toggle.ddorg__pf4-component-mapper__select-toggle {
+  max-width: 300px;
+}
+.pf-v6-c-menu {
+  box-shadow: none;
+  &__list {
+    max-width: 300px;
+    box-shadow: var(--pf-v6-c-menu--BoxShadow);
+  }
+}

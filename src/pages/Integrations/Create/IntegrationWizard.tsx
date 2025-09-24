@@ -26,6 +26,7 @@ import { useNotification } from '../../../utils/AlertUtils';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import { useIntl } from 'react-intl';
+import './styling/integrations-wizard.scss';
 
 export interface IntegrationWizardProps {
   category: string;
