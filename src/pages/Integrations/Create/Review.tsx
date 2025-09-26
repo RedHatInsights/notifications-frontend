@@ -16,6 +16,7 @@ import {
 } from '../../../types/Integration';
 import './review.scss';
 import { EventType } from '../../../types/Notification';
+import { useRbacGroups } from '../../../app/rbac/RbacGroupContext';
 
 const getFields = (fields) =>
   fields.flatMap(({ fields, ...rest }) => {
@@ -25,7 +26,7 @@ const getFields = (fields) =>
     return { ...rest };
   });
 
-const valueMapper = (category, value) => {
+const valueMapper = (category, value, groups) => {
   return {
     [INTEGRATION_TYPE]: {
       value:
@@ -54,10 +55,25 @@ const valueMapper = (category, value) => {
         </Grid>
       ),
     },
+    'user-access-groups': {
+      value: (() => {
+        if (!value || !Array.isArray(value) || value.length === 0) {
+          return 'None selected';
+        }
+
+        const selectedGroups = groups.filter((group) =>
+          value.includes(group.id)
+        );
+
+        return selectedGroups.length > 0
+          ? selectedGroups.map((group) => group.name).join(', ')
+          : 'None selected';
+      })(),
+    },
   };
 };
 
-const mapFieldValues = (values, fields, category) => {
+const mapFieldValues = (values, fields, category, groups) => {
   const allFields = getFields(fields);
   return Object.entries(values)
     .filter(([, value]) => !!value)
@@ -76,7 +92,7 @@ const mapFieldValues = (values, fields, category) => {
               ? {
                   ...currField,
                   label: `${key} ${currField.label.toLowerCase()}`,
-                  ...(valueMapper(category, val)[currField?.name] || {
+                  ...(valueMapper(category, val, groups)[currField?.name] || {
                     val,
                   }),
                 }
@@ -85,7 +101,7 @@ const mapFieldValues = (values, fields, category) => {
         : {
             ...currField,
             label: isIntegrationType ? 'Integration type' : currField.label,
-            ...(valueMapper(category, value)[currField?.name] || {
+            ...(valueMapper(category, value, groups)[currField?.name] || {
               value,
             }),
           };
@@ -103,11 +119,13 @@ const Review: React.FunctionComponent<ReviewProps> = ({
   category,
 }: ReviewProps) => {
   const formOptions = useFormApi();
+  const { groups } = useRbacGroups();
   const values = formOptions.getState().values;
   const labelsWithValues = mapFieldValues(
     values,
     formOptions.schema.fields,
-    category
+    category,
+    groups
   );
 
   return (
