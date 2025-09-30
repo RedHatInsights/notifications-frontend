@@ -55,7 +55,10 @@ export const integrationTypeStep = (
             if (key === IntegrationType.PAGERDUTY && !isPagerDutyEnabled) {
               return false;
             }
-            if (key === IntegrationType.EMAIL_SUBSCRIPTION && !isEmailIntegrationEnabled) {
+            if (
+              key === IntegrationType.EMAIL_SUBSCRIPTION &&
+              !isEmailIntegrationEnabled
+            ) {
               return false;
             }
             return true;

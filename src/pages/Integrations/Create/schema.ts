@@ -29,7 +29,14 @@ export const schema = (
           IntegrationCategory.COMMUNICATIONS,
           IntegrationCategory.REPORTING,
         ].includes(category)
-          ? [integrationTypeStep(category, isEdit, isPagerDutyEnabled, isEmailIntegrationEnabled)]
+          ? [
+              integrationTypeStep(
+                category,
+                isEdit,
+                isPagerDutyEnabled,
+                isEmailIntegrationEnabled
+              ),
+            ]
           : []),
 
         // INTEGRATION DETAILS
