@@ -69,7 +69,9 @@ export const IntegrationWizard: React.FunctionComponent<
     'platform.integrations.behavior-groups-move'
   );
   const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
-  const isEmailIntegrationEnabled = useFlag('platform-notifications-email-integration');
+  const isEmailIntegrationEnabled = useFlag(
+    'platform.notifications.email.integration'
+  );
   const notifications = useNotification();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   React.useEffect(() => {

@@ -11,13 +11,17 @@ export const useIntegrations = (
 ): ReadonlyArray<UserIntegrationType> => {
   const insights = getInsights();
   const environment = getInsightsEnvironment(insights);
-  const isEmailIntegrationEnabled = useFlag('platform-notifications-email-integration');
+  const isEmailIntegrationEnabled = useFlag(
+    'platform.notifications.email.integration'
+  );
 
   const allIntegrations = getIntegrationActions(environment, category);
 
   // Filter out EMAIL integration if feature flag is disabled
   if (!isEmailIntegrationEnabled) {
-    return allIntegrations.filter(integration => integration !== UserIntegrationType.EMAIL);
+    return allIntegrations.filter(
+      (integration) => integration !== UserIntegrationType.EMAIL
+    );
   }
 
   return allIntegrations;
