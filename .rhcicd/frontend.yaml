@@ -17,6 +17,11 @@ objects:
       API:
         versions:
           - v1
+        specs:
+          - url: https://console.redhat.com/api/notifications/v1/openapi.json
+            bundleLabels: ["settings"]
+          - url: https://console.redhat.com/api/notifications/v2/openapi.json
+            bundleLabels: ["settings"]
       frontend:
         paths:
           - /apps/notifications
