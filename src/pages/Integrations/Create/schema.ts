@@ -10,6 +10,7 @@ export const schema = (
   isEdit,
   isBehaviorGroupsEnabled,
   isPagerDutyEnabled,
+  isEmailIntegrationEnabled,
   intl
 ) => ({
   fields: [
@@ -28,7 +29,7 @@ export const schema = (
           IntegrationCategory.COMMUNICATIONS,
           IntegrationCategory.REPORTING,
         ].includes(category)
-          ? [integrationTypeStep(category, isEdit, isPagerDutyEnabled)]
+          ? [integrationTypeStep(category, isEdit, isPagerDutyEnabled, isEmailIntegrationEnabled)]
           : []),
 
         // INTEGRATION DETAILS
