@@ -25,7 +25,8 @@ import {
 export const integrationTypeStep = (
   category: string,
   isEdit: boolean,
-  isPagerDutyEnabled: boolean
+  isPagerDutyEnabled: boolean,
+  isEmailIntegrationEnabled: boolean = true
 ) => ({
   title: `${isEdit ? '' : 'Select '}Integration type`,
   name: INTEGRATION_TYPE,
@@ -52,6 +53,12 @@ export const integrationTypeStep = (
         Object.fromEntries(
           Object.entries(defaultIconList[category]).filter(([key]) => {
             if (key === IntegrationType.PAGERDUTY && !isPagerDutyEnabled) {
+              return false;
+            }
+            if (
+              key === IntegrationType.EMAIL_SUBSCRIPTION &&
+              !isEmailIntegrationEnabled
+            ) {
               return false;
             }
             return true;
