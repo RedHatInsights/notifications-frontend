@@ -23,6 +23,7 @@ import { NotificationAppState } from '../../../store/types/NotificationAppState'
 import {
   IntegrationCategory,
   UserIntegration,
+  UserIntegrationType,
 } from '../../../types/Integration';
 import { integrationExporterFactory } from '../../../utils/exporters/Integration/Factory';
 import { CreatePage } from '../Create/CreatePage';
@@ -86,7 +87,20 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 
   const { addDangerNotification } = useNotification();
   const integrationFilter = useIntegrationFilter();
-  const userIntegrations = useIntegrations(category);
+  const allUserIntegrations = useIntegrations(category);
+  const isEmailIntegrationEnabled = useFlag(
+    'platform.notifications.email.integration'
+  );
+
+  // Filter out email integration if feature flag is disabled
+  const userIntegrations = React.useMemo(() => {
+    if (isEmailIntegrationEnabled === false) {
+      return allUserIntegrations.filter(
+        (integration) => integration !== UserIntegrationType.EMAIL
+      );
+    }
+    return allUserIntegrations;
+  }, [allUserIntegrations, isEmailIntegrationEnabled]);
   const integrationFilterBuilder = React.useCallback(
     (filters?: IntegrationFilters) => {
       const filter = new Filter();
