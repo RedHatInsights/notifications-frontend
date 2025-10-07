@@ -28,6 +28,7 @@ import { useNotification } from '../../../utils/AlertUtils';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import { useIntl } from 'react-intl';
+import { IntegrationType } from '../../../types/Integration';
 import './styling/integrations-wizard.scss';
 
 export interface IntegrationWizardProps {
@@ -46,6 +47,39 @@ export interface IntegrationWizardProps {
   closeModal: () => void;
   afterSubmit: () => void;
 }
+
+/**
+ * Maps integration data from the server format to the form field format
+ * This ensures that existing integration data is properly pre-populated in edit mode
+ */
+const mapIntegrationToFormFields = (template) => {
+  if (!template) {
+    return {};
+  }
+
+  const formValues = {
+    ...template,
+    // Map integration type field
+    [INTEGRATION_TYPE]: template.type,
+    // Keep the secret token mapping
+    'secret-token': template.secretToken,
+  };
+
+  // Handle email integration specific mapping
+  if (template.type === IntegrationType.EMAIL_SUBSCRIPTION) {
+    // Map groupId to user-access-groups array
+    if (template.groupId) {
+      formValues['user-access-groups'] = [template.groupId];
+    }
+  }
+
+  // Handle camel integrations (Slack, Teams, etc.)
+  if (template.extras?.channel) {
+    formValues.channel = template.extras.channel;
+  }
+
+  return formValues;
+};
 
 export const IntegrationWizard: React.FunctionComponent<
   IntegrationWizardProps
@@ -138,14 +172,7 @@ export const IntegrationWizard: React.FunctionComponent<
               : createEndpoint(data, notifications, afterSubmit);
             closeModal();
           }}
-          initialValues={
-            isEdit
-              ? {
-                  ...template,
-                  'secret-token': template?.secretToken,
-                }
-              : {}
-          }
+          initialValues={isEdit ? mapIntegrationToFormFields(template) : {}}
           onCancel={closeModal}
         >
           {(props) => <Pf4FormTemplate {...props} showFormControls={false} />}
