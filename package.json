@@ -26,7 +26,7 @@
     "date-fns": "2.22.1",
     "date-fns-tz": "2.0.0",
     "formik": "2.2.9",
-    "immer": "9.0.6",
+    "immer": "9.0.21",
     "in-browser-download": "2.0.0",
     "lodash": "4.17.21",
     "openapi2typescript": "0.2.0",
