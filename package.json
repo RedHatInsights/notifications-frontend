@@ -118,7 +118,7 @@
     "ts-node": "^10.9.2",
     "ts-patch": "^3.1.2",
     "typescript": "5.3.3",
-    "webpack-bundle-analyzer": "4.8.0"
+    "webpack-bundle-analyzer": "4.10.2"
   },
   "scripts": {
     "build": "fec build",
