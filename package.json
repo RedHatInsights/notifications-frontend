@@ -44,7 +44,7 @@
     "redux-logger": "3.0.6",
     "redux-promise-middleware": "5.1.1",
     "remark-gfm": "^4.0.0",
-    "timezones.json": "1.7.0",
+    "timezones.json": "1.7.2",
     "typesafe-actions": "5.1.0",
     "typestyle": "2.1.0",
     "whatwg-fetch": "^3.6.20",
