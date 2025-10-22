@@ -29,7 +29,7 @@
     "immer": "9.0.6",
     "in-browser-download": "2.0.0",
     "lodash": "4.17.21",
-    "openapi2typescript": "0.2.0",
+    "openapi2typescript": "0.2.1",
     "p-limit": "3.1.0",
     "react": "^18.0.0",
     "react-content-loader": "6.2.0",
