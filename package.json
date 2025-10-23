@@ -46,7 +46,7 @@
     "remark-gfm": "^4.0.0",
     "timezones.json": "1.7.0",
     "typesafe-actions": "5.1.0",
-    "typestyle": "2.1.0",
+    "typestyle": "2.4.0",
     "whatwg-fetch": "^3.6.20",
     "yup": "0.32.9",
     "zod": "3.22.4"
