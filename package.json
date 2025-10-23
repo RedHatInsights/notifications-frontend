@@ -104,7 +104,7 @@
     "karma-jasmine": "4.0.1",
     "karma-webpack": "5.0.0",
     "npm-run-all2": "5.0.0",
-    "openapi2typescript-cli": "0.7.0",
+    "openapi2typescript-cli": "0.7.1",
     "postcss": "8.3.3",
     "prop-types": "15.7.2",
     "react-test-renderer": "18.2.0",
