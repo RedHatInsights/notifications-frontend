@@ -103,7 +103,7 @@
     "karma-firefox-launcher": "2.1.3",
     "karma-jasmine": "4.0.1",
     "karma-webpack": "5.0.1",
-    "npm-run-all2": "5.0.0",
+    "npm-run-all2": "5.0.2",
     "openapi2typescript-cli": "0.7.0",
     "postcss": "8.3.3",
     "prop-types": "15.7.2",
