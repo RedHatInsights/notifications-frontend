@@ -49,7 +49,7 @@
     "typestyle": "2.1.0",
     "whatwg-fetch": "^3.6.20",
     "yup": "0.32.9",
-    "zod": "3.22.4"
+    "zod": "4.1.12"
   },
   "devDependencies": {
     "@babel/plugin-proposal-class-properties": "7.12.1",
