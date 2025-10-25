@@ -42,7 +42,7 @@
     "react-string-format": "0.1.0",
     "react-use": "17.4.3",
     "redux-logger": "3.0.6",
-    "redux-promise-middleware": "5.1.1",
+    "redux-promise-middleware": "6.2.0",
     "remark-gfm": "^4.0.0",
     "timezones.json": "1.7.0",
     "typesafe-actions": "5.1.0",
