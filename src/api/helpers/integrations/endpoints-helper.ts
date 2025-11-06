@@ -26,8 +26,11 @@ export async function createEndpoint(
     if (config.type === 'email_subscription') {
       const emailData = {
         only_admins: false, // Default to false, could be made configurable
-        group_id: config.user_access_groups?.[0]?.id, // Use the first selected group's ID
+        group_id: config.user_access_groups?.[0], // user_access_groups is already an array of IDs
       };
+
+      console.log('Email integration config:', config);
+      console.log('Email integration payload:', emailData);
 
       // Use the email subscription specific API
       const response = await fetch(
