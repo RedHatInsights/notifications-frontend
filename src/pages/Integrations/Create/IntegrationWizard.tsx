@@ -29,6 +29,7 @@ import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import { useIntl } from 'react-intl';
 import { IntegrationType } from '../../../types/Integration';
+import { useClient } from 'react-fetching-library';
 import './styling/integrations-wizard.scss';
 
 export interface IntegrationWizardProps {
@@ -107,6 +108,7 @@ export const IntegrationWizard: React.FunctionComponent<
     'platform.notifications.email.integration'
   );
   const notifications = useNotification();
+  const { query } = useClient();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   React.useEffect(() => {
     setWizardOpen(isOpen);
@@ -169,7 +171,7 @@ export const IntegrationWizard: React.FunctionComponent<
                   notifications,
                   afterSubmit
                 )
-              : createEndpoint(data, notifications, afterSubmit);
+              : createEndpoint(data, notifications, afterSubmit, query);
             closeModal();
           }}
           initialValues={isEdit ? mapIntegrationToFormFields(template) : {}}

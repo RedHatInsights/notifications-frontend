@@ -1,6 +1,9 @@
 import { Endpoint } from '@redhat-cloud-services/integrations-client/dist/types';
 import { getIntegrationsApi } from '../../api';
 import { AxiosRequestConfig } from 'axios';
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+// @ts-ignore
+import { Operations } from '../../generated/OpenapiIntegrations';
 
 const integrationsApi = getIntegrationsApi();
 
@@ -19,7 +22,8 @@ const formatError = (error: any): string => {
 export async function createEndpoint(
   config: Endpoint & { user_access_groups }, // Allow user_access_groups for email integrations
   notifications?: any, // eslint-disable-line @typescript-eslint/no-explicit-any
-  afterSubmit?: () => void
+  afterSubmit?: () => void,
+  query?: any // eslint-disable-line @typescript-eslint/no-explicit-any
 ) {
   try {
     // Handle email subscription integrations with special endpoint
@@ -32,23 +36,52 @@ export async function createEndpoint(
       console.log('Email integration config:', config);
       console.log('Email integration payload:', emailData);
 
-      // Use the email subscription specific API
-      const response = await fetch(
-        '/api/integrations/v1.0/endpoints/system/email_subscription',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(emailData),
-        }
-      );
+      if (query) {
+        // Use the generated OpenAPI client with react-fetching-library (proper way)
+        const action =
+          Operations.EndpointResource$v1GetOrCreateEmailSubscriptionEndpoint.actionCreator(
+            {
+              body: emailData,
+            }
+          );
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(
-          `Failed to create email subscription: ${response.status} - ${error}`
+        const result = await query(action);
+
+        if (result.error || result.payload?.type !== 'Endpoint') {
+          console.error('Email integration creation failed:', result);
+          throw new Error('Failed to create email subscription endpoint');
+        }
+
+        console.log(
+          'Email integration created successfully:',
+          result.payload.value
         );
+      } else {
+        // Fallback to manual fetch if query function not provided
+        const response = await fetch(
+          '/api/integrations/v1.0/endpoints/system/email_subscription',
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(emailData),
+          }
+        );
+
+        if (!response.ok) {
+          const error = await response.text();
+          console.error('Email integration creation failed:', {
+            status: response.status,
+            error: error,
+          });
+          throw new Error(
+            `Failed to create email subscription: ${response.status} - ${error}`
+          );
+        }
+
+        const responseData = await response.json();
+        console.log('Email integration created successfully:', responseData);
       }
     } else {
       // Use standard endpoint for other integrations
@@ -61,6 +94,7 @@ export async function createEndpoint(
         config.name ? `${config.name} ` : ''
       }was created successfully.`
     );
+    console.log('Calling afterSubmit to refresh list...');
     afterSubmit?.();
   } catch (e) {
     notifications.addDangerNotification(
