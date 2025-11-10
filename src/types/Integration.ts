@@ -5,7 +5,7 @@ import { UUID } from './Notification';
 // Value should always be type:sub_type or only type if doesn't use sub_types
 export enum IntegrationType {
   WEBHOOK = 'webhook',
-  EMAIL_SUBSCRIPTION = 'email_subscription',
+  EMAIL_SUBSCRIPTION = 'camel:email_subscription',
   SPLUNK = 'camel:splunk',
   SLACK = 'camel:slack',
   SERVICE_NOW = 'camel:servicenow',
