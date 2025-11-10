@@ -19,7 +19,7 @@
     "@redhat-cloud-services/types": "^1.0.23",
     "@unleash/proxy-client-react": "3.6.0",
     "axios": "0.27.2",
-    "camelcase": "5.3.1",
+    "camelcase": "9.0.0",
     "classnames": "2.2.6",
     "csstips": "1.2.0",
     "csx": "10.0.2",
