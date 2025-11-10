@@ -27,7 +27,7 @@ export async function createEndpoint(
 ) {
   try {
     // Handle email subscription integrations with special endpoint
-    if (config.type === 'email_subscription') {
+    if (config.sub_type === 'email_subscription') {
       const emailData = {
         only_admins: false, // Default to false, could be made configurable
         group_id: config.user_access_groups?.[0], // user_access_groups is already an array of IDs

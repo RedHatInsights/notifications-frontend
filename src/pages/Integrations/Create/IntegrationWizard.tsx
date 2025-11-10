@@ -158,7 +158,7 @@ export const IntegrationWizard: React.FunctionComponent<
                   : [],
               }),
               // Add user access groups for email integrations
-              ...(type === 'email_subscription' &&
+              ...(sub_type === 'email_subscription' &&
                 userAccessGroups && {
                   user_access_groups: userAccessGroups,
                 }),
