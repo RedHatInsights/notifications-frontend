@@ -467,12 +467,12 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                       <Alert
                         variant="info"
                         isInline
-                        title="Platform default group selected"
+                        title="Custom default access group selected"
                         className="pf-v6-u-mt-md"
                       >
-                        The platform default group includes all users in your
-                        organization. Additional group selections are not
-                        necessary.
+                        The custom default access group includes all users in
+                        your organization. Additional accessgroup selections are
+                        not necessary.
                       </Alert>
                     )}
                   </div>
