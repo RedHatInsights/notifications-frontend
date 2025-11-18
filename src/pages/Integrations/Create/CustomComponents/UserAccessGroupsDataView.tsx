@@ -10,6 +10,7 @@ import {
 } from '@patternfly/react-data-view';
 import { DataViewTable } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import {
+  Alert,
   Button,
   Checkbox,
   Drawer,
@@ -68,7 +69,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
   const { query } = useClient();
-  const [isPopoverVisible, setPopoverVisible] = React.useState(false);
+  const [visiblePopoverId, setVisiblePopoverId] = React.useState<string | null>(
+    null
+  );
   const popoverRootRef = useRef<HTMLSpanElement>(null);
 
   // Drawer state
@@ -133,15 +136,15 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
       ),
     }));
 
-    // Sort groups: admin_default first, then platform_default, then regular groups
+    // Sort groups: platform_default first, then admin_default, then regular groups
     return enhancedGroups.sort((a, b) => {
-      // Admin default groups go first
-      if (a.admin_default && !b.admin_default) return -1;
-      if (!a.admin_default && b.admin_default) return 1;
-
-      // Platform default groups go second
+      // Platform default groups go first
       if (a.platform_default && !b.platform_default) return -1;
       if (!a.platform_default && b.platform_default) return 1;
+
+      // Admin default groups go second
+      if (a.admin_default && !b.admin_default) return -1;
+      if (!a.admin_default && b.admin_default) return 1;
 
       // System groups go third
       if (a.system && !b.system) return -1;
@@ -266,8 +269,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             {isDefaultGroup && (
               <Popover
                 position="right"
-                isVisible={isPopoverVisible}
-                shouldClose={() => setPopoverVisible(false)}
+                isVisible={visiblePopoverId === group.id}
+                shouldClose={() => setVisiblePopoverId(null)}
                 bodyContent={
                   group.admin_default
                     ? intl.formatMessage(messages.adminDefaultGroupDescription)
@@ -280,7 +283,11 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 appendTo={popoverRootRef.current || undefined}
               >
                 <OutlinedQuestionCircleIcon
-                  onClick={() => setPopoverVisible(!isPopoverVisible)}
+                  onClick={() =>
+                    setVisiblePopoverId(
+                      visiblePopoverId === group.id ? null : group.id
+                    )
+                  }
                 />
               </Popover>
             )}
@@ -313,7 +320,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   }, [
     paginatedData,
     isSelected,
-    isPopoverVisible,
+    visiblePopoverId,
     onSelect,
     handleViewUsers,
     intl,
@@ -455,6 +462,19 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                         </Label>
                       ))}
                     </LabelGroup>
+
+                    {selected.some((group) => group.platform_default) && (
+                      <Alert
+                        variant="info"
+                        isInline
+                        title="Platform default group selected"
+                        className="pf-v6-u-mt-md"
+                      >
+                        The platform default group includes all users in your
+                        organization. Additional group selections are not
+                        necessary.
+                      </Alert>
+                    )}
                   </div>
                 )}
 
