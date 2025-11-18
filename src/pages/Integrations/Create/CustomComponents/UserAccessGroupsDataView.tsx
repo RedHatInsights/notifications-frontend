@@ -471,8 +471,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                         className="pf-v6-u-mt-md"
                       >
                         The custom default access group includes all users in
-                        your organization. Additional accessgroup selections are
-                        not necessary.
+                        your organization. Additional access group selections
+                        are not necessary.
                       </Alert>
                     )}
                   </div>
