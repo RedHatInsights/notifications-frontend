@@ -163,6 +163,19 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
 
   const { selected, isSelected, onSelect } = selection;
 
+  // Handler to clear all selections
+  const handleClearAll = React.useCallback(() => {
+    // Clear all selected items by deselecting them one by one
+    const itemsToDeselect = [...selected];
+    itemsToDeselect.forEach((group) => onSelect(false, group));
+
+    // Also directly update the form field
+    input.onChange([]);
+    if (input.onBlur) {
+      input.onBlur();
+    }
+  }, [selected, onSelect, input]);
+
   // Handle selection changes and trigger validation
   React.useEffect(() => {
     const selectedIds = selected.map((group) => group.id);
@@ -424,7 +437,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                       categoryName={intl.formatMessage(messages.selectedGroups)}
                       numLabels={10}
                       isClosable
-                      className="pf-v6-u-mb-sm"
+                      onClick={handleClearAll}
                     >
                       {selected.map((group) => (
                         <Label
