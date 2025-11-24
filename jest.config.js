@@ -1,4 +1,8 @@
-const transformIgnorePatterns = ['node_modules/(?!(uuid)/)'];
+const transformIgnorePatterns = [
+  'node_modules/(?!(uuid|@patternfly/react-tokens|@patternfly/react-data-view|@patternfly/react-core)/)',
+];
+
+
 
 /** @type {import('ts-jest').JestConfigWithTsJest} */
 module.exports = {
