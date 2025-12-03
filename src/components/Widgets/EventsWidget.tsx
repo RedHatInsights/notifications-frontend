@@ -88,29 +88,6 @@ const EventsWidget: React.FunctionComponent = () => {
     fetchNotifications(page, perPage);
   }, [fetchNotifications, page, perPage]);
 
-  const handlePageChange = useCallback(
-    (
-      event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-      newPage: number
-    ) => {
-      onSetPage(event, newPage);
-      fetchNotifications(newPage, perPage);
-    },
-    [onSetPage, fetchNotifications, perPage]
-  );
-
-  const handlePerPageChange = useCallback(
-    (
-      event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
-      newPerPage: number
-    ) => {
-      onPerPageSelect(event, newPerPage);
-      onSetPage(event, 1);
-      fetchNotifications(1, newPerPage);
-    },
-    [onPerPageSelect, onSetPage, fetchNotifications]
-  );
-
   const emptyState = useMemo(
     () => (
       <EmptyState
@@ -199,8 +176,8 @@ const EventsWidget: React.FunctionComponent = () => {
             itemCount={totalCount}
             page={page}
             perPage={perPage}
-            onSetPage={handlePageChange}
-            onPerPageSelect={handlePerPageChange}
+            onSetPage={onSetPage}
+            onPerPageSelect={onPerPageSelect}
           />
         }
       />
