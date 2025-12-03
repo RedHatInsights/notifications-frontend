@@ -1,14 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  Table,
-  TableVariant,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
-import {
   Button,
   ButtonVariant,
   EmptyState,
@@ -24,6 +15,10 @@ import {
   DataViewToolbar,
   useDataViewPagination,
 } from '@patternfly/react-data-view';
+import {
+  DataViewTable,
+  DataViewTh,
+} from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import {
   SkeletonTableBody,
   SkeletonTableHead,
@@ -147,17 +142,28 @@ const EventsWidget: React.FunctionComponent = () => {
     [intl]
   );
 
-  const loadingStateHeader = useMemo(
-    () => (
-      <SkeletonTableHead
-        columns={[
-          intl.formatMessage(messages.event),
-          intl.formatMessage(messages.service),
-          intl.formatMessage(messages.date),
-        ]}
-      />
-    ),
+  const columns: DataViewTh[] = useMemo(
+    () => [
+      intl.formatMessage(messages.event),
+      intl.formatMessage(messages.service),
+      intl.formatMessage(messages.date),
+    ],
     [intl]
+  );
+
+  const rows = useMemo(
+    () =>
+      notifications.map((event) => [
+        event.event_type,
+        `${event.application} - ${event.bundle}`,
+        <DateFormat key={event.id} date={event.created} />,
+      ]),
+    [notifications]
+  );
+
+  const loadingStateHeader = useMemo(
+    () => <SkeletonTableHead columns={columns} />,
+    [columns]
   );
 
   const loadingStateBody = useMemo(
@@ -171,44 +177,17 @@ const EventsWidget: React.FunctionComponent = () => {
         loading ? 'loading' : notifications.length === 0 ? 'empty' : undefined
       }
     >
-      <Table aria-label="Events widget table" variant={TableVariant.compact}>
-        {loading ? (
-          loadingStateHeader
-        ) : (
-          <Thead>
-            <Tr>
-              <Th>{intl.formatMessage(messages.event)}</Th>
-              <Th>{intl.formatMessage(messages.service)}</Th>
-              <Th>{intl.formatMessage(messages.date)}</Th>
-            </Tr>
-          </Thead>
-        )}
-        {loading ? (
-          loadingStateBody
-        ) : notifications.length === 0 ? (
-          <Tbody>
-            <Tr>
-              <Td colSpan={3}>{emptyState}</Td>
-            </Tr>
-          </Tbody>
-        ) : (
-          <Tbody>
-            {notifications.map((event) => (
-              <Tr key={event.id}>
-                <Td dataLabel={intl.formatMessage(messages.event)}>
-                  {event.event_type}
-                </Td>
-                <Td dataLabel={intl.formatMessage(messages.service)}>
-                  {event.application} - {event.bundle}
-                </Td>
-                <Td dataLabel={intl.formatMessage(messages.date)}>
-                  <DateFormat date={event.created} />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        )}
-      </Table>
+      <DataViewTable
+        aria-label="Events widget table"
+        variant="compact"
+        columns={columns}
+        rows={rows}
+        headStates={{ loading: loadingStateHeader }}
+        bodyStates={{
+          loading: loadingStateBody,
+          empty: emptyState,
+        }}
+      />
       <DataViewToolbar
         ouiaId="EventsWidgetFooter"
         aria-label="Events widget footer"
