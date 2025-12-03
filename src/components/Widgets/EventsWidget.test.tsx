@@ -6,33 +6,48 @@ import EventsWidget from './EventsWidget';
 const notifications = [
   {
     id: '1',
-    title: 'Policy triggered',
-    source: 'Policies - Red Hat Enterprise Linux',
-    created: '2 May 2023, 11:43 UTC',
+    event_type: 'Policy triggered',
+    application: 'Policies',
+    bundle: 'Red Hat Enterprise Linux',
+    read: false,
+    description: 'Policy triggered event',
+    created: '2023-05-02T11:43:00Z',
   },
   {
     id: '2',
-    title: 'New advisory',
-    source: 'Patch - Red Hat Enterprise Linux',
-    created: '2 May 2023, 11:43 UTC',
+    event_type: 'New advisory',
+    application: 'Patch',
+    bundle: 'Red Hat Enterprise Linux',
+    read: false,
+    description: 'New advisory event',
+    created: '2023-05-02T11:43:00Z',
   },
   {
     id: '3',
-    title: 'New recommendation',
-    source: 'Advisor - Red Hat Enterprise Linux',
-    created: '2 May 2023, 11:43 UTC',
+    event_type: 'New recommendation',
+    application: 'Advisor',
+    bundle: 'Red Hat Enterprise Linux',
+    read: false,
+    description: 'New recommendation event',
+    created: '2023-05-02T11:43:00Z',
   },
   {
     id: '4',
-    title: 'New advisory',
-    source: 'Patch - Red Hat Enterprise Linux',
-    created: '2 May 2023, 11:43 UTC',
+    event_type: 'New advisory',
+    application: 'Patch',
+    bundle: 'Red Hat Enterprise Linux',
+    read: false,
+    description: 'New advisory event',
+    created: '2023-05-02T11:43:00Z',
   },
   {
     id: '5',
-    title: 'New recommendation',
-    source: 'Advisor - Red Hat Enterprise Linux',
-    created: '2 May 2023, 11:43 UTC',
+    event_type: 'New recommendation',
+    application: 'Advisor',
+    bundle: 'Red Hat Enterprise Linux',
+    read: false,
+    description: 'New recommendation event',
+    created: '2023-05-02T11:43:00Z',
   },
 ];
 
@@ -46,6 +61,7 @@ describe('EventsWidget component', () => {
             json: () =>
               Promise.resolve({
                 data: [],
+                meta: { count: 0 },
               }),
           } as Response);
         })
@@ -72,6 +88,7 @@ describe('EventsWidget component', () => {
             json: () =>
               Promise.resolve({
                 data: notifications,
+                meta: { count: notifications.length },
               }),
           } as Response);
         })
@@ -84,6 +101,11 @@ describe('EventsWidget component', () => {
     expect(screen.getByText('Event')).toBeVisible();
     expect(screen.getByText('Service')).toBeVisible();
     expect(screen.getByText('Date')).toBeVisible();
+    // 1 header row + 5 data rows
     expect(screen.getAllByRole('row')).toHaveLength(6);
+    // Check that pagination is rendered (only bottom pagination)
+    expect(
+      screen.getByLabelText('Events widget footer pagination')
+    ).toBeVisible();
   });
 });

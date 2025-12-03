@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Table,
   TableVariant,
@@ -14,13 +14,24 @@ import {
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
+  Pagination,
   Stack,
   StackItem,
   Title,
 } from '@patternfly/react-core';
+import {
+  DataView,
+  DataViewToolbar,
+  useDataViewPagination,
+} from '@patternfly/react-data-view';
+import {
+  SkeletonTableBody,
+  SkeletonTableHead,
+} from '@patternfly/react-component-groups';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { useIntl } from 'react-intl';
 import messages from '../../properties/DefinedMessages';
+import { perPageOptions } from '../../config/Config';
 
 import './EventsWidget.scss';
 
@@ -49,54 +60,121 @@ const EmptyStateBellIcon: React.FunctionComponent = () => (
 const EventsWidget: React.FunctionComponent = () => {
   const intl = useIntl();
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const MAX_ROWS = 5;
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await fetch(
-        '/api/notifications/v1.0/notifications/events?limit=5'
-      );
-      const { data } = await response.json();
-      setNotifications(data);
-    } catch (error) {
-      console.error('Unable to get Notifications ', error);
-    }
-  };
+  const { page, perPage, onSetPage, onPerPageSelect } = useDataViewPagination({
+    perPage: 10,
+  });
+
+  const fetchNotifications = useCallback(
+    async (currentPage: number, currentPerPage: number) => {
+      setLoading(true);
+      try {
+        const offset = (currentPage - 1) * currentPerPage;
+        const response = await fetch(
+          `/api/notifications/v1.0/notifications/events?limit=${currentPerPage}&offset=${offset}`
+        );
+        const result = await response.json();
+        setNotifications(result.data || []);
+        setTotalCount(result.meta?.count || result.data?.length || 0);
+      } catch (error) {
+        console.error('Unable to get Notifications ', error);
+        setNotifications([]);
+        setTotalCount(0);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications(page, perPage);
+  }, [fetchNotifications, page, perPage]);
+
+  const handlePageChange = useCallback(
+    (
+      event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
+      newPage: number
+    ) => {
+      onSetPage(event, newPage);
+      fetchNotifications(newPage, perPage);
+    },
+    [onSetPage, fetchNotifications, perPage]
+  );
+
+  const handlePerPageChange = useCallback(
+    (
+      event: React.MouseEvent | React.KeyboardEvent | MouseEvent,
+      newPerPage: number
+    ) => {
+      onPerPageSelect(event, newPerPage);
+      onSetPage(event, 1);
+      fetchNotifications(1, newPerPage);
+    },
+    [onPerPageSelect, onSetPage, fetchNotifications]
+  );
+
+  const emptyState = useMemo(
+    () => (
+      <EmptyState
+        titleText={
+          <Title headingLevel="h4" size="lg">
+            {intl.formatMessage(messages.noFiredEventsTitle)}
+          </Title>
+        }
+        icon={EmptyStateBellIcon}
+        variant={EmptyStateVariant.full}
+      >
+        <EmptyStateBody>
+          <Stack>
+            <StackItem>
+              {intl.formatMessage(messages.noFiredEventsDescription)}
+            </StackItem>
+          </Stack>
+        </EmptyStateBody>
+        <Button
+          component="a"
+          variant={ButtonVariant.secondary}
+          className="pf-v5-u-mt-lg"
+          href="settings/notifications"
+        >
+          {intl.formatMessage(messages.manageEvents)}
+        </Button>
+      </EmptyState>
+    ),
+    [intl]
+  );
+
+  const loadingStateHeader = useMemo(
+    () => (
+      <SkeletonTableHead
+        columns={[
+          intl.formatMessage(messages.event),
+          intl.formatMessage(messages.service),
+          intl.formatMessage(messages.date),
+        ]}
+      />
+    ),
+    [intl]
+  );
+
+  const loadingStateBody = useMemo(
+    () => <SkeletonTableBody rowsCount={perPage} columnsCount={3} />,
+    [perPage]
+  );
 
   return (
-    <>
-      {notifications.length === 0 ? (
-        <EmptyState
-          titleText={
-            <Title headingLevel="h4" size="lg">
-              {intl.formatMessage(messages.noFiredEventsTitle)}
-            </Title>
-          }
-          icon={EmptyStateBellIcon}
-          variant={EmptyStateVariant.full}
-        >
-          <EmptyStateBody>
-            <Stack>
-              <StackItem>
-                {intl.formatMessage(messages.noFiredEventsDescription)}
-              </StackItem>
-            </Stack>
-          </EmptyStateBody>
-          <Button
-            component="a"
-            variant={ButtonVariant.secondary}
-            className="pf-v5-u-mt-lg"
-            href="settings/notifications"
-          >
-            {intl.formatMessage(messages.manageEvents)}
-          </Button>
-        </EmptyState>
-      ) : (
-        <Table aria-label="Events widget table" variant={TableVariant.compact}>
+    <DataView
+      activeState={
+        loading ? 'loading' : notifications.length === 0 ? 'empty' : undefined
+      }
+    >
+      <Table aria-label="Events widget table" variant={TableVariant.compact}>
+        {loading ? (
+          loadingStateHeader
+        ) : (
           <Thead>
             <Tr>
               <Th>{intl.formatMessage(messages.event)}</Th>
@@ -104,8 +182,18 @@ const EventsWidget: React.FunctionComponent = () => {
               <Th>{intl.formatMessage(messages.date)}</Th>
             </Tr>
           </Thead>
+        )}
+        {loading ? (
+          loadingStateBody
+        ) : notifications.length === 0 ? (
           <Tbody>
-            {notifications?.slice(0, MAX_ROWS).map((event) => (
+            <Tr>
+              <Td colSpan={3}>{emptyState}</Td>
+            </Tr>
+          </Tbody>
+        ) : (
+          <Tbody>
+            {notifications.map((event) => (
               <Tr key={event.id}>
                 <Td dataLabel={intl.formatMessage(messages.event)}>
                   {event.event_type}
@@ -119,9 +207,25 @@ const EventsWidget: React.FunctionComponent = () => {
               </Tr>
             ))}
           </Tbody>
-        </Table>
-      )}
-    </>
+        )}
+      </Table>
+      <DataViewToolbar
+        ouiaId="EventsWidgetFooter"
+        aria-label="Events widget footer"
+        className="pf-v5-u-mt-sm"
+        pagination={
+          <Pagination
+            aria-label="Events widget footer pagination"
+            perPageOptions={perPageOptions}
+            itemCount={totalCount}
+            page={page}
+            perPage={perPage}
+            onSetPage={handlePageChange}
+            onPerPageSelect={handlePerPageChange}
+          />
+        }
+      />
+    </DataView>
   );
 };
 
