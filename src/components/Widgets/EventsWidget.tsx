@@ -1,26 +1,32 @@
-import React, { useEffect, useState } from 'react';
-import {
-  Table,
-  TableVariant,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
   Button,
   ButtonVariant,
   EmptyState,
   EmptyStateBody,
   EmptyStateVariant,
+  Pagination,
   Stack,
   StackItem,
   Title,
 } from '@patternfly/react-core';
+import {
+  DataView,
+  DataViewToolbar,
+  useDataViewPagination,
+} from '@patternfly/react-data-view';
+import {
+  DataViewTable,
+  DataViewTh,
+} from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
+import {
+  SkeletonTableBody,
+  SkeletonTableHead,
+} from '@patternfly/react-component-groups';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { useIntl } from 'react-intl';
 import messages from '../../properties/DefinedMessages';
+import { perPageOptions } from '../../config/Config';
 
 import './EventsWidget.scss';
 
@@ -49,79 +55,133 @@ const EmptyStateBellIcon: React.FunctionComponent = () => (
 const EventsWidget: React.FunctionComponent = () => {
   const intl = useIntl();
   const [notifications, setNotifications] = useState<Notification[]>([]);
-  const MAX_ROWS = 5;
+  const [totalCount, setTotalCount] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
-  const fetchNotifications = async () => {
-    try {
-      const response = await fetch(
-        '/api/notifications/v1.0/notifications/events?limit=5'
-      );
-      const { data } = await response.json();
-      setNotifications(data);
-    } catch (error) {
-      console.error('Unable to get Notifications ', error);
-    }
-  };
+  const { page, perPage, onSetPage, onPerPageSelect } = useDataViewPagination({
+    perPage: 10,
+  });
+
+  const fetchNotifications = useCallback(
+    async (currentPage: number, currentPerPage: number) => {
+      setLoading(true);
+      try {
+        const offset = (currentPage - 1) * currentPerPage;
+        const response = await fetch(
+          `/api/notifications/v1.0/notifications/events?limit=${currentPerPage}&offset=${offset}`
+        );
+        const result = await response.json();
+        setNotifications(result.data || []);
+        setTotalCount(result.meta?.count || result.data?.length || 0);
+      } catch (error) {
+        console.error('Unable to get Notifications ', error);
+        setNotifications([]);
+        setTotalCount(0);
+      } finally {
+        setLoading(false);
+      }
+    },
+    []
+  );
 
   useEffect(() => {
-    fetchNotifications();
-  }, []);
+    fetchNotifications(page, perPage);
+  }, [fetchNotifications, page, perPage]);
+
+  const emptyState = useMemo(
+    () => (
+      <EmptyState
+        titleText={
+          <Title headingLevel="h4" size="lg">
+            {intl.formatMessage(messages.noFiredEventsTitle)}
+          </Title>
+        }
+        icon={EmptyStateBellIcon}
+        variant={EmptyStateVariant.full}
+      >
+        <EmptyStateBody>
+          <Stack>
+            <StackItem>
+              {intl.formatMessage(messages.noFiredEventsDescription)}
+            </StackItem>
+          </Stack>
+        </EmptyStateBody>
+        <Button
+          component="a"
+          variant={ButtonVariant.secondary}
+          className="pf-v5-u-mt-lg"
+          href="settings/notifications"
+        >
+          {intl.formatMessage(messages.manageEvents)}
+        </Button>
+      </EmptyState>
+    ),
+    [intl]
+  );
+
+  const columns: DataViewTh[] = useMemo(
+    () => [
+      intl.formatMessage(messages.event),
+      intl.formatMessage(messages.service),
+      intl.formatMessage(messages.date),
+    ],
+    [intl]
+  );
+
+  const rows = useMemo(
+    () =>
+      notifications.map((event) => [
+        event.event_type,
+        `${event.application} - ${event.bundle}`,
+        <DateFormat key={event.id} date={event.created} />,
+      ]),
+    [notifications]
+  );
+
+  const loadingStateHeader = useMemo(
+    () => <SkeletonTableHead columns={columns} />,
+    [columns]
+  );
+
+  const loadingStateBody = useMemo(
+    () => <SkeletonTableBody rowsCount={perPage} columnsCount={3} />,
+    [perPage]
+  );
 
   return (
-    <>
-      {notifications.length === 0 ? (
-        <EmptyState
-          titleText={
-            <Title headingLevel="h4" size="lg">
-              {intl.formatMessage(messages.noFiredEventsTitle)}
-            </Title>
-          }
-          icon={EmptyStateBellIcon}
-          variant={EmptyStateVariant.full}
-        >
-          <EmptyStateBody>
-            <Stack>
-              <StackItem>
-                {intl.formatMessage(messages.noFiredEventsDescription)}
-              </StackItem>
-            </Stack>
-          </EmptyStateBody>
-          <Button
-            component="a"
-            variant={ButtonVariant.secondary}
-            className="pf-v5-u-mt-lg"
-            href="settings/notifications"
-          >
-            {intl.formatMessage(messages.manageEvents)}
-          </Button>
-        </EmptyState>
-      ) : (
-        <Table aria-label="Events widget table" variant={TableVariant.compact}>
-          <Thead>
-            <Tr>
-              <Th>{intl.formatMessage(messages.event)}</Th>
-              <Th>{intl.formatMessage(messages.service)}</Th>
-              <Th>{intl.formatMessage(messages.date)}</Th>
-            </Tr>
-          </Thead>
-          <Tbody>
-            {notifications?.slice(0, MAX_ROWS).map((event) => (
-              <Tr key={event.id}>
-                <Td dataLabel={intl.formatMessage(messages.event)}>
-                  {event.event_type}
-                </Td>
-                <Td dataLabel={intl.formatMessage(messages.service)}>
-                  {event.application} - {event.bundle}
-                </Td>
-                <Td dataLabel={intl.formatMessage(messages.date)}>
-                  <DateFormat date={event.created} />
-                </Td>
-              </Tr>
-            ))}
-          </Tbody>
-        </Table>
-      )}
-    </>
+    <DataView
+      activeState={
+        loading ? 'loading' : notifications.length === 0 ? 'empty' : undefined
+      }
+    >
+      <DataViewTable
+        aria-label="Events widget table"
+        variant="compact"
+        columns={columns}
+        rows={rows}
+        headStates={{ loading: loadingStateHeader }}
+        bodyStates={{
+          loading: loadingStateBody,
+          empty: emptyState,
+        }}
+      />
+      <DataViewToolbar
+        ouiaId="EventsWidgetFooter"
+        aria-label="Events widget footer"
+        className="pf-v5-u-mt-sm"
+        pagination={
+          <Pagination
+            aria-label="Events widget footer pagination"
+            perPageOptions={perPageOptions}
+            itemCount={totalCount}
+            page={page}
+            perPage={perPage}
+            onSetPage={onSetPage}
+            onPerPageSelect={onPerPageSelect}
+          />
+        }
+      />
+    </DataView>
   );
 };
 
