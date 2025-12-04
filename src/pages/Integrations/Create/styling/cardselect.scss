@@ -1,0 +1,71 @@
+.src-c-wizard__tile {
+  width: 100%;
+  text-align: center;
+
+  .pf-v6-c-tile__header,
+  .pf-v6-c-tile__body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .pf-v6-c-tile__icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .src-c-wizard__icon {
+    height: 40px;
+  }
+
+  &.disabled {
+    .src-c-wizard__icon {
+      opacity: 0.5;
+    }
+  }
+
+  .redhat-icon {
+    height: 50px;
+  }
+}
+
+.src-c-wizard--step-text {
+  max-width: 536px;
+}
+
+.src-c-wizard__radio {
+  .pf-v6-c-radio:not(:last-child) {
+    margin-bottom: var(--pf-global--spacer--lg);
+  }
+}
+
+.src-c-wizard__conditional-radio {
+  .pf-v6-c-radio:not(:last-child) {
+    margin-bottom: var(--pf-global--spacer--sm);
+  }
+  .pf-v6-c-radio__input {
+    margin-top: 3px;
+  }
+}
+
+.src-c-wizard__rhel-mag-label {
+  position: relative;
+  top: -3px;
+}
+
+.src-c-wizard__rhel-desc-title {
+  color: initial;
+}
+
+.src-c-wizard__summary-description-list {
+  .pf-v6-c-description-list__group {
+    grid-template-columns: 150px 1fr;
+  }
+}
+
+.src-m-wizard-hide-me {
+  opacity: 0;
+}
+
