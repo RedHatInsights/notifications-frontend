@@ -40,7 +40,6 @@ interface SplunkEventsDef {
 
 const DEFAULT_SPLUNK_EVENTS: SplunkEventsDef = {
   advisor: '*',
-  policies: '*',
   compliance: '*',
   'malware-detection': '*',
   patch: '*',
