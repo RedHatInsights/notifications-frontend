@@ -1,18 +1,12 @@
+import 'jest';
 import { enableMapSet } from 'immer';
-import { mockInsights } from 'insights-common-typescript-dev';
-import React from 'react';
+import 'whatwg-fetch'; // fetch for Nodejs
+import '@testing-library/jest-dom/jest-globals';
 
 import { mockResizeObserver } from './testutils/ResizeObserverMock';
+import { mockInsights } from '../src/utils/insights-common-typescript';
 
-declare const window: any;
-declare const insights: any;
-window.React = React;
 mockInsights();
-insights.chrome.on = jest.fn(() => {
-    // eslint-disable-next-line @typescript-eslint/no-empty-function
-    return () => {};
-});
-
 jest.setTimeout(10000);
 
 mockResizeObserver();

@@ -1,73 +1,90 @@
-import { useSyncInterval } from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useState } from 'react';
 import { useClient } from 'react-fetching-library';
 
 import { getRbacGroupsAction } from '../../services/Rbac/GetGroups';
 import { RbacGroup, RbacGroupContext } from './RbacGroupContext';
+import { useSyncInterval } from '../../utils/insights-common-typescript';
 
 const SYNC_INTERVAL = 2 * 60 * 1000;
 const LIMIT = 100;
 
-const getPage = async (query: ReturnType<typeof useClient>['query'], offset: number): Promise<[ ReadonlyArray<RbacGroup> | undefined, boolean ]> => {
-    const groups = await query(getRbacGroupsAction({
-        limit: LIMIT,
-        offset
-    }));
+const getPage = async (
+  query: ReturnType<typeof useClient>['query'],
+  offset: number
+): Promise<[ReadonlyArray<RbacGroup> | undefined, boolean]> => {
+  const groups = await query(
+    getRbacGroupsAction({
+      limit: LIMIT,
+      offset,
+    })
+  );
 
-    if (groups.payload?.type === 'GroupPagination') {
-        const page = groups.payload.value;
+  if (groups.payload?.type === 'GroupPagination') {
+    const page = groups.payload.value;
 
-        const hasMore =  page.data.length > 0 && (
-            page.meta?.count ? (page.meta.count > offset + LIMIT) : true
-        );
+    const hasMore =
+      page.data.length > 0 &&
+      (page.meta?.count ? page.meta.count > offset + LIMIT : true);
 
-        return [ groups.payload.value.data.map(value => ({
-            id: value.uuid,
-            name: value.name
-        })), hasMore ];
-    }
+    return [
+      groups.payload.value.data.map((value) => ({
+        id: value.uuid,
+        name: value.name,
+        principalCount: value.principalCount ?? undefined,
+        admin_default: value.admin_default ?? undefined,
+        platform_default: value.platform_default ?? undefined,
+        system: value.system ?? undefined,
+      })),
+      hasMore,
+    ];
+  }
 
-    return [ undefined, false ];
+  return [undefined, false];
 };
 
-export const RbacGroupContextProvider: React.FunctionComponent = props => {
-    const { query } = useClient();
-    const [ isLoading, setLoading ] = useState(true);
-    const [ rbacGroups, setRbacGroups ] = useState<ReadonlyArray<RbacGroup>>([]);
+export const RbacGroupContextProvider: React.FunctionComponent<
+  React.PropsWithChildren
+> = (props) => {
+  const { query } = useClient();
+  const [isLoading, setLoading] = useState(true);
+  const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
 
-    const sync = React.useCallback(async () => {
-        const allGroups: Array<RbacGroup> = [];
-        let offset = 0;
+  const sync = React.useCallback(async () => {
+    const allGroups: Array<RbacGroup> = [];
+    let offset = 0;
+    // eslint-disable-next-line no-constant-condition
+    while (true) {
+      const [groups, hasMorePages] = await getPage(query, offset);
+      if (groups === undefined) {
+        return;
+      }
 
-        while (true) {
-            const [ groups, hasMorePages ] = await getPage(query, offset);
-            if (groups === undefined) {
-                return;
-            }
+      allGroups.push(...groups);
+      if (!hasMorePages) {
+        break;
+      }
 
-            allGroups.push(...groups);
-            if (!hasMorePages) {
-                break;
-            }
+      offset += LIMIT;
+    }
 
-            offset += LIMIT;
-        }
+    setRbacGroups(allGroups);
+    setLoading(false);
+  }, [query]);
 
-        setRbacGroups(allGroups);
-        setLoading(false);
-    }, [ query ]);
+  useSyncInterval(SYNC_INTERVAL, sync, true);
 
-    useSyncInterval(SYNC_INTERVAL, sync, true);
+  const value = React.useMemo(
+    () => ({
+      groups: rbacGroups,
+      isLoading,
+    }),
+    [rbacGroups, isLoading]
+  );
 
-    const value = React.useMemo(() => ({
-        groups: rbacGroups,
-        isLoading
-    }), [ rbacGroups, isLoading ]);
-
-    return (
-        <RbacGroupContext.Provider value={ value }>
-            { props.children }
-        </RbacGroupContext.Provider>
-    );
+  return (
+    <RbacGroupContext.Provider value={value}>
+      {props.children}
+    </RbacGroupContext.Provider>
+  );
 };

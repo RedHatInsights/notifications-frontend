@@ -1,9 +1,8 @@
 [![Build Status](https://travis-ci.com/RedHatInsights/notifications-frontend.svg?branch=master)](https://travis-ci.com/RedHatInsights/notifications-frontend)
 
-# notifications-frontend
+# notifications-frontend 
 
 Notifications frontend for Red Hat Insights
-
 
 ## Build app
 
@@ -39,7 +38,6 @@ Then run the application:
 npm start
 ```
 
-
 For more info refer to [Insights Frontend Starter App README](https://github.com/RedHatInsights/insights-frontend-starter-app/blob/master/README.md)
 
 ## Deploying
@@ -68,4 +66,5 @@ When you want to test your code with unit tests please use `jest` which is preco
 ## Generating types from Openapi file
 
 The ui-frontend depends on types from the ui-backend, these are generated from the Openapi spec file, run `npm run schema` to reload the types.
+
 Generate types can be found in: `src/generated/`, check `package.json` for more info.
