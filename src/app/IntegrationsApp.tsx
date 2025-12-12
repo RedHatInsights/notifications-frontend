@@ -37,8 +37,9 @@ const IntegrationsApp: React.ComponentType<
       }}
     >
       <RbacGroupContextProvider>
-        <NotificationsProvider />
-        <IntegrationsList category={category} {...props} />
+        <NotificationsProvider>
+          <IntegrationsList category={category} {...props} />
+        </NotificationsProvider>
       </RbacGroupContextProvider>
     </AppContext.Provider>
   ) : (

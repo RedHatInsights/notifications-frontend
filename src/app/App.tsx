@@ -83,18 +83,19 @@ const App: React.ComponentType = () => {
       }}
     >
       <RbacGroupContextProvider>
-        <NotificationsProvider />
-        <InsightsEnvDetector insights={insights} onEnvironment={staging}>
-          <RenderIfTrue>
-            <Switch
-              className="pf-v5-u-p-sm"
-              isChecked={usingExperimental}
-              onChange={toggleExperimental}
-              label="Disable experimental features"
-            />
-          </RenderIfTrue>
-        </InsightsEnvDetector>
-        <Routes />
+        <NotificationsProvider>
+          <InsightsEnvDetector insights={insights} onEnvironment={staging}>
+            <RenderIfTrue>
+              <Switch
+                className="pf-v5-u-p-sm"
+                isChecked={usingExperimental}
+                onChange={toggleExperimental}
+                label="Disable experimental features"
+              />
+            </RenderIfTrue>
+          </InsightsEnvDetector>
+          <Routes />
+        </NotificationsProvider>
       </RbacGroupContextProvider>
     </AppContext.Provider>
   );
