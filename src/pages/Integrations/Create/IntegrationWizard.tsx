@@ -1,7 +1,9 @@
 import componentMapper from '@data-driven-forms/pf4-component-mapper/component-mapper';
 import Pf4FormTemplate from '@data-driven-forms/pf4-component-mapper/form-template';
 import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
+import { ClientContextProvider } from 'react-fetching-library';
 import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
@@ -29,6 +31,11 @@ import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import { useIntl } from 'react-intl';
 import { IntegrationType } from '../../../types/Integration';
+import { RbacGroupContextProvider } from '../../../app/rbac/RbacGroupContextProvider';
+import {
+  createFetchingClient,
+  getInsights,
+} from '../../../utils/insights-common-typescript';
 import './styling/integrations-wizard.scss';
 
 export interface IntegrationWizardProps {
@@ -185,13 +192,24 @@ export const IntegrationWizard: React.FunctionComponent<
 const IntegrationWizardWrapper: React.FC<
   { store?: Store } & IntegrationWizardProps
 > = ({ store, ...props }) => {
-  return store ? (
-    <Provider store={store}>
-      <IntegrationWizard {...props} />
-    </Provider>
-  ) : (
-    <IntegrationWizard {...props} />
+  const client = React.useMemo(
+    () =>
+      createFetchingClient(getInsights, {
+        responseInterceptors: [validateSchemaResponseInterceptor],
+      }),
+    []
   );
+
+  const content = (
+    <ClientContextProvider client={client}>
+      <RbacGroupContextProvider>
+        <IntegrationWizard {...props} />
+      </RbacGroupContextProvider>
+    </ClientContextProvider>
+  );
+
+  return store ? <Provider store={store}>{content}</Provider> : content;
 };
 
 export default IntegrationWizardWrapper;
+
