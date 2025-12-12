@@ -212,4 +212,3 @@ const IntegrationWizardWrapper: React.FC<
 };
 
 export default IntegrationWizardWrapper;
-
