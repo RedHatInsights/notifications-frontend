@@ -1,15 +1,8 @@
 import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
-import { PrimaryToolbar } from '@redhat-cloud-services/frontend-components';
+import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
+import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
 import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
-import {
-    ExporterType,
-    getInsights,
-    OptionalColumnsMetada,
-    OuiaComponentProps,
-    useInsightsEnvironmentFlag,
-    usePrimaryToolbarFilterConfig
-} from '@redhat-cloud-services/insights-common-typescript';
 import * as React from 'react';
 import { useCallback, useMemo } from 'react';
 
@@ -19,174 +12,214 @@ import { isExperimental, stagingAndProd } from '../../types/Environments';
 import { Facet } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import {
-    ClearNotificationFilters,
-    NotificationFilterColumn,
-    NotificationFilters,
-    SetNotificationFilters
+  ClearNotificationFilters,
+  NotificationFilterColumn,
+  NotificationFilters,
+  SetNotificationFilters,
 } from './Filter';
+import {
+  ExporterType,
+  OptionalColumnsMetada,
+  getInsights,
+  useInsightsEnvironmentFlag,
+  usePrimaryToolbarFilterConfig,
+} from '../../utils/insights-common-typescript';
 
 export enum SelectionCommand {
-    NONE,
-    PAGE,
-    ALL
+  NONE,
+  PAGE,
+  ALL,
 }
 
-export interface NotificationsToolbarProps extends OuiaComponentProps {
-    filters: NotificationFilters;
-    setFilters: SetNotificationFilters;
-    clearFilter: ClearNotificationFilters;
-    filterColumns?: ReadonlyArray<NotificationFilterColumn>;
+export interface NotificationsToolbarProps extends OuiaProps {
+  filters: NotificationFilters;
+  setFilters: SetNotificationFilters;
+  clearFilter: ClearNotificationFilters;
+  filterColumns?: ReadonlyArray<NotificationFilterColumn>;
 
-    appFilterOptions: ReadonlyArray<Facet>;
+  appFilterOptions: ReadonlyArray<Facet>;
 
-    pageAdapter: PageAdapter;
-    count: number;
+  pageAdapter: PageAdapter;
+  count: number;
 
-    onExport?: (type: ExporterType) => void;
+  onExport?: (type: ExporterType) => void;
 
-    selectedCount?: number;
-    onSelectionChanged?: (command: SelectionCommand) => void;
-    bulkSelectionDisabled?: boolean;
-    pageCount?: number;
+  selectedCount?: number;
+  onSelectionChanged?: (command: SelectionCommand) => void;
+  bulkSelectionDisabled?: boolean;
+  pageCount?: number;
 }
 
 const allFilterColumns = [
-    NotificationFilterColumn.NAME,
-    NotificationFilterColumn.APPLICATION,
-    NotificationFilterColumn.ACTION
+  NotificationFilterColumn.NAME,
+  NotificationFilterColumn.APPLICATION,
+  NotificationFilterColumn.ACTION,
 ];
 
-export const NotificationsToolbar: React.FunctionComponent<NotificationsToolbarProps> = (props) => {
+export const NotificationsToolbar: React.FunctionComponent<
+  React.PropsWithChildren<NotificationsToolbarProps>
+> = (props) => {
+  const insights = getInsights();
+  const filterColumns = props.filterColumns ?? allFilterColumns;
+  const filterMetadata = useMemo<
+    OptionalColumnsMetada<typeof NotificationFilterColumn>
+  >(() => {
+    const appFilterItems = props.appFilterOptions.map((a) => ({
+      value: a.displayName,
+      label: <> {a.displayName}</>,
+    }));
 
-    const insights = getInsights();
-    const filterColumns = props.filterColumns ?? allFilterColumns;
-    const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
+    return {
+      [NotificationFilterColumn.NAME]: filterColumns.includes(
+        NotificationFilterColumn.NAME
+      )
+        ? {
+            label: 'Event type',
+            placeholder: 'Filter by event type',
+          }
+        : undefined,
+      [NotificationFilterColumn.APPLICATION]: filterColumns.includes(
+        NotificationFilterColumn.APPLICATION
+      )
+        ? {
+            label: 'Service',
+            placeholder: 'Filter by service',
+            options: {
+              exclusive: false,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              default: [] as any,
+              items: appFilterItems,
+            },
+          }
+        : undefined,
+      [NotificationFilterColumn.ACTION]:
+        filterColumns.includes(NotificationFilterColumn.ACTION) &&
+        isExperimental(insights)
+          ? {
+              label: 'Action',
+              placeholder: 'Filter by action',
+            }
+          : undefined,
+    };
+  }, [props.appFilterOptions, insights, filterColumns]);
 
-        const appFilterItems = props.appFilterOptions.map(a => ({
-            value: a.displayName,
-            label: <> {a.displayName}</>
-        }));
+  const bulkSelectProps = React.useMemo(() => {
+    const onSelectionChanged = props.onSelectionChanged;
+    const count = props.count;
+    const pageAdapter = props.pageAdapter;
+    const selectedCount = props.selectedCount;
+    const pageSize = pageAdapter.page.size;
+    if (!onSelectionChanged) {
+      return undefined;
+    }
 
-        return {
-            [NotificationFilterColumn.NAME]: filterColumns.includes(NotificationFilterColumn.NAME) ? {
-                label: 'Event type',
-                placeholder: 'Filter by event type'
-            } : undefined,
-            [NotificationFilterColumn.APPLICATION]: filterColumns.includes(NotificationFilterColumn.APPLICATION) ? {
-                label: 'Application',
-                placeholder: 'Filter by application',
-                options: {
-                    exclusive: false,
-                    default: [] as any,
-                    items: appFilterItems
-                }
-            } : undefined,
-            [NotificationFilterColumn.ACTION]: filterColumns.includes(NotificationFilterColumn.ACTION) && isExperimental(insights) ? {
-                label: 'Action',
-                placeholder: 'Filter by action'
-            } : undefined
-        };
-    }, [ props.appFilterOptions, insights, filterColumns ]);
+    const selectAll = () => onSelectionChanged(SelectionCommand.ALL);
+    const selectNone = () => onSelectionChanged(SelectionCommand.NONE);
 
-    const bulkSelectProps = React.useMemo(() => {
-        const onSelectionChanged = props.onSelectionChanged;
-        const count = props.count;
-        const pageAdapter = props.pageAdapter;
-        const selectedCount = props.selectedCount;
-        const pageSize = pageAdapter.page.size;
-        if (!onSelectionChanged) {
-            return undefined;
-        }
+    return {
+      count: selectedCount ?? 0,
+      items: [
+        {
+          title: 'Select none (0)',
+          onClick: selectNone,
+        },
+        {
+          title: `Select page (${props.pageCount ?? pageSize})`,
+          onClick: () => onSelectionChanged(SelectionCommand.PAGE),
+        },
+        {
+          title: `Select all (${count})`,
+          onClick: selectAll,
+        },
+      ],
+      checked: selectedCount !== 0 && selectedCount === count,
+      onSelect: (isSelected: boolean) =>
+        isSelected ? selectAll() : selectNone(),
+      isDisabled: props.bulkSelectionDisabled,
+    };
+  }, [
+    props.onSelectionChanged,
+    props.selectedCount,
+    props.pageAdapter,
+    props.count,
+    props.bulkSelectionDisabled,
+    props.pageCount,
+  ]);
 
-        const selectAll = () => onSelectionChanged(SelectionCommand.ALL);
-        const selectNone = () => onSelectionChanged(SelectionCommand.NONE);
+  const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
+    NotificationFilterColumn,
+    props.filters,
+    props.setFilters,
+    props.clearFilter,
+    filterMetadata
+  );
 
-        return {
-            count: selectedCount ?? 0,
-            items: [
-                {
-                    title: 'Select none (0)',
-                    onClick: selectNone
-                },
-                {
-                    title: `Select page (${props.pageCount ?? pageSize})`,
-                    onClick: () => onSelectionChanged(SelectionCommand.PAGE)
-                },
-                {
-                    title: `Select all (${count})`,
-                    onClick: selectAll
-                }
-            ],
-            checked: selectedCount !== 0 && selectedCount === count,
-            onSelect: (isSelected: boolean) => isSelected ? selectAll() : selectNone(),
-            isDisabled: props.bulkSelectionDisabled
-        };
-    }, [ props.onSelectionChanged, props.selectedCount, props.pageAdapter, props.count, props.bulkSelectionDisabled, props.pageCount ]);
+  const exportConfigInternal = useTableExportConfig(props.onExport);
 
-    const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
-        NotificationFilterColumn,
-        props.filters,
-        props.setFilters,
-        props.clearFilter,
-        filterMetadata
-    );
+  const filterConfig = primaryToolbarFilterConfig.filterConfig;
+  const activeFiltersConfig = primaryToolbarFilterConfig.activeFiltersConfig;
 
-    const exportConfigInternal = useTableExportConfig(props.onExport);
+  const exportConfig = useInsightsEnvironmentFlag(
+    getInsights(),
+    stagingAndProd,
+    undefined,
+    useCallback(() => exportConfigInternal, [exportConfigInternal])
+  );
 
-    const filterConfig = primaryToolbarFilterConfig.filterConfig;
-    const activeFiltersConfig = primaryToolbarFilterConfig.activeFiltersConfig;
+  const pageChanged = React.useCallback(
+    (_event: unknown, page: number) => {
+      const inner = props.pageAdapter.changePage;
+      inner(page);
+    },
+    [props.pageAdapter]
+  );
 
-    const exportConfig = useInsightsEnvironmentFlag(
-        getInsights(),
-        stagingAndProd,
-        undefined,
-        useCallback(() => exportConfigInternal, [ exportConfigInternal ])
-    );
+  const perPageChanged = React.useCallback(
+    (_event: unknown, perPage: number) => {
+      const inner = props.pageAdapter.changeItemsPerPage;
+      inner(perPage);
+    },
+    [props.pageAdapter]
+  );
 
-    const pageChanged = React.useCallback((_event: unknown, page: number) => {
-        const inner = props.pageAdapter.changePage;
-        inner(page);
-    }, [ props.pageAdapter ]);
+  const topPaginationProps = React.useMemo<PaginationProps>(
+    () => ({
+      itemCount: props.count,
+      page: props.pageAdapter.page.index,
+      perPage: props.pageAdapter.page.size,
+      isCompact: true,
+      variant: PaginationVariant.top,
+      onSetPage: pageChanged,
+      onFirstClick: pageChanged,
+      onPreviousClick: pageChanged,
+      onNextClick: pageChanged,
+      onLastClick: pageChanged,
+      onPageInput: pageChanged,
+      onPerPageSelect: perPageChanged,
+    }),
+    [props.count, props.pageAdapter, pageChanged, perPageChanged]
+  );
 
-    const perPageChanged = React.useCallback((_event: unknown, perPage: number) => {
-        const inner = props.pageAdapter.changeItemsPerPage;
-        inner(perPage);
-    }, [ props.pageAdapter ]);
+  const bottomPaginationProps = React.useMemo<PaginationProps>(
+    () => ({
+      ...topPaginationProps,
+      isCompact: false,
+      variant: PaginationVariant.bottom,
+    }),
+    [topPaginationProps]
+  );
 
-    const topPaginationProps = React.useMemo<PaginationProps>(() => ({
-        itemCount: props.count,
-        page: props.pageAdapter.page.index,
-        perPage: props.pageAdapter.page.size,
-        isCompact: true,
-        variant: PaginationVariant.top,
-        onSetPage: pageChanged,
-        onFirstClick: pageChanged,
-        onPreviousClick: pageChanged,
-        onNextClick: pageChanged,
-        onLastClick: pageChanged,
-        onPageInput: pageChanged,
-        onPerPageSelect: perPageChanged
-    }), [ props.count, props.pageAdapter, pageChanged, perPageChanged ]);
-
-    const bottomPaginationProps = React.useMemo<PaginationProps>(() => ({
-        ...topPaginationProps,
-        isCompact: false,
-        variant: PaginationVariant.bottom
-    }), [ topPaginationProps ]);
-
-    return (
-        <div { ...getOuiaProps('Notifications/DualToolbar', props) }>
-            <PrimaryToolbar
-                bulkSelect={ bulkSelectProps }
-                filterConfig={ filterConfig as ConditionalFilterProps }
-                activeFiltersConfig={ activeFiltersConfig as FilterChipsProps }
-                exportConfig={ exportConfig }
-                pagination={ topPaginationProps }
-            />
-            { props.children }
-            <PrimaryToolbar
-                pagination={ bottomPaginationProps }
-            />
-        </div>
-    );
+  return (
+    <div {...getOuiaProps('Notifications/DualToolbar', props)}>
+      <PrimaryToolbar
+        bulkSelect={bulkSelectProps}
+        filterConfig={filterConfig as ConditionalFilterProps}
+        activeFiltersConfig={activeFiltersConfig as FilterChipsProps}
+        exportConfig={exportConfig}
+        pagination={topPaginationProps}
+      />
+      {props.children}
+      <PrimaryToolbar pagination={bottomPaginationProps} />
+    </div>
+  );
 };

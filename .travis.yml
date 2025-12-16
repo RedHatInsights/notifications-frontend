@@ -28,7 +28,6 @@ env:
     - ACTION=ci:test
     - ACTION=build
     - ACTION=smoketest
-    - ACTION=ci:pinned-deps
 script: npm run $ACTION
 jobs:
   include:
