@@ -351,8 +351,8 @@ const EventTypes: React.FC<EventTypesProps> = ({
                         isSelected: selected.find(({ id }) => id === row.id),
                       }}
                     />
-                    <Td dataLabel="event-type">{row.applicationDisplayName}</Td>
-                    <Td dataLabel="service">{row.eventTypeDisplayName}</Td>
+                    <Td dataLabel="event-type">{row.eventTypeDisplayName}</Td>
+                    <Td dataLabel="service">{row.applicationDisplayName}</Td>
                   </Tr>
                   {row.description ? (
                     <Tr
