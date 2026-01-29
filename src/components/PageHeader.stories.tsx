@@ -42,7 +42,8 @@ type Story = StoryObj<typeof PageHeader>;
 export const Default: Story = {
   args: {
     title: 'Notifications',
-    subtitle: 'Configure how you receive notifications for events in your organization.',
+    subtitle:
+      'Configure how you receive notifications for events in your organization.',
   },
   parameters: {
     docs: {
@@ -71,7 +72,8 @@ export const WithAction: Story = {
 export const NotificationsPage: Story = {
   args: {
     title: 'Event Log',
-    subtitle: 'View the history of events and notifications that have been sent.',
+    subtitle:
+      'View the history of events and notifications that have been sent.',
   },
   parameters: {
     docs: {
@@ -85,7 +87,8 @@ export const NotificationsPage: Story = {
 export const BehaviorGroupsPage: Story = {
   args: {
     title: 'Behavior Groups',
-    subtitle: 'Create and manage behavior groups to define how different events trigger notifications.',
+    subtitle:
+      'Create and manage behavior groups to define how different events trigger notifications.',
     action: <Button variant="primary">Create behavior group</Button>,
   },
   parameters: {
@@ -100,13 +103,15 @@ export const BehaviorGroupsPage: Story = {
 export const LongContent: Story = {
   args: {
     title: 'Configure Notification Preferences',
-    subtitle: 'Customize how and when you receive notifications for various events across your organization. You can set up different notification channels including email, webhooks, and integrations with third-party services.',
+    subtitle:
+      'Customize how and when you receive notifications for various events across your organization. You can set up different notification channels including email, webhooks, and integrations with third-party services.',
     action: <Button variant="secondary">Learn more</Button>,
   },
   parameters: {
     docs: {
       description: {
-        story: 'Page header with longer content to demonstrate text wrapping behavior.',
+        story:
+          'Page header with longer content to demonstrate text wrapping behavior.',
       },
     },
   },

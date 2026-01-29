@@ -1,8 +1,7 @@
-import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { EmptyStateSearch } from './EmptyStateSearch';
 import { EmptyStateVariant } from '@patternfly/react-core';
-import { SearchIcon, CubesIcon } from '@patternfly/react-icons';
+import { CubesIcon } from '@patternfly/react-icons';
 
 const meta: Meta<typeof EmptyStateSearch> = {
   title: 'Components/EmptyStateSearch',
@@ -37,7 +36,13 @@ Used throughout the application when search or filter results return no matches.
     },
     variant: {
       control: 'select',
-      options: [EmptyStateVariant.xs, EmptyStateVariant.sm, EmptyStateVariant.lg, EmptyStateVariant.xl, EmptyStateVariant.full],
+      options: [
+        EmptyStateVariant.xs,
+        EmptyStateVariant.sm,
+        EmptyStateVariant.lg,
+        EmptyStateVariant.xl,
+        EmptyStateVariant.full,
+      ],
       description: 'Size variant for the empty state',
     },
     headingLevel: {
@@ -54,12 +59,14 @@ type Story = StoryObj<typeof EmptyStateSearch>;
 export const Default: Story = {
   args: {
     title: 'No results found',
-    description: 'No items match your search criteria. Try adjusting your filters or search terms.',
+    description:
+      'No items match your search criteria. Try adjusting your filters or search terms.',
   },
   parameters: {
     docs: {
       description: {
-        story: 'Default empty state with search icon, commonly used for filter/search results.',
+        story:
+          'Default empty state with search icon, commonly used for filter/search results.',
       },
     },
   },
@@ -82,7 +89,8 @@ export const NoNotifications: Story = {
 export const NoIntegrations: Story = {
   args: {
     title: 'No integrations found',
-    description: 'No integrations match your search. Create a new integration to get started.',
+    description:
+      'No integrations match your search. Create a new integration to get started.',
     icon: CubesIcon,
   },
   parameters: {
@@ -112,7 +120,8 @@ export const SmallVariant: Story = {
 export const LargeVariant: Story = {
   args: {
     title: 'No results found',
-    description: 'Your search returned no results. Please try a different query or clear your filters to see all available items.',
+    description:
+      'Your search returned no results. Please try a different query or clear your filters to see all available items.',
     variant: EmptyStateVariant.lg,
   },
   parameters: {

@@ -2,7 +2,7 @@ import React from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { EnabledIntegrationIcon } from './EnabledIntegrationIcon';
 import { DisabledIntegrationIcon } from './DisabledIntegrationIcon';
-import { Split, SplitItem, Text, TextContent } from '@patternfly/react-core';
+import { Content, Split, SplitItem } from '@patternfly/react-core';
 
 const meta: Meta<typeof EnabledIntegrationIcon> = {
   title: 'Components/Icons/EnabledIntegrationIcon',
@@ -44,9 +44,7 @@ export const WithLabel: Story = {
         <EnabledIntegrationIcon />
       </SplitItem>
       <SplitItem>
-        <TextContent>
-          <Text>Integration Enabled</Text>
-        </TextContent>
+        <Content component="p">Integration Enabled</Content>
       </SplitItem>
     </Split>
   ),
@@ -68,9 +66,7 @@ export const ComparisonWithDisabled: Story = {
             <EnabledIntegrationIcon />
           </SplitItem>
           <SplitItem>
-            <TextContent>
-              <Text>Enabled</Text>
-            </TextContent>
+            <Content component="p">Enabled</Content>
           </SplitItem>
         </Split>
       </SplitItem>
@@ -80,9 +76,7 @@ export const ComparisonWithDisabled: Story = {
             <DisabledIntegrationIcon />
           </SplitItem>
           <SplitItem>
-            <TextContent>
-              <Text>Disabled</Text>
-            </TextContent>
+            <Content component="p">Disabled</Content>
           </SplitItem>
         </Split>
       </SplitItem>
