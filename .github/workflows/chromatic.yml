@@ -30,7 +30,7 @@ jobs:
           # Make sure to configure a `CHROMATIC_PROJECT_TOKEN` repository secret
           projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
           # Automatically accept all changes on main branch
-          autoAcceptChanges: "main"
+          autoAcceptChanges: "master"
           # Exit with zero code even when changes are detected
           exitZeroOnChanges: true
           # Skip builds for dependabot branches
