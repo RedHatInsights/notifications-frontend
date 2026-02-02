@@ -1,0 +1,127 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Documentation/Introduction" />
+
+# Welcome to Notifications Frontend Storybook
+
+Welcome to the **Red Hat Console Notifications Frontend** component library! This Storybook showcases all the reusable components, design patterns, and documentation for our notifications and integrations management system.
+
+## What is Notifications Frontend?
+
+The Notifications Frontend is a React application that provides:
+
+- **Notification Management** - Configure how you receive notifications for events
+- **Behavior Groups** - Define notification behaviors for different event types
+- **Integration Endpoints** - Manage webhooks, email, and third-party integrations
+- **Event Log** - View the history of events and notifications
+- **Notifications Drawer** - Real-time notification display in the console
+
+## Architecture Overview
+
+Our application is built with modern React patterns and integrates with the Red Hat Console platform:
+
+### Key Technologies
+- **React 18** with functional components and hooks
+- **react-fetching-library** for API requests
+- **PatternFly 6** for design system and components
+- **React Router 6** for navigation
+- **TypeScript** for type safety
+- **react-intl** for internationalization
+- **Jest & Cypress** for testing
+
+### Integration Points
+- **Red Hat Console Chrome** - Platform integration via `useChrome`
+- **Notifications Backend API** - Event and notification management
+- **Integrations Backend API** - Endpoint and webhook management
+- **Feature Flags (Unleash)** - Feature toggling via `useFlag`
+
+## How to Use This Storybook
+
+### Component Stories
+Browse through our components organized by category:
+- **Components** - Reusable UI components
+- **Icons** - Custom notification and integration icons
+- **Documentation** - Guides and best practices
+
+### Interactive Controls
+Most stories include interactive controls that let you:
+- Toggle props and see real-time changes
+- Test different component states
+- Experiment with various data configurations
+
+### Documentation
+Each component includes:
+- **Props documentation** - All available properties
+- **Usage examples** - Common patterns and implementations
+- **Design guidelines** - When and how to use components
+
+## Context & Permissions Testing
+
+Our Storybook includes a context mocking system that allows you to test components with different:
+
+### Permission Contexts
+- **canWriteNotifications** - Create/edit notification configurations
+- **canReadNotifications** - View notification settings
+- **canWriteIntegrationsEndpoints** - Create/edit integration endpoints
+- **canReadIntegrationsEndpoints** - View integrations
+- **canReadEvents** - View event log
+
+### Environment Contexts
+- **Production** - Prod environment behavior
+- **Staging** - Stage environment features
+
+## Getting Started
+
+### For Developers
+1. **Install dependencies**: `npm install`
+2. **Start Storybook**: `npm run storybook`
+3. **Build Storybook**: `npm run build-storybook`
+
+### For Designers
+- Browse components in the **Components** section
+- Use the **Controls** panel to experiment with different states
+- Check the **Docs** tab for detailed usage guidelines
+
+## Contributing
+
+### Adding New Stories
+When creating new components, always include:
+- Comprehensive prop documentation
+- Multiple usage examples
+- Different state variations
+- Accessibility considerations
+
+### Story File Naming
+- Place stories next to their component: `Component.stories.tsx`
+- Use descriptive story names that explain the variant
+
+### Documentation Standards
+- Use descriptive story names
+- Include context about when to use components
+- Document any special behaviors or limitations
+
+## Design Principles
+
+### Consistency
+- Follow PatternFly design guidelines
+- Use consistent spacing and typography
+- Maintain design token usage
+
+### Accessibility
+- Ensure WCAG 2.1 AA compliance
+- Include proper ARIA labels
+- Test with screen readers
+- Provide keyboard navigation
+
+## Useful Links
+
+- [Notifications Backend API](https://github.com/RedHatInsights/notifications-backend)
+- [PatternFly Design System](https://www.patternfly.org/)
+- [Red Hat Console Documentation](https://consoledot.pages.redhat.com/)
+- [Project Repository](https://github.com/RedHatInsights/notifications-frontend)
+
+---
+
+**Happy exploring!**
+
+Use the sidebar navigation to browse components, or jump directly to specific sections using the search functionality.

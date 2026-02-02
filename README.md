@@ -4,6 +4,36 @@
 
 Notifications frontend for Red Hat Insights
 
+## Storybook
+
+Interactive component documentation and visual testing powered by Chromatic.
+
+### Running Storybook Locally
+
+```bash
+npm run storybook
+```
+
+This starts the Storybook development server at http://localhost:6006
+
+### Building Storybook
+
+```bash
+npm run build-storybook
+```
+
+### Visual Testing with Chromatic
+
+Stories are automatically deployed and tested on every push via GitHub Actions.
+
+To run Chromatic manually:
+
+```bash
+npm run chromatic
+```
+
+**Note**: Requires `CHROMATIC_PROJECT_TOKEN` to be set.
+
 ## Build app
 
 0. If needed run `npm install` to install dependency packages
