@@ -1,0 +1,309 @@
+import { Meta } from '@storybook/addon-docs/blocks';
+
+<Meta title="Documentation/Storybook Guide" />
+
+# Storybook Guide
+
+This guide explains the Storybook setup for the Notifications Frontend project and best practices for creating effective component stories.
+
+## Quick Start
+
+```bash
+# Start Storybook development server
+npm run storybook
+
+# Build Storybook for deployment
+npm run build-storybook
+
+# Deploy to Chromatic
+npm run chromatic
+```
+
+## Project Structure
+
+```
+.storybook/
+  main.ts              # Storybook configuration
+  preview.tsx          # Global decorators and providers
+  context-providers.tsx # Mock Chrome, Unleash, AppContext
+  hooks/
+    useChrome.js       # Mock useChrome hook
+    unleash.js         # Mock useFlag hook
+  storybook.css        # Custom styling
+  types.ts             # TypeScript types for stories
+
+src/
+  components/
+    Component.tsx
+    Component.stories.tsx  # Stories co-located with components
+  docs/
+    Introduction.mdx       # Welcome documentation
+    StorybookGuide.mdx     # This guide
+```
+
+## Creating Stories
+
+### Basic Story Structure
+
+```typescript
+import React from 'react';
+import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import { MyComponent } from './MyComponent';
+
+const meta: Meta<typeof MyComponent> = {
+  title: 'Components/MyComponent',
+  component: MyComponent,
+  parameters: {
+    docs: {
+      description: {
+        component: `
+**MyComponent** does something useful.
+
+## Usage
+Describe when and how to use this component.
+        `,
+      },
+    },
+  },
+};
+
+export default meta;
+type Story = StoryObj<typeof MyComponent>;
+
+export const Default: Story = {
+  args: {
+    // Default prop values
+  },
+};
+
+export const WithCustomProps: Story = {
+  args: {
+    // Custom prop values for this variant
+  },
+  parameters: {
+    docs: {
+      description: {
+        story: 'Description of this specific story variant.',
+      },
+    },
+  },
+};
+```
+
+### Using Interactive Controls
+
+Define `argTypes` to create interactive controls:
+
+```typescript
+const meta: Meta<typeof MyComponent> = {
+  component: MyComponent,
+  argTypes: {
+    variant: {
+      control: 'select',
+      options: ['primary', 'secondary', 'danger'],
+      description: 'Visual style variant',
+    },
+    disabled: {
+      control: 'boolean',
+      description: 'Whether the component is disabled',
+    },
+    size: {
+      control: { type: 'range', min: 10, max: 100, step: 10 },
+      description: 'Size in pixels',
+    },
+  },
+};
+```
+
+## Context Testing
+
+### Testing with Different Permissions
+
+Override AppContext permissions in story parameters:
+
+```typescript
+export const AdminView: Story = {
+  parameters: {
+    appContext: {
+      isOrgAdmin: true,
+      rbac: {
+        canWriteNotifications: true,
+        canWriteIntegrationsEndpoints: true,
+      },
+    },
+  },
+};
+
+export const ReadOnlyView: Story = {
+  parameters: {
+    appContext: {
+      isOrgAdmin: false,
+      rbac: {
+        canWriteNotifications: false,
+        canWriteIntegrationsEndpoints: false,
+        canReadNotifications: true,
+        canReadIntegrationsEndpoints: true,
+      },
+    },
+  },
+};
+```
+
+### Testing with Different Environments
+
+```typescript
+export const ProductionBehavior: Story = {
+  parameters: {
+    chrome: {
+      environment: 'prod',
+    },
+  },
+};
+
+export const StagingBehavior: Story = {
+  parameters: {
+    chrome: {
+      environment: 'stage',
+    },
+  },
+};
+```
+
+### Testing with Feature Flags
+
+```typescript
+export const WithFeatureEnabled: Story = {
+  parameters: {
+    featureFlags: {
+      'notifications.new-feature': true,
+    },
+  },
+};
+```
+
+## MSW API Mocking
+
+Use MSW (Mock Service Worker) to mock API responses:
+
+```typescript
+import { http, HttpResponse } from 'msw';
+
+export const WithMockedData: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        http.get('/api/notifications/v1/notifications', () => {
+          return HttpResponse.json({
+            data: [
+              { id: '1', title: 'Test Notification' },
+            ],
+          });
+        }),
+      ],
+    },
+  },
+};
+
+export const WithErrorState: Story = {
+  parameters: {
+    msw: {
+      handlers: [
+        http.get('/api/notifications/v1/notifications', () => {
+          return HttpResponse.json(
+            { error: 'Server error' },
+            { status: 500 }
+          );
+        }),
+      ],
+    },
+  },
+};
+```
+
+## Best Practices
+
+### Story Organization
+- **Co-locate stories** with their components
+- **Use descriptive names** for story exports
+- **Group related stories** under the same meta title
+- **Order stories** from basic to complex
+
+### Documentation
+- **Always add component description** in meta parameters
+- **Document each story variant** with its purpose
+- **Include usage examples** in markdown
+- **Note accessibility considerations**
+
+### Testing Different States
+- **Default state** - Normal component appearance
+- **Loading state** - Show loading indicators
+- **Empty state** - No data available
+- **Error state** - Error messages and handling
+- **Interactive states** - Hover, focus, active
+
+### TypeScript
+- **Use proper types** from `@storybook/react-webpack5`
+- **Type your Story** with `StoryObj<typeof Component>`
+- **Use `fn()` from `storybook/test`** for action callbacks
+
+```typescript
+import { fn } from 'storybook/test';
+
+export const WithCallback: Story = {
+  args: {
+    onClick: fn(),
+    onSubmit: fn(),
+  },
+};
+```
+
+## Chromatic Visual Testing
+
+Stories are automatically tested with Chromatic on every push:
+
+- Visual regression testing catches UI changes
+- Review changes at [chromatic.com](https://www.chromatic.com)
+- Accept or reject visual changes before merging
+
+### Chromatic Parameters
+
+```typescript
+export const MyStory: Story = {
+  parameters: {
+    // Add delay for animations to complete
+    chromatic: { delay: 300 },
+    
+    // Disable Chromatic for this story
+    chromatic: { disableSnapshot: true },
+    
+    // Test at specific viewport widths
+    chromatic: { viewports: [320, 768, 1200] },
+  },
+};
+```
+
+## Troubleshooting
+
+### Stories Not Appearing
+- Check file naming: must end with `.stories.tsx`
+- Verify the story is exported
+- Check `main.ts` stories glob pattern
+
+### Controls Not Working
+- Ensure `argTypes` are properly defined
+- Check that args match component props
+
+### Context Not Updating
+- Verify decorator configuration in `preview.tsx`
+- Check that parameters are correctly structured
+
+### Import Errors
+- For `useChrome`: Uses mocked version from `.storybook/hooks/`
+- For `useFlag`: Uses mocked version from `.storybook/hooks/`
+
+## Resources
+
+- [Storybook Documentation](https://storybook.js.org/docs)
+- [Chromatic Documentation](https://www.chromatic.com/docs/)
+- [MSW Documentation](https://mswjs.io/docs/)
+- [PatternFly Storybook](https://www.patternfly.org/v4/)

@@ -30,3 +30,7 @@ yalc.lock
 .cypress-cache
 cypress/screenshots
 .nyc_output
+
+# storybook
+storybook-static
+build-storybook.log
