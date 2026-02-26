@@ -141,7 +141,7 @@ const preview: Preview = {
           <ChromeProvider value={chromeConfig}>
             <FeatureFlagsProvider value={featureFlags}>
               <AppContext.Provider value={appContextValue}>
-                <IntlProvider locale="en" messages={messages}>
+                <IntlProvider locale="en" messages={(messages as Record<string, Record<string, string>>)['en-US']}>
                   <MemoryRouter>
                     <Fragment>
                       <NotificationsProvider>
