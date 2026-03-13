@@ -8,9 +8,15 @@ export const INTEGRATIONS_BASE_URL = `https://${APP_TEST_HOST_PORT}/settings/int
 // Prevents inconsistent cookie prompting that is problematic for UI testing
 export async function disableCookiePrompt(page: Page) {
   await page.route('**/*', async (route, request) => {
-    if (request.url().includes('consent.trustarc.com') && request.resourceType() !== 'document') {
-      await route.abort();
-    } else {
+    try {
+      const url = new URL(request.url());
+      if (url.hostname === 'consent.trustarc.com' && request.resourceType() !== 'document') {
+        await route.abort();
+      } else {
+        await route.continue();
+      }
+    } catch {
+      // If URL parsing fails, continue normally
       await route.continue();
     }
   });
