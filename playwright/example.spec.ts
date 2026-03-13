@@ -1,4 +1,5 @@
 import { test, expect } from '@playwright/test';
+import { ensureLoggedIn, NOTIFICATIONS_BASE_URL, INTEGRATIONS_BASE_URL } from './test-utils';
 
 /**
  * Example E2E test for notifications-frontend
@@ -7,9 +8,14 @@ import { test, expect } from '@playwright/test';
  * Replace with actual test scenarios for your application.
  */
 test.describe('Notifications Frontend', () => {
+  test.beforeEach(async ({ page }) => {
+    // Ensure user is logged in before each test
+    await ensureLoggedIn(page);
+  });
+
   test('should load the notifications page', async ({ page }) => {
     // Navigate to the notifications page
-    await page.goto('/settings/notifications');
+    await page.goto(NOTIFICATIONS_BASE_URL);
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
@@ -24,7 +30,7 @@ test.describe('Notifications Frontend', () => {
 
   test('should load the integrations page', async ({ page }) => {
     // Navigate to the integrations page
-    await page.goto('/settings/integrations');
+    await page.goto(INTEGRATIONS_BASE_URL);
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
