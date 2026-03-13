@@ -31,6 +31,9 @@ export default defineConfig({
     // Base URL to use in actions like `await page.goto('/')`
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337',
 
+    // Ignore HTTPS errors for local dev server
+    ignoreHTTPSErrors: true,
+
     // Collect trace when retrying the failed test
     trace: 'on-first-retry',
 
