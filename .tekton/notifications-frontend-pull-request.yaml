@@ -55,6 +55,15 @@ spec:
     value: |
       #!/bin/bash
       set -ex
+
+      # Wait for dev server to be ready
+      timeout 120s bash -c 'until curl -k https://stage.foo.redhat.com:1337 > /dev/null 2>&1; do
+        echo "Waiting for dev server to be ready"
+        sleep 5
+      done'
+      echo "Dev server ready!"
+
+      # Run Playwright tests
       npx playwright test
 
   # Run app script - start Caddy to serve app assets
@@ -89,6 +98,18 @@ spec:
         value: pipelines/platform-ui/docker-build-run-all-tests.yaml
   taskRunTemplate:
     serviceAccountName: build-pipeline-notifications-frontend
+  taskRunSpecs:
+    - pipelineTaskName: run-e2e-tests
+      serviceAccountName: build-pipeline-notifications-frontend
+      podTemplate:
+        # Override /etc/hosts to redirect stage.foo.redhat.com to localhost
+        hostAliases:
+          - ip: "::1"
+            hostnames:
+              - "stage.foo.redhat.com"
+          - ip: "127.0.0.1"
+            hostnames:
+              - "stage.foo.redhat.com"
   workspaces:
   - name: workspace
     volumeClaimTemplate:
