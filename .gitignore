@@ -31,6 +31,12 @@ yalc.lock
 cypress/screenshots
 .nyc_output
 
+# playwright output
+playwright-results/
+test-results/
+playwright-report/
+playwright/.cache/
+
 # storybook
 storybook-static
 build-storybook.log
