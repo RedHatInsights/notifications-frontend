@@ -50,6 +50,6 @@
   border-top: var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor);
 }
 
-.pf-v6-c-notification-drawer__header-action .ins-c-bulk-select {
+.pf-v6-c-notification-drawer__header-action > .pf-v6-c-menu-toggle {
   flex-shrink: 0;
 }
