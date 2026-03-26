@@ -8,11 +8,11 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './playwright',
 
-  // Maximum time one test can run for
-  timeout: 60 * 1000,
+  // Slow SSO in Konflux — align with widget-layout#298 / Konflux E2E rules
+  timeout: 180 * 1000,
 
-  // Run tests in files in parallel
-  fullyParallel: true,
+  // Serial execution — parallel runs are flaky in CI (Konflux E2E rules; widget-layout#298)
+  fullyParallel: false,
 
   // Fail the build on CI if you accidentally left test.only in the source code
   forbidOnly: !!process.env.CI,
@@ -20,16 +20,16 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
-  // Opt out of parallel tests on CI
-  workers: process.env.CI ? 1 : undefined,
+  workers: 1,
 
   // Reporter to use
   reporter: 'html',
 
   // Shared settings for all the projects below
   use: {
-    // Base URL to use in actions like `await page.goto('/')`
-    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337',
+    // PLAYWRIGHT_BASE_URL overrides for local runs against stage; default is the dev proxy (Konflux E2E rules)
+    baseURL:
+      process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337',
 
     // Ignore HTTPS errors for local dev server
     ignoreHTTPSErrors: true,

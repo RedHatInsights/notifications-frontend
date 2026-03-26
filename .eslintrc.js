@@ -31,6 +31,13 @@ module.exports = {
         'jest/expect-expect': 'off',
       },
     },
+    // Playwright uses page.getBy* — not React Testing Library; RTL rules false-positive here
+    {
+      files: ['playwright/**/*.ts'],
+      rules: {
+        'testing-library/prefer-screen-queries': 'off',
+      },
+    },
   ],
   rules: {
     'sort-imports': [
