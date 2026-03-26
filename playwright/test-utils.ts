@@ -8,24 +8,40 @@ export const INTEGRATIONS_PATH = '/settings/integrations';
 export const getBaseURL = () =>
   process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337';
 
-// Prevents inconsistent cookie prompting that is problematic for UI testing
+function isTrustArcHost(hostname: string): boolean {
+  return hostname === 'trustarc.com' || hostname.endsWith('.trustarc.com');
+}
+
+/**
+ * Block TrustArc consent iframes/overlays (consent.trustarc.com, consent-pref.trustarc.com, …).
+ * Must run before the first navigation so the overlay never loads (CI: iframe intercepts SSO clicks).
+ */
 export async function disableCookiePrompt(page: Page) {
   await page.route('**/*', async (route, request) => {
     try {
       const url = new URL(request.url());
-      if (
-        url.hostname === 'consent.trustarc.com' &&
-        request.resourceType() !== 'document'
-      ) {
+      if (isTrustArcHost(url.hostname)) {
         await route.abort();
       } else {
         await route.continue();
       }
     } catch {
-      // If URL parsing fails, continue normally
       await route.continue();
     }
   });
+}
+
+/** Best-effort DOM cleanup if TrustArc slipped through before routes applied. */
+async function removeTrustArcOverlay(page: Page) {
+  await page
+    .evaluate(() => {
+      document
+        .querySelectorAll(
+          '.truste_box_overlay, iframe[name="trustarc_cm"], iframe.truste_popframe'
+        )
+        .forEach((el) => el.remove());
+    })
+    .catch(() => undefined);
 }
 
 export async function login(
@@ -33,28 +49,25 @@ export async function login(
   user: string,
   password: string
 ): Promise<void> {
-  // Fail in a friendly way if the proxy config is not set up correctly
   await expect(
     page.locator('text=Lockdown'),
     'proxy config incorrect'
   ).toHaveCount(0);
 
-  await disableCookiePrompt(page);
+  await removeTrustArcOverlay(page);
 
-  // Wait for and fill username field
   await page.getByLabel('Red Hat login').first().fill(user);
   await page.getByRole('button', { name: 'Next' }).click();
 
-  // Wait for and fill password field
   await page.getByLabel('Password').first().fill(password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  // confirm login was valid
   await expect(page.getByText('Invalid login')).not.toBeVisible();
 }
 
-// Shared login logic for test beforeEach blocks
 export async function ensureLoggedIn(page: Page): Promise<void> {
+  await disableCookiePrompt(page);
+
   await page.goto('/', { waitUntil: 'load', timeout: 60000 });
 
   const loggedIn = await page.getByText('Hi,').isVisible();
@@ -62,12 +75,11 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
   if (!loggedIn) {
     const user = process.env.E2E_USER!;
     const password = process.env.E2E_PASSWORD!;
-    // make sure the SSO prompt is loaded for login
     await page.waitForLoadState('load');
     await expect(page.locator('#username-verification')).toBeVisible();
+    await removeTrustArcOverlay(page);
     await login(page, user, password);
     await page.waitForLoadState('load');
-    // React hydration after SSO — intermittent failures without this in CI (widget-layout#298)
     await page.waitForTimeout(3000);
     await expect(page.getByText('Invalid login')).not.toBeVisible();
     await expect(
@@ -75,7 +87,6 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
       'dashboard not displayed'
     ).toBeVisible({ timeout: 30000 });
 
-    // conditionally accept cookie prompt
     const acceptAllButton = page.getByRole('button', { name: 'Accept all' });
     if (await acceptAllButton.isVisible()) {
       await acceptAllButton.click();
