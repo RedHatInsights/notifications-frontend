@@ -49,3 +49,7 @@
 .noti-c-table-border-top {
   border-top: var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor);
 }
+
+.pf-v6-c-notification-drawer__header-action .ins-c-bulk-select {
+  flex-shrink: 0;
+}
