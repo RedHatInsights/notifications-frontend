@@ -1,5 +1,9 @@
-import { test, expect } from '@playwright/test';
-import { ensureLoggedIn, NOTIFICATIONS_BASE_URL, INTEGRATIONS_BASE_URL } from './test-utils';
+import { expect, test } from '@playwright/test';
+import {
+  INTEGRATIONS_PATH,
+  NOTIFICATIONS_PATH,
+  ensureLoggedIn,
+} from './test-utils';
 
 /**
  * Example E2E test for notifications-frontend
@@ -15,7 +19,7 @@ test.describe('Notifications Frontend', () => {
 
   test('should load the notifications page', async ({ page }) => {
     // Navigate to the notifications page
-    await page.goto(NOTIFICATIONS_BASE_URL);
+    await page.goto(NOTIFICATIONS_PATH);
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
@@ -25,12 +29,15 @@ test.describe('Notifications Frontend', () => {
     await expect(page).toHaveURL(/settings\/notifications/);
 
     // Take a screenshot for debugging
-    await page.screenshot({ path: 'playwright-results/notifications-page.png', fullPage: true });
+    await page.screenshot({
+      path: 'playwright-results/notifications-page.png',
+      fullPage: true,
+    });
   });
 
   test('should load the integrations page', async ({ page }) => {
     // Navigate to the integrations page
-    await page.goto(INTEGRATIONS_BASE_URL);
+    await page.goto(INTEGRATIONS_PATH);
 
     // Wait for the page to load
     await page.waitForLoadState('networkidle');
@@ -39,6 +46,9 @@ test.describe('Notifications Frontend', () => {
     await expect(page).toHaveURL(/settings\/integrations/);
 
     // Take a screenshot for debugging
-    await page.screenshot({ path: 'playwright-results/integrations-page.png', fullPage: true });
+    await page.screenshot({
+      path: 'playwright-results/integrations-page.png',
+      fullPage: true,
+    });
   });
 });
