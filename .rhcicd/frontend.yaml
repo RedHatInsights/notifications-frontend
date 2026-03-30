@@ -80,6 +80,24 @@ objects:
           href: /settings/notifications
           description: A standardized way of notifying users of events for supported services on the Hybrid Cloud Console.
       
+      widgetRegistry:
+        - scope: notifications
+          module: "./DashboardWidget"
+          featureFlag: widget.notifications.enable
+          config:
+            icon: BellIcon
+            title: Events
+            headerLink:
+              title: View event log
+              href: "/settings/notifications/eventlog"
+            permissions:
+              - method: isOrgAdmin
+          defaults:
+            w: 1
+            h: 3
+            maxH: 10
+            minH: 1
+
       serviceTiles:
         - section: integrations-notifications
           group: settings
