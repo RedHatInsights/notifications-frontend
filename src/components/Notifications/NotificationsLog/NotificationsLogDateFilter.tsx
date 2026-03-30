@@ -221,7 +221,9 @@ export const NotificationsLogDateFilter: React.FunctionComponent<
         >
           <SelectList>
             {Object.values(NotificationsLogDateFilterValue).map((v) => (
-              <SelectOption key={v} value={new EventLogSelectObject(v)} />
+              <SelectOption key={v} value={new EventLogSelectObject(v)}>
+                {labels[v]}
+              </SelectOption>
             ))}
           </SelectList>
         </Select>

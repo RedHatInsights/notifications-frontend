@@ -238,7 +238,9 @@ export const EventLogDateFilter: React.FunctionComponent<
   const options = React.useMemo(
     () =>
       Object.values(EventLogDateFilterValue).map((v) => (
-        <SelectOption key={v} value={new EventLogSelectObject(v)} />
+        <SelectOption key={v} value={new EventLogSelectObject(v)}>
+          {labels[v]}
+        </SelectOption>
       )),
     []
   );
