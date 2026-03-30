@@ -49,6 +49,7 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
     auth: {
       getUser: () =>
         Promise.resolve({ identity: { user: { is_org_admin: true } } }),
+      getToken: () => Promise.resolve('mock-token'),
     },
   });
 });
@@ -68,6 +69,51 @@ const mockMaintenance = (isUp: boolean) => {
     status: 200,
     body: response,
   });
+};
+
+const mockKesselAndDefaultWorkspace = () => {
+  fetchMock.get(
+    /\/api\/rbac\/v2\/workspaces\/\?type=default/,
+    {
+      status: 200,
+      body: {
+        data: [
+          {
+            id: '00000000-0000-0000-0000-000000000001',
+            type: 'default',
+            name: 'Default',
+            created: '2020-01-01T00:00:00.000Z',
+            modified: '2020-01-01T00:00:00.000Z',
+          },
+        ],
+      },
+    },
+    { overwriteRoutes: true }
+  );
+  fetchMock.post(
+    /\/api\/kessel\/v1beta2\/checkselfbulk/,
+    {
+      status: 200,
+      body: {
+        pairs: [
+          { item: { allowed: 'ALLOWED_TRUE' } },
+          { item: { allowed: 'ALLOWED_TRUE' } },
+        ],
+      },
+    },
+    { overwriteRoutes: true }
+  );
+  fetchMock.get(
+    /\/api\/rbac\/v1\/groups/,
+    {
+      status: 200,
+      body: {
+        data: [],
+        meta: { count: 0 },
+      },
+    },
+    { overwriteRoutes: true }
+  );
 };
 
 describe('src/app/App', () => {
@@ -117,6 +163,7 @@ describe('src/app/App', () => {
   it('Shows the content when read is set', async () => {
     jest.useFakeTimers();
     mockMaintenance(true);
+    mockKesselAndDefaultWorkspace();
 
     const Wrapper = getConfiguredAppWrapper({
       route: {
@@ -153,6 +200,7 @@ describe('src/app/App', () => {
 
   it('Shows error when RBAC does not have read access when /notifications', async () => {
     jest.useFakeTimers();
+    mockKesselAndDefaultWorkspace();
     const rbac = new Rbac({
       integrations: {
         endpoints: ['read', 'write'],

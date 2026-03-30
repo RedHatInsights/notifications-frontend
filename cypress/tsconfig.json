@@ -13,7 +13,7 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "baseUrl": "./",
-    "types": ["cypress", "node", "cypress-real-events"],
+    "types": ["cypress", "node"],
     "allowJs": false
   },
   "include": ["./**/*.ts", "./**/*.tsx"],

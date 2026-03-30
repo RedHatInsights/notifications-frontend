@@ -38,6 +38,7 @@ import {
 import { useFieldApi } from '@data-driven-forms/react-form-renderer';
 import { useClient } from 'react-fetching-library';
 import { perPageOptions } from '../../../../config/Config';
+import { useKesselRbacAccess } from '../../../../app/rbac/KesselRbacAccessContext';
 import { useRbacGroups } from '../../../../app/rbac/RbacGroupContext';
 import { NotificationRbacGroupRecipient } from '../../../../types/Recipient';
 import { OutlinedQuestionCircleIcon, UsersIcon } from '@patternfly/react-icons';
@@ -68,6 +69,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   );
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
+  const { canReadRbacPrincipals } = useKesselRbacAccess();
   const { query } = useClient();
   const [visiblePopoverId, setVisiblePopoverId] = React.useState<string | null>(
     null
@@ -87,6 +89,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   // Function to fetch and open drawer with user list
   const handleViewUsers = React.useCallback(
     async (group: (typeof userAccessGroups)[0]) => {
+      if (!canReadRbacPrincipals) {
+        return;
+      }
       setSelectedGroup(group);
       setIsDrawerOpen(true);
       setIsLoadingUsers(true);
@@ -110,7 +115,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
         setIsLoadingUsers(false);
       }
     },
-    [query]
+    [query, canReadRbacPrincipals]
   );
 
   const handleCloseDrawer = React.useCallback(() => {
@@ -297,7 +302,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             intl.formatMessage(messages.allOrgAdmins)
           ) : group.platform_default ? (
             intl.formatMessage(messages.allUsers)
-          ) : (
+          ) : canReadRbacPrincipals ? (
             <Button
               variant="link"
               isInline
@@ -310,6 +315,12 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 ? intl.formatMessage(messages.userPlural)
                 : intl.formatMessage(messages.userSingular)}
             </Button>
+          ) : (
+            <span className="pf-v6-u-display-flex pf-v6-u-align-items-center">
+              {intl.formatMessage(messages.usersCountWithoutPrincipalRead, {
+                count: group.userCount,
+              })}
+            </span>
           ),
         ],
         props: {
@@ -324,6 +335,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
     onSelect,
     handleViewUsers,
     intl,
+    canReadRbacPrincipals,
   ]);
 
   const emptyState = (

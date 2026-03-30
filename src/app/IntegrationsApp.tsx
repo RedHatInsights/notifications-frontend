@@ -1,11 +1,13 @@
 import './App.scss';
 
+import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import { Bullseye, Spinner } from '@patternfly/react-core';
 import * as React from 'react';
 
 import IntegrationsList from '../pages/Integrations/List/List';
 import { IntegrationCategory } from '../types/Integration';
 import { AppContext } from './AppContext';
+import { KesselRbacAccessProvider } from './rbac/KesselRbacAccessProvider';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 import { AppEntryProps } from '../AppEntry';
@@ -28,6 +30,9 @@ const IntegrationsApp: React.ComponentType<
       ? (activeCategory as IntegrationCategory)
       : undefined;
 
+  const apiBaseUrl =
+    typeof window !== 'undefined' ? window.location.origin : '';
+
   return rbac && server ? (
     <AppContext.Provider
       value={{
@@ -36,11 +41,15 @@ const IntegrationsApp: React.ComponentType<
         isOrgAdmin: !!isOrgAdmin,
       }}
     >
-      <RbacGroupContextProvider>
-        <NotificationsProvider>
-          <IntegrationsList category={category} {...props} />
-        </NotificationsProvider>
-      </RbacGroupContextProvider>
+      <AccessCheck.Provider baseUrl={apiBaseUrl} apiPath="/api/kessel/v1beta2">
+        <KesselRbacAccessProvider>
+          <RbacGroupContextProvider>
+            <NotificationsProvider>
+              <IntegrationsList category={category} {...props} />
+            </NotificationsProvider>
+          </RbacGroupContextProvider>
+        </KesselRbacAccessProvider>
+      </AccessCheck.Provider>
     </AppContext.Provider>
   ) : (
     <Bullseye>

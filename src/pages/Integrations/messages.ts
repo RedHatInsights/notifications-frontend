@@ -77,6 +77,13 @@ export default defineMessages({
     description: 'Plural form of user',
     defaultMessage: 'users',
   },
+  usersCountWithoutPrincipalRead: {
+    id: 'integrations.userAccessGroups.usersCountWithoutPrincipalRead',
+    description:
+      'User count in the Users column when the user cannot open the principal list (Kessel rbac_principal_read denied)',
+    defaultMessage:
+      '{count} {count, plural, one {user} other {users}} (viewing users requires permission)',
+  },
 
   // Drawer messages
   usersDrawerTitle: {

@@ -1,6 +1,7 @@
 import componentMapper from '@data-driven-forms/pf4-component-mapper/component-mapper';
 import Pf4FormTemplate from '@data-driven-forms/pf4-component-mapper/form-template';
 import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
+import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
 import { ClientContextProvider } from 'react-fetching-library';
@@ -31,6 +32,7 @@ import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import { useIntl } from 'react-intl';
 import { IntegrationType } from '../../../types/Integration';
+import { KesselRbacAccessProvider } from '../../../app/rbac/KesselRbacAccessProvider';
 import { RbacGroupContextProvider } from '../../../app/rbac/RbacGroupContextProvider';
 import {
   createFetchingClient,
@@ -200,11 +202,18 @@ const IntegrationWizardWrapper: React.FC<
     []
   );
 
+  const apiBaseUrl =
+    typeof window !== 'undefined' ? window.location.origin : '';
+
   const content = (
     <ClientContextProvider client={client}>
-      <RbacGroupContextProvider>
-        <IntegrationWizard {...props} />
-      </RbacGroupContextProvider>
+      <AccessCheck.Provider baseUrl={apiBaseUrl} apiPath="/api/kessel/v1beta2">
+        <KesselRbacAccessProvider>
+          <RbacGroupContextProvider>
+            <IntegrationWizard {...props} />
+          </RbacGroupContextProvider>
+        </KesselRbacAccessProvider>
+      </AccessCheck.Provider>
     </ClientContextProvider>
   );
 

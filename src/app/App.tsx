@@ -6,11 +6,14 @@ import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import format from 'date-fns/format';
 import * as React from 'react';
 
+import { AccessCheck } from '@project-kessel/react-kessel-access-check';
+
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
 import { AppSkeleton } from './AppSkeleton';
+import { KesselRbacAccessProvider } from './rbac/KesselRbacAccessProvider';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
 import { useApp } from './useApp';
 import {
@@ -74,6 +77,9 @@ const App: React.ComponentType = () => {
     );
   }
 
+  const apiBaseUrl =
+    typeof window !== 'undefined' ? window.location.origin : '';
+
   return (
     <AppContext.Provider
       value={{
@@ -82,21 +88,25 @@ const App: React.ComponentType = () => {
         isOrgAdmin: !!isOrgAdmin,
       }}
     >
-      <RbacGroupContextProvider>
-        <NotificationsProvider>
-          <InsightsEnvDetector insights={insights} onEnvironment={staging}>
-            <RenderIfTrue>
-              <Switch
-                className="pf-v5-u-p-sm"
-                isChecked={usingExperimental}
-                onChange={toggleExperimental}
-                label="Disable experimental features"
-              />
-            </RenderIfTrue>
-          </InsightsEnvDetector>
-          <Routes />
-        </NotificationsProvider>
-      </RbacGroupContextProvider>
+      <AccessCheck.Provider baseUrl={apiBaseUrl} apiPath="/api/kessel/v1beta2">
+        <KesselRbacAccessProvider>
+          <RbacGroupContextProvider>
+            <NotificationsProvider>
+              <InsightsEnvDetector insights={insights} onEnvironment={staging}>
+                <RenderIfTrue>
+                  <Switch
+                    className="pf-v5-u-p-sm"
+                    isChecked={usingExperimental}
+                    onChange={toggleExperimental}
+                    label="Disable experimental features"
+                  />
+                </RenderIfTrue>
+              </InsightsEnvDetector>
+              <Routes />
+            </NotificationsProvider>
+          </RbacGroupContextProvider>
+        </KesselRbacAccessProvider>
+      </AccessCheck.Provider>
     </AppContext.Provider>
   );
 };

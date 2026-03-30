@@ -3,8 +3,9 @@ import { useState } from 'react';
 import { useClient } from 'react-fetching-library';
 
 import { getRbacGroupsAction } from '../../services/Rbac/GetGroups';
-import { RbacGroup, RbacGroupContext } from './RbacGroupContext';
 import { useSyncInterval } from '../../utils/insights-common-typescript';
+import { RbacGroup, RbacGroupContext } from './RbacGroupContext';
+import { useKesselRbacAccess } from './KesselRbacAccessContext';
 
 const SYNC_INTERVAL = 2 * 60 * 1000;
 const LIMIT = 100;
@@ -47,16 +48,29 @@ export const RbacGroupContextProvider: React.FunctionComponent<
   React.PropsWithChildren
 > = (props) => {
   const { query } = useClient();
+  const kessel = useKesselRbacAccess();
   const [isLoading, setLoading] = useState(true);
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
 
   const sync = React.useCallback(async () => {
+    if (kessel.isLoading) {
+      return;
+    }
+
+    if (!kessel.canReadRbacGroups) {
+      setRbacGroups([]);
+      setLoading(false);
+      return;
+    }
+
     const allGroups: Array<RbacGroup> = [];
     let offset = 0;
     // eslint-disable-next-line no-constant-condition
     while (true) {
       const [groups, hasMorePages] = await getPage(query, offset);
       if (groups === undefined) {
+        setRbacGroups([]);
+        setLoading(false);
         return;
       }
 
@@ -70,16 +84,26 @@ export const RbacGroupContextProvider: React.FunctionComponent<
 
     setRbacGroups(allGroups);
     setLoading(false);
-  }, [query]);
+  }, [query, kessel.isLoading, kessel.canReadRbacGroups]);
+
+  React.useEffect(() => {
+    if (!kessel.isLoading && !kessel.canReadRbacGroups) {
+      setRbacGroups([]);
+      setLoading(false);
+    }
+  }, [kessel.isLoading, kessel.canReadRbacGroups]);
 
   useSyncInterval(SYNC_INTERVAL, sync, true);
+
+  const groupsLoading =
+    kessel.isLoading || (kessel.canReadRbacGroups && isLoading);
 
   const value = React.useMemo(
     () => ({
       groups: rbacGroups,
-      isLoading,
+      isLoading: groupsLoading,
     }),
-    [rbacGroups, isLoading]
+    [rbacGroups, groupsLoading]
   );
 
   return (
