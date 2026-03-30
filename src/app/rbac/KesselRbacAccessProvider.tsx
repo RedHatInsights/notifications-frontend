@@ -90,14 +90,21 @@ export const KesselRbacAccessProvider: React.FunctionComponent<
     let cancelled = false;
 
     const load = async () => {
+      let auth: { headers: { Authorization: string } } | undefined;
       try {
         const token = await chrome.auth.getToken();
-        const auth = token
-          ? { headers: { Authorization: `Bearer ${token}` } }
-          : undefined;
+        if (token) {
+          auth = { headers: { Authorization: `Bearer ${token}` } };
+        }
+      } catch {
+        // Token acquisition is best-effort; proceed without auth.
+      }
+
+      try {
         const ws = await fetchDefaultWorkspace(baseUrl, auth);
         if (!cancelled) {
           setWorkspaceId(ws.id);
+          setWorkspaceError(false);
         }
       } catch {
         if (!cancelled) {
