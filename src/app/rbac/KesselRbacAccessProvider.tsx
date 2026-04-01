@@ -1,4 +1,5 @@
 import {
+  type SelfAccessCheckResourceWithRelation,
   fetchDefaultWorkspace,
   useSelfAccessCheck,
 } from '@project-kessel/react-kessel-access-check';
@@ -10,6 +11,7 @@ import {
   KesselRbacAccessContextValue,
   defaultKesselRbacAccess,
 } from './KesselRbacAccessContext';
+import { KESSEL_WORKSPACE_RELATIONS_ORDERED } from './kesselWorkspaceRelations';
 
 const rbacReporter = { type: 'rbac' as const };
 
@@ -34,21 +36,18 @@ function KesselChecksInner({
   workspaceId,
   children,
 }: React.PropsWithChildren<{ workspaceId: string }>) {
+  const resources = KESSEL_WORKSPACE_RELATIONS_ORDERED.map((relation) => ({
+    id: workspaceId,
+    type: 'workspace',
+    relation,
+    reporter: rbacReporter,
+  })) as [
+    SelfAccessCheckResourceWithRelation,
+    ...SelfAccessCheckResourceWithRelation[]
+  ];
+
   const { data, loading, error } = useSelfAccessCheck({
-    resources: [
-      {
-        id: workspaceId,
-        type: 'workspace',
-        relation: 'rbac_groups_read',
-        reporter: rbacReporter,
-      },
-      {
-        id: workspaceId,
-        type: 'workspace',
-        relation: 'rbac_principal_read',
-        reporter: rbacReporter,
-      },
-    ],
+    resources,
   });
 
   const value = React.useMemo((): KesselRbacAccessContextValue => {
@@ -59,6 +58,11 @@ function KesselChecksInner({
 
     return {
       isLoading: loading,
+      canReadNotifications: allowedFor('notifications_notifications_view'),
+      canWriteNotifications: allowedFor('notifications_notifications_edit'),
+      canReadIntegrationsEndpoints: allowedFor('integrations_endpoints_view'),
+      canWriteIntegrationsEndpoints: allowedFor('integrations_endpoints_edit'),
+      canReadEvents: allowedFor('notifications_events_view'),
       canReadRbacGroups: allowedFor('rbac_groups_read'),
       canReadRbacPrincipals: allowedFor('rbac_principal_read'),
       kesselError: !!error,
@@ -73,8 +77,9 @@ function KesselChecksInner({
 }
 
 /**
- * Resolves the org default workspace and runs Kessel self-checks for
- * rbac_groups_read / rbac_principal_read. Must render under AccessCheck.Provider.
+ * Resolves the org default workspace and runs Kessel self-checks for workspace
+ * relations defined in rbac-config (notifications.ksl) plus rbac_groups_read /
+ * rbac_principal_read. Must render under AccessCheck.Provider.
  */
 export const KesselRbacAccessProvider: React.FunctionComponent<
   React.PropsWithChildren
@@ -134,6 +139,11 @@ export const KesselRbacAccessProvider: React.FunctionComponent<
   if (!workspaceId || workspaceError) {
     const denied: KesselRbacAccessContextValue = {
       isLoading: false,
+      canReadNotifications: false,
+      canWriteNotifications: false,
+      canReadIntegrationsEndpoints: false,
+      canWriteIntegrationsEndpoints: false,
+      canReadEvents: false,
       canReadRbacGroups: false,
       canReadRbacPrincipals: false,
       workspaceError: true,

@@ -11,7 +11,7 @@ import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
 import { ServerStatus } from '../types/Server';
-import { AppContext } from './AppContext';
+import { AppKesselContextBridge } from './AppKesselContextBridge';
 import { AppSkeleton } from './AppSkeleton';
 import { KesselRbacAccessProvider } from './rbac/KesselRbacAccessProvider';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
@@ -32,7 +32,7 @@ const App: React.ComponentType = () => {
   const { updateDocumentTitle } = useChrome();
 
   updateDocumentTitle?.('Notifications');
-  const { rbac, server, isOrgAdmin } = useApp();
+  const { server, isOrgAdmin } = useApp();
   const insights = getInsights();
   const [usingExperimental, setUsingExperimental] =
     React.useState<boolean>(false);
@@ -55,7 +55,7 @@ const App: React.ComponentType = () => {
     [insights]
   );
 
-  if (!rbac || !server) {
+  if (!server) {
     return <AppSkeleton />;
   }
 
@@ -81,15 +81,9 @@ const App: React.ComponentType = () => {
     typeof window !== 'undefined' ? window.location.origin : '';
 
   return (
-    <AppContext.Provider
-      value={{
-        rbac,
-        server,
-        isOrgAdmin: !!isOrgAdmin,
-      }}
-    >
-      <AccessCheck.Provider baseUrl={apiBaseUrl} apiPath="/api/kessel/v1beta2">
-        <KesselRbacAccessProvider>
+    <AccessCheck.Provider baseUrl={apiBaseUrl} apiPath="/api/kessel/v1beta2">
+      <KesselRbacAccessProvider>
+        <AppKesselContextBridge server={server} isOrgAdmin={!!isOrgAdmin}>
           <RbacGroupContextProvider>
             <NotificationsProvider>
               <InsightsEnvDetector insights={insights} onEnvironment={staging}>
@@ -105,9 +99,9 @@ const App: React.ComponentType = () => {
               <Routes />
             </NotificationsProvider>
           </RbacGroupContextProvider>
-        </KesselRbacAccessProvider>
-      </AccessCheck.Provider>
-    </AppContext.Provider>
+        </AppKesselContextBridge>
+      </KesselRbacAccessProvider>
+    </AccessCheck.Provider>
   );
 };
 

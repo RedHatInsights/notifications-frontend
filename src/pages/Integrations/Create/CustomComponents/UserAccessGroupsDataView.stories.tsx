@@ -9,6 +9,7 @@ import { KesselRbacAccessProvider } from '../../../../app/rbac/KesselRbacAccessP
 import {
   KesselRbacAccessContext,
   type KesselRbacAccessContextValue,
+  defaultKesselRbacAccess,
 } from '../../../../app/rbac/KesselRbacAccessContext';
 import {
   type RbacGroup,
@@ -101,7 +102,7 @@ const meta: Meta<typeof UserAccessGroupsStubStory> = {
     docs: {
       description: {
         component:
-          'Email integration step: pick User Access Groups. Kessel relations `rbac_groups_read` / `rbac_principal_read` gate listing groups and viewing principals; V1 APIs still fetch data when allowed.',
+          'Email integration step: pick User Access Groups. Kessel relations from rbac-config (e.g. `rbac_groups_read` / `rbac_principal_read`) gate listing groups and viewing principals; V1 group APIs still fetch data when allowed.',
       },
     },
   },
@@ -115,7 +116,13 @@ export const StubAllPermissionsAllowed: Story = {
   name: 'Stub — groups and principals allowed',
   args: {
     kessel: {
+      ...defaultKesselRbacAccess,
       isLoading: false,
+      canReadNotifications: true,
+      canWriteNotifications: true,
+      canReadIntegrationsEndpoints: true,
+      canWriteIntegrationsEndpoints: true,
+      canReadEvents: true,
       canReadRbacGroups: true,
       canReadRbacPrincipals: true,
     },
@@ -136,6 +143,7 @@ export const StubGroupsReadDenied: Story = {
   name: 'Stub — rbac_groups_read denied',
   args: {
     kessel: {
+      ...defaultKesselRbacAccess,
       isLoading: false,
       canReadRbacGroups: false,
       canReadRbacPrincipals: false,
@@ -157,6 +165,7 @@ export const StubPrincipalReadDenied: Story = {
   name: 'Stub — rbac_principal_read denied',
   args: {
     kessel: {
+      ...defaultKesselRbacAccess,
       isLoading: false,
       canReadRbacGroups: true,
       canReadRbacPrincipals: false,
@@ -178,6 +187,7 @@ export const StubKesselLoading: Story = {
   name: 'Stub — Kessel checks loading',
   args: {
     kessel: {
+      ...defaultKesselRbacAccess,
       isLoading: true,
       canReadRbacGroups: false,
       canReadRbacPrincipals: false,

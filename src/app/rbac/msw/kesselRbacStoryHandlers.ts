@@ -1,13 +1,50 @@
 import { HttpResponse, type RequestHandler, http } from 'msw';
+import { KESSEL_WORKSPACE_RELATIONS_ORDERED } from '../kesselWorkspaceRelations';
 
 /** Default workspace id used in Storybook / tests (must match seeded group UUIDs if principals are requested). */
 export const STORY_DEFAULT_WORKSPACE_ID =
   '00000000-0000-0000-0000-0000000000aa';
 
 export type KesselBulkAllowOptions = {
+  allowNotificationsView?: boolean;
+  allowNotificationsEdit?: boolean;
+  allowIntegrationsEndpointsView?: boolean;
+  allowIntegrationsEndpointsEdit?: boolean;
+  allowEventsView?: boolean;
   allowGroupsRead?: boolean;
   allowPrincipalRead?: boolean;
 };
+
+function kesselBulkPairsFromOptions(
+  options: KesselBulkAllowOptions
+): { item: { allowed: string } }[] {
+  const allowedFor = (
+    relation: (typeof KESSEL_WORKSPACE_RELATIONS_ORDERED)[number]
+  ) => {
+    switch (relation) {
+      case 'notifications_notifications_view':
+        return options.allowNotificationsView ?? true;
+      case 'notifications_notifications_edit':
+        return options.allowNotificationsEdit ?? true;
+      case 'integrations_endpoints_view':
+        return options.allowIntegrationsEndpointsView ?? true;
+      case 'integrations_endpoints_edit':
+        return options.allowIntegrationsEndpointsEdit ?? true;
+      case 'notifications_events_view':
+        return options.allowEventsView ?? true;
+      case 'rbac_groups_read':
+        return options.allowGroupsRead ?? true;
+      case 'rbac_principal_read':
+        return options.allowPrincipalRead ?? true;
+    }
+  };
+
+  return KESSEL_WORKSPACE_RELATIONS_ORDERED.map((relation) => ({
+    item: {
+      allowed: allowedFor(relation) ? 'ALLOWED_TRUE' : 'ALLOWED_FALSE',
+    },
+  }));
+}
 
 /**
  * MSW handlers for Kessel access checks + RBAC v2 default workspace.
@@ -16,8 +53,6 @@ export type KesselBulkAllowOptions = {
 export function createKesselWorkspaceAndAccessHandlers(
   options: KesselBulkAllowOptions = {}
 ): RequestHandler[] {
-  const { allowGroupsRead = true, allowPrincipalRead = true } = options;
-
   const workspace = http.get(/\/api\/rbac\/v2\/workspaces\//, () =>
     HttpResponse.json({
       data: [
@@ -34,18 +69,7 @@ export function createKesselWorkspaceAndAccessHandlers(
 
   const kesselBulk = http.post(/\/api\/kessel\/v1beta2\/checkselfbulk/, () =>
     HttpResponse.json({
-      pairs: [
-        {
-          item: {
-            allowed: allowGroupsRead ? 'ALLOWED_TRUE' : 'ALLOWED_FALSE',
-          },
-        },
-        {
-          item: {
-            allowed: allowPrincipalRead ? 'ALLOWED_TRUE' : 'ALLOWED_FALSE',
-          },
-        },
-      ],
+      pairs: kesselBulkPairsFromOptions(options),
     })
   );
 
