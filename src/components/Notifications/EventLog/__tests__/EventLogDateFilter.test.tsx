@@ -12,7 +12,13 @@ import {
   NotificationsLogDateFilterValue,
 } from '../../NotificationsLog/NotificationsLogDateFilter';
 
-const expectedLabels = ['Today', 'Yesterday', 'Last 7 days', 'Last 14 days', 'Custom'];
+const expectedLabels = [
+  'Today',
+  'Yesterday',
+  'Last 7 days',
+  'Last 14 days',
+  'Custom',
+];
 
 describe.each([
   {
@@ -74,7 +80,7 @@ describe.each([
   it('does not show custom date pickers for non-custom values', () => {
     render(<DateFilter {...defaultProps} />);
 
-    expect(screen.queryByPlaceholderText('Start')).toBeNull();
-    expect(screen.queryByPlaceholderText('End')).toBeNull();
+    expect(screen.queryByPlaceholderText('Start')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('End')).not.toBeInTheDocument();
   });
 });

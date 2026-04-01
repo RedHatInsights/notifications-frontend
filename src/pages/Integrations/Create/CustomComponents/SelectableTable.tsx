@@ -73,6 +73,32 @@ interface EventTypeFromGroup {
   isSelected: boolean;
 }
 
+const createEventTypeMapping = (
+  event: EventTypeFromGroup
+): EventTypeMapping => ({
+  eventTypeDisplayName: event.display_name,
+  applicationDisplayName: event.application.display_name,
+  description: event.description,
+  id: event.id,
+  isSelected: true,
+});
+
+const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
+  return events.reduce(
+    (acc, event) => {
+      const bundleName = event.bundle.display_name as EventBundle;
+      return {
+        ...acc,
+        [bundleName]: {
+          ...acc[bundleName],
+          [event.id]: createEventTypeMapping(event),
+        },
+      };
+    },
+    { ...BUNDLE_DEFAULTS }
+  );
+};
+
 const SelectableTable = (props) => {
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
@@ -99,32 +125,6 @@ const SelectableTable = (props) => {
       input.value?.[currBundle?.displayName] || {}
     ) as readonly EventType[];
   }
-
-  const createEventTypeMapping = (
-    event: EventTypeFromGroup
-  ): EventTypeMapping => ({
-    eventTypeDisplayName: event.display_name,
-    applicationDisplayName: event.application.display_name,
-    description: event.description,
-    id: event.id,
-    isSelected: true,
-  });
-
-  const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
-    return events.reduce(
-      (acc, event) => {
-        const bundleName = event.bundle.display_name as EventBundle;
-        return {
-          ...acc,
-          [bundleName]: {
-            ...acc[bundleName],
-            [event.id]: createEventTypeMapping(event),
-          },
-        };
-      },
-      { ...BUNDLE_DEFAULTS }
-    );
-  };
 
   React.useEffect(() => {
     if (!integrationId) {
@@ -153,7 +153,7 @@ const SelectableTable = (props) => {
     };
 
     getEventData();
-  }, [integrationId]);
+  }, [integrationId, input]);
 
   return currBundle && loaded ? (
     <EventTypes
