@@ -3,6 +3,7 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import { expect, within } from 'storybook/test';
 import { MemoryRouter } from 'react-router-dom';
 
+import { linkTo } from '../Routes';
 import { CheckReadPermissions } from './CheckReadPermissions';
 
 /** Mirrors `.storybook/preview.tsx` defaults — Kessel-mapped flags surface here as `AppContext.rbac`. */
@@ -164,7 +165,7 @@ export const EventLogReadAllowed: Story = {
     },
   },
   render: () => (
-    <RouterShell initialPath="/eventlog">
+    <RouterShell initialPath={linkTo.eventLog()}>
       <CheckReadPermissions>{protectedContent}</CheckReadPermissions>
     </RouterShell>
   ),
@@ -191,7 +192,7 @@ export const EventLogReadDenied: Story = {
     },
   },
   render: () => (
-    <RouterShell initialPath="/eventlog">
+    <RouterShell initialPath={linkTo.eventLog()}>
       <CheckReadPermissions>{protectedContent}</CheckReadPermissions>
     </RouterShell>
   ),

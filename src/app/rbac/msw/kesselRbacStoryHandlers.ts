@@ -1,9 +1,20 @@
 import { HttpResponse, type RequestHandler, http } from 'msw';
-import { KESSEL_WORKSPACE_RELATIONS_ORDERED } from '../kesselWorkspaceRelations';
+
+import {
+  KESSEL_WORKSPACE_RELATIONS_ORDERED,
+  type KesselWorkspaceRelation,
+} from '../kesselWorkspaceRelations';
 
 /** Default workspace id used in Storybook / tests (must match seeded group UUIDs if principals are requested). */
 export const STORY_DEFAULT_WORKSPACE_ID =
   '00000000-0000-0000-0000-0000000000aa';
+
+/** List only: `/api/rbac/v1/groups` or `/api/rbac/v1/groups/` with optional query — not `.../groups/<id>/principals/`. */
+const RBAC_V1_GROUPS_LIST_PATH = /\/api\/rbac\/v1\/groups\/?(?:\?[^#]*)?$/;
+
+/** Default workspace list (e.g. `?type=default`) without matching subpaths. */
+const RBAC_V2_WORKSPACES_LIST_PATH =
+  /\/api\/rbac\/v2\/workspaces\/?(?:\?[^#]*)?$/;
 
 export type KesselBulkAllowOptions = {
   allowNotificationsView?: boolean;
@@ -15,33 +26,28 @@ export type KesselBulkAllowOptions = {
   allowPrincipalRead?: boolean;
 };
 
+function relationAllowFromOptions(
+  options: KesselBulkAllowOptions
+): Record<KesselWorkspaceRelation, boolean> {
+  return {
+    notifications_notifications_view: options.allowNotificationsView ?? true,
+    notifications_notifications_edit: options.allowNotificationsEdit ?? true,
+    integrations_endpoints_view: options.allowIntegrationsEndpointsView ?? true,
+    integrations_endpoints_edit: options.allowIntegrationsEndpointsEdit ?? true,
+    notifications_events_view: options.allowEventsView ?? true,
+    rbac_groups_read: options.allowGroupsRead ?? true,
+    rbac_principal_read: options.allowPrincipalRead ?? true,
+  };
+}
+
 function kesselBulkPairsFromOptions(
   options: KesselBulkAllowOptions
 ): { item: { allowed: string } }[] {
-  const allowedFor = (
-    relation: (typeof KESSEL_WORKSPACE_RELATIONS_ORDERED)[number]
-  ) => {
-    switch (relation) {
-      case 'notifications_notifications_view':
-        return options.allowNotificationsView ?? true;
-      case 'notifications_notifications_edit':
-        return options.allowNotificationsEdit ?? true;
-      case 'integrations_endpoints_view':
-        return options.allowIntegrationsEndpointsView ?? true;
-      case 'integrations_endpoints_edit':
-        return options.allowIntegrationsEndpointsEdit ?? true;
-      case 'notifications_events_view':
-        return options.allowEventsView ?? true;
-      case 'rbac_groups_read':
-        return options.allowGroupsRead ?? true;
-      case 'rbac_principal_read':
-        return options.allowPrincipalRead ?? true;
-    }
-  };
+  const allowByRelation = relationAllowFromOptions(options);
 
   return KESSEL_WORKSPACE_RELATIONS_ORDERED.map((relation) => ({
     item: {
-      allowed: allowedFor(relation) ? 'ALLOWED_TRUE' : 'ALLOWED_FALSE',
+      allowed: allowByRelation[relation] ? 'ALLOWED_TRUE' : 'ALLOWED_FALSE',
     },
   }));
 }
@@ -53,7 +59,7 @@ function kesselBulkPairsFromOptions(
 export function createKesselWorkspaceAndAccessHandlers(
   options: KesselBulkAllowOptions = {}
 ): RequestHandler[] {
-  const workspace = http.get(/\/api\/rbac\/v2\/workspaces\//, () =>
+  const workspace = http.get(RBAC_V2_WORKSPACES_LIST_PATH, () =>
     HttpResponse.json({
       data: [
         {
@@ -114,7 +120,7 @@ export function createRbacGroupsListHandler(
     system?: boolean;
   }>
 ): RequestHandler {
-  return http.get(/\/api\/rbac\/v1\/groups\//, () =>
+  return http.get(RBAC_V1_GROUPS_LIST_PATH, () =>
     HttpResponse.json({
       data: groups.map((g) => ({
         name: g.name,

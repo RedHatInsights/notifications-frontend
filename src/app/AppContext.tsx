@@ -13,6 +13,11 @@ export interface AppContext {
   };
   isOrgAdmin: boolean;
   server: Server;
+  /**
+   * True when the default workspace fetch or Kessel bulk check failed (outage / transport),
+   * not a permission deny. `rbac` may be all false in that case; use this to distinguish from real denies.
+   */
+  kesselRbacAccessError?: boolean;
 }
 
 export const AppContext = React.createContext<AppContext>({

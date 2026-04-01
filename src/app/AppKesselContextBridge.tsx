@@ -21,6 +21,8 @@ export const AppKesselContextBridge: React.FunctionComponent<
     return <AppSkeleton />;
   }
 
+  const kesselRbacAccessError = !!(kessel.workspaceError || kessel.kesselError);
+
   return (
     <AppContext.Provider
       value={{
@@ -33,6 +35,7 @@ export const AppKesselContextBridge: React.FunctionComponent<
         },
         server,
         isOrgAdmin: !!isOrgAdmin,
+        kesselRbacAccessError,
       }}
     >
       {children}

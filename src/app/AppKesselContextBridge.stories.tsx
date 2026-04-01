@@ -3,13 +3,13 @@ import type { Meta, StoryObj } from '@storybook/react-webpack5';
 import * as React from 'react';
 import { expect, within } from 'storybook/test';
 
-import { ServerStatus } from '../types/Server';
+import { type Server, ServerStatus } from '../types/Server';
 import { useAppContext } from './AppContext';
 import { AppKesselContextBridge } from './AppKesselContextBridge';
 import { KesselRbacAccessProvider } from './rbac/KesselRbacAccessProvider';
 import { createKesselWorkspaceAndAccessHandlers } from './rbac/msw/kesselRbacStoryHandlers';
 
-const server = { status: ServerStatus.RUNNING };
+const server: Server = { status: ServerStatus.RUNNING };
 
 function RbacFromContextDisplay() {
   const { rbac } = useAppContext();
