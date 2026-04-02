@@ -8,9 +8,7 @@ const integrationsApi = getIntegrationsApi();
 const formatError = (error: any): string => {
   const title = error.title || '';
   const violations = error.violations
-    ? error.violations
-        .map((violation) => `${violation.field}: ${violation.message}`)
-        .join('; ')
+    ? error.violations.map((violation) => `${violation.field}: ${violation.message}`).join('; ')
     : '';
 
   return `${title}${violations ? ` - ${violations}` : ''}`;
@@ -30,22 +28,17 @@ export async function createEndpoint(
       };
 
       // Use the email subscription specific API
-      const response = await fetch(
-        '/api/integrations/v1.0/endpoints/system/email_subscription',
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(emailData),
-        }
-      );
+      const response = await fetch('/api/integrations/v1.0/endpoints/system/email_subscription', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(emailData),
+      });
 
       if (!response.ok) {
         const error = await response.text();
-        throw new Error(
-          `Failed to create email subscription: ${response.status} - ${error}`
-        );
+        throw new Error(`Failed to create email subscription: ${response.status} - ${error}`);
       }
     } else {
       // Use standard endpoint for other integrations
@@ -54,16 +47,12 @@ export async function createEndpoint(
 
     notifications.addSuccessNotification(
       'Integration created',
-      `The integration ${
-        config.name ? `${config.name} ` : ''
-      }was created successfully.`
+      `The integration ${config.name ? `${config.name} ` : ''}was created successfully.`
     );
     afterSubmit?.();
   } catch (e) {
-    notifications.addDangerNotification(
-      'Failed to create integration',
-      formatError(e)
-    ) || console.error(e);
+    notifications.addDangerNotification('Failed to create integration', formatError(e)) ||
+      console.error(e);
   }
 }
 
@@ -78,16 +67,12 @@ export async function updateEndpoint(
     await integrationsApi.updateEndpoint(id, data, config);
     notifications?.addSuccessNotification(
       'Integration updated',
-      `The integration ${
-        data.name ? `${data.name} ` : ''
-      }was updated successfully.`
+      `The integration ${data.name ? `${data.name} ` : ''}was updated successfully.`
     );
     afterSubmit?.();
   } catch (e) {
-    notifications?.addDangerNotification(
-      'Failed to update integration',
-      formatError(e)
-    ) || console.error(e);
+    notifications?.addDangerNotification('Failed to update integration', formatError(e)) ||
+      console.error(e);
   }
 }
 

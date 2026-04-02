@@ -1,8 +1,4 @@
-import {
-  Icon,
-  PaginationProps,
-  PaginationVariant,
-} from '@patternfly/react-core';
+import { Icon, PaginationProps, PaginationVariant } from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -22,10 +18,7 @@ import { useNotifications } from '../../../hooks/useNotifications';
 import { EventPeriod } from '../../../types/Event';
 import { Facet, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
-import {
-  EventLogDateFilter,
-  EventLogDateFilterValue,
-} from './EventLogDateFilter';
+import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
 import {
   ClearEventLogFilters,
   EventLogFilterColumn,
@@ -100,8 +93,7 @@ const actionStatusMetadata = [
     chipValue: 'Warning',
     label: (
       <span>
-        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100" />{' '}
-        Warning{' '}
+        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100" /> Warning{' '}
       </span>
     ),
   },
@@ -150,9 +142,7 @@ export const EventLogToolbar: React.FunctionComponent<
       );
   }, [notifications, integrations]);
 
-  const filterMetadata = React.useMemo<
-    Partial<ColumnsMetada<typeof EventLogFilterColumn>>
-  >(() => {
+  const filterMetadata = React.useMemo<Partial<ColumnsMetada<typeof EventLogFilterColumn>>>(() => {
     return {
       [EventLogFilterColumn.EVENT]: {
         label: 'Event',
@@ -236,12 +226,8 @@ export const EventLogToolbar: React.FunctionComponent<
     <div {...getOuiaProps('Notifications/EventLog/DualToolbar', props)}>
       <PrimaryToolbar
         {...primaryToolbarFilterConfig}
-        filterConfig={
-          primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps
-        }
-        activeFiltersConfig={
-          primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps
-        }
+        filterConfig={primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps}
+        activeFiltersConfig={primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps}
         dedicatedAction={
           <EventLogDateFilter
             value={props.dateFilter}

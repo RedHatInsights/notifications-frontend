@@ -2,11 +2,7 @@ import { useEffect } from 'react';
 
 type AsyncFunction = () => Promise<unknown> | unknown;
 
-export const useSyncInterval = (
-  ms: number,
-  callback: AsyncFunction,
-  callImmediately = false
-) => {
+export const useSyncInterval = (ms: number, callback: AsyncFunction, callImmediately = false) => {
   useEffect(() => {
     let handler;
     let destructorCalled = false;

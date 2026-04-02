@@ -9,10 +9,7 @@ import { useGetRecipients } from '../../../components/Notifications/useGetRecipi
 import { CreateBehaviorGroup } from '../../../types/CreateBehaviorGroup';
 import { Facet } from '../../../types/Notification';
 import { useNotification } from '../../../utils/AlertUtils';
-import {
-  SaveBehaviorGroupOperation,
-  useSaveBehaviorGroup,
-} from './useSaveBehaviorGroup';
+import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
 import { useSteps } from './useSteps';
 
 interface BehaviorGroupWizardProps {
@@ -30,9 +27,9 @@ interface BehaviorGroupWizardInternalProps extends BehaviorGroupWizardProps {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const noOp = () => {};
 
-const InternalBehaviorGroupWizardPage: React.FunctionComponent<
-  BehaviorGroupWizardInternalProps
-> = (props) => {
+const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizardInternalProps> = (
+  props
+) => {
   const [currentStep, setCurrentStep] = React.useState(0);
   const { isValid, validateForm } = useFormikContext<CreateBehaviorGroup>();
   const saving = useSaveBehaviorGroup(props.behaviorGroup);
@@ -44,16 +41,9 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<
     applications: props.applications,
   };
 
-  const steps = useSteps(
-    associateEventTypeStepProps,
-    currentStep,
-    isValid,
-    saving.isSaving
-  );
+  const steps = useSteps(associateEventTypeStepProps, currentStep, isValid, saving.isSaving);
 
-  const currentStepModel = steps[currentStep] as
-    | (typeof steps)[number]
-    | undefined;
+  const currentStepModel = steps[currentStep] as (typeof steps)[number] | undefined;
   const stepValidationSchema = currentStepModel?.schema;
 
   React.useEffect(() => {
@@ -94,15 +84,11 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<
 
       onClose(true);
     } else {
-      if (
-        result.duplicate &&
-        result.operation === SaveBehaviorGroupOperation.CREATE
-      ) {
+      if (result.duplicate && result.operation === SaveBehaviorGroupOperation.CREATE) {
         addDangerNotification(
           'Behavior group failed to be created',
           <>
-            A behavior group with display name{' '}
-            <b>{behaviorGroup.displayName}</b> already exists.
+            A behavior group with display name <b>{behaviorGroup.displayName}</b> already exists.
           </>
         );
       } else {
@@ -171,9 +157,9 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<
   );
 };
 
-export const BehaviorGroupWizardPage: React.FunctionComponent<
-  BehaviorGroupWizardProps
-> = (props) => {
+export const BehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWizardProps> = (
+  props
+) => {
   const getRecipients = useGetRecipients();
   const getIntegrations = useGetIntegrations();
   const actionsContextValue = React.useMemo(
@@ -184,8 +170,7 @@ export const BehaviorGroupWizardPage: React.FunctionComponent<
     [getIntegrations, getRecipients]
   );
 
-  const [validationSchema, setValidationSchema] =
-    React.useState<Yup.AnySchema>();
+  const [validationSchema, setValidationSchema] = React.useState<Yup.AnySchema>();
 
   return (
     <RecipientContextProvider value={actionsContextValue}>

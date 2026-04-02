@@ -1,13 +1,6 @@
 import { InsightsType } from './InsightsType';
 
-const nonBetaEnvironments = [
-  'ci',
-  'qa',
-  'stage',
-  'prod',
-  'gov',
-  'govStage',
-] as const;
+const nonBetaEnvironments = ['ci', 'qa', 'stage', 'prod', 'gov', 'govStage'] as const;
 
 const betaEnvironments = nonBetaEnvironments.map((v) => `${v}-beta` as const);
 

@@ -102,9 +102,7 @@ const buildReducer = <T>(copyFunction?: CopyFunction<T>) => {
   return reducer;
 };
 
-const makeCreateAction = <T>(
-  template?: Partial<T>
-): UseFormModalReducerActionCreate<T> => ({
+const makeCreateAction = <T>(template?: Partial<T>): UseFormModalReducerActionCreate<T> => ({
   type: UseFormModalReducerActionType.CREATE,
   template,
 });

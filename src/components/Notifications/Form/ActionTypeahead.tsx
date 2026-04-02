@@ -12,10 +12,7 @@ import { Link } from 'react-router-dom';
 import { useIntegrations } from '../../../hooks/useIntegrations';
 import { useNotifications } from '../../../hooks/useNotifications';
 import { linkTo } from '../../../Routes';
-import {
-  UserIntegrationType,
-  isUserIntegrationType,
-} from '../../../types/Integration';
+import { UserIntegrationType, isUserIntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
@@ -50,9 +47,7 @@ type NoIntegrationConfigured = {
   testNoIntegrationRenderWithoutRelAndTarget?: boolean;
 };
 
-const NoIntegrationConfigured: React.FunctionComponent<
-  NoIntegrationConfigured
-> = (props) => (
+const NoIntegrationConfigured: React.FunctionComponent<NoIntegrationConfigured> = (props) => (
   <>
     <div>You have no integration configured.</div>
     {props.Comp && <props.Comp />}
@@ -60,16 +55,8 @@ const NoIntegrationConfigured: React.FunctionComponent<
       Go to Settings {'>'}{' '}
       <Link
         style={{ pointerEvents: 'all' }}
-        rel={
-          props.testNoIntegrationRenderWithoutRelAndTarget
-            ? undefined
-            : 'noopener noreferrer'
-        }
-        target={
-          props.testNoIntegrationRenderWithoutRelAndTarget
-            ? undefined
-            : '_blank'
-        }
+        rel={props.testNoIntegrationRenderWithoutRelAndTarget ? undefined : 'noopener noreferrer'}
+        target={props.testNoIntegrationRenderWithoutRelAndTarget ? undefined : '_blank'}
         to={linkTo.integrations()}
       >
         Integrations
@@ -87,9 +74,7 @@ export interface ActionTypeaheadProps extends OuiaProps {
   testNoIntegrationRenderWithoutRelAndTarget?: boolean;
 }
 
-export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
-  props
-) => {
+export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (props) => {
   const [isOpen, setOpen] = React.useState(false);
   const { getIntegrations } = useRecipientContext();
   const [hasIntegrations, setHasIntegrations] = React.useState<
@@ -152,34 +137,31 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (
   const notificationTypes = useNotifications();
 
   const selectableOptions = React.useMemo(() => {
-    return getSelectOptions(
-      notificationTypes,
-      integrationTypes,
-      props.selectedNotifications
-    ).map((o) => {
-      const isDisabled =
-        isUserIntegrationType(o.integrationType) &&
-        !hasIntegrations[o.integrationType];
-      return (
-        <SelectOption
-          aria-disabled={isDisabled ? 'true' : 'false'}
-          isDisabled={isDisabled}
-          key={o.toString()}
-          value={o}
-          description={
-            isDisabled && (
-              <NoIntegrationConfigured
-                testNoIntegrationRenderWithoutRelAndTarget={
-                  props.testNoIntegrationRenderWithoutRelAndTarget
-                }
-              />
-            )
-          }
-        >
-          {o.toString()}
-        </SelectOption>
-      );
-    });
+    return getSelectOptions(notificationTypes, integrationTypes, props.selectedNotifications).map(
+      (o) => {
+        const isDisabled =
+          isUserIntegrationType(o.integrationType) && !hasIntegrations[o.integrationType];
+        return (
+          <SelectOption
+            aria-disabled={isDisabled ? 'true' : 'false'}
+            isDisabled={isDisabled}
+            key={o.toString()}
+            value={o}
+            description={
+              isDisabled && (
+                <NoIntegrationConfigured
+                  testNoIntegrationRenderWithoutRelAndTarget={
+                    props.testNoIntegrationRenderWithoutRelAndTarget
+                  }
+                />
+              )
+            }
+          >
+            {o.toString()}
+          </SelectOption>
+        );
+      }
+    );
   }, [
     notificationTypes,
     integrationTypes,

@@ -17,15 +17,11 @@ export const useSteps = (
   isSaving: boolean
 ): Array<ExtendedWizardStep> => {
   const basicInformationStep = useBasicInformationStep();
-  const associateEventTypesStep = useAssociateEventTypesStep(
-    associateEventTypeStep
-  );
+  const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
   const actionAndRecipientStep = useActionAndRecipientStep();
 
   const [maxStep, setMaxStep] = useState<number>(0);
-  const [invalidSteps, setInvalidSteps] = useState<Set<number>>(
-    () => new Set<number>()
-  );
+  const [invalidSteps, setInvalidSteps] = useState<Set<number>>(() => new Set<number>());
 
   useEffect(() => {
     setMaxStep((prev) => Math.max(currentStep, prev));

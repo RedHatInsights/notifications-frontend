@@ -3,10 +3,7 @@ import * as React from 'react';
 import * as Yup from 'yup';
 
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
-import {
-  Form,
-  FormTextInput,
-} from '../../../../utils/insights-common-typescript';
+import { Form, FormTextInput } from '../../../../utils/insights-common-typescript';
 
 const title = 'Name';
 

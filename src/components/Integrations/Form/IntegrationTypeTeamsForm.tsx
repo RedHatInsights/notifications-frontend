@@ -4,14 +4,9 @@ import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 import { FormTextInput } from '../../../utils/insights-common-typescript';
 
-export const IntegrationTypeTeamsForm: React.FunctionComponent<
-  IntegrationTypeForm
-> = (props) => {
+export const IntegrationTypeTeamsForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
   return (
-    <div
-      className="pf-c-form"
-      {...getOuiaProps('Integrations/Camel/Teams', props)}
-    >
+    <div className="pf-c-form" {...getOuiaProps('Integrations/Camel/Teams', props)}>
       <FormTextInput
         isRequired={true}
         label="Endpoint URL"

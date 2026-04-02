@@ -18,9 +18,7 @@ const ActionNotify = Yup.object({
   integrationId: Yup.string().min(0),
 });
 
-type ActionsType =
-  | Yup.TypeOf<typeof ActionIntegration>
-  | Yup.TypeOf<typeof ActionNotify>;
+type ActionsType = Yup.TypeOf<typeof ActionIntegration> | Yup.TypeOf<typeof ActionNotify>;
 
 export const ActionsArray = Yup.array(
   Yup.lazy((obj) => {
@@ -65,8 +63,7 @@ export const ActionsArray = Yup.array(
         if (integrationIds.includes(integrationId)) {
           errors.push(
             context.createError({
-              message:
-                'Integration already used in the group, please select other',
+              message: 'Integration already used in the group, please select other',
               path: `actions.${i}`,
             })
           );
@@ -92,8 +89,6 @@ export const WithActions = Yup.object({
 });
 
 export const BehaviorGroupSchema = Yup.object({
-  displayName: Yup.string().required(
-    'You must specify a name for the behavior group'
-  ),
+  displayName: Yup.string().required('You must specify a name for the behavior group'),
   actions: ActionsArray,
 });

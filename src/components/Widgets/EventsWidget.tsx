@@ -10,19 +10,9 @@ import {
   StackItem,
   Title,
 } from '@patternfly/react-core';
-import {
-  DataView,
-  DataViewToolbar,
-  useDataViewPagination,
-} from '@patternfly/react-data-view';
-import {
-  DataViewTable,
-  DataViewTh,
-} from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
-import {
-  SkeletonTableBody,
-  SkeletonTableHead,
-} from '@patternfly/react-component-groups';
+import { DataView, DataViewToolbar, useDataViewPagination } from '@patternfly/react-data-view';
+import { DataViewTable, DataViewTh } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
+import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 import { useIntl } from 'react-intl';
 import messages from '../../properties/DefinedMessages';
@@ -62,27 +52,24 @@ const EventsWidget: React.FunctionComponent = () => {
     perPage: 10,
   });
 
-  const fetchNotifications = useCallback(
-    async (currentPage: number, currentPerPage: number) => {
-      setLoading(true);
-      try {
-        const offset = (currentPage - 1) * currentPerPage;
-        const response = await fetch(
-          `/api/notifications/v1.0/notifications/events?limit=${currentPerPage}&offset=${offset}`
-        );
-        const result = await response.json();
-        setNotifications(result.data || []);
-        setTotalCount(result.meta?.count || result.data?.length || 0);
-      } catch (error) {
-        console.error('Unable to get Notifications ', error);
-        setNotifications([]);
-        setTotalCount(0);
-      } finally {
-        setLoading(false);
-      }
-    },
-    []
-  );
+  const fetchNotifications = useCallback(async (currentPage: number, currentPerPage: number) => {
+    setLoading(true);
+    try {
+      const offset = (currentPage - 1) * currentPerPage;
+      const response = await fetch(
+        `/api/notifications/v1.0/notifications/events?limit=${currentPerPage}&offset=${offset}`
+      );
+      const result = await response.json();
+      setNotifications(result.data || []);
+      setTotalCount(result.meta?.count || result.data?.length || 0);
+    } catch (error) {
+      console.error('Unable to get Notifications ', error);
+      setNotifications([]);
+      setTotalCount(0);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     fetchNotifications(page, perPage);
@@ -101,9 +88,7 @@ const EventsWidget: React.FunctionComponent = () => {
       >
         <EmptyStateBody>
           <Stack>
-            <StackItem>
-              {intl.formatMessage(messages.noFiredEventsDescription)}
-            </StackItem>
+            <StackItem>{intl.formatMessage(messages.noFiredEventsDescription)}</StackItem>
           </Stack>
         </EmptyStateBody>
         <Button
@@ -138,10 +123,7 @@ const EventsWidget: React.FunctionComponent = () => {
     [notifications]
   );
 
-  const loadingStateHeader = useMemo(
-    () => <SkeletonTableHead columns={columns} />,
-    [columns]
-  );
+  const loadingStateHeader = useMemo(() => <SkeletonTableHead columns={columns} />, [columns]);
 
   const loadingStateBody = useMemo(
     () => <SkeletonTableBody rowsCount={perPage} columnsCount={3} />,
@@ -149,11 +131,7 @@ const EventsWidget: React.FunctionComponent = () => {
   );
 
   return (
-    <DataView
-      activeState={
-        loading ? 'loading' : notifications.length === 0 ? 'empty' : undefined
-      }
-    >
+    <DataView activeState={loading ? 'loading' : notifications.length === 0 ? 'empty' : undefined}>
       <DataViewTable
         aria-label="Events widget table"
         variant="compact"

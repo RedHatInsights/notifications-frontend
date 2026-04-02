@@ -7,22 +7,13 @@ import { integrationTypes } from '../../../config/Config';
 import { Link } from 'react-router-dom';
 import { linkTo } from '../../../Routes';
 
-const IntegrationTestModal = ({
-  integrationId,
-  integrationType,
-  isModalOpen,
-  onClose,
-}) => {
+const IntegrationTestModal = ({ integrationId, integrationType, isModalOpen, onClose }) => {
   const [inputValue, setInputValue] = useState('');
   const { addSuccessNotification, addWarningNotification } = useNotification();
 
-  const placeholderText =
-    'Congratulations! The integration was successfully tested!';
+  const placeholderText = 'Congratulations! The integration was successfully tested!';
 
-  const handleNotificationTest = async (
-    notificationMessage: string,
-    integrationType: string
-  ) => {
+  const handleNotificationTest = async (notificationMessage: string, integrationType: string) => {
     const body = { message: notificationMessage };
     const type = integrationTypes[integrationType].name;
     const testFailedMessage = `Test to integration ${type} failed`;
@@ -36,18 +27,13 @@ const IntegrationTestModal = ({
         ? addSuccessNotification(
             notificationMessage,
             <>
-              Your test to integration {type} was successful. To view payload
-              response check{' '}
-              <Link to={`/settings/notifications${linkTo.eventLog()}`}>
-                event log
-              </Link>
-              .
+              Your test to integration {type} was successful. To view payload response check{' '}
+              <Link to={`/settings/notifications${linkTo.eventLog()}`}>event log</Link>.
             </>
           )
         : addWarningNotification(
             testFailedMessage,
-            response.data ||
-              `Status: ${response.status} - ${response.statusText}`
+            response.data || `Status: ${response.status} - ${response.statusText}`
           );
     } catch (error) {
       addWarningNotification(testFailedMessage, error?.toString());
@@ -66,12 +52,7 @@ const IntegrationTestModal = ({
       actions={[
         <Button
           key="send"
-          onClick={() =>
-            handleNotificationTest(
-              inputValue || placeholderText,
-              integrationType
-            )
-          }
+          onClick={() => handleNotificationTest(inputValue || placeholderText, integrationType)}
         >
           Send
         </Button>,

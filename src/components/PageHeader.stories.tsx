@@ -42,8 +42,7 @@ type Story = StoryObj<typeof PageHeader>;
 export const Default: Story = {
   args: {
     title: 'Notifications',
-    subtitle:
-      'Configure how you receive notifications for events in your organization.',
+    subtitle: 'Configure how you receive notifications for events in your organization.',
   },
   parameters: {
     docs: {
@@ -72,8 +71,7 @@ export const WithAction: Story = {
 export const NotificationsPage: Story = {
   args: {
     title: 'Event Log',
-    subtitle:
-      'View the history of events and notifications that have been sent.',
+    subtitle: 'View the history of events and notifications that have been sent.',
   },
   parameters: {
     docs: {
@@ -110,8 +108,7 @@ export const LongContent: Story = {
   parameters: {
     docs: {
       description: {
-        story:
-          'Page header with longer content to demonstrate text wrapping behavior.',
+        story: 'Page header with longer content to demonstrate text wrapping behavior.',
       },
     },
   },

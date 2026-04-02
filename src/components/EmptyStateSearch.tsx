@@ -1,8 +1,4 @@
-import {
-  EmptyState,
-  EmptyStateBody,
-  EmptyStateVariant,
-} from '@patternfly/react-core';
+import { EmptyState, EmptyStateBody, EmptyStateVariant } from '@patternfly/react-core';
 import { SearchIcon } from '@patternfly/react-icons';
 import React from 'react';
 
@@ -16,9 +12,7 @@ interface EmptyStateSearchProps {
   description: string;
 }
 
-export const EmptyStateSearch: React.FunctionComponent<
-  EmptyStateSearchProps
-> = (props) => {
+export const EmptyStateSearch: React.FunctionComponent<EmptyStateSearchProps> = (props) => {
   return (
     <EmptyState
       headingLevel={props.headingLevel ?? 'h3'}

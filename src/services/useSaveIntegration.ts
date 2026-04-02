@@ -1,14 +1,7 @@
 import { useMutation } from 'react-fetching-library';
 import { Operations, Schemas } from '../generated/OpenapiIntegrations';
-import {
-  toIntegration,
-  toServerIntegrationRequest,
-} from '../types/adapters/IntegrationAdapter';
-import {
-  Integration,
-  NewIntegration,
-  UserIntegration,
-} from '../types/Integration';
+import { toIntegration, toServerIntegrationRequest } from '../types/adapters/IntegrationAdapter';
+import { Integration, NewIntegration, UserIntegration } from '../types/Integration';
 import { useTransformQueryResponse } from '../utils/insights-common-typescript';
 
 export const createIntegrationActionCreator = (integration: NewIntegration) => {

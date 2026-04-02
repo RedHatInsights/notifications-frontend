@@ -67,9 +67,7 @@ describe('src/components/Integrations/SaveModal', () => {
     );
 
     await waitForAsyncEvents();
-    expect(
-      screen.getByDisplayValue('sdiofgjiofdsjgoifjso')
-    ).toBeInTheDocument();
+    expect(screen.getByDisplayValue('sdiofgjiofdsjgoifjso')).toBeInTheDocument();
   });
 
   it('When the integration.type is not specified, it uses Webhook', async () => {

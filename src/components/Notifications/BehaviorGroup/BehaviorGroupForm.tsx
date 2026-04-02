@@ -11,9 +11,7 @@ export interface EditBehaviorGroupProps extends OuiaProps {
   behaviorGroup?: Partial<BehaviorGroup>;
 }
 
-export const EditBehaviorGroupForm: React.FunctionComponent<
-  EditBehaviorGroupProps
-> = (props) => {
+export const EditBehaviorGroupForm: React.FunctionComponent<EditBehaviorGroupProps> = (props) => {
   return (
     <div {...getOuiaProps('Notifications/BehaviorGroupForm', props)}>
       <Grid hasGutter>

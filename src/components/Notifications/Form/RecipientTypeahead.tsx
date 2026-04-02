@@ -52,11 +52,7 @@ const renderSelectGroup = (
         }
 
         return (
-          <SelectOption
-            key={r.getKey()}
-            value={new RecipientOption(r)}
-            description={r.description}
-          >
+          <SelectOption key={r.getKey()} value={new RecipientOption(r)} description={r.description}>
             {r.displayName}
           </SelectOption>
         );
@@ -64,9 +60,7 @@ const renderSelectGroup = (
     </SelectGroup>
   ) : null;
 
-const recipientMapper = (
-  recipients: ReadonlyArray<BaseNotificationRecipient>
-) => {
+const recipientMapper = (recipients: ReadonlyArray<BaseNotificationRecipient>) => {
   // eslint-disable-next-line testing-library/render-result-naming-convention
   const result = renderSelectGroup(rbacGroupKey, rbacGroupLabel, recipients);
   return result ? [result] : [];
@@ -89,18 +83,14 @@ const userOptions = [
   ]),
 ];
 
-export const RecipientTypeahead: React.FunctionComponent<
-  RecipientTypeaheadProps
-> = (props) => {
+export const RecipientTypeahead: React.FunctionComponent<RecipientTypeaheadProps> = (props) => {
   const [isOpen, setOpen] = React.useState(false);
   const [state, dispatchers] = useTypeaheadReducer<BaseNotificationRecipient>();
   const prevOpen = usePrevious(isOpen);
   const { getNotificationRecipients } = useRecipientContext();
 
   React.useEffect(() => {
-    getNotificationRecipients().then((recipients) =>
-      dispatchers.setDefaults(recipients)
-    );
+    getNotificationRecipients().then((recipients) => dispatchers.setDefaults(recipients));
   }, [getNotificationRecipients, dispatchers]);
 
   React.useEffect(() => {
@@ -109,12 +99,7 @@ export const RecipientTypeahead: React.FunctionComponent<
         dispatchers.setFilterValue(state.lastSearch, recipients)
       );
     }
-  }, [
-    getNotificationRecipients,
-    state.loadingFilter,
-    state.lastSearch,
-    dispatchers,
-  ]);
+  }, [getNotificationRecipients, state.loadingFilter, state.lastSearch, dispatchers]);
 
   React.useEffect(() => {
     const onOpenChange = props.onOpenChange;
@@ -123,11 +108,7 @@ export const RecipientTypeahead: React.FunctionComponent<
     }
   }, [prevOpen, isOpen, props.onOpenChange]);
 
-  const rbacOptions = useRecipientOptionMemo(
-    state,
-    recipientMapper,
-    loadingMapper
-  );
+  const rbacOptions = useRecipientOptionMemo(state, recipientMapper, loadingMapper);
 
   const options = React.useMemo(() => {
     const allOptions: React.ReactNode[] = [];
@@ -149,9 +130,7 @@ export const RecipientTypeahead: React.FunctionComponent<
       return [];
     }
 
-    return (sel as ReadonlyArray<NotificationUserRecipient>).map(
-      (s) => new RecipientOption(s)
-    );
+    return (sel as ReadonlyArray<NotificationUserRecipient>).map((s) => new RecipientOption(s));
   }, [props.selected]);
 
   const onSelect = React.useCallback(
@@ -169,11 +148,10 @@ export const RecipientTypeahead: React.FunctionComponent<
 
   const selectContent = React.useMemo(() => {
     return selection?.map((value) => {
-      const unselect =
-        (element: RecipientOption) => (evt: React.MouseEvent) => {
-          evt.stopPropagation();
-          onSelect(evt, element);
-        };
+      const unselect = (element: RecipientOption) => (evt: React.MouseEvent) => {
+        evt.stopPropagation();
+        onSelect(evt, element);
+      };
 
       const key = value.recipient.getKey();
 
@@ -226,10 +204,7 @@ export const RecipientTypeahead: React.FunctionComponent<
       >
         <SelectList>
           {options.map((optionGroup, groupIndex) => {
-            if (
-              React.isValidElement(optionGroup) &&
-              optionGroup.type === SelectGroup
-            ) {
+            if (React.isValidElement(optionGroup) && optionGroup.type === SelectGroup) {
               return React.cloneElement(optionGroup, { key: groupIndex });
             }
             return optionGroup;

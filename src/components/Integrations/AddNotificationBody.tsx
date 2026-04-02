@@ -9,15 +9,11 @@ interface AddNotificationBodyProps {
   switchEnabled: () => void;
 }
 
-export const AddNotificationBody: React.FunctionComponent<
-  AddNotificationBodyProps
-> = (props) => {
+export const AddNotificationBody: React.FunctionComponent<AddNotificationBodyProps> = (props) => {
   const text = props.integration.isEnabled
     ? 'This integration is enabled and ready to use.'
     : 'This integration is disabled.';
-  const buttonText = props.integration.isEnabled
-    ? 'Disable integration'
-    : 'Enable integration';
+  const buttonText = props.integration.isEnabled ? 'Disable integration' : 'Enable integration';
 
   return (
     <>

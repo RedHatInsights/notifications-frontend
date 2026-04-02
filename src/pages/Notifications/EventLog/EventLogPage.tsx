@@ -52,13 +52,9 @@ export const EventLogPage: React.FunctionComponent = () => {
 
   const eventLogFilters = useEventLogFilter();
 
-  const [period, setPeriod] = React.useState<EventPeriod>([
-    undefined,
-    undefined,
-  ]);
+  const [period, setPeriod] = React.useState<EventPeriod>([undefined, undefined]);
 
-  const [sortDirection, setSortDirection] =
-    React.useState<SortDirection>('desc');
+  const [sortDirection, setSortDirection] = React.useState<SortDirection>('desc');
   const [sortColumn, setSortColumn] = React.useState<EventLogTableColumns>(
     EventLogTableColumns.DATE
   );

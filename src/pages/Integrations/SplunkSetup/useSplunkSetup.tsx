@@ -66,11 +66,7 @@ export const useSplunkSetup = () => {
 
     const rhelBundleId = await getRhelBundleUuid();
 
-    const eventTypeList = await attachEventTypes(
-      rhelBundleId,
-      events,
-      onProgress
-    );
+    const eventTypeList = await attachEventTypes(rhelBundleId, events, onProgress);
 
     onProgress(`Creating Integration ${integrationName}...`);
     await createSplunkIntegration({
@@ -119,10 +115,7 @@ const useCreateSplunkIntegration = () => {
     const { payload, error, errorObject } = await mutate(newIntegration);
 
     if (errorObject) {
-      console.error(
-        'Integration creation failed with errorObject:',
-        errorObject
-      );
+      console.error('Integration creation failed with errorObject:', errorObject);
       // Enhance error with more details
       const enhancedError = new Error(
         `Integration creation failed: ${errorObject.message || 'Unknown error'}`
@@ -133,9 +126,7 @@ const useCreateSplunkIntegration = () => {
 
     if (error) {
       console.error('Integration creation failed with error:', error);
-      throw new Error(
-        `Error when creating integration ${integrationName}: ${error}`
-      );
+      throw new Error(`Error when creating integration ${integrationName}: ${error}`);
     }
 
     console.log('Integration created successfully:', payload);
@@ -158,10 +149,7 @@ const useFindEventTypesToAssociate = () => {
       }
 
       const expectEvents = events[eventType.application.name];
-      if (
-        !expectEvents ||
-        (expectEvents !== '*' && !expectEvents.includes(eventType.name))
-      ) {
+      if (!expectEvents || (expectEvents !== '*' && !expectEvents.includes(eventType.name))) {
         return false;
       }
 
@@ -170,9 +158,7 @@ const useFindEventTypesToAssociate = () => {
 
     const selectedEventTypeIds: UUID[] = [];
     for (const eventType of selectedEventTypes) {
-      onProgress(
-        `  ${eventType.application?.display_name} - ${eventType.display_name}\n`
-      );
+      onProgress(`  ${eventType.application?.display_name} - ${eventType.display_name}\n`);
       selectedEventTypeIds.push(eventType.id as UUID);
     }
     return selectedEventTypeIds;

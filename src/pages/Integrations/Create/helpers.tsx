@@ -1,8 +1,5 @@
 import React from 'react';
-import {
-  IntegrationIcon,
-  IntegrationIconTypes,
-} from '../../../types/Integration';
+import { IntegrationIcon, IntegrationIconTypes } from '../../../types/Integration';
 
 export const INTEGRATION_TYPE = 'type';
 export const EVENT_TYPES_TABLE = 'event-types-table';
@@ -32,9 +29,9 @@ export const iconMapper =
       return null;
     }
 
-    const integrationType: IntegrationIcon | undefined = Object.values(
-      integrationTypes
-    ).find((type: IntegrationIcon) => type.name === name);
+    const integrationType: IntegrationIcon | undefined = Object.values(integrationTypes).find(
+      (type: IntegrationIcon) => type.name === name
+    );
 
     if (!integrationType) {
       return null;

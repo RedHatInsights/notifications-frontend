@@ -3,9 +3,7 @@ import FormSpy from '@data-driven-forms/react-form-renderer/form-spy';
 import { useIntl } from 'react-intl';
 import { FormHelperText, Spinner } from '@patternfly/react-core';
 
-export const ValidatingSpinner: React.FC<{ validating: boolean }> = ({
-  validating,
-}) => {
+export const ValidatingSpinner: React.FC<{ validating: boolean }> = ({ validating }) => {
   const intl = useIntl();
 
   return (
@@ -26,9 +24,7 @@ export const validated = (_, { meta }) => {
       // FF sometimes does not set validating to 'false' on the field
       // So we need to also check the FormSpy.validating
       helperText: (
-        <FormSpy>
-          {({ validating }) => <ValidatingSpinner validating={validating} />}
-        </FormSpy>
+        <FormSpy>{({ validating }) => <ValidatingSpinner validating={validating} />}</FormSpy>
       ),
     };
   }

@@ -94,9 +94,7 @@ describe('src/components/Integrations/DeleteModal', () => {
     );
 
     expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeInTheDocument();
-    expect(
-      screen.getByTestId(/removing-integration-with-notifications-4/)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(/removing-integration-with-notifications-4/)).toBeInTheDocument();
   });
 
   it('Passing empty notifications renders a different message', () => {
@@ -122,9 +120,7 @@ describe('src/components/Integrations/DeleteModal', () => {
     );
 
     expect(screen.getByText(/sdiofgjiofdsjgoifjso/)).toBeInTheDocument();
-    expect(
-      screen.getByTestId(/removing-integration-without-notifications/)
-    ).toBeInTheDocument();
+    expect(screen.getByTestId(/removing-integration-without-notifications/)).toBeInTheDocument();
   });
 
   it('Opening the expandable reveals the notifications', async () => {
@@ -194,13 +190,7 @@ describe('src/components/Integrations/DeleteModal', () => {
   });
 
   it('Does not render if integration is undefined', () => {
-    render(
-      <IntegrationDeleteModal
-        onDelete={fn()}
-        isDeleting={false}
-        onClose={fn()}
-      />
-    );
+    render(<IntegrationDeleteModal onDelete={fn()} isDeleting={false} onClose={fn()} />);
     // eslint-disable-next-line testing-library/no-node-access
     expect(document.body.lastChild).toBeEmptyDOMElement();
   });

@@ -4,12 +4,7 @@ import { useMemo } from 'react';
 
 import { useRbacGroups } from '../../../app/rbac/RbacGroupContext';
 import { useGetBehaviorGroups } from '../../../services/Notifications/GetBehaviorGroups';
-import {
-  ActionNotify,
-  BehaviorGroup,
-  UUID,
-  isActionNotify,
-} from '../../../types/Notification';
+import { ActionNotify, BehaviorGroup, UUID, isActionNotify } from '../../../types/Notification';
 import { NotificationRbacGroupRecipient } from '../../../types/Recipient';
 
 export type BehaviorGroupContent =
@@ -78,25 +73,18 @@ export const useBehaviorGroupContent = (bundleId: UUID) => {
             bg.actions.forEach((a, aIndex) => {
               if (isActionNotify(a)) {
                 a.recipient.forEach((recipient, recipientIndex) => {
-                  if (
-                    recipient instanceof NotificationRbacGroupRecipient &&
-                    recipient.isLoading
-                  ) {
+                  if (recipient instanceof NotificationRbacGroupRecipient && recipient.isLoading) {
                     const recipients = (
-                      draft.content[bgIndex].actions[
-                        aIndex
-                      ] as Draft<ActionNotify>
+                      draft.content[bgIndex].actions[aIndex] as Draft<ActionNotify>
                     ).recipient;
                     const rbacRecipient = recipients[
                       recipientIndex
                     ] as NotificationRbacGroupRecipient;
-                    recipients[recipientIndex] =
-                      new NotificationRbacGroupRecipient(
-                        rbacRecipient.integrationId,
-                        rbacRecipient.groupId,
-                        groups.find((g) => g.id === rbacRecipient.groupId)
-                          ?.name || isLoadingGroups
-                      );
+                    recipients[recipientIndex] = new NotificationRbacGroupRecipient(
+                      rbacRecipient.integrationId,
+                      rbacRecipient.groupId,
+                      groups.find((g) => g.id === rbacRecipient.groupId)?.name || isLoadingGroups
+                    );
                   }
                 });
               }

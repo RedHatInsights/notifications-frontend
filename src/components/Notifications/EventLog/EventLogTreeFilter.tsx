@@ -52,18 +52,11 @@ const allChildrenChecked = (treeNode: TreeNodeItem): boolean => {
     : isChecked(treeNode);
 };
 
-const initTreeNodeById = (
-  groups: readonly Schemas.Facet[],
-  filters: EventLogCustomFilter[]
-) => {
+const initTreeNodeById = (groups: readonly Schemas.Facet[], filters: EventLogCustomFilter[]) => {
   const init: TreeNodeDict = {};
   groups.forEach((group) => {
-    const currentFilter = filters.find(
-      (filter) => filter.bundleId === group.name
-    );
-    const currentFilterChipValues = currentFilter?.chips?.map(
-      (chip) => chip.value
-    );
+    const currentFilter = filters.find((filter) => filter.bundleId === group.name);
+    const currentFilterChipValues = currentFilter?.chips?.map((chip) => chip.value);
 
     const items = group.children as Schemas.Facet[];
     const checkAll =
@@ -80,8 +73,7 @@ const initTreeNodeById = (
               id: item.name,
               name: item.displayName,
               checkProps: {
-                checked:
-                  checkAll || currentFilterChipValues?.includes(item.name),
+                checked: checkAll || currentFilterChipValues?.includes(item.name),
               },
             }))
           : undefined,
@@ -91,31 +83,21 @@ const initTreeNodeById = (
   return init;
 };
 
-export const EventLogTreeFilter: React.FunctionComponent<
-  EventLogTreeFilterProps
-> = (props) => {
+export const EventLogTreeFilter: React.FunctionComponent<EventLogTreeFilterProps> = (props) => {
   const { groups, placeholder, filters, updateFilters } = props;
 
-  const initialize = React.useMemo(
-    () => initTreeNodeById(groups, filters),
-    [groups, filters]
-  );
+  const initialize = React.useMemo(() => initTreeNodeById(groups, filters), [groups, filters]);
 
-  const [treeNodeById, setTreeNodeById] =
-    React.useState<TreeNodeDict>(initialize);
+  const [treeNodeById, setTreeNodeById] = React.useState<TreeNodeDict>(initialize);
   const [isToggled, setIsToggled] = React.useState(false);
 
-  const treeDataArray = React.useMemo(
-    () => Object.values(treeNodeById),
-    [treeNodeById]
-  );
+  const treeDataArray = React.useMemo(() => Object.values(treeNodeById), [treeNodeById]);
 
   const [activeFilters, activeBundleIds] = React.useMemo(() => {
     const bundleIds: string[] = [];
 
     const activeParentFilters = treeDataArray.filter(
-      (treeNode) =>
-        treeNode.checkProps.checked || treeNode.checkProps.checked === null
+      (treeNode) => treeNode.checkProps.checked || treeNode.checkProps.checked === null
     );
     const activeFilters = activeParentFilters.map((parentFilter) => {
       bundleIds.push(parentFilter.id);
@@ -156,9 +138,7 @@ export const EventLogTreeFilter: React.FunctionComponent<
               const activeChips = activeFilter.chips.map((chip) => chip.value);
 
               treeNode.children?.forEach((childNode) => {
-                childNode.checkProps.checked = activeChips.includes(
-                  childNode.id
-                );
+                childNode.checkProps.checked = activeChips.includes(childNode.id);
               });
 
               if (allChildrenChecked(treeNode)) {
@@ -270,11 +250,7 @@ export const EventLogTreeFilter: React.FunctionComponent<
       popper={
         <Menu>
           <MenuList>
-            <TreeView
-              data={treeDataArray}
-              hasCheckboxes={true}
-              onCheck={onCheckWrapper}
-            />
+            <TreeView data={treeDataArray} hasCheckboxes={true} onCheck={onCheckWrapper} />
           </MenuList>
         </Menu>
       }

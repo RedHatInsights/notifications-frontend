@@ -10,9 +10,7 @@ interface DrawerBellProps {
   isNotificationDrawerExpanded: boolean;
 }
 
-const DrawerBell: React.ComponentType<DrawerBellProps> = ({
-  isNotificationDrawerExpanded,
-}) => {
+const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawerExpanded }) => {
   const {
     drawerActions: { toggleDrawerContent },
   } = useChrome();

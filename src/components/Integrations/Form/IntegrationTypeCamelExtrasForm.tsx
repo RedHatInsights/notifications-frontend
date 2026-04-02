@@ -1,17 +1,9 @@
-import {
-  FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-} from '@patternfly/react-core';
+import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
-import {
-  Checkbox,
-  FormTextInput,
-} from '../../../utils/insights-common-typescript';
+import { Checkbox, FormTextInput } from '../../../utils/insights-common-typescript';
 
 interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
   secretTokenDescription: string;
@@ -21,10 +13,7 @@ export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
   IntegrationTypeCamelExtrasForm
 > = (props) => {
   return (
-    <div
-      className="pf-c-form"
-      {...getOuiaProps('Integrations/Camel/Splunk', props)}
-    >
+    <div className="pf-c-form" {...getOuiaProps('Integrations/Camel/Splunk', props)}>
       <FormTextInput
         isRequired={true}
         label="Endpoint URL"

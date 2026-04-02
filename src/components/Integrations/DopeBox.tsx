@@ -13,12 +13,7 @@ import {
   Icon,
   PageSection,
 } from '@patternfly/react-core';
-import {
-  ArrowRightIcon,
-  BellIcon,
-  CogIcon,
-  LockIcon,
-} from '@patternfly/react-icons';
+import { ArrowRightIcon, BellIcon, CogIcon, LockIcon } from '@patternfly/react-icons';
 import { IntegrationCategory } from '../../types/Integration';
 import '../../app/App.scss';
 import { Link } from 'react-router-dom';
@@ -93,8 +88,8 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             Configure applications
           </Content>
           <Content component="p" className="pf-v5-u-font-size-sm">
-            To prepare for integration with the Hybrid Cloud Console, you must
-            configure incoming webhooks in your third-party applications.
+            To prepare for integration with the Hybrid Cloud Console, you must configure incoming
+            webhooks in your third-party applications.
           </Content>
         </Content>
       </CardBody>
@@ -107,11 +102,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             >
               {communicationsDetails.map((communication) => (
                 <Content component="li" key={communication.id}>
-                  <Button
-                    variant="link"
-                    isInline
-                    onClick={() => communication.onClick?.()}
-                  >
+                  <Button variant="link" isInline onClick={() => communication.onClick?.()}>
                     {communication.url ? (
                       <Link to={communication.url} target="_blank">
                         {communication.name}
@@ -171,10 +162,9 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             Configure user access
           </Content>
           <Content component="p" className="pf-v5-u-font-size-sm">
-            To configure notifications and integration settings, you must be a
-            member of a group with the Notifications administrator role. This
-            group must be configured in User Access by an Organization
-            Administrator.
+            To configure notifications and integration settings, you must be a member of a group
+            with the Notifications administrator role. This group must be configured in User Access
+            by an Organization Administrator.
           </Content>
         </Content>
       </CardBody>
@@ -214,9 +204,8 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
                 Configure notifications portal
               </Content>
               <Content component="p" className="pf-v5-u-font-size-sm">
-                You can configure the Hybrid Cloud Console to send event
-                notifications to all users on a new or existing channel in
-                Slack, Google Chat, or Microsoft Teams.
+                You can configure the Hybrid Cloud Console to send event notifications to all users
+                on a new or existing channel in Slack, Google Chat, or Microsoft Teams.
               </Content>
             </Content>
           </CardBody>

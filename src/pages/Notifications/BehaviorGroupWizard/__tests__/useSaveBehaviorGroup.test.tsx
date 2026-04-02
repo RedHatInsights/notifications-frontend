@@ -9,10 +9,7 @@ import {
 import { IntegrationType } from '../../../../types/Integration';
 import { NotificationType } from '../../../../types/Notification';
 import { NotificationUserRecipient } from '../../../../types/Recipient';
-import {
-  SaveBehaviorGroupOperation,
-  useSaveBehaviorGroup,
-} from '../useSaveBehaviorGroup';
+import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from '../useSaveBehaviorGroup';
 
 const RESPONSE_SUCCESS_UPDATED_BG = {
   headers: {
@@ -48,14 +45,11 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
     );
 
     let resolver;
-    fetchMock.put(
-      '/api/notifications/v1.0/notifications/behaviorGroups/bg-id',
-      () => {
-        return new Promise((resolve) => {
-          resolver = resolve;
-        });
-      }
-    );
+    fetchMock.put('/api/notifications/v1.0/notifications/behaviorGroups/bg-id', () => {
+      return new Promise((resolve) => {
+        resolver = resolve;
+      });
+    });
 
     await act(async () => {
       result.current.save({
@@ -85,8 +79,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
       wrapper: getConfiguredAppWrapper(),
     });
 
-    let saveResponse: ReturnType<typeof result.current.save> | undefined =
-      undefined;
+    let saveResponse: ReturnType<typeof result.current.save> | undefined = undefined;
 
     await act(async () => {
       saveResponse = result.current.save({
@@ -118,10 +111,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
       wrapper: getConfiguredAppWrapper(),
     });
     const shouldBeCalled = jest.fn(() => RESPONSE_SUCCESS_UPDATED_BG);
-    fetchMock.put(
-      '/api/notifications/v1.0/notifications/behaviorGroups/bg-id',
-      shouldBeCalled
-    );
+    fetchMock.put('/api/notifications/v1.0/notifications/behaviorGroups/bg-id', shouldBeCalled);
 
     await act(async () => {
       result.current.save({
@@ -146,10 +136,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
       expect(options.body.eventTypeIds).toEqual(['i1', 'i2', 'i3']);
     });
 
-    fetchMock.post(
-      '/api/notifications/v1.0/notifications/behaviorGroups',
-      shouldBeCalled
-    );
+    fetchMock.post('/api/notifications/v1.0/notifications/behaviorGroups', shouldBeCalled);
 
     await act(async () => {
       await result.current.save({
@@ -201,10 +188,7 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
       expect(options.body.eventTypeIds).toEqual(['i1', 'i2', 'e1', 'e2', 'i3']);
     });
 
-    fetchMock.post(
-      '/api/notifications/v1.0/notifications/behaviorGroups',
-      shouldBeCalled
-    );
+    fetchMock.post('/api/notifications/v1.0/notifications/behaviorGroups', shouldBeCalled);
 
     await act(async () => {
       await result.current.save({
@@ -260,29 +244,17 @@ describe('src/pages/Notifications/Form/useSaveBehaviorGroup', () => {
     });
 
     const shouldBeCalled = jest.fn((_url, options) => {
-      expect(options.body.eventTypeIds).toEqual([
-        'i1',
-        'i2',
-        'e-new',
-        'e2',
-        'i3',
-      ]);
+      expect(options.body.eventTypeIds).toEqual(['i1', 'i2', 'e-new', 'e2', 'i3']);
     });
 
-    fetchMock.post(
-      '/api/notifications/v1.0/notifications/behaviorGroups',
-      shouldBeCalled
-    );
+    fetchMock.post('/api/notifications/v1.0/notifications/behaviorGroups', shouldBeCalled);
 
-    fetchMock.post(
-      '/api/integrations/v1.0/endpoints/system/email_subscription',
-      {
-        description: 'email',
-        name: 'email',
-        id: 'e-new',
-        type: 'email_subscription',
-      }
-    );
+    fetchMock.post('/api/integrations/v1.0/endpoints/system/email_subscription', {
+      description: 'email',
+      name: 'email',
+      id: 'e-new',
+      type: 'email_subscription',
+    });
 
     await act(async () => {
       await result.current.save({

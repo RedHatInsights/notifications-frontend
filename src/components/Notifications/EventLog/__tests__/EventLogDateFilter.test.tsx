@@ -3,22 +3,13 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { EventPeriod } from '../../../../types/Event';
-import {
-  EventLogDateFilter,
-  EventLogDateFilterValue,
-} from '../EventLogDateFilter';
+import { EventLogDateFilter, EventLogDateFilterValue } from '../EventLogDateFilter';
 import {
   NotificationsLogDateFilter,
   NotificationsLogDateFilterValue,
 } from '../../NotificationsLog/NotificationsLogDateFilter';
 
-const expectedLabels = [
-  'Today',
-  'Yesterday',
-  'Last 7 days',
-  'Last 14 days',
-  'Custom',
-];
+const expectedLabels = ['Today', 'Yesterday', 'Last 7 days', 'Last 14 days', 'Custom'];
 
 describe.each([
   {

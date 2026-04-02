@@ -18,19 +18,11 @@ import {
   TextInput,
   ValidatedOptions,
 } from '@patternfly/react-core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  HelpIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { string } from 'yup';
 
-import {
-  DOCUMENTATION_URL,
-  OPEN_CASE_URL,
-  SPLUNK_CLOUD_HEC_DOC,
-} from './Constants';
+import { DOCUMENTATION_URL, OPEN_CASE_URL, SPLUNK_CLOUD_HEC_DOC } from './Constants';
 import { useSplunkSetup } from './useSplunkSetup';
 import { useNotification } from '../../../utils/AlertUtils';
 import { extractErrorMessage } from '../../../utils/ErrorUtils';
@@ -60,10 +52,7 @@ const SplunkURLSchema = string()
       return false;
     }
 
-    return (
-      (urlObj.pathname === '/' || urlObj.pathname === '') &&
-      urlObj.search === ''
-    );
+    return (urlObj.pathname === '/' || urlObj.pathname === '') && urlObj.search === '';
   });
 
 export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
@@ -83,8 +72,9 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
   const { addDangerNotification } = useNotification();
   const startSplunkAutomation = useSplunkSetup();
   const [isDisabled, setIsDisabled] = useState<boolean>(true);
-  const [validatedServerHostname, setValidatedServerHostname] =
-    useState<ValidatedOptions>(ValidatedOptions.default);
+  const [validatedServerHostname, setValidatedServerHostname] = useState<ValidatedOptions>(
+    ValidatedOptions.default
+  );
   const [validatedHecToken, setValidatedHecToken] = useState<ValidatedOptions>(
     ValidatedOptions.default
   );
@@ -95,9 +85,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
       setValidatedServerHostname(ValidatedOptions.default);
     } else {
       const isValid = await SplunkURLSchema.isValid(value);
-      setValidatedServerHostname(
-        isValid ? ValidatedOptions.success : ValidatedOptions.error
-      );
+      setValidatedServerHostname(isValid ? ValidatedOptions.success : ValidatedOptions.error);
     }
   };
 
@@ -107,18 +95,12 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
       setValidatedHecToken(ValidatedOptions.default);
     } else {
       const isValid = await string().uuid().isValid(value);
-      setValidatedHecToken(
-        isValid ? ValidatedOptions.success : ValidatedOptions.error
-      );
+      setValidatedHecToken(isValid ? ValidatedOptions.success : ValidatedOptions.error);
     }
   };
 
   useEffect(() => {
-    if (
-      [validatedServerHostname, validatedHecToken].every(
-        (v) => v === ValidatedOptions.success
-      )
-    ) {
+    if ([validatedServerHostname, validatedHecToken].every((v) => v === ValidatedOptions.success)) {
       setIsDisabled(false);
     } else {
       setIsDisabled(true);
@@ -139,23 +121,13 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     setAutomationLogs([]);
 
     try {
-      await startSplunkAutomation(
-        { hecToken, splunkServerHostName },
-        onProgress
-      );
+      await startSplunkAutomation({ hecToken, splunkServerHostName }, onProgress);
     } catch (error) {
-      onProgress(
-        `\nError: ${extractErrorMessage(error)}`,
-        'pf-v6-u-danger-color-200'
-      );
+      onProgress(`\nError: ${extractErrorMessage(error)}`, 'pf-v6-u-danger-color-200');
       setStepIsInProgress(false);
       setStepVariant('danger');
 
-      addDangerNotification(
-        'Configuration failed',
-        <SplunkSetupFailedToast />,
-        true
-      );
+      addDangerNotification('Configuration failed', <SplunkSetupFailedToast />, true);
       setError(error as Error);
       return;
     }
@@ -180,8 +152,8 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               <Popover
                 headerContent={
                   <div>
-                    The server <b>hostname/IP Address</b> and <b>port</b> of
-                    your splunk HTTP Event Collector
+                    The server <b>hostname/IP Address</b> and <b>port</b> of your splunk HTTP Event
+                    Collector
                   </div>
                 }
                 bodyContent={
@@ -189,11 +161,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
                     For Splunk Enterprise the port is by default 8088.
                     <br />
                     For Splunk Cloud Platform see{' '}
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      href={SPLUNK_CLOUD_HEC_DOC}
-                    >
+                    <a target="_blank" rel="noreferrer" href={SPLUNK_CLOUD_HEC_DOC}>
                       documentation
                     </a>
                     .
@@ -234,11 +202,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               </FormHelperText>
             )}
           </FormGroup>
-          <FormGroup
-            label="Splunk HEC Token"
-            fieldId="splunk-hec-token"
-            isRequired
-          >
+          <FormGroup label="Splunk HEC Token" fieldId="splunk-hec-token" isRequired>
             <TextInput
               isRequired
               type="text"
@@ -253,8 +217,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               <FormHelperText>
                 <HelperText>
                   <HelperTextItem variant="error">
-                    Invalid HEC token. Example:
-                    123e4567-e89b-12d3-a456-426614174000
+                    Invalid HEC token. Example: 123e4567-e89b-12d3-a456-426614174000
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
@@ -299,12 +262,7 @@ const SplunkAutomationButton = ({
   } else if (stepVariant === 'success' || stepVariant === 'danger') {
     return (
       <Button variant="primary" onClick={onFinish}>
-        {stepVariant === 'success' ? (
-          <CheckCircleIcon />
-        ) : (
-          <ExclamationCircleIcon />
-        )}{' '}
-        Next: Review
+        {stepVariant === 'success' ? <CheckCircleIcon /> : <ExclamationCircleIcon />} Next: Review
       </Button>
     );
   } else {
@@ -319,8 +277,8 @@ const SplunkAutomationButton = ({
 const SplunkSetupFailedToast = () => (
   <>
     <p className="pf-v6-u-mb-md">
-      There was a problem processing the request. Please try again. If the
-      problem persists, contact Red Hat support by opening the ticket.
+      There was a problem processing the request. Please try again. If the problem persists, contact
+      Red Hat support by opening the ticket.
     </p>
     <List variant={ListVariant.inline}>
       <ListItem>

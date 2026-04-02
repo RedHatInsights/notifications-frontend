@@ -1,9 +1,6 @@
 import React from 'react';
 
-import {
-  Flex,
-  FlexItem,
-} from '@patternfly/react-core/dist/dynamic/layouts/Flex';
+import { Flex, FlexItem } from '@patternfly/react-core/dist/dynamic/layouts/Flex';
 import {
   MenuToggle,
   MenuToggleElement,
@@ -177,9 +174,7 @@ const ActionDropdownItems = ({
       {(isOrgAdmin || hasNotificationsPermissions) && (
         <DropdownItem
           key="notification settings"
-          onClick={() =>
-            onNavigateTo('/settings/notifications/configure-events')
-          }
+          onClick={() => onNavigateTo('/settings/notifications/configure-events')}
         >
           <Flex>
             <FlexItem>Configure notification settings</FlexItem>

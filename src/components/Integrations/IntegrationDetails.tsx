@@ -6,21 +6,13 @@ import {
   DescriptionListTerm,
   Icon,
 } from '@patternfly/react-core';
-import {
-  IntegrationCategory,
-  IntegrationIcon,
-  IntegrationType,
-} from '../../types/Integration';
+import { IntegrationCategory, IntegrationIcon, IntegrationType } from '../../types/Integration';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { IntegrationRow } from './Table';
 import Config, { defaultIconList } from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
 import { useIntl } from 'react-intl';
-import {
-  GoogleOrTeamsContent,
-  PagerDutyContent,
-  SlackContent,
-} from './IntegrationDetailsContent';
+import { GoogleOrTeamsContent, PagerDutyContent, SlackContent } from './IntegrationDetailsContent';
 import { CheckCircleIcon, StopCircleIcon } from '@patternfly/react-icons';
 
 export const getIntegrationIcon = (type: string): React.ReactElement | null => {
@@ -28,9 +20,9 @@ export const getIntegrationIcon = (type: string): React.ReactElement | null => {
     ...defaultIconList[IntegrationCategory.COMMUNICATIONS],
     ...defaultIconList[IntegrationCategory.REPORTING],
   };
-  const integrationType: IntegrationIcon | undefined = Object.values(
-    allIcons
-  ).find((icon: IntegrationIcon) => icon.name === type);
+  const integrationType: IntegrationIcon | undefined = Object.values(allIcons).find(
+    (icon: IntegrationIcon) => icon.name === type
+  );
   if (integrationType === undefined) {
     return null;
   }
@@ -50,9 +42,7 @@ interface IntegrationDetailsProps {
   integration?: IntegrationRow;
 }
 
-const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
-  integration,
-}) => {
+const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({ integration }) => {
   const intl = useIntl();
 
   const buildIntegrationDetails = (integration: IntegrationRow) => {
@@ -75,10 +65,7 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
   return (
     <DescriptionList isHorizontal className="pf-v5-u-p-sm pf-v5-u-m-sm">
       <DescriptionListGroup>
-        <DescriptionListTerm>
-          {' '}
-          {intl.formatMessage(messages.integrationType)}
-        </DescriptionListTerm>
+        <DescriptionListTerm> {intl.formatMessage(messages.integrationType)}</DescriptionListTerm>
         <DescriptionListDescription>
           {integration && getIntegrationIcon(integration.type)}
           {integration && Config.integrations.types[integration.type].name}
@@ -101,9 +88,7 @@ const IntegrationDetails: React.FunctionComponent<IntegrationDetailsProps> = ({
             />
           )}
         </DescriptionListDescription>
-        <DescriptionListTerm>
-          {intl.formatMessage(messages.enabled)}
-        </DescriptionListTerm>
+        <DescriptionListTerm>{intl.formatMessage(messages.enabled)}</DescriptionListTerm>
         <DescriptionListDescription>
           <Icon status={integration?.isEnabled ? 'success' : 'warning'}>
             {integration?.isEnabled ? (

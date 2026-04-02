@@ -8,9 +8,7 @@ interface ConnectionFailedProps {
   attempts: Array<IntegrationConnectionAttempt>;
 }
 
-export const ConnectionFailed: React.FunctionComponent<
-  ConnectionFailedProps
-> = (props) => {
+export const ConnectionFailed: React.FunctionComponent<ConnectionFailedProps> = (props) => {
   return (
     <ConnectionAlert
       attempts={props.attempts}

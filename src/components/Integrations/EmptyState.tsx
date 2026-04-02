@@ -34,11 +34,7 @@ const EmptyIntegrationCard: React.FunctionComponent<{
   isOrgAdmin: boolean;
 }> = ({ TitleIcon, title, body, link, isOrgAdmin }) => {
   return (
-    <Card
-      isFullHeight
-      isPlain
-      style={{ maxWidth: isOrgAdmin ? '106ch' : '70ch' }}
-    >
+    <Card isFullHeight isPlain style={{ maxWidth: isOrgAdmin ? '106ch' : '70ch' }}>
       <CardHeader>
         <Icon className="pf-v5-u-pl-sm pf-v5-u-pr-lg">
           <TitleIcon className="pf-v5-u-link-color" />
@@ -49,10 +45,7 @@ const EmptyIntegrationCard: React.FunctionComponent<{
       </CardHeader>
       <CardBody className="pf-v5-u-display-flex">
         <Content className="pf-v5-u-display-flex pf-v5-u-flex-direction-column pf-v5-u-align-self-stretch">
-          <Content
-            component={ContentVariants.p}
-            className="pf-v5-u-flex-grow-1"
-          >
+          <Content component={ContentVariants.p} className="pf-v5-u-flex-grow-1">
             {body}
           </Content>
           <Content component={ContentVariants.p}>

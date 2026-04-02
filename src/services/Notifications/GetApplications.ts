@@ -7,7 +7,6 @@ export const getApplicationsAction = (bundleName?: string) =>
     bundleName,
   });
 
-export const useGetApplicationsLazy = () =>
-  useParameterizedQuery(getApplicationsAction);
+export const useGetApplicationsLazy = () => useParameterizedQuery(getApplicationsAction);
 export const useGetApplications = (bundleName?: string) =>
   useQuery(getApplicationsAction(bundleName));

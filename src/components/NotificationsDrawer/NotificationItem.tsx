@@ -78,10 +78,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           variant="info"
           isRead={notification.read}
         >
-          <NotificationDrawerListItemHeader
-            title={notification.title}
-            srTitle="Info notification:"
-          >
+          <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
             <Checkbox
               isChecked={notification.selected}
               onChange={onCheckboxToggle}
@@ -111,16 +108,12 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
               <DropdownList>{notificationDropdownItems}</DropdownList>
             </Dropdown>
           </NotificationDrawerListItemHeader>
-          <NotificationDrawerListItemBody
-            timestamp={<DateFormat date={notification.created} />}
-          >
+          <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
             <Label variant="outline" isCompact className="pf-u-mb-md">
               {notification.source}
             </Label>
             <span className="pf-u-display-block">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>
-                {notification.description}
-              </ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
             </span>
           </NotificationDrawerListItemBody>
         </NotificationDrawerListItem>

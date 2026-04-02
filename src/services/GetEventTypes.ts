@@ -8,14 +8,10 @@ export const useGetAllEventTypes = () => {
   const { query } = useClient();
   const fetchPage = async (page?: Page): Promise<Schemas.EventType[]> => {
     if (!page) {
-      page = Page.defaultPage().withSort(
-        Sort.by('application', Direction.ASCENDING)
-      );
+      page = Page.defaultPage().withSort(Sort.by('application', Direction.ASCENDING));
     }
 
-    const { errorObject, payload } = await query(
-      listNotificationsActionCreator(page)
-    );
+    const { errorObject, payload } = await query(listNotificationsActionCreator(page));
     if (errorObject) {
       throw errorObject;
     }

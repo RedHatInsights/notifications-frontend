@@ -6,12 +6,7 @@ import * as React from 'react';
 import { ClientContextProvider, createClient } from 'react-fetching-library';
 import { Provider } from 'react-redux';
 import { MemoryRouterProps, useLocation } from 'react-router';
-import {
-  Routes as DomRoutes,
-  Route,
-  RouteProps,
-  MemoryRouter as Router,
-} from 'react-router-dom';
+import { Routes as DomRoutes, Route, RouteProps, MemoryRouter as Router } from 'react-router-dom';
 import { DeepPartial } from 'ts-essentials';
 
 import messages from '../locales/data.json';
@@ -45,9 +40,7 @@ export const appWrapperCleanup = () => {
       .filter((c) => c.isUnmatched || c.isUnmatched === undefined);
     if (calls.length > 0) {
       throw new Error(
-        `Found ${
-          calls.length
-        } unmatched calls, maybe you forgot to mock? : ${calls.map(
+        `Found ${calls.length} unmatched calls, maybe you forgot to mock? : ${calls.map(
           (c) => c.request?.url || c['0']
         )}`
       );
@@ -62,8 +55,7 @@ export const appWrapperCleanup = () => {
 type Config = {
   router?: MemoryRouterProps;
   route?: RouteProps;
-  appContext?: Partial<Omit<AppContext, 'rbac'>> &
-    DeepPartial<Pick<AppContext, 'rbac'>>;
+  appContext?: Partial<Omit<AppContext, 'rbac'>> & DeepPartial<Pick<AppContext, 'rbac'>>;
   getLocation?: jest.Mock; // Pass a jest.fn() to get back the location hook
   skipIsBetaMock?: boolean;
 };
@@ -82,9 +74,7 @@ const defaultAppContextSettings: AppContext = {
   isOrgAdmin: false,
 };
 
-const InternalWrapper: React.FunctionComponent<
-  React.PropsWithChildren<Config>
-> = (props) => {
+const InternalWrapper: React.FunctionComponent<React.PropsWithChildren<Config>> = (props) => {
   const location = useLocation();
 
   if (props.skipIsBetaMock) {
@@ -102,9 +92,7 @@ const InternalWrapper: React.FunctionComponent<
 
 export const AppWrapper: React.FunctionComponent<Config> = (props) => {
   if (!setup) {
-    throw new Error(
-      'appWrapperSetup has not been called, you need to call it on the beforeEach'
-    );
+    throw new Error('appWrapperSetup has not been called, you need to call it on the beforeEach');
   }
 
   const completeAppContext = {
@@ -146,11 +134,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
                   <DomRoutes>
                     {(props.router?.initialEntries?.length || 0) > 0 ? (
                       props.router?.initialEntries?.map((item) => (
-                        <Route
-                          key={item as string}
-                          path={item as string}
-                          {...props.route}
-                        />
+                        <Route key={item as string} path={item as string} {...props.route} />
                       ))
                     ) : (
                       <Route path="/" {...props.route} />
@@ -167,9 +151,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
 };
 
 export const getConfiguredAppWrapper = (config?: Partial<Config>) => {
-  const ConfiguredAppWrapper: React.FunctionComponent<
-    React.PropsWithChildren
-  > = (props) => {
+  const ConfiguredAppWrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => {
     return (
       <AppWrapper
         {...config}

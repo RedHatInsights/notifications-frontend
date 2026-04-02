@@ -1,8 +1,5 @@
 import { Icon } from '@patternfly/react-core';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-} from '@patternfly/react-icons';
+import { CheckCircleIcon, ExclamationCircleIcon } from '@patternfly/react-icons';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
@@ -36,9 +33,7 @@ const getIcon = (type: ConnectionAttemptType) => {
   }
 };
 
-export const ConnectionAttempt: React.FunctionComponent<
-  ConnectionAttemptProps
-> = (props) => {
+export const ConnectionAttempt: React.FunctionComponent<ConnectionAttemptProps> = (props) => {
   return (
     <>
       {getIcon(props.type)}

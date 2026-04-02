@@ -18,9 +18,10 @@ export interface AssociateEventTypesStepProps {
   };
 }
 
-export const useAssociateEventTypesStep: IntegrationWizardStep<
-  AssociateEventTypesStepProps
-> = ({ applications, bundle }: AssociateEventTypesStepProps) => {
+export const useAssociateEventTypesStep: IntegrationWizardStep<AssociateEventTypesStepProps> = ({
+  applications,
+  bundle,
+}: AssociateEventTypesStepProps) => {
   const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
   return React.useMemo(
     () => ({

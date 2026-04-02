@@ -61,8 +61,7 @@ export const useNotification = () => {
         dismissable,
       });
 
-    const clearAllNotifications: ExplicitNotificationFunction = () =>
-      clearNotifications();
+    const clearAllNotifications: ExplicitNotificationFunction = () => clearNotifications();
 
     return {
       addNotification,

@@ -9,10 +9,7 @@ import messages from '../locales/data.json';
 import IntegrationsApp from './app/IntegrationsApp';
 import { AppEntryProps } from './AppEntry';
 import { getNotificationsRegistry } from './store/Store';
-import {
-  createFetchingClient,
-  getInsights,
-} from './utils/insights-common-typescript';
+import { createFetchingClient, getInsights } from './utils/insights-common-typescript';
 
 enableMapSet();
 
@@ -33,11 +30,7 @@ const IntegrationsEntry: React.FunctionComponent<AppEntryProps> = (props) => {
   }, [props.logger]);
 
   return (
-    <IntlProvider
-      locale={navigator.language.slice(0, 2)}
-      messages={messages}
-      onError={console.log}
-    >
+    <IntlProvider locale={navigator.language.slice(0, 2)} messages={messages} onError={console.log}>
       <Provider store={store}>
         <ClientContextProvider client={client}>
           <IntegrationsApp {...props} />

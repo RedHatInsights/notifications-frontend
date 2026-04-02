@@ -9,8 +9,7 @@ import {
 
 const DEBOUNCE_MS = 250;
 
-const useUrlStateName = (defaultValue?: string) =>
-  useUrlStateString('name', defaultValue);
+const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 const useUrlStateEnabled = (_defaultValue?: string) =>
   useUrlStateMultipleOptions('enabled', ['Enabled', 'Disabled']);

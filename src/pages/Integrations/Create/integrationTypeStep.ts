@@ -1,7 +1,4 @@
-import {
-  componentTypes,
-  validatorTypes,
-} from '@data-driven-forms/react-form-renderer';
+import { componentTypes, validatorTypes } from '@data-driven-forms/react-form-renderer';
 import {
   CARD_SELECT,
   DETAILS,
@@ -17,10 +14,7 @@ import {
   iconMapper,
 } from './helpers';
 import { defaultIconList } from '../../../config/Config';
-import {
-  IntegrationIconTypes,
-  IntegrationType,
-} from '../../../types/Integration';
+import { IntegrationIconTypes, IntegrationType } from '../../../types/Integration';
 
 export const integrationTypeStep = (
   category: string,
@@ -55,10 +49,7 @@ export const integrationTypeStep = (
             if (key === IntegrationType.PAGERDUTY && !isPagerDutyEnabled) {
               return false;
             }
-            if (
-              key === IntegrationType.EMAIL_SUBSCRIPTION &&
-              !isEmailIntegrationEnabled
-            ) {
+            if (key === IntegrationType.EMAIL_SUBSCRIPTION && !isEmailIntegrationEnabled) {
               return false;
             }
             return true;
@@ -77,9 +68,7 @@ export const integrationTypeStep = (
 
       [IntegrationType.SPLUNK]: SPLUNK_DETAILS,
       [IntegrationType.SERVICE_NOW]: SERVICE_NOW_DETAILS,
-      [IntegrationType.PAGERDUTY]: isPagerDutyEnabled
-        ? PAGERDUTY_DETAILS
-        : null,
+      [IntegrationType.PAGERDUTY]: isPagerDutyEnabled ? PAGERDUTY_DETAILS : null,
       [IntegrationType.ANSIBLE]: DETAILS,
     },
   },

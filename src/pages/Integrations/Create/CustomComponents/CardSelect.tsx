@@ -47,10 +47,7 @@ export interface CardSelectProps extends UseFieldApiProps<any> {
   description: Node;
   hideLabel: boolean;
   name: string;
-  mutator: (
-    option: CardSelectOption,
-    formOptions: FormOptions
-  ) => CardSelectOption;
+  mutator: (option: CardSelectOption, formOptions: FormOptions) => CardSelectOption;
   options: Array<CardSelectOption>;
   DefaultIcon: CardSelectIcon;
   iconMapper: (value: string, DefaultIcon: CardSelectIcon) => CardSelectIcon;
@@ -58,9 +55,7 @@ export interface CardSelectProps extends UseFieldApiProps<any> {
   isReadOnly: boolean;
 }
 
-const CardSelect: React.FunctionComponent<CardSelectProps> = (
-  originalProps
-) => {
+const CardSelect: React.FunctionComponent<CardSelectProps> = (originalProps) => {
   const {
     isRequired,
     label,
@@ -78,9 +73,7 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
   const [icons] = useState(() => {
     const components = {};
 
-    options.forEach(
-      ({ value }) => (components[value] = iconMapper(value, DefaultIcon))
-    );
+    options.forEach(({ value }) => (components[value] = iconMapper(value, DefaultIcon)));
 
     return components;
   });
@@ -96,11 +89,9 @@ const CardSelect: React.FunctionComponent<CardSelectProps> = (
         : [...inputValue, value]
     );
 
-  const handleSingle = (value) =>
-    input.onChange(inputValue === value ? undefined : value);
+  const handleSingle = (value) => input.onChange(inputValue === value ? undefined : value);
 
-  const handleClick = (value) =>
-    isMulti ? handleMulti(value) : handleSingle(value);
+  const handleClick = (value) => (isMulti ? handleMulti(value) : handleSingle(value));
 
   const onClick = (value) => {
     if (isDisabled) {

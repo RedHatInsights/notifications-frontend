@@ -6,9 +6,7 @@ import { fromUtc } from '../../utils/insights-common-typescript';
 
 type ServerEvent = Schemas.EventLogEntry;
 
-export const toNotificationEvent = (
-  serverEvent: ServerEvent
-): NotificationEvent => ({
+export const toNotificationEvent = (serverEvent: ServerEvent): NotificationEvent => ({
   id: serverEvent.id,
   bundle: serverEvent.bundle,
   application: serverEvent.application,
@@ -18,14 +16,10 @@ export const toNotificationEvent = (
 });
 
 const sortEventActions = (actions: Array<NotificationEventAction>) => {
-  return actions.sort((first, second) =>
-    first.endpointType.localeCompare(second.endpointType)
-  );
+  return actions.sort((first, second) => first.endpointType.localeCompare(second.endpointType));
 };
 
-const groupActions = (
-  actions: ServerEvent['actions']
-): Array<NotificationEventAction> => {
+const groupActions = (actions: ServerEvent['actions']): Array<NotificationEventAction> => {
   const actionsById: Record<UUID, NotificationEventAction> = {};
   const actionsWithoutEndpoint: Array<NotificationEventAction> = [];
 
@@ -55,9 +49,7 @@ const groupActions = (
   return [...Object.values(actionsById), ...actionsWithoutEndpoint];
 };
 
-const initAction = (
-  action: ServerEvent['actions'][number]
-): NotificationEventAction => ({
+const initAction = (action: ServerEvent['actions'][number]): NotificationEventAction => ({
   id: action.endpoint_id ?? undefined,
   endpointType: getIntegrationType({
     type: action.endpoint_type,
@@ -71,5 +63,4 @@ const initAction = (
   errorCount: isFailed(action.status) ? 1 : 0,
 });
 
-const isFailed = (status: ServerEvent['actions'][number]['status']): boolean =>
-  status === 'FAILED';
+const isFailed = (status: ServerEvent['actions'][number]['status']): boolean => status === 'FAILED';

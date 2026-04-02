@@ -68,10 +68,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
 
   const mainPage = (
     <Main>
-      <BundlePageBehaviorGroupContent
-        applications={props.applications}
-        bundle={props.bundle}
-      />
+      <BundlePageBehaviorGroupContent applications={props.applications} bundle={props.bundle} />
     </Main>
   );
 
@@ -140,9 +137,8 @@ export const NotificationListBundlePage: React.FunctionComponent<
           subtitle={
             isOrgAdmin ? (
               <span>
-                Configure which event notifications different users within your
-                organization are entitled to receive. To manage your own
-                personal notification settings, go to{' '}
+                Configure which event notifications different users within your organization are
+                entitled to receive. To manage your own personal notification settings, go to{' '}
                 <Content
                   component={ContentVariants.a}
                   href="/settings/notifications/user-preferences/"
@@ -153,10 +149,9 @@ export const NotificationListBundlePage: React.FunctionComponent<
               </span>
             ) : (
               <span>
-                View how notifications are configured by your organization
-                admin. Contact your organization admin if you need access to
-                edit these configurations. To manage your own personal
-                notification settings, go to{' '}
+                View how notifications are configured by your organization admin. Contact your
+                organization admin if you need access to edit these configurations. To manage your
+                own personal notification settings, go to{' '}
                 <Content
                   component={ContentVariants.a}
                   href="/settings/notifications/user-preferences/"
@@ -172,9 +167,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
             <Tabs
-              activeKey={props.bundleTabs.findIndex(
-                ({ name }) => name === bundle
-              )}
+              activeKey={props.bundleTabs.findIndex(({ name }) => name === bundle)}
               onSelect={(event, tabIndex) => {
                 const newSearchParams = new URLSearchParams(location.search);
                 const selectedBundle = props.bundleTabs[tabIndex]?.name;
@@ -211,8 +204,8 @@ export const NotificationListBundlePage: React.FunctionComponent<
           title={`${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`}
           subtitle={
             <span>
-              Configure which event notifications different users within your
-              organization are entitled to receive.
+              Configure which event notifications different users within your organization are
+              entitled to receive.
             </span>
           }
           action={eventLogButton()}

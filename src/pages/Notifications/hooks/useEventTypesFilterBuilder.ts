@@ -20,15 +20,12 @@ export const useEventTypesFilterBuilder = (
     (filters?: NotificationFilters) => {
       const filter = new Filter();
 
-      const appFilter =
-        filters && filters[NotificationFilterColumn.APPLICATION];
+      const appFilter = filters && filters[NotificationFilterColumn.APPLICATION];
 
       if (appFilter) {
         const appIds: Array<string> = [];
         for (const appName of arrayValue(appFilter)) {
-          const filterOption = appFilterOptions.find(
-            (a) => a.displayName === appName
-          );
+          const filterOption = appFilterOptions.find((a) => a.displayName === appName);
           if (filterOption) {
             appIds.push(filterOption.id);
           }

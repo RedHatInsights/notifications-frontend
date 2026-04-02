@@ -93,11 +93,7 @@ export const useBehaviorGroupNotificationRows = (
   );
 
   const updateBehaviorGroupLink = React.useCallback(
-    (
-      notificationId: UUID,
-      behaviorGroup: BehaviorGroup,
-      linkBehavior: boolean
-    ) => {
+    (notificationId: UUID, behaviorGroup: BehaviorGroup, linkBehavior: boolean) => {
       if (linkBehavior) {
         setNotificationRows(
           produce((draft) => {
@@ -135,10 +131,7 @@ export const useBehaviorGroupNotificationRows = (
           if (response.payload?.status === 200) {
             setNotificationRows(
               produce((draft) => {
-                const draftNotification = getNotification(
-                  draft,
-                  notificationId
-                );
+                const draftNotification = getNotification(draft, notificationId);
                 draftNotification.isEditMode = false;
                 draftNotification.loadingActionStatus = 'done';
               })
@@ -149,18 +142,14 @@ export const useBehaviorGroupNotificationRows = (
               <>
                 There was an error saving the behavior of{' '}
                 <b>
-                  {notification.applicationDisplayName} -{' '}
-                  {notification.eventTypeDisplayName}
+                  {notification.applicationDisplayName} - {notification.eventTypeDisplayName}
                 </b>
                 .
               </>
             );
             setNotificationRows(
               produce((draft) => {
-                const draftNotification = getNotification(
-                  draft,
-                  notificationId
-                );
+                const draftNotification = getNotification(draft, notificationId);
                 draftNotification.isEditMode = true;
                 draftNotification.loadingActionStatus = 'done';
               })

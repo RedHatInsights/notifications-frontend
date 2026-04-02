@@ -13,10 +13,7 @@ import * as React from 'react';
 
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
-import {
-  SortDirection,
-  sortDirectionFromString,
-} from '../../types/SortDirection';
+import { SortDirection, sortDirectionFromString } from '../../types/SortDirection';
 import EmptyTableState from './EmptyTableState';
 import {
   Callbacks,
@@ -46,14 +43,10 @@ export interface NotificationsBehaviorGroupTableProps {
   onSort: (column: NotificationsTableColumns, direction: SortDirection) => void;
 }
 
-export const NotificationsBehaviorGroupTable =
-  WithOuia<NotificationsBehaviorGroupTableProps>((props) => {
+export const NotificationsBehaviorGroupTable = WithOuia<NotificationsBehaviorGroupTableProps>(
+  (props) => {
     const callbacks: Callbacks | undefined = React.useMemo(() => {
-      if (
-        props.onStartEditing &&
-        props.onFinishEditing &&
-        props.onCancelEditing
-      ) {
+      if (props.onStartEditing && props.onFinishEditing && props.onCancelEditing) {
         return {
           onStartEditing: props.onStartEditing,
           onFinishEditing: props.onFinishEditing,
@@ -84,29 +77,27 @@ export const NotificationsBehaviorGroupTable =
       [props.onSort]
     );
 
-    const sortOptions: Record<
-      NotificationsTableColumns,
-      undefined | ThProps['sort']
-    > = React.useMemo(() => {
-      const sortBy = {
-        direction: props.sortDirection,
-        index: props.sortBy,
-      };
+    const sortOptions: Record<NotificationsTableColumns, undefined | ThProps['sort']> =
+      React.useMemo(() => {
+        const sortBy = {
+          direction: props.sortDirection,
+          index: props.sortBy,
+        };
 
-      return {
-        [NotificationsTableColumns.EVENT]: {
-          sortBy,
-          columnIndex: NotificationsTableColumns.EVENT,
-          onSort,
-        },
-        [NotificationsTableColumns.APPLICATION]: {
-          sortBy,
-          columnIndex: NotificationsTableColumns.APPLICATION,
-          onSort,
-        },
-        [NotificationsTableColumns.BEHAVIOR]: undefined,
-      };
-    }, [props.sortDirection, props.sortBy, onSort]);
+        return {
+          [NotificationsTableColumns.EVENT]: {
+            sortBy,
+            columnIndex: NotificationsTableColumns.EVENT,
+            onSort,
+          },
+          [NotificationsTableColumns.APPLICATION]: {
+            sortBy,
+            columnIndex: NotificationsTableColumns.APPLICATION,
+            onSort,
+          },
+          [NotificationsTableColumns.BEHAVIOR]: undefined,
+        };
+      }, [props.sortDirection, props.sortBy, onSort]);
 
     const rows = React.useMemo(() => {
       const notifications = props.notifications;
@@ -134,24 +125,17 @@ export const NotificationsBehaviorGroupTable =
         <Thead>
           <Tr>
             <Th />
-            <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>
-              Event Type
-            </Th>
-            <Th sort={sortOptions[NotificationsTableColumns.APPLICATION]}>
-              Service
-            </Th>
-            <Th
-              sort={sortOptions[NotificationsTableColumns.BEHAVIOR]}
-              width={35}
-            >
+            <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>Event Type</Th>
+            <Th sort={sortOptions[NotificationsTableColumns.APPLICATION]}>Service</Th>
+            <Th sort={sortOptions[NotificationsTableColumns.BEHAVIOR]} width={35}>
               Configuration
             </Th>
             <Th />
           </Tr>
         </Thead>
-        <Tbody>
-          {props.notifications.length === 0 ? <EmptyTableState /> : rows}
-        </Tbody>
+        <Tbody>{props.notifications.length === 0 ? <EmptyTableState /> : rows}</Tbody>
       </TableComposable>
     );
-  }, 'Notifications/Notifications/Table');
+  },
+  'Notifications/Notifications/Table'
+);

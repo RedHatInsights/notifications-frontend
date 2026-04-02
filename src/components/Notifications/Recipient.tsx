@@ -4,10 +4,7 @@ import { BanIcon, LockIcon } from '@patternfly/react-icons';
 import * as React from 'react';
 
 import { Action, NotificationType } from '../../types/Notification';
-import {
-  NotificationRbacGroupRecipient,
-  NotificationUserRecipient,
-} from '../../types/Recipient';
+import { NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../types/Recipient';
 import { GroupNotFound } from './Rbac/GroupNotFound';
 import { join } from '../../utils/insights-common-typescript';
 

@@ -4,14 +4,9 @@ import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 import { FormTextInput } from '../../../utils/insights-common-typescript';
 
-export const IntegrationTypeSlackForm: React.FunctionComponent<
-  IntegrationTypeForm
-> = (props) => {
+export const IntegrationTypeSlackForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
   return (
-    <div
-      className="pf-c-form"
-      {...getOuiaProps('Integrations/Camel/Slack', props)}
-    >
+    <div className="pf-c-form" {...getOuiaProps('Integrations/Camel/Slack', props)}>
       <FormTextInput
         isRequired={true}
         label="Endpoint URL"

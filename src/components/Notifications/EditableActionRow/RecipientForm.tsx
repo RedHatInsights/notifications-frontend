@@ -15,22 +15,14 @@ import { RecipientTypeahead } from '../Form/RecipientTypeahead';
 
 interface RecipientFormProps {
   action?: Action;
-  integrationSelected: ReturnType<
-    UseBehaviorGroupActionHandlers['handleIntegrationSelected']
-  >;
-  recipientSelected: ReturnType<
-    UseBehaviorGroupActionHandlers['handleRecipientSelected']
-  >;
-  recipientOnClear: ReturnType<
-    UseBehaviorGroupActionHandlers['handleRecipientOnClear']
-  >;
+  integrationSelected: ReturnType<UseBehaviorGroupActionHandlers['handleIntegrationSelected']>;
+  recipientSelected: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientSelected']>;
+  recipientOnClear: ReturnType<UseBehaviorGroupActionHandlers['handleRecipientOnClear']>;
   onOpenChange?: (isOpen: boolean) => void;
   error?: string;
 }
 
-export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
-  props
-) => {
+export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (props) => {
   let recipient: React.ReactNode;
 
   if (!props.action) {
@@ -56,9 +48,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (
     recipient = (
       <IntegrationRecipientTypeahead
         onSelected={props.integrationSelected}
-        integrationType={
-          props.action.integration?.type ?? IntegrationType.WEBHOOK
-        }
+        integrationType={props.action.integration?.type ?? IntegrationType.WEBHOOK}
         selected={props.action.integration}
         onOpenChange={props.onOpenChange}
         error={!!props.error}

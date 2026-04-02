@@ -11,12 +11,7 @@ export class Page {
   readonly filter?: Filter;
   readonly sort?: Sort;
 
-  private constructor(
-    index: number,
-    size?: number,
-    filter?: Filter,
-    sort?: Sort
-  ) {
+  private constructor(index: number, size?: number, filter?: Filter, sort?: Sort) {
     this.index = index;
     this.size = size || DEFAULT_PAGE_SIZE;
     this.filter = filter;
@@ -60,12 +55,10 @@ export class Page {
 
     if (this.filter) {
       for (const filterElement of this.filter.elements) {
-        queryParams[
-          `filter${camelcase(filterElement.column, { pascalCase: true })}`
-        ] = filterElement.value;
-        queryParams[
-          `filterOp${camelcase(filterElement.column, { pascalCase: true })}`
-        ] = filterElement.operator;
+        queryParams[`filter${camelcase(filterElement.column, { pascalCase: true })}`] =
+          filterElement.value;
+        queryParams[`filterOp${camelcase(filterElement.column, { pascalCase: true })}`] =
+          filterElement.operator;
       }
     }
 
@@ -95,11 +88,7 @@ class FilterElement {
   readonly operator: Operator;
   readonly value: string | Array<string>;
 
-  public constructor(
-    column: string,
-    operator: Operator,
-    value: string | Array<string>
-  ) {
+  public constructor(column: string, operator: Operator, value: string | Array<string>) {
     this.column = column;
     this.operator = operator;
     this.value = value;
@@ -114,11 +103,7 @@ export class Filter {
     this.elements = this._elements = [];
   }
 
-  public and(
-    column: string,
-    operator: Operator,
-    value: string | Array<string>
-  ) {
+  public and(column: string, operator: Operator, value: string | Array<string>) {
     this._elements.push(new FilterElement(column, operator, value));
     return this;
   }
@@ -151,8 +136,4 @@ export enum Operator {
   BOOLEAN_IS = 'BOOLEAN_IS',
 }
 
-export type OnSortHandlerType = (
-  index: number,
-  column: string,
-  direction: Direction
-) => void;
+export type OnSortHandlerType = (index: number, column: string, direction: Direction) => void;

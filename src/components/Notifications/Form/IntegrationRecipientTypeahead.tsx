@@ -43,15 +43,12 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
   IntegrationRecipientTypeaheadProps
 > = ({ integrationType, selected, onSelected, isDisabled }) => {
   const chooseText = React.useMemo(
-    () =>
-      `Choose ${Config.integrations.types[integrationType].name.toLowerCase()}`,
+    () => `Choose ${Config.integrations.types[integrationType].name.toLowerCase()}`,
     [integrationType]
   );
   const [isOpen, setIsOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>('');
-  const [focusedItemIndex, setFocusedItemIndex] = React.useState<number | null>(
-    null
-  );
+  const [focusedItemIndex, setFocusedItemIndex] = React.useState<number | null>(null);
   const [activeItem, setActiveItem] = React.useState<string | null>(null);
   const textInputRef = React.useRef<HTMLInputElement>();
 
@@ -88,13 +85,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
         )
       );
     }
-  }, [
-    getIntegrations,
-    integrationType,
-    state.loadingFilter,
-    state.lastSearch,
-    dispatchers,
-  ]);
+  }, [getIntegrations, integrationType, state.loadingFilter, state.lastSearch, dispatchers]);
 
   const integrationsMapper = React.useCallback(
     (recipients: ReadonlyArray<IntegrationRecipient>) => {
@@ -114,9 +105,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
           <SelectOption
             key={recipient.integration.id}
             value={currRecipient}
-            description={
-              isDisabled ? 'This integration has already been added' : undefined
-            }
+            description={isDisabled ? 'This integration has already been added' : undefined}
             isDisabled={isDisabled}
             isSelected={selected?.id === recipient.integration.id}
             isFocused={focusedItemIndex === index}
@@ -169,10 +158,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
 
       if (key === 'ArrowDown') {
         // When no index is set or at the last index, focus to the first, otherwise increment focus index
-        if (
-          focusedItemIndex === null ||
-          focusedItemIndex === options.length - 1
-        ) {
+        if (focusedItemIndex === null || focusedItemIndex === options.length - 1) {
           indexToFocus = 0;
         } else {
           indexToFocus = focusedItemIndex + 1;
@@ -180,26 +166,15 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       }
 
       setFocusedItemIndex(indexToFocus);
-      const focusedItem = options.filter((option) => !option.props.isDisabled)[
-        indexToFocus
-      ];
-      setActiveItem(
-        `select-multi-typeahead-checkbox-${focusedItem.props.value.replace(
-          ' ',
-          '-'
-        )}`
-      );
+      const focusedItem = options.filter((option) => !option.props.isDisabled)[indexToFocus];
+      setActiveItem(`select-multi-typeahead-checkbox-${focusedItem.props.value.replace(' ', '-')}`);
     }
   };
 
   const onInputKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
-    const enabledMenuItems = options.filter(
-      (menuItem) => !menuItem.props.isDisabled
-    );
+    const enabledMenuItems = options.filter((menuItem) => !menuItem.props.isDisabled);
     const [firstMenuItem] = enabledMenuItems;
-    const focusedItem = focusedItemIndex
-      ? enabledMenuItems[focusedItemIndex]
-      : firstMenuItem;
+    const focusedItem = focusedItemIndex ? enabledMenuItems[focusedItemIndex] : firstMenuItem;
 
     switch (event.key) {
       // Select the first available option
@@ -227,10 +202,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
     setIsOpen(!isOpen);
   };
 
-  const onTextInputChange = (
-    event: React.FormEvent<HTMLInputElement>,
-    value: string
-  ) => {
+  const onTextInputChange = (event: React.FormEvent<HTMLInputElement>, value: string) => {
     setInputValue(value);
 
     const search = event.currentTarget.value?.trim();
@@ -292,9 +264,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       onOpenChange={() => setIsOpen(false)}
       toggle={toggle}
     >
-      <SelectList id="select-multi-typeahead-checkbox-listbox">
-        {options}
-      </SelectList>
+      <SelectList id="select-multi-typeahead-checkbox-listbox">{options}</SelectList>
     </Select>
   );
 };

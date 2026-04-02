@@ -24,8 +24,7 @@ const getPage = async (
     const page = groups.payload.value;
 
     const hasMore =
-      page.data.length > 0 &&
-      (page.meta?.count ? page.meta.count > offset + LIMIT : true);
+      page.data.length > 0 && (page.meta?.count ? page.meta.count > offset + LIMIT : true);
 
     return [
       groups.payload.value.data.map((value) => ({
@@ -43,9 +42,9 @@ const getPage = async (
   return [undefined, false];
 };
 
-export const RbacGroupContextProvider: React.FunctionComponent<
-  React.PropsWithChildren
-> = (props) => {
+export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithChildren> = (
+  props
+) => {
   const { query } = useClient();
   const [isLoading, setLoading] = useState(true);
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
@@ -82,9 +81,5 @@ export const RbacGroupContextProvider: React.FunctionComponent<
     [rbacGroups, isLoading]
   );
 
-  return (
-    <RbacGroupContext.Provider value={value}>
-      {props.children}
-    </RbacGroupContext.Provider>
-  );
+  return <RbacGroupContext.Provider value={value}>{props.children}</RbacGroupContext.Provider>;
 };

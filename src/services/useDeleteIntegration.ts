@@ -8,5 +8,4 @@ export const deleteIntegrationActionCreator = (integrationId: string) => {
   });
 };
 
-export const useDeleteIntegration = () =>
-  useMutation<boolean>(deleteIntegrationActionCreator);
+export const useDeleteIntegration = () => useMutation<boolean>(deleteIntegrationActionCreator);

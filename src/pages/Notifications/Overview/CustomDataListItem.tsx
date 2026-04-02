@@ -46,9 +46,7 @@ interface CustomDataListItemProps {
 const IconMapper = {
   [IconName.USER]: <UserIcon className="pf-v5-u-primary-color-100" />,
   [IconName.RUNNING]: <RunningIcon className="pf-v5-u-primary-color-100" />,
-  [IconName.INTEGRATION]: (
-    <IntegrationIcon className="pf-v5-u-primary-color-100" />
-  ),
+  [IconName.INTEGRATION]: <IntegrationIcon className="pf-v5-u-primary-color-100" />,
   [IconName.USERS]: <UsersIcon className="pf-v5-u-primary-color-100" />,
   [IconName.BELL]: <BellIcon className="pf-v5-u-primary-color-100" />,
   [IconName.BUG]: <BugIcon className="pf-v5-u-primary-color-100" />,
@@ -99,11 +97,7 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
             ]}
           />
           {linkTitle && linkTarget && (
-            <DataListAction
-              aria-labelledby="item1 action1"
-              id="action1"
-              aria-label="Actions"
-            >
+            <DataListAction aria-labelledby="item1 action1" id="action1" aria-label="Actions">
               <Button
                 component="a"
                 href={linkTarget}

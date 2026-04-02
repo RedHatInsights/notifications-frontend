@@ -1,10 +1,4 @@
-import {
-  Content,
-  ContentVariants,
-  Grid,
-  GridItem,
-  Skeleton,
-} from '@patternfly/react-core';
+import { Content, ContentVariants, Grid, GridItem, Skeleton } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { Action } from '../../../types/Notification';
@@ -15,14 +9,13 @@ interface BehaviorGroupActionsSummaryProps {
   actions?: ReadonlyArray<Action>;
 }
 
-type BehaviorGroupActionSummaryImplProps =
-  Required<BehaviorGroupActionsSummaryProps>;
+type BehaviorGroupActionSummaryImplProps = Required<BehaviorGroupActionsSummaryProps>;
 
 const skeletonActions = 3;
 
-const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<
-  React.PropsWithChildren
-> = (props) => {
+const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<React.PropsWithChildren> = (
+  props
+) => {
   return (
     <Grid>
       <GridItem span={6}>
