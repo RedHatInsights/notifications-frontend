@@ -40,3 +40,19 @@ playwright/.cache/
 # storybook
 storybook-static
 build-storybook.log
+
+# NPM cache
+.npm/
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Vim swap files
+*.swo
+*.swp
+
+# Log files
+*.log
+
+# AgentReady assessment reports
+.agentready/
