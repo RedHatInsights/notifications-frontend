@@ -211,6 +211,7 @@ export const RecipientTypeahead: React.FunctionComponent<
         selected={selection}
         onSelect={onSelect}
         onOpenChange={(isOpen) => setOpen(isOpen)}
+        maxMenuHeight="300px"
         toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
           <MenuToggle
             ref={toggleRef}

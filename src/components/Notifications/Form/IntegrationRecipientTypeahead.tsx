@@ -284,6 +284,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       id="multi-typeahead-checkbox-select"
       isOpen={isOpen}
       selected={selection}
+      maxMenuHeight="300px"
       onSelect={(_ev, selection) => {
         if (isRecipientOption(selection)) {
           onSelect(selection as RecipientOption);
