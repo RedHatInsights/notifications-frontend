@@ -244,4 +244,30 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
       /This User Access group was not found, and may have been deleted/i
     );
   });
+
+  it('Constrains dropdown menu height to 300px', async () => {
+    render(
+      <RecipientTypeahead
+        selected={SELECTED_ALL}
+        onSelected={fn()}
+        onClear={fn()}
+      />,
+      {
+        wrapper: getConfiguredWrapper(createDefaultGetMock()),
+      }
+    );
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: /Label group category/,
+      })
+    );
+
+    await waitFor(() => {
+      // eslint-disable-next-line testing-library/no-node-access
+      const menuContentElement = document.querySelector('.pf-v6-c-menu__content');
+      expect(menuContentElement).toBeInTheDocument();
+      expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
+    });
+  });
 });

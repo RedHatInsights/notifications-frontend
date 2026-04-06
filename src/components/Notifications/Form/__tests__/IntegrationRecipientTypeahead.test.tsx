@@ -265,4 +265,28 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       expect(screen.getAllByRole('menuitem')[0]).toBeDisabled()
     );
   });
+
+  it('Constrains dropdown menu height to 300px', async () => {
+    render(
+      <IntegrationRecipientTypeahead
+        selected={undefined}
+        integrationType={IntegrationType.WEBHOOK}
+        onSelected={fn()}
+      />,
+      {
+        wrapper: getConfiguredWrapper(),
+      }
+    );
+
+    await userEvent.click(
+      await screen.findByRole('button', { name: /Menu toggle/i })
+    );
+
+    await waitFor(() => {
+      // eslint-disable-next-line testing-library/no-node-access
+      const menuContentElement = document.querySelector('.pf-v6-c-menu__content');
+      expect(menuContentElement).toBeInTheDocument();
+      expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
+    });
+  });
 });
