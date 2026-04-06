@@ -54,32 +54,35 @@ export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithCh
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
 
   const sync = React.useCallback(async () => {
-    // Only fetch groups if permission is granted
     if (!canReadRbacGroups) {
       setRbacGroups([]);
       setLoading(false);
       return;
     }
 
+    setLoading(true);
     const allGroups: Array<RbacGroup> = [];
     let offset = 0;
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const [groups, hasMorePages] = await getPage(query, offset);
-      if (groups === undefined) {
-        return;
+    try {
+      // eslint-disable-next-line no-constant-condition
+      while (true) {
+        const [groups, hasMorePages] = await getPage(query, offset);
+        if (groups === undefined) {
+          return;
+        }
+
+        allGroups.push(...groups);
+        if (!hasMorePages) {
+          break;
+        }
+
+        offset += LIMIT;
       }
 
-      allGroups.push(...groups);
-      if (!hasMorePages) {
-        break;
-      }
-
-      offset += LIMIT;
+      setRbacGroups(allGroups);
+    } finally {
+      setLoading(false);
     }
-
-    setRbacGroups(allGroups);
-    setLoading(false);
   }, [query, canReadRbacGroups]);
 
   useSyncInterval(SYNC_INTERVAL, sync, true);

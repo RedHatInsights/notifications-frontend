@@ -48,46 +48,55 @@ export const createDefaultWorkspace = (overrides?: Partial<MockWorkspace>): Mock
 });
 
 /**
- * Permission check result from Kessel bulk check endpoint
+ * Allowed enum values returned by Kessel `POST .../checkself` (see
+ * `CheckSelfResponse` in `@project-kessel/react-kessel-access-check`).
+ * `useSelfAccessCheck` maps these to hook `data.allowed` booleans via
+ * `transformSingleResponse`.
  */
-export interface PermissionCheckResult {
+export type KesselAllowedEnum = 'ALLOWED_TRUE' | 'ALLOWED_FALSE' | 'ALLOWED_UNSPECIFIED';
+
+/**
+ * Request body for `checkSelf` (single check per request)
+ */
+interface CheckSelfRequestBody {
+  object: {
+    resourceId: string;
+    resourceType: string;
+    reporter?: { type: string };
+  };
   relation: string;
-  permitted: boolean;
+}
+
+function permissionToAllowedEnum(permitted: boolean | undefined): KesselAllowedEnum {
+  if (permitted === true) {
+    return 'ALLOWED_TRUE';
+  }
+  if (permitted === false) {
+    return 'ALLOWED_FALSE';
+  }
+  return 'ALLOWED_UNSPECIFIED';
 }
 
 /**
- * Request body for bulk permission check
- */
-interface BulkCheckRequest {
-  checks: Array<{
-    relation: string;
-    resource: {
-      id: string;
-      type: string;
-      reporter?: { type: string };
-    };
-  }>;
-}
-
-/**
- * Creates a bulk permission check response handler
- * @param permissions - Map of relation names to permitted status
+ * Creates a mock handler for `POST /api/rbac/v2/checkself` (single self check per
+ * request). Matches `@project-kessel/react-kessel-access-check` `checkSelf` API.
+ *
+ * @param permissions - Map of relation names to permitted status (missing key → ALLOWED_UNSPECIFIED)
  */
 export const createBulkPermissionCheckHandler = (permissions: Record<string, boolean>) => {
-  return http.post(`${KESSEL_RBAC_API_BASE}/check/self`, async ({ request }) => {
-    const body = (await request.json()) as BulkCheckRequest;
-    const checks = body.checks || [];
+  return http.post(
+    ({ request }) => new URL(request.url).pathname === '/api/rbac/v2/checkself',
+    async ({ request }) => {
+      const body = (await request.json()) as CheckSelfRequestBody;
+      const relation = body.relation;
+      const permitted = permissions[relation];
+      const allowed = permissionToAllowedEnum(permitted);
 
-    const results = checks.map((check) => ({
-      relation: check.relation,
-      resource: check.resource,
-      permitted: permissions[check.relation] ?? false,
-    }));
-
-    return HttpResponse.json({
-      results,
-    });
-  });
+      return HttpResponse.json({
+        allowed,
+      });
+    }
+  );
 };
 
 /**
