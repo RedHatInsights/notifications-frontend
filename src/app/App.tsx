@@ -5,6 +5,7 @@ import Maintenance from '@redhat-cloud-services/frontend-components/Maintenance'
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import format from 'date-fns/format';
 import * as React from 'react';
+import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 
 import { Routes } from '../Routes';
 import { staging } from '../types/Environments';
@@ -12,6 +13,7 @@ import { ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
 import { AppSkeleton } from './AppSkeleton';
 import { RbacGroupContextProvider } from './rbac/RbacGroupContextProvider';
+import { KesselRbacAccessProvider } from './rbac/KesselRbacAccessProvider';
 import { useApp } from './useApp';
 import {
   InsightsEnvDetector,
@@ -73,29 +75,33 @@ const App: React.ComponentType = () => {
   }
 
   return (
-    <AppContext.Provider
-      value={{
-        rbac,
-        server,
-        isOrgAdmin: !!isOrgAdmin,
-      }}
-    >
-      <RbacGroupContextProvider>
-        <NotificationsProvider>
-          <InsightsEnvDetector insights={insights} onEnvironment={staging}>
-            <RenderIfTrue>
-              <Switch
-                className="pf-v5-u-p-sm"
-                isChecked={usingExperimental}
-                onChange={toggleExperimental}
-                label="Disable experimental features"
-              />
-            </RenderIfTrue>
-          </InsightsEnvDetector>
-          <Routes />
-        </NotificationsProvider>
-      </RbacGroupContextProvider>
-    </AppContext.Provider>
+    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/rbac/v2">
+      <KesselRbacAccessProvider>
+        <AppContext.Provider
+          value={{
+            rbac,
+            server,
+            isOrgAdmin: !!isOrgAdmin,
+          }}
+        >
+          <RbacGroupContextProvider>
+            <NotificationsProvider>
+              <InsightsEnvDetector insights={insights} onEnvironment={staging}>
+                <RenderIfTrue>
+                  <Switch
+                    className="pf-v5-u-p-sm"
+                    isChecked={usingExperimental}
+                    onChange={toggleExperimental}
+                    label="Disable experimental features"
+                  />
+                </RenderIfTrue>
+              </InsightsEnvDetector>
+              <Routes />
+            </NotificationsProvider>
+          </RbacGroupContextProvider>
+        </AppContext.Provider>
+      </KesselRbacAccessProvider>
+    </AccessCheck.Provider>
   );
 };
 

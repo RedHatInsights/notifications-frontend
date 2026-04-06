@@ -36,6 +36,7 @@ import { useFieldApi } from '@data-driven-forms/react-form-renderer';
 import { useClient } from 'react-fetching-library';
 import { perPageOptions } from '../../../../config/Config';
 import { useRbacGroups } from '../../../../app/rbac/RbacGroupContext';
+import { useKesselRbacAccess } from '../../../../app/rbac/KesselRbacAccessContext';
 import { NotificationRbacGroupRecipient } from '../../../../types/Recipient';
 import { OutlinedQuestionCircleIcon, UsersIcon } from '@patternfly/react-icons';
 import { Operations } from '../../../../generated/OpenapiRbac';
@@ -65,6 +66,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   );
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
+  const { permissions } = useKesselRbacAccess();
+  const { canReadRbacPrincipal } = permissions;
   const { query } = useClient();
   const [visiblePopoverId, setVisiblePopoverId] = React.useState<string | null>(null);
   const popoverRootRef = useRef<HTMLSpanElement>(null);
@@ -271,7 +274,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             intl.formatMessage(messages.allOrgAdmins)
           ) : group.platform_default ? (
             intl.formatMessage(messages.allUsers)
-          ) : (
+          ) : canReadRbacPrincipal ? (
             <Button
               variant="link"
               isInline
@@ -284,6 +287,10 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 ? intl.formatMessage(messages.userPlural)
                 : intl.formatMessage(messages.userSingular)}
             </Button>
+          ) : (
+            intl.formatMessage(messages.usersCountWithoutPrincipalRead, {
+              count: group.userCount,
+            })
           ),
         ],
         props: {
@@ -291,7 +298,15 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
         },
       };
     });
-  }, [paginatedData, isSelected, visiblePopoverId, onSelect, handleViewUsers, intl]);
+  }, [
+    paginatedData,
+    isSelected,
+    visiblePopoverId,
+    onSelect,
+    handleViewUsers,
+    intl,
+    canReadRbacPrincipal,
+  ]);
 
   const emptyState = (
     <EmptyState>

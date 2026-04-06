@@ -5,6 +5,7 @@ import { useClient } from 'react-fetching-library';
 import { getRbacGroupsAction } from '../../services/Rbac/GetGroups';
 import { RbacGroup, RbacGroupContext } from './RbacGroupContext';
 import { useSyncInterval } from '../../utils/insights-common-typescript';
+import { useKesselRbacAccess } from './KesselRbacAccessContext';
 
 const SYNC_INTERVAL = 2 * 60 * 1000;
 const LIMIT = 100;
@@ -46,10 +47,20 @@ export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithCh
   props
 ) => {
   const { query } = useClient();
+  const { permissions, isLoading: isLoadingPermissions } = useKesselRbacAccess();
+  const { canReadRbacGroups } = permissions;
+
   const [isLoading, setLoading] = useState(true);
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
 
   const sync = React.useCallback(async () => {
+    // Only fetch groups if permission is granted
+    if (!canReadRbacGroups) {
+      setRbacGroups([]);
+      setLoading(false);
+      return;
+    }
+
     const allGroups: Array<RbacGroup> = [];
     let offset = 0;
     // eslint-disable-next-line no-constant-condition
@@ -69,16 +80,16 @@ export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithCh
 
     setRbacGroups(allGroups);
     setLoading(false);
-  }, [query]);
+  }, [query, canReadRbacGroups]);
 
   useSyncInterval(SYNC_INTERVAL, sync, true);
 
   const value = React.useMemo(
     () => ({
       groups: rbacGroups,
-      isLoading,
+      isLoading: isLoading || isLoadingPermissions,
     }),
-    [rbacGroups, isLoading]
+    [rbacGroups, isLoading, isLoadingPermissions]
   );
 
   return <RbacGroupContext.Provider value={value}>{props.children}</RbacGroupContext.Provider>;
