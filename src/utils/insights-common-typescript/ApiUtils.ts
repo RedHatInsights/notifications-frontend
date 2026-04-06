@@ -26,9 +26,7 @@ type UseTransformQueryResponseTypeQuery<
   USE_QUERY_RESPONSE_FROM extends ExpectedQueryResponse<FROM>,
   TO
 > = Omit<USE_QUERY_RESPONSE_FROM, 'payload' | 'query'> & {
-  query: (
-    ...args: Parameters<USE_QUERY_RESPONSE_FROM['query']>
-  ) => Promise<QueryResponse<TO>>;
+  query: (...args: Parameters<USE_QUERY_RESPONSE_FROM['query']>) => Promise<QueryResponse<TO>>;
   payload: undefined | TO;
 };
 
@@ -37,9 +35,7 @@ type UseTransformQueryResponseTypeMutation<
   USE_QUERY_RESPONSE_FROM extends ExpectedMutateResponse<FROM>,
   TO
 > = Omit<USE_QUERY_RESPONSE_FROM, 'payload' | 'mutate'> & {
-  mutate: (
-    ...args: Parameters<USE_QUERY_RESPONSE_FROM['mutate']>
-  ) => Promise<QueryResponse<TO>>;
+  mutate: (...args: Parameters<USE_QUERY_RESPONSE_FROM['mutate']>) => Promise<QueryResponse<TO>>;
   payload: undefined | TO;
 };
 
@@ -71,13 +67,10 @@ export const useTransformQueryResponse: UseTransformQueryResponseType = <
   adapter: (from: FROM) => TO
 ) => {
   if (!isQuery<FROM>(queryResponse) && !isMutate<FROM>(queryResponse)) {
-    throw new Error(
-      'Invalid query response provided to useTransformQueryResponse'
-    );
+    throw new Error('Invalid query response provided to useTransformQueryResponse');
   }
 
-  const response: ExpectedQueryResponse<FROM> | ExpectedMutateResponse<FROM> =
-    queryResponse;
+  const response: ExpectedQueryResponse<FROM> | ExpectedMutateResponse<FROM> = queryResponse;
 
   const { payload, status } = response;
 
@@ -87,9 +80,7 @@ export const useTransformQueryResponse: UseTransformQueryResponseType = <
   );
 
   const field = isQuery(queryResponse) ? 'query' : 'mutate';
-  const func = isQuery(queryResponse)
-    ? queryResponse.query
-    : queryResponse.mutate;
+  const func = isQuery(queryResponse) ? queryResponse.query : queryResponse.mutate;
 
   const transformedQuery = React.useCallback(
     (...args: Parameters<typeof func>): Promise<QueryResponse<TO>> => {

@@ -1,7 +1,4 @@
-import {
-  validatedResponse,
-  validationResponseTransformer,
-} from 'openapi2typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useParameterizedQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';

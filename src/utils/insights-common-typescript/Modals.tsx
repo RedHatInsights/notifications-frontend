@@ -1,12 +1,6 @@
 import * as React from 'react';
-import {
-  Alert,
-  AlertVariant,
-} from '@patternfly/react-core/dist/dynamic/components/Alert';
-import {
-  Button,
-  ButtonVariant,
-} from '@patternfly/react-core/dist/dynamic/components/Button';
+import { Alert, AlertVariant } from '@patternfly/react-core/dist/dynamic/components/Alert';
+import { Button, ButtonVariant } from '@patternfly/react-core/dist/dynamic/components/Button';
 import {
   Modal,
   ModalProps,
@@ -15,16 +9,14 @@ import {
 import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
 
 // Partial all but specified properties
-export type SemiPartial<T, K extends keyof T> = Pick<T, K> &
-  Partial<Omit<T, K>>;
+export type SemiPartial<T, K extends keyof T> = Pick<T, K> & Partial<Omit<T, K>>;
 
 export interface ActionModalError {
   title: string;
   description: React.ReactNode | string;
 }
 
-export interface ActionModalProps
-  extends Pick<ModalProps, 'variant' | 'titleIconVariant'> {
+export interface ActionModalProps extends Pick<ModalProps, 'variant' | 'titleIconVariant'> {
   isOpen: boolean;
   isPerformingAction: boolean;
   title: string;
@@ -40,9 +32,7 @@ export interface ActionModalProps
   cancelButtonVariant?: ButtonVariant;
 }
 
-export const ActionModal: React.FunctionComponent<ActionModalProps> = (
-  props
-) => {
+export const ActionModal: React.FunctionComponent<ActionModalProps> = (props) => {
   const close = React.useCallback(() => {
     const onClose = props.onClose;
     onClose(false);
@@ -69,11 +59,7 @@ export const ActionModal: React.FunctionComponent<ActionModalProps> = (
           isDisabled={props.isPerformingAction || props.actionButtonDisabled}
           onClick={actionCallback}
         >
-          {props.isPerformingAction ? (
-            <Spinner size="md" />
-          ) : (
-            props.actionButtonTitle
-          )}
+          {props.isPerformingAction ? <Spinner size="md" /> : props.actionButtonTitle}
         </Button>
       );
     }
@@ -114,11 +100,7 @@ export const ActionModal: React.FunctionComponent<ActionModalProps> = (
     >
       {props.error && (
         <>
-          <Alert
-            isInline
-            title={props.error.title}
-            variant={AlertVariant.danger}
-          >
+          <Alert isInline title={props.error.title} variant={AlertVariant.danger}>
             {props.error.description}
           </Alert>
           <br />
@@ -129,17 +111,12 @@ export const ActionModal: React.FunctionComponent<ActionModalProps> = (
   );
 };
 
-export type DeleteModalProps = Omit<
-  SemiPartial<ActionModalProps, InheritedProps>,
-  ChangedProps
-> & {
+export type DeleteModalProps = Omit<SemiPartial<ActionModalProps, InheritedProps>, ChangedProps> & {
   isDeleting: boolean;
   onDelete: () => boolean | Promise<boolean>;
 };
 
-export const DeleteModal: React.FunctionComponent<DeleteModalProps> = (
-  props
-) => {
+export const DeleteModal: React.FunctionComponent<DeleteModalProps> = (props) => {
   return (
     <ActionModal
       {...props}
@@ -163,10 +140,7 @@ type InheritedProps =
   | 'variant'
   | 'titleIconVariant';
 
-export type SaveModalProps = Omit<
-  SemiPartial<ActionModalProps, InheritedProps>,
-  ChangedProps
-> & {
+export type SaveModalProps = Omit<SemiPartial<ActionModalProps, InheritedProps>, ChangedProps> & {
   isSaving: boolean;
   onSave: () => boolean | Promise<boolean>;
 };

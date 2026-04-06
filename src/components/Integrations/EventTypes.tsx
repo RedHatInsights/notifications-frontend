@@ -1,10 +1,4 @@
-import {
-  Content,
-  Pagination,
-  Stack,
-  StackItem,
-  Title,
-} from '@patternfly/react-core';
+import { Content, Pagination, Stack, StackItem, Title } from '@patternfly/react-core';
 import {
   DataView,
   DataViewCheckboxFilter,
@@ -14,30 +8,16 @@ import {
   useDataViewPagination,
   useDataViewSelection,
 } from '@patternfly/react-data-view';
-import {
-  ExpandableRowContent,
-  Table,
-  Tbody,
-  Td,
-  Th,
-  Thead,
-  Tr,
-} from '@patternfly/react-table';
+import { ExpandableRowContent, Table, Tbody, Td, Th, Thead, Tr } from '@patternfly/react-table';
 import {
   BulkSelect,
   BulkSelectValue,
 } from '@patternfly/react-component-groups/dist/dynamic/BulkSelect';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import DataViewFilters from '@patternfly/react-data-view/dist/cjs/DataViewFilters';
-import {
-  SkeletonTableBody,
-  SkeletonTableHead,
-} from '@patternfly/react-component-groups';
+import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { toNotifications } from '../../types/adapters/NotificationAdapter';
-import {
-  getEventTypes,
-  paramsCreator,
-} from '../../api/helpers/notifications/event-types-helper';
+import { getEventTypes, paramsCreator } from '../../api/helpers/notifications/event-types-helper';
 import { EventType, Facet } from '../../types/Notification';
 import { debouncePromise } from '../../pages/Integrations/Create/nameValidator';
 import { perPageOptions } from '../../config/Config';
@@ -49,9 +29,7 @@ interface EventTypeFilters {
 
 interface EventTypesProps {
   selectedEvents?: readonly EventType[];
-  setSelectedEvents?: React.Dispatch<
-    React.SetStateAction<EventType[] | undefined>
-  >;
+  setSelectedEvents?: React.Dispatch<React.SetStateAction<EventType[] | undefined>>;
   currBundle: Facet;
   applications?: readonly Facet[];
 }
@@ -74,10 +52,9 @@ const EventTypes: React.FC<EventTypesProps> = ({
       return isExpanding ? [...otherExpanded, event.id] : otherExpanded;
     });
   const isEventExpanded = (event: EventType) => expanded.includes(event.id);
-  const { filters, onSetFilters, clearAllFilters } =
-    useDataViewFilters<EventTypeFilters>({
-      initialFilters: { filterEventFilterName: '', filterApplicationId: [] },
-    });
+  const { filters, onSetFilters, clearAllFilters } = useDataViewFilters<EventTypeFilters>({
+    initialFilters: { filterEventFilterName: '', filterApplicationId: [] },
+  });
 
   const { page, perPage, onSetPage, onPerPageSelect } = useDataViewPagination({
     perPage: 20,
@@ -92,9 +69,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
   const setSelected = useCallback(
     (selection, newSelect: EventType[] = [], prevSelected) => {
       setSelectedEvents?.([
-        ...prevSelected.filter(
-          (item) => !newSelect.some((newItem) => newItem.id === item.id)
-        ),
+        ...prevSelected.filter((item) => !newSelect.some((newItem) => newItem.id === item.id)),
         ...(selection ? newSelect : []),
       ]);
       onSelect(selection, newSelect);
@@ -144,10 +119,8 @@ const EventTypes: React.FC<EventTypesProps> = ({
 
   const handleBulkSelect = (value: BulkSelectValue) => {
     value === BulkSelectValue.none && setSelected(false, selected, selected);
-    value === BulkSelectValue.nonePage &&
-      setSelected(false, response.data, selected);
-    value === BulkSelectValue.page &&
-      setSelected(true, response.data, selected);
+    value === BulkSelectValue.nonePage && setSelected(false, response.data, selected);
+    value === BulkSelectValue.page && setSelected(true, response.data, selected);
     if (value === BulkSelectValue.all) {
       (async () => {
         const { data } = await getEventTypes(
@@ -177,13 +150,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
       <StackItem>
         <DataView
           selection={selection}
-          activeState={
-            loading
-              ? 'loading'
-              : (response.data?.length || 0) > 0
-              ? undefined
-              : 'empty'
-          }
+          activeState={loading ? 'loading' : (response.data?.length || 0) > 0 ? undefined : 'empty'}
         >
           <DataViewToolbar
             aria-label="Events type top toolbar"
@@ -206,8 +173,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
                 totalCount={response.meta?.count}
                 selectedCount={selected.length}
                 pageSelected={
-                  response.data?.length !== 0 &&
-                  response.data?.every((item) => isSelected(item))
+                  response.data?.length !== 0 && response.data?.every((item) => isSelected(item))
                 }
                 pagePartiallySelected={
                   response.data?.some((item) => isSelected(item)) &&
@@ -220,10 +186,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
               <DataViewFilters
                 aria-label="Event types filters"
                 onChange={(_e, values) => {
-                  if (
-                    values.filterEventFilterName !==
-                    filters.filterEventFilterName
-                  ) {
+                  if (values.filterEventFilterName !== filters.filterEventFilterName) {
                     debouncedFetchNotifications(
                       {
                         limit: perPage,
@@ -314,16 +277,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
             ) : (
               response.data?.map((row: EventType, index) => (
                 <Tbody key={index}>
-                  <Tr
-                    aria-label={`Event type ${row.id}`}
-                    isContentExpanded={isEventExpanded(row)}
-                  >
+                  <Tr aria-label={`Event type ${row.id}`} isContentExpanded={isEventExpanded(row)}>
                     <Td
                       aria-label={
                         row.description
-                          ? `Expandable row - ${
-                              isEventExpanded(row) ? 'expanded' : 'collapsed'
-                            }`
+                          ? `Expandable row - ${isEventExpanded(row) ? 'expanded' : 'collapsed'}`
                           : 'Non expandable row'
                       }
                       expand={
@@ -331,8 +289,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
                           ? {
                               rowIndex: index,
                               isExpanded: isEventExpanded(row),
-                              onToggle: () =>
-                                setEventExpanded(row, !isEventExpanded(row)),
+                              onToggle: () => setEventExpanded(row, !isEventExpanded(row)),
                               expandId: 'composable-expandable-example',
                             }
                           : undefined
@@ -340,9 +297,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     />
                     <Td
                       aria-label={`Selectable row - ${
-                        selected.find(({ id }) => id === row.id)
-                          ? 'selected'
-                          : 'not selected'
+                        selected.find(({ id }) => id === row.id) ? 'selected' : 'not selected'
                       }`}
                       select={{
                         rowIndex: index,
@@ -355,14 +310,9 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     <Td dataLabel="service">{row.applicationDisplayName}</Td>
                   </Tr>
                   {row.description ? (
-                    <Tr
-                      aria-label="Event type description"
-                      isExpanded={isEventExpanded(row)}
-                    >
+                    <Tr aria-label="Event type description" isExpanded={isEventExpanded(row)}>
                       <Td dataLabel="Event type description" colSpan={4}>
-                        <ExpandableRowContent>
-                          {row.description}
-                        </ExpandableRowContent>
+                        <ExpandableRowContent>{row.description}</ExpandableRowContent>
                       </Td>
                     </Tr>
                   ) : null}

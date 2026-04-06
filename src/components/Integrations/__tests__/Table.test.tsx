@@ -71,9 +71,7 @@ describe('components/Integrations/Table', () => {
       <IntlProvider locale={navigator.language}>
         <IntegrationsTable
           isLoading={false}
-          integrations={[
-            { ...integrationTemplate, type: IntegrationType.WEBHOOK },
-          ]}
+          integrations={[{ ...integrationTemplate, type: IntegrationType.WEBHOOK }]}
           actionResolver={jest.fn(() => [])}
         />
       </IntlProvider>
@@ -305,9 +303,7 @@ describe('components/Integrations/Table', () => {
       <IntlProvider locale={navigator.language}>
         <IntegrationsTable
           isLoading={false}
-          integrations={[
-            { ...integrationTemplate, lastConnectionAttempts: [] },
-          ]}
+          integrations={[{ ...integrationTemplate, lastConnectionAttempts: [] }]}
           actionResolver={jest.fn(() => [])}
         />
       </IntlProvider>
@@ -315,14 +311,9 @@ describe('components/Integrations/Table', () => {
 
     const successIcon = screen.getByTestId('success-icon');
     expect(successIcon).toBeVisible();
+    expect(successIcon.parentElement?.parentElement?.parentElement).toBeTruthy();
     expect(
-      successIcon.parentElement?.parentElement?.parentElement
-    ).toBeTruthy();
-    expect(
-      getByText(
-        successIcon.parentElement?.parentElement?.parentElement as HTMLElement,
-        /Ready/i
-      )
+      getByText(successIcon.parentElement?.parentElement?.parentElement as HTMLElement, /Ready/i)
     ).toBeVisible();
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
@@ -427,9 +418,7 @@ describe('components/Integrations/Table', () => {
     const inProgress = screen.getByTestId('in-progress-icon');
     expect(inProgress).toBeVisible();
     expect(inProgress.parentElement).toBeTruthy();
-    expect(
-      getByText(inProgress.parentElement as HTMLElement, /Processing/i)
-    ).toBeVisible();
+    expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
 
@@ -474,9 +463,7 @@ describe('components/Integrations/Table', () => {
     const inProgress = screen.getByTestId('in-progress-icon');
     expect(inProgress).toBeVisible();
     expect(inProgress.parentElement).toBeTruthy();
-    expect(
-      getByText(inProgress.parentElement as HTMLElement, /Processing/i)
-    ).toBeVisible();
+    expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
     // This status does not show the degraded connection
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
@@ -501,9 +488,7 @@ describe('components/Integrations/Table', () => {
     const inProgress = screen.getByTestId('in-progress-icon');
     expect(inProgress).toBeVisible();
     expect(inProgress.parentElement).toBeTruthy();
-    expect(
-      getByText(inProgress.parentElement as HTMLElement, /Processing/i)
-    ).toBeVisible();
+    expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
 
@@ -548,9 +533,7 @@ describe('components/Integrations/Table', () => {
     const inProgress = screen.getByTestId('in-progress-icon');
     expect(inProgress).toBeVisible();
     expect(inProgress.parentElement).toBeTruthy();
-    expect(
-      getByText(inProgress.parentElement as HTMLElement, /Processing/i)
-    ).toBeVisible();
+    expect(getByText(inProgress.parentElement as HTMLElement, /Processing/i)).toBeVisible();
     // This status does not show the degraded connection
     expect(screen.queryByText(/degraded connection/i)).not.toBeInTheDocument();
   });
@@ -560,9 +543,7 @@ describe('components/Integrations/Table', () => {
       <IntlProvider locale={navigator.language}>
         <IntegrationsTable
           isLoading={false}
-          integrations={[
-            { ...integrationTemplate, lastConnectionAttempts: undefined },
-          ]}
+          integrations={[{ ...integrationTemplate, lastConnectionAttempts: undefined }]}
           actionResolver={jest.fn(() => [])}
         />
       </IntlProvider>
@@ -572,10 +553,7 @@ describe('components/Integrations/Table', () => {
     expect(unknownIcon).toBeVisible();
     expect(unknownIcon.parentElement).toBeTruthy();
     expect(
-      getByText(
-        unknownIcon.parentElement as HTMLElement,
-        /Error loading status/i
-      )
+      getByText(unknownIcon.parentElement as HTMLElement, /Error loading status/i)
     ).toBeVisible();
   });
 
@@ -584,9 +562,7 @@ describe('components/Integrations/Table', () => {
       <IntlProvider locale={navigator.language}>
         <IntegrationsTable
           isLoading={false}
-          integrations={[
-            { ...integrationTemplate, isConnectionAttemptLoading: true },
-          ]}
+          integrations={[{ ...integrationTemplate, isConnectionAttemptLoading: true }]}
           actionResolver={jest.fn(() => [])}
         />
       </IntlProvider>
@@ -657,17 +633,13 @@ describe('components/Integrations/Table', () => {
     );
 
     expect(screen.getByText('Endpoint URL')).toBeVisible();
-    expect(
-      screen.getByText('Endpoint URL').nextElementSibling!
-    ).toHaveTextContent('my-url');
+    expect(screen.getByText('Endpoint URL').nextElementSibling!).toHaveTextContent('my-url');
     expect(screen.getByText('SSL verification')).toBeVisible();
-    expect(
-      screen.getByText('SSL verification').nextElementSibling!
-    ).toHaveTextContent('Enabled');
+    expect(screen.getByText('SSL verification').nextElementSibling!).toHaveTextContent('Enabled');
     expect(screen.getByText('Authentication type')).toBeVisible();
-    expect(
-      screen.getByText('Authentication type').nextElementSibling!
-    ).toHaveTextContent('Secret token');
+    expect(screen.getByText('Authentication type').nextElementSibling!).toHaveTextContent(
+      'Secret token'
+    );
   });
 
   it('Clicking Details arrow calls onCollapse with the integration, index and opposite of isOpen', async () => {
@@ -705,9 +677,7 @@ describe('components/Integrations/Table', () => {
       </IntlProvider>
     );
 
-    await userEvent.click(
-      ouiaSelectors.getByOuia('PF6/Switch', 'enabled-integration-id')
-    );
+    await userEvent.click(ouiaSelectors.getByOuia('PF6/Switch', 'enabled-integration-id'));
 
     await waitForAsyncEvents();
 

@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.com/RedHatInsights/notifications-frontend.svg?branch=master)](https://travis-ci.com/RedHatInsights/notifications-frontend)
 
-# notifications-frontend 
+# notifications-frontend
 
 Notifications frontend for Red Hat Insights
 
@@ -38,10 +38,10 @@ npm run chromatic
 
 0. If needed run `npm install` to install dependency packages
 
-1. ```npm install```
+1. `npm install`
 
-2. ```npm start```
-    - starts webpack bundler and serves the files with webpack dev server
+2. `npm start`
+   - starts webpack bundler and serves the files with webpack dev server
 
 ### Testing
 
@@ -70,6 +70,57 @@ npm start
 
 For more info refer to [Insights Frontend Starter App README](https://github.com/RedHatInsights/insights-frontend-starter-app/blob/master/README.md)
 
+## Usage
+
+### Running the Application
+
+Start the development server:
+
+```bash
+npm start
+```
+
+The application will open at http://localhost:8080
+
+### Using Storybook
+
+View component library and examples:
+
+```bash
+npm run storybook
+```
+
+Browse components at http://localhost:6006
+
+### Running Tests
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm test -- --watch
+
+# Run tests with coverage
+npm test -- --coverage
+```
+
+### Production Build
+
+```bash
+# Create production build
+npm run build
+
+# Output will be in dist/
+```
+
+### Environment Configuration
+
+Set environment variables:
+
+- `API_BASE_URL`: Backend API endpoint
+- `NODE_ENV`: Environment (development/production)
+
 ## Deploying
 
 Deployments come from the `.travis/custom_release.sh` file. Push to certain branches to deploy to certain environments:
@@ -77,7 +128,7 @@ Deployments come from the `.travis/custom_release.sh` file. Push to certain bran
 ### Pushing to master and prod branches.
 
 Anytime a build of the `master` branch happens, Travis builds and pushes a new commit to the ci-beta, qa-beta, ci-stable and qa-stable branch of notifications-frontend-build repository. Pull requests on master will not be deployed until they are merged, but they will be built to assure linting, snapshots, etc. are working as expected.
-A push to `prod` branch  will push new commits to `prod-stable` and `prod-beta` of branch of notifications-frontend-build repository.
+A push to `prod` branch will push new commits to `prod-stable` and `prod-beta` of branch of notifications-frontend-build repository.
 It's possible to only push to `prod-stable` or `prod-beta` by creating these branches, but any other push to `prod` branch will overwrite these changes.
 
 ### Deploying to prod

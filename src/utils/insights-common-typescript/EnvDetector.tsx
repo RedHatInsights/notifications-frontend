@@ -1,10 +1,6 @@
 import * as React from 'react';
 import { RenderIf } from './RenderIf';
-import {
-  BetaEnvironment,
-  Environment,
-  NonBetaEnvironment,
-} from './Environment';
+import { BetaEnvironment, Environment, NonBetaEnvironment } from './Environment';
 import { InsightsType } from './InsightsType';
 
 interface EnvDetectorProps {
@@ -12,14 +8,11 @@ interface EnvDetectorProps {
   currentEnvironment: Environment;
 }
 
-export const EnvDetector: React.FunctionComponent<
-  React.PropsWithChildren<EnvDetectorProps>
-> = (props) => {
+export const EnvDetector: React.FunctionComponent<React.PropsWithChildren<EnvDetectorProps>> = (
+  props
+) => {
   const environment = React.useMemo(
-    () =>
-      Array.isArray(props.onEnvironment)
-        ? props.onEnvironment
-        : [props.onEnvironment],
+    () => (Array.isArray(props.onEnvironment) ? props.onEnvironment : [props.onEnvironment]),
     [props.onEnvironment]
   );
 
@@ -31,8 +24,7 @@ export const EnvDetector: React.FunctionComponent<
   return <RenderIf renderIf={renderIf}>{props.children}</RenderIf>;
 };
 
-interface InsightsBetaDetectorProps
-  extends Omit<EnvDetectorProps, 'currentEnvironment'> {
+interface InsightsBetaDetectorProps extends Omit<EnvDetectorProps, 'currentEnvironment'> {
   insights: InsightsType;
 }
 
@@ -50,10 +42,7 @@ export const InsightsEnvDetector: React.FunctionComponent<
   }, [props.insights]);
 
   return (
-    <EnvDetector
-      onEnvironment={props.onEnvironment}
-      currentEnvironment={currentEnvironment}
-    >
+    <EnvDetector onEnvironment={props.onEnvironment} currentEnvironment={currentEnvironment}>
       {props.children}
     </EnvDetector>
   );

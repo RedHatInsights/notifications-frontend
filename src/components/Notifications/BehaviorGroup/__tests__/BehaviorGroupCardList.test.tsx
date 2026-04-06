@@ -2,10 +2,7 @@ import { render, screen } from '@testing-library/react';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
-import {
-  BehaviorGroup,
-  NotificationType,
-} from '../../../../types/Notification';
+import { BehaviorGroup, NotificationType } from '../../../../types/Notification';
 import { BehaviorGroupCardList } from '../BehaviorGroupCardList';
 
 const Container: React.FunctionComponent<
@@ -41,11 +38,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupCardList', () 
 
     const { rerender } = render(
       <Container hideContent={true}>
-        <BehaviorGroupCardList
-          onEdit={jest.fn()}
-          onDelete={jest.fn()}
-          behaviorGroups={bg}
-        />
+        <BehaviorGroupCardList onEdit={jest.fn()} onDelete={jest.fn()} behaviorGroups={bg} />
       </Container>
     );
 
@@ -54,11 +47,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupCardList', () 
 
     rerender(
       <Container hideContent={false}>
-        <BehaviorGroupCardList
-          onEdit={jest.fn()}
-          onDelete={jest.fn()}
-          behaviorGroups={bg}
-        />
+        <BehaviorGroupCardList onEdit={jest.fn()} onDelete={jest.fn()} behaviorGroups={bg} />
       </Container>
     );
 

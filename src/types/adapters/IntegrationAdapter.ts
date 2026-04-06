@@ -23,15 +23,10 @@ interface ExternalCompositeTyped {
   sub_type?: string | null;
 }
 
-export const getIntegrationType = (
-  serverIntegration: ExternalCompositeTyped
-): IntegrationType => {
+export const getIntegrationType = (serverIntegration: ExternalCompositeTyped): IntegrationType => {
   for (const integration of Object.values(IntegrationType)) {
     if (serverIntegration.sub_type) {
-      if (
-        integration ===
-        `${serverIntegration.type}:${serverIntegration.sub_type}`
-      ) {
+      if (integration === `${serverIntegration.type}:${serverIntegration.sub_type}`) {
         return integration as IntegrationType;
       }
     } else if (integration === serverIntegration.type) {
@@ -59,13 +54,9 @@ type NotNullType = {
   <T>(value: T | undefined | null, defaultValue: T): T;
 };
 
-const notNull: NotNullType = <T>(
-  value: T | undefined | null,
-  defaultValue?: T
-): T | undefined => (value === null ? defaultValue : value);
-const toSecretToken = (
-  secretToken: string | undefined | null
-): string | undefined =>
+const notNull: NotNullType = <T>(value: T | undefined | null, defaultValue?: T): T | undefined =>
+  value === null ? defaultValue : value;
+const toSecretToken = (secretToken: string | undefined | null): string | undefined =>
   secretToken === '' ? undefined : notNull(secretToken);
 
 const toIntegrationWebhook = (
@@ -115,8 +106,7 @@ const toIntegrationEmail = (
   ...integrationBase,
   ignorePreferences: properties.ignore_preferences,
   groupId: properties.group_id === null ? undefined : properties.group_id,
-  onlyAdmin:
-    properties.only_admins === null ? undefined : properties.only_admins,
+  onlyAdmin: properties.only_admins === null ? undefined : properties.only_admins,
 });
 
 const toIntegrationDrawer = (
@@ -138,9 +128,7 @@ const toIntegrationPagerDuty = (
   severity: properties.severity,
 });
 
-export const toIntegration = (
-  serverIntegration: ServerIntegrationResponse
-): Integration => {
+export const toIntegration = (serverIntegration: ServerIntegrationResponse): Integration => {
   const integrationBase: IntegrationBase<IntegrationType> = {
     id: serverIntegration.id || '',
     name: serverIntegration.name || '',
@@ -250,8 +238,7 @@ export const toIntegrationProperties = (
       };
     }
     case IntegrationType.DRAWER: {
-      const integrationDrawer: IntegrationDrawer =
-        integration as IntegrationDrawer;
+      const integrationDrawer: IntegrationDrawer = integration as IntegrationDrawer;
       return {
         only_admins: integrationDrawer.onlyAdmin,
         group_id: integrationDrawer.groupId,
@@ -259,8 +246,7 @@ export const toIntegrationProperties = (
       };
     }
     case IntegrationType.PAGERDUTY: {
-      const integrationPagerDuty: IntegrationPagerduty =
-        integration as IntegrationPagerduty;
+      const integrationPagerDuty: IntegrationPagerduty = integration as IntegrationPagerduty;
       return {
         secretToken: integrationPagerDuty.secretToken,
         severity: integrationPagerDuty.severity,

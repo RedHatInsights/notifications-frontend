@@ -8,9 +8,7 @@ export type GetIntegrations = (
   type: UserIntegrationType,
   search?: string
 ) => Promise<ReadonlyArray<IntegrationRef>>;
-export type GetNotificationRecipients = () => Promise<
-  ReadonlyArray<BaseNotificationRecipient>
->;
+export type GetNotificationRecipients = () => Promise<ReadonlyArray<BaseNotificationRecipient>>;
 
 export interface RecipientContext {
   getIntegrations: GetIntegrations;

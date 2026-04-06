@@ -9,7 +9,5 @@ export const savedNotificationScopeEqualFn = (
   left: SavedNotificationScopeState,
   right: SavedNotificationScopeState
 ): boolean => {
-  return (
-    left?.integration === right?.integration && left?.status === right?.status
-  );
+  return left?.integration === right?.integration && left?.status === right?.status;
 };

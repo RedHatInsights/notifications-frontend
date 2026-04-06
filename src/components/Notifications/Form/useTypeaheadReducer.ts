@@ -37,10 +37,7 @@ type ReducerAction<T> =
       values: ReadonlyArray<T>;
     };
 
-const reducerFunction = <T>(
-  state: ReducerState<T>,
-  action: ReducerAction<T>
-): ReducerState<T> => {
+const reducerFunction = <T>(state: ReducerState<T>, action: ReducerAction<T>): ReducerState<T> => {
   return produce(state, (draft) => {
     switch (action.type) {
       case ReducerActionType.SET_FILTER_VALUE:
@@ -78,16 +75,17 @@ const reducerFunction = <T>(
 };
 
 export const useTypeaheadReducer = <T>() => {
-  const [state, dispatch] = useReducer<
-    Reducer<ReducerState<T>, ReducerAction<T>>
-  >(reducerFunction, {
-    filterValues: [],
-    defaultValues: [],
-    show: 'default',
-    loadingFilter: false,
-    loadingDefault: true,
-    lastSearch: '',
-  } as ReducerState<T>);
+  const [state, dispatch] = useReducer<Reducer<ReducerState<T>, ReducerAction<T>>>(
+    reducerFunction,
+    {
+      filterValues: [],
+      defaultValues: [],
+      show: 'default',
+      loadingFilter: false,
+      loadingDefault: true,
+      lastSearch: '',
+    } as ReducerState<T>
+  );
 
   const [debouncedState, setDebouncedState] = useState<ReducerState<T>>(state);
 

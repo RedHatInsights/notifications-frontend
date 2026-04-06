@@ -16,12 +16,10 @@ export const useNotificationFilter = (
   debounce = DEBOUNCE_MS
 ) => {
   const useStateFactory = useMemo(() => {
-    const useUrlStateName = (defaultValue?: string) =>
-      useUrlStateString('name', defaultValue);
+    const useUrlStateName = (defaultValue?: string) => useUrlStateString('name', defaultValue);
     const useUrlStateApplication = (defaultValue?: Array<string>) =>
       useUrlStateMultipleOptions('app', initialAppOptions, defaultValue);
-    const useUrlStateAction = (defaultValue?: string) =>
-      useUrlStateString('action', defaultValue);
+    const useUrlStateAction = (defaultValue?: string) => useUrlStateString('action', defaultValue);
 
     return (column: NotificationFilterColumn) => {
       switch (column) {

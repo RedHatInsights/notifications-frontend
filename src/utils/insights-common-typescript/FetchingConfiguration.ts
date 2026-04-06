@@ -1,8 +1,4 @@
-import {
-  RequestInterceptor,
-  ResponseInterceptor,
-  createClient,
-} from 'react-fetching-library';
+import { RequestInterceptor, ResponseInterceptor, createClient } from 'react-fetching-library';
 import { InsightsType } from './InsightsType';
 
 const getRefreshAuthTokenInterceptor =

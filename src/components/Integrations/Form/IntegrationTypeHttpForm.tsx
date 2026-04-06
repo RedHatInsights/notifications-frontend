@@ -1,26 +1,13 @@
-import {
-  FormGroup,
-  FormHelperText,
-  HelperText,
-  HelperTextItem,
-} from '@patternfly/react-core';
+import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
-import {
-  Checkbox,
-  FormTextInput,
-} from '../../../utils/insights-common-typescript';
+import { Checkbox, FormTextInput } from '../../../utils/insights-common-typescript';
 
-export const IntegrationTypeHttpForm: React.FunctionComponent<
-  IntegrationTypeForm
-> = (props) => {
+export const IntegrationTypeHttpForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
   return (
-    <div
-      className="pf-c-form"
-      {...getOuiaProps('Integrations/HttpForm', props)}
-    >
+    <div className="pf-c-form" {...getOuiaProps('Integrations/HttpForm', props)}>
       <FormTextInput
         isRequired={true}
         label="Endpoint URL"
@@ -46,8 +33,8 @@ export const IntegrationTypeHttpForm: React.FunctionComponent<
         <FormHelperText>
           <HelperText>
             <HelperTextItem>
-              The defined secret token is sent as a &quot;X-Insight-Token&quot;
-              header on the request.
+              The defined secret token is sent as a &quot;X-Insight-Token&quot; header on the
+              request.
             </HelperTextItem>
           </HelperText>
         </FormHelperText>

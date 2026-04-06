@@ -2,65 +2,37 @@ import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner'
 import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { SearchIcon } from '@patternfly/react-icons';
-import {
-  ActionsColumn,
-  IActions,
-  ISortBy,
-  SortByDirection,
-} from '@patternfly/react-table';
-import {
-  SkeletonTableBody,
-  SkeletonTableHead,
-} from '@patternfly/react-component-groups';
+import { ActionsColumn, IActions, ISortBy, SortByDirection } from '@patternfly/react-table';
+import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 
 import * as React from 'react';
 import { useIntl } from 'react-intl';
 
 import Config from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
-import {
-  IntegrationConnectionAttempt,
-  UserIntegration,
-} from '../../types/Integration';
+import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
 import { EmptyStateSearch } from '../EmptyStateSearch';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { DataView } from '@patternfly/react-data-view/dist/dynamic/DataView';
-import {
-  DataViewTable,
-  DataViewTh,
-} from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
+import { DataViewTable, DataViewTh } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import { getIntegrationIcon } from './IntegrationDetails';
 import { Split, SplitItem } from '@patternfly/react-core';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
-import {
-  Direction,
-  Sort,
-  UseSortReturn,
-} from '../../utils/insights-common-typescript';
+import { Direction, Sort, UseSortReturn } from '../../utils/insights-common-typescript';
 
-export type OnEnable = (
-  integration: IntegrationRow,
-  index: number,
-  isChecked: boolean
-) => void;
+export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
 interface IntegrationsTableProps extends OuiaProps {
   isLoading: boolean;
   loadingCount?: number;
   integrations: IntegrationRow[];
-  onCollapse?: (
-    integration: IntegrationRow,
-    index: number,
-    isOpen: boolean
-  ) => void;
+  onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
   onEnable?: OnEnable;
   actionResolver: (row: IntegrationRow, index: number) => IActions;
   sortBy?: Sort;
   onSort?: UseSortReturn['onSort'];
   selectedIntegration?: UserIntegration;
-  setFocusedIntegration?: React.Dispatch<
-    React.SetStateAction<IntegrationRow | undefined>
-  >;
+  setFocusedIntegration?: React.Dispatch<React.SetStateAction<IntegrationRow | undefined>>;
 }
 
 export type IntegrationRow = UserIntegration & {
@@ -83,9 +55,7 @@ const sortMapper = [
   },
 ];
 
-export const DataViewIntegrationsTable: React.FunctionComponent<
-  IntegrationsTableProps
-> = ({
+export const DataViewIntegrationsTable: React.FunctionComponent<IntegrationsTableProps> = ({
   onSort,
   sortBy,
   selectedIntegration,
@@ -105,9 +75,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         onSort(
           mapping.index,
           mapping.name,
-          direction === SortByDirection.asc
-            ? Direction.ASCENDING
-            : Direction.DESCENDING
+          direction === SortByDirection.asc ? Direction.ASCENDING : Direction.DESCENDING
         );
       }
     },
@@ -121,9 +89,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         return {
           index: mapping.index,
           direction:
-            sortBy.direction === Direction.ASCENDING
-              ? SortByDirection.asc
-              : SortByDirection.desc,
+            sortBy.direction === Direction.ASCENDING ? SortByDirection.asc : SortByDirection.desc,
         };
       }
     }
@@ -148,10 +114,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
         integration.name,
         <Split key={idx}>
           <SplitItem>{getIntegrationIcon(integration.type)}</SplitItem>
-          <SplitItem>
-            {' '}
-            {Config.integrations.types[integration.type].name}{' '}
-          </SplitItem>
+          <SplitItem> {Config.integrations.types[integration.type].name} </SplitItem>
         </Split>,
         integration.lastConnectionAttempts === undefined ? (
           <StatusUnknown />
@@ -173,9 +136,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
             id={`table-row-switch-id-${integration.id}`}
             aria-label="Enabled"
             isChecked={integration.isEnabled}
-            onChange={(_e, isChecked) =>
-              onEnable?.(integration, idx, isChecked)
-            }
+            onChange={(_e, isChecked) => onEnable?.(integration, idx, isChecked)}
             isDisabled={!onEnable}
             ouiaId={`enabled-${integration.id}`}
           />
@@ -226,22 +187,13 @@ export const DataViewIntegrationsTable: React.FunctionComponent<
 
   const loadingStateHeader = <SkeletonTableHead columns={COLUMNS} />;
   const loadingStateBody = (
-    <SkeletonTableBody
-      rowsCount={loadingCount || 10}
-      columnsCount={COLUMNS.length}
-    />
+    <SkeletonTableBody rowsCount={loadingCount || 10} columnsCount={COLUMNS.length} />
   );
 
   return (
     <DataView
       ouiaId="integrations-table"
-      activeState={
-        isLoading
-          ? 'loading'
-          : !(integrations?.length > 0)
-          ? 'empty'
-          : undefined
-      }
+      activeState={isLoading ? 'loading' : !(integrations?.length > 0) ? 'empty' : undefined}
     >
       <DataViewTable
         variant="compact"

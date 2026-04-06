@@ -70,10 +70,7 @@ type NotificationType = {
   notification: EventType;
 };
 
-const getNotifications = (
-  application: Facet,
-  count: number
-): Array<NotificationType> =>
+const getNotifications = (application: Facet, count: number): Array<NotificationType> =>
   [...Array(count).keys()].map((i) => ({
     notification: {
       id: `${bundle.id}.${application.id}.notif-${i}`,
@@ -104,13 +101,10 @@ const getBehaviorGroups = (
   }));
 
 const mockBehaviorGroups = (behaviorGroups: Array<BehaviorGroup>) => {
-  fetchMock.get(
-    `/api/notifications/v1.0/notifications/bundles/${bundle.id}/behaviorGroups`,
-    {
-      status: 200,
-      body: behaviorGroups,
-    }
-  );
+  fetchMock.get(`/api/notifications/v1.0/notifications/bundles/${bundle.id}/behaviorGroups`, {
+    status: 200,
+    body: behaviorGroups,
+  });
 };
 
 const mockNotifications = (notifications: Array<NotificationType>) => {
@@ -173,15 +167,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper(),
-      }
-    );
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
 
     await waitForAsyncEvents();
 
@@ -200,19 +188,16 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    fetchMock.put(
-      `/api/notifications/v1.0/notifications/behaviorGroups/${behaviorGroups[0].id}`,
-      {
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        status: 200,
-        body: {
-          ...behaviorGroups[0],
-          display_name: 'Foobar',
-        },
-      }
-    );
+    fetchMock.put(`/api/notifications/v1.0/notifications/behaviorGroups/${behaviorGroups[0].id}`, {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      status: 200,
+      body: {
+        ...behaviorGroups[0],
+        display_name: 'Foobar',
+      },
+    });
     fetchMock.post('/api/integrations/v1.0/endpoints', {
       status: 200,
       body: {
@@ -227,15 +212,12 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
         name: '',
       } as Endpoint,
     });
-    fetchMock.post(
-      '/api/integrations/v1.0/endpoints/system/email_subscription',
-      {
-        description: 'email',
-        name: 'email',
-        id: 'e-new',
-        type: 'email_subscription',
-      }
-    );
+    fetchMock.post('/api/integrations/v1.0/endpoints/system/email_subscription', {
+      description: 'email',
+      name: 'email',
+      id: 'e-new',
+      type: 'email_subscription',
+    });
 
     // Mock the updated behavior groups data after the PUT
     const updatedBehaviorGroups = [...behaviorGroups];
@@ -250,22 +232,14 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       { overwriteRoutes: true }
     );
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper(),
-      }
-    );
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
 
     await waitFor(() => expect(screen.getAllByText('Baz').length).toBe(1)); // Only once, the behavior group card
 
     const behaviorGroupsTab = getAllByRole(document.body, 'tab');
-    await userEvent.click(
-      await findByText(behaviorGroupsTab[1], 'Behavior Groups')
-    );
+    await userEvent.click(await findByText(behaviorGroupsTab[1], 'Behavior Groups'));
 
     const pf4Card = ouiaSelectors.getAllByOuia('PF6/Card');
     expect(await findByLabelText(pf4Card[0], 'Actions')).toBeInTheDocument();
@@ -282,31 +256,19 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     await userEvent.click(await screen.findByText(/Next/i));
 
     expect(
-      await findByRole(
-        ouiaSelectors.getByOuia('Notifications/ActionTypeahead'),
-        'button'
-      )
+      await findByRole(ouiaSelectors.getByOuia('Notifications/ActionTypeahead'), 'button')
     ).toBeInTheDocument();
     await userEvent.click(
-      await findByRole(
-        ouiaSelectors.getByOuia('Notifications/ActionTypeahead'),
-        'button'
-      )
+      await findByRole(ouiaSelectors.getByOuia('Notifications/ActionTypeahead'), 'button')
     );
     expect(await screen.findByText(/Send an email/i)).toBeInTheDocument();
     await userEvent.click(await screen.findByText(/Send an email/i));
 
     expect(
-      await findByRole(
-        ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'),
-        'button'
-      )
+      await findByRole(ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'), 'button')
     ).toBeInTheDocument();
     await userEvent.click(
-      await findByRole(
-        ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'),
-        'button'
-      )
+      await findByRole(ouiaSelectors.getByOuia('Notifications/RecipientTypeahead'), 'button')
     );
   });
 
@@ -317,15 +279,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper(),
-      }
-    );
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
 
     await waitForAsyncEvents();
 
@@ -339,15 +295,9 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper(),
-      }
-    );
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
 
     expect(await screen.findByText(/Create new group/i)).toBeEnabled();
 
@@ -362,13 +312,8 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     const store = getNotificationsRegistry().getStore();
     render(
       <Provider store={store}>
-        <MemoryRouter
-          initialEntries={['/settings/notifications?activeTab=behaviorGroups']}
-        >
-          <BundlePageBehaviorGroupContent
-            applications={applications}
-            bundle={bundle}
-          />
+        <MemoryRouter initialEntries={['/settings/notifications?activeTab=behaviorGroups']}>
+          <BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />
         </MemoryRouter>
       </Provider>
     );
@@ -383,22 +328,16 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper({
-          appContext: {
-            rbac: {
-              canWriteNotifications: false,
-              canWriteIntegrationsEndpoints: false,
-            },
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper({
+        appContext: {
+          rbac: {
+            canWriteNotifications: false,
+            canWriteIntegrationsEndpoints: false,
           },
-        }),
-      }
-    );
+        },
+      }),
+    });
 
     await waitForAsyncEvents();
 
@@ -407,9 +346,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     await waitForAsyncEvents();
 
     // When user doesn't have write permissions, the button should not exist at all
-    expect(
-      screen.queryByRole('button', { name: /Create new group/i })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Create new group/i })).not.toBeInTheDocument();
   });
 
   it('Add group button should tooltip with no write permissions and user is not an org_admin', async () => {
@@ -426,23 +363,17 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper({
-          appContext: {
-            rbac: {
-              canWriteNotifications: false,
-              canWriteIntegrationsEndpoints: false,
-            },
-            isOrgAdmin: false,
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper({
+        appContext: {
+          rbac: {
+            canWriteNotifications: false,
+            canWriteIntegrationsEndpoints: false,
           },
-        }),
-      }
-    );
+          isOrgAdmin: false,
+        },
+      }),
+    });
 
     await waitForAsyncEvents();
 
@@ -451,9 +382,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     await waitForAsyncEvents();
 
     // When user doesn't have write permissions, the button should not exist at all
-    expect(
-      screen.queryByRole('button', { name: /Create new group/i })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Create new group/i })).not.toBeInTheDocument();
   });
 
   it('Add group button should tooltip with no write permissions and user is an org_admin', async () => {
@@ -463,23 +392,17 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     mockNotifications(notifications);
     mockBehaviorGroups(behaviorGroups);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper({
-          appContext: {
-            rbac: {
-              canWriteNotifications: false,
-              canWriteIntegrationsEndpoints: false,
-            },
-            isOrgAdmin: true,
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper({
+        appContext: {
+          rbac: {
+            canWriteNotifications: false,
+            canWriteIntegrationsEndpoints: false,
           },
-        }),
-      }
-    );
+          isOrgAdmin: true,
+        },
+      }),
+    });
 
     await waitForAsyncEvents();
 
@@ -488,8 +411,6 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
     await waitForAsyncEvents();
 
     // When user doesn't have write permissions, the button should not exist at all
-    expect(
-      screen.queryByRole('button', { name: /Create new group/i })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: /Create new group/i })).not.toBeInTheDocument();
   });
 });

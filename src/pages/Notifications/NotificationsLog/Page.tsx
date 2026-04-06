@@ -11,11 +11,7 @@ import NotificationsLogTable, {
 import NotificationsLogToolbar from '../../../components/Notifications/NotificationsLog/NotificationsLogToolbar';
 import { PageHeader } from '../../../components/PageHeader';
 import { Messages } from '../../../properties/Messages';
-import {
-  Filter,
-  Operator,
-  toUtc,
-} from '../../../utils/insights-common-typescript';
+import { Filter, Operator, toUtc } from '../../../utils/insights-common-typescript';
 
 export type NotificationsPeriod = [Date | undefined, Date | undefined];
 
@@ -50,10 +46,7 @@ const filterPeriodMapper = (dateFilter) => {
 };
 
 const createFilter = (dateFilter, period) => {
-  const filterPeriod = [undefined, undefined] as [
-    Date | undefined,
-    Date | undefined
-  ];
+  const filterPeriod = [undefined, undefined] as [Date | undefined, Date | undefined];
   const DATE_FORMAT = 'yyyy-MM-dd';
   const filter = new Filter();
 
@@ -65,19 +58,14 @@ const createFilter = (dateFilter, period) => {
   }
 
   return {
-    startDate: filterPeriod[0]
-      ? format(filterPeriod[0], DATE_FORMAT)
-      : undefined,
+    startDate: filterPeriod[0] ? format(filterPeriod[0], DATE_FORMAT) : undefined,
     endDate: filterPeriod[1] ? format(filterPeriod[1], DATE_FORMAT) : undefined,
   };
 };
 
 export const NotificationsLogPage: React.FunctionComponent = () => {
   const [data, setData] = useState<DrawerType>([]);
-  const [period, setPeriod] = useState<NotificationsPeriod>([
-    undefined,
-    undefined,
-  ]);
+  const [period, setPeriod] = useState<NotificationsPeriod>([undefined, undefined]);
   const [dateFilter, setDateFilter] = useState<NotificationsLogDateFilterValue>(
     NotificationsLogDateFilterValue.LAST_14
   );

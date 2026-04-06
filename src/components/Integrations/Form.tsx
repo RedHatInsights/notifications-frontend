@@ -9,11 +9,7 @@ import { NewUserIntegration } from '../../types/Integration';
 import { getOuiaProps, ouiaIdConcat } from '../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
-import {
-  Form,
-  FormSelect,
-  FormTextInput,
-} from '../../utils/insights-common-typescript';
+import { Form, FormSelect, FormTextInput } from '../../utils/insights-common-typescript';
 
 export const IntegrationsForm: React.FunctionComponent<OuiaProps> = (props) => {
   const { values } = useFormikContext<NewUserIntegration>();
@@ -21,11 +17,7 @@ export const IntegrationsForm: React.FunctionComponent<OuiaProps> = (props) => {
 
   const options = React.useMemo(() => {
     return userIntegrations.map((type) => (
-      <FormSelectOption
-        key={type}
-        label={Config.integrations.types[type].name}
-        value={type}
-      />
+      <FormSelectOption key={type} label={Config.integrations.types[type].name} value={type} />
     ));
   }, [userIntegrations]);
 
@@ -49,10 +41,7 @@ export const IntegrationsForm: React.FunctionComponent<OuiaProps> = (props) => {
       >
         {options}
       </FormSelect>
-      <IntegrationTypeForm
-        type={values.type}
-        ouiaId={ouiaIdConcat(props.ouiaId, 'type-form')}
-      />
+      <IntegrationTypeForm type={values.type} ouiaId={ouiaIdConcat(props.ouiaId, 'type-form')} />
     </Form>
   );
 };

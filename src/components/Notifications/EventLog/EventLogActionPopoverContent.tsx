@@ -15,14 +15,8 @@ import { useAsync } from 'react-use';
 import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
-import {
-  NotificationEventAction,
-  NotificationEventStatus,
-} from '../../../types/Event';
-import {
-  GetIntegrationRecipient,
-  IntegrationType,
-} from '../../../types/Integration';
+import { NotificationEventAction, NotificationEventStatus } from '../../../types/Event';
+import { GetIntegrationRecipient, IntegrationType } from '../../../types/Integration';
 import {
   NotificationStatusFailed,
   NotificationStatusProcessing,
@@ -91,11 +85,7 @@ export const EventLogActionPopoverContent: React.FunctionComponent<
   );
 
   return (
-    <TableComposable
-      borders={false}
-      variant={TableVariant.compact}
-      isStickyHeader={true}
-    >
+    <TableComposable borders={false} variant={TableVariant.compact} isStickyHeader={true}>
       <Thead>
         <Tr>
           <Th className={headerClass}>Action</Th>

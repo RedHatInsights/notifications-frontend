@@ -20,10 +20,7 @@ export interface NotificationBehaviorGroup extends EventType {
   readonly behaviors: ReadonlyArray<BehaviorGroup>;
 }
 
-export type IntegrationRef = Pick<
-  UserIntegration,
-  'id' | 'name' | 'type' | 'isEnabled'
->;
+export type IntegrationRef = Pick<UserIntegration, 'id' | 'name' | 'type' | 'isEnabled'>;
 
 export interface DefaultNotificationBehavior {
   actions: Array<Action>;
@@ -46,12 +43,10 @@ export interface ActionNotify extends ActionBase {
 export type Action = ActionIntegration | ActionNotify;
 
 export const isActionNotify = (action: Action): action is ActionNotify =>
-  action.type === NotificationType.EMAIL_SUBSCRIPTION ||
-  action.type === NotificationType.DRAWER;
+  action.type === NotificationType.EMAIL_SUBSCRIPTION || action.type === NotificationType.DRAWER;
 
-export const isActionIntegration = (
-  action: Action
-): action is ActionIntegration => action.type === NotificationType.INTEGRATION;
+export const isActionIntegration = (action: Action): action is ActionIntegration =>
+  action.type === NotificationType.INTEGRATION;
 
 export enum NotificationType {
   EMAIL_SUBSCRIPTION = 'EMAIL_SUBSCRIPTION',
@@ -76,13 +71,9 @@ export type BehaviorGroup = {
   readonly isDefault: boolean;
 };
 
-export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> &
-  Omit<BehaviorGroup, 'id'>;
+export type NewBehaviorGroup = Partial<Pick<BehaviorGroup, 'id'>> & Omit<BehaviorGroup, 'id'>;
 
-export type BehaviorGroupRequest = Omit<
-  BehaviorGroup | NewBehaviorGroup,
-  'isDefault'
->;
+export type BehaviorGroupRequest = Omit<BehaviorGroup | NewBehaviorGroup, 'isDefault'>;
 
 export type EmailSystemProperties = {
   type: NotificationType.EMAIL_SUBSCRIPTION;
@@ -115,9 +106,7 @@ export function isDrawerSystemProperties(
   return properties.type === NotificationType.DRAWER;
 }
 
-const getIntegrationIds = (
-  actions: ReadonlyArray<Action | undefined>
-): Array<UUID | undefined> => {
+const getIntegrationIds = (actions: ReadonlyArray<Action | undefined>): Array<UUID | undefined> => {
   return actions
     .map((action) => {
       if (action === undefined) {

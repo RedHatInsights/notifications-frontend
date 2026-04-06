@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-  within,
-} from '@testing-library/react';
+import { render, screen, waitForElementToBeRemoved, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
@@ -13,10 +8,7 @@ import { waitForAsyncEvents } from '../../../../../test/TestUtils';
 import { UserIntegrationType } from '../../../../types/Integration';
 import { Action, NotificationType } from '../../../../types/Notification';
 import { NotificationUserRecipient } from '../../../../types/Recipient';
-import {
-  RecipientContext,
-  RecipientContextProvider,
-} from '../../RecipientContext';
+import { RecipientContext, RecipientContextProvider } from '../../RecipientContext';
 import { ActionTypeahead } from '../ActionTypeahead';
 
 const ALL_RECIPIENTS = [
@@ -40,10 +32,7 @@ const defaultRecipientContext = (): RecipientContext => ({
 });
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const InternalWrapper: React.FunctionComponent<any> = ({
-  getLocation,
-  children,
-}) => {
+const InternalWrapper: React.FunctionComponent<any> = ({ getLocation, children }) => {
   const location = useLocation();
   if (getLocation) {
     getLocation.mockImplementation(() => location);
@@ -53,17 +42,11 @@ const InternalWrapper: React.FunctionComponent<any> = ({
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const Wrapper: React.FunctionComponent<any> = ({
-  value,
-  children,
-  getLocation,
-}) => {
+const Wrapper: React.FunctionComponent<any> = ({ value, children, getLocation }) => {
   return (
     <MemoryRouter>
       <InternalWrapper getLocation={getLocation}>
-        <RecipientContextProvider value={value}>
-          {children}
-        </RecipientContextProvider>
+        <RecipientContextProvider value={value}>{children}</RecipientContextProvider>
       </InternalWrapper>
     </MemoryRouter>
   );
@@ -78,11 +61,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     const context = defaultRecipientContext();
     render(
       <Wrapper value={context}>
-        <ActionTypeahead
-          selectedNotifications={[]}
-          action={action}
-          onSelected={fn()}
-        />
+        <ActionTypeahead selectedNotifications={[]} action={action} onSelected={fn()} />
       </Wrapper>
     );
 
@@ -116,9 +95,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     await userEvent.click(screen.getByRole('button'));
     await waitForAsyncEvents();
 
-    expect(
-      screen.getByRole('button', { name: /Send to notification drawer/i })
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: /Send to notification drawer/i })).toBeDisabled();
   });
 
   it('Selected notification doesnt show except for Integrations', async () => {
@@ -159,11 +136,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     const context = defaultRecipientContext();
     render(
       <Wrapper value={context}>
-        <ActionTypeahead
-          selectedNotifications={[]}
-          action={action}
-          onSelected={actionSelected}
-        />
+        <ActionTypeahead selectedNotifications={[]} action={action} onSelected={actionSelected} />
       </Wrapper>
     );
 
@@ -183,11 +156,7 @@ describe('src/components/Notifications/Form/ActionTypeahead', () => {
     const context = defaultRecipientContext();
     render(
       <Wrapper value={context}>
-        <ActionTypeahead
-          selectedNotifications={[]}
-          action={action}
-          onSelected={actionSelected}
-        />
+        <ActionTypeahead selectedNotifications={[]} action={action} onSelected={actionSelected} />
       </Wrapper>
     );
 

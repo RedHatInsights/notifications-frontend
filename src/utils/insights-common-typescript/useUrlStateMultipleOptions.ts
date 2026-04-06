@@ -6,10 +6,7 @@ export const useUrlStateMultipleOptions = <T extends string>(
   options?: Array<T>,
   defaultValue?: Array<T>
 ) => {
-  const lowerCaseOptions = useMemo(
-    () => options?.map((o) => o.trim().toLowerCase()),
-    [options]
-  );
+  const lowerCaseOptions = useMemo(() => options?.map((o) => o.trim().toLowerCase()), [options]);
 
   const serializer = useCallback(
     (val: Array<T> | undefined) => {

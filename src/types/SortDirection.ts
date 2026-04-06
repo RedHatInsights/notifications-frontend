@@ -3,9 +3,7 @@ export enum SortDirection {
   DESC = 'desc',
 }
 
-export const sortDirectionFromString = (
-  sortDirection: string
-): SortDirection => {
+export const sortDirectionFromString = (sortDirection: string): SortDirection => {
   const lowerCaseSortDirection = sortDirection.toLowerCase();
   switch (lowerCaseSortDirection) {
     case SortDirection.ASC:

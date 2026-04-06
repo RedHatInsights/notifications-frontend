@@ -157,9 +157,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       })
     );
 
-    await waitFor(() =>
-      expect(screen.getByText('Integration 1234')).toBeVisible()
-    );
+    await waitFor(() => expect(screen.getByText('Integration 1234')).toBeVisible());
   });
 
   it('getIntegrations is called on init', async () => {
@@ -208,10 +206,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
 
     await userEvent.type(screen.getByRole('combobox'), 'guy');
     await waitFor(() =>
-      expect(getIntegrations).toHaveBeenCalledWith(
-        IntegrationType.WEBHOOK,
-        'guy'
-      )
+      expect(getIntegrations).toHaveBeenCalledWith(IntegrationType.WEBHOOK, 'guy')
     );
     expect(await screen.findByText('guy integration')).toBeInTheDocument();
   });
@@ -230,9 +225,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
     );
     await new Promise(process.nextTick);
     await userEvent.click(screen.getByRole('button', { name: /Menu toggle/i }));
-    await waitFor(() =>
-      expect(screen.getAllByRole('menuitem')[0]).toBeInTheDocument()
-    );
+    await waitFor(() => expect(screen.getAllByRole('menuitem')[0]).toBeInTheDocument());
     await waitFor(() =>
       // eslint-disable-next-line testing-library/no-node-access
       expect(document.querySelector('.pf-c-skeleton')).not.toBeInTheDocument()
@@ -243,9 +236,7 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
 
   it('Integration recipients that have been previously used in the form are disabled', async () => {
     const formikValues: Partial<BehaviorGroup> = {
-      actions: [
-        { integration: ref1, type: NotificationType.INTEGRATION },
-      ] as ActionIntegration[],
+      actions: [{ integration: ref1, type: NotificationType.INTEGRATION }] as ActionIntegration[],
     };
 
     render(
@@ -258,12 +249,8 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
         wrapper: getConfiguredWrapper(undefined, formikValues),
       }
     );
-    await userEvent.click(
-      await screen.findByRole('button', { name: /Menu toggle/i })
-    );
-    await waitFor(() =>
-      expect(screen.getAllByRole('menuitem')[0]).toBeDisabled()
-    );
+    await userEvent.click(await screen.findByRole('button', { name: /Menu toggle/i }));
+    await waitFor(() => expect(screen.getAllByRole('menuitem')[0]).toBeDisabled());
   });
 
   it('Constrains dropdown menu height to 300px', async () => {

@@ -59,14 +59,12 @@ type Story = StoryObj<typeof EmptyStateSearch>;
 export const Default: Story = {
   args: {
     title: 'No results found',
-    description:
-      'No items match your search criteria. Try adjusting your filters or search terms.',
+    description: 'No items match your search criteria. Try adjusting your filters or search terms.',
   },
   parameters: {
     docs: {
       description: {
-        story:
-          'Default empty state with search icon, commonly used for filter/search results.',
+        story: 'Default empty state with search icon, commonly used for filter/search results.',
       },
     },
   },
@@ -89,8 +87,7 @@ export const NoNotifications: Story = {
 export const NoIntegrations: Story = {
   args: {
     title: 'No integrations found',
-    description:
-      'No integrations match your search. Create a new integration to get started.',
+    description: 'No integrations match your search. Create a new integration to get started.',
     icon: CubesIcon,
   },
   parameters: {

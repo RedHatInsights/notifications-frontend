@@ -56,9 +56,7 @@ export class DrawerSingleton {
     return id;
   }
   static unsubscribe(id: string) {
-    DrawerSingleton._subs = DrawerSingleton._subs.filter(
-      (item) => item.id !== id
-    );
+    DrawerSingleton._subs = DrawerSingleton._subs.filter((item) => item.id !== id);
   }
 
   private constructor() {}
@@ -92,10 +90,7 @@ export class DrawerSingleton {
     return DrawerSingleton._state;
   }
 
-  private setNotificationsPermissions = async (
-    mounted: boolean,
-    permissions
-  ) => {
+  private setNotificationsPermissions = async (mounted: boolean, permissions) => {
     if (mounted) {
       DrawerSingleton._state.hasNotificationsPermissions =
         permissions?.some((item) =>
@@ -150,9 +145,7 @@ export class DrawerSingleton {
         notification_ids: selected.map((notification) => notification.id),
         read_status: read,
       }).then(() => {
-        selected.forEach((notification) =>
-          this.updateNotificationRead(notification.id, read)
-        );
+        selected.forEach((notification) => this.updateNotificationRead(notification.id, read));
       });
     } catch (e) {
       console.error('failed to update notification read status', e);
@@ -161,9 +154,7 @@ export class DrawerSingleton {
 
   // helpers
   private hasUnreadNotifications = () => {
-    return DrawerSingleton._state.notificationData.some(
-      (notification) => !notification.read
-    );
+    return DrawerSingleton._state.notificationData.some((notification) => !notification.read);
   };
 
   public addNotification = (notification: NotificationData) => {
@@ -172,26 +163,25 @@ export class DrawerSingleton {
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
   public updateNotificationRead = (id: string, read: boolean) => {
-    DrawerSingleton.getState().notificationData =
-      DrawerSingleton.getState().notificationData.map((notification) =>
-        notification.id === id ? { ...notification, read } : notification
-      );
+    DrawerSingleton.getState().notificationData = DrawerSingleton.getState().notificationData.map(
+      (notification) => (notification.id === id ? { ...notification, read } : notification)
+    );
     DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
   public updateNotificationsSelected = (selected: boolean) => {
-    DrawerSingleton.getState().notificationData =
-      DrawerSingleton.getState().notificationData.map((notification) => ({
+    DrawerSingleton.getState().notificationData = DrawerSingleton.getState().notificationData.map(
+      (notification) => ({
         ...notification,
         selected,
-      }));
+      })
+    );
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
   public updateNotificationSelected = (id: string, selected: boolean) => {
-    DrawerSingleton.getState().notificationData =
-      DrawerSingleton.getState().notificationData.map((notification) =>
-        notification.id === id ? { ...notification, selected } : notification
-      );
+    DrawerSingleton.getState().notificationData = DrawerSingleton.getState().notificationData.map(
+      (notification) => (notification.id === id ? { ...notification, selected } : notification)
+    );
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
   public setFilters = (filters: string[]) => {

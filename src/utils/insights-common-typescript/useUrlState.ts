@@ -2,10 +2,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { useEffectOnce, useUpdateEffect } from 'react-use';
 
-export type UseUrlStateResponse<T> = [
-  T | undefined,
-  Dispatch<SetStateAction<T | undefined>>
-];
+export type UseUrlStateResponse<T> = [T | undefined, Dispatch<SetStateAction<T | undefined>>];
 export type Serializer<T> = (value: T | undefined) => string | undefined;
 export type Deserializer<T> = (value: string | undefined) => T | undefined;
 
@@ -75,8 +72,7 @@ export const useUrlState = <T>(
 
       if (newValue !== value) {
         localSetValue(newValue);
-        const serializedNewValue =
-          newValue === undefined ? undefined : serializer(newValue);
+        const serializedNewValue = newValue === undefined ? undefined : serializer(newValue);
         setUrlValue(serializedNewValue);
       }
     },
@@ -94,10 +90,8 @@ export const useUrlState = <T>(
   return [value, setValue];
 };
 
-const serializer = (value: string | undefined) =>
-  value === '' ? undefined : value;
-const deserializer = (value: string | undefined) =>
-  value === undefined ? '' : value;
+const serializer = (value: string | undefined) => (value === '' ? undefined : value);
+const deserializer = (value: string | undefined) => (value === undefined ? '' : value);
 
 export const useUrlStateString = (name: string, initialValue?: string) =>
   useUrlState<string>(name, serializer, deserializer, initialValue);

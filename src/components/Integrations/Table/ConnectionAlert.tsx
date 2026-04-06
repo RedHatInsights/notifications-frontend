@@ -13,9 +13,7 @@ interface ConnectionAlertProps extends OuiaProps {
   title: string;
 }
 
-export const ConnectionAlert: React.FunctionComponent<ConnectionAlertProps> = (
-  props
-) => {
+export const ConnectionAlert: React.FunctionComponent<ConnectionAlertProps> = (props) => {
   return (
     <div {...getOuiaProps('ConnectionAlert', props)}>
       <Alert title={props.title} variant={props.alertVariant} isInline>
@@ -26,9 +24,7 @@ export const ConnectionAlert: React.FunctionComponent<ConnectionAlertProps> = (
             <span key={index} className="pf-v5-u-ml-sm">
               <ConnectionAttempt
                 type={
-                  attempt.isSuccess
-                    ? ConnectionAttemptType.SUCCESS
-                    : ConnectionAttemptType.FAILED
+                  attempt.isSuccess ? ConnectionAttemptType.SUCCESS : ConnectionAttemptType.FAILED
                 }
                 date={attempt.date}
               />

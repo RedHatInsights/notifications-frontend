@@ -15,16 +15,15 @@ interface IntegrationsAppProps {
   activeCategory?: string;
 }
 
-const IntegrationsApp: React.ComponentType<
-  IntegrationsAppProps & AppEntryProps
-> = ({ activeCategory, ...props }: IntegrationsAppProps) => {
+const IntegrationsApp: React.ComponentType<IntegrationsAppProps & AppEntryProps> = ({
+  activeCategory,
+  ...props
+}: IntegrationsAppProps) => {
   const { rbac, server, isOrgAdmin } = useApp();
 
   const category =
     activeCategory &&
-    Object.values(IntegrationCategory).includes(
-      activeCategory as unknown as IntegrationCategory
-    )
+    Object.values(IntegrationCategory).includes(activeCategory as unknown as IntegrationCategory)
       ? (activeCategory as IntegrationCategory)
       : undefined;
 

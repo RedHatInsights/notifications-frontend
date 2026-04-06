@@ -20,9 +20,7 @@ interface ActionTypeToIconProps {
   actionType: NotificationType;
 }
 
-const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (
-  props
-) => {
+const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (props) => {
   switch (props.actionType) {
     case NotificationType.DRAWER:
       return <BellIcon />;
@@ -38,14 +36,10 @@ const ActionTypeToIcon: React.FunctionComponent<ActionTypeToIconProps> = (
 const ActionComponentWrapper: React.FunctionComponent<
   React.PropsWithChildren<ActionComponentText>
 > = (props) => (
-  <div {...getOuiaProps('Notifications/ActionComponent', props)}>
-    {props.children}
-  </div>
+  <div {...getOuiaProps('Notifications/ActionComponent', props)}>{props.children}</div>
 );
 
-export const ActionComponent: React.FunctionComponent<ActionComponentText> = (
-  props
-) => {
+export const ActionComponent: React.FunctionComponent<ActionComponentText> = (props) => {
   if (props.loading) {
     return (
       <ActionComponentWrapper {...props}>
@@ -76,13 +70,9 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (
   return (
     <ActionComponentWrapper {...props}>
       <ActionTypeToIcon actionType={props.action.type} />
-      <span className="pf-v5-u-ml-sm">
-        {Config.notifications.types[props.action.type].name}
-      </span>
+      <span className="pf-v5-u-ml-sm">{Config.notifications.types[props.action.type].name}</span>
       {props.action.type === NotificationType.INTEGRATION && (
-        <span>
-          : {Config.integrations.types[props.action.integration.type].name}
-        </span>
+        <span>: {Config.integrations.types[props.action.integration.type].name}</span>
       )}
     </ActionComponentWrapper>
   );

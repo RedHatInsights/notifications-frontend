@@ -44,14 +44,11 @@ function isEventReadonly(
   return Object.values(data).every(
     (item) =>
       isEvent(item) &&
-      Object.values(item).every((event) =>
-        Object.prototype.hasOwnProperty.call(event, 'id')
-      )
+      Object.values(item).every((event) => Object.prototype.hasOwnProperty.call(event, 'id'))
   );
 }
 
-export interface SelectableTableProps<T extends TableRow>
-  extends UseFieldApiProps<T[]> {
+export interface SelectableTableProps<T extends TableRow> extends UseFieldApiProps<T[]> {
   name: string;
   data?: ReadonlyArray<T>;
   columns: { name: string; key: string }[];
@@ -73,9 +70,7 @@ interface EventTypeFromGroup {
   isSelected: boolean;
 }
 
-const createEventTypeMapping = (
-  event: EventTypeFromGroup
-): EventTypeMapping => ({
+const createEventTypeMapping = (event: EventTypeFromGroup): EventTypeMapping => ({
   eventTypeDisplayName: event.display_name,
   applicationDisplayName: event.application.display_name,
   description: event.description,
@@ -121,9 +116,7 @@ const SelectableTable = (props) => {
   const currBundle = allBundles?.find(({ name }) => name === productFamily);
 
   if (currBundle?.displayName && isEventReadonly(input.value)) {
-    value = Object.values(
-      input.value?.[currBundle?.displayName] || {}
-    ) as readonly EventType[];
+    value = Object.values(input.value?.[currBundle?.displayName] || {}) as readonly EventType[];
   }
 
   React.useEffect(() => {
@@ -175,14 +168,10 @@ const SelectableTable = (props) => {
     />
   ) : (
     <Bullseye>
-      <EmptyState
-        headingLevel="h4"
-        icon={CubesIcon}
-        titleText="Select product family"
-      >
+      <EmptyState headingLevel="h4" icon={CubesIcon} titleText="Select product family">
         <EmptyStateBody>
-          Before you can assign events to integration you have to select from
-          which bundle events should be assignable.
+          Before you can assign events to integration you have to select from which bundle events
+          should be assignable.
         </EmptyStateBody>
       </EmptyState>
     </Bullseye>
@@ -190,9 +179,7 @@ const SelectableTable = (props) => {
 };
 
 const SelectableTableWrapper = (props) => (
-  <FormSpy subscription={{ values: true }}>
-    {() => <SelectableTable {...props} />}
-  </FormSpy>
+  <FormSpy subscription={{ values: true }}>{() => <SelectableTable {...props} />}</FormSpy>
 );
 
 export default SelectableTableWrapper;

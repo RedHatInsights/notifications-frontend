@@ -1,8 +1,4 @@
-import {
-  ClearFilters,
-  Filters,
-  SetFilters,
-} from '../../../utils/insights-common-typescript';
+import { ClearFilters, Filters, SetFilters } from '../../../utils/insights-common-typescript';
 
 export enum EventLogFilterColumn {
   EVENT = 'event',

@@ -7,10 +7,8 @@ const getBundlesAction = (includeApplications: boolean) =>
     includeApplications,
   });
 
-export const useGetBundles = (
-  includeApplications?: boolean,
-  initFetch = true
-) => useQuery(getBundlesAction(!!includeApplications), initFetch);
+export const useGetBundles = (includeApplications?: boolean, initFetch = true) =>
+  useQuery(getBundlesAction(!!includeApplications), initFetch);
 
 export const useGetBundleByName = () => {
   const { query } = useGetBundles(false, false); // includeApplications = false, initFetch = false

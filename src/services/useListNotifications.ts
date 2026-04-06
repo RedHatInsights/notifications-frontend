@@ -1,16 +1,10 @@
-import {
-  validatedResponse,
-  validationResponseTransformer,
-} from 'openapi2typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useQuery } from 'react-fetching-library';
 
 import { Schemas } from '../generated/OpenapiIntegrations';
 import { Operations } from '../generated/OpenapiNotifications';
 import { toNotifications } from '../types/adapters/NotificationAdapter';
-import {
-  Page,
-  useTransformQueryResponse,
-} from '../utils/insights-common-typescript';
+import { Page, useTransformQueryResponse } from '../utils/insights-common-typescript';
 
 export const listNotificationsActionCreator = (pager?: Page) => {
   const query = (pager ?? Page.defaultPage()).toQuery();
@@ -44,7 +38,4 @@ const decoder = validationResponseTransformer(
 
 // if possible use the new version of this hook instead
 export const useListNotificationsOld = (pager?: Page) =>
-  useTransformQueryResponse(
-    useQuery(listNotificationsActionCreator(pager)),
-    decoder
-  );
+  useTransformQueryResponse(useQuery(listNotificationsActionCreator(pager)), decoder);

@@ -16,16 +16,10 @@ import {
   ServerNotificationResponse,
   SystemProperties,
 } from '../Notification';
-import {
-  NotificationRbacGroupRecipient,
-  NotificationUserRecipient,
-} from '../Recipient';
+import { NotificationRbacGroupRecipient, NotificationUserRecipient } from '../Recipient';
 import { toIntegration } from './IntegrationAdapter';
 
-const _toAction = (
-  type: NotificationType,
-  serverAction: ServerIntegrationResponse
-): Action => {
+const _toAction = (type: NotificationType, serverAction: ServerIntegrationResponse): Action => {
   if (type === NotificationType.INTEGRATION) {
     const userIntegration = toIntegration(serverAction) as UserIntegration;
     return {
@@ -34,9 +28,7 @@ const _toAction = (
     };
   }
 
-  const integration = toIntegration(
-    serverAction
-  ) as IntegrationEmailSubscription;
+  const integration = toIntegration(serverAction) as IntegrationEmailSubscription;
 
   const action: ActionNotify = {
     type,
@@ -45,11 +37,7 @@ const _toAction = (
 
   if (integration.groupId) {
     action.recipient = [
-      new NotificationRbacGroupRecipient(
-        integration.id,
-        integration.groupId,
-        true
-      ),
+      new NotificationRbacGroupRecipient(integration.id, integration.groupId, true),
     ];
   } else {
     action.recipient = [
@@ -64,15 +52,9 @@ const _toAction = (
   return action;
 };
 
-export const toNotification = (
-  serverNotification: ServerNotificationResponse
-): EventType => {
+export const toNotification = (serverNotification: ServerNotificationResponse): EventType => {
   if (!serverNotification.id || !serverNotification.application) {
-    throw new Error(
-      `Unexpected notification from server ${JSON.stringify(
-        serverNotification
-      )}`
-    );
+    throw new Error(`Unexpected notification from server ${JSON.stringify(serverNotification)}`);
   }
 
   return {
@@ -96,23 +78,17 @@ export const toAction = (serverAction: ServerIntegrationResponse): Action => {
       return _toAction(NotificationType.DRAWER, serverAction);
     case null:
     case undefined:
-      throw new Error(
-        `serverAction.type is null or undefined: ${serverAction.type}`
-      );
+      throw new Error(`serverAction.type is null or undefined: ${serverAction.type}`);
     default:
       assertNever(serverAction.type);
   }
 };
 
-export const reduceActions = (
-  actions: ReadonlyArray<Action>
-): ReadonlyArray<Action> =>
+export const reduceActions = (actions: ReadonlyArray<Action>): ReadonlyArray<Action> =>
   actions.reduce((actions, current) => {
     return produce(actions, (draft) => {
       if (current.type === NotificationType.EMAIL_SUBSCRIPTION) {
-        const existingAction = draft.find(
-          (a) => a.type === current.type
-        ) as ActionNotify;
+        const existingAction = draft.find((a) => a.type === current.type) as ActionNotify;
         if (existingAction) {
           castDraft(existingAction.recipient).push(current.recipient[0]);
         } else {
@@ -124,13 +100,10 @@ export const reduceActions = (
     });
   }, [] as ReadonlyArray<Action>);
 
-export const toNotifications = (
-  serverNotifications: Array<ServerNotificationResponse>
-) => serverNotifications.map(toNotification);
+export const toNotifications = (serverNotifications: Array<ServerNotificationResponse>) =>
+  serverNotifications.map(toNotification);
 
-export const toSystemProperties = (
-  action: Action
-): ReadonlyArray<SystemProperties> => {
+export const toSystemProperties = (action: Action): ReadonlyArray<SystemProperties> => {
   if (action.type === NotificationType.EMAIL_SUBSCRIPTION) {
     return action.recipient.map<EmailSystemProperties>((r) => ({
       type: NotificationType.EMAIL_SUBSCRIPTION,

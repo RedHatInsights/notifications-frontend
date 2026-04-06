@@ -10,11 +10,7 @@ import {
   Split,
   SplitItem,
 } from '@patternfly/react-core';
-import {
-  ExternalLinkSquareAltIcon,
-  HelpIcon,
-  InProgressIcon,
-} from '@patternfly/react-icons';
+import { ExternalLinkSquareAltIcon, HelpIcon, InProgressIcon } from '@patternfly/react-icons';
 import PageHeaderTitle from '@redhat-cloud-services/frontend-components/PageHeader/PageHeaderTitle';
 import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader/PageHeader';
 import React, { useState } from 'react';
@@ -33,11 +29,7 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
           <Popover
             bodyContent={Messages.pages.splunk.page.help}
             footerContent={
-              <a
-                target="_blank"
-                rel="noopener noreferrer"
-                href={DOCUMENTATION_URL}
-              >
+              <a target="_blank" rel="noopener noreferrer" href={DOCUMENTATION_URL}>
                 Learn more <ExternalLinkSquareAltIcon />
               </a>
             }
@@ -59,8 +51,7 @@ const SplunkSetupTitle: React.FunctionComponent = () => (
 export const SplunkSetupPage: React.FunctionComponent = () => {
   const [step, setStep] = useState(2);
   const [stepIsInProgress, setStepIsInProgress] = useState(false);
-  const [stepVariant, setStepVariant] =
-    useState<ProgressStepProps['variant']>('info');
+  const [stepVariant, setStepVariant] = useState<ProgressStepProps['variant']>('info');
 
   const [hecToken, setHecToken] = useState('');
   const [splunkServerHostName, setHostName] = useState('');
@@ -91,11 +82,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                 </ProgressStep>
                 <ProgressStep
                   isCurrent={step === 2}
-                  icon={
-                    step === 2 && stepIsInProgress ? (
-                      <InProgressIcon />
-                    ) : undefined
-                  }
+                  icon={step === 2 && stepIsInProgress ? <InProgressIcon /> : undefined}
                   variant={step < 2 ? 'info' : stepVariant}
                   description="Configure Splunk integration in Insights"
                   id="step2-setup-step"
@@ -137,10 +124,7 @@ export const SplunkSetupPage: React.FunctionComponent = () => {
                 />
               )}
               {step === 3 && (
-                <SplunkSetupFinished
-                  isSuccess={stepVariant === 'success'}
-                  error={error}
-                />
+                <SplunkSetupFinished isSuccess={stepVariant === 'success'} error={error} />
               )}
             </SplitItem>
           </Split>

@@ -34,27 +34,20 @@ export enum IntegrationCategory {
   WEBHOOKS = 'Webhooks',
 }
 
-export type Subtypes<U, S extends string> = U extends `${S}:${string}`
-  ? U
-  : never;
+export type Subtypes<U, S extends string> = U extends `${S}:${string}` ? U : never;
 export type CamelIntegrationType = Subtypes<IntegrationType, 'camel'>;
 
-export const isCamelType = (
-  type?: IntegrationType
-): type is CamelIntegrationType => !!type && type.startsWith('camel:');
+export const isCamelType = (type?: IntegrationType): type is CamelIntegrationType =>
+  !!type && type.startsWith('camel:');
 export const isCamelIntegrationType = (
   integration: Partial<Integration>
-): integration is IntegrationCamel =>
-  !!integration.type && isCamelType(integration.type);
+): integration is IntegrationCamel => !!integration.type && isCamelType(integration.type);
 
-export const isUserIntegrationType = (
-  type?: IntegrationType
-): type is UserIntegrationType =>
+export const isUserIntegrationType = (type?: IntegrationType): type is UserIntegrationType =>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   !!type && Object.values(UserIntegrationType).includes(type as any);
 
-export type UserIntegrationType =
-  (typeof UserIntegrationType)[keyof typeof UserIntegrationType];
+export type UserIntegrationType = (typeof UserIntegrationType)[keyof typeof UserIntegrationType];
 
 export interface IntegrationBase<T extends IntegrationType> {
   id: string;
@@ -66,8 +59,7 @@ export interface IntegrationBase<T extends IntegrationType> {
   eventTypes?: Array<string> | undefined;
 }
 
-export interface IntegrationHttp
-  extends IntegrationBase<IntegrationType.WEBHOOK> {
+export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK> {
   type: IntegrationType.WEBHOOK;
   url: string;
   sslVerificationEnabled: boolean;
@@ -75,30 +67,26 @@ export interface IntegrationHttp
   method: Schemas.HttpType;
 }
 
-export interface IntegrationAnsible
-  extends IntegrationBase<IntegrationType.ANSIBLE> {
+export interface IntegrationAnsible extends IntegrationBase<IntegrationType.ANSIBLE> {
   url: string;
   sslVerificationEnabled: boolean;
   secretToken?: string;
   method: Schemas.HttpType;
 }
 
-export interface IntegrationPagerduty
-  extends IntegrationBase<IntegrationType.PAGERDUTY> {
+export interface IntegrationPagerduty extends IntegrationBase<IntegrationType.PAGERDUTY> {
   secretToken: string;
   severity: Schemas.PagerDutySeverity;
 }
 
-export interface IntegrationDrawer
-  extends IntegrationBase<IntegrationType.DRAWER> {
+export interface IntegrationDrawer extends IntegrationBase<IntegrationType.DRAWER> {
   type: IntegrationType.DRAWER;
   ignorePreferences: boolean | null | undefined;
   onlyAdmin: boolean | null | undefined;
   groupId?: UUID;
 }
 
-export interface IntegrationCamel
-  extends IntegrationBase<CamelIntegrationType> {
+export interface IntegrationCamel extends IntegrationBase<CamelIntegrationType> {
   type: CamelIntegrationType;
   url: string;
   sslVerificationEnabled: boolean;
@@ -159,12 +147,13 @@ export type UserIntegration = Extract<
 
 type NewIntegrationKeys = 'id' | 'serverErrors';
 
-export type NewIntegrationTemplate<T extends IntegrationBase<IntegrationType>> =
-  Omit<T, NewIntegrationKeys> & Partial<Pick<T, NewIntegrationKeys>>;
+export type NewIntegrationTemplate<T extends IntegrationBase<IntegrationType>> = Omit<
+  T,
+  NewIntegrationKeys
+> &
+  Partial<Pick<T, NewIntegrationKeys>>;
 
-export type NewIntegrationBase = NewIntegrationTemplate<
-  IntegrationBase<UserIntegrationType>
->;
+export type NewIntegrationBase = NewIntegrationTemplate<IntegrationBase<UserIntegrationType>>;
 export type NewIntegration = NewIntegrationTemplate<Integration>;
 export type NewUserIntegration = NewIntegrationTemplate<UserIntegration>;
 
@@ -176,9 +165,7 @@ export interface IntegrationConnectionAttempt {
   isSuccess: boolean;
 }
 
-export type GetIntegrationRecipient = (
-  integrationId: UUID
-) => Promise<string> | string;
+export type GetIntegrationRecipient = (integrationId: UUID) => Promise<string> | string;
 
 export type IntegrationIcon = {
   icon_url: string;

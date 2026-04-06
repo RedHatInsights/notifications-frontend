@@ -1,8 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
-import {
-  ChromeWsEventTypes,
-  ChromeWsPayload,
-} from '@redhat-cloud-services/types';
+import { ChromeWsEventTypes, ChromeWsPayload } from '@redhat-cloud-services/types';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import BulkSelect from '@redhat-cloud-services/frontend-components/BulkSelect';
 
@@ -43,8 +40,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   } = useNotificationDrawer();
   const navigate = useNavigate();
 
-  const eventType: ChromeWsEventTypes =
-    'com.redhat.console.notifications.drawer';
+  const eventType: ChromeWsEventTypes = 'com.redhat.console.notifications.drawer';
 
   const handleWsEvent = useCallback(
     (event: ChromeWsPayload<NotificationData>) => {
@@ -69,16 +65,13 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   }, [auth]);
 
   const filteredNotifications = useMemo(() => {
-    const notificationsByBundle = state.notificationData.reduce(
-      (acc, notification) => {
-        if (!acc[notification.bundle]) {
-          acc[notification.bundle] = [];
-        }
-        acc[notification.bundle].push(notification);
-        return acc;
-      },
-      {}
-    );
+    const notificationsByBundle = state.notificationData.reduce((acc, notification) => {
+      if (!acc[notification.bundle]) {
+        acc[notification.bundle] = [];
+      }
+      acc[notification.bundle].push(notification);
+      return acc;
+    }, {});
 
     return (state.filters || []).reduce((acc, chosenFilter) => {
       if (notificationsByBundle[chosenFilter]) {
@@ -126,17 +119,12 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   const RenderNotifications = () => {
     if (state.notificationData.length === 0) {
       return (
-        <EmptyNotifications
-          isOrgAdmin={isOrgAdmin}
-          onLinkClick={onNotificationsDrawerClose}
-        />
+        <EmptyNotifications isOrgAdmin={isOrgAdmin} onLinkClick={onNotificationsDrawerClose} />
       );
     }
 
     const sortedNotifications = orderBy(
-      state.filters?.length > 0
-        ? filteredNotifications
-        : state.notificationData,
+      state.filters?.length > 0 ? filteredNotifications : state.notificationData,
       ['read', 'created'],
       ['asc', 'asc']
     );
@@ -163,9 +151,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         title="Notifications"
         className="pf-u-align-items-center"
       >
-        {state.filters.length > 0 && (
-          <Badge isRead>{state.filters.length}</Badge>
-        )}
+        {state.filters.length > 0 && <Badge isRead>{state.filters.length}</Badge>}
         <FilterDropdown
           filterConfig={state.filterConfig}
           isDisabled={state.notificationData.length === 0}
@@ -199,9 +185,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
               onClick: () => selectAllNotifications(true),
             },
           ]}
-          count={
-            state.notificationData.filter(({ selected }) => selected).length
-          }
+          count={state.notificationData.filter(({ selected }) => selected).length}
           checked={
             state.notificationData.length > 0 &&
             state.notificationData.every(({ selected }) => selected)
@@ -226,11 +210,9 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   );
 };
 
-const DrawerPanel = React.forwardRef(
-  (props: DrawerPanelProps, panelRef: React.Ref<unknown>) => (
-    <DrawerPanelBase panelRef={panelRef} toggleDrawer={props.toggleDrawer} />
-  )
-);
+const DrawerPanel = React.forwardRef((props: DrawerPanelProps, panelRef: React.Ref<unknown>) => (
+  <DrawerPanelBase panelRef={panelRef} toggleDrawer={props.toggleDrawer} />
+));
 DrawerPanel.displayName = 'DrawerPanel';
 
 export default DrawerPanel;

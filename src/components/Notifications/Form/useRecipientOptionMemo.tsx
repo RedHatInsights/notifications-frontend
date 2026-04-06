@@ -34,19 +34,9 @@ export const useRecipientOptionMemo = <R extends Recipient>(
 ) => {
   return React.useMemo(() => {
     if (state.show === 'default') {
-      return getOptions(
-        state.defaultValues,
-        mapper,
-        state.loadingDefault,
-        loadingMapper
-      );
+      return getOptions(state.defaultValues, mapper, state.loadingDefault, loadingMapper);
     } else if (state.show === 'filter') {
-      return getOptions(
-        state.filterValues,
-        mapper,
-        state.loadingFilter,
-        loadingMapper
-      );
+      return getOptions(state.filterValues, mapper, state.loadingFilter, loadingMapper);
     }
 
     assertNever(state.show);

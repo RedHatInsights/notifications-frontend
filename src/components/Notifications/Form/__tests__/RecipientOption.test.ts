@@ -1,8 +1,5 @@
 import { IntegrationType } from '../../../../types/Integration';
-import {
-  IntegrationRecipient,
-  NotificationUserRecipient,
-} from '../../../../types/Recipient';
+import { IntegrationRecipient, NotificationUserRecipient } from '../../../../types/Recipient';
 import { RecipientOption } from '../RecipientOption';
 
 describe('src/components/Notifications/Form/RecipientOption', () => {

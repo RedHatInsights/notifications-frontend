@@ -8,15 +8,11 @@ type UpdateBehaviorGroupActionsParams = {
   endpointIds: Array<UUID>;
 };
 
-const updateBehaviorGroupActionsActionCreator = (
-  params: UpdateBehaviorGroupActionsParams
-) => {
-  return Operations.NotificationResource$v1UpdateBehaviorGroupActions.actionCreator(
-    {
-      behaviorGroupId: params.behaviorGroupId,
-      body: params.endpointIds,
-    }
-  );
+const updateBehaviorGroupActionsActionCreator = (params: UpdateBehaviorGroupActionsParams) => {
+  return Operations.NotificationResource$v1UpdateBehaviorGroupActions.actionCreator({
+    behaviorGroupId: params.behaviorGroupId,
+    body: params.endpointIds,
+  });
 };
 
 export const useUpdateBehaviorGroupActionsMutation = () =>

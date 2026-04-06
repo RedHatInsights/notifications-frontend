@@ -16,9 +16,7 @@ interface NotificationStatusProps {
   status: Schemas.EventLogEntryActionStatus;
 }
 
-export const NotificationStatus: React.FunctionComponent<
-  NotificationStatusProps
-> = (props) => {
+export const NotificationStatus: React.FunctionComponent<NotificationStatusProps> = (props) => {
   switch (props.status) {
     case 'FAILED':
       return <NotificationStatusFailed />;

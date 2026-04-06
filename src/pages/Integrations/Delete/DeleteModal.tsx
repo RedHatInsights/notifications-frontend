@@ -27,10 +27,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<
       setError(false);
       return deleteIntegration(integration.id).then((response) => {
         if (!response.error) {
-          addSuccessNotification(
-            'Integration removed',
-            'The integration was removed.'
-          );
+          addSuccessNotification('Integration removed', 'The integration was removed.');
           return true;
         } else {
           setError(true);
@@ -45,12 +42,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<
     if (hasError) {
       return {
         title: 'Failed to remove Integration',
-        description: (
-          <p>
-            There was an error trying to remove the Integration. Please try
-            again.
-          </p>
-        ),
+        description: <p>There was an error trying to remove the Integration. Please try again.</p>,
       };
     }
 

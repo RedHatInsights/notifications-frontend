@@ -7,11 +7,7 @@ import {
   NewIntegrationTemplate,
   ServerIntegrationResponse,
 } from '../../Integration';
-import {
-  toIntegration,
-  toIntegrations,
-  toServerIntegrationRequest,
-} from '../IntegrationAdapter';
+import { toIntegration, toIntegrations, toServerIntegrationRequest } from '../IntegrationAdapter';
 
 describe('src/types/adapters/IntegrationAdapter', () => {
   describe('toIntegration', () => {

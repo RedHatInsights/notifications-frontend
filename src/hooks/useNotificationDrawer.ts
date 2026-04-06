@@ -22,13 +22,10 @@ const useNotificationDrawer = () => {
     addNotification: DrawerSingleton.Instance.addNotification,
     updateNotificationRead: DrawerSingleton.Instance.updateNotificationRead,
     updateSelectedStatus: DrawerSingleton.Instance.updateSelectedStatus,
-    updateNotificationsSelected:
-      DrawerSingleton.Instance.updateNotificationsSelected,
-    updateNotificationSelected:
-      DrawerSingleton.Instance.updateNotificationSelected,
+    updateNotificationsSelected: DrawerSingleton.Instance.updateNotificationsSelected,
+    updateNotificationSelected: DrawerSingleton.Instance.updateNotificationSelected,
     setFilters: DrawerSingleton.Instance.setFilters,
-    setHasNotificationsPermissions:
-      DrawerSingleton.Instance.setHasNotificationsPermissions,
+    setHasNotificationsPermissions: DrawerSingleton.Instance.setHasNotificationsPermissions,
     setFilterConfig: DrawerSingleton.Instance.setFilterConfig,
   };
 };

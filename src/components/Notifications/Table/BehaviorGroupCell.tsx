@@ -15,10 +15,7 @@ import { TableText } from '@patternfly/react-table';
 import * as React from 'react';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
-import {
-  BehaviorGroup,
-  NotificationBehaviorGroup,
-} from '../../../types/Notification';
+import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
 import { join } from '../../../utils/insights-common-typescript';
@@ -44,9 +41,7 @@ interface BehaviorGroupChip {
 
 const CommaSeparator: React.FunctionComponent = () => <span>, </span>;
 
-const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (
-  props
-) => {
+const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (props) => {
   const unlink = React.useCallback(() => {
     const onSelect = props.onSelect;
     if (onSelect) {
@@ -61,9 +56,7 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (
   );
 };
 
-export const BehaviorGroupCell: React.FunctionComponent<
-  BehaviorGroupCellProps
-> = (props) => {
+export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> = (props) => {
   const [isOpen, setOpen] = React.useState(false);
 
   const onSelected = React.useCallback(
@@ -72,8 +65,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
       behaviorGroupId?: string
     ) => {
       const dataset =
-        (event?.currentTarget?.firstChild as HTMLElement)?.dataset ??
-        emptyImmutableObject;
+        (event?.currentTarget?.firstChild as HTMLElement)?.dataset ?? emptyImmutableObject;
       const onSelect = props.onSelect;
       if (
         !props.behaviorGroupContent.isLoading &&
@@ -84,9 +76,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
         if (dataset.behaviorGroupId || behaviorGroupId) {
           found = props.behaviorGroupContent.content.find(
             // eslint-disable-next-line testing-library/await-async-queries
-            findById(
-              (dataset.behaviorGroupId as string) || (behaviorGroupId as string)
-            )
+            findById((dataset.behaviorGroupId as string) || (behaviorGroupId as string))
           );
           if (found) {
             // eslint-disable-next-line testing-library/await-async-queries
@@ -96,19 +86,11 @@ export const BehaviorGroupCell: React.FunctionComponent<
         }
       }
     },
-    [
-      props.onSelect,
-      props.behaviorGroupContent,
-      props.notification,
-      props.selected,
-    ]
+    [props.onSelect, props.behaviorGroupContent, props.notification, props.selected]
   );
 
   const items = React.useMemo(() => {
-    if (
-      props.behaviorGroupContent.isLoading ||
-      props.behaviorGroupContent.hasError
-    ) {
+    if (props.behaviorGroupContent.isLoading || props.behaviorGroupContent.hasError) {
       return [
         <MenuItem key="is-loading" isDisabled>
           Loading
@@ -167,9 +149,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
   const toggleContent = React.useMemo(() => {
     return sortedSelected.length === 0 ? (
       <>
-        <span className="pf-v5-u-disabled-color-100">
-          Select behavior group
-        </span>
+        <span className="pf-v5-u-disabled-color-100">Select behavior group</span>
         <Badge className="pf-v5-u-ml-xs" isRead>
           {sortedSelected.length}
         </Badge>
@@ -230,11 +210,7 @@ export const BehaviorGroupCell: React.FunctionComponent<
   return (
     <Popper
       trigger={
-        <MenuToggle
-          onClick={() => setOpen(!isOpen)}
-          isExpanded={isOpen}
-          variant="plain"
-        >
+        <MenuToggle onClick={() => setOpen(!isOpen)} isExpanded={isOpen} variant="plain">
           {toggleContent}
         </MenuToggle>
       }

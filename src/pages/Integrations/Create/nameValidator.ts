@@ -7,11 +7,7 @@ export const debouncePromise = (
   options = { onlyResolvesLast: false }
 ) => awesomeDebouncePromise(asyncFunction, debounceTime, options);
 
-export const asyncValidator = async (
-  value,
-  integrationId = undefined,
-  intl
-) => {
+export const asyncValidator = async (value, integrationId = undefined, intl) => {
   if (!value) {
     return undefined;
   }
@@ -23,11 +19,7 @@ export const asyncValidator = async (
     return undefined;
   }
 
-  if (
-    response?.data.find(
-      ({ id, name }) => name === value && id !== integrationId
-    )
-  ) {
+  if (response?.data.find(({ id, name }) => name === value && id !== integrationId)) {
     throw intl.formatMessage({
       defaultMessage: 'That name is taken. Try another.',
       id: 'wizard.integrations.nameTaken',

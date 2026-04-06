@@ -9,9 +9,7 @@ const reportBehaviorGroup = (element: ServerBehaviorGroup): never => {
   throw new Error('Invalid behavior group:' + JSON.stringify(element));
 };
 
-export const toBehaviorGroup = (
-  serverBehaviorGroup: ServerBehaviorGroup
-): BehaviorGroup => {
+export const toBehaviorGroup = (serverBehaviorGroup: ServerBehaviorGroup): BehaviorGroup => {
   const actions =
     serverBehaviorGroup.actions?.map((behaviorAction) => {
       if (behaviorAction.endpoint) {

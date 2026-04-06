@@ -7,10 +7,7 @@ import {
 } from '@patternfly/react-icons';
 import React from 'react';
 
-import {
-  Integration,
-  IntegrationConnectionAttempt,
-} from '../../../types/Integration';
+import { Integration, IntegrationConnectionAttempt } from '../../../types/Integration';
 import {
   AggregatedConnectionAttemptStatus,
   aggregateConnectionAttemptStatus,
@@ -28,15 +25,9 @@ export interface StatusCreationFailureProps {
   includeDetails: boolean;
 }
 
-export const IntegrationStatus: React.FunctionComponent<
-  IntegrationStatusProps
-> = (props) => {
+export const IntegrationStatus: React.FunctionComponent<IntegrationStatusProps> = (props) => {
   const status = props.status ?? 'UNKNOWN';
-  if (
-    status === 'FAILED' ||
-    status === 'PROVISIONING' ||
-    status === 'DELETING'
-  ) {
+  if (status === 'FAILED' || status === 'PROVISIONING' || status === 'DELETING') {
     switch (status) {
       case 'FAILED':
         return <StatusCreationFailure includeDetails={props.includeDetails} />;
@@ -55,17 +46,13 @@ export const IntegrationStatus: React.FunctionComponent<
   );
 
   // No attempts found
-  if (
-    aggregatedConnectionAttemptStatus ===
-    AggregatedConnectionAttemptStatus.UNKNOWN
-  ) {
+  if (aggregatedConnectionAttemptStatus === AggregatedConnectionAttemptStatus.UNKNOWN) {
     return <StatusReady />;
   }
 
   const lastConnectionAttemptStatus = props.lastConnectionAttempts[0].isSuccess;
   const isDegraded =
-    aggregatedConnectionAttemptStatus ===
-    AggregatedConnectionAttemptStatus.WARNING;
+    aggregatedConnectionAttemptStatus === AggregatedConnectionAttemptStatus.WARNING;
   if (lastConnectionAttemptStatus) {
     return <StatusSuccess isDegraded={isDegraded} />;
   } else {
@@ -73,9 +60,7 @@ export const IntegrationStatus: React.FunctionComponent<
   }
 };
 
-export const StatusSuccess: React.FunctionComponent<DegradedProps> = (
-  props
-) => (
+export const StatusSuccess: React.FunctionComponent<DegradedProps> = (props) => (
   <Degraded isDegraded={props.isDegraded}>
     <Status text="Success">
       <Icon status="success">
@@ -85,9 +70,7 @@ export const StatusSuccess: React.FunctionComponent<DegradedProps> = (
   </Degraded>
 );
 
-export const StatusEventFailure: React.FunctionComponent<DegradedProps> = (
-  props
-) => (
+export const StatusEventFailure: React.FunctionComponent<DegradedProps> = (props) => (
   <Degraded isDegraded={props.isDegraded}>
     <Status text="Event failure">
       <Icon status="danger">
@@ -105,9 +88,9 @@ export const StatusReady: React.FunctionComponent<unknown> = () => (
   </Status>
 );
 
-export const StatusCreationFailure: React.FunctionComponent<
-  StatusCreationFailureProps
-> = (props) => (
+export const StatusCreationFailure: React.FunctionComponent<StatusCreationFailureProps> = (
+  props
+) => (
   <Popover
     aria-label="Basic popover"
     headerContent={<div>Failed connection</div>}

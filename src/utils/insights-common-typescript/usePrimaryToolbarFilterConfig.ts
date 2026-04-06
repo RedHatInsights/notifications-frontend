@@ -49,11 +49,7 @@ const getFilterItemValue = <FilterColumn extends StandardFilterEnum<never>>(
     }
 
     if (options.default) {
-      if (
-        value === undefined ||
-        value === '' ||
-        (Array.isArray(value) && value.length === 0)
-      ) {
+      if (value === undefined || value === '' || (Array.isArray(value) && value.length === 0)) {
         value = options.default;
       }
     }
@@ -89,9 +85,7 @@ const filterItem = <FilterColumn extends StandardFilterEnum<never>>(
           }
         } else {
           setFilters(
-            (value as Array<string>).filter((v) =>
-              options.items.find((i) => i.value === v)
-            )
+            (value as Array<string>).filter((v) => options.items.find((i) => i.value === v))
           );
         }
       } else {
@@ -110,9 +104,7 @@ const getChipValue = <FilterColumn extends StandardFilterEnum<never>>(
   return found?.chipValue ?? value;
 };
 
-const getActiveFilterConfigItem = <
-  FilterColumn extends StandardFilterEnum<never>
->(
+const getActiveFilterConfigItem = <FilterColumn extends StandardFilterEnum<never>>(
   column: EnumElement<FilterColumn>,
   filters: Filters<FilterColumn>[EnumElement<FilterColumn>],
   meta: ColumnsMetada<FilterColumn>[EnumElement<FilterColumn>]
@@ -163,8 +155,7 @@ interface FilterColumnMetadataOptionsBase<T> {
   }>;
 }
 
-interface FilterColumnMetadataOptionsSingleValue
-  extends FilterColumnMetadataOptionsBase<string> {
+interface FilterColumnMetadataOptionsSingleValue extends FilterColumnMetadataOptionsBase<string> {
   exclusive?: true;
 }
 
@@ -176,21 +167,19 @@ interface FilterColumnMetadataOptionsMultipleValue
 export interface FilterColumnMetadata {
   label: string;
   placeholder: string;
-  options?:
-    | FilterColumnMetadataOptionsSingleValue
-    | FilterColumnMetadataOptionsMultipleValue;
+  options?: FilterColumnMetadataOptionsSingleValue | FilterColumnMetadataOptionsMultipleValue;
 }
 
-export type OptionalColumnsMetada<Enum extends StandardFilterEnum<never>> =
-  OptionalFilterBase<Enum, FilterColumnMetadata>;
+export type OptionalColumnsMetada<Enum extends StandardFilterEnum<never>> = OptionalFilterBase<
+  Enum,
+  FilterColumnMetadata
+>;
 export type ColumnsMetada<Enum extends StandardFilterEnum<never>> = FilterBase<
   Enum,
   FilterColumnMetadata
 >;
 
-export const usePrimaryToolbarFilterConfig = <
-  FilterColumn extends StandardFilterEnum<never>
->(
+export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardFilterEnum<never>>(
   initEnum: FilterColumn,
   filters: Filters<FilterColumn>,
   setFilters: SetFilters<FilterColumn>,
@@ -202,9 +191,7 @@ export const usePrimaryToolbarFilterConfig = <
 
   const filterConfig = useMemo(
     () => ({
-      items: (
-        Object.values(Enum) as unknown as Array<EnumElement<FilterColumn>>
-      )
+      items: (Object.values(Enum) as unknown as Array<EnumElement<FilterColumn>>)
         .filter((e) => meta[e])
         .map((column) =>
           filterItem(
@@ -229,9 +216,7 @@ export const usePrimaryToolbarFilterConfig = <
         if (key && Object.values(Enum).includes(key)) {
           toClear[key] = element.chips.map((c) => c.name); // Todo: Check chips - do they have a value?
         } else {
-          throw new Error(
-            `Unexpected filter column label found: ${element.category}`
-          );
+          throw new Error(`Unexpected filter column label found: ${element.category}`);
         }
       }
 
@@ -242,9 +227,7 @@ export const usePrimaryToolbarFilterConfig = <
 
   const activeFiltersConfig = useMemo(() => {
     const filterConfig: Array<FilterChipsFilter> = [];
-    for (const column of Object.values(Enum) as Array<
-      EnumElement<FilterColumn>
-    >) {
+    for (const column of Object.values(Enum) as Array<EnumElement<FilterColumn>>) {
       if (!meta[column]) {
         continue;
       }

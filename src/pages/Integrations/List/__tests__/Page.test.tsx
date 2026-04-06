@@ -67,9 +67,7 @@ describe('src/pages/Integrations/List/Page', () => {
       });
 
       await waitForAsyncEvents();
-      expect(
-        screen.getByRole('button', { name: /add integration/i })
-      ).toBeDisabled();
+      expect(screen.getByRole('button', { name: /add integration/i })).toBeDisabled();
     });
 
     it('Create button is enabled when write permissions is true', async () => {
@@ -145,10 +143,7 @@ describe('src/pages/Integrations/List/Page', () => {
       await waitForAsyncEvents();
 
       expect(
-        getByLabelText(
-          ouiaSelectors.getByOuia('Notifications/Integrations/Table'),
-          /Enabled/i
-        )
+        getByLabelText(ouiaSelectors.getByOuia('Notifications/Integrations/Table'), /Enabled/i)
       ).toBeDisabled();
     });
 
@@ -184,10 +179,7 @@ describe('src/pages/Integrations/List/Page', () => {
 
       await waitForAsyncEvents();
       expect(
-        getByLabelText(
-          ouiaSelectors.getByOuia('Notifications/Integrations/Table'),
-          /Enabled/i
-        )
+        getByLabelText(ouiaSelectors.getByOuia('Notifications/Integrations/Table'), /Enabled/i)
       ).toBeEnabled();
     });
 
@@ -239,16 +231,10 @@ describe('src/pages/Integrations/List/Page', () => {
 
       // Find menu items in the dropdown
       const menuItems = screen.getAllByRole('menuitem');
-      const editItem = menuItems.find((item) =>
-        item.textContent?.includes('Edit')
-      );
-      const deleteItem = menuItems.find((item) =>
-        item.textContent?.includes('Delete')
-      );
+      const editItem = menuItems.find((item) => item.textContent?.includes('Edit'));
+      const deleteItem = menuItems.find((item) => item.textContent?.includes('Delete'));
       const toggleItem = menuItems.find(
-        (item) =>
-          item.textContent?.includes('Enable') ||
-          item.textContent?.includes('Disable')
+        (item) => item.textContent?.includes('Enable') || item.textContent?.includes('Disable')
       );
 
       expect(editItem).toBeInTheDocument();
@@ -297,16 +283,10 @@ describe('src/pages/Integrations/List/Page', () => {
 
       // Find menu items in the dropdown
       const menuItems = screen.getAllByRole('menuitem');
-      const editItem = menuItems.find((item) =>
-        item.textContent?.includes('Edit')
-      );
-      const deleteItem = menuItems.find((item) =>
-        item.textContent?.includes('Delete')
-      );
+      const editItem = menuItems.find((item) => item.textContent?.includes('Edit'));
+      const deleteItem = menuItems.find((item) => item.textContent?.includes('Delete'));
       const toggleItem = menuItems.find(
-        (item) =>
-          item.textContent?.includes('Enable') ||
-          item.textContent?.includes('Disable')
+        (item) => item.textContent?.includes('Enable') || item.textContent?.includes('Disable')
       );
 
       expect(editItem).toBeInTheDocument();

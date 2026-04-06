@@ -63,8 +63,7 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
           value: 'Enabled',
           label: (
             <>
-              <EnabledIntegrationIcon />{' '}
-              <span className={enabledTextClassName}>Enabled</span>
+              <EnabledIntegrationIcon /> <span className={enabledTextClassName}>Enabled</span>
             </>
           ),
         },
@@ -72,8 +71,7 @@ const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
           value: 'Disabled',
           label: (
             <>
-              <DisabledIntegrationIcon />{' '}
-              <span className={enabledTextClassName}>Disabled</span>
+              <DisabledIntegrationIcon /> <span className={enabledTextClassName}>Disabled</span>
             </>
           ),
         },
@@ -163,20 +161,13 @@ export const IntegrationsToolbar: React.FunctionComponent<
       <PrimaryToolbar
         actionsConfig={actionsConfig}
         exportConfig={exportConfig}
-        filterConfig={
-          primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps
-        }
-        activeFiltersConfig={
-          primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps
-        }
+        filterConfig={primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps}
+        activeFiltersConfig={primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps}
         pagination={topPaginationProps}
         id="integrations-top-toolbar"
       />
       {props.children}
-      <PrimaryToolbar
-        id="integrations-bottom-toolbar"
-        pagination={bottomPaginationProps}
-      />
+      <PrimaryToolbar id="integrations-bottom-toolbar" pagination={bottomPaginationProps} />
     </div>
   );
 };

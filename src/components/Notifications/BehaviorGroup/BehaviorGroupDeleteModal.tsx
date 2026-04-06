@@ -21,8 +21,7 @@ import {
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 
-interface BehaviorGroupDeleteModalProps
-  extends Omit<DeleteModalProps, UsedProps> {
+interface BehaviorGroupDeleteModalProps extends Omit<DeleteModalProps, UsedProps> {
   behaviorGroup: BehaviorGroup;
   onDelete: OnDelete<BehaviorGroup>;
   conflictingNotifications: Array<Notification>;
@@ -30,9 +29,9 @@ interface BehaviorGroupDeleteModalProps
 
 type BehaviorGroupDeleteModalSkeletonProps = Pick<ActionModalProps, 'onClose'>;
 
-export const BehaviorGroupDeleteModal: React.FunctionComponent<
-  BehaviorGroupDeleteModalProps
-> = (props) => {
+export const BehaviorGroupDeleteModal: React.FunctionComponent<BehaviorGroupDeleteModalProps> = (
+  props
+) => {
   const onDelete = useOnDeleteWrapper(props.onDelete, props.behaviorGroup);
 
   const cancelButtonTitle = React.useMemo(
@@ -42,9 +41,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
 
   const cancelButtonVariant = React.useMemo(
     () =>
-      props.conflictingNotifications.length === 0
-        ? ButtonVariant.link
-        : ButtonVariant.secondary,
+      props.conflictingNotifications.length === 0 ? ButtonVariant.link : ButtonVariant.secondary,
     [props.conflictingNotifications]
   );
 
@@ -55,9 +52,8 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
       return (
         <Stack hasGutter>
           <StackItem>
-            Action and recipient pairings assigned in{' '}
-            <b>{props.behaviorGroup.displayName}</b> will lost. You will no
-            longer be able to assign this behavior group to events.
+            Action and recipient pairings assigned in <b>{props.behaviorGroup.displayName}</b> will
+            lost. You will no longer be able to assign this behavior group to events.
           </StackItem>
           <StackItem>
             <Checkbox
@@ -75,15 +71,12 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
       return (
         <Stack hasGutter>
           <StackItem>
-            You will no longer be able to assign{' '}
-            <b>{props.behaviorGroup.displayName}</b> to events, and existing
-            associations to events listed below will be removed.
+            You will no longer be able to assign <b>{props.behaviorGroup.displayName}</b> to events,
+            and existing associations to events listed below will be removed.
           </StackItem>
           <StackItem>
             <ExpandableSection
-              toggleText={`View ${events.length} event${
-                events.length === 0 ? '' : 's'
-              }`}
+              toggleText={`View ${events.length} event${events.length === 0 ? '' : 's'}`}
             >
               <List>
                 {events.map((event) => (
@@ -105,12 +98,7 @@ export const BehaviorGroupDeleteModal: React.FunctionComponent<
         </Stack>
       );
     }
-  }, [
-    props.conflictingNotifications,
-    props.behaviorGroup,
-    ackDelete,
-    setAckDelete,
-  ]);
+  }, [props.conflictingNotifications, props.behaviorGroup, ackDelete, setAckDelete]);
 
   return (
     <DeleteModal

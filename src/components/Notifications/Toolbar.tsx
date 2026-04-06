@@ -61,18 +61,14 @@ export const NotificationsToolbar: React.FunctionComponent<
 > = (props) => {
   const insights = getInsights();
   const filterColumns = props.filterColumns ?? allFilterColumns;
-  const filterMetadata = useMemo<
-    OptionalColumnsMetada<typeof NotificationFilterColumn>
-  >(() => {
+  const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
     const appFilterItems = props.appFilterOptions.map((a) => ({
       value: a.displayName,
       label: <> {a.displayName}</>,
     }));
 
     return {
-      [NotificationFilterColumn.NAME]: filterColumns.includes(
-        NotificationFilterColumn.NAME
-      )
+      [NotificationFilterColumn.NAME]: filterColumns.includes(NotificationFilterColumn.NAME)
         ? {
             label: 'Event type',
             placeholder: 'Filter by event type',
@@ -93,8 +89,7 @@ export const NotificationsToolbar: React.FunctionComponent<
           }
         : undefined,
       [NotificationFilterColumn.ACTION]:
-        filterColumns.includes(NotificationFilterColumn.ACTION) &&
-        isExperimental(insights)
+        filterColumns.includes(NotificationFilterColumn.ACTION) && isExperimental(insights)
           ? {
               label: 'Action',
               placeholder: 'Filter by action',
@@ -133,8 +128,7 @@ export const NotificationsToolbar: React.FunctionComponent<
         },
       ],
       checked: selectedCount !== 0 && selectedCount === count,
-      onSelect: (isSelected: boolean) =>
-        isSelected ? selectAll() : selectNone(),
+      onSelect: (isSelected: boolean) => (isSelected ? selectAll() : selectNone()),
       isDisabled: props.bulkSelectionDisabled,
     };
   }, [

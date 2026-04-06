@@ -19,44 +19,27 @@ export const expandedContentTitleClass = style({
   fontWeight: 400,
 });
 
-export interface ExpandedContentProps<T extends IntegrationType>
-  extends OuiaProps {
+export interface ExpandedContentProps<T extends IntegrationType> extends OuiaProps {
   integration: TypedIntegration<T>;
 }
 
-export const ExpandedContent: React.FunctionComponent<
-  ExpandedContentProps<UserIntegrationType>
-> = (props) => {
+export const ExpandedContent: React.FunctionComponent<ExpandedContentProps<UserIntegrationType>> = (
+  props
+) => {
   if (props.integration.type === IntegrationType.SLACK) {
-    return (
-      <SlackExpandedContent
-        integration={props.integration as IntegrationCamel}
-      />
-    );
+    return <SlackExpandedContent integration={props.integration as IntegrationCamel} />;
   }
 
   if (props.integration.type === IntegrationType.TEAMS) {
-    return (
-      <TeamsExpandedContent
-        integration={props.integration as IntegrationCamel}
-      />
-    );
+    return <TeamsExpandedContent integration={props.integration as IntegrationCamel} />;
   }
 
   if (props.integration.type === IntegrationType.GOOGLE_CHAT) {
-    return (
-      <GoogleChatExpandedContent
-        integration={props.integration as IntegrationCamel}
-      />
-    );
+    return <GoogleChatExpandedContent integration={props.integration as IntegrationCamel} />;
   }
 
   if (props.integration.type === IntegrationType.PAGERDUTY) {
-    return (
-      <PagerDutyExpandedContent
-        integration={props.integration as IntegrationPagerduty}
-      />
-    );
+    return <PagerDutyExpandedContent integration={props.integration as IntegrationPagerduty} />;
   }
 
   return <IntegrationExpandedContent {...props} />;

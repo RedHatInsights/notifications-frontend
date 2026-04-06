@@ -37,9 +37,7 @@ type BehaviorGroupAddButtonProps = Pick<
   'className' | 'onClick' | 'isDisabled' | 'component'
 >;
 
-const BehaviorGroupAddButton: React.FunctionComponent<
-  BehaviorGroupAddButtonProps
-> = (props) => {
+const BehaviorGroupAddButton: React.FunctionComponent<BehaviorGroupAddButtonProps> = (props) => {
   const { isDisabled, ...buttonProps } = props;
   const [isOrgAdmin, setIsOrgAdmin] = React.useState<boolean | undefined>();
   const { auth } = useChrome();
@@ -73,17 +71,14 @@ const BehaviorGroupAddButton: React.FunctionComponent<
   return button;
 };
 
-export const BehaviorGroupsSection: React.FunctionComponent<
-  BehaviorGroupSectionProps
-> = (props) => {
+export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSectionProps> = (
+  props
+) => {
   const [filter, setFilter] = React.useState<string>('');
   const { rbac } = useAppContext();
 
   const filteredBehaviors = React.useMemo(() => {
-    if (
-      !props.behaviorGroupContent.isLoading &&
-      !props.behaviorGroupContent.hasError
-    ) {
+    if (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) {
       const lowerCaseFilter = filter.toLowerCase();
       return props.behaviorGroupContent.content.filter((bg) =>
         bg.displayName.toLowerCase().includes(lowerCaseFilter)
@@ -93,10 +88,8 @@ export const BehaviorGroupsSection: React.FunctionComponent<
     return emptyImmutableArray;
   }, [filter, props.behaviorGroupContent]);
 
-  const [editModalState, editModalActions] =
-    useFormModalReducer<CreateBehaviorGroup>();
-  const [deleteModalState, deleteModalActions] =
-    useDeleteModalReducer<BehaviorGroup>();
+  const [editModalState, editModalActions] = useFormModalReducer<CreateBehaviorGroup>();
+  const [deleteModalState, deleteModalActions] = useDeleteModalReducer<BehaviorGroup>();
 
   const createGroup = React.useCallback(
     (event) => {
@@ -164,16 +157,14 @@ export const BehaviorGroupsSection: React.FunctionComponent<
           <SplitItem>
             <Content>
               <Content component={ContentVariants.p}>
-                <b>Behavior groups</b> are made up of action/recipient pairings
-                that allow you to configure which notification actions different
-                users will be able to receive. Once you&apos;ve created a
-                behavior group, you can assign it to an event using the Events
+                <b>Behavior groups</b> are made up of action/recipient pairings that allow you to
+                configure which notification actions different users will be able to receive. Once
+                you&apos;ve created a behavior group, you can assign it to an event using the Events
                 table below.
                 <br></br>
                 <Content component={ContentVariants.p}>
-                  You may also prevent users from changing assigned actions by
-                  locking action/recipient pairings when creating or editing
-                  behavior groups.
+                  You may also prevent users from changing assigned actions by locking
+                  action/recipient pairings when creating or editing behavior groups.
                 </Content>
               </Content>
             </Content>
@@ -196,10 +187,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<
               <SplitItem>
                 <BehaviorGroupAddButton
                   component="a"
-                  isDisabled={
-                    props.behaviorGroupContent.isLoading ||
-                    !rbac.canWriteNotifications
-                  }
+                  isDisabled={props.behaviorGroupContent.isLoading || !rbac.canWriteNotifications}
                   onClick={createGroup}
                 />
               </SplitItem>
@@ -237,10 +225,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<
         />
       )}
       {deleteModalState.isOpen && (
-        <DeleteBehaviorGroupPage
-          behaviorGroup={deleteModalState.data}
-          onClose={onCloseDelete}
-        />
+        <DeleteBehaviorGroupPage behaviorGroup={deleteModalState.data} onClose={onCloseDelete} />
       )}
     </>
   );

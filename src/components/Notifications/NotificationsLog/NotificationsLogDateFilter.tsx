@@ -230,11 +230,7 @@ export const NotificationsLogDateFilter: React.FunctionComponent<
       </SplitItem>
       {value === NotificationsLogDateFilterValue.CUSTOM && (
         <SplitItem>
-          <CustomDateFilter
-            period={period}
-            setPeriod={setPeriod}
-            retentionDays={retentionDays}
-          />
+          <CustomDateFilter period={period} setPeriod={setPeriod} retentionDays={retentionDays} />
         </SplitItem>
       )}
     </Split>

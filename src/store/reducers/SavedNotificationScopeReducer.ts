@@ -2,10 +2,7 @@ import { getType } from 'typesafe-actions';
 
 import { NotificationAppAction } from '../actions/NotificationAppAction';
 import { SavedNotificationScopeActions } from '../actions/SavedNotificationScopeAction';
-import {
-  SavedNotificationScopeState,
-  Status,
-} from '../types/SavedNotificationScopeTypes';
+import { SavedNotificationScopeState, Status } from '../types/SavedNotificationScopeTypes';
 
 export const INITIAL_STATE: SavedNotificationScopeState = null;
 

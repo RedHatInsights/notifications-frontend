@@ -104,8 +104,6 @@ describe('EventsWidget component', () => {
     // 1 header row + 5 data rows
     expect(screen.getAllByRole('row')).toHaveLength(6);
     // Check that pagination is rendered (only bottom pagination)
-    expect(
-      screen.getByLabelText('Events widget footer pagination')
-    ).toBeVisible();
+    expect(screen.getByLabelText('Events widget footer pagination')).toBeVisible();
   });
 });

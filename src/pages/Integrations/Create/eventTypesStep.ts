@@ -1,10 +1,5 @@
 import { componentTypes } from '@data-driven-forms/react-form-renderer';
-import {
-  EVENT_TYPES,
-  EVENT_TYPES_TABLE,
-  REVIEW,
-  SELECTABLE_TABLE,
-} from './helpers';
+import { EVENT_TYPES, EVENT_TYPES_TABLE, REVIEW, SELECTABLE_TABLE } from './helpers';
 
 export const eventTypesStep = () => ({
   title: 'Associate event types (Optional)',

@@ -25,10 +25,7 @@ interface ActionToIdList {
   (actions: BehaviorGroup['actions'], ids: Array<UUID>): Array<UUID>;
 }
 
-const actionsToIdList: ActionToIdList = (
-  actions: BehaviorGroup['actions'],
-  ids?: Array<UUID>
-) => {
+const actionsToIdList: ActionToIdList = (actions: BehaviorGroup['actions'], ids?: Array<UUID>) => {
   const remainingIds = ids ? ([...ids] as UUID[]) : undefined;
   const endpointsToAdd = actions.reduce((toAdd, action) => {
     if (isActionNotify(action)) {
@@ -40,9 +37,7 @@ const actionsToIdList: ActionToIdList = (
         } else if (remainingIds.length > 0) {
           toAdd.push(remainingIds.shift() as UUID);
         } else {
-          throw new Error(
-            `No more ids remaining to assign: actions ${actions} newIds: ${ids}`
-          );
+          throw new Error(`No more ids remaining to assign: actions ${actions} newIds: ${ids}`);
         }
       });
     } else if (isActionIntegration(action)) {
@@ -68,13 +63,10 @@ export interface SaveBehaviorGroupResponse {
   duplicate?: boolean;
 }
 
-export const useSaveBehaviorGroup = (
-  originalBehaviorGroup?: Partial<BehaviorGroup>
-) => {
+export const useSaveBehaviorGroup = (originalBehaviorGroup?: Partial<BehaviorGroup>) => {
   const saveBehaviorGroupMutation = useSaveBehaviorGroupMutation();
   const { query } = useContext(ClientContext);
-  const [fetchingIntegrations, setFetchingIntegrations] =
-    useState<boolean>(false);
+  const [fetchingIntegrations, setFetchingIntegrations] = useState<boolean>(false);
 
   const save = useCallback(
     async (data: BehaviorGroupRequest): Promise<SaveBehaviorGroupResponse> => {
@@ -102,12 +94,7 @@ export const useSaveBehaviorGroup = (
         needsSavingEventTypes = true;
       }
 
-      if (
-        !areActionsEqual(
-          originalBehaviorGroup?.actions ?? [],
-          data.actions ?? []
-        )
-      ) {
+      if (!areActionsEqual(originalBehaviorGroup?.actions ?? [], data.actions ?? [])) {
         needsSavingActions = true;
       }
 
@@ -117,9 +104,7 @@ export const useSaveBehaviorGroup = (
             .filter(isActionNotify)
             .map((action) =>
               produce(action, (draft) => {
-                draft.recipient = draft.recipient.filter(
-                  (r) => !r.integrationId
-                );
+                draft.recipient = draft.recipient.filter((r) => !r.integrationId);
               })
             )
             .map((action) => toSystemProperties(action))
@@ -130,10 +115,7 @@ export const useSaveBehaviorGroup = (
       if (
         toFetch.find(
           (props) =>
-            ![
-              NotificationType.EMAIL_SUBSCRIPTION,
-              NotificationType.DRAWER,
-            ].includes(props.type)
+            ![NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER].includes(props.type)
         )
       ) {
         throw new Error(
@@ -148,16 +130,12 @@ export const useSaveBehaviorGroup = (
       const enpointIds = await Promise.all(
         toFetch.map((systemProps) =>
           query(getDefaultSystemEndpointAction(systemProps)).then((result) =>
-            result.payload?.type === 'Endpoint'
-              ? result.payload.value.id
-              : undefined
+            result.payload?.type === 'Endpoint' ? result.payload.value.id : undefined
           )
         )
       ).then((newIds) => {
         if (newIds.includes(undefined)) {
-          throw new Error(
-            'Unexpected ids were returned when querying for system endpoints'
-          );
+          throw new Error('Unexpected ids were returned when querying for system endpoints');
         }
 
         // We want to preserve the order
@@ -168,20 +146,12 @@ export const useSaveBehaviorGroup = (
       const request: SaveBehaviorGroupRequest = {
         ...data,
         // cast, but it's OK - needsSavingDisplayName is always true when creating a new bg.
-        displayName: needsSavingDisplayName
-          ? data.displayName
-          : (undefined as unknown as string),
+        displayName: needsSavingDisplayName ? data.displayName : (undefined as unknown as string),
         endpointIds: needsSavingActions ? enpointIds : undefined,
-        eventTypesIds: needsSavingEventTypes
-          ? data.events.map((e) => e.id)
-          : undefined,
+        eventTypesIds: needsSavingEventTypes ? data.events.map((e) => e.id) : undefined,
       };
 
-      if (
-        !needsSavingDisplayName &&
-        !needsSavingActions &&
-        !needsSavingEventTypes
-      ) {
+      if (!needsSavingDisplayName && !needsSavingActions && !needsSavingEventTypes) {
         return {
           operation:
             data.id === undefined

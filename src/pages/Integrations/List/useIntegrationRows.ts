@@ -21,11 +21,7 @@ import { useNotification } from '../../../utils/AlertUtils';
 
 const MAX_NUMBER_OF_CONCURRENT_REQUESTS = 5;
 
-const SUCCESS_STATUS: Array<Schemas.NotificationStatus> = [
-  'PROCESSING',
-  'SENT',
-  'SUCCESS',
-];
+const SUCCESS_STATUS: Array<Schemas.NotificationStatus> = ['PROCESSING', 'SENT', 'SUCCESS'];
 
 export const useIntegrationRows = (
   integrations: Array<UserIntegration>,
@@ -34,15 +30,11 @@ export const useIntegrationRows = (
 ) => {
   const { addDangerNotification } = useNotification();
 
-  const [integrationRows, setIntegrationRows] = useState<Array<IntegrationRow>>(
-    []
-  );
+  const [integrationRows, setIntegrationRows] = useState<Array<IntegrationRow>>([]);
   const prevIntegrationsInput = usePrevious(integrations);
 
   const { query } = useContext(ClientContext);
-  const [limit] = useState<pLimit.Limit>(() =>
-    pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS)
-  );
+  const [limit] = useState<pLimit.Limit>(() => pLimit(MAX_NUMBER_OF_CONCURRENT_REQUESTS));
 
   const setIntegrationRowByIndex = useCallback(
     (index: number, partialIntegration: Partial<IntegrationRow>) => {
@@ -61,9 +53,7 @@ export const useIntegrationRows = (
   const setIntegrationRowById = useCallback(
     (id: string, partialIntegration: Partial<IntegrationRow>) => {
       setIntegrationRows((prevIntegrations) => {
-        const index = prevIntegrations.findIndex(
-          (integration) => integration.id === id
-        );
+        const index = prevIntegrations.findIndex((integration) => integration.id === id);
         if (index === -1) {
           return prevIntegrations;
         }
@@ -129,13 +119,7 @@ export const useIntegrationRows = (
           });
       }
     }
-  }, [
-    prevIntegrationsInput,
-    integrations,
-    setIntegrationRowById,
-    limit,
-    query,
-  ]);
+  }, [prevIntegrationsInput, integrations, setIntegrationRowById, limit, query]);
 
   const onCollapse = useCallback(
     (_integration: IntegrationRow, index: number, isOpen: boolean) => {
@@ -158,52 +142,42 @@ export const useIntegrationRows = (
         }
       }
 
-      query(switchIntegrationEnabledStatusActionCreator(_integration)).then(
-        (response) => {
-          if (!response.error) {
-            setIntegrationRowByIndex(index, {
-              isEnabled,
-              isEnabledLoading: false,
-            });
-            if (savedNotificationScope) {
-              if (_integration.id === savedNotificationScope.integration.id) {
-                reduxDispatch(SavedNotificationScopeActions.finish(isEnabled));
-              }
+      query(switchIntegrationEnabledStatusActionCreator(_integration)).then((response) => {
+        if (!response.error) {
+          setIntegrationRowByIndex(index, {
+            isEnabled,
+            isEnabledLoading: false,
+          });
+          if (savedNotificationScope) {
+            if (_integration.id === savedNotificationScope.integration.id) {
+              reduxDispatch(SavedNotificationScopeActions.finish(isEnabled));
             }
-          } else {
-            const message = isEnabled
-              ? Messages.components.integrations.enableError
-              : Messages.components.integrations.disableError;
-
-            if (savedNotificationScope) {
-              if (_integration.id === savedNotificationScope.integration.id) {
-                reduxDispatch(
-                  SavedNotificationScopeActions.finish(_integration.isEnabled)
-                );
-              }
-            }
-
-            addDangerNotification(
-              message.title,
-              format(message.description, _integration.name),
-              true
-            );
-
-            setIntegrationRowByIndex(index, {
-              isEnabled: _integration.isEnabled,
-              isEnabledLoading: false,
-            });
           }
+        } else {
+          const message = isEnabled
+            ? Messages.components.integrations.enableError
+            : Messages.components.integrations.disableError;
+
+          if (savedNotificationScope) {
+            if (_integration.id === savedNotificationScope.integration.id) {
+              reduxDispatch(SavedNotificationScopeActions.finish(_integration.isEnabled));
+            }
+          }
+
+          addDangerNotification(
+            message.title,
+            format(message.description, _integration.name),
+            true
+          );
+
+          setIntegrationRowByIndex(index, {
+            isEnabled: _integration.isEnabled,
+            isEnabledLoading: false,
+          });
         }
-      );
+      });
     },
-    [
-      setIntegrationRowByIndex,
-      savedNotificationScope,
-      query,
-      reduxDispatch,
-      addDangerNotification,
-    ]
+    [setIntegrationRowByIndex, savedNotificationScope, query, reduxDispatch, addDangerNotification]
   );
 
   useEffect(() => {

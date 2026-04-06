@@ -2,10 +2,7 @@ import {
   DatePicker,
   DatePickerRef,
 } from '@patternfly/react-core/dist/dynamic/components/DatePicker';
-import {
-  Split,
-  SplitItem,
-} from '@patternfly/react-core/dist/dynamic/layouts/Split';
+import { Split, SplitItem } from '@patternfly/react-core/dist/dynamic/layouts/Split';
 import { TextInputProps } from '@patternfly/react-core/dist/dynamic/components/TextInput';
 import {
   MenuToggle,
@@ -85,9 +82,7 @@ interface CustomDateFilterProps {
   setPeriod: Dispatch<SetStateAction<EventPeriod>>;
 }
 
-const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (
-  props
-) => {
+const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (props) => {
   const maxDate = React.useMemo(() => new Date(), []);
   const minDate = React.useMemo(
     () =>
@@ -232,9 +227,7 @@ export interface EventLogDateFilterProps {
   setPeriod: Dispatch<SetStateAction<EventPeriod>>;
 }
 
-export const EventLogDateFilter: React.FunctionComponent<
-  EventLogDateFilterProps
-> = (props) => {
+export const EventLogDateFilter: React.FunctionComponent<EventLogDateFilterProps> = (props) => {
   const options = React.useMemo(
     () =>
       Object.values(EventLogDateFilterValue).map((v) => (
@@ -246,10 +239,7 @@ export const EventLogDateFilter: React.FunctionComponent<
   );
   const [isOpen, setOpen] = React.useState(false);
   const onToggle = React.useCallback(() => setOpen((prev) => !prev), [setOpen]);
-  const value = React.useMemo(
-    () => new EventLogSelectObject(props.value),
-    [props.value]
-  );
+  const value = React.useMemo(() => new EventLogSelectObject(props.value), [props.value]);
   const onSelect = React.useCallback(
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (_e: any, selectObject: any) => {

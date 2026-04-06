@@ -31,10 +31,7 @@ import {
   Spinner,
   Title,
 } from '@patternfly/react-core';
-import {
-  SkeletonTableBody,
-  SkeletonTableHead,
-} from '@patternfly/react-component-groups';
+import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { useFieldApi } from '@data-driven-forms/react-form-renderer';
 import { useClient } from 'react-fetching-library';
 import { perPageOptions } from '../../../../config/Config';
@@ -69,19 +66,15 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   const { input, meta } = useFieldApi({ name });
   const { groups, isLoading } = useRbacGroups();
   const { query } = useClient();
-  const [visiblePopoverId, setVisiblePopoverId] = React.useState<string | null>(
-    null
-  );
+  const [visiblePopoverId, setVisiblePopoverId] = React.useState<string | null>(null);
   const popoverRootRef = useRef<HTMLSpanElement>(null);
 
   // Drawer state
   const [isDrawerOpen, setIsDrawerOpen] = React.useState(false);
-  const [selectedGroup, setSelectedGroup] = React.useState<
-    (typeof userAccessGroups)[0] | null
-  >(null);
-  const [groupUsers, setGroupUsers] = React.useState<
-    Array<{ username: string }>
-  >([]);
+  const [selectedGroup, setSelectedGroup] = React.useState<(typeof userAccessGroups)[0] | null>(
+    null
+  );
+  const [groupUsers, setGroupUsers] = React.useState<Array<{ username: string }>>([]);
   const [isLoadingUsers, setIsLoadingUsers] = React.useState(false);
 
   // Function to fetch and open drawer with user list
@@ -99,9 +92,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
 
         if (response.payload?.type === 'PrincipalPagination') {
           const principals = response.payload.value.data;
-          setGroupUsers(
-            principals.map((principal) => ({ username: principal.username }))
-          );
+          setGroupUsers(principals.map((principal) => ({ username: principal.username })));
         }
       } catch (error) {
         console.error('Failed to fetch group users:', error);
@@ -129,11 +120,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
       platform_default: group.platform_default,
       system: group.system,
       // Create NotificationRbacGroupRecipient for compatibility
-      recipient: new NotificationRbacGroupRecipient(
-        undefined,
-        group.id,
-        group.name
-      ),
+      recipient: new NotificationRbacGroupRecipient(undefined, group.id, group.name),
     }));
 
     // Sort groups: platform_default first, then admin_default, then regular groups
@@ -198,9 +185,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
       userAccessGroups.length > 0 &&
       selected.length === 0
     ) {
-      const selectedGroups = userAccessGroups.filter((group) =>
-        input.value.includes(group.id)
-      );
+      const selectedGroups = userAccessGroups.filter((group) => input.value.includes(group.id));
       if (selectedGroups.length > 0) {
         onSelect(true, selectedGroups);
       }
@@ -255,15 +240,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             })}
           />,
           // Second column: Group name with popover for default groups
-          <div
-            key={`name-${group.id}`}
-            className="pf-v6-u-display-flex pf-v6-u-align-items-center"
-          >
-            <span
-              className={
-                isDefaultGroup ? 'pf-v6-u-font-weight-bold pf-v6-u-mr-sm' : ''
-              }
-            >
+          <div key={`name-${group.id}`} className="pf-v6-u-display-flex pf-v6-u-align-items-center">
+            <span className={isDefaultGroup ? 'pf-v6-u-font-weight-bold pf-v6-u-mr-sm' : ''}>
               {getGroupDisplayName(group)}
             </span>
             {isDefaultGroup && (
@@ -274,9 +252,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 bodyContent={
                   group.admin_default
                     ? intl.formatMessage(messages.adminDefaultGroupDescription)
-                    : intl.formatMessage(
-                        messages.platformDefaultGroupDescription
-                      )
+                    : intl.formatMessage(messages.platformDefaultGroupDescription)
                 }
                 aria-label="user-group-popover"
                 hideOnOutsideClick
@@ -284,9 +260,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               >
                 <OutlinedQuestionCircleIcon
                   onClick={() =>
-                    setVisiblePopoverId(
-                      visiblePopoverId === group.id ? null : group.id
-                    )
+                    setVisiblePopoverId(visiblePopoverId === group.id ? null : group.id)
                   }
                 />
               </Popover>
@@ -317,14 +291,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
         },
       };
     });
-  }, [
-    paginatedData,
-    isSelected,
-    visiblePopoverId,
-    onSelect,
-    handleViewUsers,
-    intl,
-  ]);
+  }, [paginatedData, isSelected, visiblePopoverId, onSelect, handleViewUsers, intl]);
 
   const emptyState = (
     <EmptyState>
@@ -341,12 +308,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
     </EmptyState>
   );
 
-  const loadingStateHeader = (
-    <SkeletonTableHead columns={columns.map((c) => c.label)} />
-  );
-  const loadingStateBody = (
-    <SkeletonTableBody rowsCount={5} columnsCount={columns.length} />
-  );
+  const loadingStateHeader = <SkeletonTableHead columns={columns.map((c) => c.label)} />;
+  const loadingStateBody = <SkeletonTableBody rowsCount={5} columnsCount={columns.length} />;
 
   return (
     <div>
@@ -369,9 +332,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                 {isLoadingUsers ? (
                   <div className="pf-v6-u-text-align-center pf-v6-u-p-lg">
                     <Spinner size="lg" />
-                    <div className="pf-v6-u-mt-sm">
-                      {intl.formatMessage(messages.loadingUsers)}
-                    </div>
+                    <div className="pf-v6-u-mt-sm">{intl.formatMessage(messages.loadingUsers)}</div>
                   </div>
                 ) : groupUsers.length > 0 ? (
                   <List isBordered isPlain>
@@ -381,12 +342,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                   </List>
                 ) : (
                   <EmptyState>
-                    <Title headingLevel="h4">
-                      {intl.formatMessage(messages.noUsersFound)}
-                    </Title>
-                    <EmptyStateBody>
-                      {intl.formatMessage(messages.noUsersAssigned)}
-                    </EmptyStateBody>
+                    <Title headingLevel="h4">{intl.formatMessage(messages.noUsersFound)}</Title>
+                    <EmptyStateBody>{intl.formatMessage(messages.noUsersAssigned)}</EmptyStateBody>
                   </EmptyState>
                 )}
               </div>
@@ -398,31 +355,21 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               <div className="pf-v6-c-form__label">
                 <label className="pf-v6-c-form__label-text">
                   {label}
-                  {isRequired && (
-                    <span className="pf-v6-c-form__label-required"> *</span>
-                  )}
+                  {isRequired && <span className="pf-v6-c-form__label-required"> *</span>}
                 </label>
               </div>
               <DataView
                 activeState={
-                  isLoading
-                    ? 'loading'
-                    : filteredData.length === 0
-                    ? 'empty'
-                    : undefined
+                  isLoading ? 'loading' : filteredData.length === 0 ? 'empty' : undefined
                 }
               >
                 <DataViewToolbar
-                  clearAllFilters={
-                    searchTerm ? () => setSearchTerm('') : undefined
-                  }
+                  clearAllFilters={searchTerm ? () => setSearchTerm('') : undefined}
                   filters={
                     <DataViewTextFilter
                       filterId="filterGroupName"
                       title={intl.formatMessage(messages.groupNameFilter)}
-                      placeholder={intl.formatMessage(
-                        messages.filterByGroupNamePlaceholder
-                      )}
+                      placeholder={intl.formatMessage(messages.filterByGroupNamePlaceholder)}
                       value={searchTerm}
                       onChange={(_event, value) => setSearchTerm(value)}
                       onClear={() => setSearchTerm('')}
@@ -450,10 +397,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                         <Label
                           key={group.id}
                           onClose={() => onSelect(false, group)}
-                          closeBtnAriaLabel={intl.formatMessage(
-                            messages.removeGroup,
-                            { groupName: group.name }
-                          )}
+                          closeBtnAriaLabel={intl.formatMessage(messages.removeGroup, {
+                            groupName: group.name,
+                          })}
                           variant="filled"
                           color="grey"
                           isCompact
@@ -470,18 +416,15 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                         title="Custom default access group selected"
                         className="pf-v6-u-mt-md"
                       >
-                        The custom default access group includes all users in
-                        your organization. Additional access group selections
-                        are not necessary.
+                        The custom default access group includes all users in your organization.
+                        Additional access group selections are not necessary.
                       </Alert>
                     )}
                   </div>
                 )}
 
                 <DataViewTable
-                  aria-label={intl.formatMessage(
-                    messages.userAccessGroupsTableLabel
-                  )}
+                  aria-label={intl.formatMessage(messages.userAccessGroupsTableLabel)}
                   variant="compact"
                   columns={columns.map((column, index) => ({
                     cell: column.label,
@@ -511,9 +454,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               </DataView>
 
               {meta.error && (
-                <div className="pf-v6-c-form__helper-text pf-m-error">
-                  {meta.error}
-                </div>
+                <div className="pf-v6-c-form__helper-text pf-m-error">{meta.error}</div>
               )}
             </div>
           </DrawerContentBody>

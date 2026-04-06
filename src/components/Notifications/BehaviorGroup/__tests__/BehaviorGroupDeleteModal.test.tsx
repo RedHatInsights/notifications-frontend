@@ -72,9 +72,7 @@ describe('src/components/Notifications/BehaviorGroup/BehaviorGroupDeleteModal', 
       />
     );
 
-    expect(
-      screen.queryByText(/remove/i, { selector: 'button' })
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/remove/i, { selector: 'button' })).not.toBeInTheDocument();
     expect(screen.getByText(/close/i)).toBeVisible();
   });
 
