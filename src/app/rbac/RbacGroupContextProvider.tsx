@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { useClient } from 'react-fetching-library';
 
 import { getRbacGroupsAction } from '../../services/Rbac/GetGroups';
@@ -53,7 +53,14 @@ export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithCh
   const [isLoading, setLoading] = useState(true);
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);
 
+  const syncRunIdRef = useRef(0);
+  const canReadRbacGroupsRef = useRef(canReadRbacGroups);
+  canReadRbacGroupsRef.current = canReadRbacGroups;
+
   const sync = React.useCallback(async () => {
+    syncRunIdRef.current += 1;
+    const runId = syncRunIdRef.current;
+
     if (!canReadRbacGroups) {
       setRbacGroups([]);
       setLoading(false);
@@ -79,9 +86,13 @@ export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithCh
         offset += LIMIT;
       }
 
-      setRbacGroups(allGroups);
+      if (runId === syncRunIdRef.current && canReadRbacGroupsRef.current) {
+        setRbacGroups(allGroups);
+      }
     } finally {
-      setLoading(false);
+      if (runId === syncRunIdRef.current) {
+        setLoading(false);
+      }
     }
   }, [query, canReadRbacGroups]);
 

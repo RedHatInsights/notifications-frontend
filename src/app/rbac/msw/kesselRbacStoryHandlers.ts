@@ -83,7 +83,7 @@ function permissionToAllowedEnum(permitted: boolean | undefined): KesselAllowedE
  *
  * @param permissions - Map of relation names to permitted status (missing key → ALLOWED_UNSPECIFIED)
  */
-export const createBulkPermissionCheckHandler = (permissions: Record<string, boolean>) => {
+export const createPermissionCheckHandler = (permissions: Record<string, boolean>) => {
   return http.post(
     ({ request }) => new URL(request.url).pathname === '/api/rbac/v2/checkself',
     async ({ request }) => {
@@ -160,7 +160,7 @@ export const createKesselRbacHandlers = (
 
   return [
     createWorkspaceListHandler([defaultWorkspace]),
-    createBulkPermissionCheckHandler(permissions),
+    createPermissionCheckHandler(permissions),
   ];
 };
 
