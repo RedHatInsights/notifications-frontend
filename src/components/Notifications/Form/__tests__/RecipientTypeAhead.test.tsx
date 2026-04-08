@@ -151,7 +151,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitFor(() => expect(screen.getByText('I am real')).toBeVisible());
+    expect(await screen.findByText('I am real')).toBeVisible();
   });
 
   it('Renders selected loading group as a loading', async () => {
@@ -182,16 +182,9 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
   });
 
   it('Constrains dropdown menu height to 300px', async () => {
-    render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
-      {
-        wrapper: getConfiguredWrapper(createDefaultGetMock()),
-      }
-    );
+    render(<RecipientTypeahead selected={SELECTED_ALL} onSelected={fn()} onClear={fn()} />, {
+      wrapper: getConfiguredWrapper(createDefaultGetMock()),
+    });
 
     await userEvent.click(
       screen.getByRole('button', {
@@ -199,11 +192,13 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
       })
     );
 
-    await waitFor(() => {
+    // eslint-disable-next-line testing-library/no-node-access
+    const menuContentElement = await waitFor(() => {
       // eslint-disable-next-line testing-library/no-node-access
-      const menuContentElement = document.querySelector('.pf-v6-c-menu__content');
-      expect(menuContentElement).toBeInTheDocument();
-      expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
+      const element = document.querySelector('.pf-v6-c-menu__content');
+      expect(element).toBeInTheDocument();
+      return element;
     });
+    expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
   });
 });

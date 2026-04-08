@@ -250,7 +250,8 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await userEvent.click(await screen.findByRole('button', { name: /Menu toggle/i }));
-    await waitFor(() => expect(screen.getAllByRole('menuitem')[0]).toBeDisabled());
+    const menuItems = await screen.findAllByRole('menuitem');
+    expect(menuItems[0]).toBeDisabled();
   });
 
   it('Constrains dropdown menu height to 300px', async () => {
@@ -265,15 +266,15 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
 
-    await userEvent.click(
-      await screen.findByRole('button', { name: /Menu toggle/i })
-    );
+    await userEvent.click(await screen.findByRole('button', { name: /Menu toggle/i }));
 
-    await waitFor(() => {
+    // eslint-disable-next-line testing-library/no-node-access
+    const menuContentElement = await waitFor(() => {
       // eslint-disable-next-line testing-library/no-node-access
-      const menuContentElement = document.querySelector('.pf-v6-c-menu__content');
-      expect(menuContentElement).toBeInTheDocument();
-      expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
+      const element = document.querySelector('.pf-v6-c-menu__content');
+      expect(element).toBeInTheDocument();
+      return element;
     });
+    expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
   });
 });
