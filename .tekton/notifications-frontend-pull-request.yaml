@@ -41,14 +41,13 @@ spec:
         # Note: Playwright browsers are pre-installed in the playwright image
         # when image version matches package.json
 
-    # Unit tests - verified command from package.json
-    - name: unit-tests-script
-      value: |
-        #!/bin/bash
-        set -ex
-        # npm run lint
-        # npm run test
-        echo "TODO: re-enable unit tests once things are in a better state"
+  # Unit tests - verified command from package.json
+  - name: unit-tests-script
+    value: |
+      #!/bin/bash
+      set -ex
+      npm run lint
+      npm test -- --runInBand --no-cache
 
     # E2E tests - only run tests (dependencies installed in workspace-setup-script)
     - name: e2e-tests-script

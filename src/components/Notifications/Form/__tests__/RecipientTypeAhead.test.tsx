@@ -151,7 +151,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitFor(() => expect(screen.getByText('I am real')).toBeVisible());
+    expect(await screen.findByText('I am real')).toBeVisible();
   });
 
   it('Renders selected loading group as a loading', async () => {

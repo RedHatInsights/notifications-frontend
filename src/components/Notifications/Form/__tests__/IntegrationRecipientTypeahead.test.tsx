@@ -250,7 +250,8 @@ describe('src/components/Notifications/Form/IntegrationRecipientTypeAhead', () =
       }
     );
     await userEvent.click(await screen.findByRole('button', { name: /Menu toggle/i }));
-    await waitFor(() => expect(screen.getAllByRole('menuitem')[0]).toBeDisabled());
+    const menuItems = await screen.findAllByRole('menuitem');
+    expect(menuItems[0]).toBeDisabled();
   });
 
   it('Constrains dropdown menu height to 300px', async () => {
