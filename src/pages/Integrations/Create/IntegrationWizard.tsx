@@ -22,20 +22,14 @@ import {
 import { Integration } from '../../../types/Integration';
 import TableToolbar from './CustomComponents/TableToolbar';
 import { useFlag } from '@unleash/proxy-client-react';
-import {
-  createEndpoint,
-  updateEndpoint,
-} from '../../../api/helpers/integrations/endpoints-helper';
+import { createEndpoint, updateEndpoint } from '../../../api/helpers/integrations/endpoints-helper';
 import { useNotification } from '../../../utils/AlertUtils';
 import { Provider } from 'react-redux';
 import { Store } from 'redux';
 import { useIntl } from 'react-intl';
 import { IntegrationType } from '../../../types/Integration';
 import { RbacGroupContextProvider } from '../../../app/rbac/RbacGroupContextProvider';
-import {
-  createFetchingClient,
-  getInsights,
-} from '../../../utils/insights-common-typescript';
+import { createFetchingClient, getInsights } from '../../../utils/insights-common-typescript';
 import './styling/integrations-wizard.scss';
 
 export interface IntegrationWizardProps {
@@ -88,9 +82,7 @@ const mapIntegrationToFormFields = (template) => {
   return formValues;
 };
 
-export const IntegrationWizard: React.FunctionComponent<
-  IntegrationWizardProps
-> = ({
+export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> = ({
   isOpen,
   isEdit,
   template,
@@ -106,13 +98,9 @@ export const IntegrationWizard: React.FunctionComponent<
     [TABLE_TOOLBAR]: TableToolbar,
     [USER_ACCESS_GROUPS_DATAVIEW]: UserAccessGroupsDataView,
   };
-  const isBehaviorGroupsEnabled = useFlag(
-    'platform.integrations.behavior-groups-move'
-  );
+  const isBehaviorGroupsEnabled = useFlag('platform.integrations.behavior-groups-move');
   const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
-  const isEmailIntegrationEnabled = useFlag(
-    'platform.notifications.email.integration'
-  );
+  const isEmailIntegrationEnabled = useFlag('platform.notifications.email.integration');
   const notifications = useNotification();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
   React.useEffect(() => {
@@ -169,13 +157,7 @@ export const IntegrationWizard: React.FunctionComponent<
                 }),
             };
             isEdit && template?.id
-              ? updateEndpoint(
-                  template?.id,
-                  data,
-                  undefined,
-                  notifications,
-                  afterSubmit
-                )
+              ? updateEndpoint(template?.id, data, undefined, notifications, afterSubmit)
               : createEndpoint(data, notifications, afterSubmit);
             closeModal();
           }}
@@ -189,9 +171,10 @@ export const IntegrationWizard: React.FunctionComponent<
   );
 };
 
-const IntegrationWizardWrapper: React.FC<
-  { store?: Store } & IntegrationWizardProps
-> = ({ store, ...props }) => {
+const IntegrationWizardWrapper: React.FC<{ store?: Store } & IntegrationWizardProps> = ({
+  store,
+  ...props
+}) => {
   const client = React.useMemo(
     () =>
       createFetchingClient(getInsights, {

@@ -9,20 +9,11 @@ import * as React from 'react';
 
 import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
-import {
-  Checkbox,
-  FormTextArea,
-  FormTextInput,
-} from '../../../utils/insights-common-typescript';
+import { Checkbox, FormTextArea, FormTextInput } from '../../../utils/insights-common-typescript';
 
-export const IntegrationTypeCamelForm: React.FunctionComponent<
-  IntegrationTypeForm
-> = (props) => {
+export const IntegrationTypeCamelForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
   return (
-    <div
-      className="pf-c-form"
-      {...getOuiaProps('Integrations/HttpForm', props)}
-    >
+    <div className="pf-c-form" {...getOuiaProps('Integrations/HttpForm', props)}>
       <FormTextInput
         isRequired={true}
         label="Endpoint URL"
@@ -48,8 +39,8 @@ export const IntegrationTypeCamelForm: React.FunctionComponent<
         <FormHelperText>
           <HelperText>
             <HelperTextItem>
-              The defined secret token is sent as a &quot;X-Insight-Token&quot;
-              header on the request.
+              The defined secret token is sent as a &quot;X-Insight-Token&quot; header on the
+              request.
             </HelperTextItem>
           </HelperText>
         </FormHelperText>

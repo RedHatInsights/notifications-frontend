@@ -2,11 +2,9 @@ import { useMemo } from 'react';
 
 export type FeatureFlagCallback<T> = () => T;
 export type FeatureFlagSignature = {
-  <T>(
-    resolver: () => boolean,
-    ifTrue: FeatureFlagCallback<T>,
-    ifFalse?: FeatureFlagCallback<T>
-  ): T | undefined;
+  <T>(resolver: () => boolean, ifTrue: FeatureFlagCallback<T>, ifFalse?: FeatureFlagCallback<T>):
+    | T
+    | undefined;
   <T>(
     resolver: () => boolean,
     ifTrue: FeatureFlagCallback<T> | undefined,

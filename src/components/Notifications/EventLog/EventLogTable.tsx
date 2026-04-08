@@ -1,10 +1,7 @@
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { Popover } from '@patternfly/react-core/dist/dynamic/components/Popover';
 import { Skeleton } from '@patternfly/react-core/dist/dynamic/components/Skeleton';
-import {
-  Button,
-  ButtonVariant,
-} from '@patternfly/react-core/dist/dynamic/components/Button';
+import { Button, ButtonVariant } from '@patternfly/react-core/dist/dynamic/components/Button';
 import {
   Label,
   LabelGroup,
@@ -36,10 +33,7 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
-import {
-  NotificationEvent,
-  NotificationEventStatus,
-} from '../../../types/Event';
+import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
 import { EmptyStateSearch } from '../../EmptyStateSearch';
 import { ActionsHelpPopover } from './ActionsHelpPopover';
@@ -103,9 +97,7 @@ export const toLabelProps = (
   }
 };
 
-export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (
-  props
-) => {
+export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props) => {
   const onSort = React.useCallback(
     (
       _event: React.MouseEvent,
@@ -120,22 +112,21 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (
     [props.onSort]
   );
 
-  const sortOptions: Record<EventLogTableColumns, undefined | ThProps['sort']> =
-    React.useMemo(
-      () => ({
-        [EventLogTableColumns.EVENT]: undefined,
-        [EventLogTableColumns.SERVICE]: undefined,
-        [EventLogTableColumns.DATE]: {
-          sortBy: {
-            direction: props.sortDirection,
-            index: props.sortColumn,
-          },
-          columnIndex: EventLogTableColumns.DATE,
-          onSort,
+  const sortOptions: Record<EventLogTableColumns, undefined | ThProps['sort']> = React.useMemo(
+    () => ({
+      [EventLogTableColumns.EVENT]: undefined,
+      [EventLogTableColumns.SERVICE]: undefined,
+      [EventLogTableColumns.DATE]: {
+        sortBy: {
+          direction: props.sortDirection,
+          index: props.sortColumn,
         },
-      }),
-      [props.sortColumn, props.sortDirection, onSort]
-    );
+        columnIndex: EventLogTableColumns.DATE,
+        onSort,
+      },
+    }),
+    [props.sortColumn, props.sortDirection, onSort]
+  );
 
   const rows = React.useMemo(() => {
     const events = props.events;
@@ -177,10 +168,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (
                       />
                     }
                   >
-                    <Label
-                      className={labelClassName}
-                      {...toLabelProps(a.status)}
-                    >
+                    <Label className={labelClassName} {...toLabelProps(a.status)}>
                       {Config.integrations.types[a.endpointType].action}
                     </Label>
                   </Popover>

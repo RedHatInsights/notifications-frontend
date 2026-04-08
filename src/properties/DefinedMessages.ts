@@ -76,8 +76,7 @@ export default defineMessages({
   removeDescription: {
     id: 'removeDescription',
     description: 'integrations drawer dropdown remove action description',
-    defaultMessage:
-      'Permanently delete this integration and all collected data',
+    defaultMessage: 'Permanently delete this integration and all collected data',
   },
   integrationdropdownEdit: {
     id: 'integrationdropdownEdit',

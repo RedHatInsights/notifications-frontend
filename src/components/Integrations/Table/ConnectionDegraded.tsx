@@ -8,9 +8,7 @@ interface ConnectionDegradedProps {
   attempts: Array<IntegrationConnectionAttempt>;
 }
 
-export const ConnectionDegraded: React.FunctionComponent<
-  ConnectionDegradedProps
-> = (props) => {
+export const ConnectionDegraded: React.FunctionComponent<ConnectionDegradedProps> = (props) => {
   const description = React.useMemo(() => {
     const failures = props.attempts.filter((a) => !a.isSuccess).length;
     const attempts = props.attempts.length;

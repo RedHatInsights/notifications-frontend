@@ -52,9 +52,7 @@ interface TimeConfigState {
 export const TimeConfigComponent: React.FunctionComponent = () => {
   const [showCustomSelect, setShowCustomSelect] = React.useState(false);
   const [timePref, setTimePref] = React.useState<string | null>();
-  const [timeSelect, setTimeSelect] = React.useState<TimeConfigState | null>(
-    null
-  );
+  const [timeSelect, setTimeSelect] = React.useState<TimeConfigState | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const toggleRef = React.useRef<HTMLButtonElement>(null);
@@ -119,18 +117,13 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
       const targetTimezone = timezones.find((t) => t.text === textContent);
       if (targetTimezone) {
         setTimeSelect((prev) => {
-          const pieces = (prev?.baseCustomTime || '00:00')
-            .split(':')
-            .map((t) => parseInt(t));
+          const pieces = (prev?.baseCustomTime || '00:00').split(':').map((t) => parseInt(t));
           const date = new Date();
           date.setUTCHours(pieces[0], pieces[1]);
           // Going from UTC to the timezone
           const zonedDate = addHours(date, -targetTimezone.offset);
           const utcHours = zonedDate.getUTCHours().toString().padStart(2, '0');
-          const utcMinutes = zonedDate
-            .getUTCMinutes()
-            .toString()
-            .padStart(2, '0');
+          const utcMinutes = zonedDate.getUTCMinutes().toString().padStart(2, '0');
 
           return {
             baseCustomTime: prev?.baseCustomTime || '00:00',
@@ -211,13 +204,11 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
             <Title headingLevel="h2">Action settings</Title>
           </StackItem>
           <StackItem>
-            <Content component={ContentVariants.p}>
-              Daily digest email receipt
-            </Content>
+            <Content component={ContentVariants.p}>Daily digest email receipt</Content>
             <HelperText>
               <HelperTextItem variant="indeterminate">
-                Schedule the time at which to send your account&apos;s daily
-                digest email. All times will be converted to UTC after saving.
+                Schedule the time at which to send your account&apos;s daily digest email. All times
+                will be converted to UTC after saving.
               </HelperTextItem>
             </HelperText>
           </StackItem>
@@ -278,10 +269,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                             <MenuList className={timezoneListClassName}>
                               {timezones.map((tz) => (
                                 // Abbr, value, offset, etc are not unique by themselves
-                                <MenuItem
-                                  onClick={handleTimezoneChange}
-                                  key={tz.text}
-                                >
+                                <MenuItem onClick={handleTimezoneChange} key={tz.text}>
                                   {tz.text}
                                 </MenuItem>
                               ))}
@@ -297,8 +285,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                           onClick={onToggleClick}
                           isExpanded={isOpen}
                         >
-                          {timeSelect?.timezoneText ??
-                            '(UTC-00:00) Universal Time'}
+                          {timeSelect?.timezoneText ?? '(UTC-00:00) Universal Time'}
                         </MenuToggle>
                       }
                       toggleRef={toggleRef}

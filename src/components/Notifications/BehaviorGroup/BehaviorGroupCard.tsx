@@ -111,8 +111,8 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                         System required behavior group
                         <br></br>
                         <br></br>
-                        This group is system generated and can not be edited,
-                        deleted, or removed from being applied to an event
+                        This group is system generated and can not be edited, deleted, or removed
+                        from being applied to an event
                       </div>
                     }
                   >
@@ -122,10 +122,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
               </SplitItem>
               <SplitItem>
                 <Content>
-                  <Content component={ContentVariants.h4}>
-                    {' '}
-                    {props.title}{' '}
-                  </Content>
+                  <Content component={ContentVariants.h4}> {props.title} </Content>
                 </Content>
               </SplitItem>
             </Split>
@@ -137,9 +134,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
   );
 };
 
-const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = (
-  props
-) => {
+const BehaviorGroupCardImpl: React.FunctionComponent<BehaviorGroupImplProps> = (props) => {
   const onClickEdit = React.useCallback(() => {
     const onEdit = props.onEdit;
     if (onEdit) {
@@ -191,13 +186,9 @@ const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
   );
 };
 
-export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = (
-  props
-) => {
+export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = (props) => {
   if (props.behaviorGroup) {
-    return (
-      <BehaviorGroupCardImpl {...props} behaviorGroup={props.behaviorGroup} />
-    );
+    return <BehaviorGroupCardImpl {...props} behaviorGroup={props.behaviorGroup} />;
   }
 
   return <BehaviorGroupCardSkeleton />;

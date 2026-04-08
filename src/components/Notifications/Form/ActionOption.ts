@@ -40,8 +40,7 @@ export class ActionOption {
   toString(): string {
     const actionName = Config.notifications.types[this.notificationType].name;
     if (this.integrationType) {
-      const integrationName =
-        Config.integrations.types[this.integrationType].name;
+      const integrationName = Config.integrations.types[this.integrationType].name;
       return `${actionName}: ${integrationName}`;
     }
 

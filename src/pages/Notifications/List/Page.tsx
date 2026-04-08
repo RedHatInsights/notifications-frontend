@@ -24,12 +24,8 @@ export const NotificationsListPage: React.FunctionComponent = () => {
   const { isFedramp } = useChrome();
   const params = useParams<Record<string, string | undefined>>();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-  const errataNotifications = useFlag(
-    'platform.notifications.errata.userpreferences'
-  );
-  const ansibleAutomation = useFlag(
-    'platform.notifications.ansible-automation'
-  );
+  const errataNotifications = useFlag('platform.notifications.errata.userpreferences');
+  const ansibleAutomation = useFlag('platform.notifications.ansible-automation');
   const bundleList = [
     'rhel',
     'console',
@@ -48,10 +44,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
   const bundle: Facet | BundleStatus = useMemo(() => {
     if (getBundles.payload?.status === 200) {
-      return (
-        getBundles.payload.value.find((b) => b.name === bundleName) ??
-        BundleStatus.NOT_FOUND
-      );
+      return getBundles.payload.value.find((b) => b.name === bundleName) ?? BundleStatus.NOT_FOUND;
     } else if (getBundles.payload) {
       return BundleStatus.FAILED_TO_LOAD;
     }
@@ -92,9 +85,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
 
   const applications: Array<Facet> | null | undefined = useMemo(() => {
     if (getApplications.payload) {
-      return getApplications.payload.status === 200
-        ? getApplications.payload.value
-        : null;
+      return getApplications.payload.status === 200 ? getApplications.payload.value : null;
     }
 
     return undefined;

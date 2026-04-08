@@ -15,9 +15,7 @@ interface UseDeleteModalActionReset {
   type: UseDeleteModalReducerActionType.RESET;
 }
 
-type UseDeleteModalReducerAction<T> =
-  | UseDeleteModalActionDelete<T>
-  | UseDeleteModalActionReset;
+type UseDeleteModalReducerAction<T> = UseDeleteModalActionDelete<T> | UseDeleteModalActionReset;
 
 type UseDeleteModalReducerState<T> =
   | {
@@ -69,14 +67,8 @@ const makeResetAction = (): UseDeleteModalActionReset => ({
   type: UseDeleteModalReducerActionType.RESET,
 });
 
-export const useDeleteModalReducer = <T>(): [
-  UseDeleteModalReducerState<T>,
-  ReducerActions<T>
-] => {
-  const [state, dispatch] = useReducer<ReducerFunction<T>>(
-    reducer,
-    initialState
-  );
+export const useDeleteModalReducer = <T>(): [UseDeleteModalReducerState<T>, ReducerActions<T>] => {
+  const [state, dispatch] = useReducer<ReducerFunction<T>>(reducer, initialState);
 
   const actions = useMemo<ReducerActions<T>>(
     () => ({

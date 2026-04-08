@@ -4,14 +4,11 @@ import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 import { FormTextInput } from '../../../utils/insights-common-typescript';
 
-export const IntegrationTypeGoogleChatForm: React.FunctionComponent<
-  IntegrationTypeForm
-> = (props) => {
+export const IntegrationTypeGoogleChatForm: React.FunctionComponent<IntegrationTypeForm> = (
+  props
+) => {
   return (
-    <div
-      className="pf-c-form"
-      {...getOuiaProps('Integrations/Camel/GoogleChat', props)}
-    >
+    <div className="pf-c-form" {...getOuiaProps('Integrations/Camel/GoogleChat', props)}>
       <FormTextInput
         isRequired={true}
         label="Endpoint URL"

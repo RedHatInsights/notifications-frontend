@@ -47,9 +47,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const [isOrgAdmin, setIsOrgAdmin] = React.useState(null);
   const { auth, isBeta, getBundle } = useChrome();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-  const errataNotifications = useFlag(
-    'platform.notifications.errata.userpreferences'
-  );
+  const errataNotifications = useFlag('platform.notifications.errata.userpreferences');
   React.useEffect(() => {
     const getUser = async () => {
       const {
@@ -79,9 +77,9 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           <FlexItem className="pf-v5-u-align-self-flex-start">
             <PageHeaderTitle title="Notifications" className="pf-v5-u-mb-sm" />
             <p className="pf-v5-u-mb-sm">
-              Receive notifications about events that occur in your console
-              services. You can choose to receive notifications by email, in
-              third-party applications, or from a combination of these methods.
+              Receive notifications about events that occur in your console services. You can choose
+              to receive notifications by email, in third-party applications, or from a combination
+              of these methods.
             </p>
           </FlexItem>
         </Flex>
@@ -93,26 +91,21 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
               <Grid hasGutter>
                 <GridItem sm={12} md={6} lg={8}>
                   <CardTitle>
-                    <Title headingLevel="h2">
-                      Manage events for your organization
-                    </Title>
+                    <Title headingLevel="h2">Manage events for your organization</Title>
                   </CardTitle>
                   <CardBody>
                     <p>
-                      Control which notifications different users within your
-                      organization can receive by creating behavior groups and
-                      associating them with specific events. Users can then
-                      select the event notifications they want to receive and
-                      how to be notified in their{' '}
+                      Control which notifications different users within your organization can
+                      receive by creating behavior groups and associating them with specific events.
+                      Users can then select the event notifications they want to receive and how to
+                      be notified in their{' '}
                       <a
                         href={`${
                           isBeta() ? '/preview' : ''
                         }/${getBundle()}/notifications/user-preferences`}
                         onClick={(e) => {
                           e.preventDefault();
-                          navigate(
-                            `/${getBundle()}/notifications/user-preferences`
-                          );
+                          navigate(`/${getBundle()}/notifications/user-preferences`);
                         }}
                       >
                         Notification Preferences
@@ -130,9 +123,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       size="lg"
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate(
-                          `/${getBundle()}/notifications/configure-events`
-                        );
+                        navigate(`/${getBundle()}/notifications/configure-events`);
                       }}
                     >
                       Configure events
@@ -164,18 +155,16 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       </FlexItem>
                       <FlexItem>
                         <Title headingLevel="h2">
-                          Manage your own notifications with Notification
-                          Preferences
+                          Manage your own notifications with Notification Preferences
                         </Title>
                       </FlexItem>
                     </Flex>
                   </CardTitle>
                   <CardBody>
                     <p>
-                      This service allows you to opt-in and out of receiving
-                      notifications. Your Organization Administrator has
-                      configured which notifications you can or can not receive
-                      in their Settings.
+                      This service allows you to opt-in and out of receiving notifications. Your
+                      Organization Administrator has configured which notifications you can or can
+                      not receive in their Settings.
                     </p>
                   </CardBody>
                   <CardFooter>
@@ -188,9 +177,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       }/${getBundle()}/notifications/user-preferences`}
                       onClick={(e) => {
                         e.preventDefault();
-                        navigate(
-                          `/${getBundle()}/notifications/user-preferences`
-                        );
+                        navigate(`/${getBundle()}/notifications/user-preferences`);
                       }}
                     >
                       Go to Notification Preferences
@@ -208,16 +195,14 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         </Icon>
                       </FlexItem>
                       <FlexItem>
-                        <Title headingLevel="h2">
-                          Monitor all fired events with the Event log
-                        </Title>
+                        <Title headingLevel="h2">Monitor all fired events with the Event log</Title>
                       </FlexItem>
                     </Flex>
                   </CardTitle>
                   <CardBody>
                     <p>
-                      See all the events affecting your organization and view
-                      details around the events fired.
+                      See all the events affecting your organization and view details around the
+                      events fired.
                     </p>
                   </CardBody>
                   <CardFooter>
@@ -250,10 +235,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
               Supporting features
             </Title>
 
-            <DataList
-              aria-label="Supporting features list"
-              className="pf-v5-u-mb-lg"
-            >
+            <DataList aria-label="Supporting features list" className="pf-v5-u-mb-lg">
               <CustomDataListItem
                 icon={IconName.USER}
                 isExpanded
@@ -268,9 +250,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 icon={IconName.RUNNING}
                 heading="Monitor all fired events with the Event log"
                 linkTitle="View Event log"
-                linkTarget={`${
-                  isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/eventlog `}
+                linkTarget={`${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/eventlog `}
                 expandableContent="See all the events occurring in your organization and view details about the triggered events."
               />
               <CustomDataListItem
@@ -280,19 +260,14 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 {...(isSourcesIntegrations && { isRedirect: true })}
                 linkTarget={
                   isSourcesIntegrations
-                    ? `${
-                        isBeta() ? '/preview' : ''
-                      }/settings/sources?category=Communications`
-                    : `${
-                        isBeta() ? '/preview' : ''
-                      }/${getBundle()}/notifications/integrations`
+                    ? `${isBeta() ? '/preview' : ''}/settings/sources?category=Communications`
+                    : `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/integrations`
                 }
                 expandableContent={
                   <span>
-                    The notifications and integrations services work together to
-                    transmit messages to third-party applications, such as
-                    instant messaging platforms and external ticketing systems,
-                    when events occur. Integrations include Splunk, Slack,
+                    The notifications and integrations services work together to transmit messages
+                    to third-party applications, such as instant messaging platforms and external
+                    ticketing systems, when events occur. Integrations include Splunk, Slack,
                     ServiceNow,{' '}
                     <a
                       href={
@@ -324,9 +299,8 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   }/${getBundle()}/notifications/user-preferences?bundle=subscription-services&app=errata-notifications`}
                   expandableContent={
                     <span>
-                      Configure notifications for product advisories that affect
-                      your purchased subscriptions. Managing these notifications
-                      can be done in your{' '}
+                      Configure notifications for product advisories that affect your purchased
+                      subscriptions. Managing these notifications can be done in your{' '}
                       <Button
                         component="a"
                         href={`${
@@ -354,10 +328,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <DataList
-              aria-label="Supporting features list"
-              className="pf-v5-u-mb-lg"
-            >
+            <DataList aria-label="Supporting features list" className="pf-v5-u-mb-lg">
               <CustomDataListItem
                 icon={IconName.BELL}
                 heading="About Notifications"

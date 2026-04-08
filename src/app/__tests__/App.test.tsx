@@ -23,18 +23,14 @@ jest.mock('../../utils/insights-common-typescript', () => {
 });
 
 jest.mock('../../pages/Notifications/List/Page', () => {
-  const MockedRoutes: React.FunctionComponent = () => (
-    <div data-testid="content" />
-  );
+  const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
   return {
     NotificationsListPage: MockedRoutes,
   };
 });
 
 jest.mock('../../pages/Integrations/List/Page', () => {
-  const MockedRoutes: React.FunctionComponent = () => (
-    <div data-testid="content" />
-  );
+  const MockedRoutes: React.FunctionComponent = () => <div data-testid="content" />;
   return {
     IntegrationsListPage: MockedRoutes,
   };
@@ -47,8 +43,7 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
     isBeta: () => false,
     getEnvironment: () => 'bar',
     auth: {
-      getUser: () =>
-        Promise.resolve({ identity: { user: { is_org_admin: true } } }),
+      getUser: () => Promise.resolve({ identity: { user: { is_org_admin: true } } }),
     },
   });
 });
@@ -183,8 +178,6 @@ describe('src/app/App', () => {
       await jest.advanceTimersToNextTimer();
     });
 
-    expect(
-      screen.getByText(/You do not have access to Notifications/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/You do not have access to Notifications/i)).toBeInTheDocument();
   });
 });

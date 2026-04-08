@@ -9,10 +9,7 @@ import * as Redux from 'redux';
 import messages from '../locales/data.json';
 import App from './app/App';
 import { getNotificationsRegistry } from './store/Store';
-import {
-  createFetchingClient,
-  getInsights,
-} from './utils/insights-common-typescript';
+import { createFetchingClient, getInsights } from './utils/insights-common-typescript';
 
 export interface AppEntryProps {
   logger?: Redux.Middleware;
@@ -37,11 +34,7 @@ const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
   }, [props.logger]);
 
   return (
-    <IntlProvider
-      locale={navigator.language.slice(0, 2)}
-      messages={messages}
-      onError={console.log}
-    >
+    <IntlProvider locale={navigator.language.slice(0, 2)} messages={messages} onError={console.log}>
       <Provider store={store}>
         <ClientContextProvider client={client}>
           <App />

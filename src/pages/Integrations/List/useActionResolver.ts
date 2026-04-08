@@ -1,9 +1,6 @@
 import { useCallback } from 'react';
 
-import {
-  IntegrationRow,
-  OnEnable,
-} from '../../../components/Integrations/Table';
+import { IntegrationRow, OnEnable } from '../../../components/Integrations/Table';
 import { UserIntegration } from '../../../types/Integration';
 import { useFlag } from '@unleash/proxy-client-react';
 import { useIntl } from 'react-intl';
@@ -35,9 +32,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
           type: 'edit',
           isDisabled,
           onClick: () => onEdit(integration),
-          description: intl.formatMessage(
-            messages.integrationdropdownEditDescription
-          ),
+          description: intl.formatMessage(messages.integrationdropdownEditDescription),
         },
         ...(integrationTest
           ? [
@@ -45,9 +40,7 @@ export const useActionResolver = (params: ActionResolverParams) => {
                 title: 'Test',
                 isDisabled,
                 onClick: () => onTest(integration),
-                description: intl.formatMessage(
-                  messages.integrationdropdownTestDescription
-                ),
+                description: intl.formatMessage(messages.integrationdropdownTestDescription),
               },
             ]
           : []),

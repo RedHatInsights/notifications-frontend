@@ -1,7 +1,4 @@
-import {
-  componentTypes,
-  validatorTypes,
-} from '@data-driven-forms/react-form-renderer';
+import { componentTypes, validatorTypes } from '@data-driven-forms/react-form-renderer';
 import {
   DETAILS,
   EMAIL_CONFIG,
@@ -31,9 +28,7 @@ const commonFields = (isSlack: boolean, isEdit: boolean, intl: IntlShape) => [
   {
     component: componentTypes.PLAIN_TEXT,
     name: 'integration-details-subtitle',
-    label: `${isEdit ? 'Edit' : 'Enter'} the details ${
-      isEdit ? 'of' : 'for'
-    } your integration.`,
+    label: `${isEdit ? 'Edit' : 'Enter'} the details ${isEdit ? 'of' : 'for'} your integration.`,
     variant: 'p',
   },
   {
@@ -73,11 +68,7 @@ const sslAlert = {
   variant: 'info',
 };
 
-export const detailSteps = (
-  isEdit: boolean,
-  isBehaviorGroupsEnabled: boolean,
-  intl: IntlShape
-) => {
+export const detailSteps = (isEdit: boolean, isBehaviorGroupsEnabled: boolean, intl: IntlShape) => {
   const title = `${isEdit ? 'Edit' : 'Enter'} details`;
   return [
     // REPORTING - SPLUNK, ANSIBLE
@@ -169,8 +160,7 @@ export const detailSteps = (
           component: componentTypes.SELECT,
           name: 'severity',
           label: 'Alert severity',
-          helperText:
-            'Severity of the alert created in PagerDuty when this integration is used.',
+          helperText: 'Severity of the alert created in PagerDuty when this integration is used.',
           isRequired: true,
           simpleValue: true,
           options: [
@@ -230,8 +220,7 @@ export const detailSteps = (
           label: 'Integration name',
           isRequired: true,
           validate: [
-            (value, { id }) =>
-              asyncValidatorDebouncedWrapper(intl)(value, id, intl),
+            (value, { id }) => asyncValidatorDebouncedWrapper(intl)(value, id, intl),
             {
               type: validatorTypes.REQUIRED,
             },
@@ -256,9 +245,7 @@ export const detailSteps = (
         {
           component: componentTypes.PLAIN_TEXT,
           name: 'email-config-subtitle',
-          label: `${
-            isEdit ? 'Edit' : 'Configure'
-          } additional settings for your email integration.`,
+          label: `${isEdit ? 'Edit' : 'Configure'} additional settings for your email integration.`,
           variant: 'p',
         },
         {
@@ -309,8 +296,7 @@ export const detailSteps = (
           name: 'secret-token',
           type: 'text',
           label: 'Secret token',
-          helperText:
-            "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
+          helperText: "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
           isRequired: false,
         },
         sslAlert,

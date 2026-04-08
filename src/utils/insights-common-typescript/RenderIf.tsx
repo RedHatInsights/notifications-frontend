@@ -12,15 +12,11 @@ export interface RenderIfTrueFalse {
 
 const checkRenderIfTrueFalse = (props: RenderIfTrueFalse) => {
   if (props._value === undefined) {
-    throw new Error(
-      'Invalid usage of RenderIf*, must be immediately after a RenderIf'
-    );
+    throw new Error('Invalid usage of RenderIf*, must be immediately after a RenderIf');
   }
 };
 
-export const RenderIfTrue: React.FunctionComponent<RenderIfTrueFalse> = (
-  props
-) => {
+export const RenderIfTrue: React.FunctionComponent<RenderIfTrueFalse> = (props) => {
   checkRenderIfTrueFalse(props);
   if (props._value) {
     return <> {props.children} </>;
@@ -29,9 +25,7 @@ export const RenderIfTrue: React.FunctionComponent<RenderIfTrueFalse> = (
   return null;
 };
 
-export const RenderIfFalse: React.FunctionComponent<RenderIfTrueFalse> = (
-  props
-) => {
+export const RenderIfFalse: React.FunctionComponent<RenderIfTrueFalse> = (props) => {
   checkRenderIfTrueFalse(props);
   if (props._value) {
     return null;
@@ -56,9 +50,7 @@ export const RenderIf: React.FunctionComponent<RenderIfProps> = (props) => {
         }
       );
     } else {
-      throw new Error(
-        'Only RenderIfTrue and RenderIfFalse are accepted Elements in RenderIf'
-      );
+      throw new Error('Only RenderIfTrue and RenderIfFalse are accepted Elements in RenderIf');
     }
   });
 

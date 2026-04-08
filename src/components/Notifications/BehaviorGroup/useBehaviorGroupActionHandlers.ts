@@ -18,16 +18,12 @@ import { RecipientOption } from '../Form/RecipientOption';
 
 export interface UseBehaviorGroupActionHandlers {
   handleActionSelected: (index: number) => (value: ActionOption) => void;
-  handleIntegrationSelected: (
-    index: number
-  ) => (value: RecipientOption) => void;
+  handleIntegrationSelected: (index: number) => (value: RecipientOption) => void;
   handleRecipientSelected: (index: number) => (value: RecipientOption) => void;
   handleRecipientOnClear: (index: number) => () => void;
 }
 
-export type SetActionUpdater = SetStateAction<
-  ReadonlyArray<DeepPartial<Action>>
->;
+export type SetActionUpdater = SetStateAction<ReadonlyArray<DeepPartial<Action>>>;
 
 export const useBehaviorGroupActionHandlers = (
   setActions: (updater: SetActionUpdater) => void
@@ -43,9 +39,7 @@ export const useBehaviorGroupActionHandlers = (
           const row = prev[index];
           row.type = value.notificationType;
           if (value.integrationType) {
-            const rowAsIntegration = row as Draft<
-              DeepPartial<ActionIntegration>
-            >;
+            const rowAsIntegration = row as Draft<DeepPartial<ActionIntegration>>;
             rowAsIntegration.integration = {
               type: value.integrationType,
             };

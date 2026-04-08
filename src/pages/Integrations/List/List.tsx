@@ -6,10 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { AppContext } from '../../../app/AppContext';
 import { IntegrationsEmptyState } from '../../../components/Integrations/EmptyState';
 import { IntegrationFilters } from '../../../components/Integrations/Filters';
-import {
-  IntegrationRow,
-  IntegrationsTable,
-} from '../../../components/Integrations/Table';
+import { IntegrationRow, IntegrationsTable } from '../../../components/Integrations/Table';
 import { IntegrationsToolbar } from '../../../components/Integrations/Toolbar';
 import { useDeleteModalReducer } from '../../../hooks/useDeleteModalReducer';
 import { useFormModalReducer } from '../../../hooks/useFormModalReducer';
@@ -37,11 +34,7 @@ import { useFlag } from '@unleash/proxy-client-react';
 import DopeBox from '../../../components/Integrations/DopeBox';
 import { DataViewIntegrationsTable } from '../../../components/Integrations/IntegrationsTable';
 import { DataViewEventsProvider } from '@patternfly/react-data-view/dist/dynamic/DataViewEventsContext';
-import {
-  Drawer,
-  DrawerContent,
-  DrawerContentBody,
-} from '@patternfly/react-core';
+import { Drawer, DrawerContent, DrawerContentBody } from '@patternfly/react-core';
 import IntegrationsDrawer from '../../../components/Integrations/IntegrationsDrawer';
 import { useNotification } from '../../../utils/AlertUtils';
 import {
@@ -71,15 +64,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 }: IntegrationListProps) => {
   const dispatch = useDispatch();
   const wizardEnabled = useFlag('insights.integrations.wizard');
-  const isBehaviorGroupsEnabled = useFlag(
-    'platform.integrations.behavior-groups-move'
-  );
+  const isBehaviorGroupsEnabled = useFlag('platform.integrations.behavior-groups-move');
   const { savedNotificationScope } = useSelector(selector);
-  const [selectedIntegration, setSelectedIntegration] =
-    useState<UserIntegration>();
+  const [selectedIntegration, setSelectedIntegration] = useState<UserIntegration>();
   const [isTestModalOpen, setIsTestModalOpen] = useState(true);
-  const [focusedIntegration, setFocusedIntegration] =
-    useState<IntegrationRow>();
+  const [focusedIntegration, setFocusedIntegration] = useState<IntegrationRow>();
   const drawerRef = React.useRef<HTMLDivElement>(null);
   const {
     rbac: { canWriteIntegrationsEndpoints },
@@ -88,16 +77,12 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const { addDangerNotification } = useNotification();
   const integrationFilter = useIntegrationFilter();
   const allUserIntegrations = useIntegrations(category);
-  const isEmailIntegrationEnabled = useFlag(
-    'platform.notifications.email.integration'
-  );
+  const isEmailIntegrationEnabled = useFlag('platform.notifications.email.integration');
 
   // Filter out email integration if feature flag is disabled
   const userIntegrations = React.useMemo(() => {
     if (isEmailIntegrationEnabled === false) {
-      return allUserIntegrations.filter(
-        (integration) => integration !== UserIntegrationType.EMAIL
-      );
+      return allUserIntegrations.filter((integration) => integration !== UserIntegrationType.EMAIL);
     }
     return allUserIntegrations;
   }, [allUserIntegrations, isEmailIntegrationEnabled]);
@@ -114,19 +99,14 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
         filter.and('name', Operator.EQUAL, name);
       }
 
-      return filter.and(
-        'type',
-        Operator.EQUAL,
-        userIntegrations as Array<string>
-      );
+      return filter.and('type', Operator.EQUAL, userIntegrations as Array<string>);
     },
     [userIntegrations]
   );
 
   const [modalIsOpenState, modalIsOpenActions] =
     useFormModalReducer<UserIntegration>(userIntegrationCopier);
-  const [deleteModalState, deleteModalActions] =
-    useDeleteModalReducer<UserIntegration>();
+  const [deleteModalState, deleteModalActions] = useDeleteModalReducer<UserIntegration>();
 
   const sort = useSort();
 
@@ -152,11 +132,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     };
   }, [integrationsQuery.payload]);
 
-  const integrationRows = useIntegrationRows(
-    integrations.data,
-    dispatch,
-    savedNotificationScope
-  );
+  const integrationRows = useIntegrationRows(integrations.data, dispatch, savedNotificationScope);
 
   const focusedIntegrationEnabled = integrationRows.rows.find(
     ({ id }) => id === focusedIntegration?.id
@@ -164,9 +140,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
 
   React.useEffect(() => {
     if (focusedIntegration) {
-      setFocusedIntegration(
-        integrationRows.rows.find(({ id }) => id === focusedIntegration?.id)
-      );
+      setFocusedIntegration(integrationRows.rows.find(({ id }) => id === focusedIntegration?.id));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [focusedIntegrationEnabled]);
@@ -202,11 +176,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       const query = exportIntegrationsQuery.query;
       const exporter = integrationExporterFactory(type);
       const exportedIntegrations: Array<UserIntegration> = [];
-      let page = Page.of(
-        1,
-        100,
-        new Filter().and('type', Operator.EQUAL, 'webhook')
-      );
+      let page = Page.of(1, 100, new Filter().and('type', Operator.EQUAL, 'webhook'));
       // eslint-disable-next-line no-constant-condition
       while (true) {
         const data = await query(page);
@@ -236,9 +206,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
       if (exportedIntegrations) {
         inBrowserDownload(
           exporter.export(exportedIntegrations),
-          `integrations-${format(new Date(Date.now()), 'y-dd-MM')}.${
-            exporter.type
-          }`
+          `integrations-${format(new Date(Date.now()), 'y-dd-MM')}.${exporter.type}`
         );
       }
     },
@@ -297,20 +265,14 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     <>
       {integrationsEmpty && (
         <IntegrationsEmptyState
-          onAddIntegration={
-            canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined
-          }
+          onAddIntegration={canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined}
         />
       )}
       {!integrationsEmpty && (
         <>
           <DopeBox category={category} />
           <IntegrationsToolbar
-            onAddIntegration={
-              canWriteIntegrationsEndpoints
-                ? onAddIntegrationClicked
-                : undefined
-            }
+            onAddIntegration={canWriteIntegrationsEndpoints ? onAddIntegrationClicked : undefined}
             onExport={onExport}
             filters={integrationFilter.filters}
             setFilters={integrationFilter.setFilters}
@@ -328,11 +290,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                 loadingCount={loadingCount}
                 integrations={integrationRows.rows}
                 onCollapse={integrationRows.onCollapse}
-                onEnable={
-                  canWriteIntegrationsEndpoints
-                    ? integrationRows.onEnable
-                    : undefined
-                }
+                onEnable={canWriteIntegrationsEndpoints ? integrationRows.onEnable : undefined}
                 actionResolver={actionResolver}
                 onSort={sort.onSort}
                 sortBy={sort.sortBy}
@@ -349,8 +307,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                       <IntegrationsDrawer
                         actionResolver={actionResolver}
                         selectedIndex={integrationRows.rows?.findIndex(
-                          ({ id }) =>
-                            focusedIntegration && id === focusedIntegration.id
+                          ({ id }) => focusedIntegration && id === focusedIntegration.id
                         )}
                         selectedIntegration={focusedIntegration}
                         setSelectedIntegration={setFocusedIntegration}
@@ -364,9 +321,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
                         integrations={integrationRows.rows}
                         onCollapse={integrationRows.onCollapse}
                         onEnable={
-                          canWriteIntegrationsEndpoints
-                            ? integrationRows.onEnable
-                            : undefined
+                          canWriteIntegrationsEndpoints ? integrationRows.onEnable : undefined
                         }
                         actionResolver={actionResolver}
                         onSort={sort.onSort}

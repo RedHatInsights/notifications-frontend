@@ -1,18 +1,7 @@
 import { Button, ButtonVariant, GridItem } from '@patternfly/react-core';
 import { MinusCircleIcon, PlusCircleIcon } from '@patternfly/react-icons';
-import {
-  IActions,
-  ICell,
-  IRow,
-  IRowData,
-  TableVariant,
-  cellWidth,
-} from '@patternfly/react-table';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-} from '@patternfly/react-table/deprecated';
+import { IActions, ICell, IRow, IRowData, TableVariant, cellWidth } from '@patternfly/react-table';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table/deprecated';
 import { important } from 'csx';
 import { FieldArrayRenderProps, FormikProps } from 'formik';
 import produce, { Draft, castDraft } from 'immer';
@@ -99,11 +88,7 @@ const toTableRows = (
   touched: any,
   selectedNotifications: ReadonlyArray<NotificationType>,
   rowHandlers: UseBehaviorGroupActionHandlers,
-  setFieldTouched: (
-    field: string,
-    isTouched?: boolean,
-    shouldValidate?: boolean
-  ) => void
+  setFieldTouched: (field: string, isTouched?: boolean, shouldValidate?: boolean) => void
 ): Array<IRow> => {
   return actions.map((action, index) => {
     let error: string | undefined = undefined;
@@ -166,9 +151,9 @@ const toTableRows = (
 
 const emptySpan = () => <span />;
 
-export const BehaviorGroupFormActionsTable: React.FunctionComponent<
-  BehaviorGroupFormTableProps
-> = (props) => {
+export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGroupFormTableProps> = (
+  props
+) => {
   const { values, setValues, errors, touched, setFieldTouched } = props.form;
   const actions = React.useMemo<ReadonlyArray<Action | undefined>>(
     () => values.actions ?? ([] as ReadonlyArray<Action>),
@@ -193,9 +178,7 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<
         produce((prev) => {
           const form = prev as Draft<FormType>;
           if (updater instanceof Function) {
-            form.actions = castDraft(
-              updater(form.actions as ReadonlyArray<DeepPartial<Action>>)
-            );
+            form.actions = castDraft(updater(form.actions as ReadonlyArray<DeepPartial<Action>>));
           } else {
             form.actions = castDraft(updater);
           }
@@ -229,14 +212,7 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<
         rowHandlers,
         setFieldTouched
       ),
-    [
-      actions,
-      errorActions,
-      touchedActions,
-      selectedNotifications,
-      rowHandlers,
-      setFieldTouched,
-    ]
+    [actions, errorActions, touchedActions, selectedNotifications, rowHandlers, setFieldTouched]
   );
 
   const actionResolver = React.useCallback(

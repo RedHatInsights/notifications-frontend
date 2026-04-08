@@ -44,14 +44,11 @@ function isEventReadonly(
   return Object.values(data).every(
     (item) =>
       isEvent(item) &&
-      Object.values(item).every((event) =>
-        Object.prototype.hasOwnProperty.call(event, 'id')
-      )
+      Object.values(item).every((event) => Object.prototype.hasOwnProperty.call(event, 'id'))
   );
 }
 
-export interface SelectableTableProps<T extends TableRow>
-  extends UseFieldApiProps<T[]> {
+export interface SelectableTableProps<T extends TableRow> extends UseFieldApiProps<T[]> {
   name: string;
   data?: ReadonlyArray<T>;
   columns: { name: string; key: string }[];
@@ -72,6 +69,30 @@ interface EventTypeFromGroup {
   id: string;
   isSelected: boolean;
 }
+
+const createEventTypeMapping = (event: EventTypeFromGroup): EventTypeMapping => ({
+  eventTypeDisplayName: event.display_name,
+  applicationDisplayName: event.application.display_name,
+  description: event.description,
+  id: event.id,
+  isSelected: true,
+});
+
+const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
+  return events.reduce(
+    (acc, event) => {
+      const bundleName = event.bundle.display_name as EventBundle;
+      return {
+        ...acc,
+        [bundleName]: {
+          ...acc[bundleName],
+          [event.id]: createEventTypeMapping(event),
+        },
+      };
+    },
+    { ...BUNDLE_DEFAULTS }
+  );
+};
 
 const SelectableTable = (props) => {
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
@@ -95,36 +116,8 @@ const SelectableTable = (props) => {
   const currBundle = allBundles?.find(({ name }) => name === productFamily);
 
   if (currBundle?.displayName && isEventReadonly(input.value)) {
-    value = Object.values(
-      input.value?.[currBundle?.displayName] || {}
-    ) as readonly EventType[];
+    value = Object.values(input.value?.[currBundle?.displayName] || {}) as readonly EventType[];
   }
-
-  const createEventTypeMapping = (
-    event: EventTypeFromGroup
-  ): EventTypeMapping => ({
-    eventTypeDisplayName: event.display_name,
-    applicationDisplayName: event.application.display_name,
-    description: event.description,
-    id: event.id,
-    isSelected: true,
-  });
-
-  const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
-    return events.reduce(
-      (acc, event) => {
-        const bundleName = event.bundle.display_name as EventBundle;
-        return {
-          ...acc,
-          [bundleName]: {
-            ...acc[bundleName],
-            [event.id]: createEventTypeMapping(event),
-          },
-        };
-      },
-      { ...BUNDLE_DEFAULTS }
-    );
-  };
 
   React.useEffect(() => {
     if (!integrationId) {
@@ -153,7 +146,7 @@ const SelectableTable = (props) => {
     };
 
     getEventData();
-  }, [integrationId]);
+  }, [integrationId, input]);
 
   return currBundle && loaded ? (
     <EventTypes
@@ -175,14 +168,10 @@ const SelectableTable = (props) => {
     />
   ) : (
     <Bullseye>
-      <EmptyState
-        headingLevel="h4"
-        icon={CubesIcon}
-        titleText="Select product family"
-      >
+      <EmptyState headingLevel="h4" icon={CubesIcon} titleText="Select product family">
         <EmptyStateBody>
-          Before you can assign events to integration you have to select from
-          which bundle events should be assignable.
+          Before you can assign events to integration you have to select from which bundle events
+          should be assignable.
         </EmptyStateBody>
       </EmptyState>
     </Bullseye>
@@ -190,9 +179,7 @@ const SelectableTable = (props) => {
 };
 
 const SelectableTableWrapper = (props) => (
-  <FormSpy subscription={{ values: true }}>
-    {() => <SelectableTable {...props} />}
-  </FormSpy>
+  <FormSpy subscription={{ values: true }}>{() => <SelectableTable {...props} />}</FormSpy>
 );
 
 export default SelectableTableWrapper;

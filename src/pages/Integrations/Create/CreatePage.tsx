@@ -35,9 +35,9 @@ interface AddNotificationBodyContainer {
   savedNotificationScope: SavedNotificationScopeState;
 }
 
-const AddNotificationBodyContainer: React.FunctionComponent<
-  AddNotificationBodyContainer
-> = (props) => {
+const AddNotificationBodyContainer: React.FunctionComponent<AddNotificationBodyContainer> = (
+  props
+) => {
   const switchIntegrationEnabledStatus = useSwitchIntegrationEnabledStatus();
 
   const onClick = React.useCallback((): void => {
@@ -49,27 +49,17 @@ const AddNotificationBodyContainer: React.FunctionComponent<
       const integration = savedNotificationScope.integration;
       mutate(integration).then((response) => {
         if (!response.error) {
-          reduxDispatch(
-            SavedNotificationScopeActions.finish(!integration.isEnabled)
-          );
+          reduxDispatch(SavedNotificationScopeActions.finish(!integration.isEnabled));
         } else {
-          reduxDispatch(
-            SavedNotificationScopeActions.finish(integration.isEnabled)
-          );
+          reduxDispatch(SavedNotificationScopeActions.finish(integration.isEnabled));
         }
       });
     }
-  }, [
-    switchIntegrationEnabledStatus.mutate,
-    props.reduxDispatch,
-    props.savedNotificationScope,
-  ]);
+  }, [switchIntegrationEnabledStatus.mutate, props.reduxDispatch, props.savedNotificationScope]);
 
   React.useEffect(() => {
     const reduxDispatch = props.reduxDispatch;
-    reduxDispatch(
-      SavedNotificationScopeActions.setIntegration(props.integration)
-    );
+    reduxDispatch(SavedNotificationScopeActions.setIntegration(props.integration));
     return () => {
       reduxDispatch(SavedNotificationScopeActions.unset());
     };
@@ -116,8 +106,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = (props) => {
             response.payload?.type === 'Integration'
               ? {
                   ...(response.payload.value as Integration),
-                  type: response.payload.value
-                    .type as unknown as UserIntegrationType,
+                  type: response.payload.value.type as unknown as UserIntegrationType,
                 }
               : (integration as IntegrationRef);
 
@@ -127,9 +116,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = (props) => {
 
           addSuccessNotification(
             title,
-            <ConnectedAddNotificationBodyContainer
-              integration={savedIntegration}
-            />,
+            <ConnectedAddNotificationBodyContainer integration={savedIntegration} />,
             true
           );
 
@@ -149,20 +136,14 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = (props) => {
         return {
           title: 'Integration failed to update',
           description: (
-            <p>
-              There was an error trying to update the Integration. Please try
-              again.
-            </p>
+            <p>There was an error trying to update the Integration. Please try again.</p>
           ),
         };
       } else {
         return {
           title: 'Failed to create Integration',
           description: (
-            <p>
-              There was an error trying to create the Integration. Please try
-              again.
-            </p>
+            <p>There was an error trying to create the Integration. Please try again.</p>
           ),
         };
       }

@@ -10,10 +10,7 @@ import {
 import React, { Fragment } from 'react';
 import { EVENT_TYPES_TABLE, INTEGRATION_TYPE } from './helpers';
 import { defaultIconList } from '../../../config/Config';
-import {
-  IntegrationCategory,
-  IntegrationType,
-} from '../../../types/Integration';
+import { IntegrationCategory, IntegrationType } from '../../../types/Integration';
 import './review.scss';
 import { EventType } from '../../../types/Notification';
 import { useRbacGroups } from '../../../app/rbac/RbacGroupContext';
@@ -29,9 +26,7 @@ const getFields = (fields) =>
 const valueMapper = (category, value, groups) => {
   return {
     [INTEGRATION_TYPE]: {
-      value:
-        defaultIconList[category]?.[value as IntegrationType]?.product_name ||
-        value,
+      value: defaultIconList[category]?.[value as IntegrationType]?.product_name || value,
     },
     [EVENT_TYPES_TABLE]: {
       value: (
@@ -44,12 +39,8 @@ const valueMapper = (category, value, groups) => {
           </GridItem>
           {Object.values(value).map((item, index) => (
             <Fragment key={index}>
-              <GridItem span={6}>
-                {(item as EventType).eventTypeDisplayName}
-              </GridItem>
-              <GridItem span={6}>
-                {(item as EventType).applicationDisplayName}
-              </GridItem>
+              <GridItem span={6}>{(item as EventType).eventTypeDisplayName}</GridItem>
+              <GridItem span={6}>{(item as EventType).applicationDisplayName}</GridItem>
             </Fragment>
           ))}
         </Grid>
@@ -61,9 +52,7 @@ const valueMapper = (category, value, groups) => {
           return 'None selected';
         }
 
-        const selectedGroups = groups.filter((group) =>
-          value.includes(group.id)
-        );
+        const selectedGroups = groups.filter((group) => value.includes(group.id));
 
         return selectedGroups.length > 0
           ? selectedGroups.map((group) => group.name).join(', ')
@@ -115,24 +104,14 @@ interface ReviewProps {
   name: string;
 }
 
-const Review: React.FunctionComponent<ReviewProps> = ({
-  category,
-}: ReviewProps) => {
+const Review: React.FunctionComponent<ReviewProps> = ({ category }: ReviewProps) => {
   const formOptions = useFormApi();
   const { groups } = useRbacGroups();
   const values = formOptions.getState().values;
-  const labelsWithValues = mapFieldValues(
-    values,
-    formOptions.schema.fields,
-    category,
-    groups
-  );
+  const labelsWithValues = mapFieldValues(values, formOptions.schema.fields, category, groups);
 
   return (
-    <DescriptionList
-      isHorizontal
-      className="src-c-wizard__summary-description-list"
-    >
+    <DescriptionList isHorizontal className="src-c-wizard__summary-description-list">
       {labelsWithValues.map((field) => (
         <DescriptionListGroup key={field.name}>
           <DescriptionListTerm>{field.label}</DescriptionListTerm>

@@ -71,10 +71,7 @@ const bundle: Facet = {
   name: 'rhel',
 };
 
-const getNotifications = (
-  application: Facet,
-  count: number
-): Array<NotificationType> =>
+const getNotifications = (application: Facet, count: number): Array<NotificationType> =>
   [...Array(count).keys()].map((i) => ({
     notification: {
       id: `${bundle.id}.${application.id}.notif-${i}`,
@@ -121,8 +118,7 @@ const mockEnvironment = (env: Environment) => {
   mockInsights({
     chrome: {
       ...getInsights().chrome,
-      getEnvironment: () =>
-        insightsEnv as ReturnType<InsightsType['chrome']['getEnvironment']>,
+      getEnvironment: () => insightsEnv as ReturnType<InsightsType['chrome']['getEnvironment']>,
       isProd,
       isBeta: () => isBeta,
     },
@@ -202,163 +198,160 @@ const mockEventTypes = (eventTypeId: string = defaultEventTypeId) => {
 };
 
 const mockBehaviorGroup = () => {
-  fetchMock.get(
-    '/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups',
-    {
-      body: [
-        {
-          created: '2021-05-05T18:14:46.618528',
-          id: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
-          display_name: 'Stuff',
-          bundle_id: 'rhel',
-          actions: [
-            {
-              created: '2021-05-05T18:14:47.291189',
-              id: {
-                behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
-                endpointId: 'ea9cbec3-9ac6-42bb-9e70-7a73e1eeb673',
-              },
-              endpoint: {
-                created: '2021-05-05T18:14:46.974783',
-                id: 'ea9cbec3-9ac6-42bb-9e70-7a73e1eeb673',
-                name: 'Email subscription',
-                description: '',
-                enabled: true,
-                type: 'email_subscription',
-                properties: {
-                  only_admins: false,
-                  group_id: undefined,
-                  ignore_preferences: false,
-                },
+  fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
+    body: [
+      {
+        created: '2021-05-05T18:14:46.618528',
+        id: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
+        display_name: 'Stuff',
+        bundle_id: 'rhel',
+        actions: [
+          {
+            created: '2021-05-05T18:14:47.291189',
+            id: {
+              behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
+              endpointId: 'ea9cbec3-9ac6-42bb-9e70-7a73e1eeb673',
+            },
+            endpoint: {
+              created: '2021-05-05T18:14:46.974783',
+              id: 'ea9cbec3-9ac6-42bb-9e70-7a73e1eeb673',
+              name: 'Email subscription',
+              description: '',
+              enabled: true,
+              type: 'email_subscription',
+              properties: {
+                only_admins: false,
+                group_id: undefined,
+                ignore_preferences: false,
               },
             },
-            {
-              created: '2021-05-05T21:42:58.005847',
-              id: {
-                behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
-                endpointId: '89025967-e843-4a84-8dbc-87f26cb8e5a6',
-              },
-              endpoint: {
-                created: '2021-05-04T22:48:55.579464',
-                id: '89025967-e843-4a84-8dbc-87f26cb8e5a6',
-                name: 'Webhook 1',
-                description: '',
-                enabled: true,
-                type: 'webhook',
-                properties: {
-                  url: 'https://webhook.site/1510a88f-ca26-4938-b29d-3b0ad85ae705',
-                  method: 'POST',
-                  disable_ssl_verification: false,
-                  secret_token: null,
-                  basic_authentication: null,
-                },
+          },
+          {
+            created: '2021-05-05T21:42:58.005847',
+            id: {
+              behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
+              endpointId: '89025967-e843-4a84-8dbc-87f26cb8e5a6',
+            },
+            endpoint: {
+              created: '2021-05-04T22:48:55.579464',
+              id: '89025967-e843-4a84-8dbc-87f26cb8e5a6',
+              name: 'Webhook 1',
+              description: '',
+              enabled: true,
+              type: 'webhook',
+              properties: {
+                url: 'https://webhook.site/1510a88f-ca26-4938-b29d-3b0ad85ae705',
+                method: 'POST',
+                disable_ssl_verification: false,
+                secret_token: null,
+                basic_authentication: null,
               },
             },
-            {
-              created: '2021-05-05T21:42:58.007177',
-              id: {
-                behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
-                endpointId: '116979f1-0e1c-4dbe-add0-74ec623bfcca',
-              },
-              endpoint: {
-                created: '2021-05-04T22:49:01.19272',
-                id: '116979f1-0e1c-4dbe-add0-74ec623bfcca',
-                name: 'Webhook 2',
-                description: '',
-                enabled: true,
-                type: 'webhook',
-                properties: {
-                  url: 'https://webhook.site/1510a88f-ca26-4938-b29d-3b0ad85ae705',
-                  method: 'POST',
-                  disable_ssl_verification: false,
-                  secret_token: null,
-                  basic_authentication: null,
-                },
+          },
+          {
+            created: '2021-05-05T21:42:58.007177',
+            id: {
+              behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
+              endpointId: '116979f1-0e1c-4dbe-add0-74ec623bfcca',
+            },
+            endpoint: {
+              created: '2021-05-04T22:49:01.19272',
+              id: '116979f1-0e1c-4dbe-add0-74ec623bfcca',
+              name: 'Webhook 2',
+              description: '',
+              enabled: true,
+              type: 'webhook',
+              properties: {
+                url: 'https://webhook.site/1510a88f-ca26-4938-b29d-3b0ad85ae705',
+                method: 'POST',
+                disable_ssl_verification: false,
+                secret_token: null,
+                basic_authentication: null,
               },
             },
-            {
-              created: '2021-05-05T23:07:12.091362',
-              id: {
-                behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
-                endpointId: '3a23c473-b376-431f-9a07-74dbe980107e',
-              },
-              endpoint: {
-                created: '2021-05-04T22:49:06.040102',
-                id: '3a23c473-b376-431f-9a07-74dbe980107e',
-                name: 'Slack',
-                description: '',
-                enabled: true,
-                type: 'webhook',
-                properties: {
-                  url: 'https://webhook.site/1510a88f-ca26-4938-b29d-3b0ad85ae705',
-                  method: 'POST',
-                  disable_ssl_verification: false,
-                  secret_token: null,
-                  basic_authentication: null,
-                },
+          },
+          {
+            created: '2021-05-05T23:07:12.091362',
+            id: {
+              behaviorGroupId: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
+              endpointId: '3a23c473-b376-431f-9a07-74dbe980107e',
+            },
+            endpoint: {
+              created: '2021-05-04T22:49:06.040102',
+              id: '3a23c473-b376-431f-9a07-74dbe980107e',
+              name: 'Slack',
+              description: '',
+              enabled: true,
+              type: 'webhook',
+              properties: {
+                url: 'https://webhook.site/1510a88f-ca26-4938-b29d-3b0ad85ae705',
+                method: 'POST',
+                disable_ssl_verification: false,
+                secret_token: null,
+                basic_authentication: null,
               },
             },
-          ],
-        },
-        {
-          created: '2021-05-05T18:14:40.698201',
-          id: '412e37bf-b669-46da-8e19-c031c40df410',
-          display_name: 'more',
-          bundle_id: 'rhel',
-          actions: [
-            {
-              created: '2021-05-05T18:14:41.406439',
-              id: {
-                behaviorGroupId: '412e37bf-b669-46da-8e19-c031c40df410',
-                endpointId: '128e2ef3-9b2e-43cc-b97e-bbec91b643f4',
-              },
-              endpoint: {
-                created: '2021-05-05T18:14:41.064672',
-                id: '128e2ef3-9b2e-43cc-b97e-bbec91b643f4',
-                name: 'Email subscription',
-                description: '',
-                enabled: true,
-                type: 'email_subscription',
-                properties: {
-                  only_admins: false,
-                  group_id: undefined,
-                  ignore_preferences: false,
-                },
+          },
+        ],
+      },
+      {
+        created: '2021-05-05T18:14:40.698201',
+        id: '412e37bf-b669-46da-8e19-c031c40df410',
+        display_name: 'more',
+        bundle_id: 'rhel',
+        actions: [
+          {
+            created: '2021-05-05T18:14:41.406439',
+            id: {
+              behaviorGroupId: '412e37bf-b669-46da-8e19-c031c40df410',
+              endpointId: '128e2ef3-9b2e-43cc-b97e-bbec91b643f4',
+            },
+            endpoint: {
+              created: '2021-05-05T18:14:41.064672',
+              id: '128e2ef3-9b2e-43cc-b97e-bbec91b643f4',
+              name: 'Email subscription',
+              description: '',
+              enabled: true,
+              type: 'email_subscription',
+              properties: {
+                only_admins: false,
+                group_id: undefined,
+                ignore_preferences: false,
               },
             },
-          ],
-        },
-        {
-          created: '2021-05-05T18:14:33.482023',
-          id: '6945a772-9b37-4748-b4fe-01a33472ff17',
-          display_name: 'xyz',
-          bundle_id: 'rhel',
-          actions: [
-            {
-              created: '2021-05-05T18:14:34.198221',
-              id: {
-                behaviorGroupId: '6945a772-9b37-4748-b4fe-01a33472ff17',
-                endpointId: '2dce7e14-d0bc-4e07-a8b6-835fe61709cb',
-              },
-              endpoint: {
-                created: '2021-05-05T18:14:33.854982',
-                id: '2dce7e14-d0bc-4e07-a8b6-835fe61709cb',
-                name: 'Email subscription',
-                description: '',
-                enabled: true,
-                type: 'email_subscription',
-                properties: {
-                  only_admins: false,
-                  group_id: undefined,
-                  ignore_preferences: false,
-                },
+          },
+        ],
+      },
+      {
+        created: '2021-05-05T18:14:33.482023',
+        id: '6945a772-9b37-4748-b4fe-01a33472ff17',
+        display_name: 'xyz',
+        bundle_id: 'rhel',
+        actions: [
+          {
+            created: '2021-05-05T18:14:34.198221',
+            id: {
+              behaviorGroupId: '6945a772-9b37-4748-b4fe-01a33472ff17',
+              endpointId: '2dce7e14-d0bc-4e07-a8b6-835fe61709cb',
+            },
+            endpoint: {
+              created: '2021-05-05T18:14:33.854982',
+              id: '2dce7e14-d0bc-4e07-a8b6-835fe61709cb',
+              name: 'Email subscription',
+              description: '',
+              enabled: true,
+              type: 'email_subscription',
+              properties: {
+                only_admins: false,
+                group_id: undefined,
+                ignore_preferences: false,
               },
             },
-          ],
-        },
-      ] as Array<Schemas.BehaviorGroup>,
-    }
-  );
+          },
+        ],
+      },
+    ] as Array<Schemas.BehaviorGroup>,
+  });
 };
 
 const defaultGetEventTypesUrlMatcher = (url: string) => {
@@ -369,21 +362,18 @@ const mockBehaviorGroupsOfEventTypes = (
   eventTypeId: string = defaultEventTypeId,
   returnEmpty?: boolean
 ) => {
-  fetchMock.get(
-    `/api/notifications/v1.0/notifications/eventTypes/${eventTypeId}/behaviorGroups`,
-    {
-      body: returnEmpty
-        ? []
-        : [
-            {
-              bundle_id: 'rhel',
-              created: '2021-05-04T22:08:07.268356',
-              display_name: 'Behavior group 4',
-              id: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
-            },
-          ],
-    }
-  );
+  fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${eventTypeId}/behaviorGroups`, {
+    body: returnEmpty
+      ? []
+      : [
+          {
+            bundle_id: 'rhel',
+            created: '2021-05-04T22:08:07.268356',
+            display_name: 'Behavior group 4',
+            id: 'c06e3a00-3005-4576-b45a-94cd1d2337f2',
+          },
+        ],
+  });
 };
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
@@ -432,9 +422,7 @@ describe('src/pages/Notifications/List/Page', () => {
     );
 
     await waitForAsyncEvents();
-    expect(
-      screen.getByText(/Error: Unable to load bundle information/i)
-    ).toBeInTheDocument();
+    expect(screen.getByText(/Error: Unable to load bundle information/i)).toBeInTheDocument();
     err.mockRestore();
   });
 
@@ -443,10 +431,7 @@ describe('src/pages/Notifications/List/Page', () => {
     mockFacets(new Promise((_resolve) => (resolve = _resolve)), null);
     render(
       <VerboseErrorBoundary>
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />
+        <BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />
       </VerboseErrorBoundary>,
       {
         wrapper: getConfiguredAppWrapper({
@@ -467,10 +452,7 @@ describe('src/pages/Notifications/List/Page', () => {
 
     render(
       <VerboseErrorBoundary>
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />
+        <BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />
       </VerboseErrorBoundary>,
       {
         wrapper: getConfiguredAppWrapper({
@@ -490,15 +472,9 @@ describe('src/pages/Notifications/List/Page', () => {
       const notifications = getNotifications(policiesApplication, 3);
       mockNotifications(notifications);
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
       await waitForAsyncEvents();
 
       const table = ouiaSelectors
@@ -517,25 +493,16 @@ describe('src/pages/Notifications/List/Page', () => {
         body: [] as Array<Schemas.Endpoint>,
       });
       mockEventTypes(defaultEventTypeId);
-      fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-        {
-          body: [],
-        }
-      );
+      fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
+        body: [],
+      });
       mockFacets();
       const notifications = getNotifications(policiesApplication, 3);
       mockNotifications(notifications);
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
       await waitForAsyncEvents();
 
       await waitForAsyncEvents();
@@ -558,12 +525,9 @@ describe('src/pages/Notifications/List/Page', () => {
         body: [] as Array<Schemas.Endpoint>,
       });
       mockEventTypes(defaultEventTypeId);
-      fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-        {
-          body: [],
-        }
-      );
+      fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
+        body: [],
+      });
       mockFacets();
       mockBehaviorGroup();
       mockBehaviorGroupsOfEventTypes();
@@ -577,15 +541,9 @@ describe('src/pages/Notifications/List/Page', () => {
       const notifications = getNotifications(policiesApplication, 3);
       mockNotifications(notifications);
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
       await waitForAsyncEvents();
 
       const table = ouiaSelectors
@@ -620,29 +578,20 @@ describe('src/pages/Notifications/List/Page', () => {
     mockBehaviorGroupsOfEventTypes();
     mockNotifications(notifications);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper({
-          appContext: {
-            rbac: {
-              canWriteIntegrationsEndpoints: false,
-              canWriteNotifications: false,
-            },
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper({
+        appContext: {
+          rbac: {
+            canWriteIntegrationsEndpoints: false,
+            canWriteNotifications: false,
           },
-        }),
-      }
-    );
+        },
+      }),
+    });
     await waitForAsyncEvents();
 
     expect(
-      getByLabelText(
-        ouiaSelectors.getByOuia('Notifications/Notifications/Table'),
-        /edit/i
-      )
+      getByLabelText(ouiaSelectors.getByOuia('Notifications/Notifications/Table'), /edit/i)
     ).toBeDisabled();
   });
 
@@ -650,89 +599,54 @@ describe('src/pages/Notifications/List/Page', () => {
     const notifications = getNotifications(policiesApplication, 3);
     mockNotifications(notifications);
 
-    render(
-      <BundlePageBehaviorGroupContent
-        applications={applications}
-        bundle={bundle}
-      />,
-      {
-        wrapper: getConfiguredAppWrapper(),
-      }
-    );
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
     await waitForAsyncEvents();
 
     expect(
-      getAllByLabelText(
-        ouiaSelectors.getByOuia('Notifications/Notifications/Table'),
-        /edit/i
-      )[0]
+      getAllByLabelText(ouiaSelectors.getByOuia('Notifications/Notifications/Table'), /edit/i)[0]
     ).toBeEnabled();
   });
 
   describe('Behavior groups', () => {
     it('Loads correctly on empty', async () => {
-      fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-        {
-          body: [],
-        }
-      );
+      fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
+        body: [],
+      });
       mockEventTypes(defaultEventTypeId);
       mockFacets();
       mockBehaviorGroupsOfEventTypes();
-      fetchMock.get(
-        '/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups',
-        {
-          body: [],
-        }
-      );
+      fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
+        body: [],
+      });
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
 
       await waitForAsyncEvents();
       const behaviorGroupTab = getAllByRole(document.body, 'tab');
-      expect(
-        getAllByText(behaviorGroupTab[1], 'Behavior Groups').length
-      ).toBeGreaterThan(0);
+      expect(getAllByText(behaviorGroupTab[1], 'Behavior Groups').length).toBeGreaterThan(0);
     });
 
     it('Create behavior group when there are no behavior groups', async () => {
       fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
         body: [] as Array<Schemas.Endpoint>,
       });
-      fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-        {
-          body: [],
-        }
-      );
+      fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
+        body: [],
+      });
       mockEventTypes();
       mockFacets();
-      fetchMock.get(
-        '/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups',
-        {
-          body: [],
-        }
-      );
+      fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', {
+        body: [],
+      });
       mockBehaviorGroupsOfEventTypes(defaultEventTypeId, true);
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
 
       await waitForAsyncEvents();
 
@@ -750,26 +664,17 @@ describe('src/pages/Notifications/List/Page', () => {
       fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
         body: [] as Array<Schemas.Endpoint>,
       });
-      fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-        {
-          body: [],
-        }
-      );
+      fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
+        body: [],
+      });
       mockEventTypes();
       mockBehaviorGroupsOfEventTypes();
       mockFacets();
       mockBehaviorGroup();
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
 
       await waitForAsyncEvents();
 
@@ -797,40 +702,28 @@ describe('src/pages/Notifications/List/Page', () => {
       fetchMock.get('/api/notifications/v1.0/notifications/defaults', {
         body: [] as Array<Schemas.Endpoint>,
       });
-      fetchMock.get(
-        `/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`,
-        {
-          body: [],
-        }
-      );
+      fetchMock.get(`/api/notifications/v1.0/notifications/eventTypes/${defaultEventTypeId}`, {
+        body: [],
+      });
       mockEventTypes(defaultEventTypeId);
       mockFacets();
       if (appears) {
         mockBehaviorGroup();
         mockBehaviorGroupsOfEventTypes();
       } else {
-        fetchMock.get(
-          '/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups',
-          () => Promise.reject('should not call this')
+        fetchMock.get('/api/notifications/v1.0/notifications/bundles/foobar/behaviorGroups', () =>
+          Promise.reject('should not call this')
         );
       }
 
-      render(
-        <BundlePageBehaviorGroupContent
-          applications={applications}
-          bundle={bundle}
-        />,
-        {
-          wrapper: getConfiguredAppWrapper(),
-        }
-      );
+      render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+        wrapper: getConfiguredAppWrapper(),
+      });
 
       await waitForAsyncEvents();
       /* eslint-disable jest/no-conditional-expect */
       if (appears) {
-        expect(screen.getAllByText(/behavior group/i).length).toBeGreaterThan(
-          0
-        );
+        expect(screen.getAllByText(/behavior group/i).length).toBeGreaterThan(0);
       } else {
         expect(screen.queryByText(/behavior group/i)).not.toBeInTheDocument();
       }

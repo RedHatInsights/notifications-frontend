@@ -2,11 +2,7 @@ import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
-import {
-  appWrapperCleanup,
-  appWrapperSetup,
-  getConfiguredAppWrapper,
-} from '../../test/AppWrapper';
+import { appWrapperCleanup, appWrapperSetup, getConfiguredAppWrapper } from '../../test/AppWrapper';
 import { Routes } from '../Routes';
 
 jest.mock('../pages/Notifications/List/Page', () => ({
@@ -54,9 +50,7 @@ describe('src/Routes', () => {
       });
 
       expect(getLocation().pathname).toBe('/');
-      expect(
-        screen.getByRole('link', { name: 'Go to landing page' })
-      ).toBeVisible();
+      expect(screen.getByRole('link', { name: 'Go to landing page' })).toBeVisible();
     });
 
     it('Should render on /notifications/foobar', async () => {

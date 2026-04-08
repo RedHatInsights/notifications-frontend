@@ -9,9 +9,9 @@ interface PageHeaderProps {
   action?: React.ReactNode;
 }
 
-export const PageHeader: React.FunctionComponent<
-  React.PropsWithChildren<PageHeaderProps>
-> = (props) => {
+export const PageHeader: React.FunctionComponent<React.PropsWithChildren<PageHeaderProps>> = (
+  props
+) => {
   return (
     <PageHeaderFC className="pf-v5-u-pb-md">
       <Split>
@@ -21,9 +21,7 @@ export const PageHeader: React.FunctionComponent<
             <Content component="p">{props.subtitle}</Content>
           </Content>
         </SplitItem>
-        {props.action && (
-          <SplitItem className="pf-v5-u-ml-3xl">{props.action}</SplitItem>
-        )}
+        {props.action && <SplitItem className="pf-v5-u-ml-3xl">{props.action}</SplitItem>}
       </Split>
     </PageHeaderFC>
   );

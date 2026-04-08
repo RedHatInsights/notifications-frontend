@@ -1,9 +1,4 @@
-import {
-  Button,
-  ButtonVariant,
-  Content,
-  Skeleton,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Content, Skeleton } from '@patternfly/react-core';
 import { CheckIcon, CloseIcon, PencilAltIcon } from '@patternfly/react-icons';
 import {
   CustomActionsToggleProps,
@@ -15,11 +10,7 @@ import * as React from 'react';
 
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
-import {
-  BehaviorGroup,
-  NotificationBehaviorGroup,
-  UUID,
-} from '../../types/Notification';
+import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Notification';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 
@@ -133,14 +124,7 @@ export interface NotificationsBehaviorGroupRowProps {
 
 export const NotificationsBehaviorGroupRow: React.FunctionComponent<
   NotificationsBehaviorGroupRowProps
-> = ({
-  rowIndex,
-  notification,
-  behaviorGroupContent,
-  onSelect,
-  isEditMode,
-  callbacks,
-}) => {
+> = ({ rowIndex, notification, behaviorGroupContent, onSelect, isEditMode, callbacks }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
   return (
     <>

@@ -15,13 +15,11 @@ export interface DeleteBehaviorGroupPageProps {
   onClose: (deleted: boolean) => void;
 }
 
-export const DeleteBehaviorGroupPage: React.FunctionComponent<
-  DeleteBehaviorGroupPageProps
-> = (props) => {
+export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGroupPageProps> = (
+  props
+) => {
   const deleteBehaviorGroup = useDeleteBehaviorGroupMutation();
-  const affected = useGetAffectedNotificationsByBehaviorGroupQuery(
-    props.behaviorGroup.id
-  );
+  const affected = useGetAffectedNotificationsByBehaviorGroupQuery(props.behaviorGroup.id);
   const { addDangerNotification, addSuccessNotification } = useNotification();
 
   const onDelete = React.useCallback(
@@ -60,8 +58,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<
       addDangerNotification(
         'Associated events failed to load ',
         <>
-          Failed to load associated events for group{' '}
-          <b> {props.behaviorGroup.displayName}</b>.
+          Failed to load associated events for group <b> {props.behaviorGroup.displayName}</b>.
           <br />
           Please try again.
         </>
@@ -69,12 +66,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<
 
       onClose(false);
     }
-  }, [
-    addDangerNotification,
-    affected.payload,
-    props.behaviorGroup,
-    props.onClose,
-  ]);
+  }, [addDangerNotification, affected.payload, props.behaviorGroup, props.onClose]);
 
   if (affected.loading) {
     return <BehaviorGroupDeleteModalSkeleton onClose={props.onClose} />;

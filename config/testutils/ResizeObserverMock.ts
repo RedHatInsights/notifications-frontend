@@ -82,8 +82,7 @@ export const mockResizeObserver = () => {
   window.ResizeObserver = ResizeObserverMock;
 };
 
-export const getObservers = () =>
-  observers as ReadonlyArray<ResizeObserverMock>;
+export const getObservers = () => observers as ReadonlyArray<ResizeObserverMock>;
 export const getLastObserver = (): ResizeObserverMock => {
   if (observers.length > 0) {
     return observers[observers.length - 1];

@@ -2,12 +2,7 @@ import { useDebounce, useUpdateEffect } from 'react-use';
 import { Dispatch, SetStateAction, useCallback, useState } from 'react';
 
 type UseStateType = typeof useState;
-type UseDebouncedStateReturn<T> = [
-  T,
-  Dispatch<SetStateAction<T>>,
-  T,
-  () => boolean | null
-];
+type UseDebouncedStateReturn<T> = [T, Dispatch<SetStateAction<T>>, T, () => boolean | null];
 
 export const useDebouncedState = <T>(
   initialValue: T,

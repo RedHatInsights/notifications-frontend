@@ -16,9 +16,9 @@ interface EditBehaviorGroupPageProps {
   onClose: (saved: boolean) => void;
 }
 
-export const EditBehaviorGroupPage: React.FunctionComponent<
-  EditBehaviorGroupPageProps
-> = (props) => {
+export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPageProps> = (
+  props
+) => {
   const getRecipients = useGetRecipients();
   const getIntegrations = useGetIntegrations();
   const { addDangerNotification, addSuccessNotification } = useNotification();

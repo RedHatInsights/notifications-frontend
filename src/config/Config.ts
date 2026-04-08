@@ -33,10 +33,7 @@ interface NotificationTypeConfig {
   name: string;
 }
 
-export const integrationTypes: Record<
-  IntegrationType,
-  IntegrationTypeConfigBase
-> = {
+export const integrationTypes: Record<IntegrationType, IntegrationTypeConfigBase> = {
   [IntegrationType.SPLUNK]: {
     name: 'Splunk',
   },
@@ -91,10 +88,7 @@ const computeIntegrationConfig = (
     element: IntegrationTypeConfigBase
   ): IntegrationTypeConfig => ({
     ...element,
-    action: [
-      IntegrationType.EMAIL_SUBSCRIPTION,
-      IntegrationType.DRAWER,
-    ].includes(type)
+    action: [IntegrationType.EMAIL_SUBSCRIPTION, IntegrationType.DRAWER].includes(type)
       ? element.name
       : `Integration: ${element.name}`,
   });
@@ -109,20 +103,18 @@ const computeIntegrationConfig = (
 export const sortedIntegrationList = (
   integrations: Array<UserIntegrationType>
 ): Array<UserIntegrationType> => {
-  return [...integrations].sort(
-    (first: UserIntegrationType, second: UserIntegrationType) => {
-      const firstName = integrationTypes[first].name;
-      const secondName = integrationTypes[second].name;
+  return [...integrations].sort((first: UserIntegrationType, second: UserIntegrationType) => {
+    const firstName = integrationTypes[first].name;
+    const secondName = integrationTypes[second].name;
 
-      if (firstName < secondName) {
-        return -1;
-      } else if (firstName > secondName) {
-        return 1;
-      }
-
-      return 0;
+    if (firstName < secondName) {
+      return -1;
+    } else if (firstName > secondName) {
+      return 1;
     }
-  );
+
+    return 0;
+  });
 };
 
 export const defaultIconList = {
@@ -140,8 +132,7 @@ export const defaultIconList = {
     [UserIntegrationType.TEAMS]: <IntegrationIcon>{
       name: IntegrationType.TEAMS,
       product_name: 'Microsoft Office Teams',
-      icon_url:
-        '/apps/frontend-assets/partners-icons/microsoft-office-teams.svg',
+      icon_url: '/apps/frontend-assets/partners-icons/microsoft-office-teams.svg',
     },
     [UserIntegrationType.SLACK]: <IntegrationIcon>{
       name: IntegrationType.SLACK,
@@ -186,9 +177,7 @@ const defaultIntegrationList = {
     UserIntegrationType.ANSIBLE,
     UserIntegrationType.PAGERDUTY,
   ]),
-  [IntegrationCategory.WEBHOOKS]: sortedIntegrationList([
-    UserIntegrationType.WEBHOOK,
-  ]),
+  [IntegrationCategory.WEBHOOKS]: sortedIntegrationList([UserIntegrationType.WEBHOOK]),
   all: sortedIntegrationList([
     UserIntegrationType.ANSIBLE,
     UserIntegrationType.EMAIL,
@@ -225,10 +214,7 @@ const Config = {
     types: notificationTypes,
     actions: {
       released: [NotificationType.EMAIL_SUBSCRIPTION],
-      experimental: [
-        NotificationType.EMAIL_SUBSCRIPTION,
-        NotificationType.DRAWER,
-      ],
+      experimental: [NotificationType.EMAIL_SUBSCRIPTION, NotificationType.DRAWER],
       fedramp: [NotificationType.EMAIL_SUBSCRIPTION],
     },
   },

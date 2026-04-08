@@ -1,7 +1,4 @@
-import {
-  AccessApi,
-  AccessPagination,
-} from '@redhat-cloud-services/rbac-client';
+import { AccessApi, AccessPagination } from '@redhat-cloud-services/rbac-client';
 import axios from 'axios';
 
 const BASE_PATH = '/api/rbac/v1';
@@ -38,15 +35,9 @@ export class Rbac {
     return permissions.includes(verb) || permissions.includes(anything);
   }
 
-  private hasAppPermission(
-    permissions: AppPermissions,
-    what: What,
-    verb: Verb
-  ): boolean {
+  private hasAppPermission(permissions: AppPermissions, what: What, verb: Verb): boolean {
     const verbs = permissions[what];
-    const specificPermission = verbs
-      ? this.hasWhatPermission(verbs, verb)
-      : undefined;
+    const specificPermission = verbs ? this.hasWhatPermission(verbs, verb) : undefined;
 
     if (specificPermission) {
       return specificPermission;
@@ -66,10 +57,7 @@ export class RbacPermissionsBuilder {
   }
 
   public build(): RbacPermission {
-    if (
-      !this.accessPagination?.data ||
-      this.accessPagination.data.length === 0
-    ) {
+    if (!this.accessPagination?.data || this.accessPagination.data.length === 0) {
       return {};
     }
 

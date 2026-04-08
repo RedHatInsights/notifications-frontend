@@ -1,30 +1,21 @@
-import {
-  ExpandableSection,
-  List,
-  ListItem,
-  Skeleton,
-} from '@patternfly/react-core';
+import { ExpandableSection, List, ListItem, Skeleton } from '@patternfly/react-core';
 import * as React from 'react';
 
 import { UserIntegration } from '../../types/Integration';
 import { BehaviorGroup } from '../../types/Notification';
-import {
-  DeleteModal,
-  DeleteModalProps,
-} from '../../utils/insights-common-typescript';
+import { DeleteModal, DeleteModalProps } from '../../utils/insights-common-typescript';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 
-interface IntegrationDeleteModalProps
-  extends Omit<DeleteModalProps, UsedProps> {
+interface IntegrationDeleteModalProps extends Omit<DeleteModalProps, UsedProps> {
   integration?: UserIntegration;
   onDelete: (integration: UserIntegration) => boolean | Promise<boolean>;
   behaviorGroups?: Array<BehaviorGroup>;
 }
 
-export const IntegrationDeleteModal: React.FunctionComponent<
-  IntegrationDeleteModalProps
-> = (props) => {
+export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteModalProps> = (
+  props
+) => {
   const onDeleteInternal = React.useCallback(() => {
     const integration = props.integration;
     const onDelete = props.onDelete;
@@ -45,23 +36,20 @@ export const IntegrationDeleteModal: React.FunctionComponent<
     } else if (props.behaviorGroups.length === 0) {
       return (
         <span data-testid="removing-integration-without-notifications">
-          Deleting integration <strong>{props.integration?.name}</strong> does
-          not affect any behavior group.
+          Deleting integration <strong>{props.integration?.name}</strong> does not affect any
+          behavior group.
         </span>
       );
     } else {
       const behaviorGroupText =
-        props.behaviorGroups.length !== 1
-          ? 'behavior groups'
-          : 'behavior group';
+        props.behaviorGroups.length !== 1 ? 'behavior groups' : 'behavior group';
       return (
         <span
           data-testid={`removing-integration-with-notifications-${props.behaviorGroups.length}`}
         >
           Delete integration <strong>{props.integration?.name}</strong> affects{' '}
-          {props.behaviorGroups.length} {behaviorGroupText}. The end point
-          associated with this integration will not recieve notifications for
-          the following events.
+          {props.behaviorGroups.length} {behaviorGroupText}. The end point associated with this
+          integration will not recieve notifications for the following events.
           {props.behaviorGroups.length > 0 && (
             <ExpandableSection
               toggleText={`View ${props.behaviorGroups.length} ${behaviorGroupText}`}

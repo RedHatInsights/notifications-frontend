@@ -30,15 +30,10 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
   const intl = useIntl();
 
   const userPreferences = (
-    <a href={localUrl(`/user-preferences/notifications/`, chrome.isBeta())}>
-      {' '}
-      User Preferences
-    </a>
+    <a href={localUrl(`/user-preferences/notifications/`, chrome.isBeta())}> User Preferences</a>
   );
   const myUserAccess = (
-    <a
-      href={localUrl(`/settings/my-user-access?bundle=rhel }`, chrome.isBeta())}
-    >
+    <a href={localUrl(`/settings/my-user-access?bundle=rhel }`, chrome.isBeta())}>
       {' '}
       My User Access{' '}
     </a>
@@ -75,8 +70,8 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
     if (serviceName === 'Notifications') {
       return (
         <span>
-          Configure which event notifications different users within your
-          organization are entitled to receive.
+          Configure which event notifications different users within your organization are entitled
+          to receive.
         </span>
       );
     } else {
@@ -99,10 +94,9 @@ export const NotAuthorizedPage: React.FunctionComponent = () => {
       <UnauthorizedAccess
         bodyText={
           <>
-            Contact your organization administrator for more information or
-            visit
-            {myUserAccess} to learn more about your permissions. To manage your
-            notifications, go to your {userPreferences}.
+            Contact your organization administrator for more information or visit
+            {myUserAccess} to learn more about your permissions. To manage your notifications, go to
+            your {userPreferences}.
           </>
         }
         serviceName={serviceName}

@@ -1,15 +1,8 @@
 import React from 'react';
-import {
-  AssignedEventType,
-  NameDisplayName,
-  UserIntegration,
-} from '../../types/Integration';
+import { AssignedEventType, NameDisplayName, UserIntegration } from '../../types/Integration';
 import { getEndpoint } from '../../api/helpers/integrations/endpoints-helper';
 import { DataViewTable } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
-import {
-  SkeletonTableBody,
-  SkeletonTableHead,
-} from '@patternfly/react-component-groups';
+import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { DataView } from '@patternfly/react-data-view/dist/dynamic/DataView';
 import {
   Button,
@@ -76,16 +69,12 @@ const perPageOptions = [
   { title: '100', value: 100 },
 ];
 
-const EmptyTable: React.FC<{ onEdit?: (event?: React.MouseEvent) => void }> = ({
-  onEdit,
-}) => (
+const EmptyTable: React.FC<{ onEdit?: (event?: React.MouseEvent) => void }> = ({ onEdit }) => (
   <Tbody>
     <Tr key="loading" ouiaId={`${ouiaId}-tr-loading`}>
       <Td colSpan={columns.length}>
         <EmptyState>
-          <EmptyStateBody>
-            There are no Events assigned to this integration.
-          </EmptyStateBody>
+          <EmptyStateBody>There are no Events assigned to this integration.</EmptyStateBody>
           <EmptyStateFooter>
             <EmptyStateActions>
               <Button variant="primary" onClick={() => onEdit?.()}>
@@ -123,8 +112,7 @@ const IntegrationEventDetails: React.FC<{
       direction,
       defaultDirection: 'asc',
     },
-    onSort: (_event, index, direction) =>
-      onSort(_event, columns[index].key, direction),
+    onSort: (_event, index, direction) => onSort(_event, columns[index].key, direction),
     columnIndex,
   });
   const fetchIntegration = React.useCallback(async () => {
@@ -180,14 +168,10 @@ const IntegrationEventDetails: React.FC<{
           props: { sort: getSortParams(index) },
         }))}
         headStates={{
-          loading: (
-            <SkeletonTableHead columns={columns.map(({ label }) => label)} />
-          ),
+          loading: <SkeletonTableHead columns={columns.map(({ label }) => label)} />,
         }}
         bodyStates={{
-          loading: (
-            <SkeletonTableBody rowsCount={10} columnsCount={columns.length} />
-          ),
+          loading: <SkeletonTableBody rowsCount={10} columnsCount={columns.length} />,
           empty: <EmptyTable onEdit={onEdit} />,
         }}
         rows={

@@ -13,19 +13,19 @@ import {
 
 const DEFAULT_DEBOUNCE_MS = 250;
 
-type FilterUseStateFunctions<Enum extends StandardFilterEnum<never>> =
-  FilterBase<Enum, typeof useState | undefined>;
+type FilterUseStateFunctions<Enum extends StandardFilterEnum<never>> = FilterBase<
+  Enum,
+  typeof useState | undefined
+>;
 
 export const useFilters = <FilterColumn extends StandardFilterEnum<never>>(
   initEnum: FilterColumn,
   debounce = DEFAULT_DEBOUNCE_MS,
-  initUseStateFactory?: (
-    column: EnumElement<FilterColumn>
-  ) => typeof useState | undefined
+  initUseStateFactory?: (column: EnumElement<FilterColumn>) => typeof useState | undefined
 ) => {
-  const [columns] = useState(() =>
-    Object.values(initEnum).sort()
-  ) as unknown as [Array<EnumElement<FilterColumn>>];
+  const [columns] = useState(() => Object.values(initEnum).sort()) as unknown as [
+    Array<EnumElement<FilterColumn>>
+  ];
   const [useStateFunctions] = useState(() => {
     if (initUseStateFactory) {
       const stateFunctions = {} as FilterUseStateFunctions<FilterColumn>;
@@ -69,10 +69,7 @@ export const useFilters = <FilterColumn extends StandardFilterEnum<never>>(
   const setFilters = useMemo(() => elements.setFilters, [elements.setFilters]);
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  const debouncedFilters = useMemo(
-    () => elements.debouncedFilters,
-    [elements.debouncedFilters]
-  );
+  const debouncedFilters = useMemo(() => elements.debouncedFilters, [elements.debouncedFilters]);
 
   const clearFilter: ClearFilters<FilterColumn> = useCallback(
     (columns: ClearFilterElement<FilterColumn>) => {
@@ -80,10 +77,7 @@ export const useFilters = <FilterColumn extends StandardFilterEnum<never>>(
         if (setFilters[column]) {
           setFilters[column]((prev) => {
             if (typeof prev === 'string') {
-              if (
-                (typeof value === 'string' || Array.isArray(value)) &&
-                value.includes(prev)
-              ) {
+              if ((typeof value === 'string' || Array.isArray(value)) && value.includes(prev)) {
                 return '';
               }
             } else if (typeof value === 'string' || Array.isArray(value)) {

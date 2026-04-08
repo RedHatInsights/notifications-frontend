@@ -58,10 +58,5 @@ export const useInsightsEnvironmentFlag: InsightsEnvironmentFlagSignature = <T>(
   const current = useMemo(() => getInsightsEnvironment(insights), [insights]);
 
   // Same as above
-  return useEnvironmentFlag(
-    current,
-    targetEnvironments,
-    ifTrue,
-    ifFalse as FeatureFlagCallback<T>
-  );
+  return useEnvironmentFlag(current, targetEnvironments, ifTrue, ifFalse as FeatureFlagCallback<T>);
 };

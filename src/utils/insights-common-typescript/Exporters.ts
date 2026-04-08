@@ -19,9 +19,7 @@ export interface Exporter<T> {
   export(elements: Array<T>): Blob;
 }
 
-export type Headers<T> = Array<
-  [keyof ReturnType<ExporterCsv<T>['serialize']>, string]
->;
+export type Headers<T> = Array<[keyof ReturnType<ExporterCsv<T>['serialize']>, string]>;
 export type ExporterHeaders<Exporter extends ExporterCsv<T>, T> = Array<
   [keyof ReturnType<Exporter['serialize']>, string]
 >;

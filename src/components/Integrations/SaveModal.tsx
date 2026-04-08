@@ -19,12 +19,9 @@ import {
 type PartialIntegration = Partial<UserIntegration>;
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
 
-export interface IntegrationSaveModalProps
-  extends Omit<SaveModalProps, UsedProps> {
+export interface IntegrationSaveModalProps extends Omit<SaveModalProps, UsedProps> {
   initialIntegration?: PartialIntegration;
-  onSave: (
-    integration: UserIntegration | NewUserIntegration
-  ) => boolean | Promise<boolean>;
+  onSave: (integration: UserIntegration | NewUserIntegration) => boolean | Promise<boolean>;
   isEdit: boolean;
 }
 
@@ -34,15 +31,14 @@ interface InternalIntegrationSaveModalProps {
   error?: ActionModalError;
 }
 
-const InternalIntegrationSaveModal: React.FunctionComponent<
-  InternalIntegrationSaveModalProps
-> = (props) => {
+const InternalIntegrationSaveModal: React.FunctionComponent<InternalIntegrationSaveModalProps> = (
+  props
+) => {
   const pageMessages = props.isEdit
     ? Messages.pages.integrations.edit
     : Messages.pages.integrations.add;
   const pageTitle = pageMessages.title;
-  const { handleSubmit, isValid, isSubmitting } =
-    useFormikContext<NewUserIntegration>();
+  const { handleSubmit, isValid, isSubmitting } = useFormikContext<NewUserIntegration>();
 
   const onSaveClicked = React.useCallback(() => {
     handleSubmit();
@@ -63,9 +59,7 @@ const InternalIntegrationSaveModal: React.FunctionComponent<
   );
 };
 
-export const IntegrationSaveModal: React.FunctionComponent<
-  IntegrationSaveModalProps
-> = (props) => {
+export const IntegrationSaveModal: React.FunctionComponent<IntegrationSaveModalProps> = (props) => {
   const [initialIntegration] = React.useState<PartialIntegration>(() => {
     const initial = {
       // The call is twice, because we use lazy evaluation for the integration base type.
@@ -92,9 +86,7 @@ export const IntegrationSaveModal: React.FunctionComponent<
     async (integration: PartialIntegration) => {
       const onSave = props.onSave;
       const onClose = props.onClose;
-      const transformedIntegration = IntegrationSchema.cast(
-        integration
-      ) as NewUserIntegration;
+      const transformedIntegration = IntegrationSchema.cast(integration) as NewUserIntegration;
       const saved = await onSave(transformedIntegration);
       if (saved) {
         onClose(true);

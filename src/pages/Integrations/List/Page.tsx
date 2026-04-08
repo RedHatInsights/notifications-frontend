@@ -29,11 +29,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
             <SplitItem>
               <Button
                 variant="secondary"
-                component={() => (
-                  <Link
-                    to={`/${getBundle()}/notifications${linkTo.eventLog()}`}
-                  />
-                )}
+                component={() => <Link to={`/${getBundle()}/notifications${linkTo.eventLog()}`} />}
               >
                 {' '}
                 View event log{' '}

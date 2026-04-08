@@ -76,12 +76,7 @@ export class NotificationUserRecipient extends BaseNotificationRecipient {
         'All users in your organization who subscribed to this email in their Notification Preferences';
     }
 
-    super(
-      displayName,
-      description,
-      integrationId,
-      sendToAdmin ? 'users-admin' : 'users-all'
-    );
+    super(displayName, description, integrationId, sendToAdmin ? 'users-admin' : 'users-all');
 
     this.sendToAdmin = sendToAdmin;
     this.ignorePreferences = ignorePreferences;

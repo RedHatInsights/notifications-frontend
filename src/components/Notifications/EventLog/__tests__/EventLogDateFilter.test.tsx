@@ -3,10 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { EventPeriod } from '../../../../types/Event';
-import {
-  EventLogDateFilter,
-  EventLogDateFilterValue,
-} from '../EventLogDateFilter';
+import { EventLogDateFilter, EventLogDateFilterValue } from '../EventLogDateFilter';
 import {
   NotificationsLogDateFilter,
   NotificationsLogDateFilterValue,
@@ -74,7 +71,7 @@ describe.each([
   it('does not show custom date pickers for non-custom values', () => {
     render(<DateFilter {...defaultProps} />);
 
-    expect(screen.queryByPlaceholderText('Start')).toBeNull();
-    expect(screen.queryByPlaceholderText('End')).toBeNull();
+    expect(screen.queryByPlaceholderText('Start')).not.toBeInTheDocument();
+    expect(screen.queryByPlaceholderText('End')).not.toBeInTheDocument();
   });
 });

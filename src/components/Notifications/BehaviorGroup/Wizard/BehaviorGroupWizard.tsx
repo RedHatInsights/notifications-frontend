@@ -19,18 +19,12 @@ interface BehaviorGroupWizardProps {
   loading: boolean;
 }
 
-export const BehaviorGroupWizard: React.FunctionComponent<
-  BehaviorGroupWizardProps
-> = (props) => {
+export const BehaviorGroupWizard: React.FunctionComponent<BehaviorGroupWizardProps> = (props) => {
   const { values } = useFormikContext<CreateBehaviorGroup>();
   const title = (values.id ? 'Edit' : 'Create') + ' behavior group';
 
   return (
-    <Form
-      placeholder=""
-      onPointerEnterCapture={undefined}
-      onPointerLeaveCapture={undefined}
-    >
+    <Form placeholder="" onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined}>
       <Wizard
         title={title}
         steps={props.steps}

@@ -5,11 +5,7 @@ import { EventLogDateFilterValue } from '../../../components/Notifications/Event
 import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
 import { EventPeriod } from '../../../types/Event';
 import { Facet } from '../../../types/Notification';
-import {
-  Filter,
-  Operator,
-  toUtc,
-} from '../../../utils/insights-common-typescript';
+import { Filter, Operator, toUtc } from '../../../utils/insights-common-typescript';
 
 const DATE_FORMAT = 'yyyy-MM-dd';
 
@@ -64,10 +60,7 @@ export const useFilterBuilder = (
         filter.and('endpointTypes', Operator.EQUAL, filters.endpointTypes);
       }
 
-      let filterPeriod = [undefined, undefined] as [
-        Date | undefined,
-        Date | undefined
-      ];
+      let filterPeriod = [undefined, undefined] as [Date | undefined, Date | undefined];
       const today = toUtc(new Date());
 
       switch (dateFilter) {
@@ -103,11 +96,7 @@ export const useFilterBuilder = (
       }
 
       if (filterPeriod[0] && filterPeriod[1]) {
-        filter.and(
-          'start',
-          Operator.EQUAL,
-          format(filterPeriod[0], DATE_FORMAT)
-        );
+        filter.and('start', Operator.EQUAL, format(filterPeriod[0], DATE_FORMAT));
         filter.and('end', Operator.EQUAL, format(filterPeriod[1], DATE_FORMAT));
       }
 

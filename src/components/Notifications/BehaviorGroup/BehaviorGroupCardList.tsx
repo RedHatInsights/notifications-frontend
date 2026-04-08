@@ -16,16 +16,11 @@ interface BehaviorGroupCardListProps {
   behaviorGroups?: ReadonlyArray<BehaviorGroup>;
 }
 
-type BehaviorGroupCardListImplProps = MarkRequired<
-  BehaviorGroupCardListProps,
-  'behaviorGroups'
->;
+type BehaviorGroupCardListImplProps = MarkRequired<BehaviorGroupCardListProps, 'behaviorGroups'>;
 
 const skeletonBehaviorGroupCount = 3;
 
-const BehaviorGroupCardListLayout: React.FunctionComponent<
-  React.PropsWithChildren
-> = (props) => {
+const BehaviorGroupCardListLayout: React.FunctionComponent<React.PropsWithChildren> = (props) => {
   return (
     <div data-testid="ref-card-list-container">
       <Flex
@@ -41,9 +36,9 @@ const BehaviorGroupCardListLayout: React.FunctionComponent<
   );
 };
 
-const BehaviorGroupaCrdListImpl: React.FunctionComponent<
-  BehaviorGroupCardListImplProps
-> = (props) => {
+const BehaviorGroupaCrdListImpl: React.FunctionComponent<BehaviorGroupCardListImplProps> = (
+  props
+) => {
   return (
     <BehaviorGroupCardListLayout>
       {props.behaviorGroups.map((behaviorGroup) => (
@@ -63,10 +58,7 @@ const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
   return (
     <BehaviorGroupCardListLayout>
       {[...Array(skeletonBehaviorGroupCount).values()].map((_unused, index) => (
-        <FlexItem
-          key={`behavior-group-card-skeleton-${index}`}
-          className="pf-v6-u-pb-md"
-        >
+        <FlexItem key={`behavior-group-card-skeleton-${index}`} className="pf-v6-u-pb-md">
           <BehaviorGroupCard />
         </FlexItem>
       ))}
@@ -74,16 +66,11 @@ const BehaviorGroupCardListSkeleton: React.FunctionComponent = () => {
   );
 };
 
-export const BehaviorGroupCardList: React.FunctionComponent<
-  BehaviorGroupCardListProps
-> = (props) => {
+export const BehaviorGroupCardList: React.FunctionComponent<BehaviorGroupCardListProps> = (
+  props
+) => {
   if (props.behaviorGroups) {
-    return (
-      <BehaviorGroupaCrdListImpl
-        {...props}
-        behaviorGroups={props.behaviorGroups}
-      />
-    );
+    return <BehaviorGroupaCrdListImpl {...props} behaviorGroups={props.behaviorGroups} />;
   }
 
   return <BehaviorGroupCardListSkeleton />;

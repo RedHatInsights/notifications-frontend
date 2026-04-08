@@ -83,9 +83,7 @@ interface IntegrationsDrawerProps {
   actionResolver: (row: IntegrationRow, index: number) => ResolvedAction[];
   selectedIndex?: number;
   selectedIntegration?: IntegrationRow;
-  setSelectedIntegration: React.Dispatch<
-    React.SetStateAction<IntegrationRow | undefined>
-  >;
+  setSelectedIntegration: React.Dispatch<React.SetStateAction<IntegrationRow | undefined>>;
 }
 
 const ouiaId = 'IntegrationsTable';
@@ -110,11 +108,7 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
   return (
     <DrawerPanelContent>
       <DrawerHead>
-        <Title
-          className="pf-v5-u-mb-md"
-          headingLevel="h2"
-          ouiaId={`${ouiaId}-drawer-title`}
-        >
+        <Title className="pf-v5-u-mb-md" headingLevel="h2" ouiaId={`${ouiaId}-drawer-title`}>
           {selectedIntegration?.name}
         </Title>
         <DrawerActions>
@@ -131,17 +125,11 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
           />
         </DrawerActions>
       </DrawerHead>
-      <Tabs
-        activeKey={activeTabKey}
-        onSelect={handleTabClick}
-        ouiaId={`${ouiaId}-drawer-tabs`}
-      >
+      <Tabs activeKey={activeTabKey} onSelect={handleTabClick} ouiaId={`${ouiaId}-drawer-tabs`}>
         <Tab
           eventKey={0}
           title={
-            <TabTitleText>
-              {intl.formatMessage(messages.integrationDetailsTabTitle)}
-            </TabTitleText>
+            <TabTitleText>{intl.formatMessage(messages.integrationDetailsTabTitle)}</TabTitleText>
           }
           ouiaId={`${ouiaId}-details-tab`}
         >
@@ -150,26 +138,21 @@ const IntegrationsDrawer: React.FunctionComponent<IntegrationsDrawerProps> = ({
         <Tab
           eventKey={1}
           title={
-            <TabTitleText>
-              {intl.formatMessage(messages.associatedEventTypesTabTitle)}
-            </TabTitleText>
+            <TabTitleText>{intl.formatMessage(messages.associatedEventTypesTabTitle)}</TabTitleText>
           }
           ouiaId={`${ouiaId}-associated-event-types-tab`}
         >
-          {selectedIntegration &&
-            selectedIndex !== undefined &&
-            selectedIndex !== -1 && (
-              <IntegrationEventDetails
-                id={selectedIntegration?.id}
-                onEdit={() => {
-                  const editAction = actionResolver(
-                    selectedIntegration,
-                    selectedIndex
-                  ).find(({ type }) => type === 'edit');
-                  editAction?.onClick?.();
-                }}
-              />
-            )}
+          {selectedIntegration && selectedIndex !== undefined && selectedIndex !== -1 && (
+            <IntegrationEventDetails
+              id={selectedIntegration?.id}
+              onEdit={() => {
+                const editAction = actionResolver(selectedIntegration, selectedIndex).find(
+                  ({ type }) => type === 'edit'
+                );
+                editAction?.onClick?.();
+              }}
+            />
+          )}
         </Tab>
       </Tabs>
     </DrawerPanelContent>

@@ -1,30 +1,24 @@
-import {
-  validatedResponse,
-  validationResponseTransformer,
-} from 'openapi2typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useClient, useQuery } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
 import { UUID } from '../../types/Notification';
 import { useTransformQueryResponse } from '../../utils/insights-common-typescript';
 
-export const getBehaviorGroupByNotificationDecoder =
-  validationResponseTransformer(
-    (
-      payload: Operations.NotificationResource$v1GetLinkedBehaviorGroups.Payload
-    ) => {
-      if (payload.status === 200) {
-        return validatedResponse(
-          'BehaviorGroupId',
-          200,
-          payload.value.map((value) => value.id),
-          payload.errors
-        );
-      }
-
-      return payload;
+export const getBehaviorGroupByNotificationDecoder = validationResponseTransformer(
+  (payload: Operations.NotificationResource$v1GetLinkedBehaviorGroups.Payload) => {
+    if (payload.status === 200) {
+      return validatedResponse(
+        'BehaviorGroupId',
+        200,
+        payload.value.map((value) => value.id),
+        payload.errors
+      );
     }
-  );
+
+    return payload;
+  }
+);
 
 export const getBehaviorGroupByNotificationAction = (notificationId: UUID) =>
   Operations.NotificationResource$v1GetLinkedBehaviorGroups.actionCreator({

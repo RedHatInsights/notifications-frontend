@@ -5,9 +5,7 @@ interface GroupNotFoundProps {
   onClose?: LabelProps['onClose'];
 }
 
-export const GroupNotFound: React.FunctionComponent<GroupNotFoundProps> = (
-  props
-) => {
+export const GroupNotFound: React.FunctionComponent<GroupNotFoundProps> = (props) => {
   const text = 'User Access group (Not found)';
   return (
     <Tooltip content="This User Access group was not found, and may have been deleted. Remove it from your behavior group to stop seeing it.">

@@ -21,8 +21,7 @@ export const linkTo = {
   configureEvents: () => '/configure-events',
   integrations: () => '/settings/integrations',
   notifications: (bundle: string) => `/${bundle}`,
-  eventLog: (bundle?: string) =>
-    `/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
+  eventLog: (bundle?: string) => `/eventlog${bundle ? `?bundle=${bundle}` : ''}`,
   notificationsLog: () => '/notificationslog',
   splunk: () => '/integrations/splunk-setup',
 };
@@ -116,9 +115,7 @@ export const Routes: React.FunctionComponent = () => {
           }
         />
       ))}
-      {!notificationsOverhaul && (
-        <Route path="*" element={<Navigate to="/" replace />} />
-      )}
+      {!notificationsOverhaul && <Route path="*" element={<Navigate to="/" replace />} />}
     </DomRoutes>
   );
 };

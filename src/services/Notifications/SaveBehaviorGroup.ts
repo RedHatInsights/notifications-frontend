@@ -1,7 +1,4 @@
-import {
-  validatedResponse,
-  validationResponseTransformer,
-} from 'openapi2typescript';
+import { validatedResponse, validationResponseTransformer } from 'openapi2typescript';
 import { useMutation } from 'react-fetching-library';
 
 import { Operations } from '../../generated/OpenapiNotifications';
@@ -39,20 +36,13 @@ const decoder = validationResponseTransformer((payload: Payload) => {
       actions: [], // can't get the actions from only the ids,
       events: [], // can't get the eventTypes from only the ids,
     };
-    return validatedResponse(
-      'BehaviorGroup',
-      payload.status,
-      behaviorGroup,
-      payload.errors
-    );
+    return validatedResponse('BehaviorGroup', payload.status, behaviorGroup, payload.errors);
   }
 
   return payload;
 });
 
-const saveBehaviorGroupActionCreator = (
-  behaviorGroup: SaveBehaviorGroupRequest
-) => {
+const saveBehaviorGroupActionCreator = (behaviorGroup: SaveBehaviorGroupRequest) => {
   if ('id' in behaviorGroup) {
     return Operations.NotificationResource$v1UpdateBehaviorGroup.actionCreator({
       id: behaviorGroup.id,
@@ -75,7 +65,4 @@ const saveBehaviorGroupActionCreator = (
 };
 
 export const useSaveBehaviorGroupMutation = () =>
-  useTransformQueryResponse(
-    useMutation(saveBehaviorGroupActionCreator),
-    decoder
-  );
+  useTransformQueryResponse(useMutation(saveBehaviorGroupActionCreator), decoder);

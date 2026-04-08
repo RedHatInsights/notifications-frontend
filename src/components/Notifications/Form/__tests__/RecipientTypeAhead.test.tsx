@@ -22,9 +22,7 @@ const getConfiguredWrapper = (getRecipients?: GetNotificationRecipients) => {
   };
 
   const Wrapper: React.FunctionComponent<React.PropsWithChildren> = (props) => (
-    <RecipientContextProvider value={context}>
-      {props.children}
-    </RecipientContextProvider>
+    <RecipientContextProvider value={context}>{props.children}</RecipientContextProvider>
   );
   return Wrapper;
 };
@@ -60,12 +58,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
   it('Renders disabled if isDisabled', async () => {
     render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={fn()}
-        onClear={fn()}
-        isDisabled
-      />,
+      <RecipientTypeahead selected={SELECTED_ALL} onSelected={fn()} onClear={fn()} isDisabled />,
       {
         wrapper: getConfiguredWrapper(),
       }
@@ -81,11 +74,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
   it('Renders the selected even if getRecipients does not yield it', async () => {
     render(
-      <RecipientTypeahead
-        selected={SELECTED_SEND_TO_ADMIN}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
+      <RecipientTypeahead selected={SELECTED_SEND_TO_ADMIN} onSelected={fn()} onClear={fn()} />,
       {
         wrapper: getConfiguredWrapper(),
       }
@@ -94,32 +83,18 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
   });
 
   it('Renders multiple selected', async () => {
-    render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
-      {
-        wrapper: getConfiguredWrapper(createDefaultGetMock()),
-      }
-    );
+    render(<RecipientTypeahead selected={SELECTED_ALL} onSelected={fn()} onClear={fn()} />, {
+      wrapper: getConfiguredWrapper(createDefaultGetMock()),
+    });
     await waitFor(() => expect(screen.getByText('Admins')).toBeVisible());
     await waitFor(() => expect(screen.getByText('All')).toBeVisible());
   });
 
   it('Clicking close button will call onSelected for removal', async () => {
     const onSelected = fn();
-    render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={onSelected}
-        onClear={fn()}
-      />,
-      {
-        wrapper: getConfiguredWrapper(createDefaultGetMock()),
-      }
-    );
+    render(<RecipientTypeahead selected={SELECTED_ALL} onSelected={onSelected} onClear={fn()} />, {
+      wrapper: getConfiguredWrapper(createDefaultGetMock()),
+    });
 
     await userEvent.click(
       screen.getByRole('button', {
@@ -130,58 +105,33 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
   });
 
   it('Clicking will show the options', async () => {
-    render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
-      {
-        wrapper: getConfiguredWrapper(createDefaultGetMock()),
-      }
-    );
+    render(<RecipientTypeahead selected={SELECTED_ALL} onSelected={fn()} onClear={fn()} />, {
+      wrapper: getConfiguredWrapper(createDefaultGetMock()),
+    });
 
     await userEvent.click(
       screen.getByRole('button', {
         name: /Label group category/,
       })
     );
-    await waitFor(() =>
-      screen.getAllByText('Admins').map((e) => expect(e).toBeVisible())
-    );
-    await waitFor(() =>
-      screen.getAllByText('All').map((e) => expect(e).toBeVisible())
-    );
+    await waitFor(() => screen.getAllByText('Admins').map((e) => expect(e).toBeVisible()));
+    await waitFor(() => screen.getAllByText('All').map((e) => expect(e).toBeVisible()));
   });
 
   it('getRecipients is called on init', async () => {
     const getRecipient = createDefaultGetMock();
-    render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
-      {
-        wrapper: getConfiguredWrapper(getRecipient),
-      }
-    );
+    render(<RecipientTypeahead selected={SELECTED_ALL} onSelected={fn()} onClear={fn()} />, {
+      wrapper: getConfiguredWrapper(getRecipient),
+    });
 
     await waitFor(() => expect(getRecipient).toHaveBeenCalledWith());
   });
 
   it('onSelected GetsCalled when selecting an element', async () => {
     const onSelected = jest.fn();
-    render(
-      <RecipientTypeahead
-        selected={SELECTED_ALL}
-        onSelected={onSelected}
-        onClear={fn()}
-      />,
-      {
-        wrapper: getConfiguredWrapper(createDefaultGetMock()),
-      }
-    );
+    render(<RecipientTypeahead selected={SELECTED_ALL} onSelected={onSelected} onClear={fn()} />, {
+      wrapper: getConfiguredWrapper(createDefaultGetMock()),
+    });
 
     await userEvent.click(
       screen.getByRole('button', {
@@ -196,11 +146,7 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
   it('Renders selected loaded group with its name', async () => {
     render(
-      <RecipientTypeahead
-        selected={SELECTED_LOADED_GROUP}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
+      <RecipientTypeahead selected={SELECTED_LOADED_GROUP} onSelected={fn()} onClear={fn()} />,
       {
         wrapper: getConfiguredWrapper(),
       }
@@ -210,18 +156,12 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
 
   it('Renders selected loading group as a loading', async () => {
     render(
-      <RecipientTypeahead
-        selected={SELECTED_LOADING_GROUP}
-        onSelected={fn()}
-        onClear={fn()}
-      />,
+      <RecipientTypeahead selected={SELECTED_LOADING_GROUP} onSelected={fn()} onClear={fn()} />,
       {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitFor(() =>
-      expect(screen.getByTestId('loading-group')).toBeVisible()
-    );
+    await waitFor(() => expect(screen.getByTestId('loading-group')).toBeVisible());
   });
 
   it('Renders selected non existent group as a does not exist', async () => {
@@ -235,13 +175,35 @@ describe('src/components/Notifications/Form/RecipientTypeAhead', () => {
         wrapper: getConfiguredWrapper(),
       }
     );
-    await waitFor(() =>
-      expect(screen.getByText(/User Access group \(Not found\)/i)).toBeVisible()
-    );
+    await waitFor(() => expect(screen.getByText(/User Access group \(Not found\)/i)).toBeVisible());
 
     await userEvent.hover(screen.getByText(/User Access group \(Not found\)/i));
-    await screen.findByText(
-      /This User Access group was not found, and may have been deleted/i
+    await screen.findByText(/This User Access group was not found, and may have been deleted/i);
+  });
+
+  it('Constrains dropdown menu height to 300px', async () => {
+    render(
+      <RecipientTypeahead
+        selected={SELECTED_ALL}
+        onSelected={fn()}
+        onClear={fn()}
+      />,
+      {
+        wrapper: getConfiguredWrapper(createDefaultGetMock()),
+      }
     );
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: /Label group category/,
+      })
+    );
+
+    await waitFor(() => {
+      // eslint-disable-next-line testing-library/no-node-access
+      const menuContentElement = document.querySelector('.pf-v6-c-menu__content');
+      expect(menuContentElement).toBeInTheDocument();
+      expect(menuContentElement).toHaveStyle({ '--pf-v6-c-menu__content--MaxHeight': '300px' });
+    });
   });
 });

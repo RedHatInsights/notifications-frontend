@@ -1,11 +1,4 @@
-import {
-  Button,
-  ButtonVariant,
-  Icon,
-  Spinner,
-  Split,
-  SplitItem,
-} from '@patternfly/react-core';
+import { Button, ButtonVariant, Icon, Spinner, Split, SplitItem } from '@patternfly/react-core';
 import { WizardContext, WizardFooter } from '@patternfly/react-core/deprecated';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
@@ -16,9 +9,9 @@ export interface BehaviorGroupWizardFooterProps {
   onBack: (goBack: () => void) => void;
 }
 
-export const BehaviorGroupWizardFooter: React.FunctionComponent<
-  BehaviorGroupWizardFooterProps
-> = (props) => {
+export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWizardFooterProps> = (
+  props
+) => {
   const wizardContext = React.useContext(WizardContext);
 
   const onNext = () => {

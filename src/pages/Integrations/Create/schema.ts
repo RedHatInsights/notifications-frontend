@@ -25,18 +25,8 @@ export const schema = (
       name: `${isEdit ? 'edit' : 'add'}-integration-wizard`,
       fields: [
         // INTEGRATION TYPE
-        ...([
-          IntegrationCategory.COMMUNICATIONS,
-          IntegrationCategory.REPORTING,
-        ].includes(category)
-          ? [
-              integrationTypeStep(
-                category,
-                isEdit,
-                isPagerDutyEnabled,
-                isEmailIntegrationEnabled
-              ),
-            ]
+        ...([IntegrationCategory.COMMUNICATIONS, IntegrationCategory.REPORTING].includes(category)
+          ? [integrationTypeStep(category, isEdit, isPagerDutyEnabled, isEmailIntegrationEnabled)]
           : []),
 
         // INTEGRATION DETAILS

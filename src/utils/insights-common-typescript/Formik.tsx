@@ -1,17 +1,11 @@
 import * as React from 'react';
 import { FieldInputProps, useField } from 'formik';
-import {
-  Content,
-  ContentVariants,
-} from '@patternfly/react-core/dist/dynamic/components/Content';
+import { Content, ContentVariants } from '@patternfly/react-core/dist/dynamic/components/Content';
 import {
   TextInput as PFTextInput,
   TextInputProps,
 } from '@patternfly/react-core/dist/dynamic/components/TextInput';
-import {
-  FormGroup,
-  FormHelperText,
-} from '@patternfly/react-core/dist/dynamic/components/Form';
+import { FormGroup, FormHelperText } from '@patternfly/react-core/dist/dynamic/components/Form';
 import {
   Checkbox as PFCheckbox,
   CheckboxProps as PFCheckboxProps,
@@ -34,13 +28,9 @@ import {
 } from '@patternfly/react-core/dist/dynamic/components/HelperText';
 
 import { getOuiaProps } from '../getOuiaProps';
-import {
-  OuiaProps,
-  withoutOuiaProps,
-} from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+import { OuiaProps, withoutOuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
-interface FormTextInputProps
-  extends Omit<TextInputProps, 'onChange' | 'innerRef' | 'ouiaId'> {
+interface FormTextInputProps extends Omit<TextInputProps, 'onChange' | 'innerRef' | 'ouiaId'> {
   id: string;
   name: string;
   hint?: string;
@@ -55,9 +45,7 @@ export const onChangePFAdapter = <T = React.FormEvent<HTMLInputElement>,>(
   };
 };
 
-export const FormTextInput: React.FunctionComponent<FormTextInputProps> = (
-  props
-) => {
+export const FormTextInput: React.FunctionComponent<FormTextInputProps> = (props) => {
   const { hint, ...otherProps } = props;
   const [field, meta] = useField({ ...otherProps });
   const isValid = !meta.error || !meta.touched;
@@ -88,8 +76,7 @@ export const FormTextInput: React.FunctionComponent<FormTextInputProps> = (
   );
 };
 
-interface CheckboxProps
-  extends Omit<PFCheckboxProps, 'onChange' | 'ref' | 'ouiaId'> {
+interface CheckboxProps extends Omit<PFCheckboxProps, 'onChange' | 'ref' | 'ouiaId'> {
   name: string;
   isRequired?: boolean;
   ouiaId?: string;
@@ -124,16 +111,12 @@ export const Checkbox: React.FunctionComponent<CheckboxProps> = (props) => {
   );
 };
 
-interface FormTextAreaProps
-  extends OuiaProps,
-    Omit<PFTextAreaProps, 'id' | 'name' | 'onChange'> {
+interface FormTextAreaProps extends OuiaProps, Omit<PFTextAreaProps, 'id' | 'name' | 'onChange'> {
   id: string;
   name: string;
 }
 
-export const FormTextArea: React.FunctionComponent<FormTextAreaProps> = (
-  props
-) => {
+export const FormTextArea: React.FunctionComponent<FormTextAreaProps> = (props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { innerRef, ...useFieldProps } = props;
   const [field, meta] = useField({ ...useFieldProps });
@@ -152,9 +135,7 @@ export const FormTextArea: React.FunctionComponent<FormTextAreaProps> = (
         value={field.value || ''}
         validated={isValid ? 'default' : 'error'}
         isRequired={props.isRequired}
-        onChange={onChangePFAdapter<React.FormEvent<HTMLTextAreaElement>>(
-          field
-        )}
+        onChange={onChangePFAdapter<React.FormEvent<HTMLTextAreaElement>>(field)}
       />
       {meta.error && (
         <FormHelperText>

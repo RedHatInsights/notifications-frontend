@@ -18,10 +18,7 @@ const intlSettings = { locale };
 
 const MutableMessages = {
   appName: intlHelper(intl.formatMessage(messages.notifications), intlSettings),
-  appNameIntegrations: intlHelper(
-    intl.formatMessage(messages.integrations),
-    intlSettings
-  ),
+  appNameIntegrations: intlHelper(intl.formatMessage(messages.integrations), intlSettings),
   pages: {
     integrations: {
       list: {
@@ -59,8 +56,7 @@ const MutableMessages = {
       },
       notificationsLog: {
         title: 'Notifications log',
-        subtitle:
-          'View details for all notifications delivered to my notification drawer.',
+        subtitle: 'View details for all notifications delivered to my notification drawer.',
       },
     },
     error: {
@@ -120,8 +116,7 @@ const MutableMessages = {
       table: {
         notFound: {
           title: 'No matching events found',
-          description:
-            'This filter criteria matches no events. Try changing your filter settings.',
+          description: 'This filter criteria matches no events. Try changing your filter settings.',
         },
       },
     },

@@ -1,8 +1,4 @@
-import {
-  ClearFilters,
-  Filters,
-  SetFilters,
-} from '../../utils/insights-common-typescript';
+import { ClearFilters, Filters, SetFilters } from '../../utils/insights-common-typescript';
 
 export enum IntegrationFilterColumn {
   NAME = 'name',
@@ -11,6 +7,4 @@ export enum IntegrationFilterColumn {
 
 export type IntegrationFilters = Filters<typeof IntegrationFilterColumn>;
 export type SetIntegrationFilters = SetFilters<typeof IntegrationFilterColumn>;
-export type ClearIntegrationFilters = ClearFilters<
-  typeof IntegrationFilterColumn
->;
+export type ClearIntegrationFilters = ClearFilters<typeof IntegrationFilterColumn>;

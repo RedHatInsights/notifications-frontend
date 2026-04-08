@@ -31,15 +31,13 @@ const App: React.ComponentType = () => {
   updateDocumentTitle?.('Notifications');
   const { rbac, server, isOrgAdmin } = useApp();
   const insights = getInsights();
-  const [usingExperimental, setUsingExperimental] =
-    React.useState<boolean>(false);
+  const [usingExperimental, setUsingExperimental] = React.useState<boolean>(false);
 
   const toggleExperimental = React.useCallback(
     (isEnabled) => {
       if (isEnabled) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        (insights.chrome as any).getEnvironmentOriginal =
-          insights.chrome.getEnvironment;
+        (insights.chrome as any).getEnvironmentOriginal = insights.chrome.getEnvironment;
         insights.chrome.getEnvironment = () => 'ci';
       } else {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any

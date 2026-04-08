@@ -4,11 +4,7 @@ import { Content } from '@patternfly/react-core/dist/dynamic/components/Content'
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
-import {
-  Table,
-  TableBody,
-  TableHeader,
-} from '@patternfly/react-table/deprecated';
+import { Table, TableBody, TableHeader } from '@patternfly/react-table/deprecated';
 import {
   IActions,
   IActionsResolver,
@@ -32,10 +28,7 @@ import { style } from 'typestyle';
 import Config from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
 import { Messages } from '../../properties/Messages';
-import {
-  IntegrationConnectionAttempt,
-  UserIntegration,
-} from '../../types/Integration';
+import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
 import {
   AggregatedConnectionAttemptStatus,
   aggregateConnectionAttemptStatus,
@@ -48,27 +41,15 @@ import { ExpandedContent } from './Table/ExpandedContent';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { LastConnectionHelpTable } from './Table/LastConnectionHelpTable';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
-import {
-  Direction,
-  Sort,
-  UseSortReturn,
-} from '../../utils/insights-common-typescript';
+import { Direction, Sort, UseSortReturn } from '../../utils/insights-common-typescript';
 
-export type OnEnable = (
-  integration: IntegrationRow,
-  index: number,
-  isChecked: boolean
-) => void;
+export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
 interface IntegrationsTableProps extends OuiaProps {
   isLoading: boolean;
   loadingCount?: number;
   integrations: Array<IntegrationRow>;
-  onCollapse?: (
-    integration: IntegrationRow,
-    index: number,
-    isOpen: boolean
-  ) => void;
+  onCollapse?: (integration: IntegrationRow, index: number, isOpen: boolean) => void;
   onEnable?: OnEnable;
   actionResolver: (row: IntegrationRow, index: number) => IActions;
   sortBy?: Sort;
@@ -107,10 +88,7 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
   }
 };
 
-const toTableRows = (
-  integrations: Array<IntegrationRow>,
-  onEnable?: OnEnable
-): IRow[] => {
+const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): IRow[] => {
   return integrations.reduce((rows, integration, idx) => {
     rows.push({
       id: integration.id,
@@ -153,9 +131,7 @@ const toTableRows = (
                   id={`table-row-switch-id-${integration.id}`}
                   aria-label="Enabled"
                   isChecked={integration.isEnabled}
-                  onChange={(_e, isChecked) =>
-                    onEnable && onEnable(integration, idx, isChecked)
-                  }
+                  onChange={(_e, isChecked) => onEnable && onEnable(integration, idx, isChecked)}
                   isDisabled={!onEnable}
                   ouiaId={`enabled-${integration.id}`}
                 />
@@ -175,10 +151,7 @@ const toTableRows = (
               {integration.lastConnectionAttempts !== undefined &&
                 getConnectionAlert(integration.lastConnectionAttempts)}
               <div className="pf-v5-u-pl-0 pf-v5-u-pb-0">
-                <ExpandedContent
-                  integration={integration}
-                  ouiaId={integration.id}
-                />
+                <ExpandedContent integration={integration} ouiaId={integration.id} />
               </div>
             </>
           ),
@@ -211,9 +184,7 @@ const columns: Array<ICell> = [
           hasAutoWidth: true,
           headerContent: (
             <Content>
-              <Content component="h6">
-                Last connection attempt status meanings
-              </Content>
+              <Content component="h6">Last connection attempt status meanings</Content>
             </Content>
           ),
         },
@@ -253,9 +224,7 @@ const buildClassNames = () => {
 
 const { tableClassName } = buildClassNames();
 
-const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
-  props
-) => {
+const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (props) => {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { trRef, className, rowProps, row, ...rest } = props;
   if (!row) {
@@ -265,9 +234,7 @@ const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
   return (
     <tr
       {...rest}
-      ref={
-        trRef as any /* eslint-disable-line @typescript-eslint/no-explicit-any */
-      }
+      ref={trRef as any /* eslint-disable-line @typescript-eslint/no-explicit-any */}
       className={css('pf-v5-c-table__tr', className)}
       hidden={row?.isExpanded !== undefined && !row.isExpanded}
     >
@@ -276,17 +243,13 @@ const RowWrapper: React.FunctionComponent<Omit<RowWrapperProps, 'onResize'>> = (
   );
 };
 
-export const IntegrationsTable: React.FunctionComponent<
-  IntegrationsTableProps
-> = (props) => {
+export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> = (props) => {
   const intl = useIntl();
   const onCollapseHandler = React.useCallback(
     (_event, _index: number, isOpen: boolean, data: IRowData) => {
       const integrations = props.integrations;
       const onCollapse = props.onCollapse;
-      const index = integrations.findIndex(
-        (integration) => integration.id === data.id
-      );
+      const index = integrations.findIndex((integration) => integration.id === data.id);
       if (onCollapse && index !== -1) {
         const integration = integrations[index];
         onCollapse(integration, index, isOpen);
@@ -303,9 +266,7 @@ export const IntegrationsTable: React.FunctionComponent<
         propsOnSort(
           mapping.index,
           mapping.name,
-          direction === SortByDirection.asc
-            ? Direction.ASCENDING
-            : Direction.DESCENDING
+          direction === SortByDirection.asc ? Direction.ASCENDING : Direction.DESCENDING
         );
       }
     },
@@ -341,9 +302,7 @@ export const IntegrationsTable: React.FunctionComponent<
       const actionResolver = props.actionResolver;
 
       if (rowData.parent === undefined && rowData && props.integrations) {
-        const integrationIndex = props.integrations.findIndex(
-          (i) => i.id === rowData.id
-        );
+        const integrationIndex = props.integrations.findIndex((i) => i.id === rowData.id);
         const integrationRow = props.integrations[integrationIndex];
         if (integrationRow) {
           return actionResolver(integrationRow, integrationIndex);
@@ -357,15 +316,9 @@ export const IntegrationsTable: React.FunctionComponent<
 
   if (props.isLoading) {
     return (
-      <div
-        {...getOuiaProps('Integrations/Table', { ...props, ouiaSafe: false })}
-      >
+      <div {...getOuiaProps('Integrations/Table', { ...props, ouiaSafe: false })}>
         <SkeletonTable
-          rows={
-            props.loadingCount && props.loadingCount > 0
-              ? props.loadingCount
-              : 10
-          }
+          rows={props.loadingCount && props.loadingCount > 0 ? props.loadingCount : 10}
           columns={columns.map(({ title }) => title)}
         />
       </div>
@@ -378,9 +331,7 @@ export const IntegrationsTable: React.FunctionComponent<
         variant={EmptyStateVariant.full}
         icon={SearchIcon}
         title={intl.formatMessage(messages.integrationsEmptyStateTitle)}
-        description={intl.formatMessage(
-          messages.integrationsTableEmptyStateBody
-        )}
+        description={intl.formatMessage(messages.integrationsTableEmptyStateBody)}
       />
     );
   }
@@ -393,9 +344,7 @@ export const IntegrationsTable: React.FunctionComponent<
         rows={rows}
         cells={columns}
         onCollapse={onCollapseHandler}
-        rowWrapper={
-          RowWrapper as (props: RowWrapperProps) => React.ReactElement
-        }
+        rowWrapper={RowWrapper as (props: RowWrapperProps) => React.ReactElement}
         actionResolver={actionsResolverCallback}
         isStickyHeader={true}
         onSort={onSort}

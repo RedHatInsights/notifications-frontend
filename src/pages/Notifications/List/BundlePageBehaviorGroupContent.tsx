@@ -6,12 +6,7 @@ import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
 import { NotificationsToolbar } from '../../../components/Notifications/Toolbar';
 import { useListNotificationsOld } from '../../../services/useListNotifications';
-import {
-  BehaviorGroup,
-  Facet,
-  NotificationBehaviorGroup,
-  UUID,
-} from '../../../types/Notification';
+import { BehaviorGroup, Facet, NotificationBehaviorGroup, UUID } from '../../../types/Notification';
 import { useEventTypesPage } from '../hooks/useEventTypesPage';
 import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import { useBehaviorGroupContent } from './useBehaviorGroupContent';
@@ -49,15 +44,9 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     console.log('Export to', type);
   }, []);
 
-  const eventTypePage = useEventTypesPage(
-    props.bundle,
-    props.applications,
-    true
-  );
+  const eventTypePage = useEventTypesPage(props.bundle, props.applications, true);
 
-  const useNotifications = useListNotificationsOld(
-    eventTypePage.pageController.page
-  );
+  const useNotifications = useListNotificationsOld(eventTypePage.pageController.page);
 
   const count = useMemo(() => {
     const payload = useNotifications.payload;
@@ -81,8 +70,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     cancelEditMode,
     updateBehaviorGroups,
   } = useBehaviorGroupNotificationRows(
-    !useNotifications.loading &&
-      useNotifications.payload?.type === 'eventTypesArray'
+    !useNotifications.loading && useNotifications.payload?.type === 'eventTypesArray'
       ? useNotifications.payload.value.data
       : noEvents,
     behaviorGroups
@@ -95,11 +83,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   }, [behaviorGroups, updateBehaviorGroups]);
 
   const onBehaviorGroupLinkUpdated = useCallback(
-    (
-      notification: NotificationBehaviorGroup,
-      behaviorGroup: BehaviorGroup,
-      isLinked: boolean
-    ) => {
+    (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, isLinked: boolean) => {
       if (behaviorGroup) {
         updateBehaviorGroupLink(notification.id, behaviorGroup, isLinked);
       }
@@ -146,8 +130,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       onSelect={(event, tabIndex) => {
         const newSearchParams = new URLSearchParams(location.search);
         const selectedTab =
-          Object.keys(tabMapping).find((key) => tabMapping[key] === tabIndex) ??
-          'configuration';
+          Object.keys(tabMapping).find((key) => tabMapping[key] === tabIndex) ?? 'configuration';
         newSearchParams.set('tab', selectedTab);
         navigate(`${location.pathname}?${newSearchParams.toString()}`, {
           replace: true,
@@ -168,15 +151,9 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
             notifications={notificationRows}
             behaviorGroupContent={behaviorGroupContent}
             onBehaviorGroupLinkUpdated={onBehaviorGroupLinkUpdated}
-            onStartEditing={
-              rbac.canWriteNotifications ? onStartEditing : undefined
-            }
-            onFinishEditing={
-              rbac.canWriteNotifications ? onFinishEditing : undefined
-            }
-            onCancelEditing={
-              rbac.canWriteNotifications ? onCancelEditing : undefined
-            }
+            onStartEditing={rbac.canWriteNotifications ? onStartEditing : undefined}
+            onFinishEditing={rbac.canWriteNotifications ? onFinishEditing : undefined}
+            onCancelEditing={rbac.canWriteNotifications ? onCancelEditing : undefined}
             onSort={eventTypePage.onSort}
             sortBy={eventTypePage.sortBy}
             sortDirection={eventTypePage.sortDirection}

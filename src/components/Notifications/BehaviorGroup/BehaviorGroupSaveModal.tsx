@@ -5,10 +5,7 @@ import * as React from 'react';
 import { BehaviorGroupSchema } from '../../../schemas/Integrations/Notifications';
 import { BehaviorGroup, areActionsEqual } from '../../../types/Notification';
 import { EditBehaviorGroupForm } from './BehaviorGroupForm';
-import {
-  SaveModal,
-  SaveModalProps,
-} from '../../../utils/insights-common-typescript';
+import { SaveModal, SaveModalProps } from '../../../utils/insights-common-typescript';
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onSave';
 export type BehaviorGroupSaveModalProps = Omit<SaveModalProps, UsedProps> & {
@@ -21,13 +18,10 @@ interface InternalProps {
   data: BehaviorGroupSaveModalProps['data'];
 }
 
-const InternalBehaviorGroupSaveModal: React.FunctionComponent<InternalProps> = (
-  props
-) => {
+const InternalBehaviorGroupSaveModal: React.FunctionComponent<InternalProps> = (props) => {
   const title = `${props.data?.id ? 'Edit' : 'Create new'} behavior group`;
 
-  const { handleSubmit, isValid, isSubmitting, values } =
-    useFormikContext<BehaviorGroup>();
+  const { handleSubmit, isValid, isSubmitting, values } = useFormikContext<BehaviorGroup>();
 
   const needsSaving = React.useMemo(() => {
     if (!isValid) {
@@ -68,9 +62,9 @@ const InternalBehaviorGroupSaveModal: React.FunctionComponent<InternalProps> = (
   );
 };
 
-export const BehaviorGroupSaveModal: React.FunctionComponent<
-  BehaviorGroupSaveModalProps
-> = (props) => {
+export const BehaviorGroupSaveModal: React.FunctionComponent<BehaviorGroupSaveModalProps> = (
+  props
+) => {
   const onSubmit = React.useCallback(
     async (data: Partial<BehaviorGroup>) => {
       const onClose = props.onClose;
@@ -92,10 +86,7 @@ export const BehaviorGroupSaveModal: React.FunctionComponent<
       onSubmit={onSubmit}
       validateOnMount={true}
     >
-      <InternalBehaviorGroupSaveModal
-        onClose={props.onClose}
-        data={props.data}
-      />
+      <InternalBehaviorGroupSaveModal onClose={props.onClose} data={props.data} />
     </Formik>
   );
 };

@@ -9,5 +9,4 @@ const deleteBehaviorGroupAction = (id: UUID) => {
   });
 };
 
-export const useDeleteBehaviorGroupMutation = () =>
-  useMutation(deleteBehaviorGroupAction);
+export const useDeleteBehaviorGroupMutation = () => useMutation(deleteBehaviorGroupAction);

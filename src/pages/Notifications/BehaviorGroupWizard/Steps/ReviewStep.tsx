@@ -24,9 +24,7 @@ interface EventTypeReviewTableProps {
   events: ReadonlyArray<EventType>;
 }
 
-const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = (
-  props
-) => {
+const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = (props) => {
   return (
     <Grid>
       <GridItem span={6}>
@@ -60,10 +58,7 @@ const ReviewStep: React.FunctionComponent = () => {
       <DescriptionList isHorizontal>
         <DescriptionListGroup>
           <DescriptionListTerm>Name</DescriptionListTerm>
-          <DescriptionListDescription>
-            {' '}
-            {values.displayName}
-          </DescriptionListDescription>
+          <DescriptionListDescription> {values.displayName}</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
           <DescriptionListTerm> Actions and recipients</DescriptionListTerm>

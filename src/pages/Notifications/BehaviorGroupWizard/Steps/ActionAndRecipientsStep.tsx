@@ -22,8 +22,7 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
         </Title>
         <Content className="pf-v5-u-pt-sm">
           <Content component="p">
-            Select action and recipient pairs to assign to your notification
-            events.
+            Select action and recipient pairs to assign to your notification events.
           </Content>
         </Content>
         <EditBehaviorGroupForm behaviorGroup={values} />
