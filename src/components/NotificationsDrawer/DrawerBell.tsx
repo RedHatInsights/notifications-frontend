@@ -15,8 +15,9 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
     drawerActions: { toggleDrawerContent },
   } = useChrome();
   const {
-    state: { hasUnread, ready },
+    state: { hasUnread, ready, notificationData },
   } = useNotificationDrawer();
+  const unreadCount = notificationData.filter((n) => !n.read).length;
   return (
     <ToolbarItem className="pf-v6-u-mx-0">
       <Tooltip
@@ -29,6 +30,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
         <NotificationBadge
           className="chr-c-notification-badge"
           variant={hasUnread ? 'unread' : 'read'}
+          count={unreadCount}
           onClick={() => {
             toggleDrawerContent({
               scope: 'notifications',
