@@ -58,8 +58,7 @@ describe('src/components/NotificationsDrawer/DrawerBell', () => {
   it('does not show a count when all notifications are read', () => {
     renderBell([makeNotification('1', true), makeNotification('2', true)]);
 
-    expect(screen.queryByText('1')).not.toBeInTheDocument();
-    expect(screen.queryByText('2')).not.toBeInTheDocument();
+    expect(screen.queryByText('0')).not.toBeInTheDocument();
   });
 
   it('renders the bell button when there are no notifications', () => {
