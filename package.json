@@ -11,6 +11,7 @@
     "@patternfly/react-icons": "^6.4.0",
     "@patternfly/react-styles": "^6.4.0",
     "@patternfly/react-table": "^6.4.0",
+    "@project-kessel/react-kessel-access-check": "^0.5.0",
     "@redhat-cloud-services/frontend-components": "^6.1.1",
     "@redhat-cloud-services/frontend-components-notifications": "^6.1.14",
     "@redhat-cloud-services/frontend-components-translations": "^4.0.16",
@@ -134,8 +135,8 @@
     "webpack-bundle-analyzer": "4.8.0"
   },
   "scripts": {
-    "build": "fec build",
-    "static": "fec static",
+    "build": "npx --no-install fec build",
+    "static": "npx --no-install fec static",
     "cypress": "cypress",
     "cypress:run": "cypress run --browser electron",
     "cypress:run:e2e": "cypress run --browser electron",
@@ -152,7 +153,7 @@
     "lint:ts": "eslint --ext js,ts,tsx config src test",
     "lint:ts:fix": "eslint --ext js,ts,tsx config src test --fix",
     "lint:sass": "stylelint 'src/**/*.scss' --config .stylelintrc.json",
-    "start": "HOT=true fec dev",
+    "start": "HOT=true npx --no-install fec dev",
     "ci": "npm-run-all build lint 'test --coverage --forceExit --maxWorkers=4 --detectOpenHandles'",
     "verify": "npm-run-all build lint test",
     "nightly": "npm run deploy",

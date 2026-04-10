@@ -131,4 +131,11 @@ export default defineMessages({
     description: 'Placeholder text for group name filter',
     defaultMessage: 'Filter by group name...',
   },
+
+  // Permission messages
+  usersCountWithoutPrincipalRead: {
+    id: 'integrations.userAccessGroups.usersCountWithoutPermission',
+    description: 'User count display when rbac:principal:read permission is denied',
+    defaultMessage: '{count} {count, plural, one {user} other {users}}',
+  },
 });

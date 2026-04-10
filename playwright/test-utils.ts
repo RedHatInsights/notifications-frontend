@@ -36,23 +36,14 @@ async function removeTrustArcOverlay(page: Page) {
   await page
     .evaluate(() => {
       document
-        .querySelectorAll(
-          '.truste_box_overlay, iframe[name="trustarc_cm"], iframe.truste_popframe'
-        )
+        .querySelectorAll('.truste_box_overlay, iframe[name="trustarc_cm"], iframe.truste_popframe')
         .forEach((el) => el.remove());
     })
     .catch(() => undefined);
 }
 
-export async function login(
-  page: Page,
-  user: string,
-  password: string
-): Promise<void> {
-  await expect(
-    page.locator('text=Lockdown'),
-    'proxy config incorrect'
-  ).toHaveCount(0);
+export async function login(page: Page, user: string, password: string): Promise<void> {
+  await expect(page.locator('text=Lockdown'), 'proxy config incorrect').toHaveCount(0);
 
   await removeTrustArcOverlay(page);
 
@@ -76,7 +67,9 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     const user = process.env.E2E_USER!;
     const password = process.env.E2E_PASSWORD!;
     await page.waitForLoadState('load');
-    await expect(page.locator('#username-verification')).toBeVisible();
+    await expect(page.getByLabel('Red Hat login')).toBeVisible({
+      timeout: 10000,
+    });
     await removeTrustArcOverlay(page);
     await login(page, user, password);
     await page.waitForLoadState('load');

@@ -4,6 +4,7 @@ import FormRenderer from '@data-driven-forms/react-form-renderer/form-renderer';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
 import { ClientContextProvider } from 'react-fetching-library';
+import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import Review from './Review';
 import CardSelect from './CustomComponents/CardSelect';
 import InlineAlert from './CustomComponents/InlineAlert';
@@ -29,6 +30,7 @@ import { Store } from 'redux';
 import { useIntl } from 'react-intl';
 import { IntegrationType } from '../../../types/Integration';
 import { RbacGroupContextProvider } from '../../../app/rbac/RbacGroupContextProvider';
+import { KesselRbacAccessProvider } from '../../../app/rbac/KesselRbacAccessProvider';
 import { createFetchingClient, getInsights } from '../../../utils/insights-common-typescript';
 import './styling/integrations-wizard.scss';
 
@@ -184,11 +186,15 @@ const IntegrationWizardWrapper: React.FC<{ store?: Store } & IntegrationWizardPr
   );
 
   const content = (
-    <ClientContextProvider client={client}>
-      <RbacGroupContextProvider>
-        <IntegrationWizard {...props} />
-      </RbacGroupContextProvider>
-    </ClientContextProvider>
+    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/rbac/v2">
+      <KesselRbacAccessProvider>
+        <ClientContextProvider client={client}>
+          <RbacGroupContextProvider>
+            <IntegrationWizard {...props} />
+          </RbacGroupContextProvider>
+        </ClientContextProvider>
+      </KesselRbacAccessProvider>
+    </AccessCheck.Provider>
   );
 
   return store ? <Provider store={store}>{content}</Provider> : content;
