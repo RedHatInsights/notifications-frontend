@@ -41,15 +41,15 @@ export const EmptyNotifications = ({
       module: './state/globalState',
       importName: 'Models',
     },
-    {}
+    null
   );
 
-  const Models = module as ModelsType;
+  const Models = module as ModelsType | null;
   const [, setVAState] = useVirtualAssistant || [null, null];
-  const isVAAvailable = !loading && !!setVAState && !!Models;
+  const isVAAvailable = !loading && !!setVAState && !!Models?.VA;
 
   const handleContactAdmin = () => {
-    if (setVAState) {
+    if (setVAState && Models?.VA) {
       onLinkClick();
       setVAState({
         isOpen: true,

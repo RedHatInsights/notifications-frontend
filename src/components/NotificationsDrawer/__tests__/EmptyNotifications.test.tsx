@@ -111,6 +111,17 @@ describe('EmptyNotifications', () => {
         })
       ).not.toBeInTheDocument();
     });
+
+    it('renders contact admin as plain text when Models.VA is missing', () => {
+      mockModels = {};
+      renderComponent({});
+      expect(screen.getByText('Contact your organization administrator')).toBeInTheDocument();
+      expect(
+        screen.queryByRole('button', {
+          name: 'Contact your organization administrator',
+        })
+      ).not.toBeInTheDocument();
+    });
   });
 
   describe('org admin user', () => {
