@@ -2,6 +2,8 @@ import { Schemas } from '../generated/OpenapiNotifications';
 import { IntegrationType } from './Integration';
 import { UUID } from './Notification';
 
+export type EventSeverity = Schemas.Severity;
+
 export interface NotificationEventStatus {
   last: Schemas.EventLogEntryActionStatus;
   isDegraded: boolean;
@@ -22,6 +24,7 @@ export interface NotificationEvent {
   bundle: string;
   actions: ReadonlyArray<NotificationEventAction>;
   date: Date;
+  severity?: EventSeverity;
 }
 
 export type EventPeriod = [Date | undefined, Date | undefined];

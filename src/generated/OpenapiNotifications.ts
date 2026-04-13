@@ -6,12 +6,9 @@ import * as z from 'zod';
 import { ValidatedResponse } from 'openapi2typescript';
 import { Action } from 'react-fetching-library';
 import { ValidateRule } from 'openapi2typescript';
-import {
-  ActionValidatableConfig,
-  actionBuilder,
-} from 'openapi2typescript/react-fetching-library';
+import { ActionValidatableConfig, actionBuilder } from 'openapi2typescript/react-fetching-library';
 
-export namespace Schemas {
+export module Schemas {
   export const Application = zodSchemaApplication();
   export type Application = {
     bundle_id: UUID;
@@ -57,8 +54,7 @@ export namespace Schemas {
     updated?: LocalDateTime | undefined | null;
   };
 
-  export const CreateBehaviorGroupRequest =
-    zodSchemaCreateBehaviorGroupRequest();
+  export const CreateBehaviorGroupRequest = zodSchemaCreateBehaviorGroupRequest();
   export type CreateBehaviorGroupRequest = {
     bundle_id?: UUID | undefined | null;
     bundle_name?: string | undefined | null;
@@ -68,8 +64,7 @@ export namespace Schemas {
     event_type_ids?: Array<string> | undefined | null;
   };
 
-  export const CreateBehaviorGroupResponse =
-    zodSchemaCreateBehaviorGroupResponse();
+  export const CreateBehaviorGroupResponse = zodSchemaCreateBehaviorGroupResponse();
   export type CreateBehaviorGroupResponse = {
     bundle_id: UUID;
     created: LocalDateTime;
@@ -86,6 +81,7 @@ export namespace Schemas {
     description?: string | undefined | null;
     id?: UUID | undefined | null;
     read: boolean;
+    severity?: string | undefined | null;
     source?: string | undefined | null;
     title?: string | undefined | null;
   };
@@ -109,13 +105,7 @@ export namespace Schemas {
   export type EndpointProperties = unknown;
 
   export const EndpointStatus = zodSchemaEndpointStatus();
-  export type EndpointStatus =
-    | 'READY'
-    | 'UNKNOWN'
-    | 'NEW'
-    | 'PROVISIONING'
-    | 'DELETING'
-    | 'FAILED';
+  export type EndpointStatus = 'READY' | 'UNKNOWN' | 'NEW' | 'PROVISIONING' | 'DELETING' | 'FAILED';
 
   export const EndpointType = zodSchemaEndpointType();
   export type EndpointType =
@@ -133,8 +123,10 @@ export namespace Schemas {
     bundle: string;
     created: LocalDateTime;
     event_type: string;
+    external_id?: UUID | undefined | null;
     id: UUID;
     payload?: string | undefined | null;
+    severity?: Severity | undefined | null;
   };
 
   export const EventLogEntryAction = zodSchemaEventLogEntryAction();
@@ -149,30 +141,27 @@ export namespace Schemas {
     endpoint_sub_type?: string | undefined | null;
     endpoint_type: EndpointType;
     id: UUID;
+    recipients_count?: number | undefined | null;
     status: EventLogEntryActionStatus;
   };
 
   export const EventLogEntryActionStatus = zodSchemaEventLogEntryActionStatus();
-  export type EventLogEntryActionStatus =
-    | 'SENT'
-    | 'SUCCESS'
-    | 'PROCESSING'
-    | 'FAILED'
-    | 'UNKNOWN';
+  export type EventLogEntryActionStatus = 'SENT' | 'SUCCESS' | 'PROCESSING' | 'FAILED' | 'UNKNOWN';
 
   export const EventType = zodSchemaEventType();
   export type EventType = {
     application?: Application | undefined | null;
     application_id: UUID;
+    available_severities?: Array<Severity> | undefined | null;
+    default_severity?: Severity | undefined | null;
     description?: string | undefined | null;
     display_name: string;
     fully_qualified_name?: string | undefined | null;
     id?: UUID | undefined | null;
+    included_in_drawer?: boolean | undefined | null;
     name: string;
-    not_subscription_locked_or_subscribed_by_default?:
-      | boolean
-      | undefined
-      | null;
+    not_subscription_locked_or_subscribed_by_default?: boolean | undefined | null;
+    restrict_to_recipients_integrations?: boolean | undefined | null;
     subscribed_by_default?: boolean | undefined | null;
     subscription_locked?: boolean | undefined | null;
     visible?: boolean | undefined | null;
@@ -240,11 +229,13 @@ export namespace Schemas {
     meta: Meta;
   };
 
+  export const Severity = zodSchemaSeverity();
+  export type Severity = 'CRITICAL' | 'IMPORTANT' | 'MODERATE' | 'LOW' | 'NONE' | 'UNDEFINED';
+
   export const UUID = zodSchemaUUID();
   export type UUID = string;
 
-  export const UpdateBehaviorGroupRequest =
-    zodSchemaUpdateBehaviorGroupRequest();
+  export const UpdateBehaviorGroupRequest = zodSchemaUpdateBehaviorGroupRequest();
   export type UpdateBehaviorGroupRequest = {
     display_name?: string | undefined | null;
     display_name_not_null_and_blank?: boolean | undefined | null;
@@ -252,8 +243,7 @@ export namespace Schemas {
     event_type_ids?: Array<string> | undefined | null;
   };
 
-  export const UpdateNotificationDrawerStatus =
-    zodSchemaUpdateNotificationDrawerStatus();
+  export const UpdateNotificationDrawerStatus = zodSchemaUpdateNotificationDrawerStatus();
   export type UpdateNotificationDrawerStatus = {
     notification_ids: Array<string>;
     read_status: boolean;
@@ -356,6 +346,7 @@ export namespace Schemas {
         description: z.string().optional().nullable(),
         id: zodSchemaUUID().optional().nullable(),
         read: z.boolean(),
+        severity: z.string().optional().nullable(),
         source: z.string().optional().nullable(),
         title: z.string().optional().nullable(),
       })
@@ -385,25 +376,11 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointStatus() {
-    return z.enum([
-      'READY',
-      'UNKNOWN',
-      'NEW',
-      'PROVISIONING',
-      'DELETING',
-      'FAILED',
-    ]);
+    return z.enum(['READY', 'UNKNOWN', 'NEW', 'PROVISIONING', 'DELETING', 'FAILED']);
   }
 
   function zodSchemaEndpointType() {
-    return z.enum([
-      'ansible',
-      'camel',
-      'drawer',
-      'email_subscription',
-      'webhook',
-      'pagerduty',
-    ]);
+    return z.enum(['ansible', 'camel', 'drawer', 'email_subscription', 'webhook', 'pagerduty']);
   }
 
   function zodSchemaEventLogEntry() {
@@ -414,8 +391,10 @@ export namespace Schemas {
         bundle: z.string(),
         created: zodSchemaLocalDateTime(),
         event_type: z.string(),
+        external_id: zodSchemaUUID().optional().nullable(),
         id: zodSchemaUUID(),
         payload: z.string().optional().nullable(),
+        severity: zodSchemaSeverity().optional().nullable(),
       })
       .nonstrict();
   }
@@ -428,6 +407,7 @@ export namespace Schemas {
         endpoint_sub_type: z.string().optional().nullable(),
         endpoint_type: zodSchemaEndpointType(),
         id: zodSchemaUUID(),
+        recipients_count: z.number().int().optional().nullable(),
         status: zodSchemaEventLogEntryActionStatus(),
       })
       .nonstrict();
@@ -442,15 +422,16 @@ export namespace Schemas {
       .object({
         application: zodSchemaApplication().optional().nullable(),
         application_id: zodSchemaUUID(),
+        available_severities: z.array(zodSchemaSeverity()).optional().nullable(),
+        default_severity: zodSchemaSeverity().optional().nullable(),
         description: z.string().optional().nullable(),
         display_name: z.string(),
         fully_qualified_name: z.string().optional().nullable(),
         id: zodSchemaUUID().optional().nullable(),
+        included_in_drawer: z.boolean().optional().nullable(),
         name: z.string(),
-        not_subscription_locked_or_subscribed_by_default: z
-          .boolean()
-          .optional()
-          .nullable(),
+        not_subscription_locked_or_subscribed_by_default: z.boolean().optional().nullable(),
+        restrict_to_recipients_integrations: z.boolean().optional().nullable(),
         subscribed_by_default: z.boolean().optional().nullable(),
         subscription_locked: z.boolean().optional().nullable(),
         visible: z.boolean().optional().nullable(),
@@ -541,6 +522,10 @@ export namespace Schemas {
       .nonstrict();
   }
 
+  function zodSchemaSeverity() {
+    return z.enum(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE', 'UNDEFINED']);
+  }
+
   function zodSchemaUUID() {
     return z.string();
   }
@@ -581,11 +566,7 @@ export module Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<
-          'CreateBehaviorGroupResponse',
-          200,
-          Schemas.CreateBehaviorGroupResponse
-        >
+      | ValidatedResponse<'CreateBehaviorGroupResponse', 200, Schemas.CreateBehaviorGroupResponse>
       | ValidatedResponse<'unknown', 400, Response400>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
@@ -689,11 +670,10 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
-          '{id}',
-          params['id'].toString()
-        );
+      const path = '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
+        '{id}',
+        params['id'].toString()
+      );
       const query = {} as Record<string, any>;
       return actionBuilder('PUT', path)
         .queryParams(query)
@@ -722,11 +702,10 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
-          '{id}',
-          params['id'].toString()
-        );
+      const path = '/api/notifications/v1.0/notifications/behaviorGroups/{id}'.replace(
+        '{id}',
+        params['id'].toString()
+      );
       const query = {} as Record<string, any>;
       return actionBuilder('DELETE', path)
         .queryParams(query)
@@ -778,11 +757,10 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/notifications/v1.0/notifications/bundles/{bundleName}'.replace(
-          '{bundleName}',
-          params['bundleName'].toString()
-        );
+      const path = '/api/notifications/v1.0/notifications/bundles/{bundleName}'.replace(
+        '{bundleName}',
+        params['bundleName'].toString()
+      );
       const query = {} as Record<string, any>;
       return actionBuilder('GET', path)
         .queryParams(query)
@@ -889,11 +867,7 @@ export module Operations {
     }
 
     export type Payload =
-      | ValidatedResponse<
-          'PageDrawerEntryPayload',
-          200,
-          Schemas.PageDrawerEntryPayload
-        >
+      | ValidatedResponse<'PageDrawerEntryPayload', 200, Schemas.PageDrawerEntryPayload>
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
@@ -942,13 +916,7 @@ export module Operations {
       return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-          rules: [
-            new ValidateRule(
-              Schemas.PageDrawerEntryPayload,
-              'PageDrawerEntryPayload',
-              200
-            ),
-          ],
+          rules: [new ValidateRule(Schemas.PageDrawerEntryPayload, 'PageDrawerEntryPayload', 200)],
         })
         .build();
     };
@@ -1048,9 +1016,7 @@ export module Operations {
       return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-          rules: [
-            new ValidateRule(Schemas.PageEventType, 'PageEventType', 200),
-          ],
+          rules: [new ValidateRule(Schemas.PageEventType, 'PageEventType', 200)],
         })
         .build();
     };
@@ -1197,6 +1163,38 @@ export module Operations {
         .build();
     };
   }
+  // PUT /notifications/eventTypes/{eventTypeId}/endpoints
+  // Update the list of endpoints for an event type
+  export module NotificationResource$v1UpdateEventTypeEndpoints {
+    const Body = z.array(z.string());
+    type Body = Array<string>;
+    const Response200 = z.string();
+    type Response200 = string;
+    export interface Params {
+      eventTypeId: Schemas.UUID;
+      body: Body;
+    }
+
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (params: Params): ActionCreator => {
+      const path =
+        '/api/notifications/v1.0/notifications/eventTypes/{eventTypeId}/endpoints'.replace(
+          '{eventTypeId}',
+          params['eventTypeId'].toString()
+        );
+      const query = {} as Record<string, any>;
+      return actionBuilder('PUT', path)
+        .queryParams(query)
+        .data(params.body)
+        .config({
+          rules: [new ValidateRule(Response200, 'unknown', 200)],
+        })
+        .build();
+    };
+  }
   // PUT /notifications/eventTypes/{eventTypeUuid}/behaviorGroups/{behaviorGroupUuid}
   // Add a behavior group to the given event type.
   export module NotificationResource$v1AppendBehaviorGroupToEventType {
@@ -1212,10 +1210,7 @@ export module Operations {
     export const actionCreator = (params: Params): ActionCreator => {
       const path =
         '/api/notifications/v1.0/notifications/eventTypes/{eventTypeUuid}/behaviorGroups/{behaviorGroupUuid}'
-          .replace(
-            '{behaviorGroupUuid}',
-            params['behaviorGroupUuid'].toString()
-          )
+          .replace('{behaviorGroupUuid}', params['behaviorGroupUuid'].toString())
           .replace('{eventTypeUuid}', params['eventTypeUuid'].toString());
       const query = {} as Record<string, any>;
       return actionBuilder('PUT', path)
@@ -1251,6 +1246,8 @@ export module Operations {
     type Offset = number;
     const PageNumber = z.number().int();
     type PageNumber = number;
+    const Severities = z.array(Schemas.Severity);
+    type Severities = Array<Schemas.Severity>;
     const SortBy = z.string();
     type SortBy = string;
     const Status = z.array(Schemas.EventLogEntryActionStatus);
@@ -1268,6 +1265,7 @@ export module Operations {
       limit?: Limit;
       offset?: Offset;
       pageNumber?: PageNumber;
+      severities?: Severities;
       sortBy?: SortBy;
       startDate?: Schemas.LocalDate;
       status?: Status;
@@ -1328,6 +1326,10 @@ export module Operations {
         query['pageNumber'] = params['pageNumber'];
       }
 
+      if (params['severities'] !== undefined) {
+        query['severities'] = params['severities'];
+      }
+
       if (params['sortBy'] !== undefined) {
         query['sort_by'] = params['sortBy'];
       }
@@ -1343,13 +1345,7 @@ export module Operations {
       return actionBuilder('GET', path)
         .queryParams(query)
         .config({
-          rules: [
-            new ValidateRule(
-              Schemas.PageEventLogEntry,
-              'PageEventLogEntry',
-              200
-            ),
-          ],
+          rules: [new ValidateRule(Schemas.PageEventLogEntry, 'PageEventLogEntry', 200)],
         })
         .build();
     };
@@ -1414,6 +1410,26 @@ export module Operations {
         .build();
     };
   }
+  // GET /notifications/severities
+  // List configured severities
+  export module NotificationResource$v1GetSeverities {
+    const Response200 = z.array(Schemas.Severity);
+    type Response200 = Array<Schemas.Severity>;
+    export type Payload =
+      | ValidatedResponse<'unknown', 200, Response200>
+      | ValidatedResponse<'unknown', undefined, unknown>;
+    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
+    export const actionCreator = (): ActionCreator => {
+      const path = '/api/notifications/v1.0/notifications/severities';
+      const query = {} as Record<string, any>;
+      return actionBuilder('GET', path)
+        .queryParams(query)
+        .config({
+          rules: [new ValidateRule(Response200, 'unknown', 200)],
+        })
+        .build();
+    };
+  }
   // GET /org-config/daily-digest/time-preference
   // Retrieve the daily digest time
   export module OrgConfigResource$v1GetDailyDigestTimePreference {
@@ -1424,8 +1440,7 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (): ActionCreator => {
-      const path =
-        '/api/notifications/v1.0/org-config/daily-digest/time-preference';
+      const path = '/api/notifications/v1.0/org-config/daily-digest/time-preference';
       const query = {} as Record<string, any>;
       return actionBuilder('GET', path)
         .queryParams(query)
@@ -1448,8 +1463,7 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/notifications/v1.0/org-config/daily-digest/time-preference';
+      const path = '/api/notifications/v1.0/org-config/daily-digest/time-preference';
       const query = {} as Record<string, any>;
       return actionBuilder('PUT', path)
         .queryParams(query)
