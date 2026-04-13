@@ -1,28 +1,35 @@
-import { toSeverityLabelProps } from '../EventLogTable';
+import { severityDescription, toSeverityLabelProps } from '../EventLogTable';
 
 describe('EventLogTable severity', () => {
-  describe.each([
-    ['CRITICAL', 'red'],
-    ['IMPORTANT', 'orange'],
-    ['MODERATE', 'yellow'],
-    ['LOW', 'blue'],
-    ['NONE', 'grey'],
-    ['UNDEFINED', 'grey'],
-  ] as const)('toSeverityLabelProps(%s)', (severity, expectedColor) => {
-    it(`returns color "${expectedColor}"`, () => {
-      const result = toSeverityLabelProps(severity);
-      expect(result.color).toBe(expectedColor);
-    });
+  describe.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE', 'UNDEFINED'] as const)(
+    'toSeverityLabelProps(%s)',
+    (severity) => {
+      it('returns an icon element', () => {
+        const result = toSeverityLabelProps(severity);
+        expect(result.icon).toBeTruthy();
+      });
 
-    it('returns an icon element', () => {
-      const result = toSeverityLabelProps(severity);
-      expect(result.icon).toBeTruthy();
-    });
+      it('does not set a color prop (uses PF tokens)', () => {
+        const result = toSeverityLabelProps(severity);
+        expect(result.color).toBeUndefined();
+      });
+    }
+  );
+
+  it('returns icon for undefined severity', () => {
+    const result = toSeverityLabelProps(undefined);
+    expect(result.icon).toBeTruthy();
+    expect(result.color).toBeUndefined();
   });
 
-  it('returns grey for undefined severity', () => {
-    const result = toSeverityLabelProps(undefined);
-    expect(result.color).toBe('grey');
-    expect(result.icon).toBeTruthy();
+  describe('severityDescription', () => {
+    it.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE', 'UNDEFINED'] as const)(
+      'has a non-empty description for %s',
+      (severity) => {
+        expect(severityDescription[severity]).toBeTruthy();
+        expect(typeof severityDescription[severity]).toBe('string');
+        expect(severityDescription[severity].length).toBeGreaterThan(0);
+      }
+    );
   });
 });
