@@ -13,6 +13,7 @@ export const toNotificationEvent = (serverEvent: ServerEvent): NotificationEvent
   event: serverEvent.event_type,
   date: fromUtc(new Date(serverEvent.created)),
   actions: sortEventActions(groupActions(serverEvent.actions)),
+  severity: serverEvent.severity ?? undefined,
 });
 
 const sortEventActions = (actions: Array<NotificationEventAction>) => {

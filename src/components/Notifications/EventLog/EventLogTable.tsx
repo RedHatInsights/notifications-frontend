@@ -13,6 +13,7 @@ import {
   ExclamationTriangleIcon,
   HelpIcon,
   InProgressIcon,
+  InfoCircleIcon,
   UnknownIcon,
 } from '@patternfly/react-icons';
 import {
@@ -33,7 +34,7 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
-import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
+import { EventSeverity, NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
 import { EmptyStateSearch } from '../../EmptyStateSearch';
 import { ActionsHelpPopover } from './ActionsHelpPopover';
@@ -52,6 +53,7 @@ export interface EventLogTableProps {
 
 export enum EventLogTableColumns {
   EVENT,
+  SEVERITY,
   SERVICE,
   DATE,
 }
@@ -59,6 +61,50 @@ export enum EventLogTableColumns {
 const labelClassName = style({
   cursor: 'pointer',
 });
+
+export const toSeverityLabelProps = (
+  severity?: EventSeverity
+): Pick<LabelProps, 'color' | 'icon'> => {
+  switch (severity) {
+    case 'CRITICAL':
+      return {
+        color: 'red',
+        icon: <ExclamationCircleIcon />,
+      };
+    case 'IMPORTANT':
+      return {
+        color: 'orange',
+        icon: <ExclamationTriangleIcon />,
+      };
+    case 'MODERATE':
+      return {
+        color: 'yellow',
+        icon: <InfoCircleIcon />,
+      };
+    case 'LOW':
+      return {
+        color: 'blue',
+        icon: <InfoCircleIcon />,
+      };
+    case 'NONE':
+    case 'UNDEFINED':
+    case undefined:
+    default:
+      return {
+        color: 'grey',
+        icon: <UnknownIcon />,
+      };
+  }
+};
+
+const severityDisplayName: Record<EventSeverity, string> = {
+  CRITICAL: 'Critical',
+  IMPORTANT: 'Important',
+  MODERATE: 'Moderate',
+  LOW: 'Low',
+  NONE: 'None',
+  UNDEFINED: 'Undefined',
+};
 
 export const toLabelProps = (
   actionStatus: NotificationEventStatus
@@ -115,6 +161,14 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
   const sortOptions: Record<EventLogTableColumns, undefined | ThProps['sort']> = React.useMemo(
     () => ({
       [EventLogTableColumns.EVENT]: undefined,
+      [EventLogTableColumns.SEVERITY]: {
+        sortBy: {
+          direction: props.sortDirection,
+          index: props.sortColumn,
+        },
+        columnIndex: EventLogTableColumns.SEVERITY,
+        onSort,
+      },
       [EventLogTableColumns.SERVICE]: undefined,
       [EventLogTableColumns.DATE]: {
         sortBy: {
@@ -145,12 +199,24 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
           <Td>
             <Skeleton />
           </Td>
+          <Td>
+            <Skeleton />
+          </Td>
         </Tr>
       ));
     } else {
       return events.map((e) => (
         <Tr key={e.id}>
           <Td>{e.event}</Td>
+          <Td>
+            {e.severity ? (
+              <Label {...toSeverityLabelProps(e.severity)}>
+                {severityDisplayName[e.severity] ?? e.severity}
+              </Label>
+            ) : (
+              <Label {...toSeverityLabelProps(undefined)}>{'— Undefined'}</Label>
+            )}
+          </Td>
           <Td>
             {e.application} - {e.bundle}
           </Td>
@@ -201,6 +267,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
       <Thead>
         <Tr>
           <Th sort={sortOptions[EventLogTableColumns.EVENT]}>Event type</Th>
+          <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
           <Th sort={sortOptions[EventLogTableColumns.SERVICE]}>Service</Th>
           <Th>
             Action taken{' '}
