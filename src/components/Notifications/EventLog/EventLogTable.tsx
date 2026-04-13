@@ -1,6 +1,7 @@
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
 import { Popover } from '@patternfly/react-core/dist/dynamic/components/Popover';
 import { Skeleton } from '@patternfly/react-core/dist/dynamic/components/Skeleton';
+import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 import { Button, ButtonVariant } from '@patternfly/react-core/dist/dynamic/components/Button';
 import {
   Label,
@@ -13,7 +14,12 @@ import {
   ExclamationTriangleIcon,
   HelpIcon,
   InProgressIcon,
-  InfoCircleIcon,
+  SeverityCriticalIcon,
+  SeverityImportantIcon,
+  SeverityMinorIcon,
+  SeverityModerateIcon,
+  SeverityNoneIcon,
+  SeverityUndefinedIcon,
   UnknownIcon,
 } from '@patternfly/react-icons';
 import {
@@ -68,31 +74,53 @@ export const toSeverityLabelProps = (
   switch (severity) {
     case 'CRITICAL':
       return {
-        color: 'red',
-        icon: <ExclamationCircleIcon />,
+        icon: (
+          <SeverityCriticalIcon
+            style={{ color: 'var(--pf-t--global--icon--color--severity--critical--default)' }}
+          />
+        ),
       };
     case 'IMPORTANT':
       return {
-        color: 'orange',
-        icon: <ExclamationTriangleIcon />,
+        icon: (
+          <SeverityImportantIcon
+            style={{ color: 'var(--pf-t--global--icon--color--severity--important--default)' }}
+          />
+        ),
       };
     case 'MODERATE':
       return {
-        color: 'yellow',
-        icon: <InfoCircleIcon />,
+        icon: (
+          <SeverityModerateIcon
+            style={{ color: 'var(--pf-t--global--icon--color--severity--moderate--default)' }}
+          />
+        ),
       };
     case 'LOW':
       return {
-        color: 'blue',
-        icon: <InfoCircleIcon />,
+        icon: (
+          <SeverityMinorIcon
+            style={{ color: 'var(--pf-t--global--icon--color--severity--minor--default)' }}
+          />
+        ),
       };
     case 'NONE':
+      return {
+        icon: (
+          <SeverityNoneIcon
+            style={{ color: 'var(--pf-t--global--icon--color--severity--none--default)' }}
+          />
+        ),
+      };
     case 'UNDEFINED':
     case undefined:
     default:
       return {
-        color: 'grey',
-        icon: <UnknownIcon />,
+        icon: (
+          <SeverityUndefinedIcon
+            style={{ color: 'var(--pf-t--global--icon--color--severity--undefined--default)' }}
+          />
+        ),
       };
   }
 };
@@ -104,6 +132,15 @@ const severityDisplayName: Record<EventSeverity, string> = {
   LOW: 'Low',
   NONE: 'None',
   UNDEFINED: 'Undefined',
+};
+
+export const severityDescription: Record<EventSeverity, string> = {
+  CRITICAL: 'Urgent notification about an event with impact to your systems',
+  IMPORTANT: 'Errors or other events that may impact your systems',
+  MODERATE: 'Warning',
+  LOW: 'Information only',
+  NONE: 'Debug or informative updates',
+  UNDEFINED: 'Severity level has not been defined for this event',
 };
 
 export const toLabelProps = (
@@ -161,14 +198,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
   const sortOptions: Record<EventLogTableColumns, undefined | ThProps['sort']> = React.useMemo(
     () => ({
       [EventLogTableColumns.EVENT]: undefined,
-      [EventLogTableColumns.SEVERITY]: {
-        sortBy: {
-          direction: props.sortDirection,
-          index: props.sortColumn,
-        },
-        columnIndex: EventLogTableColumns.SEVERITY,
-        onSort,
-      },
+      [EventLogTableColumns.SEVERITY]: undefined,
       [EventLogTableColumns.SERVICE]: undefined,
       [EventLogTableColumns.DATE]: {
         sortBy: {
@@ -209,16 +239,20 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         <Tr key={e.id}>
           <Td>{e.event}</Td>
           <Td>
-            {e.severity ? (
-              <Label {...toSeverityLabelProps(e.severity)}>
-                {severityDisplayName[e.severity] ?? e.severity}
-              </Label>
-            ) : (
-              <Label {...toSeverityLabelProps(undefined)}>{'— Undefined'}</Label>
-            )}
+            {e.application} - {e.bundle}
           </Td>
           <Td>
-            {e.application} - {e.bundle}
+            {e.severity ? (
+              <Tooltip content={severityDescription[e.severity]}>
+                <Label {...toSeverityLabelProps(e.severity)}>
+                  {severityDisplayName[e.severity] ?? e.severity}
+                </Label>
+              </Tooltip>
+            ) : (
+              <Tooltip content={severityDescription.UNDEFINED}>
+                <Label {...toSeverityLabelProps(undefined)}>{'— Undefined'}</Label>
+              </Tooltip>
+            )}
           </Td>
           <Td>
             {e.actions.length > 0 ? (
@@ -267,8 +301,8 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
       <Thead>
         <Tr>
           <Th sort={sortOptions[EventLogTableColumns.EVENT]}>Event type</Th>
-          <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
           <Th sort={sortOptions[EventLogTableColumns.SERVICE]}>Service</Th>
+          <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
           <Th>
             Action taken{' '}
             <ActionsHelpPopover>

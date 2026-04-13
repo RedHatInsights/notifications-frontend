@@ -76,11 +76,9 @@ export const EventLogPage: React.FunctionComponent = () => {
       case EventLogTableColumns.DATE:
         column = 'created';
         break;
-      case EventLogTableColumns.SEVERITY:
-        column = 'severity';
-        break;
       default:
-        throw new Error(`Invalid sorting index: ${sortColumn}`);
+        column = 'created';
+        break;
     }
 
     return Sort.by(column, direction);
