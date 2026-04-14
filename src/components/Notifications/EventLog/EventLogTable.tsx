@@ -14,12 +14,6 @@ import {
   ExclamationTriangleIcon,
   HelpIcon,
   InProgressIcon,
-  SeverityCriticalIcon,
-  SeverityImportantIcon,
-  SeverityMinorIcon,
-  SeverityModerateIcon,
-  SeverityNoneIcon,
-  SeverityUndefinedIcon,
   UnknownIcon,
 } from '@patternfly/react-icons';
 import {
@@ -40,8 +34,13 @@ import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
-import { EventSeverity, NotificationEvent, NotificationEventStatus } from '../../../types/Event';
+import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
+import {
+  severityDescription,
+  severityDisplayName,
+  toSeverityLabelProps,
+} from '../../../utils/severityUtils';
 import { EmptyStateSearch } from '../../EmptyStateSearch';
 import { ActionsHelpPopover } from './ActionsHelpPopover';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
@@ -68,120 +67,13 @@ const labelClassName = style({
   cursor: 'pointer',
 });
 
-/**
- * Filled label backgrounds use PatternFly global **severity** surface tokens
- * (`--pf-t--global--color--severity--*-100`), aligned with the severity palette in
- * https://www.patternfly.org/patterns/status-and-severity/#severity-icons
- *
- * Variables are set via inline `style` on `Label` so they are not overridden by
- * PatternFly stylesheet order (a prior class-only approach left all chips grey).
- *
- * Foreground uses white/black for contrast. Icons are severity-shaped, not status icons.
- */
-const severityLabelFgOnDark = 'var(--pf-t--color--white)';
-const severityLabelFgOnLight = 'var(--pf-t--color--black)';
-
-/** Inline Label `style` so PF label CSS does not override single-class typestyle rules (load order). */
-const severityLabelVars = (vars: Record<string, string>): React.CSSProperties =>
-  vars as React.CSSProperties;
-
-export const eventLogSeverityLabelStyles: Record<EventSeverity, React.CSSProperties> = {
-  CRITICAL: severityLabelVars({
-    '--pf-v6-c-label--BackgroundColor': 'var(--pf-t--global--color--severity--critical--100)',
-    '--pf-v6-c-label--Color': severityLabelFgOnDark,
-    '--pf-v6-c-label__icon--Color': severityLabelFgOnDark,
-  }),
-  IMPORTANT: severityLabelVars({
-    '--pf-v6-c-label--BackgroundColor': 'var(--pf-t--global--color--severity--important--100)',
-    '--pf-v6-c-label--Color': severityLabelFgOnDark,
-    '--pf-v6-c-label__icon--Color': severityLabelFgOnDark,
-  }),
-  MODERATE: severityLabelVars({
-    '--pf-v6-c-label--BackgroundColor': 'var(--pf-t--global--color--severity--moderate--100)',
-    '--pf-v6-c-label--Color': severityLabelFgOnLight,
-    '--pf-v6-c-label__icon--Color': severityLabelFgOnLight,
-  }),
-  LOW: severityLabelVars({
-    '--pf-v6-c-label--BackgroundColor': 'var(--pf-t--global--color--severity--minor--100)',
-    '--pf-v6-c-label--Color': severityLabelFgOnLight,
-    '--pf-v6-c-label__icon--Color': severityLabelFgOnLight,
-  }),
-  NONE: severityLabelVars({
-    '--pf-v6-c-label--BackgroundColor': 'var(--pf-t--global--color--severity--none--100)',
-    '--pf-v6-c-label--Color': severityLabelFgOnDark,
-    '--pf-v6-c-label__icon--Color': severityLabelFgOnDark,
-  }),
-  UNDEFINED: severityLabelVars({
-    '--pf-v6-c-label--BorderColor': 'var(--pf-t--global--color--severity--undefined--200)',
-    '--pf-v6-c-label--Color': severityLabelFgOnLight,
-    '--pf-v6-c-label__icon--Color': severityLabelFgOnLight,
-  }),
-};
-
-export const toSeverityLabelProps = (
-  severity?: EventSeverity
-): Pick<LabelProps, 'color' | 'icon' | 'style' | 'status' | 'variant'> => {
-  switch (severity) {
-    case 'CRITICAL':
-      return {
-        style: eventLogSeverityLabelStyles.CRITICAL,
-        icon: <SeverityCriticalIcon />,
-      };
-    case 'IMPORTANT':
-      return {
-        style: eventLogSeverityLabelStyles.IMPORTANT,
-        icon: <SeverityImportantIcon />,
-      };
-    case 'MODERATE':
-      return {
-        style: eventLogSeverityLabelStyles.MODERATE,
-        icon: <SeverityModerateIcon />,
-      };
-    case 'LOW':
-      return {
-        style: eventLogSeverityLabelStyles.LOW,
-        icon: <SeverityMinorIcon />,
-      };
-    case 'NONE':
-      return {
-        style: eventLogSeverityLabelStyles.NONE,
-        icon: <SeverityNoneIcon />,
-      };
-    case 'UNDEFINED':
-      return {
-        style: eventLogSeverityLabelStyles.UNDEFINED,
-        color: 'grey',
-        variant: 'outline',
-        icon: <SeverityUndefinedIcon />,
-      };
-    case undefined:
-    default:
-      return {
-        style: eventLogSeverityLabelStyles.UNDEFINED,
-        color: 'grey',
-        variant: 'outline',
-        icon: <SeverityUndefinedIcon />,
-      };
-  }
-};
-
-const severityDisplayName: Record<EventSeverity, string> = {
-  CRITICAL: 'Critical',
-  IMPORTANT: 'Important',
-  MODERATE: 'Moderate',
-  LOW: 'Low',
-  NONE: 'None',
-  UNDEFINED: 'Undefined',
-};
-
-export const severityDescription: Record<EventSeverity, string> = {
-  CRITICAL: 'Urgent notification about an event with impact to your systems',
-  IMPORTANT: 'Errors or other events that may impact your systems',
-  MODERATE: 'Warning',
-  LOW: 'Information only',
-  NONE: 'Debug or informative updates',
-  UNDEFINED: 'Severity level has not been defined for this event',
-};
+// Re-export severity utilities from shared module for backward compatibility
+export {
+  eventLogSeverityLabelStyles,
+  toSeverityLabelProps,
+  severityDisplayName,
+  severityDescription,
+} from '../../../utils/severityUtils';
 
 export const toLabelProps = (
   actionStatus: NotificationEventStatus

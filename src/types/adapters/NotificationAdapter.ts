@@ -62,6 +62,7 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
     applicationDisplayName: serverNotification.application.display_name,
     eventTypeDisplayName: serverNotification.display_name,
     description: serverNotification.description || undefined,
+    defaultSeverity: serverNotification.default_severity || undefined,
   };
 };
 

@@ -1,4 +1,12 @@
-import { Content, Pagination, Stack, StackItem, Title } from '@patternfly/react-core';
+import {
+  Content,
+  Label,
+  Pagination,
+  Stack,
+  StackItem,
+  Title,
+  Tooltip,
+} from '@patternfly/react-core';
 import {
   DataView,
   DataViewCheckboxFilter,
@@ -21,10 +29,17 @@ import { getEventTypes, paramsCreator } from '../../api/helpers/notifications/ev
 import { EventType, Facet } from '../../types/Notification';
 import { debouncePromise } from '../../pages/Integrations/Create/nameValidator';
 import { perPageOptions } from '../../config/Config';
+import {
+  SEVERITY_VALUES,
+  severityDescription,
+  severityDisplayName,
+  toSeverityLabelProps,
+} from '../../utils/severityUtils';
 
 interface EventTypeFilters {
   filterEventFilterName?: string;
   filterApplicationId?: string[];
+  filterSeverity?: string[];
 }
 
 interface EventTypesProps {
@@ -53,7 +68,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
     });
   const isEventExpanded = (event: EventType) => expanded.includes(event.id);
   const { filters, onSetFilters, clearAllFilters } = useDataViewFilters<EventTypeFilters>({
-    initialFilters: { filterEventFilterName: '', filterApplicationId: [] },
+    initialFilters: { filterEventFilterName: '', filterApplicationId: [], filterSeverity: [] },
   });
 
   const { page, perPage, onSetPage, onPerPageSelect } = useDataViewPagination({
@@ -83,6 +98,18 @@ const EventTypes: React.FC<EventTypesProps> = ({
     onSelect(true, [...(selectedEvents || [])]);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [currBundle.id]);
+
+  // Filter data client-side by severity since the API does not support it
+  const filteredData = useMemo(() => {
+    if (!response.data || !filters.filterSeverity || filters.filterSeverity.length === 0) {
+      return response.data;
+    }
+
+    return response.data.filter((event) => {
+      const sev = event.defaultSeverity ?? 'UNDEFINED';
+      return filters.filterSeverity!.includes(sev);
+    });
+  }, [response.data, filters.filterSeverity]);
 
   const fetchNotifications = useCallback(
     async (pager, filters) => {
@@ -118,9 +145,10 @@ const EventTypes: React.FC<EventTypesProps> = ({
   }, [fetchNotifications, page, perPage]);
 
   const handleBulkSelect = (value: BulkSelectValue) => {
+    const dataForBulk = filteredData ?? [];
     value === BulkSelectValue.none && setSelected(false, selected, selected);
-    value === BulkSelectValue.nonePage && setSelected(false, response.data, selected);
-    value === BulkSelectValue.page && setSelected(true, response.data, selected);
+    value === BulkSelectValue.nonePage && setSelected(false, dataForBulk, selected);
+    value === BulkSelectValue.page && setSelected(true, dataForBulk, selected);
     if (value === BulkSelectValue.all) {
       (async () => {
         const { data } = await getEventTypes(
@@ -130,9 +158,39 @@ const EventTypes: React.FC<EventTypesProps> = ({
             bundleId: currBundle.id,
           })
         );
-        setSelected(true, data, selected);
+        const allData = toNotifications(data) ?? [];
+        // Apply severity filter to all data if active
+        const filtered =
+          filters.filterSeverity && filters.filterSeverity.length > 0
+            ? allData.filter((event) => {
+                const sev = event.defaultSeverity ?? 'UNDEFINED';
+                return filters.filterSeverity!.includes(sev);
+              })
+            : allData;
+        setSelected(true, filtered, selected);
       })();
     }
+  };
+
+  const displayData = filteredData ?? [];
+
+  const renderSeverityCell = (event: EventType) => {
+    const severity = event.defaultSeverity;
+    if (severity) {
+      return (
+        <Tooltip content={severityDescription[severity]}>
+          <Label {...toSeverityLabelProps(severity)}>
+            {severityDisplayName[severity] ?? severity}
+          </Label>
+        </Tooltip>
+      );
+    }
+
+    return (
+      <Tooltip content={severityDescription.UNDEFINED}>
+        <Label {...toSeverityLabelProps(undefined)}>{'— Undefined'}</Label>
+      </Tooltip>
+    );
   };
 
   return (
@@ -150,7 +208,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
       <StackItem>
         <DataView
           selection={selection}
-          activeState={loading ? 'loading' : (response.data?.length || 0) > 0 ? undefined : 'empty'}
+          activeState={loading ? 'loading' : displayData.length > 0 ? undefined : 'empty'}
         >
           <DataViewToolbar
             aria-label="Events type top toolbar"
@@ -169,15 +227,19 @@ const EventTypes: React.FC<EventTypesProps> = ({
               <BulkSelect
                 aria-label="Event types bulk select"
                 canSelectAll
-                pageCount={response.data?.length || 0}
-                totalCount={response.meta?.count}
+                pageCount={displayData.length}
+                totalCount={
+                  filters.filterSeverity && filters.filterSeverity.length > 0
+                    ? displayData.length
+                    : response.meta?.count
+                }
                 selectedCount={selected.length}
                 pageSelected={
-                  response.data?.length !== 0 && response.data?.every((item) => isSelected(item))
+                  displayData.length !== 0 && displayData.every((item) => isSelected(item))
                 }
                 pagePartiallySelected={
-                  response.data?.some((item) => isSelected(item)) &&
-                  !response.data?.every((item) => isSelected(item))
+                  displayData.some((item) => isSelected(item)) &&
+                  !displayData.every((item) => isSelected(item))
                 }
                 onSelect={handleBulkSelect}
               />
@@ -194,7 +256,10 @@ const EventTypes: React.FC<EventTypesProps> = ({
                       },
                       values
                     );
-                  } else {
+                  } else if (
+                    JSON.stringify(values.filterApplicationId) !==
+                    JSON.stringify(filters.filterApplicationId)
+                  ) {
                     fetchNotifications(
                       {
                         limit: perPage,
@@ -203,6 +268,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
                       values
                     );
                   }
+                  // Severity filter is client-side, no need to refetch
                   onSetFilters(values);
                 }}
                 values={filters}
@@ -225,6 +291,16 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     })) || []
                   }
                 />
+                <DataViewCheckboxFilter
+                  aria-label="Filter by severity"
+                  filterId="filterSeverity"
+                  title="Severity"
+                  placeholder="Filter by severity"
+                  options={SEVERITY_VALUES.map((sev) => ({
+                    label: severityDisplayName[sev],
+                    value: sev,
+                  }))}
+                />
               </DataViewFilters>
             }
             pagination={
@@ -232,7 +308,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
                 aria-label="Event types top pagination"
                 isCompact
                 perPageOptions={perPageOptions}
-                itemCount={response.meta?.count}
+                itemCount={
+                  filters.filterSeverity && filters.filterSeverity.length > 0
+                    ? displayData.length
+                    : response.meta?.count
+                }
                 page={page}
                 perPage={perPage}
                 onSetPage={(e, newPage) => {
@@ -261,7 +341,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
           />
           <Table variant={'compact'} aria-label="Event types table">
             {loading ? (
-              <SkeletonTableHead columns={['Event type', 'Service']} />
+              <SkeletonTableHead columns={['Event type', 'Service', 'Severity']} />
             ) : (
               <Thead aria-label="Event types table head">
                 <Tr>
@@ -269,13 +349,14 @@ const EventTypes: React.FC<EventTypesProps> = ({
                   <Th screenReaderText="Row expansion" />
                   <Th>Event type</Th>
                   <Th>Service</Th>
+                  <Th>Severity</Th>
                 </Tr>
               </Thead>
             )}
             {loading ? (
-              <SkeletonTableBody rowsCount={5} columnsCount={2} />
+              <SkeletonTableBody rowsCount={5} columnsCount={3} />
             ) : (
-              response.data?.map((row: EventType, index) => (
+              displayData.map((row: EventType, index) => (
                 <Tbody key={index}>
                   <Tr aria-label={`Event type ${row.id}`} isContentExpanded={isEventExpanded(row)}>
                     <Td
@@ -308,10 +389,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     />
                     <Td dataLabel="event-type">{row.eventTypeDisplayName}</Td>
                     <Td dataLabel="service">{row.applicationDisplayName}</Td>
+                    <Td dataLabel="severity">{renderSeverityCell(row)}</Td>
                   </Tr>
                   {row.description ? (
                     <Tr aria-label="Event type description" isExpanded={isEventExpanded(row)}>
-                      <Td dataLabel="Event type description" colSpan={4}>
+                      <Td dataLabel="Event type description" colSpan={5}>
                         <ExpandableRowContent>{row.description}</ExpandableRowContent>
                       </Td>
                     </Tr>
@@ -327,7 +409,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
               <Pagination
                 aria-label="Event types footer pagination"
                 perPageOptions={perPageOptions}
-                itemCount={response.meta?.count}
+                itemCount={
+                  filters.filterSeverity && filters.filterSeverity.length > 0
+                    ? displayData.length
+                    : response.meta?.count
+                }
                 page={page}
                 perPage={perPage}
                 onSetPage={(e, newPage) => {
