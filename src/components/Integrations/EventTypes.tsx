@@ -155,7 +155,8 @@ const EventTypes: React.FC<EventTypesProps> = ({
           paramsCreator({
             limit: `${response.meta?.count}`,
             offset: '0',
-            bundleId: currBundle.id,
+            filterBundleId: currBundle.id,
+            ...filters,
           })
         );
         const allData = toNotifications(data) ?? [];
