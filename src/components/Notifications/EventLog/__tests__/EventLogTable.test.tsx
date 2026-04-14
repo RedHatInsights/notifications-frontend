@@ -1,7 +1,11 @@
-import { severityDescription, toSeverityLabelProps } from '../EventLogTable';
+import {
+  eventLogSeverityLabelStyles,
+  severityDescription,
+  toSeverityLabelProps,
+} from '../EventLogTable';
 
 describe('EventLogTable severity', () => {
-  describe.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE', 'UNDEFINED'] as const)(
+  describe.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE'] as const)(
     'toSeverityLabelProps(%s)',
     (severity) => {
       it('returns an icon element', () => {
@@ -9,17 +13,34 @@ describe('EventLogTable severity', () => {
         expect(result.icon).toBeTruthy();
       });
 
-      it('does not set a color prop (uses PF tokens)', () => {
+      it('uses inline Label style with PatternFly severity surface tokens', () => {
         const result = toSeverityLabelProps(severity);
+        expect(result.style).toEqual(eventLogSeverityLabelStyles[severity]);
+        expect(result.status).toBeUndefined();
         expect(result.color).toBeUndefined();
+        expect(result.variant).toBeUndefined();
       });
     }
   );
 
-  it('returns icon for undefined severity', () => {
+  describe('toSeverityLabelProps(UNDEFINED)', () => {
+    it('returns outline grey label with severity undefined border style', () => {
+      const result = toSeverityLabelProps('UNDEFINED');
+      expect(result.icon).toBeTruthy();
+      expect(result.style).toEqual(eventLogSeverityLabelStyles.UNDEFINED);
+      expect(result.status).toBeUndefined();
+      expect(result.color).toBe('grey');
+      expect(result.variant).toBe('outline');
+    });
+  });
+
+  it('matches UNDEFINED styling when severity is missing', () => {
     const result = toSeverityLabelProps(undefined);
     expect(result.icon).toBeTruthy();
-    expect(result.color).toBeUndefined();
+    expect(result.style).toEqual(eventLogSeverityLabelStyles.UNDEFINED);
+    expect(result.status).toBeUndefined();
+    expect(result.color).toBe('grey');
+    expect(result.variant).toBe('outline');
   });
 
   describe('severityDescription', () => {
