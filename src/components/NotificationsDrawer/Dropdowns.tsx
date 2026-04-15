@@ -109,7 +109,6 @@ export const ActionDropdown = ({
           variant="plain"
           id="notifications-actions-toggle"
           aria-label="Notifications actions dropdown"
-          isFullWidth
         >
           <EllipsisVIcon />
         </MenuToggle>
