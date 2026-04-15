@@ -22,6 +22,7 @@ import {
   BulkSelectValue,
 } from '@patternfly/react-component-groups/dist/dynamic/BulkSelect';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import DataViewFilters from '@patternfly/react-data-view/dist/cjs/DataViewFilters';
 import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { toNotifications } from '../../types/adapters/NotificationAdapter';
@@ -53,6 +54,8 @@ const EventTypes: React.FC<EventTypesProps> = ({
   currBundle,
   applications,
 }) => {
+  const { isBeta } = useChrome();
+  const isPreview = isBeta();
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState<{
     meta?: { count: number };
@@ -301,7 +304,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
           />
           <Table variant={'compact'} aria-label="Event types table">
             {loading ? (
-              <SkeletonTableHead columns={['Event type', 'Service', 'Severity']} />
+              <SkeletonTableHead
+                columns={
+                  isPreview ? ['Event type', 'Service', 'Severity'] : ['Event type', 'Service']
+                }
+              />
             ) : (
               <Thead aria-label="Event types table head">
                 <Tr>
@@ -309,12 +316,12 @@ const EventTypes: React.FC<EventTypesProps> = ({
                   <Th screenReaderText="Row expansion" />
                   <Th>Event type</Th>
                   <Th>Service</Th>
-                  <Th>Severity</Th>
+                  {isPreview && <Th>Severity</Th>}
                 </Tr>
               </Thead>
             )}
             {loading ? (
-              <SkeletonTableBody rowsCount={5} columnsCount={3} />
+              <SkeletonTableBody rowsCount={5} columnsCount={isPreview ? 3 : 2} />
             ) : (
               displayData.map((row: EventType, index) => (
                 <Tbody key={index}>
@@ -349,11 +356,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     />
                     <Td dataLabel="event-type">{row.eventTypeDisplayName}</Td>
                     <Td dataLabel="service">{row.applicationDisplayName}</Td>
-                    <Td dataLabel="severity">{renderSeverityCell(row)}</Td>
+                    {isPreview && <Td dataLabel="severity">{renderSeverityCell(row)}</Td>}
                   </Tr>
                   {row.description ? (
                     <Tr aria-label="Event type description" isExpanded={isEventExpanded(row)}>
-                      <Td dataLabel="Event type description" colSpan={5}>
+                      <Td dataLabel="Event type description" colSpan={isPreview ? 5 : 4}>
                         <ExpandableRowContent>{row.description}</ExpandableRowContent>
                       </Td>
                     </Tr>
