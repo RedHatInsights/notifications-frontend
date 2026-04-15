@@ -29,6 +29,7 @@ import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
+import { DailyDigestTrigger } from '../../../components/Notifications/DailyDigestTrigger';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 
@@ -137,6 +138,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                 ></GridItem>
               </Grid>
             </Card>
+            <DailyDigestTrigger />
           </React.Fragment>
         ) : (
           <React.Fragment>
