@@ -169,7 +169,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
 
     return (
       <Tooltip content={severityDescription.UNDEFINED}>
-        <Label {...toSeverityLabelProps(undefined)}>{'— Undefined'}</Label>
+        <Label {...toSeverityLabelProps(undefined)}>{severityDisplayName.UNDEFINED}</Label>
       </Tooltip>
     );
   };

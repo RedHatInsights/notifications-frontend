@@ -182,7 +182,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
               </Tooltip>
             ) : (
               <Tooltip content={severityDescription.UNDEFINED}>
-                <Label {...toSeverityLabelProps(undefined)}>{'— Undefined'}</Label>
+                <Label {...toSeverityLabelProps(undefined)}>{severityDisplayName.UNDEFINED}</Label>
               </Tooltip>
             )}
           </Td>
