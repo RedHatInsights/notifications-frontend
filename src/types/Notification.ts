@@ -3,12 +3,14 @@ import { UserIntegration } from './Integration';
 import { BaseNotificationRecipient } from './Recipient';
 
 export type UUID = Schemas.UUID;
+export type Severity = Schemas.Severity;
 
 export interface EventType {
   id: UUID;
   applicationDisplayName: string;
   eventTypeDisplayName: string;
   description?: string;
+  defaultSeverity?: Severity;
 }
 
 export interface Notification extends EventType {

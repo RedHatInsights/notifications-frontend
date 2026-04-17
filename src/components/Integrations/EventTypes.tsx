@@ -1,4 +1,12 @@
-import { Content, Pagination, Stack, StackItem, Title } from '@patternfly/react-core';
+import {
+  Content,
+  Label,
+  Pagination,
+  Stack,
+  StackItem,
+  Title,
+  Tooltip,
+} from '@patternfly/react-core';
 import {
   DataView,
   DataViewCheckboxFilter,
@@ -14,6 +22,7 @@ import {
   BulkSelectValue,
 } from '@patternfly/react-component-groups/dist/dynamic/BulkSelect';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFlag } from '@unleash/proxy-client-react';
 import DataViewFilters from '@patternfly/react-data-view/dist/cjs/DataViewFilters';
 import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { toNotifications } from '../../types/adapters/NotificationAdapter';
@@ -21,6 +30,11 @@ import { getEventTypes, paramsCreator } from '../../api/helpers/notifications/ev
 import { EventType, Facet } from '../../types/Notification';
 import { debouncePromise } from '../../pages/Integrations/Create/nameValidator';
 import { perPageOptions } from '../../config/Config';
+import {
+  severityDescription,
+  severityDisplayName,
+  toSeverityLabelProps,
+} from '../../utils/severityUtils';
 
 interface EventTypeFilters {
   filterEventFilterName?: string;
@@ -40,6 +54,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
   currBundle,
   applications,
 }) => {
+  const isSeverityEnabled = useFlag('platform.notifications.severity');
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState<{
     meta?: { count: number };
@@ -118,21 +133,45 @@ const EventTypes: React.FC<EventTypesProps> = ({
   }, [fetchNotifications, page, perPage]);
 
   const handleBulkSelect = (value: BulkSelectValue) => {
+    const pageData = response.data ?? [];
     value === BulkSelectValue.none && setSelected(false, selected, selected);
-    value === BulkSelectValue.nonePage && setSelected(false, response.data, selected);
-    value === BulkSelectValue.page && setSelected(true, response.data, selected);
+    value === BulkSelectValue.nonePage && setSelected(false, pageData, selected);
+    value === BulkSelectValue.page && setSelected(true, pageData, selected);
     if (value === BulkSelectValue.all) {
       (async () => {
         const { data } = await getEventTypes(
           paramsCreator({
             limit: `${response.meta?.count}`,
             offset: '0',
-            bundleId: currBundle.id,
+            filterBundleId: currBundle.id,
+            ...filters,
           })
         );
-        setSelected(true, data, selected);
+        const allData = toNotifications(data) ?? [];
+        setSelected(true, allData, selected);
       })();
     }
+  };
+
+  const displayData = response.data ?? [];
+
+  const renderSeverityCell = (event: EventType) => {
+    const severity = event.defaultSeverity;
+    if (severity) {
+      return (
+        <Tooltip content={severityDescription[severity]}>
+          <Label {...toSeverityLabelProps(severity)}>
+            {severityDisplayName[severity] ?? severity}
+          </Label>
+        </Tooltip>
+      );
+    }
+
+    return (
+      <Tooltip content={severityDescription.UNDEFINED}>
+        <Label {...toSeverityLabelProps(undefined)}>{severityDisplayName.UNDEFINED}</Label>
+      </Tooltip>
+    );
   };
 
   return (
@@ -150,7 +189,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
       <StackItem>
         <DataView
           selection={selection}
-          activeState={loading ? 'loading' : (response.data?.length || 0) > 0 ? undefined : 'empty'}
+          activeState={loading ? 'loading' : displayData.length > 0 ? undefined : 'empty'}
         >
           <DataViewToolbar
             aria-label="Events type top toolbar"
@@ -169,15 +208,15 @@ const EventTypes: React.FC<EventTypesProps> = ({
               <BulkSelect
                 aria-label="Event types bulk select"
                 canSelectAll
-                pageCount={response.data?.length || 0}
+                pageCount={displayData.length}
                 totalCount={response.meta?.count}
                 selectedCount={selected.length}
                 pageSelected={
-                  response.data?.length !== 0 && response.data?.every((item) => isSelected(item))
+                  displayData.length !== 0 && displayData.every((item) => isSelected(item))
                 }
                 pagePartiallySelected={
-                  response.data?.some((item) => isSelected(item)) &&
-                  !response.data?.every((item) => isSelected(item))
+                  displayData.some((item) => isSelected(item)) &&
+                  !displayData.every((item) => isSelected(item))
                 }
                 onSelect={handleBulkSelect}
               />
@@ -194,7 +233,10 @@ const EventTypes: React.FC<EventTypesProps> = ({
                       },
                       values
                     );
-                  } else {
+                  } else if (
+                    JSON.stringify(values.filterApplicationId) !==
+                    JSON.stringify(filters.filterApplicationId)
+                  ) {
                     fetchNotifications(
                       {
                         limit: perPage,
@@ -261,7 +303,13 @@ const EventTypes: React.FC<EventTypesProps> = ({
           />
           <Table variant={'compact'} aria-label="Event types table">
             {loading ? (
-              <SkeletonTableHead columns={['Event type', 'Service']} />
+              <SkeletonTableHead
+                columns={
+                  isSeverityEnabled
+                    ? ['Event type', 'Service', 'Severity']
+                    : ['Event type', 'Service']
+                }
+              />
             ) : (
               <Thead aria-label="Event types table head">
                 <Tr>
@@ -269,13 +317,14 @@ const EventTypes: React.FC<EventTypesProps> = ({
                   <Th screenReaderText="Row expansion" />
                   <Th>Event type</Th>
                   <Th>Service</Th>
+                  {isSeverityEnabled && <Th>Severity</Th>}
                 </Tr>
               </Thead>
             )}
             {loading ? (
-              <SkeletonTableBody rowsCount={5} columnsCount={2} />
+              <SkeletonTableBody rowsCount={5} columnsCount={isSeverityEnabled ? 3 : 2} />
             ) : (
-              response.data?.map((row: EventType, index) => (
+              displayData.map((row: EventType, index) => (
                 <Tbody key={index}>
                   <Tr aria-label={`Event type ${row.id}`} isContentExpanded={isEventExpanded(row)}>
                     <Td
@@ -308,10 +357,11 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     />
                     <Td dataLabel="event-type">{row.eventTypeDisplayName}</Td>
                     <Td dataLabel="service">{row.applicationDisplayName}</Td>
+                    {isSeverityEnabled && <Td dataLabel="severity">{renderSeverityCell(row)}</Td>}
                   </Tr>
                   {row.description ? (
                     <Tr aria-label="Event type description" isExpanded={isEventExpanded(row)}>
-                      <Td dataLabel="Event type description" colSpan={4}>
+                      <Td dataLabel="Event type description" colSpan={isSeverityEnabled ? 5 : 4}>
                         <ExpandableRowContent>{row.description}</ExpandableRowContent>
                       </Td>
                     </Tr>
