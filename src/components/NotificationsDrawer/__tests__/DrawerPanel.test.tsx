@@ -88,7 +88,7 @@ describe('DrawerPanel bulk select checkbox', () => {
     expect(checkbox).toBePartiallyChecked();
   });
 
-  it('shows unchecked state when only one of many is selected', () => {
+  it('shows mixed/indeterminate state when only one of many is selected', () => {
     renderDrawerPanel([
       makeNotification('1', false, true),
       makeNotification('2', false, false),
