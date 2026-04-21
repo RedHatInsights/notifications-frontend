@@ -60,6 +60,10 @@ export const useFilterBuilder = (
         filter.and('endpointTypes', Operator.EQUAL, filters.endpointTypes);
       }
 
+      if (filters?.severities) {
+        filter.and('severities', Operator.EQUAL, filters.severities);
+      }
+
       let filterPeriod = [undefined, undefined] as [Date | undefined, Date | undefined];
       const today = toUtc(new Date());
 

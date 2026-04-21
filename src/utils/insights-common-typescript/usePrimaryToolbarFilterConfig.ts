@@ -214,7 +214,7 @@ export const usePrimaryToolbarFilterConfig = <FilterColumn extends StandardFilte
           (key) => meta[key] && meta[key].label === element.category
         ) as undefined | EnumElement<FilterColumn>;
         if (key && Object.values(Enum).includes(key)) {
-          toClear[key] = element.chips.map((c) => c.name); // Todo: Check chips - do they have a value?
+          toClear[key] = element.chips.map((c) => c.value);
         } else {
           throw new Error(`Unexpected filter column label found: ${element.category}`);
         }

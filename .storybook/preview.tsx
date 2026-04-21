@@ -4,27 +4,33 @@ import '@patternfly/patternfly/patternfly-addons.css';
 import './storybook.css';
 import React, { Fragment, useState } from 'react';
 import { IntlProvider } from 'react-intl';
+import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import { createClient, ClientContextProvider } from 'react-fetching-library';
 import { MemoryRouter } from 'react-router-dom';
 import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
 import { ServerStatus } from '../src/types/Server';
-import { ChromeProvider, FeatureFlagsProvider, type ChromeConfig, type FeatureFlagsConfig, type AppContextConfig } from './context-providers';
+import {
+  ChromeProvider,
+  FeatureFlagsProvider,
+  type ChromeConfig,
+  type FeatureFlagsConfig,
+  type AppContextConfig,
+} from './context-providers';
 import { initialize, mswLoader } from 'msw-storybook-addon';
 
-// Create a client for react-fetching-library
-const createTestClient = () => createClient({});
+// Same OpenAPI response shaping as AppEntry so hooks that check payload.status === 200 work (e.g. useGetSeverities).
+const createTestClient = () =>
+  createClient({
+    responseInterceptors: [validateSchemaResponseInterceptor],
+  });
 
 // Wrapper that provides a fresh client for each story
 const ClientWrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [client] = useState(() => createTestClient());
-  
-  return (
-    <ClientContextProvider client={client}>
-      {children}
-    </ClientContextProvider>
-  );
+
+  return <ClientContextProvider client={client}>{children}</ClientContextProvider>;
 };
 
 // Mock insights global for Storybook
@@ -32,6 +38,7 @@ declare global {
   var insights: {
     chrome: {
       getEnvironment: () => string;
+      isBeta: () => boolean;
     };
   };
 }
@@ -39,22 +46,25 @@ declare global {
 // Mock global insights object for libraries that access it directly
 const mockInsightsChrome = {
   getEnvironment: () => 'prod',
-  getUserPermissions: () => Promise.resolve([
-    { permission: 'notifications:*:*', resourceDefinitions: [] },
-    { permission: 'integrations:endpoints:read', resourceDefinitions: [] },
-    { permission: 'integrations:endpoints:write', resourceDefinitions: [] },
-  ]),
+  isBeta: () => false,
+  getUserPermissions: () =>
+    Promise.resolve([
+      { permission: 'notifications:*:*', resourceDefinitions: [] },
+      { permission: 'integrations:endpoints:read', resourceDefinitions: [] },
+      { permission: 'integrations:endpoints:write', resourceDefinitions: [] },
+    ]),
   auth: {
-    getUser: () => Promise.resolve({
-      identity: {
-        user: {
-          username: 'test-user',
-          email: 'test@redhat.com',
-          is_org_admin: true,
-          is_internal: false,
+    getUser: () =>
+      Promise.resolve({
+        identity: {
+          user: {
+            username: 'test-user',
+            email: 'test@redhat.com',
+            is_org_admin: true,
+            is_internal: false,
+          },
         },
-      },
-    }),
+      }),
     getToken: () => Promise.resolve('mock-jwt-token-12345'),
   },
 };
@@ -141,7 +151,10 @@ const preview: Preview = {
           <ChromeProvider value={chromeConfig}>
             <FeatureFlagsProvider value={featureFlags}>
               <AppContext.Provider value={appContextValue}>
-                <IntlProvider locale="en" messages={(messages as Record<string, Record<string, string>>)['en-US']}>
+                <IntlProvider
+                  locale="en"
+                  messages={(messages as Record<string, Record<string, string>>)['en-US']}
+                >
                   <MemoryRouter>
                     <Fragment>
                       <NotificationsProvider>

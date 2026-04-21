@@ -40,8 +40,9 @@ const setFilters = {
   event: jest.fn(),
   bundle: jest.fn(),
   service: jest.fn(),
-  actionType: jest.fn(),
-  actionState: jest.fn(),
+  endpointTypes: jest.fn(),
+  status: jest.fn(),
+  severities: jest.fn(),
 };
 
 describe('src/components/Notifications/EventLog', () => {
@@ -71,11 +72,12 @@ describe('src/components/Notifications/EventLog', () => {
 
     const filterDropdown = screen.getAllByRole('menuitem');
 
-    expect(filterDropdown.length).toBe(4);
+    expect(filterDropdown.length).toBe(5);
     expect(filterDropdown[0]).toHaveTextContent('Event');
     expect(filterDropdown[1]).toHaveTextContent('Service');
     expect(filterDropdown[2]).toHaveTextContent('Action Type');
     expect(filterDropdown[3]).toHaveTextContent('Action Status');
+    expect(filterDropdown[4]).toHaveTextContent('Severity');
   });
 
   it('Render custom Service filter and perform basic tree filtering', async () => {
