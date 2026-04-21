@@ -33,6 +33,7 @@ const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
+  const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
   const getEndpoint = useParameterizedQuery(getEndpointAction);
   const { rbac } = useAppContext();
 
@@ -182,6 +183,7 @@ export const EventLogPage: React.FunctionComponent = () => {
         <EventLogTable
           events={events.data}
           loading={eventsQuery.loading}
+          showSeverity={isEventLogSeverityEnabled}
           onSort={onSort}
           sortColumn={sortColumn}
           sortDirection={sortDirection}
