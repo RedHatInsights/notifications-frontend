@@ -65,6 +65,7 @@ describe('CheckReadPermissions', () => {
     );
 
     expect(screen.queryByText(childText)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /User Preferences/i })).toBeInTheDocument();
   });
 
   it('Shows children for /notificationslog regardless of canReadNotifications', () => {
@@ -116,5 +117,6 @@ describe('CheckReadPermissions', () => {
     );
 
     expect(screen.queryByText(childText)).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: /User Preferences/i })).toBeInTheDocument();
   });
 });
