@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { Flex, FlexItem } from '@patternfly/react-core/dist/dynamic/layouts/Flex';
 import {
   MenuToggle,
   MenuToggleElement,
@@ -120,15 +119,13 @@ export const ActionDropdown = ({
       }}
       id="notifications-actions-dropdown"
     >
-      <DropdownList>
-        <ActionDropdownItems
-          isDisabled={isDisabled}
-          onUpdateSelectedStatus={onUpdateSelectedStatus}
-          onNavigateTo={onNavigateTo}
-          isOrgAdmin={isOrgAdmin}
-          hasNotificationsPermissions={hasNotificationsPermissions}
-        />
-      </DropdownList>
+      <ActionDropdownItems
+        isDisabled={isDisabled}
+        onUpdateSelectedStatus={onUpdateSelectedStatus}
+        onNavigateTo={onNavigateTo}
+        isOrgAdmin={isOrgAdmin}
+        hasNotificationsPermissions={hasNotificationsPermissions}
+      />
     </Dropdown>
   );
 };
@@ -142,54 +139,49 @@ const ActionDropdownItems = ({
 }) => {
   return (
     <>
-      <DropdownItem key="actions" description="Actions" />,
-      <DropdownItem
-        key="read selected"
-        onClick={() => onUpdateSelectedStatus(true)}
-        isDisabled={isDisabled}
-      >
-        Mark selected as read
-      </DropdownItem>
-      ,
-      <DropdownItem
-        key="unread selected"
-        onClick={() => onUpdateSelectedStatus(false)}
-        isDisabled={isDisabled}
-      >
-        Mark selected as unread
-      </DropdownItem>
-      ,
-      <Divider key="divider" />,
-      <DropdownItem key="quick links" description="Quick links" />,
-      <DropdownItem
-        key="notifications log"
-        onClick={() => onNavigateTo('/settings/notifications/notificationslog')}
-      >
-        <Flex>
-          <FlexItem>View notifications log</FlexItem>
-        </Flex>
-      </DropdownItem>
-      ,
-      {(isOrgAdmin || hasNotificationsPermissions) && (
-        <DropdownItem
-          key="notification settings"
-          onClick={() => onNavigateTo('/settings/notifications/configure-events')}
-        >
-          <Flex>
-            <FlexItem>Configure notification settings</FlexItem>
-          </Flex>
-        </DropdownItem>
-      )}
-      ,
-      <DropdownItem
-        key="notification preferences"
-        onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
-      >
-        <Flex>
-          <FlexItem>Manage my notification preferences</FlexItem>
-        </Flex>
-      </DropdownItem>
-      ,
+      <DropdownGroup label="Actions">
+        <DropdownList>
+          <DropdownItem
+            key="read selected"
+            onClick={() => onUpdateSelectedStatus(true)}
+            isDisabled={isDisabled}
+          >
+            Mark selected as read
+          </DropdownItem>
+          <DropdownItem
+            key="unread selected"
+            onClick={() => onUpdateSelectedStatus(false)}
+            isDisabled={isDisabled}
+          >
+            Mark selected as unread
+          </DropdownItem>
+        </DropdownList>
+      </DropdownGroup>
+      <Divider />
+      <DropdownGroup label="Quick links">
+        <DropdownList>
+          <DropdownItem
+            key="notifications log"
+            onClick={() => onNavigateTo('/settings/notifications/notificationslog')}
+          >
+            View notifications log
+          </DropdownItem>
+          {(isOrgAdmin || hasNotificationsPermissions) && (
+            <DropdownItem
+              key="notification settings"
+              onClick={() => onNavigateTo('/settings/notifications/configure-events')}
+            >
+              Configure notification settings
+            </DropdownItem>
+          )}
+          <DropdownItem
+            key="notification preferences"
+            onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
+          >
+            Manage my notification preferences
+          </DropdownItem>
+        </DropdownList>
+      </DropdownGroup>
     </>
   );
 };
