@@ -18,7 +18,6 @@ interface IntegrationsToolbarProps extends OuiaProps {
   onExport: (type: ExporterType) => void;
   filters: IntegrationFilters;
   setFilters: SetIntegrationFilters;
-  pageCount: number;
   count: number;
   page: number;
   perPage: number;
@@ -149,11 +148,6 @@ export const IntegrationsToolbar: React.FunctionComponent<
             isCompact
             variant={PaginationVariant.top}
             onSetPage={pageChanged}
-            onFirstClick={pageChanged}
-            onPreviousClick={pageChanged}
-            onNextClick={pageChanged}
-            onLastClick={pageChanged}
-            onPageInput={pageChanged}
             onPerPageSelect={perPageChanged}
           />
         }
@@ -168,11 +162,6 @@ export const IntegrationsToolbar: React.FunctionComponent<
             perPage={perPage}
             variant={PaginationVariant.bottom}
             onSetPage={pageChanged}
-            onFirstClick={pageChanged}
-            onPreviousClick={pageChanged}
-            onNextClick={pageChanged}
-            onLastClick={pageChanged}
-            onPageInput={pageChanged}
             onPerPageSelect={perPageChanged}
           />
         }

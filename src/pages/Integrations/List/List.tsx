@@ -277,7 +277,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
             filters={integrationFilter.filters}
             setFilters={integrationFilter.setFilters}
             count={integrations.count || 0}
-            pageCount={integrations.data.length}
             page={pageData.page.index}
             perPage={pageData.page.size}
             pageChanged={pageData.changePage}
