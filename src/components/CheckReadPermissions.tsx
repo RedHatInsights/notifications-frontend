@@ -22,6 +22,10 @@ export const CheckReadPermissions: React.FunctionComponent<React.PropsWithChildr
           return rbac?.canReadEvents;
         }
 
+        if (location.pathname === linkTo.notificationsLog()) {
+          return true;
+        }
+
         return rbac?.canReadNotifications;
     }
 
