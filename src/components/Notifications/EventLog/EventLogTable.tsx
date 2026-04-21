@@ -50,6 +50,7 @@ export type SortDirection = 'asc' | 'desc';
 export interface EventLogTableProps {
   events: ReadonlyArray<NotificationEvent>;
   loading: boolean;
+  showSeverity: boolean;
   onSort: (column: EventLogTableColumns, direction: SortDirection) => void;
   sortColumn: EventLogTableColumns;
   sortDirection: SortDirection;
@@ -146,6 +147,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
 
   const rows = React.useMemo(() => {
     const events = props.events;
+    const { showSeverity } = props;
     if (props.loading) {
       return [...Array(10)].map((_, i) => (
         <Tr key={`loading-row-${i}`}>
@@ -155,9 +157,11 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
           <Td>
             <Skeleton />
           </Td>
-          <Td>
-            <Skeleton />
-          </Td>
+          {showSeverity && (
+            <Td>
+              <Skeleton />
+            </Td>
+          )}
           <Td>
             <Skeleton />
           </Td>
@@ -173,19 +177,23 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
           <Td>
             {e.application} - {e.bundle}
           </Td>
-          <Td>
-            {e.severity ? (
-              <Tooltip content={severityDescription[e.severity]}>
-                <Label {...toSeverityLabelProps(e.severity)}>
-                  {severityDisplayName[e.severity] ?? e.severity}
-                </Label>
-              </Tooltip>
-            ) : (
-              <Tooltip content={severityDescription.UNDEFINED}>
-                <Label {...toSeverityLabelProps(undefined)}>{severityDisplayName.UNDEFINED}</Label>
-              </Tooltip>
-            )}
-          </Td>
+          {showSeverity && (
+            <Td>
+              {e.severity ? (
+                <Tooltip content={severityDescription[e.severity]}>
+                  <Label {...toSeverityLabelProps(e.severity)}>
+                    {severityDisplayName[e.severity] ?? e.severity}
+                  </Label>
+                </Tooltip>
+              ) : (
+                <Tooltip content={severityDescription.UNDEFINED}>
+                  <Label {...toSeverityLabelProps(undefined)}>
+                    {severityDisplayName.UNDEFINED}
+                  </Label>
+                </Tooltip>
+              )}
+            </Td>
+          )}
           <Td>
             {e.actions.length > 0 ? (
               <LabelGroup>
@@ -216,7 +224,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         </Tr>
       ));
     }
-  }, [props.loading, props.events, props.getIntegrationRecipient]);
+  }, [props.loading, props.events, props.getIntegrationRecipient, props.showSeverity]);
 
   if (rows.length === 0) {
     return (
@@ -234,7 +242,9 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         <Tr>
           <Th sort={sortOptions[EventLogTableColumns.EVENT]}>Event type</Th>
           <Th sort={sortOptions[EventLogTableColumns.SERVICE]}>Service</Th>
-          <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
+          {props.showSeverity && (
+            <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
+          )}
           <Th>
             Action taken{' '}
             <ActionsHelpPopover>
