@@ -276,7 +276,6 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
             onExport={onExport}
             filters={integrationFilter.filters}
             setFilters={integrationFilter.setFilters}
-            clearFilters={integrationFilter.clearFilter}
             count={integrations.count || 0}
             pageCount={integrations.data.length}
             page={pageData.page.index}
