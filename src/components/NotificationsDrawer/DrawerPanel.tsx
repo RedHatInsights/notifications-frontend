@@ -171,7 +171,11 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
           count={state.notificationData.filter(({ selected }) => selected).length}
           checked={
             state.notificationData.length > 0 &&
-            state.notificationData.every(({ selected }) => selected)
+            state.notificationData.some(({ selected }) => selected)
+              ? state.notificationData.every(({ selected }) => selected)
+                ? true
+                : null
+              : false
           }
         />
         <ActionDropdown
