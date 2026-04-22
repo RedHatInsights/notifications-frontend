@@ -394,6 +394,7 @@ const ToolbarWithEvents: React.FC<ToolbarWithEventsProps> = ({
         sortColumn={sortColumn}
         sortDirection={sortDirection}
         getIntegrationRecipient={getIntegrationRecipient}
+        showSeverity={false}
       />
     </EventLogToolbar>
   );
