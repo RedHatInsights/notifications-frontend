@@ -17,6 +17,7 @@ export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
 
     const useActionType = () => useUrlStateMultipleOptions('endpointTypes');
     const useActionStatus = () => useUrlStateMultipleOptions('status');
+    const useSeverity = () => useUrlStateMultipleOptions('severities');
 
     const useEvent = () => useUrlStateString('event');
 
@@ -32,6 +33,8 @@ export const useEventLogFilter = (debounce = DEBOUNCE_MS) => {
           return useActionType;
         case EventLogFilterColumn.ACTION_STATUS:
           return useActionStatus;
+        case EventLogFilterColumn.SEVERITY:
+          return useSeverity;
         default:
           assertNever(column);
       }

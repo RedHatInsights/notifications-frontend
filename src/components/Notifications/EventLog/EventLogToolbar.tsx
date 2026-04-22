@@ -15,9 +15,15 @@ import { SetStateAction } from 'react';
 import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
 import { useNotifications } from '../../../hooks/useNotifications';
-import { EventPeriod } from '../../../types/Event';
+import { EventPeriod, EventSeverity } from '../../../types/Event';
 import { Facet, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
+import {
+  SEVERITY_VALUES,
+  severityDisplayName,
+  toSeverityLabelProps,
+} from '../../../utils/severityUtils';
+import { useGetSeverities } from '../../../services/Notifications/GetSeverities';
 import { EventLogDateFilter, EventLogDateFilterValue } from './EventLogDateFilter';
 import {
   ClearEventLogFilters,
@@ -125,6 +131,7 @@ export const EventLogToolbar: React.FunctionComponent<
 > = (props) => {
   const notifications = useNotifications();
   const integrations = useIntegrations();
+  const severitiesQuery = useGetSeverities();
 
   const actionTypeMetadata = React.useMemo(() => {
     return notifications
@@ -141,6 +148,24 @@ export const EventLogToolbar: React.FunctionComponent<
         }))
       );
   }, [notifications, integrations]);
+
+  const severityMetadata = React.useMemo(() => {
+    const severities: EventSeverity[] =
+      severitiesQuery.payload?.status === 200 ? severitiesQuery.payload.value : SEVERITY_VALUES;
+
+    return severities.map((severity: EventSeverity) => {
+      const labelProps = toSeverityLabelProps(severity);
+      return {
+        value: severity,
+        chipValue: severityDisplayName[severity],
+        label: (
+          <span>
+            {labelProps.icon} {severityDisplayName[severity]}
+          </span>
+        ),
+      };
+    });
+  }, [severitiesQuery.payload]);
 
   const filterMetadata = React.useMemo<Partial<ColumnsMetada<typeof EventLogFilterColumn>>>(() => {
     return {
@@ -168,8 +193,16 @@ export const EventLogToolbar: React.FunctionComponent<
           items: actionStatusMetadata,
         },
       },
+      [EventLogFilterColumn.SEVERITY]: {
+        label: 'Severity',
+        placeholder: 'Filter by severity',
+        options: {
+          exclusive: false,
+          items: severityMetadata,
+        },
+      },
     };
-  }, [actionTypeMetadata]);
+  }, [actionTypeMetadata, severityMetadata]);
 
   const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfigWrapper(
     props.bundleOptions,

@@ -6,6 +6,7 @@ export enum EventLogFilterColumn {
   SERVICE = 'service',
   ACTION_TYPE = 'endpointTypes',
   ACTION_STATUS = 'status',
+  SEVERITY = 'severities',
 }
 
 export type EventLogFilters = Filters<typeof EventLogFilterColumn>;
