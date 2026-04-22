@@ -95,14 +95,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     updateNotificationsSelected(selected);
   };
 
-  const selectVisibleNotifications = () => {
-    const visibleNotifications =
-      state.filters.length > 0 ? filteredNotifications : state.notificationData;
-    visibleNotifications.forEach((notification) =>
-      updateNotificationSelected(notification.id, true)
-    );
-  };
-
   const onFilterSelect = (chosenFilter: string) => {
     state.filters.includes(chosenFilter)
       ? setFilters(state.filters.filter((filter) => filter !== chosenFilter))
@@ -169,15 +161,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
               title: 'Select none (0)',
               key: 'select-none',
               onClick: () => selectAllNotifications(false),
-            },
-            {
-              title: `Select visible (${
-                state.filters.length > 0
-                  ? filteredNotifications.length
-                  : state.notificationData.length
-              })`,
-              key: 'select-visible',
-              onClick: selectVisibleNotifications,
             },
             {
               title: `Select all (${state.notificationData.length})`,
