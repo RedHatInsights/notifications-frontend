@@ -102,6 +102,11 @@ export const useChrome = () => {
             resourceDefinitions: [],
           },
         ]),
+      addWsEventListener: () => {
+        // Return unregister function that can be called on cleanup
+        return fn().mockName('unregister');
+      },
+      removeWsEventListener: fn().mockName('removeWsEventListener'),
       ...chromeConfig,
     }),
     [chromeConfig]
