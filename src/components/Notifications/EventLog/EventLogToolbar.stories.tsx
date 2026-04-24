@@ -390,6 +390,7 @@ const ToolbarWithEvents: React.FC<ToolbarWithEventsProps> = ({
       <EventLogTable
         events={pageEvents}
         loading={false}
+        showSeverity={true}
         onSort={onSort}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
