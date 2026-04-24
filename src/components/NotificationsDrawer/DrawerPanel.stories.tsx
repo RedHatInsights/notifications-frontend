@@ -80,17 +80,17 @@ const DrawerPanelWrapper = ({ isExpanded = true }: { isExpanded?: boolean }) => 
   );
 };
 
-const seedState = (
+const seedState = async (
   notifications: NotificationData[],
   hasNotificationsPermissions = true,
   ready = true
 ) => {
   const { initialize } = DrawerSingleton.Instance;
 
-  // Initialize with permissions
-  initialize(hasNotificationsPermissions, notificationPerms);
+  // Initialize with permissions and await to prevent race condition
+  await initialize(hasNotificationsPermissions, notificationPerms);
 
-  // Seed notification data
+  // Seed notification data after initialization completes
   Object.assign(DrawerSingleton.getState(), {
     notificationData: notifications,
     hasUnread: notifications.some((n) => !n.read),
