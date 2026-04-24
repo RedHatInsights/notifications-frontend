@@ -47,6 +47,8 @@ spec:
         #!/bin/bash
         set -ex
         npm run lint
+        # TypeScript type-check to catch compilation errors
+        npx tsc --noEmit
         npm test -- --runInBand --no-cache
 
     # E2E tests - only run tests (dependencies installed in workspace-setup-script)
