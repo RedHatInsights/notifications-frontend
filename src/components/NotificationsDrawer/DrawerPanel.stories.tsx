@@ -1,9 +1,8 @@
 import React, { useRef, useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { within, userEvent, expect, waitFor } from '@storybook/test';
-import { BrowserRouter } from 'react-router-dom';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
 import { Page } from '@patternfly/react-core/dist/dynamic/components/Page';
-import { http, HttpResponse, delay } from 'msw';
+import { HttpResponse, delay, http } from 'msw';
 import DrawerPanel from './DrawerPanel';
 import { DrawerSingleton } from './DrawerSingleton';
 import { NotificationData } from '../../types/Drawer';
@@ -61,31 +60,31 @@ const bundleFacets = [
 ];
 
 // Test wrapper component
-const DrawerPanelWrapper = ({ notifications = [], isExpanded = true }: { notifications?: NotificationData[]; isExpanded?: boolean }) => {
+const DrawerPanelWrapper = ({ isExpanded = true }: { isExpanded?: boolean }) => {
   const drawerPanelRef = useRef<HTMLDivElement>(null);
   const [expanded, setExpanded] = useState(isExpanded);
 
   const toggleDrawer = () => setExpanded(!expanded);
 
   return (
-    <BrowserRouter>
-      <Page
-        isNotificationDrawerExpanded={expanded}
-        notificationDrawer={
-          <DrawerPanel panelRef={drawerPanelRef} toggleDrawer={toggleDrawer} />
-        }
-      >
-        <div style={{ padding: '20px' }}>
-          <button id="drawer-toggle" onClick={toggleDrawer}>
-            Toggle drawer
-          </button>
-        </div>
-      </Page>
-    </BrowserRouter>
+    <Page
+      isNotificationDrawerExpanded={expanded}
+      notificationDrawer={<DrawerPanel panelRef={drawerPanelRef} toggleDrawer={toggleDrawer} />}
+    >
+      <div style={{ padding: '20px' }}>
+        <button id="drawer-toggle" onClick={toggleDrawer}>
+          Toggle drawer
+        </button>
+      </div>
+    </Page>
   );
 };
 
-const seedState = (notifications: NotificationData[], hasNotificationsPermissions = true, ready = true) => {
+const seedState = (
+  notifications: NotificationData[],
+  hasNotificationsPermissions = true,
+  ready = true
+) => {
   const { initialize } = DrawerSingleton.Instance;
 
   // Initialize with permissions
@@ -98,7 +97,7 @@ const seedState = (notifications: NotificationData[], hasNotificationsPermission
     ready,
     initializing: !ready,
     hasNotificationsPermissions,
-    filterConfig: bundleFacets.map(b => ({ label: b.displayName, value: b.name })),
+    filterConfig: bundleFacets.map((b) => ({ label: b.displayName, value: b.name })),
     filters: [],
   });
 };
@@ -156,7 +155,7 @@ type Story = StoryObj<typeof DrawerPanelWrapper>;
  */
 export const Default: Story = {
   loaders: [async () => seedState([])],
-  render: () => <DrawerPanelWrapper notifications={[]} />,
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -177,7 +176,7 @@ export const Default: Story = {
  */
 export const WithNotifications: Story = {
   loaders: [async () => seedState(notificationDrawerData)],
-  render: () => <DrawerPanelWrapper notifications={notificationDrawerData} />,
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
 
@@ -200,7 +199,7 @@ export const WithNotifications: Story = {
  */
 export const MarkSingleAsRead: Story = {
   loaders: [async () => seedState(notificationDrawerData)],
-  render: () => <DrawerPanelWrapper notifications={notificationDrawerData} />,
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
@@ -241,14 +240,13 @@ export const MarkSingleAsRead: Story = {
  * Mark a single notification as unread
  */
 export const MarkSingleAsUnread: Story = {
-  loaders: [async () => {
-    const readNotifications = notificationDrawerData.map(n => ({ ...n, read: true }));
-    seedState(readNotifications);
-  }],
-  render: () => {
-    const readNotifications = notificationDrawerData.map(n => ({ ...n, read: true }));
-    return <DrawerPanelWrapper notifications={readNotifications} />;
-  },
+  loaders: [
+    async () => {
+      const readNotifications = notificationDrawerData.map((n) => ({ ...n, read: true }));
+      seedState(readNotifications);
+    },
+  ],
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
@@ -290,7 +288,7 @@ export const MarkSingleAsUnread: Story = {
  */
 export const BulkMarkAllAsRead: Story = {
   loaders: [async () => seedState(notificationDrawerData)],
-  render: () => <DrawerPanelWrapper notifications={notificationDrawerData} />,
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
@@ -339,14 +337,13 @@ export const BulkMarkAllAsRead: Story = {
  * Bulk mark all notifications as unread
  */
 export const BulkMarkAllAsUnread: Story = {
-  loaders: [async () => {
-    const readNotifications = notificationDrawerData.map(n => ({ ...n, read: true }));
-    seedState(readNotifications);
-  }],
-  render: () => {
-    const readNotifications = notificationDrawerData.map(n => ({ ...n, read: true }));
-    return <DrawerPanelWrapper notifications={readNotifications} />;
-  },
+  loaders: [
+    async () => {
+      const readNotifications = notificationDrawerData.map((n) => ({ ...n, read: true }));
+      seedState(readNotifications);
+    },
+  ],
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
@@ -396,7 +393,7 @@ export const BulkMarkAllAsUnread: Story = {
  */
 export const FilterByBundle: Story = {
   loaders: [async () => seedState(notificationDrawerData)],
-  render: () => <DrawerPanelWrapper notifications={notificationDrawerData} />,
+  render: () => <DrawerPanelWrapper />,
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
     const user = userEvent.setup();
@@ -418,7 +415,9 @@ export const FilterByBundle: Story = {
 
     // Verify only 2 console notifications are visible (Notification 2 and 3 are console bundle)
     await waitFor(() => {
-      const filteredItems = canvasElement.querySelectorAll('.pf-v6-c-notification-drawer__list-item');
+      const filteredItems = canvasElement.querySelectorAll(
+        '.pf-v6-c-notification-drawer__list-item'
+      );
       expect(filteredItems).toHaveLength(2);
     });
 
@@ -428,7 +427,9 @@ export const FilterByBundle: Story = {
 
     // Verify all 3 notifications are visible again
     await waitFor(() => {
-      const allItemsAgain = canvasElement.querySelectorAll('.pf-v6-c-notification-drawer__list-item');
+      const allItemsAgain = canvasElement.querySelectorAll(
+        '.pf-v6-c-notification-drawer__list-item'
+      );
       expect(allItemsAgain).toHaveLength(3);
     });
   },
