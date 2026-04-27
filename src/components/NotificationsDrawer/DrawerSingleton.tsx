@@ -1,4 +1,5 @@
 import { Access, AccessApi } from '@redhat-cloud-services/rbac-client';
+import { ChromeAPI } from '@redhat-cloud-services/types';
 import axios from 'axios';
 import { getDateDaysAgo } from '../UtcDate';
 
@@ -38,7 +39,7 @@ export class DrawerSingleton {
   private static _subs: { id: string; rerenderer: () => void }[];
   private static _state: NotificationDrawerState = initialState;
 
-  static subscribe(rerenderer: () => void) {
+  static subscribe(rerenderer: () => void, addWsEventListener?: ChromeAPI['addWsEventListener']) {
     const id = crypto.randomUUID();
     // Run the init procedure if the state is not ready for subscriber
     if (!DrawerSingleton._state.initializing && !DrawerSingleton._state.ready) {
@@ -46,7 +47,7 @@ export class DrawerSingleton {
       rbacApi
         .getPrincipalAccess('notifications', undefined, undefined, 1000)
         .then(({ data: { data } }) => {
-          DrawerSingleton.Instance.initialize(true, data);
+          DrawerSingleton.Instance.initialize(true, data, addWsEventListener);
           DrawerSingleton._state.initializing = false;
           DrawerSingleton._state.ready = true;
           DrawerSingleton._subs.push({ id, rerenderer });
@@ -70,20 +71,21 @@ export class DrawerSingleton {
   }
 
   // initialize function calls the three functions below
-  public initialize = async (mounted: boolean, permissions: Access[]) => {
+  public initialize = async (
+    mounted: boolean,
+    permissions: Access[],
+    addWsEventListener?: ChromeAPI['addWsEventListener']
+  ) => {
     await this.fetchFilterConfig(mounted);
     await this.getNotifications();
     await this.setNotificationsPermissions(mounted, permissions);
-    // We can't use hooks here, so we need to use the public chrome API to subscribe to events
-    // eslint-disable-next-line rulesdir/no-chrome-api-call-from-window
-    window.insights.chrome.addWsEventListener(
-      'com.redhat.console.notifications.drawer',
-      (event) => {
+    if (addWsEventListener) {
+      addWsEventListener('com.redhat.console.notifications.drawer', (event) => {
         if (isNotificationData(event.data)) {
           this.addNotification(event.data);
         }
-      }
-    );
+      });
+    }
   };
 
   public static getState() {
