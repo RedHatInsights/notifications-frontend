@@ -1,42 +1,23 @@
-import { PaginationProps, PaginationVariant } from '@patternfly/react-core';
-import PrimaryToolbar from '@redhat-cloud-services/frontend-components/PrimaryToolbar';
-import { ConditionalFilterProps } from '@redhat-cloud-services/frontend-components/ConditionalFilter';
-import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/FilterChips';
+import { Pagination, PaginationVariant } from '@patternfly/react-core';
+import { ResponsiveAction, ResponsiveActions } from '@patternfly/react-component-groups';
+import { DataViewToolbar } from '@patternfly/react-data-view/dist/dynamic/DataViewToolbar';
+import { DataViewFilters } from '@patternfly/react-data-view/dist/dynamic/DataViewFilters';
+import { DataViewTextFilter } from '@patternfly/react-data-view/dist/dynamic/DataViewTextFilter';
+import { DataViewCheckboxFilter } from '@patternfly/react-data-view/dist/dynamic/DataViewCheckboxFilter';
 import * as React from 'react';
-import { cssRaw, style } from 'typestyle';
 
-import { useTableExportConfig } from '../../hooks/useTableExportConfig';
 import { Messages } from '../../properties/Messages';
+import { ExporterType } from '../../utils/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
-import {
-  ClearIntegrationFilters,
-  IntegrationFilterColumn,
-  IntegrationFilters,
-  SetIntegrationFilters,
-} from './Filters';
+import { IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
-import {
-  ColumnsMetada,
-  ExporterType,
-  usePrimaryToolbarFilterConfig,
-} from '../../utils/insights-common-typescript';
-
-cssRaw(`
-    @media only screen and (max-width: 768px) {
-        #integrations-bottom-toolbar .ins-c-primary-toolbar__pagination {
-            flex: 1;
-        }
-    }
-`);
 
 interface IntegrationsToolbarProps extends OuiaProps {
   onAddIntegration?: () => void;
   onExport: (type: ExporterType) => void;
   filters: IntegrationFilters;
   setFilters: SetIntegrationFilters;
-  clearFilters: ClearIntegrationFilters;
-  pageCount: number;
   count: number;
   page: number;
   perPage: number;
@@ -44,130 +25,147 @@ interface IntegrationsToolbarProps extends OuiaProps {
   perPageChanged: (page: number) => void;
 }
 
-const enabledTextClassName = style({
-  marginLeft: 4,
-});
-
-const filterMetadata: ColumnsMetada<typeof IntegrationFilterColumn> = {
-  [IntegrationFilterColumn.NAME]: {
-    label: 'Name',
-    placeholder: 'Filter by name',
+const enabledFilterOptions = [
+  {
+    value: 'Enabled',
+    label: (
+      <>
+        <EnabledIntegrationIcon /> Enabled
+      </>
+    ),
   },
-  [IntegrationFilterColumn.ENABLED]: {
-    label: 'Enabled',
-    placeholder: 'Filter by enabled',
-    options: {
-      exclusive: false,
-      items: [
-        {
-          value: 'Enabled',
-          label: (
-            <>
-              <EnabledIntegrationIcon /> <span className={enabledTextClassName}>Enabled</span>
-            </>
-          ),
-        },
-        {
-          value: 'Disabled',
-          label: (
-            <>
-              <DisabledIntegrationIcon /> <span className={enabledTextClassName}>Disabled</span>
-            </>
-          ),
-        },
-      ],
-    },
+  {
+    value: 'Disabled',
+    label: (
+      <>
+        <DisabledIntegrationIcon /> Disabled
+      </>
+    ),
   },
-};
+];
 
 export const IntegrationsToolbar: React.FunctionComponent<
   React.PropsWithChildren<IntegrationsToolbarProps>
-> = (props) => {
-  const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfig(
-    IntegrationFilterColumn,
-    props.filters,
-    props.setFilters,
-    props.clearFilters,
-    filterMetadata
+> = ({
+  filters,
+  setFilters,
+  onAddIntegration,
+  onExport,
+  count,
+  page,
+  perPage,
+  pageChanged: onPageChanged,
+  perPageChanged: onPerPageChanged,
+  children,
+  ...ouiaProps
+}) => {
+  const filterValues = React.useMemo(
+    () => ({
+      [IntegrationFilterColumn.NAME]: (typeof filters.name === 'string' ? filters.name : '') || '',
+      [IntegrationFilterColumn.ENABLED]: Array.isArray(filters.enabled) ? filters.enabled : [],
+    }),
+    [filters.name, filters.enabled]
   );
 
-  const actionsConfig = React.useMemo(() => {
-    const actions = [
-      {
-        key: 'add-integration',
-        label: Messages.components.integrations.toolbar.actions.addIntegration,
-        onClick: props.onAddIntegration,
-        props: {
-          isDisabled: !props.onAddIntegration,
-        },
-      },
-    ];
+  const handleFilterChange = React.useCallback(
+    (filterId: string, newValues: Partial<Record<string, string | string[]>>) => {
+      if (filterId === IntegrationFilterColumn.NAME && IntegrationFilterColumn.NAME in newValues) {
+        setFilters.name(newValues[IntegrationFilterColumn.NAME] as string);
+      }
 
-    return {
-      actions,
-      kebabToggleProps: {
-        isDisabled: false,
-      },
-    };
-  }, [props.onAddIntegration]);
+      if (
+        filterId === IntegrationFilterColumn.ENABLED &&
+        IntegrationFilterColumn.ENABLED in newValues
+      ) {
+        setFilters.enabled(newValues[IntegrationFilterColumn.ENABLED] as string[]);
+      }
+    },
+    [setFilters]
+  );
 
-  const exportConfig = useTableExportConfig(props.onExport);
+  const clearAllFilters = React.useCallback(() => {
+    setFilters.name('');
+    setFilters.enabled([]);
+  }, [setFilters]);
 
   const pageChanged = React.useCallback(
-    (_event: unknown, page: number) => {
-      const inner = props.pageChanged;
-      inner(page);
+    (_event: unknown, newPage: number) => {
+      onPageChanged(newPage);
     },
-    [props.pageChanged]
+    [onPageChanged]
   );
 
   const perPageChanged = React.useCallback(
-    (_event: unknown, perPage: number) => {
-      const inner = props.perPageChanged;
-      inner(perPage);
+    (_event: unknown, newPerPage: number) => {
+      onPerPageChanged(newPerPage);
     },
-    [props.perPageChanged]
-  );
-
-  const topPaginationProps = React.useMemo<PaginationProps>(
-    () => ({
-      itemCount: props.count,
-      page: props.page,
-      perPage: props.perPage,
-      isCompact: true,
-      variant: PaginationVariant.top,
-      onSetPage: pageChanged,
-      onFirstClick: pageChanged,
-      onPreviousClick: pageChanged,
-      onNextClick: pageChanged,
-      onLastClick: pageChanged,
-      onPageInput: pageChanged,
-      onPerPageSelect: perPageChanged,
-    }),
-    [props.count, props.page, props.perPage, pageChanged, perPageChanged]
-  );
-
-  const bottomPaginationProps = React.useMemo<PaginationProps>(
-    () => ({
-      ...topPaginationProps,
-      isCompact: false,
-      variant: PaginationVariant.bottom,
-    }),
-    [topPaginationProps]
+    [onPerPageChanged]
   );
 
   return (
-    <div {...getOuiaProps('Integrations/DualToolbar', props)}>
-      <PrimaryToolbar
-        actionsConfig={actionsConfig}
-        exportConfig={exportConfig}
-        filterConfig={primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps}
-        activeFiltersConfig={primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps}
-        pagination={topPaginationProps}
-        id="integrations-top-toolbar"
+    <div {...getOuiaProps('Integrations/DualToolbar', ouiaProps)}>
+      <DataViewToolbar
+        ouiaId="integrations-top-toolbar"
+        clearAllFilters={clearAllFilters}
+        filters={
+          <DataViewFilters onChange={handleFilterChange} values={filterValues}>
+            <DataViewTextFilter
+              filterId={IntegrationFilterColumn.NAME}
+              title="Name"
+              placeholder="Filter by name"
+            />
+            <DataViewCheckboxFilter
+              filterId={IntegrationFilterColumn.ENABLED}
+              title="Enabled"
+              placeholder="Filter by enabled"
+              options={enabledFilterOptions}
+            />
+          </DataViewFilters>
+        }
+        actions={
+          <ResponsiveActions breakpoint="lg" ouiaId="integrations-actions">
+            <ResponsiveAction
+              isPersistent
+              variant="primary"
+              onClick={onAddIntegration}
+              isDisabled={!onAddIntegration}
+            >
+              {Messages.components.integrations.toolbar.actions.addIntegration}
+            </ResponsiveAction>
+            <ResponsiveAction onClick={() => onExport(ExporterType.CSV)}>
+              Export as CSV
+            </ResponsiveAction>
+            <ResponsiveAction onClick={() => onExport(ExporterType.JSON)}>
+              Export as JSON
+            </ResponsiveAction>
+          </ResponsiveActions>
+        }
+        pagination={
+          <Pagination
+            itemCount={count}
+            page={page}
+            perPage={perPage}
+            isCompact
+            variant={PaginationVariant.top}
+            onSetPage={pageChanged}
+            onPerPageSelect={perPageChanged}
+          />
+        }
       />
-      {props.children}
-      <PrimaryToolbar id="integrations-bottom-toolbar" pagination={bottomPaginationProps} />
+      {children}
+      <DataViewToolbar
+        ouiaId="integrations-bottom-toolbar"
+        pagination={
+          <Pagination
+            itemCount={count}
+            page={page}
+            perPage={perPage}
+            variant={PaginationVariant.bottom}
+            onSetPage={pageChanged}
+            onPerPageSelect={perPageChanged}
+          />
+        }
+      />
     </div>
   );
 };
