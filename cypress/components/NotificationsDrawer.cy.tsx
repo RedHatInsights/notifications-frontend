@@ -94,7 +94,7 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 describe('Notification Drawer', () => {
   beforeEach(() => {
     cy.viewport(1200, 800);
-    cy.intercept('GET', ' /api/rbac/v1/access/?application=notifications&limit=1000', {
+    cy.intercept('GET', '/api/rbac/v1/access/?application=notifications&limit=1000', {
       data: notificationPerms,
     });
     cy.intercept('GET', '/api/notifications/v1/notifications/drawer?limit=50&startDate=*', {

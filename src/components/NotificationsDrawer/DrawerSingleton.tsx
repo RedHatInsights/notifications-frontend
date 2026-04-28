@@ -41,19 +41,26 @@ export class DrawerSingleton {
 
   static subscribe(rerenderer: () => void, addWsEventListener?: ChromeAPI['addWsEventListener']) {
     const id = crypto.randomUUID();
+    DrawerSingleton._subs.push({ id, rerenderer });
     // Run the init procedure if the state is not ready for subscriber
     if (!DrawerSingleton._state.initializing && !DrawerSingleton._state.ready) {
       DrawerSingleton._state.initializing = true;
       rbacApi
         .getPrincipalAccess('notifications', undefined, undefined, 1000)
-        .then(({ data: { data } }) => {
-          DrawerSingleton.Instance.initialize(true, data, addWsEventListener);
-          DrawerSingleton._state.initializing = false;
+        .then(({ data: { data } }) =>
+          DrawerSingleton.Instance.initialize(true, data, addWsEventListener)
+        )
+        .then(() => {
           DrawerSingleton._state.ready = true;
-          DrawerSingleton._subs.push({ id, rerenderer });
+        })
+        .catch((error) => {
+          console.error('Failed to initialize notification drawer:', error);
+        })
+        .finally(() => {
+          DrawerSingleton._state.initializing = false;
+          DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
         });
     }
-    DrawerSingleton._subs.push({ id, rerenderer });
     return id;
   }
   static unsubscribe(id: string) {
