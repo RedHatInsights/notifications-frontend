@@ -85,6 +85,8 @@ export class DrawerSingleton {
           this.addNotification(event.data);
         }
       });
+    } else {
+      console.warn('WebSocket event listener not available - live notifications disabled');
     }
   };
 
