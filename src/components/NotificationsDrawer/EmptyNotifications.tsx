@@ -9,6 +9,7 @@ import BellSlashIcon from '@patternfly/react-icons/dist/dynamic/icons/bell-slash
 import { Link } from 'react-router-dom';
 import { Stack, StackItem } from '@patternfly/react-core/dist/dynamic/layouts/Stack';
 import { useLoadModule, useRemoteHook } from '@scalprum/react-core';
+import { useFlag } from '@unleash/proxy-client-react';
 
 type ModelsType = {
   VA: string;
@@ -20,13 +21,12 @@ type VirtualAssistantState = {
   message?: string;
 };
 
-export const EmptyNotifications = ({
-  isOrgAdmin,
-  onLinkClick,
-}: {
-  onLinkClick: () => void;
-  isOrgAdmin?: boolean;
-}) => {
+/**
+ * Sub-component that loads VA modules only when mounted.
+ * Extracted so that Scalprum module loading is skipped entirely
+ * when the feature flag is disabled (FedRAMP compliance).
+ */
+export const EmptyNotificationsVAButton = ({ onLinkClick }: { onLinkClick: () => void }) => {
   const { hookResult: useVirtualAssistant, loading } = useRemoteHook<
     [VirtualAssistantState, Dispatch<SetStateAction<VirtualAssistantState>>]
   >({
@@ -58,6 +58,30 @@ export const EmptyNotifications = ({
       });
     }
   };
+
+  if (!isVAAvailable) {
+    return <Content component="p">Contact your organization administrator</Content>;
+  }
+
+  return (
+    <button
+      type="button"
+      onClick={handleContactAdmin}
+      className="pf-v6-c-button pf-m-link pf-m-inline"
+    >
+      Contact your organization administrator
+    </button>
+  );
+};
+
+export const EmptyNotifications = ({
+  isOrgAdmin,
+  onLinkClick,
+}: {
+  onLinkClick: () => void;
+  isOrgAdmin?: boolean;
+}) => {
+  const isVAEnabled = useFlag('platform.va.environment.enabled');
 
   return (
     <EmptyState
@@ -105,14 +129,8 @@ export const EmptyNotifications = ({
                 </Link>
               </StackItem>
               <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
-                {isVAAvailable ? (
-                  <button
-                    type="button"
-                    onClick={handleContactAdmin}
-                    className="pf-v6-c-button pf-m-link pf-m-inline"
-                  >
-                    Contact your organization administrator
-                  </button>
+                {isVAEnabled ? (
+                  <EmptyNotificationsVAButton onLinkClick={onLinkClick} />
                 ) : (
                   <Content component="p">Contact your organization administrator</Content>
                 )}
