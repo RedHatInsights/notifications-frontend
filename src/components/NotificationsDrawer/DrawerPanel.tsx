@@ -8,7 +8,8 @@ import {
   NotificationDrawerHeader,
   NotificationDrawerList,
 } from '@patternfly/react-core/dist/dynamic/components/NotificationDrawer';
-import { Badge } from '@patternfly/react-core/dist/dynamic/components/Badge';
+import { LabelGroup } from '@patternfly/react-core/dist/dynamic/components/Label';
+import { Label } from '@patternfly/react-core/dist/dynamic/components/Label';
 import Spinner from '@redhat-cloud-services/frontend-components/Spinner';
 
 import orderBy from 'lodash/orderBy';
@@ -136,6 +137,15 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     return <Spinner centered />;
   }
 
+  const onRemoveFilter = (filterValue: string) => {
+    setFilters(state.filters.filter((filter) => filter !== filterValue));
+  };
+
+  const getFilterLabel = (filterValue: string) => {
+    const filterItem = state.filterConfig.find((item) => item.value === filterValue);
+    return filterItem?.title || filterValue;
+  };
+
   return (
     <>
       <NotificationDrawerHeader
@@ -143,7 +153,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         title="Notifications"
         className="pf-u-align-items-center"
       >
-        {state.filters.length > 0 && <Badge isRead>{state.filters.length}</Badge>}
         <FilterDropdown
           filterConfig={state.filterConfig}
           isDisabled={state.notificationData.length === 0}
@@ -188,6 +197,17 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
           hasNotificationsPermissions={state.hasNotificationsPermissions}
         />
       </NotificationDrawerHeader>
+      {state.filters.length > 0 && (
+        <div className="pf-v6-u-px-md pf-v6-u-pb-sm">
+          <LabelGroup>
+            {state.filters.map((filter) => (
+              <Label key={filter} color="blue" onClose={() => onRemoveFilter(filter)}>
+                {getFilterLabel(filter)}
+              </Label>
+            ))}
+          </LabelGroup>
+        </div>
+      )}
       <NotificationDrawerBody>
         <NotificationDrawerList>
           <RenderNotifications />
