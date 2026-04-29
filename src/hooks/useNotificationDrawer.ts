@@ -1,8 +1,10 @@
 import { useEffect, useReducer } from 'react';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 import { DrawerSingleton } from '../components/NotificationsDrawer/DrawerSingleton';
 
 const useNotificationDrawer = () => {
+  const { addWsEventListener } = useChrome();
   const [state, rerender] = useReducer(
     () => ({ ...DrawerSingleton.getState() }),
     DrawerSingleton.getState()
@@ -10,11 +12,11 @@ const useNotificationDrawer = () => {
   // rerenderer
 
   useEffect(() => {
-    const subsId = DrawerSingleton.subscribe(rerender);
+    const subsId = DrawerSingleton.subscribe(rerender, addWsEventListener);
     return () => {
       DrawerSingleton.unsubscribe(subsId);
     };
-  }, []);
+  }, [addWsEventListener]);
 
   return {
     state,
