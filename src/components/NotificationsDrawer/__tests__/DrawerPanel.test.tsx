@@ -1,7 +1,14 @@
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
 import { MemoryRouter } from 'react-router-dom';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 jest.mock('react-markdown', () => ({
   __esModule: true,
@@ -97,5 +104,34 @@ describe('DrawerPanel bulk select checkbox', () => {
 
     const checkbox = screen.getByRole('checkbox', { name: 'Select all' });
     expect(checkbox).toBePartiallyChecked();
+  });
+});
+
+describe('NotificationItem manage this event', () => {
+  beforeEach(() => mockNavigate.mockClear());
+
+  it('clicking Manage this event navigates with autoEdit=true', async () => {
+    const notification = makeNotification('1', false);
+    renderDrawerPanel([notification]);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Notification actions dropdown' }));
+    await userEvent.click(screen.getByText('Manage this event'));
+
+    expect(mockNavigate).toHaveBeenCalledWith(expect.stringContaining('autoEdit=true'));
+  });
+
+  it('clicking Manage this event includes bundle, app, and name in the url', async () => {
+    const notification = makeNotification('1', false);
+    renderDrawerPanel([notification]);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Notification actions dropdown' }));
+    await userEvent.click(screen.getByText('Manage this event'));
+
+    const url = mockNavigate.mock.calls[0][0] as string;
+    const params = new URLSearchParams(url.split('?')[1]);
+    expect(params.get('bundle')).toBe(notification.bundle);
+    expect(params.get('app')).toBe(notification.source);
+    expect(params.get('name')).toBe(notification.title);
+    expect(params.get('autoEdit')).toBe('true');
   });
 });

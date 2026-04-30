@@ -63,7 +63,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       key="manage-event"
       onClick={() =>
         onNavigateTo(
-          `/settings/notifications/configure-events?bundle=${notification.bundle}&tab=configuration`
+          `/settings/notifications/configure-events?${new URLSearchParams({
+            bundle: notification.bundle,
+            tab: 'configuration',
+            app: notification.source,
+            name: notification.title,
+            autoEdit: 'true',
+          }).toString()}`
         )
       }
     >
