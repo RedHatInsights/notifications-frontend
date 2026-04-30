@@ -13,6 +13,7 @@ import {
 import { Menu } from '@patternfly/react-core/dist/dynamic/components/Menu';
 import { MenuList } from '@patternfly/react-core/dist/dynamic/components/Menu';
 import { MenuItem } from '@patternfly/react-core/dist/dynamic/components/Menu';
+import { MenuGroup } from '@patternfly/react-core/dist/dynamic/components/Menu';
 import { MenuFooter } from '@patternfly/react-core/dist/dynamic/components/Menu';
 import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
 import { PopoverPosition } from '@patternfly/react-core/dist/dynamic/components/Popover';
@@ -52,7 +53,7 @@ export const FilterDropdown = ({
     >
       <Menu onSelect={(_event, itemId) => onFilterSelect(itemId as string)}>
         <MenuList>
-          <DropdownGroup key="filter-label" label="Show notifications for...">
+          <MenuGroup key="filter-label" label="Show notifications for...">
             {filterConfig.map((source: { value: string; title: string }) => (
               <MenuItem
                 key={source.value}
@@ -64,7 +65,7 @@ export const FilterDropdown = ({
                 {source.title}
               </MenuItem>
             ))}
-          </DropdownGroup>
+          </MenuGroup>
         </MenuList>
         <Divider />
         <MenuFooter>
