@@ -38,6 +38,16 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     [location.search]
   );
 
+  const autoEdit = useMemo(
+    () => new URLSearchParams(location.search).get('autoEdit') === 'true',
+    [location.search]
+  );
+
+  const autoEditName = useMemo(
+    () => new URLSearchParams(location.search).get('name') ?? '',
+    [location.search]
+  );
+
   const { rbac } = useAppContext();
 
   const onExport = useCallback((type: ExporterType) => {
@@ -81,6 +91,39 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       updateBehaviorGroups(behaviorGroups);
     }
   }, [behaviorGroups, updateBehaviorGroups]);
+
+  const autoEditTriggered = React.useRef('');
+
+  useEffect(() => {
+    if (
+      !autoEdit ||
+      !rbac.canWriteNotifications ||
+      autoEditTriggered.current === autoEditName ||
+      notificationRows.length === 0
+    ) {
+      return;
+    }
+
+    const match = notificationRows.find(
+      (row) => row.eventTypeDisplayName.toLowerCase() === autoEditName.toLowerCase()
+    );
+
+    if (match) {
+      autoEditTriggered.current = autoEditName;
+      startEditMode(match.id);
+      const newSearchParams = new URLSearchParams(location.search);
+      newSearchParams.delete('autoEdit');
+      navigate(`${location.pathname}?${newSearchParams.toString()}`, { replace: true });
+    }
+  }, [
+    autoEdit,
+    autoEditName,
+    notificationRows,
+    startEditMode,
+    location,
+    navigate,
+    rbac.canWriteNotifications,
+  ]);
 
   const onBehaviorGroupLinkUpdated = useCallback(
     (notification: NotificationBehaviorGroup, behaviorGroup: BehaviorGroup, isLinked: boolean) => {
