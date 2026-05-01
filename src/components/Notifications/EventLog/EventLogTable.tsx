@@ -214,7 +214,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         </Tr>
       ));
     }
-  }, [props]);
+  }, [props.events, props.loading, props.showSeverity, props.getIntegrationRecipient]);
 
   if (rows.length === 0) {
     return (
