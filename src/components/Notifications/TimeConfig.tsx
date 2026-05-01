@@ -65,11 +65,28 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     timePreferenceLoad();
   }, []);
 
+  const handleModalToggle = React.useCallback(() => {
+    setIsModalOpen((prev) => !prev);
+    if (timePref) {
+      setTimeSelect({
+        baseCustomTime: timePref,
+        utcTime: timePref,
+        timezoneText: undefined,
+      });
+    }
+  }, [timePref]);
+
   const timeconfigTitle = useMemo(() => {
-    return `Any daily digest emails you've opted into will be sent at ${
-      timeSelect?.utcTime ? timeSelect?.utcTime : '00:00'
-    } UTC`;
-  }, [timeSelect?.utcTime]);
+    return (
+      <>
+        Any daily digest emails you&apos;ve opted into will be sent at{' '}
+        {timeSelect?.utcTime ? timeSelect?.utcTime : '00:00'} UTC.{' '}
+        <AlertActionLink onClick={handleModalToggle} ouiaId="TimeConfigModal">
+          Edit time settings.
+        </AlertActionLink>
+      </>
+    );
+  }, [timeSelect?.utcTime, handleModalToggle]);
 
   // Set the time preference value once we load it from the server
   useEffect(() => {
@@ -154,31 +171,11 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
 
   const isLoading = timeSelect === null || timePref === null;
 
-  const handleModalToggle = () => {
-    setIsModalOpen(!isModalOpen);
-    if (timePref) {
-      setTimeSelect({
-        baseCustomTime: timePref,
-        utcTime: timePref,
-        timezoneText: undefined,
-      });
-    }
-  };
-
   return (
     <>
-      <Alert
-        className={alertClassName}
-        isInline
-        title={timeconfigTitle}
-        actionLinks={
-          <AlertActionLink onClick={handleModalToggle} ouiaId="TimeConfigModal">
-            Edit time settings
-          </AlertActionLink>
-        }
-      />
+      <Alert className={alertClassName} isInline title={timeconfigTitle} />
       <Modal
-        className="pf-v5-u-pl-xl"
+        className="pf-v6-u-pl-xl"
         variant={ModalVariant.small}
         isOpen={isModalOpen}
         onClose={handleModalToggle}
@@ -247,7 +244,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
               </StackItem>
               {showCustomSelect && (
                 <>
-                  <StackItem className="pf-v5-u-pl-lg">
+                  <StackItem className="pf-v6-u-pl-lg">
                     <Content component={ContentVariants.h6}>Time</Content>
                     <TimePicker
                       onChange={handleTimePrefSelect}
@@ -258,7 +255,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
                       is24Hour
                     />
                   </StackItem>
-                  <StackItem className="pf-v5-u-pl-lg">
+                  <StackItem className="pf-v6-u-pl-lg">
                     <Content component={ContentVariants.h6}>Time zone</Content>
                     <MenuContainer
                       isOpen={isOpen}

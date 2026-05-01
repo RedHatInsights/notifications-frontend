@@ -20,6 +20,7 @@ import { Facet, NotificationType } from '../../../types/Notification';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
 import {
   SEVERITY_VALUES,
+  getSeverityIconColor,
   severityDisplayName,
   toSeverityLabelProps,
 } from '../../../utils/severityUtils';
@@ -99,7 +100,7 @@ const actionStatusMetadata = [
     chipValue: 'Warning',
     label: (
       <span>
-        <ExclamationTriangleIcon className="pf-v5-u-warning-color-100" /> Warning{' '}
+        <ExclamationTriangleIcon className="pf-v6-u-warning-color-100" /> Warning{' '}
       </span>
     ),
   },
@@ -155,12 +156,14 @@ export const EventLogToolbar: React.FunctionComponent<
 
     return severities.map((severity: EventSeverity) => {
       const labelProps = toSeverityLabelProps(severity);
+
       return {
         value: severity,
         chipValue: severityDisplayName[severity],
         label: (
           <span>
-            {labelProps.icon} {severityDisplayName[severity]}
+            <span style={{ color: getSeverityIconColor(severity) }}>{labelProps.icon}</span>{' '}
+            {severityDisplayName[severity]}
           </span>
         ),
       };

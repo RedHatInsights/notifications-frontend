@@ -8,14 +8,7 @@ import {
   LabelGroup,
   LabelProps,
 } from '@patternfly/react-core/dist/dynamic/components/Label';
-import {
-  CheckCircleIcon,
-  ExclamationCircleIcon,
-  ExclamationTriangleIcon,
-  HelpIcon,
-  InProgressIcon,
-  UnknownIcon,
-} from '@patternfly/react-icons';
+import { HelpIcon, InProgressIcon, UnknownIcon } from '@patternfly/react-icons';
 import {
   IExtraColumnData,
   SortByDirection,
@@ -78,25 +71,22 @@ export {
 
 export const toLabelProps = (
   actionStatus: NotificationEventStatus
-): Pick<LabelProps, 'color' | 'icon'> => {
+): Pick<LabelProps, 'status' | 'color' | 'icon'> => {
   switch (actionStatus.last) {
     case 'FAILED':
       return {
-        color: 'red',
-        icon: <ExclamationCircleIcon />,
+        status: 'danger',
       };
     case 'SENT':
     case 'SUCCESS':
       if (actionStatus.isDegraded) {
         return {
-          color: 'orange',
-          icon: <ExclamationTriangleIcon />,
+          status: 'warning',
         };
       }
 
       return {
-        color: 'green',
-        icon: <CheckCircleIcon />,
+        status: 'success',
       };
     case 'PROCESSING':
       return {
@@ -208,7 +198,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
                       />
                     }
                   >
-                    <Label className={labelClassName} {...toLabelProps(a.status)}>
+                    <Label className={labelClassName} variant="outline" {...toLabelProps(a.status)}>
                       {Config.integrations.types[a.endpointType].action}
                     </Label>
                   </Popover>
@@ -224,7 +214,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         </Tr>
       ));
     }
-  }, [props.loading, props.events, props.getIntegrationRecipient, props.showSeverity]);
+  }, [props]);
 
   if (rows.length === 0) {
     return (
