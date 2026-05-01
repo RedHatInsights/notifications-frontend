@@ -134,3 +134,24 @@ export const SEVERITY_VALUES: EventSeverity[] = [
   'NONE',
   'UNDEFINED',
 ];
+
+/**
+ * Returns the icon color for a given severity level using PatternFly severity color tokens.
+ * Used for severity icons in filters, dropdowns, and other non-label contexts.
+ */
+export const getSeverityIconColor = (severity: EventSeverity): string => {
+  switch (severity) {
+    case 'CRITICAL':
+      return 'var(--pf-t--global--color--severity--critical--100)';
+    case 'IMPORTANT':
+      return 'var(--pf-t--global--color--severity--important--100)';
+    case 'MODERATE':
+      return 'var(--pf-t--global--color--severity--moderate--100)';
+    case 'LOW':
+      return 'var(--pf-t--global--color--severity--minor--100)';
+    case 'NONE':
+      return 'var(--pf-t--global--color--severity--none--100)';
+    case 'UNDEFINED':
+      return 'var(--pf-t--global--color--severity--undefined--200)';
+  }
+};

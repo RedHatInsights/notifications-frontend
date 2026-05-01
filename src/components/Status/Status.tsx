@@ -7,6 +7,6 @@ interface StatusProps {
 export const Status: React.FunctionComponent<React.PropsWithChildren<StatusProps>> = (props) => (
   <span>
     {props.children}
-    <span className="pg-v5-u-ml-sm">{props.text}</span>
+    <span className="pf-v6-u-ml-sm">{props.text}</span>
   </span>
 );
