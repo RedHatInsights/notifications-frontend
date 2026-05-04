@@ -1,9 +1,4 @@
-import { AccessApi, AccessPagination } from '@redhat-cloud-services/rbac-client';
-import axios from 'axios';
-
-const BASE_PATH = '/api/rbac/v1';
-
-const rbacClient = new AccessApi(undefined, BASE_PATH, axios.create());
+import { AccessPagination, getPrincipalAccess } from '@redhat-cloud-services/rbac-client';
 
 type Verb = string;
 type What = string;
@@ -82,7 +77,6 @@ export class RbacPermissionsBuilder {
 }
 
 export const fetchRBAC = (appQuery: string): Promise<Rbac> =>
-  rbacClient
-    .getPrincipalAccess(appQuery)
+  getPrincipalAccess({ application: appQuery })
     .then((response) => new RbacPermissionsBuilder(response.data))
     .then((builder: RbacPermissionsBuilder): Rbac => new Rbac(builder.build()));

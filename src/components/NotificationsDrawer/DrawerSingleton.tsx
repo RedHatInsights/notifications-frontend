@@ -1,6 +1,5 @@
-import { Access, AccessApi } from '@redhat-cloud-services/rbac-client';
+import { Access, getPrincipalAccess } from '@redhat-cloud-services/rbac-client';
 import { ChromeAPI } from '@redhat-cloud-services/types';
-import axios from 'axios';
 import { getDateDaysAgo } from '../UtcDate';
 
 import { getBundleFacets } from '../../api/helpers/notifications/bundle-facets-helper';
@@ -13,8 +12,6 @@ import {
   NotificationDrawerState,
   isNotificationData,
 } from '../../types/Drawer';
-
-const rbacApi = new AccessApi(undefined, '/api/rbac/v1', axios.create());
 
 interface Bundle {
   id: string;
@@ -45,8 +42,7 @@ export class DrawerSingleton {
     // Run the init procedure if the state is not ready for subscriber
     if (!DrawerSingleton._state.initializing && !DrawerSingleton._state.ready) {
       DrawerSingleton._state.initializing = true;
-      rbacApi
-        .getPrincipalAccess('notifications', undefined, undefined, 1000)
+      getPrincipalAccess({ application: 'notifications', limit: 1000 })
         .then(({ data: { data } }) =>
           DrawerSingleton.Instance.initialize(true, data, addWsEventListener)
         )
