@@ -63,7 +63,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       key="manage-event"
       onClick={() =>
         onNavigateTo(
-          `/settings/notifications/configure-events?bundle=${notification.bundle}&tab=configuration`
+          `/settings/notifications/configure-events?${new URLSearchParams({
+            bundle: notification.bundle,
+            tab: 'configuration',
+            app: notification.source,
+            name: notification.title,
+            autoEdit: 'true',
+          }).toString()}`
         )
       }
     >
@@ -75,7 +81,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       <NotificationDrawerList>
         <NotificationDrawerListItem
           aria-label={`Notification item ${notification.title}`}
-          variant="info"
+          variant={notification.read ? undefined : 'info'}
           isRead={notification.read}
         >
           <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
