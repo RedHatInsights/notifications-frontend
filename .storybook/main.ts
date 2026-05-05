@@ -28,6 +28,7 @@ const config: StorybookConfig = {
           '.storybook/hooks/useChrome'
         ),
         '@unleash/proxy-client-react': path.resolve(process.cwd(), '.storybook/hooks/unleash'),
+        '@scalprum/react-core': path.resolve(process.cwd(), '.storybook/hooks/scalprum'),
       },
       fallback: {
         ...config.resolve?.fallback,
