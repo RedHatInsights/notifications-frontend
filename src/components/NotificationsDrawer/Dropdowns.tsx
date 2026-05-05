@@ -10,8 +10,14 @@ import {
   DropdownItem,
   DropdownList,
 } from '@patternfly/react-core/dist/dynamic/components/Dropdown';
+import { Menu } from '@patternfly/react-core/dist/dynamic/components/Menu';
+import { MenuList } from '@patternfly/react-core/dist/dynamic/components/Menu';
+import { MenuItem } from '@patternfly/react-core/dist/dynamic/components/Menu';
+import { MenuGroup } from '@patternfly/react-core/dist/dynamic/components/Menu';
+import { MenuFooter } from '@patternfly/react-core/dist/dynamic/components/Menu';
 import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
 import { PopoverPosition } from '@patternfly/react-core/dist/dynamic/components/Popover';
+import { Button } from '@patternfly/react-core/dist/dynamic/components/Button';
 
 import FilterIcon from '@patternfly/react-icons/dist/dynamic/icons/filter-icon';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
@@ -45,49 +51,36 @@ export const FilterDropdown = ({
       }}
       id="notifications-filter-dropdown"
     >
-      <FilterDropdownItems
-        filterConfig={filterConfig}
-        isDisabled={isDisabled}
-        activeFilters={activeFilters}
-        setActiveFilters={setActiveFilters}
-        onFilterSelect={onFilterSelect}
-      />
+      <Menu onSelect={(_event, itemId) => onFilterSelect(itemId as string)}>
+        <MenuList>
+          <MenuGroup key="filter-label" label="Show notifications for...">
+            {filterConfig.map((source: { value: string; title: string }) => (
+              <MenuItem
+                key={source.value}
+                itemId={source.value}
+                hasCheckbox
+                isSelected={activeFilters.includes(source.value)}
+                isDisabled={isDisabled}
+              >
+                {source.title}
+              </MenuItem>
+            ))}
+          </MenuGroup>
+        </MenuList>
+        <Divider />
+        <MenuFooter>
+          <Button
+            variant="link"
+            isInline
+            isDisabled={activeFilters.length === 0}
+            onClick={() => setActiveFilters([])}
+          >
+            Reset filters
+          </Button>
+        </MenuFooter>
+      </Menu>
     </Dropdown>
   );
-};
-
-const FilterDropdownItems = ({
-  filterConfig,
-  isDisabled,
-  activeFilters,
-  setActiveFilters,
-  onFilterSelect,
-}) => {
-  return [
-    <DropdownGroup key="filter-label" label="Show notifications for...">
-      <DropdownList>
-        {filterConfig.map((source) => (
-          <DropdownItem
-            key={source.value}
-            onClick={() => onFilterSelect(source.value)}
-            isDisabled={isDisabled}
-            isSelected={activeFilters.includes(source.value)}
-            hasCheckbox
-          >
-            {source.title}
-          </DropdownItem>
-        ))}
-        <Divider />
-        <DropdownItem
-          key="reset-filters"
-          isDisabled={activeFilters.length === 0}
-          onClick={() => setActiveFilters([])}
-        >
-          Reset filters
-        </DropdownItem>
-      </DropdownList>
-    </DropdownGroup>,
-  ];
 };
 
 export const ActionDropdown = ({
