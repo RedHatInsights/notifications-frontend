@@ -48,6 +48,7 @@ export interface EventLogTableProps {
   sortColumn: EventLogTableColumns;
   sortDirection: SortDirection;
   getIntegrationRecipient: GetIntegrationRecipient;
+  actionColumnHeader?: string;
 }
 
 export enum EventLogTableColumns {
@@ -236,7 +237,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
             <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
           )}
           <Th>
-            Action taken{' '}
+            {props.actionColumnHeader ?? 'Action taken'}{' '}
             <ActionsHelpPopover>
               <Button icon={<HelpIcon />} variant={ButtonVariant.plain} />
             </ActionsHelpPopover>

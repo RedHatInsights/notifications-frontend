@@ -1,179 +1,172 @@
-import { Card } from '@patternfly/react-core';
-import Main from '@redhat-cloud-services/frontend-components/Main';
-import { format, sub, toDate } from 'date-fns';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useFlag } from '@unleash/proxy-client-react';
+import assertNever from 'assert-never';
+import * as React from 'react';
+import { useParameterizedQuery } from 'react-fetching-library';
 
-import { NotificationsLogDateFilterValue } from '../../../components/Notifications/NotificationsLog/NotificationsLogDateFilter';
-import NotificationsLogTable, {
-  DrawerType,
-  PaginationType,
-} from '../../../components/Notifications/NotificationsLog/NotificationsLogTable';
-import NotificationsLogToolbar from '../../../components/Notifications/NotificationsLog/NotificationsLogToolbar';
+import { EventLogDateFilterValue } from '../../../components/Notifications/EventLog/EventLogDateFilter';
+import { EventLogFilters } from '../../../components/Notifications/EventLog/EventLogFilter';
+import {
+  EventLogTable,
+  EventLogTableColumns,
+  SortDirection,
+} from '../../../components/Notifications/EventLog/EventLogTable';
+import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
 import { PageHeader } from '../../../components/PageHeader';
+import Config from '../../../config/Config';
+import { Schemas } from '../../../generated/OpenapiIntegrations';
+import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
-import { Filter, Operator, toUtc } from '../../../utils/insights-common-typescript';
-
-export type NotificationsPeriod = [Date | undefined, Date | undefined];
-
-const sortMapper = {
-  0: 'title',
-  2: 'created',
-};
+import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
+import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
+import { useGetBundles } from '../../../services/Notifications/GetBundles';
+import { EventPeriod } from '../../../types/Event';
+import { UUID } from '../../../types/Notification';
+import { useEventLogFilter } from '../EventLog/useEventLogFilter';
+import { useFilterBuilder } from '../EventLog/useFilterBuilder';
+import { Direction, Sort } from '../../../utils/insights-common-typescript';
 
 const RETENTION_DAYS = 14;
 
-const filterPeriodMapper = (dateFilter) => {
-  const today = toUtc(new Date());
-  const yesterday = sub(toDate(today), {
-    days: 1,
-  });
-  return {
-    [NotificationsLogDateFilterValue.LAST_14]: [
-      sub(toDate(today), {
-        days: 14,
-      }),
-      today,
-    ],
-    [NotificationsLogDateFilterValue.LAST_7]: [
-      sub(toDate(today), {
-        days: 7,
-      }),
-      today,
-    ],
-    [NotificationsLogDateFilterValue.TODAY]: [today, today],
-    [NotificationsLogDateFilterValue.YESTERDAY]: [yesterday, yesterday],
-  }[dateFilter];
-};
-
-const createFilter = (dateFilter, period) => {
-  const filterPeriod = [undefined, undefined] as [Date | undefined, Date | undefined];
-  const DATE_FORMAT = 'yyyy-MM-dd';
-  const filter = new Filter();
-
-  filterPeriodMapper(dateFilter) || period;
-
-  if (filterPeriod[0] && filterPeriod[1]) {
-    filter.and('start', Operator.EQUAL, format(filterPeriod[0], DATE_FORMAT));
-    filter.and('end', Operator.EQUAL, format(filterPeriod[1], DATE_FORMAT));
-  }
-
-  return {
-    startDate: filterPeriod[0] ? format(filterPeriod[0], DATE_FORMAT) : undefined,
-    endDate: filterPeriod[1] ? format(filterPeriod[1], DATE_FORMAT) : undefined,
-  };
-};
-
 export const NotificationsLogPage: React.FunctionComponent = () => {
-  const [data, setData] = useState<DrawerType>([]);
-  const [period, setPeriod] = useState<NotificationsPeriod>([undefined, undefined]);
-  const [dateFilter, setDateFilter] = useState<NotificationsLogDateFilterValue>(
-    NotificationsLogDateFilterValue.LAST_14
-  );
-  const [pagination, setPagination] = useState<PaginationType>({
-    offset: 0,
-    limit: 20,
-    count: 0,
-  });
-  const [sort, setSort] = useState<{
-    columnIndex: number;
-    direction: 'asc' | 'desc';
-  }>({
-    columnIndex: 2,
-    direction: 'desc',
-  });
+  const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
+  const getEndpoint = useParameterizedQuery(getEndpointAction);
 
-  const filterBuilder = useMemo(
-    () => createFilter(dateFilter, period),
-    [dateFilter, period[0]?.toString(), period[1]?.toString()] // eslint-disable-line react-hooks/exhaustive-deps
-  );
-
-  //TODO: use new JS client instead of directly calling fetch
-  const callApi = useCallback((pagination, sort, filterBuilder) => {
-    const search = new URLSearchParams({
-      offset: `${pagination.offset}`,
-      limit: `${pagination.limit}`,
-      sort_by: `${sortMapper[sort.columnIndex]}:${sort.direction}`,
-    });
-
-    if (filterBuilder.startDate) {
-      search.append('startDate', filterBuilder.startDate + 'T00:00:00');
+  const getBundles = useGetBundles(true);
+  const bundles = React.useMemo(() => {
+    const payload = getBundles.payload;
+    if (payload?.status === 200) {
+      return payload.value;
     }
 
-    if (filterBuilder.endDate) {
-      search.append('endDate', filterBuilder.endDate + 'T23:59:59');
+    return [];
+  }, [getBundles.payload]);
+
+  const [dateFilter, setDateFilter] = React.useState<EventLogDateFilterValue>(
+    EventLogDateFilterValue.LAST_14
+  );
+
+  const eventLogFilters = useEventLogFilter();
+
+  const [period, setPeriod] = React.useState<EventPeriod>([undefined, undefined]);
+
+  const [sortDirection, setSortDirection] = React.useState<SortDirection>('desc');
+  const [sortColumn, setSortColumn] = React.useState<EventLogTableColumns>(
+    EventLogTableColumns.DATE
+  );
+
+  const onSort = React.useCallback(
+    (column: EventLogTableColumns, direction: SortDirection) => {
+      setSortDirection(direction);
+      setSortColumn(column);
+    },
+    [setSortDirection, setSortColumn]
+  );
+
+  const filterBuilder = useFilterBuilder(bundles, dateFilter, period);
+
+  const sort: Sort = React.useMemo(() => {
+    const direction = sortDirection.toUpperCase() as Direction;
+    let column: string;
+    switch (sortColumn) {
+      case EventLogTableColumns.DATE:
+        column = 'created';
+        break;
+      default:
+        column = 'created';
+        break;
     }
 
-    fetch(`/api/notifications/v1/notifications/drawer?${search.toString()}`)
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
+    return Sort.by(column, direction);
+  }, [sortColumn, sortDirection]);
+
+  const eventsPage = usePage<EventLogFilters>(
+    Config.paging.defaultPerPage,
+    filterBuilder,
+    eventLogFilters.filters,
+    sort
+  );
+  const eventsQuery = useGetEvents(eventsPage.page);
+
+  const events = React.useMemo(() => {
+    if (eventsQuery.payload?.status === 200) {
+      const allData = eventsQuery.payload.value.data;
+      const withActions = allData.filter((e) => e.actions.length > 0);
+      return {
+        data: withActions,
+        count: eventsQuery.payload.value.meta.count,
+      };
+    }
+
+    return {
+      data: [],
+      count: 0,
+    };
+  }, [eventsQuery]);
+
+  const getIntegrationRecipient = React.useCallback(
+    async (id: UUID) => {
+      const query = getEndpoint.query;
+      const endpoint = await query(id);
+      if (endpoint.payload?.type === 'Endpoint') {
+        const type = endpoint.payload.value.type;
+        switch (type) {
+          case 'camel':
+          case 'webhook':
+          case 'ansible':
+          case 'pagerduty':
+            return endpoint.payload.value.name;
+          case 'email_subscription':
+          case 'drawer': {
+            const properties = endpoint.payload.value
+              .properties as Schemas.SystemSubscriptionProperties;
+            if (properties.only_admins) {
+              return 'Users: Admin';
+            }
+
+            return 'Users: All';
+          }
+          default:
+            assertNever(type);
         }
+      }
 
-        return response.json();
-      })
-      .then((response) => {
-        setData(response.data);
-        setPagination((prevState) => ({
-          ...prevState,
-          count: response.meta.count,
-        }));
-      })
-      .catch((error) => {
-        console.error('Error while fetching data: ', error);
-      });
-  }, []);
-
-  useEffect(() => {
-    callApi(pagination, sort, filterBuilder);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dateFilter, period[0]?.toString(), period[1]?.toString()]);
+      return 'Error while loading';
+    },
+    [getEndpoint.query]
+  );
 
   return (
-    <React.Fragment>
+    <>
       <PageHeader
         title={Messages.pages.notifications.notificationsLog.title}
         subtitle={Messages.pages.notifications.notificationsLog.subtitle}
       />
-      <Main>
-        <Card>
-          <NotificationsLogToolbar
-            pagination={pagination}
-            onPagination={({ limit, offset }) => {
-              setPagination((prevState) => ({ ...prevState, offset, limit }));
-              callApi({ limit, offset }, sort, filterBuilder);
-            }}
-            dateFilter={dateFilter}
-            setDateFilter={setDateFilter}
-            retentionDays={RETENTION_DAYS}
-            period={period}
-            setPeriod={setPeriod}
-          />
-          <NotificationsLogTable
-            isEmptyState={data.length === 0}
-            sort={sort}
-            onSort={(index, direction) => {
-              setSort({
-                columnIndex: index,
-                direction,
-              });
-              callApi(
-                pagination,
-                {
-                  columnIndex: index,
-                  direction,
-                },
-                filterBuilder
-              );
-            }}
-            drawer={data}
-            pagination={pagination}
-            onPagination={({ limit, offset }) => {
-              setPagination((prevState) => ({ ...prevState, offset, limit }));
-              callApi({ limit, offset }, sort, filterBuilder);
-            }}
-          />
-        </Card>
-      </Main>
-    </React.Fragment>
+      <EventLogToolbar
+        {...eventLogFilters}
+        bundleOptions={bundles}
+        dateFilter={dateFilter}
+        setDateFilter={setDateFilter}
+        count={events.count}
+        perPageChanged={eventsPage.changeItemsPerPage}
+        pageChanged={eventsPage.changePage}
+        perPage={eventsPage.page.size}
+        page={eventsPage.page.index}
+        pageCount={events.data.length}
+        retentionDays={RETENTION_DAYS}
+        period={period}
+        setPeriod={setPeriod}
+      >
+        <EventLogTable
+          events={events.data}
+          loading={eventsQuery.loading}
+          showSeverity={isEventLogSeverityEnabled}
+          onSort={onSort}
+          sortColumn={sortColumn}
+          sortDirection={sortDirection}
+          getIntegrationRecipient={getIntegrationRecipient}
+          actionColumnHeader="Type"
+        />
+      </EventLogToolbar>
+    </>
   );
 };
