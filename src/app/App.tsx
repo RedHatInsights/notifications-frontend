@@ -27,7 +27,11 @@ const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';
 const timezoneFormat = 'O';
 
-const App: React.ComponentType = () => {
+/**
+ * Inner app component that uses RBAC hooks.
+ * Must be rendered inside KesselRbacAccessProvider.
+ */
+const AppContent: React.FC = () => {
   const { updateDocumentTitle } = useChrome();
 
   updateDocumentTitle?.('Notifications');
@@ -75,31 +79,40 @@ const App: React.ComponentType = () => {
   }
 
   return (
-    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/rbac/v2">
+    <AppContext.Provider
+      value={{
+        rbac,
+        server,
+        isOrgAdmin: !!isOrgAdmin,
+      }}
+    >
+      <RbacGroupContextProvider>
+        <NotificationsProvider>
+          <InsightsEnvDetector insights={insights} onEnvironment={staging}>
+            <RenderIfTrue>
+              <Switch
+                className="pf-v5-u-p-sm"
+                isChecked={usingExperimental}
+                onChange={toggleExperimental}
+                label="Disable experimental features"
+              />
+            </RenderIfTrue>
+          </InsightsEnvDetector>
+          <Routes />
+        </NotificationsProvider>
+      </RbacGroupContextProvider>
+    </AppContext.Provider>
+  );
+};
+
+/**
+ * Main app component - sets up Kessel RBAC provider before rendering app content.
+ */
+const App: React.ComponentType = () => {
+  return (
+    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/kessel/v1beta2">
       <KesselRbacAccessProvider>
-        <AppContext.Provider
-          value={{
-            rbac,
-            server,
-            isOrgAdmin: !!isOrgAdmin,
-          }}
-        >
-          <RbacGroupContextProvider>
-            <NotificationsProvider>
-              <InsightsEnvDetector insights={insights} onEnvironment={staging}>
-                <RenderIfTrue>
-                  <Switch
-                    className="pf-v5-u-p-sm"
-                    isChecked={usingExperimental}
-                    onChange={toggleExperimental}
-                    label="Disable experimental features"
-                  />
-                </RenderIfTrue>
-              </InsightsEnvDetector>
-              <Routes />
-            </NotificationsProvider>
-          </RbacGroupContextProvider>
-        </AppContext.Provider>
+        <AppContent />
       </KesselRbacAccessProvider>
     </AccessCheck.Provider>
   );

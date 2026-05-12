@@ -1,18 +1,32 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useEffect, useState } from 'react';
+import * as React from 'react';
 
 import Config from '../config/Config';
 import { useGetServerStatus } from '../services/GetServerStatus';
 import { Server, ServerStatus } from '../types/Server';
 import { AppContext } from './AppContext';
 import { Rbac, fetchRBAC } from '../utils/insights-common-typescript';
+import { useKesselRbacAccess } from './rbac/KesselRbacAccessContext';
+import { mapKesselToV1Permissions } from './rbac/utils/permissionMapper';
 
 export const useApp = (): Partial<AppContext> => {
   const chrome = useChrome();
   const serverStatus = useGetServerStatus();
-  const [rbac, setRbac] = useState<Rbac>();
+  const [v1Rbac, setV1Rbac] = useState<Rbac>();
   const [server, setServer] = useState<Server>();
   const [isOrgAdmin, setOrgAdmin] = useState<boolean>(false);
+
+  // Get Kessel v2 permissions and workspace ID
+  const kesselRbacContext = useKesselRbacAccess();
+  const {
+    workspaceId,
+    permissions: kesselPermissions,
+    isLoading: isKesselLoading,
+  } = kesselRbacContext;
+
+  // Determine org version (v2 if workspace exists, v1 otherwise)
+  const isV2Org = workspaceId !== undefined;
 
   useEffect(() => {
     const appId = chrome.getApp();
@@ -48,22 +62,44 @@ export const useApp = (): Partial<AppContext> => {
     chrome.auth.getUser().then((user) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setOrgAdmin((user as any).identity.user.is_org_admin);
-      fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setRbac);
+
+      // Only call v1 API if this is a v1 org
+      // v2 orgs will use Kessel permissions instead
+      if (!isV2Org && !isKesselLoading) {
+        fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(
+          setV1Rbac
+        );
+      }
     });
     // Chrome object is changed when the user is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [isV2Org, isKesselLoading]);
+
+  // Compute final RBAC object based on org version
+  const rbac = React.useMemo(() => {
+    if (isV2Org) {
+      // v2 org: map Kessel permissions to v1 structure
+      if (isKesselLoading) {
+        return undefined; // Still loading v2 permissions
+      }
+      return mapKesselToV1Permissions(kesselPermissions);
+    } else {
+      // v1 org: use traditional v1 RBAC
+      if (!v1Rbac) {
+        return undefined; // Still loading v1 permissions
+      }
+      return {
+        canWriteNotifications: v1Rbac.hasPermission('notifications', 'notifications', 'write'),
+        canReadNotifications: v1Rbac.hasPermission('notifications', 'notifications', 'read'),
+        canWriteIntegrationsEndpoints: v1Rbac.hasPermission('integrations', 'endpoints', 'write'),
+        canReadIntegrationsEndpoints: v1Rbac.hasPermission('integrations', 'endpoints', 'read'),
+        canReadEvents: v1Rbac.hasPermission('notifications', 'events', 'read'),
+      };
+    }
+  }, [isV2Org, isKesselLoading, kesselPermissions, v1Rbac]);
 
   return {
-    rbac: rbac
-      ? {
-          canWriteNotifications: rbac.hasPermission('notifications', 'notifications', 'write'),
-          canReadNotifications: rbac.hasPermission('notifications', 'notifications', 'read'),
-          canWriteIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'write'),
-          canReadIntegrationsEndpoints: rbac.hasPermission('integrations', 'endpoints', 'read'),
-          canReadEvents: rbac.hasPermission('notifications', 'events', 'read'),
-        }
-      : undefined,
+    rbac,
     isOrgAdmin,
     server,
   };
