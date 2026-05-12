@@ -40,7 +40,7 @@ const AppContent: React.FC = () => {
   const [usingExperimental, setUsingExperimental] = React.useState<boolean>(false);
 
   const toggleExperimental = React.useCallback(
-    (isEnabled) => {
+    (_event: React.FormEvent<HTMLInputElement>, isEnabled: boolean) => {
       if (isEnabled) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         (insights.chrome as any).getEnvironmentOriginal = insights.chrome.getEnvironment;

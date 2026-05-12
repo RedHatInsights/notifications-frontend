@@ -16,6 +16,7 @@ export const useApp = (): Partial<AppContext> => {
   const [v1Rbac, setV1Rbac] = useState<Rbac>();
   const [server, setServer] = useState<Server>();
   const [isOrgAdmin, setOrgAdmin] = useState<boolean>(false);
+  const [userLoaded, setUserLoaded] = useState<boolean>(false);
 
   // Get Kessel v2 permissions and workspace ID
   const kesselRbacContext = useKesselRbacAccess();
@@ -58,22 +59,23 @@ export const useApp = (): Partial<AppContext> => {
     }
   }, [serverStatus.payload]);
 
+  // Effect to fetch user info
   useEffect(() => {
     chrome.auth.getUser().then((user) => {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       setOrgAdmin((user as any).identity.user.is_org_admin);
-
-      // Only call v1 API if this is a v1 org
-      // v2 orgs will use Kessel permissions instead
-      if (!isV2Org && !isKesselLoading) {
-        fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(
-          setV1Rbac
-        );
-      }
+      setUserLoaded(true);
     });
     // Chrome object is changed when the user is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isV2Org, isKesselLoading]);
+  }, []);
+
+  // Effect to fetch v1 RBAC when org is v1 and Kessel is done loading
+  useEffect(() => {
+    if (userLoaded && !isV2Org && !isKesselLoading) {
+      fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setV1Rbac);
+    }
+  }, [userLoaded, isV2Org, isKesselLoading]);
 
   // Compute final RBAC object based on org version
   const rbac = React.useMemo(() => {
