@@ -58,21 +58,30 @@ export const useApp = (): Partial<AppContext> => {
 
   // Effect to fetch user info
   useEffect(() => {
-    chrome.auth.getUser().then((user) => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      setOrgAdmin((user as any).identity.user.is_org_admin);
-      setUserLoaded(true);
-    });
+    chrome.auth
+      .getUser()
+      .then((user) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        setOrgAdmin((user as any).identity.user.is_org_admin);
+      })
+      .catch(() => {
+        // Auth failed, ensure org admin is false
+        setOrgAdmin(false);
+      })
+      .finally(() => {
+        // Always set userLoaded to unblock RBAC fetch
+        setUserLoaded(true);
+      });
     // Chrome object is changed when the user is changed
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Effect to fetch v1 RBAC when org is v1 and Kessel is done loading
+  // Effect to fetch v1 RBAC when org is v1 (no need to wait for Kessel)
   useEffect(() => {
-    if (userLoaded && !isV2Org && !isKesselLoading) {
+    if (userLoaded && !isV2Org) {
       fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setV1Rbac);
     }
-  }, [userLoaded, isV2Org, isKesselLoading]);
+  }, [userLoaded, isV2Org]);
 
   // Compute final RBAC object based on org version
   const rbac = React.useMemo(() => {
