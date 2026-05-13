@@ -127,7 +127,6 @@ describe('src/pages/Notifications/NotificationsLog/Page', () => {
     await waitForAsyncEvents();
 
     const rows = screen.getAllByRole('row');
-    // 1 header row + 2 data rows (event without action is excluded)
     expect(rows.length).toBe(3);
   });
 });
