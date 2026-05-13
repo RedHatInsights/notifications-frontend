@@ -1,4 +1,5 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { useFlag } from '@unleash/proxy-client-react';
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 
@@ -18,16 +19,12 @@ export const useApp = (): Partial<AppContext> => {
   const [isOrgAdmin, setOrgAdmin] = useState<boolean>(false);
   const [userLoaded, setUserLoaded] = useState<boolean>(false);
 
-  // Get Kessel v2 permissions and workspace ID
+  // Get Kessel v2 permissions
   const kesselRbacContext = useKesselRbacAccess();
-  const {
-    workspaceId,
-    permissions: kesselPermissions,
-    isLoading: isKesselLoading,
-  } = kesselRbacContext;
+  const { permissions: kesselPermissions, isLoading: isKesselLoading } = kesselRbacContext;
 
-  // Determine org version (v2 if workspace exists, v1 otherwise)
-  const isV2Org = workspaceId !== undefined;
+  // Determine org version using feature flag (v2 if flag enabled, v1 otherwise)
+  const isV2Org = useFlag('platform.rbac.workspaces');
 
   useEffect(() => {
     const appId = chrome.getApp();
