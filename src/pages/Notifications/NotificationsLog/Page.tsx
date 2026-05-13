@@ -93,7 +93,7 @@ export const NotificationsLogPage: React.FunctionComponent = () => {
       const withActions = allData.filter((e) => e.actions.length > 0);
       return {
         data: withActions,
-        count: eventsQuery.payload.value.meta.count,
+        count: withActions.length,
       };
     }
 
