@@ -14,6 +14,8 @@ export const CheckReadPermissions: React.FunctionComponent<React.PropsWithChildr
 
   const hasReadPermissions = React.useMemo(() => {
     const appId = chrome.getApp();
+
+    // AppContext.rbac is already correctly populated by useApp for both v1 and v2 orgs
     switch (appId) {
       case Config.integrations.subAppId:
         return rbac?.canReadIntegrationsEndpoints;
@@ -21,11 +23,11 @@ export const CheckReadPermissions: React.FunctionComponent<React.PropsWithChildr
         if (location.pathname === linkTo.eventLog()) {
           return rbac?.canReadEvents;
         }
-
         return rbac?.canReadNotifications;
     }
 
     return false;
   }, [rbac, location, chrome]);
+
   return <>{!hasReadPermissions ? <NotAuthorizedPage /> : props.children}</>;
 };

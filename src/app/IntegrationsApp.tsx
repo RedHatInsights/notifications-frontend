@@ -17,10 +17,14 @@ interface IntegrationsAppProps {
   activeCategory?: string;
 }
 
-const IntegrationsApp: React.ComponentType<IntegrationsAppProps & AppEntryProps> = ({
+/**
+ * Inner component that uses RBAC hooks.
+ * Must be rendered inside KesselRbacAccessProvider.
+ */
+const IntegrationsAppContent: React.FC<IntegrationsAppProps & AppEntryProps> = ({
   activeCategory,
   ...props
-}: IntegrationsAppProps) => {
+}) => {
   const { rbac, server, isOrgAdmin } = useApp();
 
   const category =
@@ -29,28 +33,41 @@ const IntegrationsApp: React.ComponentType<IntegrationsAppProps & AppEntryProps>
       ? (activeCategory as IntegrationCategory)
       : undefined;
 
-  return rbac && server ? (
-    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/rbac/v2">
+  if (!rbac || !server) {
+    return (
+      <Bullseye>
+        <Spinner size="xl" />
+      </Bullseye>
+    );
+  }
+
+  return (
+    <AppContext.Provider
+      value={{
+        rbac,
+        server,
+        isOrgAdmin: !!isOrgAdmin,
+      }}
+    >
+      <RbacGroupContextProvider>
+        <NotificationsProvider>
+          <IntegrationsList category={category} {...props} />
+        </NotificationsProvider>
+      </RbacGroupContextProvider>
+    </AppContext.Provider>
+  );
+};
+
+/**
+ * Main integrations app component - sets up Kessel RBAC provider.
+ */
+const IntegrationsApp: React.ComponentType<IntegrationsAppProps & AppEntryProps> = (props) => {
+  return (
+    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/kessel/v1beta2">
       <KesselRbacAccessProvider>
-        <AppContext.Provider
-          value={{
-            rbac,
-            server,
-            isOrgAdmin: !!isOrgAdmin,
-          }}
-        >
-          <RbacGroupContextProvider>
-            <NotificationsProvider>
-              <IntegrationsList category={category} {...props} />
-            </NotificationsProvider>
-          </RbacGroupContextProvider>
-        </AppContext.Provider>
+        <IntegrationsAppContent {...props} />
       </KesselRbacAccessProvider>
     </AccessCheck.Provider>
-  ) : (
-    <Bullseye>
-      <Spinner size="xl" />
-    </Bullseye>
   );
 };
 

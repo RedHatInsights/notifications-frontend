@@ -112,7 +112,7 @@ const TestWrapper: React.FC<WrapperProps> = ({ initialValues = {}, children }) =
   };
 
   return (
-    <AccessCheck.Provider baseUrl="http://localhost:8002" apiPath="/api/rbac/v2">
+    <AccessCheck.Provider baseUrl="http://localhost:8002" apiPath="/api/kessel/v1beta2">
       <KesselRbacAccessProvider>
         <IntlProvider locale="en" messages={messages}>
           <ClientContextProvider client={mockClient}>

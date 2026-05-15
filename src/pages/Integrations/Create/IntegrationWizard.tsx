@@ -186,7 +186,7 @@ const IntegrationWizardWrapper: React.FC<{ store?: Store } & IntegrationWizardPr
   );
 
   const content = (
-    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/rbac/v2">
+    <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/kessel/v1beta2">
       <KesselRbacAccessProvider>
         <ClientContextProvider client={client}>
           <RbacGroupContextProvider>

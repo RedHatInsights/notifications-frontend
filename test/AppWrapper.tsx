@@ -1,5 +1,6 @@
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
+import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import fetchMock from 'fetch-mock';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import * as React from 'react';
@@ -11,6 +12,7 @@ import { DeepPartial } from 'ts-essentials';
 
 import messages from '../locales/data.json';
 import { AppContext } from '../src/app/AppContext';
+import { KesselRbacAccessProvider } from '../src/app/rbac/KesselRbacAccessProvider';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
 import { getInsights } from '../src/utils/insights-common-typescript';
@@ -125,26 +127,30 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
   return (
     <IntlProvider locale={navigator.language} messages={messages}>
       <FlagProvider unleashClient={unleashClient}>
-        <Provider store={store}>
-          <Router {...props.router}>
-            <ClientContextProvider client={client}>
-              <AppContext.Provider value={completeAppContext}>
-                <NotificationsProvider />
-                <InternalWrapper {...props}>
-                  <DomRoutes>
-                    {(props.router?.initialEntries?.length || 0) > 0 ? (
-                      props.router?.initialEntries?.map((item) => (
-                        <Route key={item as string} path={item as string} {...props.route} />
-                      ))
-                    ) : (
-                      <Route path="/" {...props.route} />
-                    )}
-                  </DomRoutes>
-                </InternalWrapper>
-              </AppContext.Provider>
-            </ClientContextProvider>
-          </Router>
-        </Provider>
+        <AccessCheck.Provider baseUrl="http://localhost" apiPath="/api/kessel/v1beta2">
+          <KesselRbacAccessProvider>
+            <Provider store={store}>
+              <Router {...props.router}>
+                <ClientContextProvider client={client}>
+                  <AppContext.Provider value={completeAppContext}>
+                    <NotificationsProvider />
+                    <InternalWrapper {...props}>
+                      <DomRoutes>
+                        {(props.router?.initialEntries?.length || 0) > 0 ? (
+                          props.router?.initialEntries?.map((item) => (
+                            <Route key={item as string} path={item as string} {...props.route} />
+                          ))
+                        ) : (
+                          <Route path="/" {...props.route} />
+                        )}
+                      </DomRoutes>
+                    </InternalWrapper>
+                  </AppContext.Provider>
+                </ClientContextProvider>
+              </Router>
+            </Provider>
+          </KesselRbacAccessProvider>
+        </AccessCheck.Provider>
       </FlagProvider>
     </IntlProvider>
   );

@@ -5,7 +5,10 @@ import { HttpResponse, http } from 'msw';
  * Provides reusable factory functions for mocking workspace and permission responses.
  */
 
-const KESSEL_RBAC_API_BASE = '/api/rbac/v2';
+// Workspace endpoint uses /api/rbac/v2 (hardcoded in Kessel SDK)
+const KESSEL_WORKSPACE_API_BASE = '/api/rbac/v2';
+// Permission check endpoint uses /api/kessel/v1beta2 (Kessel service)
+const KESSEL_PERMISSION_API_BASE = '/api/kessel/v1beta2';
 
 /**
  * Mock default workspace response
@@ -24,7 +27,7 @@ export interface MockWorkspace {
  * @param workspaces - Array of workspace objects to return
  */
 export const createWorkspaceListHandler = (workspaces: MockWorkspace[]) => {
-  return http.get(`${KESSEL_RBAC_API_BASE}/workspaces/`, () => {
+  return http.get(`${KESSEL_WORKSPACE_API_BASE}/workspaces/`, () => {
     return HttpResponse.json({
       data: workspaces,
       meta: {
@@ -78,14 +81,14 @@ function permissionToAllowedEnum(permitted: boolean | undefined): KesselAllowedE
 }
 
 /**
- * Creates a mock handler for `POST /api/rbac/v2/checkself` (single self check per
+ * Creates a mock handler for `POST /api/kessel/v1beta2/checkself` (single self check per
  * request). Matches `@project-kessel/react-kessel-access-check` `checkSelf` API.
  *
  * @param permissions - Map of relation names to permitted status (missing key → ALLOWED_UNSPECIFIED)
  */
 export const createPermissionCheckHandler = (permissions: Record<string, boolean>) => {
   return http.post(
-    ({ request }) => new URL(request.url).pathname === '/api/rbac/v2/checkself',
+    ({ request }) => new URL(request.url).pathname === `${KESSEL_PERMISSION_API_BASE}/checkself`,
     async ({ request }) => {
       const body = (await request.json()) as CheckSelfRequestBody;
       const relation = body.relation;
