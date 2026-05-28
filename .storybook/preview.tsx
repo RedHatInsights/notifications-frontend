@@ -1,7 +1,7 @@
 import type { Preview } from '@storybook/react-webpack5';
 import '@patternfly/react-core/dist/styles/base.css';
 import '@patternfly/patternfly/patternfly-addons.css';
-import './storybook.css';
+import '@redhat-cloud-services/hcc-storybook-hub/css/storybook.css';
 import React, { Fragment, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
@@ -16,9 +16,22 @@ import {
   FeatureFlagsProvider,
   type ChromeConfig,
   type FeatureFlagsConfig,
-  type AppContextConfig,
-} from './context-providers';
+} from '@redhat-cloud-services/hcc-storybook-hub';
 import { initialize, mswLoader } from 'msw-storybook-addon';
+
+// App-specific types for Storybook parameters
+interface RbacConfig {
+  canWriteIntegrationsEndpoints: boolean;
+  canReadIntegrationsEndpoints: boolean;
+  canWriteNotifications: boolean;
+  canReadNotifications: boolean;
+  canReadEvents: boolean;
+}
+
+interface AppContextConfig {
+  rbac: RbacConfig;
+  isOrgAdmin: boolean;
+}
 
 // Same OpenAPI response shaping as AppEntry so hooks that check payload.status === 200 work (e.g. useGetSeverities).
 const createTestClient = () =>
