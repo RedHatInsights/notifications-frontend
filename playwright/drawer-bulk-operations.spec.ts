@@ -277,18 +277,19 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     if (filterCount < 1) {
       await filterToggle.click();
-      console.log('No filter options — skipping filter + selection test');
-      return;
     }
+    test.skip(filterCount < 1, 'No filter options available');
 
     // Click the first available filter
     await filterItems.first().click();
     // Close the dropdown
     await filterToggle.click();
-    await page.waitForTimeout(500);
 
-    // Verify filtered results
+    // Wait for filter to apply (web-first assertion instead of fixed delay)
     const filteredItems = drawerHelpers.notificationItems(page);
+    await expect
+      .poll(() => filteredItems.count(), { timeout: 10_000 })
+      .toBeLessThanOrEqual(totalCount);
     const filteredCount = await filteredItems.count();
 
     if (filteredCount > 0) {
