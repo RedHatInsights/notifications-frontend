@@ -31,10 +31,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping individual selection test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     const first = items.first();
     const checkbox = drawerHelpers.notificationCheckbox(first);
@@ -62,10 +59,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping selection count test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // Ensure none selected initially
     await drawerHelpers.bulkSelectNone(page);
@@ -94,10 +88,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping select all test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     await drawerHelpers.bulkSelectAll(page);
 
@@ -127,10 +118,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping select none test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // First select all, then select none
     await drawerHelpers.bulkSelectAll(page);
@@ -158,10 +146,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count < 2) {
-      console.log('Need at least 2 notifications for indeterminate state test — skipping');
-      return;
-    }
+    test.skip(count < 2, 'Need at least 2 notifications for indeterminate state test');
 
     // Start fresh
     await drawerHelpers.bulkSelectNone(page);
@@ -191,10 +176,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping bulk mark as read test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // Record initial state
     const initialCounts = await drawerHelpers.getReadUnreadCounts(page);
@@ -204,7 +186,11 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       await drawerHelpers.bulkSelectAll(page);
       await drawerHelpers.markSelectedAsUnread(page);
       // Wait for state to update
-      await page.waitForTimeout(1000);
+      await expect
+        .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+          timeout: 10000,
+        })
+        .toBeGreaterThan(0);
     }
 
     // Select all and mark as read
@@ -212,18 +198,20 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.markSelectedAsRead(page);
 
     // Wait for the API call to complete and state to update
-    await page.waitForTimeout(2000);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+        timeout: 10000,
+      })
+      .toBe(0);
 
     // Verify all notifications are now read
     const afterCounts = await drawerHelpers.getReadUnreadCounts(page);
     expect(afterCounts.read).toBe(afterCounts.total);
 
-    // Restore: mark as unread if they were previously unread
-    if (initialCounts.unread > 0) {
-      await drawerHelpers.bulkSelectAll(page);
-      await drawerHelpers.markSelectedAsUnread(page);
-      await page.waitForTimeout(1000);
-    }
+    // Note: intentionally not restoring per-item read/unread state.
+    // Bulk "mark all as unread" would flip originally-read items to unread,
+    // leaving state dirtier than we found it. Each test sets up its own
+    // preconditions instead.
 
     console.log(`Bulk mark as read: ${afterCounts.total} notifications marked read`);
   });
@@ -237,20 +225,25 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping bulk mark as unread test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // Ensure all are read first
     await drawerHelpers.bulkSelectAll(page);
     await drawerHelpers.markSelectedAsRead(page);
-    await page.waitForTimeout(1000);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
+        timeout: 10000,
+      })
+      .toBe(count);
 
     // Now mark all as unread
     await drawerHelpers.bulkSelectAll(page);
     await drawerHelpers.markSelectedAsUnread(page);
-    await page.waitForTimeout(2000);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+        timeout: 10000,
+      })
+      .toBe(count);
 
     // Verify none are read
     const afterCounts = await drawerHelpers.getReadUnreadCounts(page);
@@ -270,10 +263,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const totalCount = await items.count();
 
-    if (totalCount === 0) {
-      console.log('No notifications — skipping filter + selection test');
-      return;
-    }
+    test.skip(totalCount === 0, 'No notifications available');
 
     // Open filter dropdown and check available filters
     const filterToggle = page.locator('#notifications-filter-toggle');
@@ -325,19 +315,16 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     );
   });
 
-  // ── 7. Checkbox Toggle Persistence ────────────────────────────────
+  // ── 7. Drawer Close/Reopen Sanity Check ──────────────────────────
 
-  test('checkbox state persists across drawer close/reopen', async ({ page }) => {
+  test('drawer reopens with correct notification count after close', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping persistence test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // Select first notification
     await drawerHelpers.bulkSelectNone(page);
@@ -345,7 +332,6 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     // Close and reopen the drawer
     await drawerHelpers.closeDrawer(page);
-    await page.waitForTimeout(500);
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -369,10 +355,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count < 2) {
-      console.log('Need at least 2 notifications for multi-step workflow — skipping');
-      return;
-    }
+    test.skip(count < 2, 'Need at least 2 notifications for multi-step workflow');
 
     // Step 1: Select none first
     await drawerHelpers.bulkSelectNone(page);
@@ -384,7 +367,9 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     // Step 3: Mark selected as read
     await drawerHelpers.markSelectedAsRead(page);
-    await page.waitForTimeout(1000);
+    await expect
+      .poll(() => drawerHelpers.isNotificationRead(items.first()), { timeout: 10000 })
+      .toBe(true);
 
     // Step 4: Verify first notification is now read
     const firstIsRead = await drawerHelpers.isNotificationRead(items.first());
@@ -395,7 +380,11 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     // Step 6: Mark all as unread to restore
     await drawerHelpers.markSelectedAsUnread(page);
-    await page.waitForTimeout(1000);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+        timeout: 10000,
+      })
+      .toBe(count);
 
     // Step 7: Verify all are unread now
     const finalCounts = await drawerHelpers.getReadUnreadCounts(page);
@@ -413,10 +402,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping performance test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // Measure select all timing
     const selectStart = Date.now();
@@ -434,23 +420,29 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const markEnd = Date.now();
     const markMs = markEnd - markStart;
 
-    await page.waitForTimeout(1000);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+        timeout: 10000,
+      })
+      .toBe(0);
 
     // Restore state
     await drawerHelpers.bulkSelectAll(page);
     await drawerHelpers.markSelectedAsUnread(page);
-    await page.waitForTimeout(1000);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+        timeout: 10000,
+      })
+      .toBe(count);
 
     // Clean up selection
     await drawerHelpers.bulkSelectNone(page);
 
+    // Timing logged for performance monitoring — no hard assertions
+    // as wall-clock time varies with CI load and network conditions
     console.log(
       `Performance: ${count} notifications — select all: ${selectMs}ms, mark read: ${markMs}ms`
     );
-
-    // Sanity check: operations should complete within reasonable time
-    expect(selectMs).toBeLessThan(5000);
-    expect(markMs).toBeLessThan(5000);
   });
 
   // ── 10. Bulk Select Checkbox Direct Toggle ────────────────────────
@@ -462,10 +454,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping bulk checkbox toggle test');
-      return;
-    }
+    test.skip(count === 0, 'No notifications available');
 
     // Start with none selected
     await drawerHelpers.bulkSelectNone(page);

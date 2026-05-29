@@ -158,8 +158,8 @@ export const drawerHelpers = {
   async openBulkSelectDropdown(page: Page): Promise<void> {
     const toggle = this.bulkSelectContainer(page).locator('button.pf-v6-c-menu-toggle');
     await toggle.click();
-    // Wait for menu to appear
-    await expect(page.locator('.pf-v6-c-menu')).toBeVisible({ timeout: 5000 });
+    // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 5000 });
   },
 
   /** Click "Select all (N)" in the bulk select dropdown. */
