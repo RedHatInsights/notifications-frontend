@@ -140,4 +140,118 @@ export const drawerHelpers = {
       timeout: 30000,
     });
   },
+
+  // ── Bulk selection helpers ─────────────────────────────────────────
+
+  /** Locator for the BulkSelect container. */
+  bulkSelectContainer(page: Page): Locator {
+    return page.locator('#notifications-bulk-select');
+  },
+
+  /** Click the BulkSelect main checkbox (toggle all/none). */
+  async clickBulkSelectCheckbox(page: Page): Promise<void> {
+    const checkbox = this.bulkSelectContainer(page).locator('input[type="checkbox"]');
+    await checkbox.click();
+  },
+
+  /** Open the BulkSelect dropdown (the caret/arrow next to the checkbox). */
+  async openBulkSelectDropdown(page: Page): Promise<void> {
+    const toggle = this.bulkSelectContainer(page).locator('button.pf-v6-c-menu-toggle');
+    await toggle.click();
+    // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 5000 });
+  },
+
+  /** Click "Select all (N)" in the bulk select dropdown. */
+  async bulkSelectAll(page: Page): Promise<void> {
+    await this.openBulkSelectDropdown(page);
+    await page.getByRole('menuitem', { name: /Select all/ }).click();
+  },
+
+  /** Click "Select none (0)" in the bulk select dropdown. */
+  async bulkSelectNone(page: Page): Promise<void> {
+    await this.openBulkSelectDropdown(page);
+    await page.getByRole('menuitem', { name: /Select none/ }).click();
+  },
+
+  /** Get the count of currently selected notifications (from BulkSelect badge). */
+  async getSelectedCount(page: Page): Promise<number> {
+    const container = this.bulkSelectContainer(page);
+    const text = await container.textContent();
+    const match = text?.match(/(\d+)/);
+    return match ? parseInt(match[1], 10) : 0;
+  },
+
+  /** Check if the BulkSelect checkbox is in indeterminate state. */
+  async isBulkSelectIndeterminate(page: Page): Promise<boolean> {
+    const checkbox = this.bulkSelectContainer(page).locator('input[type="checkbox"]');
+    return checkbox.evaluate((el: HTMLInputElement) => el.indeterminate);
+  },
+
+  /** Check if the BulkSelect checkbox is fully checked. */
+  async isBulkSelectChecked(page: Page): Promise<boolean> {
+    const checkbox = this.bulkSelectContainer(page).locator('input[type="checkbox"]');
+    return checkbox.isChecked();
+  },
+
+  /** Get the checkbox locator for a specific notification item. */
+  notificationCheckbox(notificationLocator: Locator): Locator {
+    return notificationLocator.locator('input[type="checkbox"]');
+  },
+
+  /** Select a specific notification by clicking its checkbox. */
+  async selectNotification(notificationLocator: Locator): Promise<void> {
+    const checkbox = this.notificationCheckbox(notificationLocator);
+    if (!(await checkbox.isChecked())) {
+      await checkbox.click();
+    }
+  },
+
+  /** Deselect a specific notification by clicking its checkbox. */
+  async deselectNotification(notificationLocator: Locator): Promise<void> {
+    const checkbox = this.notificationCheckbox(notificationLocator);
+    if (await checkbox.isChecked()) {
+      await checkbox.click();
+    }
+  },
+
+  /** Open the actions dropdown and click "Mark selected as read". */
+  async markSelectedAsRead(page: Page): Promise<void> {
+    await this.openActionsDropdown(page);
+    const item = page
+      .locator('#notifications-actions-dropdown')
+      .getByRole('menuitem', { name: 'Mark selected as read' });
+    await item.click();
+  },
+
+  /** Open the actions dropdown and click "Mark selected as unread". */
+  async markSelectedAsUnread(page: Page): Promise<void> {
+    await this.openActionsDropdown(page);
+    const item = page
+      .locator('#notifications-actions-dropdown')
+      .getByRole('menuitem', { name: 'Mark selected as unread' });
+    await item.click();
+  },
+
+  /** Check whether a notification item has the "read" state. */
+  async isNotificationRead(notificationLocator: Locator): Promise<boolean> {
+    return notificationLocator.evaluate((el) => el.classList.contains('pf-m-read'));
+  },
+
+  /**
+   * Count how many notifications are in "read" vs "unread" state.
+   * Returns { read, unread, total }.
+   */
+  async getReadUnreadCounts(page: Page): Promise<{ read: number; unread: number; total: number }> {
+    const items = this.notificationItems(page);
+    const total = await items.count();
+    let read = 0;
+    for (let i = 0; i < total; i++) {
+      const item = items.nth(i);
+      if (await this.isNotificationRead(item)) {
+        read++;
+      }
+    }
+    return { read, unread: total - read, total };
+  },
 };
