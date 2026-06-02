@@ -62,6 +62,10 @@ export const useChrome = () => {
       appNavClick: chromeAppNavClickSpy,
       appObjectId: () => undefined,
       appAction: () => undefined,
+      addWsEventListener: (_eventType: string, _callback: Function) => {
+        // No-op in Storybook — return unsubscribe cleanup
+        return () => {};
+      },
       drawerActions: {
         toggleDrawerContent: fn().mockName('toggleDrawerContent'),
       },
