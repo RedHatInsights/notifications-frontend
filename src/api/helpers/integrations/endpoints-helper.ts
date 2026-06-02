@@ -20,30 +20,20 @@ export async function createEndpoint(
   afterSubmit?: () => void
 ) {
   try {
-    // Handle email subscription integrations with special endpoint
-    if (config.type === 'email_subscription') {
-      const emailData = {
-        only_admins: false, // Default to false, could be made configurable
-        group_id: config.user_access_groups?.[0]?.id, // Use the first selected group's ID
-      };
+    // For email subscriptions, map user_access_groups to the correct properties shape.
+    // The regular /endpoints API now accepts email_subscription type directly.
+    const endpointConfig =
+      config.type === 'email_subscription'
+        ? {
+            ...config,
+            properties: {
+              only_admins: false,
+              group_id: config.user_access_groups?.[0]?.id,
+            },
+          }
+        : config;
 
-      // Use the email subscription specific API
-      const response = await fetch('/api/integrations/v1.0/endpoints/system/email_subscription', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(emailData),
-      });
-
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Failed to create email subscription: ${response.status} - ${error}`);
-      }
-    } else {
-      // Use standard endpoint for other integrations
-      await integrationsApi.createEndpoint(config);
-    }
+    await integrationsApi.createEndpoint(endpointConfig);
 
     notifications.addSuccessNotification(
       'Integration created',
