@@ -67,7 +67,7 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     const user = process.env.E2E_USER!;
     const password = process.env.E2E_PASSWORD!;
     await page.waitForLoadState('load');
-    await expect(page.getByLabel('Red Hat login')).toBeVisible({
+    await expect(page.getByLabel('Red Hat login').first()).toBeVisible({
       timeout: 10000,
     });
     await removeTrustArcOverlay(page);
