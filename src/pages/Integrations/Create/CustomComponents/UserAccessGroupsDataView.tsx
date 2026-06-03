@@ -65,6 +65,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
     [intl]
   );
   const { input, meta } = useFieldApi({ name });
+  const inputRef = React.useRef(input);
+  inputRef.current = input;
   const { groups, isLoading } = useRbacGroups();
   const { permissions } = useKesselRbacAccess();
   const { canReadRbacPrincipal } = permissions;
@@ -158,27 +160,24 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
 
   // Handler to clear all selections
   const handleClearAll = React.useCallback(() => {
-    // Clear all selected items by deselecting them one by one
     const itemsToDeselect = [...selected];
     itemsToDeselect.forEach((group) => onSelect(false, group));
-
-    // Also directly update the form field
-    input.onChange([]);
-    if (input.onBlur) {
-      input.onBlur();
+    inputRef.current.onChange([]);
+    if (inputRef.current.onBlur) {
+      inputRef.current.onBlur();
     }
-  }, [selected, onSelect, input]);
+  }, [selected, onSelect]);
 
-  // Handle selection changes and trigger validation
+  // Handle selection changes and trigger validation.
+  // inputRef avoids including `input` in deps — useFieldApi returns a new object reference
+  // on every render, which would cause an infinite re-render loop.
   React.useEffect(() => {
     const selectedIds = selected.map((group) => group.id);
-    input.onChange(selectedIds);
-
-    // Trigger field validation by calling onBlur
-    if (input.onBlur) {
-      input.onBlur();
+    inputRef.current.onChange(selectedIds);
+    if (inputRef.current.onBlur) {
+      inputRef.current.onBlur();
     }
-  }, [selected, input]);
+  }, [selected]);
 
   // Initialize selected items from form value
   React.useEffect(() => {
@@ -229,6 +228,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
       const isDefaultGroup = group.admin_default || group.platform_default;
 
       return {
+        id: group.id,
         row: [
           // First column: Checkbox for all groups
           <Checkbox
@@ -293,9 +293,6 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
             })
           ),
         ],
-        props: {
-          key: group.id,
-        },
       };
     });
   }, [
