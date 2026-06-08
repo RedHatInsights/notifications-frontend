@@ -190,11 +190,10 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         <ActionDropdown
           isDropdownOpen={isDropdownOpen}
           setIsDropdownOpen={toggleDropdown}
-          isDisabled={state.notificationData.length === 0}
+          selectedCount={state.notificationData.filter(({ selected }) => selected).length}
           onUpdateSelectedStatus={onUpdateSelectedStatus}
           onNavigateTo={onNavigateTo}
           isOrgAdmin={isOrgAdmin}
-          hasNotificationsPermissions={state.hasNotificationsPermissions}
         />
       </NotificationDrawerHeader>
       {state.filters.length > 0 && (
