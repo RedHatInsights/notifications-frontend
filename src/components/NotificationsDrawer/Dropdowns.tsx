@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 
 import {
   MenuToggle,
@@ -21,6 +22,7 @@ import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip'
 
 import FilterIcon from '@patternfly/react-icons/dist/dynamic/icons/filter-icon';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
+import messages from '../../properties/DefinedMessages';
 
 export const FilterDropdown = ({
   isFilterDropdownOpen,
@@ -127,6 +129,7 @@ const ActionDropdownItems = ({
   onNavigateTo,
   isOrgAdmin,
 }) => {
+  const intl = useIntl();
   const isBulkActionDisabled = selectedCount === 0;
 
   return (
@@ -137,14 +140,14 @@ const ActionDropdownItems = ({
           onClick={() => onUpdateSelectedStatus(true)}
           isDisabled={isBulkActionDisabled}
         >
-          Mark Selected ({selectedCount}) as read
+          {intl.formatMessage(messages.markSelectedAsRead, { count: selectedCount })}
         </DropdownItem>
         <DropdownItem
           key="unread selected"
           onClick={() => onUpdateSelectedStatus(false)}
           isDisabled={isBulkActionDisabled}
         >
-          Mark Selected ({selectedCount}) as unread
+          {intl.formatMessage(messages.markSelectedAsUnread, { count: selectedCount })}
         </DropdownItem>
       </DropdownList>
       <Divider />
@@ -153,23 +156,23 @@ const ActionDropdownItems = ({
           key="event log"
           onClick={() => onNavigateTo('/settings/notifications/eventlog')}
         >
-          View event log
+          {intl.formatMessage(messages.viewEventLog)}
         </DropdownItem>
         <DropdownItem
           key="event notifications"
           onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
         >
-          Manage my event notifications
+          {intl.formatMessage(messages.manageMyEventNotifications)}
         </DropdownItem>
         {!isOrgAdmin ? (
-          <Tooltip content="Admin-access required">
+          <Tooltip content={intl.formatMessage(messages.adminAccessRequired)}>
             <span>
               <DropdownItem
                 key="event configuration"
                 onClick={() => onNavigateTo('/settings/notifications/configure-events')}
                 isDisabled={true}
               >
-                Manage event configuration
+                {intl.formatMessage(messages.manageEventConfiguration)}
               </DropdownItem>
             </span>
           </Tooltip>
@@ -178,7 +181,7 @@ const ActionDropdownItems = ({
             key="event configuration"
             onClick={() => onNavigateTo('/settings/notifications/configure-events')}
           >
-            Manage event configuration
+            {intl.formatMessage(messages.manageEventConfiguration)}
           </DropdownItem>
         )}
       </DropdownList>
