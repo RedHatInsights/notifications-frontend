@@ -1,8 +1,9 @@
 import { Schemas } from '../../generated/OpenapiNotifications';
+import { normalizeSeverity } from '../../utils/severityUtils';
+import { fromUtc } from '../../utils/insights-common-typescript';
 import { NotificationEvent, NotificationEventAction } from '../Event';
 import { UUID } from '../Notification';
 import { getIntegrationType } from './IntegrationAdapter';
-import { fromUtc } from '../../utils/insights-common-typescript';
 
 type ServerEvent = Schemas.EventLogEntry;
 
@@ -13,7 +14,7 @@ export const toNotificationEvent = (serverEvent: ServerEvent): NotificationEvent
   event: serverEvent.event_type,
   date: fromUtc(new Date(serverEvent.created)),
   actions: sortEventActions(groupActions(serverEvent.actions)),
-  severity: serverEvent.severity ?? undefined,
+  severity: normalizeSeverity(serverEvent.severity),
 });
 
 const sortEventActions = (actions: Array<NotificationEventAction>) => {
