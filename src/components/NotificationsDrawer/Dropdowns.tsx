@@ -1,4 +1,5 @@
 import React from 'react';
+import { useIntl } from 'react-intl';
 
 import {
   MenuToggle,
@@ -6,7 +7,6 @@ import {
 } from '@patternfly/react-core/dist/dynamic/components/MenuToggle';
 import {
   Dropdown,
-  DropdownGroup,
   DropdownItem,
   DropdownList,
 } from '@patternfly/react-core/dist/dynamic/components/Dropdown';
@@ -18,9 +18,11 @@ import { MenuFooter } from '@patternfly/react-core/dist/dynamic/components/Menu'
 import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
 import { PopoverPosition } from '@patternfly/react-core/dist/dynamic/components/Popover';
 import { Button } from '@patternfly/react-core/dist/dynamic/components/Button';
+import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 
 import FilterIcon from '@patternfly/react-icons/dist/dynamic/icons/filter-icon';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
+import messages from '../../properties/DefinedMessages';
 
 export const FilterDropdown = ({
   isFilterDropdownOpen,
@@ -86,11 +88,10 @@ export const FilterDropdown = ({
 export const ActionDropdown = ({
   isDropdownOpen,
   setIsDropdownOpen,
-  isDisabled,
+  selectedCount,
   onUpdateSelectedStatus,
   onNavigateTo,
   isOrgAdmin,
-  hasNotificationsPermissions,
 }) => {
   return (
     <Dropdown
@@ -113,68 +114,77 @@ export const ActionDropdown = ({
       id="notifications-actions-dropdown"
     >
       <ActionDropdownItems
-        isDisabled={isDisabled}
+        selectedCount={selectedCount}
         onUpdateSelectedStatus={onUpdateSelectedStatus}
         onNavigateTo={onNavigateTo}
         isOrgAdmin={isOrgAdmin}
-        hasNotificationsPermissions={hasNotificationsPermissions}
       />
     </Dropdown>
   );
 };
 
 const ActionDropdownItems = ({
-  isDisabled,
+  selectedCount,
   onUpdateSelectedStatus,
   onNavigateTo,
   isOrgAdmin,
-  hasNotificationsPermissions,
 }) => {
+  const intl = useIntl();
+  const isBulkActionDisabled = selectedCount === 0;
+
   return (
     <>
-      <DropdownGroup label="Actions">
-        <DropdownList>
-          <DropdownItem
-            key="read selected"
-            onClick={() => onUpdateSelectedStatus(true)}
-            isDisabled={isDisabled}
-          >
-            Mark selected as read
-          </DropdownItem>
-          <DropdownItem
-            key="unread selected"
-            onClick={() => onUpdateSelectedStatus(false)}
-            isDisabled={isDisabled}
-          >
-            Mark selected as unread
-          </DropdownItem>
-        </DropdownList>
-      </DropdownGroup>
+      <DropdownList>
+        <DropdownItem
+          key="read selected"
+          onClick={() => onUpdateSelectedStatus(true)}
+          isDisabled={isBulkActionDisabled}
+        >
+          {intl.formatMessage(messages.markSelectedAsRead, { count: selectedCount })}
+        </DropdownItem>
+        <DropdownItem
+          key="unread selected"
+          onClick={() => onUpdateSelectedStatus(false)}
+          isDisabled={isBulkActionDisabled}
+        >
+          {intl.formatMessage(messages.markSelectedAsUnread, { count: selectedCount })}
+        </DropdownItem>
+      </DropdownList>
       <Divider />
-      <DropdownGroup label="Quick links">
-        <DropdownList>
+      <DropdownList>
+        <DropdownItem
+          key="event log"
+          onClick={() => onNavigateTo('/settings/notifications/eventlog')}
+        >
+          {intl.formatMessage(messages.viewEventLog)}
+        </DropdownItem>
+        <DropdownItem
+          key="event notifications"
+          onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
+        >
+          {intl.formatMessage(messages.manageMyEventNotifications)}
+        </DropdownItem>
+        {!isOrgAdmin ? (
+          <Tooltip content={intl.formatMessage(messages.adminAccessRequired)}>
+            <span>
+              <DropdownItem
+                key="event configuration"
+                onClick={() => onNavigateTo('/settings/notifications/configure-events')}
+                isDisabled={true}
+              >
+                {intl.formatMessage(messages.manageEventConfiguration)}
+              </DropdownItem>
+            </span>
+          </Tooltip>
+        ) : (
           <DropdownItem
-            key="notifications log"
-            onClick={() => onNavigateTo('/settings/notifications/notificationslog')}
+            key="event configuration"
+            onClick={() => onNavigateTo('/settings/notifications/configure-events')}
           >
-            View notifications log
+            {intl.formatMessage(messages.manageEventConfiguration)}
           </DropdownItem>
-          {(isOrgAdmin || hasNotificationsPermissions) && (
-            <DropdownItem
-              key="notification settings"
-              onClick={() => onNavigateTo('/settings/notifications/configure-events')}
-            >
-              Configure notification settings
-            </DropdownItem>
-          )}
-          <DropdownItem
-            key="notification preferences"
-            onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
-          >
-            Manage my notification preferences
-          </DropdownItem>
-        </DropdownList>
-      </DropdownGroup>
+        )}
+      </DropdownList>
     </>
   );
 };

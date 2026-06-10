@@ -138,4 +138,34 @@ export default defineMessages({
     description: 'severity',
     defaultMessage: 'Severity',
   },
+  markSelectedAsRead: {
+    id: 'markSelectedAsRead',
+    description: 'Mark selected notifications as read',
+    defaultMessage: 'Mark selected ({count}) as read',
+  },
+  markSelectedAsUnread: {
+    id: 'markSelectedAsUnread',
+    description: 'Mark selected notifications as unread',
+    defaultMessage: 'Mark selected ({count}) as unread',
+  },
+  viewEventLog: {
+    id: 'viewEventLog',
+    description: 'View event log menu item',
+    defaultMessage: 'View event log',
+  },
+  manageMyEventNotifications: {
+    id: 'manageMyEventNotifications',
+    description: 'Manage my event notifications menu item',
+    defaultMessage: 'Manage my event notifications',
+  },
+  manageEventConfiguration: {
+    id: 'manageEventConfiguration',
+    description: 'Manage event configuration menu item',
+    defaultMessage: 'Manage event configuration',
+  },
+  adminAccessRequired: {
+    id: 'adminAccessRequired',
+    description: 'Admin access required tooltip',
+    defaultMessage: 'Admin-access required',
+  },
 });

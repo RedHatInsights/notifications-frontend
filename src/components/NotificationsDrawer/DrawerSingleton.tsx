@@ -156,7 +156,15 @@ export class DrawerSingleton {
         notification_ids: selected.map((notification) => notification.id),
         read_status: read,
       }).then(() => {
-        selected.forEach((notification) => this.updateNotificationRead(notification.id, read));
+        const selectedIds = new Set(selected.map((n) => n.id));
+        DrawerSingleton._state.notificationData = DrawerSingleton._state.notificationData.map(
+          (notification) =>
+            selectedIds.has(notification.id)
+              ? { ...notification, read, selected: false }
+              : notification
+        );
+        DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
+        DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
       });
     } catch (e) {
       console.error('failed to update notification read status', e);
