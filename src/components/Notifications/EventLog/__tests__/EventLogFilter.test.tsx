@@ -8,6 +8,15 @@ import { EventLogFilters, SetEventLogFilters } from '../EventLogFilter';
 import { EventLogToolbar } from '../EventLogToolbar';
 import { EventLogTreeFilter } from '../EventLogTreeFilter';
 
+jest.mock('../../../../services/Notifications/GetSeverities', () => ({
+  useGetSeverities: jest.fn(() => ({
+    payload: {
+      status: 200,
+      value: ['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE', 'UNDEFINED'],
+    },
+  })),
+}));
+
 const applications = [
   {
     id: '3',
@@ -45,27 +54,30 @@ const setFilters = {
   severities: jest.fn(),
 };
 
+const renderToolbar = () =>
+  render(
+    <EventLogToolbar
+      filters={{} as EventLogFilters}
+      setFilters={setFilters as unknown as SetEventLogFilters}
+      clearFilter={jest.fn()}
+      bundleOptions={[]}
+      pageCount={0}
+      count={0}
+      page={0}
+      perPage={0}
+      pageChanged={jest.fn()}
+      perPageChanged={jest.fn()}
+      dateFilter={{} as EventLogDateFilterValue}
+      setDateFilter={jest.fn()}
+      retentionDays={0}
+      period={{} as EventPeriod}
+      setPeriod={jest.fn()}
+    />
+  );
+
 describe('src/components/Notifications/EventLog', () => {
   it('Render and verify filtering options', async () => {
-    render(
-      <EventLogToolbar
-        filters={{} as EventLogFilters}
-        setFilters={setFilters as unknown as SetEventLogFilters}
-        clearFilter={jest.fn()}
-        bundleOptions={[]}
-        pageCount={0}
-        count={0}
-        page={0}
-        perPage={0}
-        pageChanged={jest.fn()}
-        perPageChanged={jest.fn()}
-        dateFilter={{} as EventLogDateFilterValue}
-        setDateFilter={jest.fn()}
-        retentionDays={0}
-        period={{} as EventPeriod}
-        setPeriod={jest.fn()}
-      />
-    );
+    renderToolbar();
 
     const filterDropdownBtn = screen.getAllByRole('button')[0];
     await userEvent.click(filterDropdownBtn);
@@ -78,6 +90,19 @@ describe('src/components/Notifications/EventLog', () => {
     expect(filterDropdown[2]).toHaveTextContent('Action Type');
     expect(filterDropdown[3]).toHaveTextContent('Action Status');
     expect(filterDropdown[4]).toHaveTextContent('Severity');
+  });
+
+  it('does not offer Undefined as a severity filter option', async () => {
+    renderToolbar();
+
+    const filterDropdownBtn = screen.getAllByRole('button')[0];
+    await userEvent.click(filterDropdownBtn);
+    await userEvent.click(screen.getByRole('menuitem', { name: 'Severity' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Options menu' }));
+
+    expect(screen.queryByText('Undefined')).not.toBeInTheDocument();
+    expect(screen.getByText('Critical')).toBeVisible();
+    expect(screen.getByText('None')).toBeVisible();
   });
 
   it('Render custom Service filter and perform basic tree filtering', async () => {

@@ -161,4 +161,26 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
       actions: [],
     });
   });
+
+  it('toNotificationEvent treats UNDEFINED severity as undefined', () => {
+    const event: ServerEvent = {
+      id: 'undefined-sev-id',
+      event_type: 'undefined-sev-event',
+      application: 'undefined-sev-app',
+      bundle: 'undefined-sev-bundle',
+      created: '2024-01-01 12:00:00.000',
+      severity: 'UNDEFINED',
+      actions: [],
+    };
+
+    expect(toNotificationEvent(event)).toStrictEqual({
+      id: 'undefined-sev-id',
+      bundle: 'undefined-sev-bundle',
+      application: 'undefined-sev-app',
+      event: 'undefined-sev-event',
+      date: new Date('2024-01-01T12:00:00.000Z'),
+      severity: undefined,
+      actions: [],
+    });
+  });
 });

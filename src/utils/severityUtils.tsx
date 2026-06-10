@@ -61,6 +61,18 @@ export const eventLogSeverityLabelStyles: Record<EventSeverity, React.CSSPropert
   }),
 };
 
+export const normalizeSeverity = (severity?: EventSeverity | null): EventSeverity | undefined => {
+  if (!severity || severity === 'UNDEFINED') {
+    return undefined;
+  }
+
+  return severity;
+};
+
+export const hasDisplayableSeverity = (
+  severity?: EventSeverity | null
+): severity is Exclude<EventSeverity, 'UNDEFINED'> => normalizeSeverity(severity) !== undefined;
+
 export const toSeverityLabelProps = (
   severity?: EventSeverity
 ): Pick<LabelProps, 'color' | 'icon' | 'style' | 'status' | 'variant'> => {

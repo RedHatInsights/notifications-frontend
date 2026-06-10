@@ -154,20 +154,22 @@ export const EventLogToolbar: React.FunctionComponent<
     const severities: EventSeverity[] =
       severitiesQuery.payload?.status === 200 ? severitiesQuery.payload.value : SEVERITY_VALUES;
 
-    return severities.map((severity: EventSeverity) => {
-      const labelProps = toSeverityLabelProps(severity);
+    return severities
+      .filter((severity) => severity !== 'UNDEFINED')
+      .map((severity: EventSeverity) => {
+        const labelProps = toSeverityLabelProps(severity);
 
-      return {
-        value: severity,
-        chipValue: severityDisplayName[severity],
-        label: (
-          <span>
-            <span style={{ color: getSeverityIconColor(severity) }}>{labelProps.icon}</span>{' '}
-            {severityDisplayName[severity]}
-          </span>
-        ),
-      };
-    });
+        return {
+          value: severity,
+          chipValue: severityDisplayName[severity],
+          label: (
+            <span>
+              <span style={{ color: getSeverityIconColor(severity) }}>{labelProps.icon}</span>{' '}
+              {severityDisplayName[severity]}
+            </span>
+          ),
+        };
+      });
   }, [severitiesQuery.payload]);
 
   const filterMetadata = React.useMemo<Partial<ColumnsMetada<typeof EventLogFilterColumn>>>(() => {

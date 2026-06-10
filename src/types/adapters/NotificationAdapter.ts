@@ -1,6 +1,7 @@
 import { assertNever } from 'assert-never';
 import produce, { castDraft } from 'immer';
 import { Schemas } from '../../generated/OpenapiIntegrations';
+import { normalizeSeverity } from '../../utils/severityUtils';
 import {
   IntegrationEmailSubscription,
   ServerIntegrationResponse,
@@ -62,7 +63,7 @@ export const toNotification = (serverNotification: ServerNotificationResponse): 
     applicationDisplayName: serverNotification.application.display_name,
     eventTypeDisplayName: serverNotification.display_name,
     description: serverNotification.description || undefined,
-    defaultSeverity: serverNotification.default_severity || undefined,
+    defaultSeverity: normalizeSeverity(serverNotification.default_severity),
   };
 };
 
