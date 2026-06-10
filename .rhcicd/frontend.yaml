@@ -19,15 +19,15 @@ objects:
           - v1
         specs:
           - url: https://console.redhat.com/api/notifications/v1/openapi.json
-            bundleLabels: ["settings"]
+            bundleLabels: ['settings']
           - url: https://console.redhat.com/api/notifications/v2/openapi.json
-            bundleLabels: ["settings"]
+            bundleLabels: ['settings']
       frontend:
         paths:
           - /apps/notifications
       image: ${IMAGE}:${IMAGE_TAG}
       module:
-        manifestLocation: "/apps/notifications/fed-mods.json"
+        manifestLocation: '/apps/notifications/fed-mods.json'
         defaultDocumentTitle: Notifications | Settings
         config:
           supportCaseData:
@@ -35,11 +35,11 @@ objects:
             version: Notifications
 
         modules:
-        - id: notifications
-          module: "./RootApp"
-          routes:
-          - pathname: "/settings/notifications"
-          - pathname: "/settings/integrations/splunk-setup"
+          - id: notifications
+            module: './RootApp'
+            routes:
+              - pathname: '/settings/notifications'
+              - pathname: '/settings/integrations/splunk-setup'
 
       bundleSegments:
         - segmentId: notifications-settings
@@ -49,29 +49,37 @@ objects:
               id: notifications
               expandable: true
               routes:
-              - id: notificationOverview
-                icon: PlaceholderIcon
-                title: Overview
-                href: "/settings/notifications"
-              - id: configureEvents
-                title: Configure Events
-                href: "/settings/notifications/configure-events"
-                permissions:
-                - method: loosePermissions
-                  args:
-                  - - integrations:*:*
-                    - integrations:endpoints:write
-              - id: eventLog
-                title: Event Log
-                href: "/settings/notifications/eventlog"
-                permissions:
-                - method: loosePermissions
-                  args:
-                  - - notifications:*:*
-                    - notifications:notifications:write
-              - id: myUserPreferences
-                title: Notification Preferences
-                href: "/settings/notifications/user-preferences"
+                - id: notificationOverview
+                  icon: PlaceholderIcon
+                  title: Overview
+                  href: '/settings/notifications'
+                - id: configureEvents
+                  title: Configure Events
+                  href: '/settings/notifications/configure-events'
+                  permissions:
+                    - method: loosePermissions
+                      args:
+                        - - integrations:*:*
+                          - integrations:endpoints:write
+                - id: eventLog
+                  title: Event Log
+                  href: '/settings/notifications/eventlog'
+                  permissions:
+                    - method: loosePermissions
+                      args:
+                        - - notifications:*:*
+                          - notifications:notifications:write
+                - id: notificationsLog
+                  title: Notifications Log
+                  href: '/settings/notifications/notificationslog'
+                  permissions:
+                    - method: loosePermissions
+                      args:
+                        - - notifications:*:*
+                          - notifications:notifications:write
+                - id: myUserPreferences
+                  title: Notification Preferences
+                  href: '/settings/notifications/user-preferences'
           position: 1000
 
       searchEntries:
@@ -79,17 +87,17 @@ objects:
           title: Notifications
           href: /settings/notifications
           description: A standardized way of notifying users of events for supported services on the Hybrid Cloud Console.
-      
+
       widgetRegistry:
         - scope: notifications
-          module: "./DashboardWidget"
+          module: './DashboardWidget'
           featureFlag: widget.notifications.enable
           config:
             icon: BellIcon
             title: Events
             headerLink:
               title: View event log
-              href: "/settings/notifications/eventlog"
+              href: '/settings/notifications/eventlog'
             permissions:
               - method: isOrgAdmin
           defaults:
