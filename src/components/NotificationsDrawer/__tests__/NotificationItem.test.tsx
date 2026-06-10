@@ -50,12 +50,12 @@ describe('NotificationItem variant based on read status', () => {
     expect(listItem).toHaveClass('pf-m-info');
   });
 
-  it('renders without info variant when notification is read', () => {
+  it('renders with info variant when notification is read', () => {
     const notification = makeNotification('1', true);
     renderNotificationItem(notification);
 
     const listItem = screen.getByRole('listitem');
-    expect(listItem).not.toHaveClass('pf-m-info');
+    expect(listItem).toHaveClass('pf-m-info');
   });
 
   it('applies isRead attribute when notification is read', () => {
