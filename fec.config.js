@@ -53,7 +53,7 @@ module.exports = {
       ),
       './NotificationsDrawerBell': path.resolve(
         __dirname,
-        './src/components/NotificationsDrawer/DrawerBell.tsx'
+        './src/components/NotificationsDrawer/DrawerBellEntry.tsx'
       ),
       './DrawerPanel': path.resolve(
         __dirname,
