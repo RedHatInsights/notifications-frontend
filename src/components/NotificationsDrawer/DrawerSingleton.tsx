@@ -1,6 +1,4 @@
-import { Access, AccessApi } from '@redhat-cloud-services/rbac-client';
 import { ChromeAPI } from '@redhat-cloud-services/types';
-import axios from 'axios';
 import { getDateDaysAgo } from '../UtcDate';
 
 import { getBundleFacets } from '../../api/helpers/notifications/bundle-facets-helper';
@@ -13,8 +11,6 @@ import {
   NotificationDrawerState,
   isNotificationData,
 } from '../../types/Drawer';
-
-const rbacApi = new AccessApi(undefined, '/api/rbac/v1', axios.create());
 
 interface Bundle {
   id: string;
@@ -45,11 +41,7 @@ export class DrawerSingleton {
     // Run the init procedure if the state is not ready for subscriber
     if (!DrawerSingleton._state.initializing && !DrawerSingleton._state.ready) {
       DrawerSingleton._state.initializing = true;
-      rbacApi
-        .getPrincipalAccess('notifications', undefined, undefined, 1000)
-        .then(({ data: { data } }) =>
-          DrawerSingleton.Instance.initialize(true, data, addWsEventListener)
-        )
+      DrawerSingleton.Instance.initialize(true, addWsEventListener)
         .then(() => {
           DrawerSingleton._state.ready = true;
         })
@@ -77,15 +69,12 @@ export class DrawerSingleton {
     return DrawerSingleton._instance;
   }
 
-  // initialize function calls the three functions below
   public initialize = async (
     mounted: boolean,
-    permissions: Access[],
     addWsEventListener?: ChromeAPI['addWsEventListener']
   ) => {
     await this.fetchFilterConfig(mounted);
     await this.getNotifications();
-    await this.setNotificationsPermissions(mounted, permissions);
     if (addWsEventListener) {
       addWsEventListener('com.redhat.console.notifications.drawer', (event) => {
         if (isNotificationData(event.data)) {
@@ -100,20 +89,6 @@ export class DrawerSingleton {
   public static getState() {
     return DrawerSingleton._state;
   }
-
-  private setNotificationsPermissions = async (mounted: boolean, permissions) => {
-    if (mounted) {
-      DrawerSingleton._state.hasNotificationsPermissions =
-        permissions?.some((item) =>
-          [
-            'notifications:*:*',
-            'notifications:notifications:read',
-            'notifications:notifications:write',
-          ].includes((typeof item === 'string' && item) || item?.permission)
-        ) || false;
-      DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
-    }
-  };
 
   private fetchFilterConfig = async (mounted: boolean) => {
     if (!mounted) {
