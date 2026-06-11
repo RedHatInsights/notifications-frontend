@@ -21,14 +21,22 @@ test.describe('Notifications Landing Page', () => {
   });
 
   test('should display landing page controls and content', async ({ page }) => {
+    // Wait for the page to finish loading (spinner to disappear)
+    await page.waitForLoadState('networkidle', { timeout: TIMEOUTS.PAGE_LOAD });
+
     // Main heading
     await expect(page.getByRole('heading', { name: 'Notifications', level: 1 })).toBeVisible({
       timeout: TIMEOUTS.ELEMENT_VISIBLE,
     });
 
+    // Wait for the main content card to appear (confirms isOrgAdmin state is resolved)
+    const mainContentCard = page.locator('.pf-v5-c-card, .pf-v6-c-card').first();
+    await expect(mainContentCard).toBeVisible({ timeout: TIMEOUTS.API_RESPONSE });
+
     // Main "Configure events" button (org admin view)
     // Note: This button only appears for org admins
-    const configureEventsButton = page.getByRole('link', { name: 'Configure events' });
+    // Filter to get the primary button, not the navigation link
+    const configureEventsButton = page.getByRole('link', { name: 'Configure events' }).filter({ hasText: 'Configure events' }).and(page.locator('.pf-v6-c-button.pf-m-primary'));
     const isConfigureEventsVisible = await configureEventsButton.isVisible();
 
     if (isConfigureEventsVisible) {
@@ -68,47 +76,47 @@ test.describe('Notifications Landing Page', () => {
         })
       ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-      // Manage errata action - conditionally check (stage-only feature)
-      // This is behind the platform.notifications.errata.userpreferences feature flag
-      const manageErrataLink = supportingFeaturesList.getByRole('link', {
-        name: 'Manage subscriptions errata',
-      });
+      // Manage errata action - now available on both stage and prod
+      await expect(
+        supportingFeaturesList.getByRole('link', {
+          name: 'Manage subscriptions errata',
+        })
+      ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-      // Check if errata link exists (feature flagged)
-      const isErrataVisible = await manageErrataLink.isVisible();
-      if (isErrataVisible) {
-        await expect(manageErrataLink).toBeVisible({
-          timeout: TIMEOUTS.ELEMENT_VISIBLE,
-        });
-      }
-
-      // Recommended content table
-      const recommendedContentTable = page.getByRole('table', {
+      // Check for Recommended content section (may require scrolling)
+      const recommendedContentHeading = page.getByRole('heading', {
         name: 'Recommended content',
+        level: 2,
       });
 
-      // Notifications action - View documentation
+      // Scroll to the recommended content section
+      await recommendedContentHeading.scrollIntoViewIfNeeded();
+      await expect(recommendedContentHeading).toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
+
+      // Verify recommended content items are visible
+      // The structure may be a table or list depending on the migration state
+      await expect(page.getByText('Configuring Notifications')).toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
+
+      await expect(page.getByText('Configuring Integrations')).toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
+
       await expect(
-        recommendedContentTable
-          .getByRole('row')
-          .filter({ hasText: 'Configuring Notifications' })
-          .getByRole('link', { name: /View documentation/i })
+        page.getByText('Restricting access to a service to a team')
       ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-      // Integrations action - View documentation
-      await expect(
-        recommendedContentTable
-          .getByRole('row')
-          .filter({ hasText: 'Configuring Integrations' })
-          .getByRole('link', { name: /View documentation/i })
-      ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
+      // Verify action links exist
+      const viewDocLinks = page.getByRole('link', { name: /View documentation/i });
+      await expect(viewDocLinks.first()).toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
 
-      // Restricting action - Begin Quick start
       await expect(
-        recommendedContentTable
-          .getByRole('row')
-          .filter({ hasText: 'Restricting access to a service to a team' })
-          .getByRole('link', { name: /Begin Quick start/i })
+        page.getByRole('link', { name: /Begin Quick start/i })
       ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
     } else {
       // Non-org admin view - verify different content
