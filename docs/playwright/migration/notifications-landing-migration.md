@@ -1,5 +1,21 @@
 # Test Documentation: test_landing.py → notifications-landing.spec.ts
 
+## Changelog
+
+### 2026-06-11: Errata Feature Now Available in All Environments
+- **Change:** Removed conditional check for "Manage subscriptions errata" link
+- **Reason:** Feature `platform.notifications.errata.userpreferences` is now enabled in both stage and prod
+- **Impact:** Test now always asserts errata link is visible (no longer conditional)
+- **Files Updated:** 
+  - `playwright/notifications-landing.spec.ts` - Changed from conditional `if (isErrataVisible)` to direct assertion
+  - Documentation updated to reflect unconditional check
+
+### 2026-05-25: Initial Migration
+- Migrated test from IQE to Playwright
+- Original implementation included conditional errata check
+
+---
+
 ## Repository Assignment
 **Target Repository:** `notifications-frontend`
 **Rationale:** Tests the Notifications overview/landing page which is part of the notifications-frontend application
@@ -26,10 +42,10 @@ Verifies that the Notifications landing page (overview page) displays all expect
 **Note:** This repository uses a custom auth approach rather than the standard `@redhat-cloud-services/playwright-test-auth` package
 
 ### Feature Flags
-**Critical:** This test checks for feature-flagged content:
-- `platform.notifications.errata.userpreferences` - Controls visibility of "Manage errata" action
+**Updated 2026-06-11:** The errata feature is now available in both stage and prod environments:
+- `platform.notifications.errata.userpreferences` - Previously feature-flagged, now enabled in all environments
 - The IQE test only checked for errata in stage environment using `is_stage()` check
-- The Playwright test conditionally checks for errata link visibility regardless of environment
+- The Playwright test now asserts the errata link is always visible (no conditional check needed)
 
 ### Test Steps
 
@@ -110,27 +126,26 @@ await expect(
 ```
 **Expected Result:** Link is visible in the supporting features list (org admin view only)
 
-#### Step 9: Verify Supporting Features - Manage Errata Action (Conditional)
-**Action:** Check that "Manage subscriptions errata" link is visible (if feature flag is enabled)
+#### Step 9: Verify Supporting Features - Manage Errata Action
+**Action:** Check that "Manage subscriptions errata" link is visible
 **IQE Code:** 
 ```python
 if is_stage():
     assert view.supporting_features.manage_errata_action.is_displayed
 ```
-**Playwright Code:** 
+**Playwright Code (Updated 2026-06-11):** 
 ```typescript
-const manageErrataLink = supportingFeaturesList.getByRole('link', {
-  name: 'Manage subscriptions errata',
-});
-const isErrataVisible = await manageErrataLink.isVisible();
-if (isErrataVisible) {
-  await expect(manageErrataLink).toBeVisible();
-}
+await expect(
+  supportingFeaturesList.getByRole('link', {
+    name: 'Manage subscriptions errata',
+  })
+).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 ```
-**Expected Result:** 
-- If feature flag `platform.notifications.errata.userpreferences` is enabled: Link is visible
-- If feature flag is disabled: Link is not visible (test continues without error)
-**Note:** IQE test only checked this in stage environment. Playwright test checks feature flag presence regardless of environment.
+**Expected Result:** Link is always visible in the supporting features list (org admin view)
+**Note:** 
+- **IQE:** Only checked this in stage environment using `is_stage()` conditional
+- **Playwright (Original):** Conditionally checked feature flag presence
+- **Playwright (Updated):** Now asserts link is always visible since feature is enabled in all environments
 
 #### Step 10: Verify Recommended Content - Notifications Documentation
 **Action:** Check that "View documentation" link for "Configuring Notifications" is visible
@@ -201,7 +216,7 @@ await expect(viewAllResourcesLink).toHaveText('View all Settings Learning Resour
 - [ ] "View Event log" link is visible
 - [ ] "Set up Integrations" link is visible
 - [ ] "Create new behavior group" link is visible
-- [ ] If errata feature flag enabled: "Manage subscriptions errata" link is visible
+- [ ] "Manage subscriptions errata" link is visible (now available in all environments)
 - [ ] Recommended content table displays with aria-label "Recommended content"
 - [ ] "Configuring Notifications" documentation link is visible
 - [ ] "Configuring Integrations" documentation link is visible
@@ -246,7 +261,7 @@ PLAYWRIGHT_BASE_URL=https://stage.foo.redhat.com:1337  # Optional - defaults to 
 
 1. **User Type Detection:** The Playwright test detects whether the user is an org admin by checking for the presence of the "Configure events" button, rather than explicitly querying user properties. This is a practical approach based on the UI differences.
 
-2. **Errata Feature Check:** The IQE test only checked for errata in the stage environment using `is_stage()`. The Playwright test checks for the presence of the errata link regardless of environment, making it more flexible as the feature flag can be enabled in any environment.
+2. **Errata Feature Check:** The IQE test only checked for errata in the stage environment using `is_stage()`. The Playwright test originally had a conditional check but was updated on 2026-06-11 to always assert the link is visible, since the feature is now enabled in all environments (stage and prod).
 
 3. **Selector Strategy:** 
    - IQE uses XPath selectors targeting specific text content and structure
@@ -262,7 +277,7 @@ PLAYWRIGHT_BASE_URL=https://stage.foo.redhat.com:1337  # Optional - defaults to 
 This Playwright test provides **100% coverage** of the original IQE test:
 - ✅ Page navigation
 - ✅ Main action button verification
-- ✅ All supporting features links (5 items, including conditional errata)
+- ✅ All supporting features links (5 items, including errata now available in all environments)
 - ✅ All recommended content links (3 items)
 - ✅ View all resources link
 - ✅ Handles both org admin and non-admin user views

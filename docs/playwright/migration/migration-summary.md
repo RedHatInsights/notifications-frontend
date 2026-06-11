@@ -39,7 +39,7 @@ notifications-frontend/
 4. ✅ Verify supporting features - Monitor action
 5. ✅ Verify supporting features - Setup action
 6. ✅ Verify supporting features - Create action
-7. ✅ Verify supporting features - Manage errata (conditional/stage-only)
+7. ✅ Verify supporting features - Manage errata (now available in all environments as of 2026-06-11)
 8. ✅ Verify recommended content - Notifications documentation
 9. ✅ Verify recommended content - Integrations documentation
 10. ✅ Verify recommended content - Restricting access quick start
