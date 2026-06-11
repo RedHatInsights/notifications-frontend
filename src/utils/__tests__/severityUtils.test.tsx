@@ -1,11 +1,45 @@
 import {
   SEVERITY_VALUES,
+  hasDisplayableSeverity,
+  normalizeSeverity,
   severityDescription,
   severityDisplayName,
   toSeverityLabelProps,
 } from '../severityUtils';
 
 describe('severityUtils', () => {
+  describe('normalizeSeverity', () => {
+    it.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE'] as const)(
+      'returns %s unchanged',
+      (severity) => {
+        expect(normalizeSeverity(severity)).toBe(severity);
+      }
+    );
+
+    it.each([undefined, null, 'UNDEFINED'] as const)(
+      'returns undefined for empty severity values',
+      (severity) => {
+        expect(normalizeSeverity(severity)).toBeUndefined();
+      }
+    );
+  });
+
+  describe('hasDisplayableSeverity', () => {
+    it.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE'] as const)(
+      'returns true for %s',
+      (severity) => {
+        expect(hasDisplayableSeverity(severity)).toBe(true);
+      }
+    );
+
+    it.each([undefined, null, 'UNDEFINED'] as const)(
+      'returns false for empty severity values',
+      (severity) => {
+        expect(hasDisplayableSeverity(severity)).toBe(false);
+      }
+    );
+  });
+
   describe('toSeverityLabelProps', () => {
     it.each(['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE'] as const)(
       'returns an icon and style for %s severity',
@@ -42,12 +76,15 @@ describe('severityUtils', () => {
       }
     );
 
-    it('maps to human-readable names', () => {
+    it('maps to human-readable names for displayable severities', () => {
       expect(severityDisplayName.CRITICAL).toBe('Critical');
       expect(severityDisplayName.IMPORTANT).toBe('Important');
       expect(severityDisplayName.MODERATE).toBe('Moderate');
       expect(severityDisplayName.LOW).toBe('Low');
       expect(severityDisplayName.NONE).toBe('None');
+    });
+
+    it('keeps an internal mapping for UNDEFINED without surfacing it in the UI', () => {
       expect(severityDisplayName.UNDEFINED).toBe('Undefined');
     });
   });

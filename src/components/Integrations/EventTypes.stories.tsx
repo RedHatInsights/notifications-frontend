@@ -77,7 +77,7 @@ const mockEventTypes = [
     application: { id: 'app-3', display_name: 'Drift', name: 'drift', bundle_id: 'bundle-1' },
     display_name: 'Comparison completed',
     name: 'comparison-completed',
-    // No severity — tests the fallback
+    // No severity — tests the blank severity cell
   },
 ];
 
@@ -139,7 +139,7 @@ type Story = StoryObj<typeof EventTypes>;
 /**
  * Default view showing event types with severity column.
  * Demonstrates severity labels with icons for CRITICAL, IMPORTANT,
- * MODERATE, LOW, NONE, and the fallback for undefined severity.
+ * MODERATE, LOW, NONE, and a blank cell for undefined severity.
  */
 export const Default: Story = {
   parameters: {

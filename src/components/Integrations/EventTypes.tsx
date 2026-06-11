@@ -31,6 +31,7 @@ import { EventType, Facet } from '../../types/Notification';
 import { debouncePromise } from '../../pages/Integrations/Create/nameValidator';
 import { perPageOptions } from '../../config/Config';
 import {
+  hasDisplayableSeverity,
   severityDescription,
   severityDisplayName,
   toSeverityLabelProps,
@@ -157,19 +158,15 @@ const EventTypes: React.FC<EventTypesProps> = ({
 
   const renderSeverityCell = (event: EventType) => {
     const severity = event.defaultSeverity;
-    if (severity) {
-      return (
-        <Tooltip content={severityDescription[severity]}>
-          <Label {...toSeverityLabelProps(severity)}>
-            {severityDisplayName[severity] ?? severity}
-          </Label>
-        </Tooltip>
-      );
+    if (!hasDisplayableSeverity(severity)) {
+      return null;
     }
 
     return (
-      <Tooltip content={severityDescription.UNDEFINED}>
-        <Label {...toSeverityLabelProps(undefined)}>{severityDisplayName.UNDEFINED}</Label>
+      <Tooltip content={severityDescription[severity]}>
+        <Label {...toSeverityLabelProps(severity)}>
+          {severityDisplayName[severity] ?? severity}
+        </Label>
       </Tooltip>
     );
   };

@@ -421,6 +421,17 @@ const meta: Meta<typeof EventLogToolbar> = {
 export default meta;
 type Story = StoryObj<typeof EventLogToolbar>;
 
+/** Toolbar + table; events without severity leave the severity cell blank. */
+export const BlankSeverityForMissingValue: Story = {
+  render: () => <ToolbarWithEvents />,
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+    await canvas.findByPlaceholderText('Filter by event');
+    await waitFor(() => expect(canvas.getByText('Legacy event (no severity)')).toBeVisible());
+    expect(canvas.queryByText('Undefined')).not.toBeInTheDocument();
+  },
+};
+
 /** Toolbar + table with mock data; no filter changes (initial “Event” filter only). */
 export const Default: Story = {
   render: () => <ToolbarWithEvents />,

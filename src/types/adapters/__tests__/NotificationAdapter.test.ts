@@ -42,14 +42,24 @@ describe('NotificationAdapter', () => {
       expect(result.defaultSeverity).toBe('CRITICAL');
     });
 
-    it('maps all severity values correctly', () => {
-      const severities = ['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE', 'UNDEFINED'] as const;
+    it('maps defined severity values correctly', () => {
+      const severities = ['CRITICAL', 'IMPORTANT', 'MODERATE', 'LOW', 'NONE'] as const;
 
       for (const severity of severities) {
         const server = makeServerEventType({ default_severity: severity });
         const result = toNotification(server);
         expect(result.defaultSeverity).toBe(severity);
       }
+    });
+
+    it('sets defaultSeverity to undefined when API returns UNDEFINED', () => {
+      const server = makeServerEventType({
+        default_severity: 'UNDEFINED',
+      });
+
+      const result = toNotification(server);
+
+      expect(result.defaultSeverity).toBeUndefined();
     });
 
     it('sets defaultSeverity to undefined when API omits it', () => {
