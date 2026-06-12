@@ -62,10 +62,10 @@ const meta: Meta = {
     msw: {
       handlers: [
         http.put('/api/notifications/v1.0/notifications/drawer/read', () => {
-          return HttpResponse.json({ success: true });
+          return HttpResponse.json(1);
         }),
         http.put('/api/notifications/v1/notifications/drawer/read', () => {
-          return HttpResponse.json({ success: true });
+          return HttpResponse.json(1);
         }),
       ],
     },
@@ -80,7 +80,7 @@ const meta: Meta = {
 };
 
 export default meta;
-type Story = StoryObj;
+type Story = StoryObj<typeof meta>;
 
 /**
  * Notification item in unread state. The bell icon is purple (variant="info")
