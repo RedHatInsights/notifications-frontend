@@ -15,7 +15,6 @@ import { AppContext } from '../src/app/AppContext';
 import { KesselRbacAccessProvider } from '../src/app/rbac/KesselRbacAccessProvider';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
-import { getInsights } from '../src/utils/insights-common-typescript';
 import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 
 let setup = false;
@@ -80,7 +79,9 @@ const InternalWrapper: React.FunctionComponent<React.PropsWithChildren<Config>> 
   const location = useLocation();
 
   if (props.skipIsBetaMock) {
-    (getInsights().chrome.isBeta as jest.Mock).mockImplementation(() => {
+    (
+      global as unknown as Record<string, Record<string, Record<string, jest.Mock>>>
+    ).insights.chrome.isBeta.mockImplementation(() => {
       return location.pathname.startsWith('/beta/');
     });
   }

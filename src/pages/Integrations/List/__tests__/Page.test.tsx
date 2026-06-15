@@ -17,7 +17,15 @@ import { getByLabelText } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
-  return () => ({ getBundle: () => 'foo', getEnvironment: () => 'bar' });
+  return () => ({
+    getBundle: () => 'foo',
+    getEnvironment: () => 'bar',
+    isBeta: () => false,
+    auth: { getToken: () => Promise.resolve('mock-token') },
+    updateDocumentTitle: jest.fn(),
+    appNavClick: jest.fn(),
+    addWsEventListener: jest.fn(() => jest.fn()),
+  });
 });
 
 describe('src/pages/Integrations/List/Page', () => {

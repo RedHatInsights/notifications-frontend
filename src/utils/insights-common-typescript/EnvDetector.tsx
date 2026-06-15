@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { RenderIf } from './RenderIf';
 import { BetaEnvironment, Environment, NonBetaEnvironment } from './Environment';
-import { InsightsType } from './InsightsType';
 
 interface EnvDetectorProps {
   onEnvironment: ReadonlyArray<Environment> | Environment;
@@ -24,22 +23,20 @@ export const EnvDetector: React.FunctionComponent<React.PropsWithChildren<EnvDet
   return <RenderIf renderIf={renderIf}>{props.children}</RenderIf>;
 };
 
-interface InsightsBetaDetectorProps extends Omit<EnvDetectorProps, 'currentEnvironment'> {
-  insights: InsightsType;
+interface InsightsEnvDetectorProps extends Omit<EnvDetectorProps, 'currentEnvironment'> {
+  isBeta: boolean;
+  environment: string;
 }
 
 export const InsightsEnvDetector: React.FunctionComponent<
-  React.PropsWithChildren<InsightsBetaDetectorProps>
+  React.PropsWithChildren<InsightsEnvDetectorProps>
 > = (props) => {
   const currentEnvironment: Environment = React.useMemo(() => {
-    const isBeta = props.insights.chrome.isBeta();
-    const env: NonBetaEnvironment = props.insights.chrome.getEnvironment();
-    if (isBeta) {
-      return `${env}-beta` as BetaEnvironment;
-    } else {
-      return env;
+    if (props.isBeta) {
+      return `${props.environment}-beta` as BetaEnvironment;
     }
-  }, [props.insights]);
+    return props.environment as NonBetaEnvironment;
+  }, [props.isBeta, props.environment]);
 
   return (
     <EnvDetector onEnvironment={props.onEnvironment} currentEnvironment={currentEnvironment}>
