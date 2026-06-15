@@ -87,11 +87,6 @@ export const useApp = (): Partial<AppContext> => {
   useEffect(() => {
     if (userLoaded) {
       fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then((rbac) => {
-        console.log('[RBAC DEBUG] v1 RBAC loaded:', {
-          // @ts-expect-error - accessing private field for debugging
-          permissions: rbac?.permissions,
-          isOrgAdmin,
-        });
         setV1Rbac(rbac);
       });
     }
@@ -109,7 +104,6 @@ export const useApp = (): Partial<AppContext> => {
       const kesselFailed = kesselErrors && kesselErrors.length > 0;
 
       if (kesselFailed) {
-        console.log('[RBAC DEBUG] Kessel failed, using v1 fallback only:', kesselErrors);
         if (!v1Rbac) {
           return undefined; // Still loading v1
         }
@@ -124,24 +118,10 @@ export const useApp = (): Partial<AppContext> => {
       }
 
       if (isKesselLoading || !v1Rbac) {
-        console.log('[RBAC DEBUG] Still loading:', { isKesselLoading, hasV1Rbac: !!v1Rbac });
         return undefined; // Still loading
       }
 
       const kesselPerms = mapKesselToV1Permissions(kesselPermissions);
-
-      // Debug logging
-      console.log('[RBAC DEBUG] v2 org permissions:', {
-        isOrgAdmin,
-        kesselPerms,
-        v1Rbac: {
-          integrationsEndpointsWrite: v1Rbac.hasPermission('integrations', 'endpoints', 'write'),
-          integrationsEndpointsRead: v1Rbac.hasPermission('integrations', 'endpoints', 'read'),
-          notificationsWrite: v1Rbac.hasPermission('notifications', 'notifications', 'write'),
-          notificationsRead: v1Rbac.hasPermission('notifications', 'notifications', 'read'),
-          eventsRead: v1Rbac.hasPermission('notifications', 'events', 'read'),
-        },
-      });
 
       return {
         // Grant permission if EITHER Kessel v2 OR v1 wildcard check passes
