@@ -76,21 +76,50 @@ export const useApp = (): Partial<AppContext> => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  // Effect to fetch v1 RBAC when org is v1 (no need to wait for Kessel)
+  // Effect to fetch v1 RBAC for ALL orgs (v2 orgs need it for wildcard permission fallback)
+  // This is necessary because Kessel v2 does not support wildcard permission expansion,
+  // so we must check v1 wildcards (integrations:*:*, notifications:*:*) as fallback.
+  // See: https://github.com/RedHatInsights/insights-chrome/pull/3362
   useEffect(() => {
-    if (userLoaded && !isV2Org) {
+    if (userLoaded) {
       fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then(setV1Rbac);
     }
-  }, [userLoaded, isV2Org]);
+  }, [userLoaded]);
 
   // Compute final RBAC object based on org version
   const rbac = React.useMemo(() => {
     if (isV2Org) {
-      // v2 org: map Kessel permissions to v1 structure
-      if (isKesselLoading) {
-        return undefined; // Still loading v2 permissions
+      // v2 org: combine Kessel v2 permissions with v1 wildcard fallback
+      // Kessel v2 does not support wildcard expansion, so we must check v1 wildcards
+      // (integrations:*:*, notifications:*:*) as fallback for Org Admins and legacy roles.
+      // See: https://github.com/RedHatInsights/insights-chrome/pull/3362
+      if (isKesselLoading || !v1Rbac) {
+        return undefined; // Still loading
       }
-      return mapKesselToV1Permissions(kesselPermissions);
+
+      const kesselPerms = mapKesselToV1Permissions(kesselPermissions);
+
+      return {
+        // Grant permission if EITHER Kessel v2 OR v1 wildcard check passes
+        canWriteIntegrationsEndpoints:
+          kesselPerms.canWriteIntegrationsEndpoints ||
+          v1Rbac.hasPermission('integrations', 'endpoints', 'write'),
+
+        canReadIntegrationsEndpoints:
+          kesselPerms.canReadIntegrationsEndpoints ||
+          v1Rbac.hasPermission('integrations', 'endpoints', 'read'),
+
+        canWriteNotifications:
+          kesselPerms.canWriteNotifications ||
+          v1Rbac.hasPermission('notifications', 'notifications', 'write'),
+
+        canReadNotifications:
+          kesselPerms.canReadNotifications ||
+          v1Rbac.hasPermission('notifications', 'notifications', 'read'),
+
+        canReadEvents:
+          kesselPerms.canReadEvents || v1Rbac.hasPermission('notifications', 'events', 'read'),
+      };
     } else {
       // v1 org: use traditional v1 RBAC
       if (!v1Rbac) {
