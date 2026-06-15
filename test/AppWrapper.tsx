@@ -1,3 +1,4 @@
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import { AccessCheck } from '@project-kessel/react-kessel-access-check';
@@ -15,7 +16,6 @@ import { AppContext } from '../src/app/AppContext';
 import { KesselRbacAccessProvider } from '../src/app/rbac/KesselRbacAccessProvider';
 import { getNotificationsRegistry } from '../src/store/Store';
 import { ServerStatus } from '../src/types/Server';
-import { getInsights } from '../src/utils/insights-common-typescript';
 import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 
 let setup = false;
@@ -78,9 +78,10 @@ const defaultAppContextSettings: AppContext = {
 
 const InternalWrapper: React.FunctionComponent<React.PropsWithChildren<Config>> = (props) => {
   const location = useLocation();
+  const chrome = useChrome();
 
   if (props.skipIsBetaMock) {
-    (getInsights().chrome.isBeta as jest.Mock).mockImplementation(() => {
+    (chrome.isBeta as jest.Mock).mockImplementation(() => {
       return location.pathname.startsWith('/beta/');
     });
   }

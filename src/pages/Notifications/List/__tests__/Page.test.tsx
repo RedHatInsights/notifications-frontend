@@ -12,11 +12,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 import { MemoryRouterProps, RouteProps } from 'react-router';
-import {
-  Environment,
-  InsightsType,
-  getInsights,
-} from '../../../../utils/insights-common-typescript';
+import { Environment } from '../../../../utils/insights-common-typescript';
 
 import {
   appWrapperCleanup,
@@ -31,7 +27,6 @@ import { NotificationsListPage } from '../Page';
 import Facet = Schemas.Facet;
 import EventType = Schemas.EventType;
 import { BundlePageBehaviorGroupContent } from '../BundlePageBehaviorGroupContent';
-import { mockInsights } from '../../../../utils/insights-common-typescript';
 
 type RouterAndRoute = {
   router: MemoryRouterProps;
@@ -113,16 +108,8 @@ const mockNotifications = (notifications: Array<NotificationType>) => {
 const mockEnvironment = (env: Environment) => {
   const insightsEnv = env.replace('-beta', '');
   const isBeta = env.endsWith('-beta');
-  const isProd = env.startsWith('prod');
-
-  mockInsights({
-    chrome: {
-      ...getInsights().chrome,
-      getEnvironment: () => insightsEnv as ReturnType<InsightsType['chrome']['getEnvironment']>,
-      isProd,
-      isBeta: () => isBeta,
-    },
-  });
+  mockGetEnvironment.mockReturnValue(insightsEnv);
+  mockIsBeta.mockReturnValue(isBeta);
 };
 
 const defaultEventTypeId = 'my-event-type-id';
@@ -376,9 +363,18 @@ const mockBehaviorGroupsOfEventTypes = (
   });
 };
 
+const mockGetEnvironment = jest.fn(() => 'ci');
+const mockIsBeta = jest.fn(() => true);
+
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
   return () => ({
-    getEnvironment: () => 'bar',
+    getEnvironment: mockGetEnvironment,
+    isBeta: mockIsBeta,
+    getApp: () => 'notifications',
+    getBundle: () => 'settings',
+    updateDocumentTitle: jest.fn(),
+    appNavClick: jest.fn(),
+    addWsEventListener: jest.fn(() => jest.fn()),
     auth: {
       getUser: async () => ({
         identity: {
@@ -387,6 +383,7 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
           },
         },
       }),
+      getToken: () => Promise.resolve('mock-token'),
     },
   });
 });
@@ -731,7 +728,8 @@ describe('src/pages/Notifications/List/Page', () => {
     });
 
     afterAll(() => {
-      mockInsights();
+      mockGetEnvironment.mockReturnValue('ci');
+      mockIsBeta.mockReturnValue(true);
     });
   });
 });

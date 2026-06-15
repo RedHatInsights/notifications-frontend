@@ -1,13 +1,11 @@
 import { RequestInterceptor, ResponseInterceptor, createClient } from 'react-fetching-library';
-import { InsightsType } from './InsightsType';
 
 const getRefreshAuthTokenInterceptor =
-  (getInsights: () => InsightsType): RequestInterceptor =>
+  (getToken: () => Promise<string | undefined>): RequestInterceptor =>
   () =>
-  (action) => {
-    return getInsights()
-      .chrome.auth.getUser()
-      .then(() => action);
+  async (action) => {
+    await getToken();
+    return action;
   };
 
 interface FetchingClientOptions {
@@ -16,12 +14,12 @@ interface FetchingClientOptions {
 }
 
 export const createFetchingClient = (
-  getInsights: () => InsightsType,
+  getToken: () => Promise<string | undefined>,
   options?: FetchingClientOptions
 ) =>
   createClient({
     requestInterceptors: [
-      getRefreshAuthTokenInterceptor(getInsights),
+      getRefreshAuthTokenInterceptor(getToken),
       ...(options?.requestInterceptors ?? []),
     ],
     responseInterceptors: [...(options?.responseInterceptors ?? [])],
