@@ -13,6 +13,7 @@ export const useIntegrations = (
 
   const integrations = getIntegrationActions(environment, category);
 
+  // Filter out EMAIL integration if feature flag is not enabled
   if (!isEmailIntegrationEnabled) {
     return integrations.filter((integration) => integration !== UserIntegrationType.EMAIL);
   }

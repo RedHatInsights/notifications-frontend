@@ -55,11 +55,6 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => ({
   default: () => mockChrome,
 }));
 
-// Legacy global for tests that still access window.insights directly
-(global as unknown as Record<string, unknown>).insights = {
-  chrome: mockChrome,
-};
-
 jest.setTimeout(10000);
 
 mockResizeObserver();

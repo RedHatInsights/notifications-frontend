@@ -1,3 +1,4 @@
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import { AccessCheck } from '@project-kessel/react-kessel-access-check';
@@ -77,11 +78,10 @@ const defaultAppContextSettings: AppContext = {
 
 const InternalWrapper: React.FunctionComponent<React.PropsWithChildren<Config>> = (props) => {
   const location = useLocation();
+  const chrome = useChrome();
 
   if (props.skipIsBetaMock) {
-    (
-      global as unknown as Record<string, Record<string, Record<string, jest.Mock>>>
-    ).insights.chrome.isBeta.mockImplementation(() => {
+    (chrome.isBeta as jest.Mock).mockImplementation(() => {
       return location.pathname.startsWith('/beta/');
     });
   }

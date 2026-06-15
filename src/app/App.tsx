@@ -22,6 +22,10 @@ const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';
 const timezoneFormat = 'O';
 
+/**
+ * Inner app component that uses RBAC hooks.
+ * Must be rendered inside KesselRbacAccessProvider.
+ */
 const AppContent: React.FC = () => {
   const chrome = useChrome();
 
@@ -92,6 +96,9 @@ const AppContent: React.FC = () => {
   );
 };
 
+/**
+ * Main app component — sets up Kessel RBAC provider before rendering app content.
+ */
 const App: React.ComponentType = () => {
   return (
     <AccessCheck.Provider baseUrl={window.location.origin} apiPath="/api/kessel/v1beta2">
