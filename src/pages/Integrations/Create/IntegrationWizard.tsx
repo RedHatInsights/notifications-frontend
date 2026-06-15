@@ -31,7 +31,8 @@ import { useIntl } from 'react-intl';
 import { IntegrationType } from '../../../types/Integration';
 import { RbacGroupContextProvider } from '../../../app/rbac/RbacGroupContextProvider';
 import { KesselRbacAccessProvider } from '../../../app/rbac/KesselRbacAccessProvider';
-import { createFetchingClient, getInsights } from '../../../utils/insights-common-typescript';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+import { createFetchingClient } from '../../../utils/insights-common-typescript';
 import './styling/integrations-wizard.scss';
 
 export interface IntegrationWizardProps {
@@ -177,12 +178,14 @@ const IntegrationWizardWrapper: React.FC<{ store?: Store } & IntegrationWizardPr
   store,
   ...props
 }) => {
+  const { auth } = useChrome();
+
   const client = React.useMemo(
     () =>
-      createFetchingClient(getInsights, {
+      createFetchingClient(() => auth.getToken(), {
         responseInterceptors: [validateSchemaResponseInterceptor],
       }),
-    []
+    [auth]
   );
 
   const content = (

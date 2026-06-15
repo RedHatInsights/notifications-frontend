@@ -1,10 +1,11 @@
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { getNotificationActions } from '../config/Config';
 import { NotificationType } from '../types/Notification';
-import { getInsights, getInsightsEnvironment } from '../utils/insights-common-typescript';
+import { getInsightsEnvironment } from '../utils/insights-common-typescript';
 
 export const useNotifications = (): ReadonlyArray<NotificationType> => {
-  const insights = getInsights();
-  const environment = getInsightsEnvironment(insights);
+  const { getEnvironment, isBeta } = useChrome();
+  const environment = getInsightsEnvironment(isBeta(), getEnvironment());
 
   return getNotificationActions(environment);
 };

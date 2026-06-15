@@ -4,9 +4,6 @@
 // the team was using on their APIs and frontends. In this sense, this package was holding common code for a team.
 // The components found here should be incorporated into the codebase or migrated to a different library.
 
-export * from './dev';
-export type { InsightsType } from './InsightsType';
-export { getInsights } from './InsightsType';
 export { createFetchingClient } from './FetchingConfiguration';
 export { RenderIfTrue } from './RenderIf';
 export { toUtc, fromUtc } from './Date';
