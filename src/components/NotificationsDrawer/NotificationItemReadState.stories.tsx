@@ -14,8 +14,8 @@
 
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { expect, waitFor, within, userEvent } from 'storybook/test';
-import { http, HttpResponse } from 'msw';
+import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { HttpResponse, http } from 'msw';
 import NotificationItem from './NotificationItem';
 import { NotificationData } from '../../types/Drawer';
 
@@ -101,11 +101,9 @@ export const UnreadState: Story = {
     const canvas = within(canvasElement);
 
     // Verify unread visual state — no pf-m-read class, pf-m-info present
-    await waitFor(() => {
-      const listItem = canvas.getByRole('listitem');
-      expect(listItem).toHaveClass('pf-m-info');
-      expect(listItem).not.toHaveClass('pf-m-read');
-    });
+    const unreadListItem = await canvas.findByRole('listitem');
+    expect(unreadListItem).toHaveClass('pf-m-info');
+    expect(unreadListItem).not.toHaveClass('pf-m-read');
 
     // Open kebab and verify "Mark as read" option
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
@@ -135,11 +133,9 @@ export const ReadState: Story = {
     const canvas = within(canvasElement);
 
     // Verify read visual state — pf-m-read class present, pf-m-info preserved
-    await waitFor(() => {
-      const listItem = canvas.getByRole('listitem');
-      expect(listItem).toHaveClass('pf-m-info');
-      expect(listItem).toHaveClass('pf-m-read');
-    });
+    const readListItem = await canvas.findByRole('listitem');
+    expect(readListItem).toHaveClass('pf-m-info');
+    expect(readListItem).toHaveClass('pf-m-read');
 
     // Open kebab and verify "Mark as unread" option
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
@@ -174,11 +170,9 @@ export const ToggleReadUnread: Story = {
     const canvas = within(canvasElement);
 
     // 1. Verify initial unread state
-    await waitFor(() => {
-      const listItem = canvas.getByRole('listitem');
-      expect(listItem).toHaveClass('pf-m-info');
-      expect(listItem).not.toHaveClass('pf-m-read');
-    });
+    const initialListItem = await canvas.findByRole('listitem');
+    expect(initialListItem).toHaveClass('pf-m-info');
+    expect(initialListItem).not.toHaveClass('pf-m-read');
 
     // 2. Open kebab and verify "Mark as read" is present
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
@@ -191,10 +185,10 @@ export const ToggleReadUnread: Story = {
 
     // 4. Verify transition to read state — icon stays purple, read styling applied
     await waitFor(() => {
-      const listItem = canvas.getByRole('listitem');
-      expect(listItem).toHaveClass('pf-m-info');
-      expect(listItem).toHaveClass('pf-m-read');
+      expect(canvas.getByRole('listitem')).toHaveClass('pf-m-read');
     });
+    const readItem = canvas.getByRole('listitem');
+    expect(readItem).toHaveClass('pf-m-info');
 
     // 5. Open kebab and verify "Mark as unread" is now shown
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
@@ -207,10 +201,10 @@ export const ToggleReadUnread: Story = {
 
     // 7. Verify transition back to unread state
     await waitFor(() => {
-      const listItem = canvas.getByRole('listitem');
-      expect(listItem).toHaveClass('pf-m-info');
-      expect(listItem).not.toHaveClass('pf-m-read');
+      expect(canvas.getByRole('listitem')).not.toHaveClass('pf-m-read');
     });
+    const unreadItem = canvas.getByRole('listitem');
+    expect(unreadItem).toHaveClass('pf-m-info');
 
     // 8. Verify kebab shows "Mark as read" again
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
