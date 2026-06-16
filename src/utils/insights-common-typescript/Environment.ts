@@ -1,5 +1,3 @@
-import { InsightsType } from './InsightsType';
-
 const nonBetaEnvironments = ['ci', 'qa', 'stage', 'prod', 'gov', 'govStage'] as const;
 
 const betaEnvironments = nonBetaEnvironments.map((v) => `${v}-beta` as const);
@@ -9,12 +7,9 @@ export type BetaEnvironment = (typeof betaEnvironments)[number];
 
 export type Environment = NonBetaEnvironment | BetaEnvironment;
 
-export const getInsightsEnvironment = (insights: InsightsType): Environment => {
-  const isBeta = insights.chrome.isBeta();
-  const env: NonBetaEnvironment = insights.chrome.getEnvironment();
+export const getInsightsEnvironment = (isBeta: boolean, env: string): Environment => {
   if (isBeta) {
     return `${env}-beta` as BetaEnvironment;
-  } else {
-    return env;
   }
+  return env as NonBetaEnvironment;
 };

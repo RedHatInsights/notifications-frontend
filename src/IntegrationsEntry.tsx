@@ -1,4 +1,5 @@
 import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { enableMapSet } from 'immer';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
 import React from 'react';
@@ -9,17 +10,19 @@ import messages from '../locales/data.json';
 import IntegrationsApp from './app/IntegrationsApp';
 import { AppEntryProps } from './AppEntry';
 import { getNotificationsRegistry } from './store/Store';
-import { createFetchingClient, getInsights } from './utils/insights-common-typescript';
+import { createFetchingClient } from './utils/insights-common-typescript';
 
 enableMapSet();
 
 const IntegrationsEntry: React.FunctionComponent<AppEntryProps> = (props) => {
+  const { auth } = useChrome();
+
   const client = React.useMemo(
     () =>
-      createFetchingClient(getInsights, {
+      createFetchingClient(() => auth.getToken(), {
         responseInterceptors: [validateSchemaResponseInterceptor],
       }),
-    []
+    [auth]
   );
 
   const store = React.useMemo(() => {

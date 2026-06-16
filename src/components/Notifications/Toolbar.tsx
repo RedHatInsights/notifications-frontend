@@ -17,10 +17,10 @@ import {
   NotificationFilters,
   SetNotificationFilters,
 } from './Filter';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import {
   ExporterType,
   OptionalColumnsMetada,
-  getInsights,
   useInsightsEnvironmentFlag,
   usePrimaryToolbarFilterConfig,
 } from '../../utils/insights-common-typescript';
@@ -59,7 +59,7 @@ const allFilterColumns = [
 export const NotificationsToolbar: React.FunctionComponent<
   React.PropsWithChildren<NotificationsToolbarProps>
 > = (props) => {
-  const insights = getInsights();
+  const { getEnvironment, isBeta } = useChrome();
   const filterColumns = props.filterColumns ?? allFilterColumns;
   const filterMetadata = useMemo<OptionalColumnsMetada<typeof NotificationFilterColumn>>(() => {
     const appFilterItems = props.appFilterOptions.map((a) => ({
@@ -89,14 +89,15 @@ export const NotificationsToolbar: React.FunctionComponent<
           }
         : undefined,
       [NotificationFilterColumn.ACTION]:
-        filterColumns.includes(NotificationFilterColumn.ACTION) && isExperimental(insights)
+        filterColumns.includes(NotificationFilterColumn.ACTION) &&
+        isExperimental(isBeta(), getEnvironment())
           ? {
               label: 'Action',
               placeholder: 'Filter by action',
             }
           : undefined,
     };
-  }, [props.appFilterOptions, insights, filterColumns]);
+  }, [props.appFilterOptions, isBeta, getEnvironment, filterColumns]);
 
   const bulkSelectProps = React.useMemo(() => {
     const onSelectionChanged = props.onSelectionChanged;
@@ -154,7 +155,8 @@ export const NotificationsToolbar: React.FunctionComponent<
   const activeFiltersConfig = primaryToolbarFilterConfig.activeFiltersConfig;
 
   const exportConfig = useInsightsEnvironmentFlag(
-    getInsights(),
+    isBeta(),
+    getEnvironment(),
     stagingAndProd,
     undefined,
     useCallback(() => exportConfigInternal, [exportConfigInternal])

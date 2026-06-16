@@ -1,8 +1,4 @@
-import {
-  Environment,
-  InsightsType,
-  getInsightsEnvironment,
-} from '../utils/insights-common-typescript';
+import { Environment, getInsightsEnvironment } from '../utils/insights-common-typescript';
 
 export const stagingAndProd: Array<Environment> = ['stage-beta', 'prod-beta', 'stage', 'prod'];
 
@@ -14,8 +10,8 @@ export const stagingAndProdBeta: Array<Environment> = ['stage-beta', 'prod-beta'
 
 export const staging: Array<Environment> = ['stage', 'stage-beta'];
 
-export const isExperimental = (insights: InsightsType) => {
-  const environment = getInsightsEnvironment(insights);
+export const isExperimental = (isBeta: boolean, env: string) => {
+  const environment = getInsightsEnvironment(isBeta, env);
 
   return !stagingAndProd.includes(environment) && !fedramp.includes(environment);
 };
