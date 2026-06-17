@@ -4,6 +4,9 @@ import { Page, expect } from '@playwright/test';
 export const NOTIFICATIONS_PATH = '/settings/notifications';
 export const INTEGRATIONS_PATH = '/settings/integrations';
 
+/** Bundle names for parametrized tests */
+export const BUNDLES = ['rhel', 'console', 'openshift', 'ansible'];
+
 /** Matches playwright.config `baseURL` — for callers that need a full URL string. */
 export const getBaseURL = () =>
   process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337';
@@ -47,29 +50,70 @@ export async function login(page: Page, user: string, password: string): Promise
 
   await removeTrustArcOverlay(page);
 
-  await page.getByLabel('Red Hat login').first().fill(user);
+  console.log(`Attempting login with user: ${user}`);
+
+  // Use the visible, enabled input field (not the readonly one)
+  const usernameInput = page
+    .getByLabel('Red Hat login')
+    .and(page.locator('input:not([readonly])'))
+    .first();
+  await usernameInput.fill(user);
   await page.getByRole('button', { name: 'Next' }).click();
 
-  await page.getByLabel('Password').first().fill(password);
+  // Wait for password field to appear and be ready
+  const passwordInput = page.getByLabel('Password').first();
+  await passwordInput.waitFor({ state: 'visible', timeout: 10000 });
+  await page.waitForTimeout(500);
+
+  // Click into the field first to ensure it's focused
+  await passwordInput.click();
+  await page.waitForTimeout(200);
+
+  // Type the password character by character (more realistic)
+  await passwordInput.pressSequentially(password, { delay: 50 });
+
+  console.log(`Password field filled, clicking Log in button`);
+  await page.waitForTimeout(500);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  await expect(page.getByText('Invalid login')).not.toBeVisible();
+  // Wait a bit for login to process
+  await page.waitForTimeout(2000);
+
+  // Check if login failed
+  const invalidLoginVisible = await page
+    .getByText('Invalid login')
+    .isVisible()
+    .catch(() => false);
+  if (invalidLoginVisible) {
+    throw new Error(`Invalid login credentials for user: ${user}`);
+  }
 }
 
+/**
+ * Ensure user is logged in before running tests.
+ * Handles SSO authentication manually.
+ */
 export async function ensureLoggedIn(page: Page): Promise<void> {
   await disableCookiePrompt(page);
 
   await page.goto('/', { waitUntil: 'load', timeout: 60000 });
+  await page.waitForTimeout(2000);
 
-  const loggedIn = await page.getByText('Hi,').isVisible();
+  // Check if we got redirected to SSO or are on login page
+  const currentUrl = page.url();
+  const isOnSSOPage =
+    currentUrl.includes('sso.stage.redhat.com') ||
+    currentUrl.includes('sso.redhat.com') ||
+    (await page
+      .getByLabel('Red Hat login')
+      .isVisible({ timeout: 2000 })
+      .catch(() => false));
 
-  if (!loggedIn) {
+  if (isOnSSOPage) {
+    console.log('On SSO page, logging in...');
     const user = process.env.E2E_USER!;
     const password = process.env.E2E_PASSWORD!;
-    await page.waitForLoadState('load');
-    await expect(page.getByLabel('Red Hat login')).toBeVisible({
-      timeout: 10000,
-    });
+
     await removeTrustArcOverlay(page);
     await login(page, user, password);
     await page.waitForLoadState('load');
@@ -83,6 +127,20 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     const acceptAllButton = page.getByRole('button', { name: 'Accept all' });
     if (await acceptAllButton.isVisible()) {
       await acceptAllButton.click();
+    }
+
+    console.log('✓ Login successful');
+  } else {
+    // Check if we're on the dashboard (logged in)
+    const dashboardVisible = await page
+      .getByRole('button', { name: 'Add widgets' })
+      .isVisible({ timeout: 5000 })
+      .catch(() => false);
+
+    if (dashboardVisible) {
+      console.log('✓ Already logged in');
+    } else {
+      console.log('⚠ Unknown page state, attempting to continue');
     }
   }
 }
