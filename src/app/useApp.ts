@@ -90,7 +90,7 @@ export const useApp = (): Partial<AppContext> => {
         setV1Rbac(rbac);
       });
     }
-  }, [userLoaded, isOrgAdmin]);
+  }, [userLoaded]);
 
   // Compute final RBAC object based on org version
   const rbac = React.useMemo(() => {
