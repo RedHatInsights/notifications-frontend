@@ -157,7 +157,7 @@ export const useApp = (): Partial<AppContext> => {
         canReadEvents: v1Rbac.hasPermission('notifications', 'events', 'read'),
       };
     }
-  }, [isV2Org, isKesselLoading, kesselPermissions, v1Rbac, kesselErrors, isOrgAdmin]);
+  }, [isV2Org, isKesselLoading, kesselPermissions, v1Rbac, kesselErrors]);
 
   return {
     rbac,
