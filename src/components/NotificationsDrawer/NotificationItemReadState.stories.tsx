@@ -14,7 +14,7 @@
 
 import React, { useState } from 'react';
 import type { Meta, StoryObj } from '@storybook/react-webpack5';
-import { expect, userEvent, waitFor, within } from 'storybook/test';
+import { expect, screen, userEvent, waitFor, within } from 'storybook/test';
 import { HttpResponse, http } from 'msw';
 import NotificationItem from './NotificationItem';
 import { NotificationData } from '../../types/Drawer';
@@ -105,10 +105,10 @@ export const UnreadState: Story = {
     expect(unreadListItem).toHaveClass('pf-m-info');
     expect(unreadListItem).not.toHaveClass('pf-m-read');
 
-    // Open kebab and verify "Mark as read" option
+    // Open kebab and verify "Mark as read" option (dropdown renders in portal)
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
     await waitFor(() => {
-      expect(canvas.getByText('Mark as read')).toBeInTheDocument();
+      expect(screen.getByText('Mark as read')).toBeInTheDocument();
     });
   },
 };
@@ -137,10 +137,10 @@ export const ReadState: Story = {
     expect(readListItem).toHaveClass('pf-m-info');
     expect(readListItem).toHaveClass('pf-m-read');
 
-    // Open kebab and verify "Mark as unread" option
+    // Open kebab and verify "Mark as unread" option (dropdown renders in portal)
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
     await waitFor(() => {
-      expect(canvas.getByText('Mark as unread')).toBeInTheDocument();
+      expect(screen.getByText('Mark as unread')).toBeInTheDocument();
     });
   },
 };
@@ -174,14 +174,14 @@ export const ToggleReadUnread: Story = {
     expect(initialListItem).toHaveClass('pf-m-info');
     expect(initialListItem).not.toHaveClass('pf-m-read');
 
-    // 2. Open kebab and verify "Mark as read" is present
+    // 2. Open kebab and verify "Mark as read" is present (dropdown renders in portal)
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
     await waitFor(() => {
-      expect(canvas.getByText('Mark as read')).toBeInTheDocument();
+      expect(screen.getByText('Mark as read')).toBeInTheDocument();
     });
 
     // 3. Click "Mark as read"
-    await userEvent.click(canvas.getByText('Mark as read'));
+    await userEvent.click(screen.getByText('Mark as read'));
 
     // 4. Verify transition to read state — icon stays purple, read styling applied
     await waitFor(() => {
@@ -190,14 +190,14 @@ export const ToggleReadUnread: Story = {
     const readItem = canvas.getByRole('listitem');
     expect(readItem).toHaveClass('pf-m-info');
 
-    // 5. Open kebab and verify "Mark as unread" is now shown
+    // 5. Open kebab and verify "Mark as unread" is now shown (portal)
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
     await waitFor(() => {
-      expect(canvas.getByText('Mark as unread')).toBeInTheDocument();
+      expect(screen.getByText('Mark as unread')).toBeInTheDocument();
     });
 
     // 6. Click "Mark as unread"
-    await userEvent.click(canvas.getByText('Mark as unread'));
+    await userEvent.click(screen.getByText('Mark as unread'));
 
     // 7. Verify transition back to unread state
     await waitFor(() => {
@@ -206,10 +206,10 @@ export const ToggleReadUnread: Story = {
     const unreadItem = canvas.getByRole('listitem');
     expect(unreadItem).toHaveClass('pf-m-info');
 
-    // 8. Verify kebab shows "Mark as read" again
+    // 8. Verify kebab shows "Mark as read" again (portal)
     await userEvent.click(canvas.getByRole('button', { name: 'Notification actions dropdown' }));
     await waitFor(() => {
-      expect(canvas.getByText('Mark as read')).toBeInTheDocument();
+      expect(screen.getByText('Mark as read')).toBeInTheDocument();
     });
   },
 };
