@@ -326,6 +326,30 @@ The following PatternFly React skills are available via the `pf-react` plugin:
 - Auto-sync every 2 minutes
 - Files: `src/app/rbac/KesselRbacAccessProvider.tsx`, `kesselWorkspaceRelations.ts`
 
+#### V2 RBAC with V1 Wildcard Fallback (TEMPORARY)
+
+**Location**: `src/app/useApp.ts` (lines 79-123)
+
+**Current behavior**: For v2 orgs (determined by `platform.rbac.workspaces` feature flag), we fetch BOTH Kessel v2 permissions AND v1 RBAC, then combine them using OR logic:
+
+```typescript
+canWriteIntegrationsEndpoints: kesselPerms.canWriteIntegrationsEndpoints ||
+  v1Rbac.hasPermission('integrations', 'endpoints', 'write');
+```
+
+**Why this exists**: Kessel v2 does not currently support wildcard permission expansion. Org Admins and some legacy roles have wildcard permissions like `integrations:*:*` or `notifications:*:*` in v1 RBAC. Without the v1 fallback, these users would lose access when moved to v2 orgs.
+
+**Known issue**: This creates a permanent dependency on v1 RBAC for v2 orgs, which defeats the migration purpose. Once we're fully on v2, we still call the v1 RBAC endpoint.
+
+**When to remove**: Remove this fallback logic once EITHER:
+
+1. Kessel v2 supports wildcard permission expansion, OR
+2. All wildcard permissions are migrated to explicit Kessel workspace relations
+
+**Coordinated removal required**: This same pattern exists in `insights-chrome` (see PR #3362). Both repos must be updated together to avoid breaking permissions.
+
+**Reference**: https://github.com/RedHatInsights/insights-chrome/pull/3362
+
 ### Feature Flag Routing
 
 - Unleash flag `platform.notifications.overhaul` controls route sets
