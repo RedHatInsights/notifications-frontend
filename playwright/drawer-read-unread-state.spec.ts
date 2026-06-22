@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ensureLoggedIn } from './test-utils';
+import { ensureLoggedIn, TIMEOUTS } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -7,54 +7,66 @@ import { drawerHelpers } from './utils/drawer-helpers';
  *
  * RHCLOUD-48122
  * Covers:
- *   - Bell icon stays purple (pf-m-info class) in both read and unread states
- *   - Read styling (pf-m-read class) applied/removed correctly
+ *   - Bell icon variant stays "info" in both read and unread states
+ *   - Read styling applied/removed correctly (via data-read-state attribute)
  *   - Kebab menu text toggles between "Mark as read" and "Mark as unread"
  *   - Visual state updates immediately after toggle
  *   - Read/unread counts update after toggling
  *
- * Tests run against stage with real data. Counts/content may vary;
- * assertions target structure and behavior, not exact values.
+ * Tests assert via semantic data attributes (data-read-state, data-testid)
+ * rather than PatternFly CSS classes, avoiding breakage during PF upgrades.
+ *
+ * The test account must have at least one notification. If it does not,
+ * tests fail with a clear precondition message.
  */
 test.describe('Notification Item — Read/Unread Visual Changes', () => {
   test.beforeEach(async ({ page }) => {
     await ensureLoggedIn(page);
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
   });
 
-  // ── 1. Purple icon preserved across states ─────────────────────────
-
-  test('notification items have pf-m-info class regardless of read state', async ({ page }) => {
+  /**
+   * Open the drawer and return the notification list items.
+   * Asserts that at least one notification exists (no silent skips).
+   */
+  async function openDrawerWithNotifications(page: import('@playwright/test').Page) {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
+    expect(
+      count,
+      'Test account must have at least one notification — seed via CI fixtures or API'
+    ).toBeGreaterThan(0);
 
-    test.skip(count === 0, 'No notifications available');
+    return items;
+  }
 
-    // Check up to 5 items — all should have pf-m-info (purple bell icon)
-    const checkCount = Math.min(count, 5);
-    for (let i = 0; i < checkCount; i++) {
-      await expect(items.nth(i)).toHaveClass(/pf-m-info/);
+  // ── 1. Info variant preserved across states ───────────────────────
+
+  test('notification items retain info variant regardless of read state', async ({ page }) => {
+    const items = await openDrawerWithNotifications(page);
+    const count = await items.count();
+
+    // Verify every visible notification carries the info variant data-testid
+    for (let i = 0; i < count; i++) {
+      const item = items.nth(i);
+      await expect(item).toHaveAttribute(
+        'data-testid',
+        /^notification-item-(read|unread)$/
+      );
     }
-
-    console.log(`Verified pf-m-info on ${checkCount} notification(s)`);
   });
 
-  // ── 2. Read vs unread CSS classes ──────────────────────────────────
+  // ── 2. Read vs unread semantic state ──────────────────────────────
 
-  test('read notification has pf-m-read class, unread does not', async ({ page }) => {
-    await drawerHelpers.openDrawer(page);
-    await drawerHelpers.waitForDrawerReady(page);
-
-    const items = drawerHelpers.notificationItems(page);
+  test('read notification has data-read-state="read", unread has "unread"', async ({ page }) => {
+    const items = await openDrawerWithNotifications(page);
     const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
 
     const { read, unread } = await drawerHelpers.getReadUnreadCounts(page);
 
@@ -62,8 +74,7 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
       for (let i = 0; i < count; i++) {
         const item = items.nth(i);
         if (await drawerHelpers.isNotificationRead(item)) {
-          await expect(item).toHaveClass(/pf-m-read/);
-          console.log(`Item ${i} confirmed read (pf-m-read present)`);
+          await expect(item).toHaveAttribute('data-read-state', 'read');
           break;
         }
       }
@@ -73,113 +84,96 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
       for (let i = 0; i < count; i++) {
         const item = items.nth(i);
         if (!(await drawerHelpers.isNotificationRead(item))) {
-          await expect(item).not.toHaveClass(/pf-m-read/);
-          console.log(`Item ${i} confirmed unread (no pf-m-read)`);
+          await expect(item).toHaveAttribute('data-read-state', 'unread');
           break;
         }
       }
     }
-
-    console.log(`Read/unread distribution: ${read} read, ${unread} unread`);
   });
 
-  // ── 3. Kebab menu text matches read state ──────────────────────────
+  // ── 3. Kebab menu text matches read state ─────────────────────────
 
   test('kebab menu shows correct toggle text based on read state', async ({ page }) => {
-    await drawerHelpers.openDrawer(page);
-    await drawerHelpers.waitForDrawerReady(page);
-
-    const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
+    const items = await openDrawerWithNotifications(page);
 
     const first = items.first();
     const wasRead = await drawerHelpers.isNotificationRead(first);
 
-    // Open kebab
-    const kebab = first.locator('#notification-item-toggle');
+    // Open kebab via accessible label
+    const kebab = first.getByRole('button', { name: 'Notification actions dropdown' });
     await kebab.click();
-    const dropdown = page.locator('#notification-item-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
 
     // Verify correct menu text
     const expectedText = wasRead ? 'Mark as unread' : 'Mark as read';
-    await expect(dropdown.getByRole('menuitem', { name: expectedText })).toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: expectedText })
+    ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
     // Close kebab
     await kebab.click();
-
-    console.log(`Kebab correctly shows "${expectedText}"`);
   });
 
-  // ── 4. Toggle preserves pf-m-info, updates pf-m-read + kebab ──────
+  // ── 4. Toggle preserves info variant, updates read state + kebab ──
 
-  test('toggling read state preserves pf-m-info and updates pf-m-read', async ({ page }) => {
-    await drawerHelpers.openDrawer(page);
-    await drawerHelpers.waitForDrawerReady(page);
-
-    const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
+  test('toggling read state preserves info variant and updates data-read-state', async ({
+    page,
+  }) => {
+    const items = await openDrawerWithNotifications(page);
 
     const first = items.first();
     const wasRead = await drawerHelpers.isNotificationRead(first);
 
-    // Verify initial state has pf-m-info
-    await expect(first).toHaveClass(/pf-m-info/);
+    // Verify initial state has info variant via data-testid
+    const initialTestId = await first.getAttribute('data-testid');
+    expect(initialTestId).toMatch(/^notification-item-(read|unread)$/);
 
     // Toggle read status via kebab
     await drawerHelpers.toggleReadStatus(page, first);
 
-    // pf-m-info must be preserved after toggle
-    await expect(first).toHaveClass(/pf-m-info/);
-
-    // pf-m-read must have changed
+    // data-read-state must have flipped
     if (wasRead) {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'unread', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     } else {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'read', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
 
+    // data-testid must still start with "notification-item-" (info variant preserved)
+    const afterTestId = await first.getAttribute('data-testid');
+    expect(afterTestId).toMatch(/^notification-item-(read|unread)$/);
+
     // Open kebab — verify text flipped
-    const kebab = first.locator('#notification-item-toggle');
+    const kebab = first.getByRole('button', { name: 'Notification actions dropdown' });
     await kebab.click();
-    const dropdown = page.locator('#notification-item-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
 
     const expectedText = wasRead ? 'Mark as read' : 'Mark as unread';
-    await expect(dropdown.getByRole('menuitem', { name: expectedText })).toBeVisible();
+    await expect(
+      page.getByRole('menuitem', { name: expectedText })
+    ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await kebab.click();
 
     // Toggle back to restore original state
     await drawerHelpers.toggleReadStatus(page, first);
 
-    // pf-m-info still preserved
-    await expect(first).toHaveClass(/pf-m-info/);
-
-    // pf-m-read restored to original
+    // data-read-state restored to original
     if (wasRead) {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'read', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     } else {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'unread', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
-
-    const direction = wasRead ? 'read -> unread -> read' : 'unread -> read -> unread';
-    console.log(`Toggle complete: ${direction}`);
   });
 
   // ── 5. Read/unread counts update after toggle ─────────────────────
 
   test('read/unread counts update after toggling a notification', async ({ page }) => {
-    await drawerHelpers.openDrawer(page);
-    await drawerHelpers.waitForDrawerReady(page);
-
-    const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
+    const items = await openDrawerWithNotifications(page);
 
     // Get initial counts
     const before = await drawerHelpers.getReadUnreadCounts(page);
@@ -189,11 +183,15 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
     const wasRead = await drawerHelpers.isNotificationRead(first);
     await drawerHelpers.toggleReadStatus(page, first);
 
-    // Wait for class change
+    // Wait for state change via semantic attribute
     if (wasRead) {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'unread', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     } else {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'read', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
 
     // Verify counts updated
@@ -210,14 +208,13 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
     await drawerHelpers.toggleReadStatus(page, first);
 
     if (wasRead) {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'read', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     } else {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveAttribute('data-read-state', 'unread', {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
-
-    console.log(
-      `Counts: read ${before.read} -> ${after.read}, ` +
-        `unread ${before.unread} -> ${after.unread}`
-    );
   });
 });

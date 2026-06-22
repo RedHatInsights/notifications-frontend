@@ -243,8 +243,13 @@ export const drawerHelpers = {
     await item.click();
   },
 
-  /** Check whether a notification item has the "read" state. */
+  /** Check whether a notification item has the "read" state via semantic data attribute. */
   async isNotificationRead(notificationLocator: Locator): Promise<boolean> {
+    const readState = await notificationLocator.getAttribute('data-read-state');
+    if (readState !== null) {
+      return readState === 'read';
+    }
+    // Fallback for items without the semantic attribute
     return notificationLocator.evaluate((el) => el.classList.contains('pf-m-read'));
   },
 

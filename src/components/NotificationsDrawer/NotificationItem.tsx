@@ -137,6 +137,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       aria-label={`Notification item ${notification.title}`}
       variant="info"
       isRead={notification.read}
+      data-testid={`notification-item-${notification.read ? 'read' : 'unread'}`}
+      data-read-state={notification.read ? 'read' : 'unread'}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
         <Checkbox
