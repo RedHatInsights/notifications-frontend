@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { TIMEOUTS } from './timeouts';
 
 /**
  * Helper utilities for interacting with the notifications drawer in E2E tests.
@@ -30,11 +31,11 @@ export const drawerHelpers = {
   /** Open the notifications drawer by clicking the bell icon. */
   async openDrawer(page: Page): Promise<void> {
     const bell = this.bellButton(page);
-    await bell.waitFor({ state: 'visible', timeout: 30000 });
+    await bell.waitFor({ state: 'visible', timeout: TIMEOUTS.DRAWER_LOAD });
     await bell.click();
     // Wait for the drawer header to appear
     await expect(this.drawerPanel(page).getByText('Notifications').first()).toBeVisible({
-      timeout: 15000,
+      timeout: TIMEOUTS.DRAWER_CONTENT,
     });
   },
 
@@ -43,7 +44,7 @@ export const drawerHelpers = {
     const closeBtn = this.closeButton(page);
     if (await closeBtn.isVisible()) {
       await closeBtn.click();
-      await expect(this.drawerPanel(page)).not.toBeVisible({ timeout: 10000 });
+      await expect(this.drawerPanel(page)).not.toBeVisible({ timeout: TIMEOUTS.API_POLL });
     }
   },
 
@@ -70,7 +71,7 @@ export const drawerHelpers = {
     const filterToggle = page.locator('#notifications-filter-toggle');
     await filterToggle.click();
     const filterItem = page.getByRole('menuitem', { name: filterName });
-    await filterItem.waitFor({ state: 'visible', timeout: 5000 });
+    await filterItem.waitFor({ state: 'visible', timeout: TIMEOUTS.UI_FEEDBACK });
     await filterItem.click();
     // Close the dropdown by clicking the toggle again
     await filterToggle.click();
@@ -83,7 +84,9 @@ export const drawerHelpers = {
     const resetBtn = page.getByRole('menuitem', { name: 'Reset filters' });
     await resetBtn.click();
     // Wait for dropdown to close after reset
-    await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({
+      timeout: TIMEOUTS.UI_FEEDBACK,
+    });
   },
 
   /**
@@ -98,7 +101,9 @@ export const drawerHelpers = {
   async toggleReadStatus(page: Page, notificationLocator: Locator): Promise<void> {
     const kebab = notificationLocator.locator('#notification-item-toggle');
     await kebab.click();
-    await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notification-item-dropdown')).toBeVisible({
+      timeout: TIMEOUTS.UI_FEEDBACK,
+    });
     // The menu item text is dynamic: "Mark as read" or "Mark as unread"
     const markItem = page
       .locator('#notification-item-dropdown')
@@ -110,7 +115,9 @@ export const drawerHelpers = {
   async clickManageEvent(page: Page, notificationLocator: Locator): Promise<void> {
     const kebab = notificationLocator.locator('#notification-item-toggle');
     await kebab.click();
-    await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notification-item-dropdown')).toBeVisible({
+      timeout: TIMEOUTS.UI_FEEDBACK,
+    });
     const manageItem = page
       .locator('#notification-item-dropdown')
       .getByRole('menuitem', { name: 'Manage this event' });
@@ -132,7 +139,7 @@ export const drawerHelpers = {
     const toggle = this.actionsToggle(page);
     await toggle.click();
     const dropdown = this.actionsDropdown(page);
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.UI_FEEDBACK });
     return dropdown;
   },
 
@@ -163,7 +170,7 @@ export const drawerHelpers = {
   async waitForDrawerReady(page: Page): Promise<void> {
     // Wait until the spinner disappears — indicates data is loaded
     await expect(this.drawerPanel(page).locator('.pf-v6-c-spinner')).not.toBeVisible({
-      timeout: 30000,
+      timeout: TIMEOUTS.DRAWER_LOAD,
     });
   },
 
@@ -185,7 +192,9 @@ export const drawerHelpers = {
     const toggle = this.bulkSelectContainer(page).locator('button.pf-v6-c-menu-toggle');
     await toggle.click();
     // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 5000 });
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true', {
+      timeout: TIMEOUTS.UI_FEEDBACK,
+    });
   },
 
   /** Click "Select all (N)" in the bulk select dropdown. */

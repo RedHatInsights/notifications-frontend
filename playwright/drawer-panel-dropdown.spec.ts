@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { disableCookiePrompt } from '@redhat-cloud-services/playwright-test-auth';
 import { drawerHelpers } from './utils/drawer-helpers';
+import { TIMEOUTS } from './utils/timeouts';
 
 /**
  * E2E tests for the notifications drawer — panel-level actions dropdown menu.
@@ -15,21 +16,37 @@ import { drawerHelpers } from './utils/drawer-helpers';
  * - The staging environment MUST have at least 2 notifications present
  */
 
-/** Symbolic timeout constants — eliminates magic numbers */
-const TIMEOUTS = {
-  /** Chrome shell + federated module initial load */
-  CHROME_LOAD: 60_000,
-  /** API response polling (mark read/unread state changes) */
-  API_POLL: 10_000,
-  /** SPA client-side page navigation */
-  NAVIGATION: 30_000,
-} as const;
+/** Drawer API paths */
+const DRAWER_API = '/api/notifications/v1.0/notifications/drawer';
+const DRAWER_READ_API = '/api/notifications/v1.0/notifications/drawer/read';
 
 /** Minimum notifications required by this test suite */
 const MIN_NOTIFICATIONS = 2;
 
+/** Notification IDs fetched from the API — shared across tests in this suite */
+let notificationIds: string[] = [];
+
 test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
-  test.beforeEach(async ({ page }) => {
+  test.beforeAll(async ({ request }) => {
+    // Validate that the test account has enough notifications for deterministic testing
+    const response = await request.get(DRAWER_API, { params: { limit: 50 } });
+    expect(response.ok(), 'Drawer API must be accessible').toBe(true);
+
+    const { data } = await response.json();
+    notificationIds = data.map((entry: { id: string }) => entry.id);
+
+    expect(
+      notificationIds.length,
+      `Stage test account must have ≥${MIN_NOTIFICATIONS} notifications — seed the account via the event pipeline`
+    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
+  });
+
+  test.beforeEach(async ({ page, request }) => {
+    // Reset ALL notifications to unread — deterministic baseline for every test
+    await request.put(DRAWER_READ_API, {
+      data: { notification_ids: notificationIds, read_status: false },
+    });
+
     await disableCookiePrompt(page);
     await page.goto('/');
     await drawerHelpers.bellButton(page).waitFor({
@@ -78,14 +95,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
-
-    expect(
-      count,
-      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
-    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
-
     // Ensure none selected
     await drawerHelpers.bulkSelectNone(page);
 
@@ -118,12 +127,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
-
-    expect(
-      count,
-      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
-    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Start with none selected
     await drawerHelpers.bulkSelectNone(page);
@@ -159,11 +162,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
-
-    expect(
-      count,
-      `Environment must have ≥${MIN_NOTIFICATIONS} notifications for selection-change test`
-    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Start fresh
     await drawerHelpers.bulkSelectNone(page);
@@ -201,27 +199,8 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
 
-    expect(
-      count,
-      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
-    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
-
-    // Get initial read/unread counts
-    const initialCounts = await drawerHelpers.getReadUnreadCounts(page);
-
-    // Ensure some are unread — if all read, mark all as unread first
-    if (initialCounts.unread === 0) {
-      await drawerHelpers.bulkSelectAll(page);
-      await drawerHelpers.markSelectedAsUnread(page);
-      await expect
-        .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-          timeout: TIMEOUTS.API_POLL,
-        })
-        .toBeGreaterThan(0);
-    }
-
+    // beforeEach resets all notifications to unread — deterministic baseline
     // Select the first notification
     await drawerHelpers.bulkSelectNone(page);
     await drawerHelpers.selectNotification(items.first());
@@ -255,30 +234,24 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
   test('mark selected as unread via panel dropdown updates notification state', async ({
     page,
+    request,
   }) => {
+    // Mark the first notification as read via API — deterministic precondition
+    await request.put(DRAWER_READ_API, {
+      data: { notification_ids: [notificationIds[0]], read_status: true },
+    });
+
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
-    const count = await items.count();
 
-    expect(
-      count,
-      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
-    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
-
-    // Ensure first notification is read
-    const isRead = await drawerHelpers.isNotificationRead(items.first());
-    if (!isRead) {
-      await drawerHelpers.bulkSelectNone(page);
-      await drawerHelpers.selectNotification(items.first());
-      await drawerHelpers.markSelectedAsRead(page);
-      await expect
-        .poll(() => drawerHelpers.isNotificationRead(items.first()), {
-          timeout: TIMEOUTS.API_POLL,
-        })
-        .toBe(true);
-    }
+    // First notification should be read (set via API above)
+    await expect
+      .poll(() => drawerHelpers.isNotificationRead(items.first()), {
+        timeout: TIMEOUTS.API_POLL,
+      })
+      .toBe(true);
 
     // Select the first notification
     await drawerHelpers.bulkSelectNone(page);
