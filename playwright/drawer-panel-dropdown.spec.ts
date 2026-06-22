@@ -12,7 +12,7 @@ import { drawerHelpers } from './utils/drawer-helpers';
  *
  * Prerequisites:
  * - Authentication is handled by globalSetup (session reused via storageState)
- * - The staging environment MUST have notifications present for full coverage
+ * - The staging environment MUST have at least 2 notifications present
  */
 
 /** Symbolic timeout constants — eliminates magic numbers */
@@ -26,6 +26,9 @@ const TIMEOUTS = {
   /** SPA client-side page navigation */
   NAVIGATION: 30_000,
 } as const;
+
+/** Minimum notifications required by this test suite */
+const MIN_NOTIFICATIONS = 2;
 
 test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
   test.beforeEach(async ({ page }) => {
@@ -43,18 +46,20 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
 
     const dropdown = page.locator('#notifications-actions-dropdown');
     await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
-    // Bulk action items
+    // Bulk action items — use precise regex with count group to avoid greedy matching
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
     ).toBeVisible();
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected .* as unread/ })
+      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as unread/ })
     ).toBeVisible();
 
     // Navigation items
@@ -87,22 +92,24 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     expect(
       count,
-      'Staging environment must have notifications — verify event pipeline is operational'
-    ).toBeGreaterThan(0);
+      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
+    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Ensure none selected
     await drawerHelpers.bulkSelectNone(page);
 
     // Open actions dropdown
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
 
     const dropdown = page.locator('#notifications-actions-dropdown');
     await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
     // Bulk action items should show count 0 and be disabled
-    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
-    const markUnread = dropdown.getByRole('menuitem', { name: /Mark selected .* as unread/ });
+    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
+    const markUnread = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as unread/ });
 
     await expect(markRead).toHaveAttribute('aria-disabled', 'true');
     await expect(markUnread).toHaveAttribute('aria-disabled', 'true');
@@ -132,28 +139,30 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     expect(
       count,
-      'Staging environment must have notifications — verify event pipeline is operational'
-    ).toBeGreaterThan(0);
+      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
+    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Start with none selected
     await drawerHelpers.bulkSelectNone(page);
 
-    // Select first two notifications (or just one if only one available)
-    const selectCount = Math.min(count, 2);
+    // Select exactly 2 notifications (precondition ensures at least 2 exist)
+    const selectCount = 2;
     for (let i = 0; i < selectCount; i++) {
       await drawerHelpers.selectNotification(items.nth(i));
     }
 
     // Open actions dropdown
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
 
     const dropdown = page.locator('#notifications-actions-dropdown');
     await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
     // Bulk action items should show correct count and be enabled
-    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
-    const markUnread = dropdown.getByRole('menuitem', { name: /Mark selected .* as unread/ });
+    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
+    const markUnread = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as unread/ });
 
     await expect(markRead).toContainText(`(${selectCount})`);
     await expect(markUnread).toContainText(`(${selectCount})`);
@@ -177,8 +186,8 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     expect(
       count,
-      'Staging environment must have at least 2 notifications for selection-change test'
-    ).toBeGreaterThanOrEqual(2);
+      `Environment must have ≥${MIN_NOTIFICATIONS} notifications for selection-change test`
+    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Start fresh
     await drawerHelpers.bulkSelectNone(page);
@@ -187,11 +196,13 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.selectNotification(items.first());
 
     // Verify count is 1
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
     const dropdown = page.locator('#notifications-actions-dropdown');
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
     ).toContainText('(1)');
     await actionsToggle.click();
 
@@ -201,7 +212,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Verify count matches total
     await actionsToggle.click();
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
     ).toContainText(`(${count})`);
     await actionsToggle.click();
 
@@ -211,7 +222,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Verify count is 0
     await actionsToggle.click();
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
     ).toContainText('(0)');
     await actionsToggle.click();
   });
@@ -227,8 +238,8 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     expect(
       count,
-      'Staging environment must have notifications — verify event pipeline is operational'
-    ).toBeGreaterThan(0);
+      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
+    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Get initial read/unread counts
     const initialCounts = await drawerHelpers.getReadUnreadCounts(page);
@@ -249,10 +260,12 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.selectNotification(items.first());
 
     // Use the panel dropdown to mark as read
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
     const dropdown = page.locator('#notifications-actions-dropdown');
-    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
+    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
     await markRead.click();
 
     // Verify notification is now read
@@ -268,7 +281,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Re-open dropdown and verify count reset to 0
     await actionsToggle.click();
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
     ).toContainText('(0)');
     await actionsToggle.click();
   });
@@ -286,8 +299,8 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     expect(
       count,
-      'Staging environment must have notifications — verify event pipeline is operational'
-    ).toBeGreaterThan(0);
+      `Environment must have ≥${MIN_NOTIFICATIONS} notifications — verify event pipeline`
+    ).toBeGreaterThanOrEqual(MIN_NOTIFICATIONS);
 
     // Ensure first notification is read
     const isRead = await drawerHelpers.isNotificationRead(items.first());
@@ -307,10 +320,14 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.selectNotification(items.first());
 
     // Use the panel dropdown to mark as unread
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
     const dropdown = page.locator('#notifications-actions-dropdown');
-    const markUnread = dropdown.getByRole('menuitem', { name: /Mark selected .* as unread/ });
+    const markUnread = dropdown.getByRole('menuitem', {
+      name: /Mark selected \(\d+\) as unread/,
+    });
     await markUnread.click();
 
     // Verify notification is now unread
@@ -331,14 +348,19 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.waitForDrawerReady(page);
 
     // Click "View event log" in the actions dropdown
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
     const dropdown = page.locator('#notifications-actions-dropdown');
     const viewLog = dropdown.getByRole('menuitem', { name: 'View event log' });
     await viewLog.click();
 
-    // Should navigate to the event log page
+    // Verify navigation: URL + page content rendered
     await page.waitForURL(/\/settings\/notifications\/eventlog/, {
+      timeout: TIMEOUTS.NAVIGATION,
+    });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({
       timeout: TIMEOUTS.NAVIGATION,
     });
   });
@@ -348,7 +370,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.waitForDrawerReady(page);
 
     // Click "Manage my event notifications" in the actions dropdown
-    const actionsToggle = page.locator('#notifications-actions-toggle');
+    const actionsToggle = page.getByRole('button', {
+      name: 'Notifications actions dropdown',
+    });
     await actionsToggle.click();
     const dropdown = page.locator('#notifications-actions-dropdown');
     const manageNotifs = dropdown.getByRole('menuitem', {
@@ -356,8 +380,11 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     });
     await manageNotifs.click();
 
-    // Should navigate to user preferences page
+    // Verify navigation: URL + page content rendered
     await page.waitForURL(/\/settings\/notifications\/user-preferences/, {
+      timeout: TIMEOUTS.NAVIGATION,
+    });
+    await expect(page.getByRole('heading', { level: 1 })).toBeVisible({
       timeout: TIMEOUTS.NAVIGATION,
     });
   });
