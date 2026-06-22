@@ -35,8 +35,12 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await expect(dropdown).toBeVisible({ timeout: 5000 });
 
     // Bulk action items
-    await expect(dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })).toBeVisible();
-    await expect(dropdown.getByRole('menuitem', { name: /Mark selected .* as unread/ })).toBeVisible();
+    await expect(
+      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+    ).toBeVisible();
+    await expect(
+      dropdown.getByRole('menuitem', { name: /Mark selected .* as unread/ })
+    ).toBeVisible();
 
     // Navigation items
     await expect(dropdown.getByRole('menuitem', { name: 'View event log' })).toBeVisible();
@@ -45,7 +49,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     ).toBeVisible();
 
     // "Manage event configuration" may be disabled for non-admins but should exist
-    await expect(dropdown.getByText('Manage event configuration')).toBeVisible();
+    await expect(
+      dropdown.getByRole('menuitem', { name: 'Manage event configuration' })
+    ).toBeVisible();
 
     // Divider between bulk actions and navigation items
     const separators = dropdown.getByRole('separator');
@@ -53,8 +59,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     // Close dropdown
     await actionsToggle.click();
-
-    console.log('Actions dropdown structure verified — all items present with divider');
   });
 
   // ── 2. Bulk Actions Disabled When Nothing Selected ───────────────
@@ -95,8 +99,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     // Close dropdown
     await actionsToggle.click();
-
-    console.log('Bulk actions correctly disabled with 0 selected');
   });
 
   // ── 3. Bulk Actions Enabled With Selection ───────────────────────
@@ -141,8 +143,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Close dropdown and clean up selection
     await actionsToggle.click();
     await drawerHelpers.bulkSelectNone(page);
-
-    console.log(`Bulk actions enabled with ${selectCount} selected — count displayed correctly`);
   });
 
   // ── 4. Count Updates Dynamically ─────────────────────────────────
@@ -166,9 +166,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const actionsToggle = page.locator('#notifications-actions-toggle');
     await actionsToggle.click();
     const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })).toContainText(
-      '(1)'
-    );
+    await expect(
+      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+    ).toContainText('(1)');
     await actionsToggle.click();
 
     // Select all
@@ -176,9 +176,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     // Verify count matches total
     await actionsToggle.click();
-    await expect(dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })).toContainText(
-      `(${count})`
-    );
+    await expect(
+      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+    ).toContainText(`(${count})`);
     await actionsToggle.click();
 
     // Deselect all
@@ -186,12 +186,10 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     // Verify count is 0
     await actionsToggle.click();
-    await expect(dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })).toContainText(
-      '(0)'
-    );
+    await expect(
+      dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
+    ).toContainText('(0)');
     await actionsToggle.click();
-
-    console.log(`Dynamic count verified: 1 → ${count} → 0`);
   });
 
   // ── 5. Mark Selected as Read via Dropdown ────────────────────────
@@ -231,9 +229,11 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await markRead.click();
 
     // Verify notification is now read
-    await expect.poll(() => drawerHelpers.isNotificationRead(items.first()), { timeout: 10000 }).toBe(
-      true
-    );
+    await expect
+      .poll(() => drawerHelpers.isNotificationRead(items.first()), {
+        timeout: 10000,
+      })
+      .toBe(true);
 
     // Verify dropdown closes after action
     await expect(dropdown).not.toBeVisible({ timeout: 5000 });
@@ -244,8 +244,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ })
     ).toContainText('(0)');
     await actionsToggle.click();
-
-    console.log('Mark selected as read via dropdown: notification state updated, count reset');
   });
 
   // ── 6. Mark Selected as Unread via Dropdown ──────────────────────
@@ -284,14 +282,14 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await markUnread.click();
 
     // Verify notification is now unread
-    await expect.poll(() => drawerHelpers.isNotificationRead(items.first()), { timeout: 10000 }).toBe(
-      false
-    );
+    await expect
+      .poll(() => drawerHelpers.isNotificationRead(items.first()), {
+        timeout: 10000,
+      })
+      .toBe(false);
 
     // Verify dropdown closes after action
     await expect(dropdown).not.toBeVisible({ timeout: 5000 });
-
-    console.log('Mark selected as unread via dropdown: notification state updated');
   });
 
   // ── 7. Navigation Items ──────────────────────────────────────────
@@ -309,8 +307,6 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     // Should navigate to the event log page
     await page.waitForURL(/\/settings\/notifications\/eventlog/, { timeout: 30000 });
-
-    console.log('View event log navigation verified');
   });
 
   test('manage event notifications item redirects to user preferences', async ({ page }) => {
@@ -328,7 +324,5 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
 
     // Should navigate to user preferences page
     await page.waitForURL(/\/settings\/notifications\/user-preferences/, { timeout: 30000 });
-
-    console.log('Manage event notifications navigation verified');
   });
 });
