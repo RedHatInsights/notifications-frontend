@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ensureLoggedIn } from './test-utils';
+import { disableCookiePrompt } from '@redhat-cloud-services/playwright-test-auth';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -10,15 +10,30 @@ import { drawerHelpers } from './utils/drawer-helpers';
  * dynamic selected-count labels, divider between action groups, navigation
  * items, and mark-as-read/unread via the panel dropdown.
  *
- * These tests run against stage with real data. Counts and content may vary;
- * tests assert structure and behavior, not exact values.
+ * Prerequisites:
+ * - Authentication is handled by globalSetup (session reused via storageState)
+ * - The staging environment MUST have notifications present for full coverage
  */
+
+/** Symbolic timeout constants — eliminates magic numbers */
+const TIMEOUTS = {
+  /** Chrome shell + federated module initial load */
+  CHROME_LOAD: 60_000,
+  /** Dropdown/popover/menu visibility transitions */
+  DROPDOWN: 5_000,
+  /** API response polling (mark read/unread state changes) */
+  API_POLL: 10_000,
+  /** SPA client-side page navigation */
+  NAVIGATION: 30_000,
+} as const;
+
 test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
+    await page.goto('/');
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: TIMEOUTS.CHROME_LOAD,
     });
   });
 
@@ -32,7 +47,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await actionsToggle.click();
 
     const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
     // Bulk action items
     await expect(
@@ -70,7 +85,10 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(
+      count,
+      'Staging environment must have notifications — verify event pipeline is operational'
+    ).toBeGreaterThan(0);
 
     // Ensure none selected
     await drawerHelpers.bulkSelectNone(page);
@@ -80,7 +98,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await actionsToggle.click();
 
     const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
     // Bulk action items should show count 0 and be disabled
     const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
@@ -112,7 +130,10 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(
+      count,
+      'Staging environment must have notifications — verify event pipeline is operational'
+    ).toBeGreaterThan(0);
 
     // Start with none selected
     await drawerHelpers.bulkSelectNone(page);
@@ -128,7 +149,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await actionsToggle.click();
 
     const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
     // Bulk action items should show correct count and be enabled
     const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
@@ -154,7 +175,10 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count < 2, 'Need at least 2 notifications');
+    expect(
+      count,
+      'Staging environment must have at least 2 notifications for selection-change test'
+    ).toBeGreaterThanOrEqual(2);
 
     // Start fresh
     await drawerHelpers.bulkSelectNone(page);
@@ -201,7 +225,10 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(
+      count,
+      'Staging environment must have notifications — verify event pipeline is operational'
+    ).toBeGreaterThan(0);
 
     // Get initial read/unread counts
     const initialCounts = await drawerHelpers.getReadUnreadCounts(page);
@@ -212,7 +239,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       await drawerHelpers.markSelectedAsUnread(page);
       await expect
         .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-          timeout: 10000,
+          timeout: TIMEOUTS.API_POLL,
         })
         .toBeGreaterThan(0);
     }
@@ -231,12 +258,12 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Verify notification is now read
     await expect
       .poll(() => drawerHelpers.isNotificationRead(items.first()), {
-        timeout: 10000,
+        timeout: TIMEOUTS.API_POLL,
       })
       .toBe(true);
 
     // Verify dropdown closes after action
-    await expect(dropdown).not.toBeVisible({ timeout: 5000 });
+    await expect(dropdown).not.toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
 
     // Re-open dropdown and verify count reset to 0
     await actionsToggle.click();
@@ -257,7 +284,10 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(
+      count,
+      'Staging environment must have notifications — verify event pipeline is operational'
+    ).toBeGreaterThan(0);
 
     // Ensure first notification is read
     const isRead = await drawerHelpers.isNotificationRead(items.first());
@@ -266,7 +296,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       await drawerHelpers.selectNotification(items.first());
       await drawerHelpers.markSelectedAsRead(page);
       await expect
-        .poll(() => drawerHelpers.isNotificationRead(items.first()), { timeout: 10000 })
+        .poll(() => drawerHelpers.isNotificationRead(items.first()), {
+          timeout: TIMEOUTS.API_POLL,
+        })
         .toBe(true);
     }
 
@@ -284,12 +316,12 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Verify notification is now unread
     await expect
       .poll(() => drawerHelpers.isNotificationRead(items.first()), {
-        timeout: 10000,
+        timeout: TIMEOUTS.API_POLL,
       })
       .toBe(false);
 
     // Verify dropdown closes after action
-    await expect(dropdown).not.toBeVisible({ timeout: 5000 });
+    await expect(dropdown).not.toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
   });
 
   // ── 7. Navigation Items ──────────────────────────────────────────
@@ -306,7 +338,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await viewLog.click();
 
     // Should navigate to the event log page
-    await page.waitForURL(/\/settings\/notifications\/eventlog/, { timeout: 30000 });
+    await page.waitForURL(/\/settings\/notifications\/eventlog/, {
+      timeout: TIMEOUTS.NAVIGATION,
+    });
   });
 
   test('manage event notifications item redirects to user preferences', async ({ page }) => {
@@ -323,6 +357,8 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await manageNotifs.click();
 
     // Should navigate to user preferences page
-    await page.waitForURL(/\/settings\/notifications\/user-preferences/, { timeout: 30000 });
+    await page.waitForURL(/\/settings\/notifications\/user-preferences/, {
+      timeout: TIMEOUTS.NAVIGATION,
+    });
   });
 });

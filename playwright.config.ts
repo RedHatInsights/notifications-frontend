@@ -8,6 +8,11 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './playwright',
 
+  // Authenticate once via @redhat-cloud-services/playwright-test-auth, reuse session
+  globalSetup: require.resolve(
+    '@redhat-cloud-services/playwright-test-auth/global-setup'
+  ),
+
   // Slow SSO in Konflux — align with widget-layout#298 / Konflux E2E rules
   timeout: 180 * 1000,
 
@@ -32,6 +37,9 @@ export default defineConfig({
   use: {
     // PLAYWRIGHT_BASE_URL overrides for local runs against stage; default is the dev proxy (Konflux E2E rules)
     baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337',
+
+    // Reuse authenticated session saved by globalSetup
+    storageState: 'playwright/.auth/user.json',
 
     // Ignore HTTPS errors for local dev server
     ignoreHTTPSErrors: true,
