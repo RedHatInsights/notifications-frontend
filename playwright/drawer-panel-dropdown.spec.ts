@@ -19,8 +19,6 @@ import { drawerHelpers } from './utils/drawer-helpers';
 const TIMEOUTS = {
   /** Chrome shell + federated module initial load */
   CHROME_LOAD: 60_000,
-  /** Dropdown/popover/menu visibility transitions */
-  DROPDOWN: 5_000,
   /** API response polling (mark read/unread state changes) */
   API_POLL: 10_000,
   /** SPA client-side page navigation */
@@ -46,13 +44,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-
-    const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
 
     // Bulk action items — use precise regex with count group to avoid greedy matching
     await expect(
@@ -77,8 +69,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     const separators = dropdown.getByRole('separator');
     await expect(separators.first()).toBeVisible();
 
-    // Close dropdown
-    await actionsToggle.click();
+    await drawerHelpers.closeActionsDropdown(page);
   });
 
   // ── 2. Bulk Actions Disabled When Nothing Selected ───────────────
@@ -98,14 +89,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Ensure none selected
     await drawerHelpers.bulkSelectNone(page);
 
-    // Open actions dropdown
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-
-    const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
 
     // Bulk action items should show count 0 and be disabled
     const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
@@ -114,16 +98,15 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await expect(markRead).toHaveAttribute('aria-disabled', 'true');
     await expect(markUnread).toHaveAttribute('aria-disabled', 'true');
 
-    // Verify count is 0 in labels
-    await expect(markRead).toContainText('(0)');
-    await expect(markUnread).toContainText('(0)');
+    // Verify count is 0 via semantic data attribute
+    await expect(markRead).toHaveAttribute('data-selected-count', '0');
+    await expect(markUnread).toHaveAttribute('data-selected-count', '0');
 
     // Navigation items should remain enabled
     const viewLog = dropdown.getByRole('menuitem', { name: 'View event log' });
     await expect(viewLog).not.toHaveAttribute('aria-disabled', 'true');
 
-    // Close dropdown
-    await actionsToggle.click();
+    await drawerHelpers.closeActionsDropdown(page);
   });
 
   // ── 3. Bulk Actions Enabled With Selection ───────────────────────
@@ -151,27 +134,20 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       await drawerHelpers.selectNotification(items.nth(i));
     }
 
-    // Open actions dropdown
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
 
-    const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
-
-    // Bulk action items should show correct count and be enabled
+    // Bulk action items should show correct count via semantic attribute and be enabled
     const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
     const markUnread = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as unread/ });
 
-    await expect(markRead).toContainText(`(${selectCount})`);
-    await expect(markUnread).toContainText(`(${selectCount})`);
+    await expect(markRead).toHaveAttribute('data-selected-count', String(selectCount));
+    await expect(markUnread).toHaveAttribute('data-selected-count', String(selectCount));
 
     await expect(markRead).not.toHaveAttribute('aria-disabled', 'true');
     await expect(markUnread).not.toHaveAttribute('aria-disabled', 'true');
 
     // Close dropdown and clean up selection
-    await actionsToggle.click();
+    await drawerHelpers.closeActionsDropdown(page);
     await drawerHelpers.bulkSelectNone(page);
   });
 
@@ -195,36 +171,27 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Select 1 notification
     await drawerHelpers.selectNotification(items.first());
 
-    // Verify count is 1
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-    const dropdown = page.locator('#notifications-actions-dropdown');
-    await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
-    ).toContainText('(1)');
-    await actionsToggle.click();
+    // Verify count is 1 via semantic attribute
+    let dropdown = await drawerHelpers.openActionsDropdown(page);
+    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
+    await expect(markRead).toHaveAttribute('data-selected-count', '1');
+    await drawerHelpers.closeActionsDropdown(page);
 
     // Select all
     await drawerHelpers.bulkSelectAll(page);
 
     // Verify count matches total
-    await actionsToggle.click();
-    await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
-    ).toContainText(`(${count})`);
-    await actionsToggle.click();
+    dropdown = await drawerHelpers.openActionsDropdown(page);
+    await expect(markRead).toHaveAttribute('data-selected-count', String(count));
+    await drawerHelpers.closeActionsDropdown(page);
 
     // Deselect all
     await drawerHelpers.bulkSelectNone(page);
 
     // Verify count is 0
-    await actionsToggle.click();
-    await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
-    ).toContainText('(0)');
-    await actionsToggle.click();
+    dropdown = await drawerHelpers.openActionsDropdown(page);
+    await expect(markRead).toHaveAttribute('data-selected-count', '0');
+    await drawerHelpers.closeActionsDropdown(page);
   });
 
   // ── 5. Mark Selected as Read via Dropdown ────────────────────────
@@ -260,11 +227,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.selectNotification(items.first());
 
     // Use the panel dropdown to mark as read
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-    const dropdown = page.locator('#notifications-actions-dropdown');
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
     const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
     await markRead.click();
 
@@ -276,14 +239,16 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       .toBe(true);
 
     // Verify dropdown closes after action
-    await expect(dropdown).not.toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
+    await expect(drawerHelpers.actionsDropdown(page)).not.toBeVisible();
 
-    // Re-open dropdown and verify count reset to 0
-    await actionsToggle.click();
+    // Re-open dropdown and verify count reset to 0 via semantic attribute
+    await drawerHelpers.openActionsDropdown(page);
     await expect(
-      dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
-    ).toContainText('(0)');
-    await actionsToggle.click();
+      drawerHelpers
+        .actionsDropdown(page)
+        .getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ })
+    ).toHaveAttribute('data-selected-count', '0');
+    await drawerHelpers.closeActionsDropdown(page);
   });
 
   // ── 6. Mark Selected as Unread via Dropdown ──────────────────────
@@ -320,11 +285,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.selectNotification(items.first());
 
     // Use the panel dropdown to mark as unread
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-    const dropdown = page.locator('#notifications-actions-dropdown');
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
     const markUnread = dropdown.getByRole('menuitem', {
       name: /Mark selected \(\d+\) as unread/,
     });
@@ -338,7 +299,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       .toBe(false);
 
     // Verify dropdown closes after action
-    await expect(dropdown).not.toBeVisible({ timeout: TIMEOUTS.DROPDOWN });
+    await expect(drawerHelpers.actionsDropdown(page)).not.toBeVisible();
   });
 
   // ── 7. Navigation Items ──────────────────────────────────────────
@@ -348,11 +309,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.waitForDrawerReady(page);
 
     // Click "View event log" in the actions dropdown
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-    const dropdown = page.locator('#notifications-actions-dropdown');
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
     const viewLog = dropdown.getByRole('menuitem', { name: 'View event log' });
     await viewLog.click();
 
@@ -370,11 +327,7 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     await drawerHelpers.waitForDrawerReady(page);
 
     // Click "Manage my event notifications" in the actions dropdown
-    const actionsToggle = page.getByRole('button', {
-      name: 'Notifications actions dropdown',
-    });
-    await actionsToggle.click();
-    const dropdown = page.locator('#notifications-actions-dropdown');
+    const dropdown = await drawerHelpers.openActionsDropdown(page);
     const manageNotifs = dropdown.getByRole('menuitem', {
       name: 'Manage my event notifications',
     });

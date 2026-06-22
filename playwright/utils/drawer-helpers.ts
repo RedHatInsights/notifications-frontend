@@ -117,20 +117,46 @@ export const drawerHelpers = {
     await manageItem.click();
   },
 
-  /** Open the actions dropdown (header ellipsis). */
-  async openActionsDropdown(page: Page): Promise<void> {
-    const toggle = page.locator('#notifications-actions-toggle');
+  /** Locator for the actions dropdown toggle (ellipsis button). */
+  actionsToggle(page: Page): Locator {
+    return page.getByRole('button', { name: 'Notifications actions dropdown' });
+  },
+
+  /** Locator for the actions dropdown menu container. */
+  actionsDropdown(page: Page): Locator {
+    return page.locator('#notifications-actions-dropdown');
+  },
+
+  /** Open the actions dropdown (header ellipsis) and return the dropdown locator. */
+  async openActionsDropdown(page: Page): Promise<Locator> {
+    const toggle = this.actionsToggle(page);
     await toggle.click();
-    await expect(page.locator('#notifications-actions-dropdown')).toBeVisible({ timeout: 5000 });
+    const dropdown = this.actionsDropdown(page);
+    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    return dropdown;
+  },
+
+  /** Close the actions dropdown by clicking the toggle again. */
+  async closeActionsDropdown(page: Page): Promise<void> {
+    await this.actionsToggle(page).click();
   },
 
   /** Click an item inside the actions dropdown by its visible text. */
   async clickActionItem(page: Page, itemText: string): Promise<void> {
-    await this.openActionsDropdown(page);
-    const item = page
-      .locator('#notifications-actions-dropdown')
-      .getByRole('menuitem', { name: itemText });
+    const dropdown = await this.openActionsDropdown(page);
+    const item = dropdown.getByRole('menuitem', { name: itemText });
     await item.click();
+  },
+
+  /**
+   * Read the `data-selected-count` attribute from a bulk action menu item.
+   * Requires the actions dropdown to be open.
+   */
+  async getSelectedCountFromDropdown(page: Page): Promise<number> {
+    const dropdown = this.actionsDropdown(page);
+    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
+    const countAttr = await markRead.getAttribute('data-selected-count');
+    return parseInt(countAttr ?? '0', 10);
   },
 
   /** Wait for the drawer to finish loading (spinner gone). */
