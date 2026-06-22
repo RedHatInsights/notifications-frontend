@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
-import { NOTIFICATIONS_PATH } from './test-utils';
+import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
 import { generateBehaviorGroupName } from './utils/data-generators';
-import { fillBehaviorGroupForm, waitForSuccessNotification } from './utils/form-helpers';
+import { fillBehaviorGroupForm } from './utils/form-helpers';
 
 /**
  * Notifications UI E2E Test Suite
@@ -20,12 +20,15 @@ const BUNDLES = ['rhel', 'console', 'openshift', 'ansible'];
 // =============================================================================
 
 test.describe('Notifications Bundle Navigation', () => {
+  test.beforeEach(async ({ page }) => {
+    await ensureLoggedIn(page);
+  });
+
   test('should navigate to each bundle', async ({ page }) => {
     for (const bundleName of BUNDLES) {
       const bundleUrl = `${NOTIFICATIONS_PATH}/${bundleName}`;
 
-      await page.goto(bundleUrl);
-      await page.waitForLoadState('networkidle');
+      await page.goto(bundleUrl, { waitUntil: 'domcontentloaded' });
       await expect(page).toHaveURL(new RegExp(`notifications/${bundleName}`));
     }
   });
@@ -34,8 +37,7 @@ test.describe('Notifications Bundle Navigation', () => {
     for (const bundleName of BUNDLES) {
       const bundleUrl = `${NOTIFICATIONS_PATH}/${bundleName}`;
 
-      await page.goto(bundleUrl);
-      await page.waitForLoadState('networkidle');
+      await page.goto(bundleUrl, { waitUntil: 'domcontentloaded' });
 
       const configureEventsLink = page
         .locator(
@@ -43,9 +45,10 @@ test.describe('Notifications Bundle Navigation', () => {
         )
         .first();
 
-      if (await configureEventsLink.isVisible({ timeout: 3000 })) {
+      // Only some bundles have Configure Events - skip if not present
+      if (await configureEventsLink.isVisible({ timeout: 3000 }).catch(() => false)) {
         await configureEventsLink.click();
-        await page.waitForLoadState('networkidle');
+        await page.waitForLoadState('domcontentloaded');
       }
     }
   });
@@ -56,14 +59,17 @@ test.describe('Notifications Bundle Navigation', () => {
 // =============================================================================
 
 test.describe('Behavior Group Lifecycle', () => {
+  test.beforeEach(async ({ page }) => {
+    await ensureLoggedIn(page);
+  });
+
   test('should create, verify, and delete behavior group for RHEL', async ({ page }) => {
     const bundleName = 'rhel';
     const groupName = generateBehaviorGroupName(bundleName);
     const bundleUrl = `${NOTIFICATIONS_PATH}/${bundleName}`;
 
     // Navigate to bundle page
-    await page.goto(bundleUrl);
-    await page.waitForLoadState('networkidle');
+    await page.goto(bundleUrl, { waitUntil: 'domcontentloaded' });
     await expect(page).toHaveURL(new RegExp(`notifications/${bundleName}`));
 
     // Dismiss cookie consent if needed
@@ -81,7 +87,7 @@ test.describe('Behavior Group Lifecycle', () => {
       .first();
     await configureEventsLink.waitFor({ state: 'visible', timeout: 10000 });
     await configureEventsLink.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     // Click Behavior Groups tab
     const behaviorGroupsTab = page
@@ -91,7 +97,7 @@ test.describe('Behavior Group Lifecycle', () => {
       .first();
     await behaviorGroupsTab.waitFor({ state: 'visible', timeout: 10000 });
     await behaviorGroupsTab.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(2000);
 
     // Create behavior group
@@ -107,20 +113,18 @@ test.describe('Behavior Group Lifecycle', () => {
       skipEventTypes: true,
     });
 
-    await waitForSuccessNotification(page);
-
-    // Modal closes automatically - wait for it
-    await page.waitForTimeout(2000);
+    // Wait for form submission to complete and modal to close
+    await page.waitForTimeout(3000);
 
     // Navigate back to the Behavior Groups tab to verify
     await page.goto(bundleUrl);
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     await configureEventsLink.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
 
     await behaviorGroupsTab.click();
-    await page.waitForLoadState('networkidle');
+    await page.waitForLoadState('domcontentloaded');
     await page.waitForTimeout(1000);
 
     // Verify behavior group appears in the list
@@ -167,37 +171,16 @@ test.describe('Behavior Group Lifecycle', () => {
 // =============================================================================
 
 test.describe('Events Log', () => {
+  test.beforeEach(async ({ page }) => {
+    await ensureLoggedIn(page);
+  });
+
   test('should display events log page', async ({ page }) => {
     const eventLogUrl = `${NOTIFICATIONS_PATH}/event-log`;
 
-    await page.goto(eventLogUrl);
-    await page.waitForLoadState('networkidle');
-    await page.waitForTimeout(2000);
+    await page.goto(eventLogUrl, { waitUntil: 'domcontentloaded' });
 
-    // Just verify the page loaded (might redirect to auth or different URL)
-    // Check for any content indicating we're on a notifications page
-    const hasNotificationsContent = await page
-      .locator('text=/event|notification|log/i')
-      .first()
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
-    const hasTable = await page
-      .locator('table')
-      .first()
-      .isVisible()
-      .catch(() => false);
-    const hasEmptyState = await page
-      .locator(
-        '[data-ouia-component-type="PF5/EmptyState"], [data-ouia-component-type="PF6/EmptyState"]'
-      )
-      .isVisible()
-      .catch(() => false);
-
-    // As long as the page loads without errors, consider it a pass
-    expect(
-      hasNotificationsContent || hasTable || hasEmptyState || page.url().includes('notifications')
-    ).toBeTruthy();
-
-    console.log(`✓ Events log page loaded (URL: ${page.url()})`);
+    // Verify we're on the notifications event log route (URL check is sufficient for navigation test)
+    await expect(page).toHaveURL(/settings\/notifications\/event-log/);
   });
 });

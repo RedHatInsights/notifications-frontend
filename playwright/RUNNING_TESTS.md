@@ -1,8 +1,8 @@
 # Running Playwright Tests
 
-The Playwright tests are configured to run against the **Red Hat stage environment** (`https://console.stage.redhat.com`).
+The Playwright tests are configured by default to run against the **local development proxy** (`https://stage.foo.redhat.com:1337`).
 
-This matches the pattern used by other HCC frontend E2E tests (e.g., rbac-ui) and is suitable for both local development and CI/CD (Konflux).
+This requires running the local dev server (`npm start`) and proper `/etc/hosts` configuration. For remote testing without a local proxy, you can override the base URL to `https://console.stage.redhat.com`.
 
 ## Prerequisites
 
@@ -24,47 +24,46 @@ E2E_PASSWORD=your-redhat-password
 
 ## Running Tests
 
-### Direct Against Stage (Recommended)
+### Against Local Dev Proxy (Default)
 
-Tests run directly against `https://console.stage.redhat.com` by default:
+Tests run against `https://stage.foo.redhat.com:1337` by default (requires `npm start`):
 
 ```bash
 # Run all migrated tests
-npx playwright test integrations.spec.ts notifications.spec.ts
+npx playwright test integrations-ui.spec.ts notifications-ui.spec.ts
 
 # Run only integration tests
-npx playwright test integrations.spec.ts
+npx playwright test integrations-ui.spec.ts
 
 # Run only notification tests
-npx playwright test notifications.spec.ts
+npx playwright test notifications-ui.spec.ts
 
 # Run in UI mode (interactive debugging)
 npx playwright test --ui
 
 # Run specific test suite
-npx playwright test integrations.spec.ts -g "Webhook Integration Creation"
+npx playwright test integrations-ui.spec.ts -g "Webhook Integration"
 
 # Run with headed browser (see what's happening)
 npx playwright test --headed
 
 # Debug a specific test
-npx playwright test integrations.spec.ts --debug
+npx playwright test integrations-ui.spec.ts --debug
 ```
 
-## Running Against Local Dev Server (Optional)
+## Running Against Remote Stage (Optional)
 
-If you want to test against a local development proxy instead:
+If you want to test against remote stage without a local proxy:
 
 ```bash
 # Set environment variable to override the default
-export PLAYWRIGHT_BASE_URL="https://stage.foo.redhat.com:1337"
+export PLAYWRIGHT_BASE_URL="https://console.stage.redhat.com"
 
 # Run tests
 npx playwright test
 ```
 
-**Note:** This requires `/etc/hosts` configuration and a running local dev server (`npm start`).
-Most developers and CI/CD should use the default stage environment instead.
+**Note:** Most local development uses the default local proxy (`stage.foo.redhat.com:1337`).
 
 ## Troubleshooting
 
@@ -154,8 +153,8 @@ In CI (Konflux), tests run with:
 export E2E_USER="your-redhat-username"
 export E2E_PASSWORD="your-redhat-password"
 
-# Run tests directly against stage
-npx playwright test integrations.spec.ts --headed
+# Run tests against local dev proxy
+npx playwright test integrations-ui.spec.ts --headed
 
 # Watch the tests run in the browser!
 ```

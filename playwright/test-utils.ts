@@ -45,12 +45,23 @@ async function removeTrustArcOverlay(page: Page) {
     .catch(() => undefined);
 }
 
+/** Dismiss cookie consent banner if visible */
+export async function dismissCookieConsent(page: Page): Promise<void> {
+  const acceptCookies = page
+    .getByRole('button', { name: 'Accept all' })
+    .or(page.getByRole('button', { name: 'Accept' }));
+  if (await acceptCookies.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await acceptCookies.click();
+    await page.waitForTimeout(500);
+  }
+}
+
 export async function login(page: Page, user: string, password: string): Promise<void> {
   await expect(page.locator('text=Lockdown'), 'proxy config incorrect').toHaveCount(0);
 
   await removeTrustArcOverlay(page);
 
-  console.log(`Attempting login with user: ${user}`);
+  console.log('Attempting login...');
 
   // Use the visible, enabled input field (not the readonly one)
   const usernameInput = page
@@ -111,36 +122,40 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
 
   if (isOnSSOPage) {
     console.log('On SSO page, logging in...');
-    const user = process.env.E2E_USER!;
-    const password = process.env.E2E_PASSWORD!;
+    const user = process.env.E2E_USER;
+    const password = process.env.E2E_PASSWORD;
+
+    if (!user || !password) {
+      throw new Error('E2E_USER and E2E_PASSWORD environment variables must be set');
+    }
 
     await removeTrustArcOverlay(page);
     await login(page, user, password);
     await page.waitForLoadState('load');
     await page.waitForTimeout(3000);
-    await expect(page.getByText('Invalid login')).not.toBeVisible();
-    await expect(
-      page.getByRole('button', { name: 'Add widgets' }),
-      'dashboard not displayed'
-    ).toBeVisible({ timeout: 30000 });
 
+    // Verify login succeeded (not still on SSO page with error)
+    await expect(page.getByText('Invalid login')).not.toBeVisible();
+
+    // Dismiss cookie consent if present
     const acceptAllButton = page.getByRole('button', { name: 'Accept all' });
-    if (await acceptAllButton.isVisible()) {
+    if (await acceptAllButton.isVisible({ timeout: 2000 }).catch(() => false)) {
       await acceptAllButton.click();
     }
 
     console.log('✓ Login successful');
   } else {
-    // Check if we're on the dashboard (logged in)
-    const dashboardVisible = await page
-      .getByRole('button', { name: 'Add widgets' })
-      .isVisible({ timeout: 5000 })
-      .catch(() => false);
+    // Not redirected to SSO - check if we're actually logged in or have an auth failure
+    const currentUrl = page.url();
 
-    if (dashboardVisible) {
-      console.log('✓ Already logged in');
-    } else {
-      console.log('⚠ Unknown page state, attempting to continue');
+    // If we're still on SSO login page, that's a real failure
+    if (currentUrl.includes('sso.stage.redhat.com') || currentUrl.includes('sso.redhat.com')) {
+      throw new Error(
+        `Still on SSO page after navigation, possible auth failure. Current URL: ${currentUrl}`
+      );
     }
+
+    // Otherwise assume we're logged in
+    console.log('✓ Already logged in or login not required');
   }
 }

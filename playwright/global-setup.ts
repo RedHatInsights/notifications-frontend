@@ -26,7 +26,7 @@ async function login(page: Page, user: string, password: string) {
     throw new Error('Proxy config incorrect - Lockdown page detected');
   }
 
-  console.log(`Logging in as ${user}...`);
+  console.log('Logging in...');
 
   // Fill username
   const usernameInput = page

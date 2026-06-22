@@ -61,9 +61,7 @@ export async function fillWebhookForm(page: Page, payload: WebhookPayload): Prom
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       // Select event types if provided
       for (const eventType of payload.eventTypes) {
-        const eventCheckbox = page
-          .locator(`input[type="checkbox"][value="${eventType}"], label:has-text("${eventType}")`)
-          .first();
+        const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
         if (await eventCheckbox.isVisible()) {
           await eventCheckbox.check();
         }
@@ -164,9 +162,7 @@ export async function fillCommunicationForm(
   if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       for (const eventType of payload.eventTypes) {
-        const eventCheckbox = page
-          .locator(`input[type="checkbox"][value="${eventType}"], label:has-text("${eventType}")`)
-          .first();
+        const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
         if (await eventCheckbox.isVisible()) {
           await eventCheckbox.check();
         }
@@ -230,9 +226,7 @@ export async function fillPagerDutyForm(page: Page, payload: PagerDutyPayload): 
   if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       for (const eventType of payload.eventTypes) {
-        const eventCheckbox = page
-          .locator(`input[type="checkbox"][value="${eventType}"], label:has-text("${eventType}")`)
-          .first();
+        const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
         if (await eventCheckbox.isVisible()) {
           await eventCheckbox.check();
         }
@@ -290,9 +284,7 @@ export async function fillServiceNowForm(page: Page, payload: ServiceNowPayload)
   if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       for (const eventType of payload.eventTypes) {
-        const eventCheckbox = page
-          .locator(`input[type="checkbox"][value="${eventType}"], label:has-text("${eventType}")`)
-          .first();
+        const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
         if (await eventCheckbox.isVisible()) {
           await eventCheckbox.check();
         }
@@ -346,9 +338,7 @@ export async function fillSplunkForm(page: Page, payload: SplunkPayload): Promis
   if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       for (const eventType of payload.eventTypes) {
-        const eventCheckbox = page
-          .locator(`input[type="checkbox"][value="${eventType}"], label:has-text("${eventType}")`)
-          .first();
+        const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
         if (await eventCheckbox.isVisible()) {
           await eventCheckbox.check();
         }
@@ -400,9 +390,7 @@ export async function fillAnsibleForm(page: Page, payload: AnsiblePayload): Prom
   if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       for (const eventType of payload.eventTypes) {
-        const eventCheckbox = page
-          .locator(`input[type="checkbox"][value="${eventType}"], label:has-text("${eventType}")`)
-          .first();
+        const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
         if (await eventCheckbox.isVisible()) {
           await eventCheckbox.check();
         }
@@ -424,22 +412,21 @@ export async function fillAnsibleForm(page: Page, payload: AnsiblePayload): Prom
  */
 export async function waitForSuccessNotification(page: Page): Promise<void> {
   // PatternFly alerts appear at the top of the page
-  // Try multiple selectors for success alerts
-  const successSelectors = [
-    '.pf-v6-c-alert.pf-m-success',
-    '[class*="pf-v6-c-alert"][class*="success"]',
-    '.pf-c-alert.pf-m-success',
-    '[data-ouia-component-type*="Alert"]',
-    'text=/success|created|added/i',
-  ];
+  // Try to find success alert or success text
+  const alertFound = await page
+    .locator(
+      '.pf-v6-c-alert.pf-m-success, [class*="pf-v6-c-alert"][class*="success"], .pf-c-alert.pf-m-success, [data-ouia-component-type*="Alert"]'
+    )
+    .or(page.locator('text=/success|created|added/i'))
+    .first()
+    .waitFor({ state: 'visible', timeout: 10000 })
+    .then(() => true)
+    .catch(() => false);
 
-  // Wait for any success indicator
-  try {
-    await page.waitForSelector(successSelectors.join(', '), { timeout: 10000 });
-  } catch {
-    // If alert doesn't appear, just wait a bit (creation might have succeeded)
-    console.log('⚠ Success alert not found, continuing anyway');
-    await page.waitForTimeout(2000);
+  if (!alertFound) {
+    throw new Error(
+      'Failed to find success notification after form submission. Expected PatternFly success alert or success text.'
+    );
   }
 }
 
@@ -451,6 +438,41 @@ export async function closeWizardModal(page: Page): Promise<void> {
   if (await closeButton.isVisible({ timeout: 2000 })) {
     await closeButton.click();
   }
+}
+
+/**
+ * Delete an integration from the UI
+ * Handles both direct delete button and kebab menu fallback
+ */
+export async function deleteIntegration(page: Page, integrationName: string): Promise<void> {
+  const container = page
+    .locator('[role="row"], [class*="card"]', {
+      has: page.locator(`text="${integrationName}"`),
+    })
+    .first();
+
+  const deleteButton = container
+    .locator('button[aria-label*="Delete"], button:has-text("Delete")')
+    .first();
+
+  if (await deleteButton.isVisible({ timeout: 3000 }).catch(() => false)) {
+    await deleteButton.click();
+  } else {
+    const kebabButton = container
+      .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
+      .first();
+    await kebabButton.click();
+    await page.waitForTimeout(500);
+    const deleteMenuItem = page.locator('button:has-text("Delete")').first();
+    await deleteMenuItem.click();
+  }
+
+  // Confirm deletion
+  const confirmButton = page
+    .locator('button:has-text("Delete"), button:has-text("Confirm")')
+    .first();
+  await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
+  await confirmButton.click({ force: true });
 }
 
 /**
