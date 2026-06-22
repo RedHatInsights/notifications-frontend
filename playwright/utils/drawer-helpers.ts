@@ -161,7 +161,7 @@ export const drawerHelpers = {
    */
   async getSelectedCountFromDropdown(page: Page): Promise<number> {
     const dropdown = this.actionsDropdown(page);
-    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected .* as read/ });
+    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
     const countAttr = await markRead.getAttribute('data-selected-count');
     return parseInt(countAttr ?? '0', 10);
   },
