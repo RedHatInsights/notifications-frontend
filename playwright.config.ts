@@ -9,9 +9,7 @@ export default defineConfig({
   testDir: './playwright',
 
   // Authenticate once via @redhat-cloud-services/playwright-test-auth, reuse session
-  globalSetup: require.resolve(
-    '@redhat-cloud-services/playwright-test-auth/global-setup'
-  ),
+  globalSetup: require.resolve('@redhat-cloud-services/playwright-test-auth/global-setup'),
 
   // Slow SSO in Konflux — align with widget-layout#298 / Konflux E2E rules
   timeout: 180 * 1000,
