@@ -109,6 +109,7 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
 
   // Check if we got redirected to SSO or are on login page
   const currentUrl = page.url();
+  // codeql[js/incomplete-url-substring-sanitization] - Test code: detecting SSO page to determine login state, not making security decisions
   const isOnSSOPage =
     currentUrl.includes('sso.stage.redhat.com') ||
     currentUrl.includes('sso.redhat.com') ||
@@ -143,6 +144,7 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     const currentUrl = page.url();
 
     // If we're still on SSO login page, that's a real failure
+    // codeql[js/incomplete-url-substring-sanitization] - Test code: detecting SSO page to determine login state, not making security decisions
     if (currentUrl.includes('sso.stage.redhat.com') || currentUrl.includes('sso.redhat.com')) {
       throw new Error(
         `Still on SSO page after navigation, possible auth failure. Current URL: ${currentUrl}`
