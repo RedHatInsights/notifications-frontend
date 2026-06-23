@@ -161,7 +161,9 @@ export const drawerHelpers = {
    */
   async getSelectedCountFromDropdown(page: Page): Promise<number> {
     const dropdown = this.actionsDropdown(page);
-    const markRead = dropdown.getByRole('menuitem', { name: /Mark selected \(\d+\) as read/ });
+    const markRead = dropdown.getByRole('menuitem', {
+      name: /Mark selected(?: \(\d+\))? as read/,
+    });
     const countAttr = await markRead.getAttribute('data-selected-count');
     return parseInt(countAttr ?? '0', 10);
   },
@@ -192,7 +194,9 @@ export const drawerHelpers = {
   async openBulkSelectDropdown(page: Page): Promise<void> {
     // Use aria-expanded attribute to find the dropdown toggle button (semantic over CSS class)
     const toggle = this.bulkSelectContainer(page).locator('button[aria-expanded]');
-    await toggle.click();
+    if ((await toggle.getAttribute('aria-expanded')) !== 'true') {
+      await toggle.click();
+    }
     // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
     await expect(toggle).toHaveAttribute('aria-expanded', 'true', {
       timeout: TIMEOUTS.UI_FEEDBACK,
