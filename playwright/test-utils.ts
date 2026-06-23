@@ -61,8 +61,6 @@ export async function login(page: Page, user: string, password: string): Promise
 
   await removeTrustArcOverlay(page);
 
-  console.log('Attempting login...');
-
   // Use the visible, enabled input field (not the readonly one)
   const usernameInput = page
     .getByLabel('Red Hat login')
@@ -83,7 +81,6 @@ export async function login(page: Page, user: string, password: string): Promise
   // Type the password character by character (more realistic)
   await passwordInput.pressSequentially(password, { delay: 50 });
 
-  console.log(`Password field filled, clicking Log in button`);
   await page.waitForTimeout(500);
   await page.getByRole('button', { name: 'Log in' }).click();
 
@@ -121,7 +118,6 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
       .catch(() => false));
 
   if (isOnSSOPage) {
-    console.log('On SSO page, logging in...');
     const user = process.env.E2E_USER;
     const password = process.env.E2E_PASSWORD;
 
@@ -142,8 +138,6 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     if (await acceptAllButton.isVisible({ timeout: 2000 }).catch(() => false)) {
       await acceptAllButton.click();
     }
-
-    console.log('✓ Login successful');
   } else {
     // Not redirected to SSO - check if we're actually logged in or have an auth failure
     const currentUrl = page.url();
@@ -156,6 +150,5 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     }
 
     // Otherwise assume we're logged in
-    console.log('✓ Already logged in or login not required');
   }
 }

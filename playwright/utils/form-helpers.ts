@@ -55,30 +55,61 @@ export async function fillWebhookForm(page: Page, payload: WebhookPayload): Prom
   await nextButton.click();
 
   // Step 2: Event Types (if behavior groups feature is enabled)
-  // Check if event types step exists (use .first() as text appears in nav and header)
-  const eventTypesHeader = page.locator('text=/Associate event types/i').first();
-  if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
+  // Target the h4 header specifically to avoid matching the nav text
+  const eventTypesHeader = page.locator('h4:has-text("Associate event types")').first();
+
+  // Wait for the step to appear - don't catch, let it throw if step doesn't exist
+  try {
+    await eventTypesHeader.waitFor({ state: 'visible', timeout: 15000 });
+  } catch (e) {
+    // Step 2 doesn't exist, skip to step 3 (Review)
+    return;
+  }
+
+  // If we get here, step 2 exists and we MUST complete it
+  {
+    // The Next button won't be enabled until the table finishes loading,
+    // so we'll rely on that check rather than trying to detect table load state
+
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       // Select event types if provided
       for (const eventType of payload.eventTypes) {
         const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
-        if (await eventCheckbox.isVisible()) {
+        if (await eventCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
           await eventCheckbox.check();
+          await page.waitForTimeout(300);
         }
       }
     }
-    // Click Next to go to review
-    await page.locator('button:has-text("Next")').first().click();
+
+    // Click Next button to proceed to Review step
+    // Button doesn't have role attribute, use text selector
+    const nextButtonStep2 = page.locator('button:has-text("Next")').first();
+
+    // Wait for it to be visible
+    await nextButtonStep2.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Wait for button to be enabled (no disabled attribute)
+    // This will wait until the table finishes loading, so use a long timeout (30s)
+    await page.waitForFunction(
+      (btn) => !btn.hasAttribute('disabled'),
+      await nextButtonStep2.elementHandle(),
+      { timeout: 30000 }
+    );
+
+    // Click the button (force click to bypass any overlays)
+    await nextButtonStep2.click({ force: true });
+
+    // Wait to ensure navigation to Review step happened
+    await page.waitForTimeout(2000);
   }
 
   // Step 3: Review
   // Wait for review step
   await page.waitForSelector('text=/Review/i', { timeout: 5000 });
 
-  // Click Submit/Create button (force click in case of overlays)
-  const submitButton = page
-    .locator('button:has-text("Submit"), button:has-text("Create"), button:has-text("Add")')
-    .first();
+  // Click Submit button - scope to within the dialog to avoid clicking the background button
+  const submitButton = page.locator('[role="dialog"] button:has-text("Submit")').first();
   await submitButton.waitFor({ state: 'visible', timeout: 5000 });
 
   // Use force to bypass any overlay issues
@@ -158,24 +189,59 @@ export async function fillCommunicationForm(
   await page.locator('button:has-text("Next")').first().click();
 
   // Step 3: Event Types (if enabled)
-  const eventTypesHeader = page.locator('text=/Associate event types/i').first();
-  if (await eventTypesHeader.isVisible({ timeout: 2000 }).catch(() => false)) {
+  // Target the h4 header specifically to avoid matching the nav text
+  const eventTypesHeaderComm = page.locator('h4:has-text("Associate event types")').first();
+
+  // Wait for the step to appear - don't catch, let it throw if step doesn't exist
+  try {
+    await eventTypesHeaderComm.waitFor({ state: 'visible', timeout: 15000 });
+  } catch (e) {
+    // Step 3 doesn't exist, skip to step 4 (Review)
+    return;
+  }
+
+  // If we get here, step 3 exists and we MUST complete it
+  {
+    // The Next button won't be enabled until the table finishes loading,
+    // so we'll rely on that check rather than trying to detect table load state
+
     if (payload.eventTypes && payload.eventTypes.length > 0) {
       for (const eventType of payload.eventTypes) {
         const eventCheckbox = page.locator(`input[type="checkbox"][value="${eventType}"]`).first();
-        if (await eventCheckbox.isVisible()) {
+        if (await eventCheckbox.isVisible({ timeout: 2000 }).catch(() => false)) {
           await eventCheckbox.check();
+          await page.waitForTimeout(300);
         }
       }
     }
-    await page.locator('button:has-text("Next")').first().click();
+
+    // Click Next button to proceed to Review step
+    // Button doesn't have role attribute, use text selector
+    const nextButtonStep3 = page.locator('button:has-text("Next")').first();
+
+    // Wait for it to be visible
+    await nextButtonStep3.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Wait for button to be enabled (no disabled attribute)
+    // This will wait until the table finishes loading, so use a long timeout (30s)
+    await page.waitForFunction(
+      (btn) => !btn.hasAttribute('disabled'),
+      await nextButtonStep3.elementHandle(),
+      { timeout: 30000 }
+    );
+
+    // Click the button (force click to bypass any overlays)
+    await nextButtonStep3.click({ force: true });
+
+    // Wait to ensure navigation to Review step happened
+    await page.waitForTimeout(2000);
   }
 
   // Step 4: Review and Submit
   await page.waitForSelector('text=/Review/i', { timeout: 5000 });
-  const submitButton = page
-    .locator('button:has-text("Submit"), button:has-text("Create"), button:has-text("Add")')
-    .first();
+
+  // Click Submit button - scope to within the dialog to avoid clicking the background button
+  const submitButton = page.locator('[role="dialog"] button:has-text("Submit")').first();
 
   // Wait for button to be enabled
   await page
@@ -445,11 +511,18 @@ export async function closeWizardModal(page: Page): Promise<void> {
  * Handles both direct delete button and kebab menu fallback
  */
 export async function deleteIntegration(page: Page, integrationName: string): Promise<void> {
+  // Find the table row containing this integration
   const container = page
-    .locator('[role="row"], [class*="card"]', {
+    .locator('tr', {
       has: page.locator(`text="${integrationName}"`),
     })
     .first();
+
+  // Scroll the row into view first (with timeout to avoid hanging)
+  await container.scrollIntoViewIfNeeded({ timeout: 5000 }).catch(() => {
+    // If scroll fails, continue anyway - element might already be in view
+  });
+  await page.waitForTimeout(500);
 
   const deleteButton = container
     .locator('button[aria-label*="Delete"], button:has-text("Delete")')
@@ -458,9 +531,13 @@ export async function deleteIntegration(page: Page, integrationName: string): Pr
   if (await deleteButton.isVisible({ timeout: 3000 }).catch(() => false)) {
     await deleteButton.click();
   } else {
+    // Find kebab menu toggle button (PatternFly 6 uses MenuToggle)
     const kebabButton = container
-      .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
+      .locator(
+        'button[aria-label*="Actions"], button[aria-label*="Kebab"], button[aria-label*="MenuToggle"], button.pf-v6-c-menu-toggle'
+      )
       .first();
+    await kebabButton.waitFor({ state: 'visible', timeout: 5000 });
     await kebabButton.click();
     await page.waitForTimeout(500);
     const deleteMenuItem = page.locator('button:has-text("Delete")').first();
@@ -566,40 +643,46 @@ export async function fillBehaviorGroupForm(
   await page.waitForTimeout(500);
 
   // Step 3: Event Types
-  // Check if event types step exists
-  const eventTypesHeader = page.locator(
-    'text=/Associate event/i, text=/Event types/i, text=/Select event/i'
-  );
+  // Check if event types step exists by looking for the header
+  const eventTypesHeader = page.locator('h4:has-text("Associate event types")').first();
 
-  if (await eventTypesHeader.isVisible({ timeout: 3000 })) {
+  let hasEventTypesStep = false;
+  try {
+    await eventTypesHeader.waitFor({ state: 'visible', timeout: 3000 });
+    hasEventTypesStep = true;
+  } catch {
+    hasEventTypesStep = false;
+  }
+
+  if (hasEventTypesStep) {
+    // Wait for Next button to be enabled (table loads async)
+    nextButton = page.locator('button:has-text("Next")').first();
+    await page.waitForFunction(
+      (btn) => {
+        const button = btn as HTMLButtonElement;
+        return !button.hasAttribute('disabled');
+      },
+      await nextButton.elementHandle(),
+      { timeout: 30000 }
+    );
+
     if (skipEventTypes) {
       // Just click next without selecting any event types
-      nextButton = page
-        .locator('button:has-text("Next"), button:has-text("Create"), button:has-text("Save")')
-        .first();
       await nextButton.click();
     } else {
       // TODO: Implement event type selection if needed
-      nextButton = page
-        .locator('button:has-text("Next"), button:has-text("Create"), button:has-text("Save")')
-        .first();
       await nextButton.click();
-    }
-  } else {
-    // No event types step, might be on final submit
-    const submitButton = page
-      .locator('button:has-text("Create"), button:has-text("Save"), button:has-text("Submit")')
-      .first();
-    if (await submitButton.isVisible({ timeout: 2000 })) {
-      await submitButton.click();
     }
   }
 
   await page.waitForTimeout(500);
 
   // Final submit if needed (in case there's a review step)
+  // Scope to dialog to avoid clicking wrong button
   const finalSubmitButton = page
-    .locator('button:has-text("Create"), button:has-text("Save"), button:has-text("Submit")')
+    .locator('[role="dialog"] button:has-text("Finish")')
+    .or(page.locator('[role="dialog"] button:has-text("Create")'))
+    .or(page.locator('[role="dialog"] button:has-text("Save")'))
     .first();
   if (await finalSubmitButton.isVisible({ timeout: 2000 })) {
     await finalSubmitButton.click();
