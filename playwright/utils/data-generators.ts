@@ -89,7 +89,6 @@ export function generatePagerDutyPayload(
 ): PagerDutyPayload {
   return {
     name: generateIntegrationName('pagerduty'),
-    // codeql[js/insecure-randomness] - Test code: generating unique test data identifiers, not cryptographic material
     secretToken: `test-token-${Date.now()}-${Math.random().toString(36).substring(2, 12)}`,
     severity: options.severity || 'critical',
     ...(options.eventTypes && { eventTypes: options.eventTypes }),
@@ -116,7 +115,6 @@ export function generateServiceNowPayload(
     name: generateIntegrationName('servicenow'),
     instanceUrl: `https://dev${Date.now()}.service-now.com`,
     username: `test-user-${Date.now()}`,
-    // codeql[js/insecure-randomness] - Test code: generating unique test data identifiers, not cryptographic material
     password: `test-password-${randomString(12)}`,
     ...(options.eventTypes && { eventTypes: options.eventTypes }),
   };

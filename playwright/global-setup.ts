@@ -8,7 +8,6 @@ import { type FullConfig, type Page, type Request, type Route, chromium } from '
 async function disableCookiePrompt(page: Page) {
   await page.route('**/*', async (route: Route, request: Request) => {
     const url = request.url();
-    // codeql[js/incomplete-url-substring-sanitization] - Test code: detecting TrustArc resources to block, not making security decisions
     if (
       (url.includes('consent.trustarc.com') || url.includes('trustarc.com')) &&
       request.resourceType() !== 'document'
