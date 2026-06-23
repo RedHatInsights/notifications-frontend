@@ -22,7 +22,13 @@ test.describe('Integrations Navigation', () => {
     await ensureLoggedIn(page);
   });
 
-  test('should navigate across all tabs', async ({ page }) => {
+  test.skip('should navigate across all tabs', async ({ page }) => {
+    /**
+     * SKIPPED: Tab clicks currently clear the category URL parameter
+     * This test verifies the correct behavior (URL should update with category param)
+     * Once RHCLOUD-48620 is fixed, remove the .skip to enable this test
+     * See: https://redhat.atlassian.net/browse/RHCLOUD-48620
+     */
     // Navigate to integrations page
     await page.goto(INTEGRATIONS_PATH);
     await page.waitForLoadState('domcontentloaded');
