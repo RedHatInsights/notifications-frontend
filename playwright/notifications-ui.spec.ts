@@ -24,21 +24,14 @@ test.describe('Notifications Bundle Navigation', () => {
     await ensureLoggedIn(page);
   });
 
-  test('should navigate to each bundle', async ({ page }) => {
+  test('should navigate to each bundle and Configure Events', async ({ page }) => {
     for (const bundleName of BUNDLES) {
+      // Navigate to bundle page
       const bundleUrl = `${NOTIFICATIONS_PATH}/${bundleName}`;
-
       await page.goto(bundleUrl, { waitUntil: 'domcontentloaded' });
       await expect(page).toHaveURL(new RegExp(`notifications/${bundleName}`));
-    }
-  });
 
-  test('should navigate to Configure Events for each bundle', async ({ page }) => {
-    for (const bundleName of BUNDLES) {
-      const bundleUrl = `${NOTIFICATIONS_PATH}/${bundleName}`;
-
-      await page.goto(bundleUrl, { waitUntil: 'domcontentloaded' });
-
+      // Navigate to Configure Events if available
       const configureEventsLink = page
         .locator(
           'a:has-text("Configure Events"), button:has-text("Configure Events"), [role="tab"]:has-text("Configure Events")'
