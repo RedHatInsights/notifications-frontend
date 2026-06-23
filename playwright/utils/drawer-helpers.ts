@@ -169,7 +169,8 @@ export const drawerHelpers = {
   /** Wait for the drawer to finish loading (spinner gone). */
   async waitForDrawerReady(page: Page): Promise<void> {
     // Wait until the spinner disappears — indicates data is loaded
-    await expect(this.drawerPanel(page).locator('.pf-v6-c-spinner')).not.toBeVisible({
+    // Use semantic role selector instead of PF CSS class
+    await expect(this.drawerPanel(page).getByRole('progressbar')).not.toBeVisible({
       timeout: TIMEOUTS.DRAWER_LOAD,
     });
   },
@@ -189,7 +190,8 @@ export const drawerHelpers = {
 
   /** Open the BulkSelect dropdown (the caret/arrow next to the checkbox). */
   async openBulkSelectDropdown(page: Page): Promise<void> {
-    const toggle = this.bulkSelectContainer(page).locator('button.pf-v6-c-menu-toggle');
+    // Use aria-expanded attribute to find the dropdown toggle button (semantic over CSS class)
+    const toggle = this.bulkSelectContainer(page).locator('button[aria-expanded]');
     await toggle.click();
     // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
     await expect(toggle).toHaveAttribute('aria-expanded', 'true', {
