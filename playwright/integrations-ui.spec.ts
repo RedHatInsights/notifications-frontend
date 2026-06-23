@@ -34,7 +34,10 @@ test.describe('Integrations Navigation', () => {
     await page.waitForLoadState('domcontentloaded');
     await expect(page).toHaveURL(/settings\/integrations/);
 
-    // Wait for page heading - reload once if it doesn't appear quickly
+    // Wait for page heading with dual-timeout strategy:
+    // 1. Quick check (5s) - if heading visible, continue immediately
+    // 2. If not visible, reload page (module federation may not have hydrated)
+    // 3. Full retry (30s) - expect() auto-retries until heading appears or timeout
     const heading = page.getByRole('heading', { name: 'Integrations' });
     if (!(await heading.isVisible({ timeout: 5000 }))) {
       await page.reload();
@@ -111,6 +114,7 @@ test.describe('Webhook Integration Lifecycle', () => {
     await page.goto(INTEGRATIONS_PATH);
     await page.waitForLoadState('domcontentloaded');
 
+    // Dual-timeout strategy: fast check (5s) → reload if needed → full retry (30s)
     const heading = page.getByRole('heading', { name: 'Integrations' });
     if (!(await heading.isVisible({ timeout: 5000 }))) {
       await page.reload();
@@ -199,6 +203,7 @@ test.describe('Communication Integration Lifecycle', () => {
     await page.goto(INTEGRATIONS_PATH);
     await page.waitForLoadState('domcontentloaded');
 
+    // Dual-timeout strategy: fast check (5s) → reload if needed → full retry (30s)
     const heading = page.getByRole('heading', { name: 'Integrations' });
     if (!(await heading.isVisible({ timeout: 5000 }))) {
       await page.reload();

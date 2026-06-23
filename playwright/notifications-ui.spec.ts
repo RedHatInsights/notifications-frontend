@@ -168,11 +168,11 @@ test.describe('Events Log', () => {
   });
 
   test('should display events log page', async ({ page }) => {
-    const eventLogUrl = `${NOTIFICATIONS_PATH}/event-log`;
+    const eventLogUrl = `${NOTIFICATIONS_PATH}/eventlog`;
 
     await page.goto(eventLogUrl, { waitUntil: 'domcontentloaded' });
 
     // Verify we're on the notifications event log route (URL check is sufficient for navigation test)
-    await expect(page).toHaveURL(/settings\/notifications\/event-log/);
+    await expect(page).toHaveURL(/settings\/notifications\/eventlog/);
   });
 });

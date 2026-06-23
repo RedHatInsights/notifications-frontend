@@ -68,7 +68,7 @@ This validates the full user experience end-to-end.
 ### Tests fail with authentication error
 
 - Check `E2E_USER` and `E2E_PASSWORD` are set
-- Clear auth cache: `rm -rf playwright/.auth`
+- Verify VPN connection is active
 
 ### Connection refused
 
