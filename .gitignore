@@ -36,6 +36,7 @@ playwright-results/
 test-results/
 playwright-report/
 playwright/.cache/
+playwright/.auth/
 
 # storybook
 storybook-static

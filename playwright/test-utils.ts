@@ -134,10 +134,7 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     await expect(page.getByText('Invalid login')).not.toBeVisible();
 
     // Dismiss cookie consent if present
-    const acceptAllButton = page.getByRole('button', { name: 'Accept all' });
-    if (await acceptAllButton.isVisible({ timeout: 2000 }).catch(() => false)) {
-      await acceptAllButton.click();
-    }
+    await dismissCookieConsent(page);
   } else {
     // Not redirected to SSO - check if we're actually logged in or have an auth failure
     const currentUrl = page.url();
