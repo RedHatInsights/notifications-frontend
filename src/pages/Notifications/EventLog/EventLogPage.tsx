@@ -1,4 +1,4 @@
-import { ButtonVariant } from '@patternfly/react-core';
+import { Alert, ButtonVariant } from '@patternfly/react-core';
 import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
@@ -35,7 +35,8 @@ export const EventLogPage: React.FunctionComponent = () => {
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
   const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
   const getEndpoint = useParameterizedQuery(getEndpointAction);
-  const { rbac } = useAppContext();
+  const { rbac, isOrgAdmin } = useAppContext();
+  const [onlyImpactingMe, setOnlyImpactingMe] = React.useState(!isOrgAdmin);
 
   const getBundles = useGetBundles(true);
   const bundles = React.useMemo(() => {
@@ -179,7 +180,20 @@ export const EventLogPage: React.FunctionComponent = () => {
         retentionDays={RETENTION_DAYS}
         period={period}
         setPeriod={setPeriod}
+        isOrgAdmin={isOrgAdmin}
+        onlyImpactingMe={onlyImpactingMe}
+        setOnlyImpactingMe={setOnlyImpactingMe}
       >
+        {!isOrgAdmin && (
+          <Alert
+            variant="info"
+            isInline
+            title="Events are being filtered out due to your privileges"
+          >
+            You are only seeing event instances that you have been given access to see. If you need
+            see all events for your entire organization, contact your org admin.
+          </Alert>
+        )}
         <EventLogTable
           events={events.data}
           loading={eventsQuery.loading}

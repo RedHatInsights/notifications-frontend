@@ -8,7 +8,6 @@ import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
-import { NotificationsLogPage } from './pages/Notifications/NotificationsLog/Page';
 import { NotificationsOverviewPage } from './pages/Notifications/Overview/Page';
 
 interface Path {
@@ -56,10 +55,6 @@ const legacyRoutes: Path[] = [
     path: linkTo.splunk(),
     component: SplunkSetupPage,
   },
-  {
-    path: linkTo.notificationsLog(),
-    component: NotificationsLogPage,
-  },
 ];
 
 const routesOverhaul: Path[] = [
@@ -78,10 +73,6 @@ const routesOverhaul: Path[] = [
   {
     path: linkTo.eventLog(),
     component: EventLogPage,
-  },
-  {
-    path: linkTo.notificationsLog(),
-    component: NotificationsLogPage,
   },
 ];
 
@@ -104,6 +95,10 @@ export const Routes: React.FunctionComponent = () => {
 
   return (
     <DomRoutes>
+      <Route
+        path={linkTo.notificationsLog()}
+        element={<Navigate to={linkTo.eventLog()} replace />}
+      />
       {pathRoutes.map((pathRoute) => (
         <Route
           key={pathRoute.path}

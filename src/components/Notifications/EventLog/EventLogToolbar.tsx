@@ -1,4 +1,10 @@
-import { Icon, PaginationProps, PaginationVariant } from '@patternfly/react-core';
+import {
+  Checkbox,
+  Icon,
+  PaginationProps,
+  PaginationVariant,
+  Tooltip,
+} from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -56,6 +62,10 @@ interface EventLogToolbarProps extends OuiaProps {
   retentionDays: number;
   period: EventPeriod;
   setPeriod: Dispatch<SetStateAction<EventPeriod>>;
+
+  isOrgAdmin: boolean;
+  onlyImpactingMe: boolean;
+  setOnlyImpactingMe: (value: boolean) => void;
 }
 
 const notificationTypes: Record<NotificationType, { name: string }> = {
@@ -267,13 +277,34 @@ export const EventLogToolbar: React.FunctionComponent<
         filterConfig={primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps}
         activeFiltersConfig={primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps}
         dedicatedAction={
-          <EventLogDateFilter
-            value={props.dateFilter}
-            setValue={props.setDateFilter}
-            retentionDays={props.retentionDays}
-            setPeriod={props.setPeriod}
-            period={props.period}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <EventLogDateFilter
+              value={props.dateFilter}
+              setValue={props.setDateFilter}
+              retentionDays={props.retentionDays}
+              setPeriod={props.setPeriod}
+              period={props.period}
+            />
+            {props.isOrgAdmin ? (
+              <Checkbox
+                label="Only show events impacting me"
+                isChecked={props.onlyImpactingMe}
+                onChange={(_e, checked) => props.setOnlyImpactingMe(checked)}
+                id="only-impacting-me"
+              />
+            ) : (
+              <Tooltip content="Org admin access required to view all organization events">
+                <span>
+                  <Checkbox
+                    label="Only show events impacting me"
+                    isChecked={true}
+                    isDisabled={true}
+                    id="only-impacting-me"
+                  />
+                </span>
+              </Tooltip>
+            )}
+          </div>
         }
         pagination={topPaginationProps}
       />
