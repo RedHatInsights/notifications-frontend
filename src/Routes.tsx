@@ -1,7 +1,15 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
-import { Routes as DomRoutes, Navigate, Route } from 'react-router-dom';
+import { Routes as DomRoutes, Navigate, Route, useNavigate } from 'react-router-dom';
+
+const NotificationsLogRedirect: React.FunctionComponent = () => {
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    navigate('/settings/notifications/eventlog', { replace: true });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+};
 
 import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
@@ -95,10 +103,7 @@ export const Routes: React.FunctionComponent = () => {
 
   return (
     <DomRoutes>
-      <Route
-        path={linkTo.notificationsLog()}
-        element={<Navigate to={linkTo.eventLog()} replace />}
-      />
+      <Route path={linkTo.notificationsLog()} element={<NotificationsLogRedirect />} />
       {pathRoutes.map((pathRoute) => (
         <Route
           key={pathRoute.path}
