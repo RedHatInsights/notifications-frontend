@@ -5,24 +5,18 @@ import Section from '@redhat-cloud-services/frontend-components/Section';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
-import { Link, useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
-import { IntegrationCategory } from '../../../types/Integration';
 import IntegrationsList from './List';
 
 export const IntegrationsListPage: React.FunctionComponent = () => {
   const { updateDocumentTitle, getBundle } = useChrome();
-  const [searchParams] = useSearchParams();
 
   updateDocumentTitle?.('Integrations');
 
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
-
-  // Read category from URL query parameter
-  const categoryParam = searchParams.get('category');
-  const category = categoryParam as IntegrationCategory | undefined;
 
   return (
     <Section className="pf-c-page__main-section pf-m-light">
@@ -44,7 +38,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
           )}
         </Split>
       </PageHeader>
-      <IntegrationsList category={category} />
+      <IntegrationsList />
     </Section>
   );
 };
