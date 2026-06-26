@@ -1,9 +1,5 @@
 import { expect, test } from '@playwright/test';
-import {
-  INTEGRATIONS_PATH,
-  NOTIFICATIONS_PATH,
-  ensureLoggedIn,
-} from './test-utils';
+import { INTEGRATIONS_PATH, NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
 
 /**
  * Example E2E test for notifications-frontend
