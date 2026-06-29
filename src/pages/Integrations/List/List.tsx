@@ -118,7 +118,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     sort.sortBy,
     category
   );
-  const integrationsQuery = useListIntegrationsQuery(pageData.page);
+  // Only fetch integrations if user has read permissions
+  const integrationsQuery = useListIntegrationsQuery(
+    pageData.page,
+    canReadIntegrationsEndpoints // initFetch parameter
+  );
   const exportIntegrationsQuery = useListIntegrationPQuery();
 
   const integrations = React.useMemo(() => {
