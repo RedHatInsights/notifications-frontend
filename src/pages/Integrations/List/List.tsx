@@ -121,9 +121,10 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   // Only fetch integrations if user has read permissions
   const integrationsQuery = useListIntegrationsQuery(
     pageData.page,
-    canReadIntegrationsEndpoints // initFetch parameter
+    canReadIntegrationsEndpoints,
+    isEmailIntegrationEnabled
   );
-  const exportIntegrationsQuery = useListIntegrationPQuery();
+  const exportIntegrationsQuery = useListIntegrationPQuery(isEmailIntegrationEnabled);
 
   const integrations = React.useMemo(() => {
     const payload = integrationsQuery.payload;
