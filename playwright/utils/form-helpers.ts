@@ -23,12 +23,13 @@ export async function clickCardAction(
   page: Page,
   actionName: string
 ): Promise<void> {
-  // Try to find direct action button first
+  // Try to find direct action button first and verify it's visible
+  // Hidden responsive actions should fall back to kebab menu
   const directButton = card
     .locator(`button[aria-label*="${actionName}"], button:has-text("${actionName}")`)
     .first();
 
-  if ((await directButton.count()) > 0) {
+  if (await directButton.isVisible({ timeout: 1000 }).catch(() => false)) {
     await directButton.click();
   } else {
     // Fall back to kebab menu
@@ -37,10 +38,16 @@ export async function clickCardAction(
       .first();
     await kebabButton.click();
 
-    // Wait for menu to open and scope the action lookup to the opened menu
-    const menu = page
+    // PatternFly menus may render inside the card or in a portal outside it
+    // Try card-scoped menu first, then fall back to page menu (for portals)
+    const cardMenu = card.locator(
+      '[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]'
+    );
+    const pageMenu = page
       .locator('[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]')
-      .first();
+      .last();
+
+    const menu = cardMenu.or(pageMenu);
     await menu.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
 
     const menuItem = menu.locator(`button:has-text("${actionName}")`).first();
