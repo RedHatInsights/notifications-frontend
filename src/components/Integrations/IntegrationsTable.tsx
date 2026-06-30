@@ -153,7 +153,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<IntegrationsTabl
             aria-label="Enabled"
             isChecked={integration.isEnabled}
             onChange={(_e, isChecked) => onEnable?.(integration, idx, isChecked)}
-            isDisabled={!onEnable}
+            isDisabled={!onEnable || isReadOnlyEmail(integration)}
             ouiaId={`enabled-${integration.id}`}
           />
         ),
