@@ -1,7 +1,8 @@
 import { expect, test } from '@playwright/test';
 import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
+import { TIMEOUTS } from './test-constants';
 import { generateBehaviorGroupName } from './utils/data-generators';
-import { fillBehaviorGroupForm } from './utils/form-helpers';
+import { clickCardAction, fillBehaviorGroupForm } from './utils/form-helpers';
 
 /**
  * Notifications UI E2E Test Suite
@@ -86,7 +87,7 @@ test.describe('Behavior Group Lifecycle', () => {
     const configureEventsLink = page
       .locator('a:has-text("Configure Events"), button:has-text("Configure Events")')
       .first();
-    await configureEventsLink.waitFor({ state: 'visible', timeout: 10000 });
+    await configureEventsLink.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
     await configureEventsLink.click();
     await page.waitForLoadState('domcontentloaded');
 
@@ -96,13 +97,13 @@ test.describe('Behavior Group Lifecycle', () => {
         'button:has-text("Behavior Groups"), a:has-text("Behavior Groups"), [role="tab"]:has-text("Behavior Groups")'
       )
       .first();
-    await behaviorGroupsTab.waitFor({ state: 'visible', timeout: 10000 });
+    await behaviorGroupsTab.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
     await behaviorGroupsTab.click();
     await page.waitForLoadState('domcontentloaded');
 
     // Step 4: Open creation wizard
     const createButton = page.getByText('Create new group', { exact: true }).first();
-    await createButton.waitFor({ state: 'visible', timeout: 10000 });
+    await createButton.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
     await createButton.click();
 
     // Step 5: Fill and submit wizard with initial data
@@ -114,7 +115,7 @@ test.describe('Behavior Group Lifecycle', () => {
 
     // Step 6: Verify initial behavior group appears
     const initialBgElement = page.locator(`text="${initialGroupName}"`).first();
-    await expect(initialBgElement).toBeVisible({ timeout: 10000 });
+    await expect(initialBgElement).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
     // Step 7: Edit behavior group
     const card = page
@@ -123,20 +124,8 @@ test.describe('Behavior Group Lifecycle', () => {
       })
       .first();
 
-    // Find and click Edit button (could be direct button or in kebab menu)
-    const editButton = card.locator('button[aria-label*="Edit"], button:has-text("Edit")').first();
-
-    if ((await editButton.count()) > 0) {
-      await editButton.click();
-    } else {
-      // Try kebab menu
-      const kebabButton = card
-        .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
-        .first();
-      await kebabButton.click();
-      const editMenuItem = page.locator('button:has-text("Edit")').first();
-      await editMenuItem.click();
-    }
+    // Use shared helper to click Edit action
+    await clickCardAction(card, page, 'Edit');
 
     // Step 8: Fill edit form with updated data
     await fillBehaviorGroupForm(page, updatedGroupName, {
@@ -147,10 +136,10 @@ test.describe('Behavior Group Lifecycle', () => {
 
     // Step 9: Verify updated behavior group appears with new name
     const updatedBgElement = page.locator(`text="${updatedGroupName}"`).first();
-    await expect(updatedBgElement).toBeVisible({ timeout: 10000 });
+    await expect(updatedBgElement).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
-    // Verify old name is gone
-    await expect(initialBgElement).not.toBeVisible({ timeout: 5000 });
+    // Verify old name is gone (use consistent timeout with other edit-submission checks)
+    await expect(initialBgElement).not.toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
     // Step 10: Delete behavior group
     const updatedCard = page
@@ -159,34 +148,22 @@ test.describe('Behavior Group Lifecycle', () => {
       })
       .first();
 
-    const deleteButton = updatedCard
-      .locator('button[aria-label*="Delete"], button:has-text("Delete")')
-      .first();
-
-    if ((await deleteButton.count()) > 0) {
-      await deleteButton.click();
-    } else {
-      const kebabButton = updatedCard
-        .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
-        .first();
-      await kebabButton.click();
-      const deleteMenuItem = page.locator('button:has-text("Delete")').first();
-      await deleteMenuItem.click();
-    }
+    // Use shared helper to click Delete action
+    await clickCardAction(updatedCard, page, 'Delete');
 
     // Step 11: Confirm deletion
     const acknowledgeCheckbox = page.locator('input[type="checkbox"][id*="acknowledge"]').first();
-    await acknowledgeCheckbox.waitFor({ state: 'visible', timeout: 5000 });
+    await acknowledgeCheckbox.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
     await acknowledgeCheckbox.check();
 
     const confirmButton = page
       .locator('button:has-text("Delete"), button:has-text("Confirm")')
       .first();
-    await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
+    await confirmButton.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
     await confirmButton.click();
 
     // Step 12: Verify deletion
-    await expect(updatedBgElement).not.toBeVisible({ timeout: 10000 });
+    await expect(updatedBgElement).not.toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
   });
 });
 
@@ -208,18 +185,20 @@ test.describe('Events Log', () => {
     await expect(page).toHaveURL(/settings\/notifications\/eventlog/);
 
     // Verify page header (level might vary, or use getByText for heading)
-    await expect(page.getByRole('heading', { name: 'Event Log' })).toBeVisible({ timeout: 30000 });
+    await expect(page.getByRole('heading', { name: 'Event Log' })).toBeVisible({
+      timeout: TIMEOUTS.PAGE_LOAD,
+    });
 
     // Verify page subtitle
     await expect(
       page.getByText('View all events that have occurred in your organization.')
-    ).toBeVisible({ timeout: 30000 });
+    ).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
 
     // Verify the EventLog table or toolbar is present (indicates page loaded correctly)
     // The table may be empty, but the structure should exist
     const tableOrEmptyState = page
       .locator('[role="grid"], table, [data-ouia-component-type*="Table"]')
       .or(page.getByText(/No events found|No results found/i));
-    await expect(tableOrEmptyState.first()).toBeVisible({ timeout: 30000 });
+    await expect(tableOrEmptyState.first()).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
   });
 });

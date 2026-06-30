@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import {
   AnsiblePayload,
   CommunicationPayload,
@@ -7,11 +7,46 @@ import {
   SplunkPayload,
   WebhookPayload,
 } from './data-generators';
+import { TIMEOUTS } from '../test-constants';
 
 /**
  * Form interaction helpers for Playwright E2E tests
  * Provides utilities for filling out integration forms
  */
+
+/**
+ * Click an action button on a card (Edit, Delete, etc.)
+ * Handles both direct button and kebab menu patterns
+ */
+export async function clickCardAction(
+  card: Locator,
+  page: Page,
+  actionName: string
+): Promise<void> {
+  // Try to find direct action button first
+  const directButton = card
+    .locator(`button[aria-label*="${actionName}"], button:has-text("${actionName}")`)
+    .first();
+
+  if ((await directButton.count()) > 0) {
+    await directButton.click();
+  } else {
+    // Fall back to kebab menu
+    const kebabButton = card
+      .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
+      .first();
+    await kebabButton.click();
+
+    // Wait for menu to open and scope the action lookup to the opened menu
+    const menu = page
+      .locator('[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]')
+      .first();
+    await menu.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
+
+    const menuItem = menu.locator(`button:has-text("${actionName}")`).first();
+    await menuItem.click();
+  }
+}
 
 /**
  * Fill webhook form in the integration wizard
@@ -619,14 +654,15 @@ export async function fillBehaviorGroupForm(
     .locator('[data-label="Recipient"] button, td:has-text("Recipient") + td button')
     .first();
 
-  await recipientSelect.waitFor({ state: 'visible', timeout: 5000 });
+  await recipientSelect.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
   await recipientSelect.click();
 
   await page.waitForTimeout(500);
-  const option = page
+  // Scope the option lookup to the dialog to avoid clicking wrong item outside the modal
+  const option = dialog
     .locator(`li:has-text("${recipient}"), [role="option"]:has-text("${recipient}")`)
     .first();
-  await option.waitFor({ state: 'visible', timeout: 5000 });
+  await option.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
   await option.click();
 
   // Click Next
