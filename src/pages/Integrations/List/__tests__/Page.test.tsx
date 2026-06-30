@@ -301,5 +301,30 @@ describe('src/pages/Integrations/List/Page', () => {
       expect(deleteItem).toBeInTheDocument();
       expect(toggleItem).toBeInTheDocument();
     });
+
+    it('Shows unauthorized state when read permissions is false', async () => {
+      render(<IntegrationsListPage />, {
+        wrapper: getConfiguredAppWrapper({
+          appContext: {
+            rbac: {
+              canReadIntegrationsEndpoints: false,
+              canWriteIntegrationsEndpoints: false,
+            },
+          },
+        }),
+      });
+
+      await waitForAsyncEvents();
+
+      // Check for unauthorized state elements
+      expect(screen.getByText(/no integrations available/i)).toBeInTheDocument();
+      expect(screen.getByText(/need to create an integration/i)).toBeInTheDocument();
+      expect(
+        screen.getByText(/you need read permissions to view integrations/i)
+      ).toBeInTheDocument();
+
+      // Verify integrations API was NOT called since user lacks permissions
+      expect(fetchMock.calls(/\/api\/integrations\/v1\.0\/endpoints.*/).length).toBe(0);
+    });
   });
 });
