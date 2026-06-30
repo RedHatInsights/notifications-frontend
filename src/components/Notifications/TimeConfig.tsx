@@ -19,6 +19,7 @@ import {
   StackItem,
   TimePicker,
   Title,
+  Tooltip,
 } from '@patternfly/react-core';
 import { Modal, ModalVariant } from '@patternfly/react-core/deprecated';
 import { Alert } from '@patternfly/react-core';
@@ -32,6 +33,7 @@ import {
   getTimeConfig,
   setTimeConfig,
 } from '../../api/helpers/notifications/time-preference-helper';
+import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 
 const alertClassName = style({
   marginTop: '12px',
@@ -59,6 +61,14 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
   const menuRef = React.useRef<HTMLDivElement>(null);
 
   const { addSuccessNotification, addDangerNotification } = useNotification();
+  const { auth } = useChrome();
+  const [isOrgAdmin, setIsOrgAdmin] = useState(false);
+
+  useEffect(() => {
+    auth.getUser().then((user) => {
+      setIsOrgAdmin(user?.identity?.user?.is_org_admin ?? false);
+    });
+  }, [auth]);
 
   React.useEffect(() => {
     const timePreferenceLoad = async () => setTimePref(await getTimeConfig());
@@ -77,16 +87,31 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
   }, [timePref]);
 
   const timeconfigTitle = useMemo(() => {
+    const actionLink = (
+      <AlertActionLink
+        onClick={handleModalToggle}
+        ouiaId="TimeConfigModal"
+        isDisabled={!isOrgAdmin}
+      >
+        Edit time settings.
+      </AlertActionLink>
+    );
+
     return (
       <>
         Any daily digest emails you&apos;ve opted into will be sent at{' '}
-        {timeSelect?.utcTime ? timeSelect?.utcTime : '00:00'} UTC.{' '}
-        <AlertActionLink onClick={handleModalToggle} ouiaId="TimeConfigModal">
-          Edit time settings.
-        </AlertActionLink>
+        {timeSelect?.utcTime ?? '00:00'} UTC.
+        <br />
+        {!isOrgAdmin ? (
+          <Tooltip content="Contact your Organization Administrator to edit time settings.">
+            <span>{actionLink}</span>
+          </Tooltip>
+        ) : (
+          actionLink
+        )}
       </>
     );
-  }, [timeSelect?.utcTime, handleModalToggle]);
+  }, [timeSelect?.utcTime, handleModalToggle, isOrgAdmin]);
 
   // Set the time preference value once we load it from the server
   useEffect(() => {
