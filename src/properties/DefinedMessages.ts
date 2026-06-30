@@ -168,4 +168,10 @@ export default defineMessages({
     description: 'Admin access required tooltip',
     defaultMessage: 'Admin-access required',
   },
+  readOnlyEmailTooltip: {
+    id: 'readOnlyEmailTooltip',
+    description: 'Tooltip for read-only system email integrations',
+    defaultMessage:
+      'This email integration is managed by your organization administrator and cannot be modified.',
+  },
 });

@@ -98,7 +98,11 @@ const isReadOnlyEmail = (integration: IntegrationRow) =>
   integration.type === IntegrationType.EMAIL_SUBSCRIPTION &&
   (integration as IntegrationRow & IntegrationEmailSubscription).readOnly === true;
 
-const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): IRow[] => {
+const toTableRows = (
+  integrations: Array<IntegrationRow>,
+  onEnable?: OnEnable,
+  readOnlyEmailTooltip?: string
+): IRow[] => {
   return integrations.reduce((rows, integration, idx) => {
     rows.push({
       id: integration.id,
@@ -110,7 +114,7 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
           title: isReadOnlyEmail(integration) ? (
             <>
               {integration.name}{' '}
-              <Tooltip content="This email integration is managed by your organization administrator and cannot be modified.">
+              <Tooltip content={readOnlyEmailTooltip}>
                 <LockIcon className="pf-v5-u-ml-sm" />
               </Tooltip>
             </>
@@ -313,8 +317,12 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
   }, [props.sortBy]);
 
   const rows = React.useMemo(() => {
-    return toTableRows(props.integrations, props.onEnable);
-  }, [props.integrations, props.onEnable]);
+    return toTableRows(
+      props.integrations,
+      props.onEnable,
+      intl.formatMessage(messages.readOnlyEmailTooltip)
+    );
+  }, [props.integrations, props.onEnable, intl]);
 
   const actionsResolverCallback: IActionsResolver = React.useCallback(
     (rowData) => {
