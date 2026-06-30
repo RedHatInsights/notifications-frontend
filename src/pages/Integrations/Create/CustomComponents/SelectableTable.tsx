@@ -103,6 +103,9 @@ const SelectableTable = (props) => {
   const productFamily = getState().values[props.bundleFieldName];
   const integrationId = getState().values['id'];
 
+  const inputRef = React.useRef(input);
+  inputRef.current = input;
+
   useEffect(() => {
     const getAllBundles = async () => {
       const bundles: Facet[] = await getBundleFacets({
@@ -130,7 +133,7 @@ const SelectableTable = (props) => {
       const eventGroups = data.event_types_group_by_bundles_and_applications;
 
       if (!eventGroups) {
-        input.onChange(BUNDLE_DEFAULTS);
+        inputRef.current.onChange(BUNDLE_DEFAULTS);
         setLoaded(true);
         return;
       }
@@ -141,12 +144,12 @@ const SelectableTable = (props) => {
         )
       );
 
-      input.onChange(mapEventTypesToInput(eventTypes));
+      inputRef.current.onChange(mapEventTypesToInput(eventTypes));
       setLoaded(true);
     };
 
     getEventData();
-  }, [integrationId, input]);
+  }, [integrationId]);
 
   return currBundle && loaded ? (
     <EventTypes
