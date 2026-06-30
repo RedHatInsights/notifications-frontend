@@ -6,12 +6,9 @@ import * as z from 'zod';
 import { ValidatedResponse } from 'openapi2typescript';
 import { Action } from 'react-fetching-library';
 import { ValidateRule } from 'openapi2typescript';
-import {
-  ActionValidatableConfig,
-  actionBuilder,
-} from 'openapi2typescript/react-fetching-library';
+import { ActionValidatableConfig, actionBuilder } from 'openapi2typescript/react-fetching-library';
 
-export namespace Schemas {
+export module Schemas {
   export const Application = zodSchemaApplication();
   export type Application = {
     bundle_id: UUID;
@@ -19,12 +16,6 @@ export namespace Schemas {
     event_types?: Array<EventType> | undefined | null;
     id?: UUID | undefined | null;
     name: string;
-  };
-
-  export const BasicAuthentication = zodSchemaBasicAuthentication();
-  export type BasicAuthentication = {
-    password?: string | undefined | null;
-    username?: string | undefined | null;
   };
 
   export const Bundle = zodSchemaBundle();
@@ -37,15 +28,14 @@ export namespace Schemas {
 
   export const CamelProperties = zodSchemaCamelProperties();
   export type CamelProperties = {
-    basicAuthentication?: BasicAuthentication | undefined | null;
-    disableSslVerification: boolean;
+    disable_ssl_verification: boolean;
     extras?:
       | {
           [x: string]: string;
         }
       | undefined
       | null;
-    secretToken?: string | undefined | null;
+    secret_token?: string | undefined | null;
     url: string;
   };
 
@@ -55,21 +45,11 @@ export namespace Schemas {
     description: string;
     enabled?: boolean | undefined | null;
     event_types?: Array<string> | undefined | null;
-    event_types_group_by_bundles_and_applications?:
-      | Array<Bundle>
-      | undefined
-      | null;
+    event_types_group_by_bundles_and_applications?: Array<Bundle> | undefined | null;
     id?: UUID | undefined | null;
     name: string;
-    properties?:
-      | (
-          | CamelProperties
-          | SystemSubscriptionProperties
-          | WebhookProperties
-          | PagerDutyProperties
-        )
-      | undefined
-      | null;
+    properties?: EndpointProperties | undefined | null;
+    read_only?: boolean | undefined | null;
     server_errors?: number | undefined | null;
     status?: EndpointStatus | undefined | null;
     sub_type?: string | undefined | null;
@@ -90,13 +70,7 @@ export namespace Schemas {
   export type EndpointProperties = unknown;
 
   export const EndpointStatus = zodSchemaEndpointStatus();
-  export type EndpointStatus =
-    | 'DELETING'
-    | 'FAILED'
-    | 'NEW'
-    | 'PROVISIONING'
-    | 'READY'
-    | 'UNKNOWN';
+  export type EndpointStatus = 'DELETING' | 'FAILED' | 'NEW' | 'PROVISIONING' | 'READY' | 'UNKNOWN';
 
   export const EndpointTestRequest = zodSchemaEndpointTestRequest();
   export type EndpointTestRequest = {
@@ -120,9 +94,6 @@ export namespace Schemas {
     id?: UUID | undefined | null;
     name: string;
   };
-
-  export const HttpType = zodSchemaHttpType();
-  export type HttpType = 'GET' | 'POST' | 'PUT';
 
   export const LocalDateTime = zodSchemaLocalDateTime();
   export type LocalDateTime = string;
@@ -159,24 +130,23 @@ export namespace Schemas {
 
   export const PagerDutyProperties = zodSchemaPagerDutyProperties();
   export type PagerDutyProperties = {
-    secretToken: string;
+    secret_token: string;
     severity: PagerDutySeverity;
   };
 
   export const PagerDutySeverity = zodSchemaPagerDutySeverity();
   export type PagerDutySeverity = 'critical' | 'error' | 'warning' | 'info';
 
-  export const RequestSystemSubscriptionProperties =
-    zodSchemaRequestSystemSubscriptionProperties();
+  export const RequestSystemSubscriptionProperties = zodSchemaRequestSystemSubscriptionProperties();
   export type RequestSystemSubscriptionProperties = {
     group_id?: UUID | undefined | null;
     only_admins: boolean;
   };
 
-  export const SystemSubscriptionProperties =
-    zodSchemaSystemSubscriptionProperties();
+  export const SystemSubscriptionProperties = zodSchemaSystemSubscriptionProperties();
   export type SystemSubscriptionProperties = {
     group_id?: UUID | undefined | null;
+    group_ids?: Array<string> | undefined | null;
     ignore_preferences?: boolean | undefined | null;
     only_admins?: boolean | undefined | null;
   };
@@ -186,10 +156,9 @@ export namespace Schemas {
 
   export const WebhookProperties = zodSchemaWebhookProperties();
   export type WebhookProperties = {
-    basicAuthentication?: BasicAuthentication | undefined | null;
-    bearerAuthentication?: string | undefined | null;
-    disableSslVerification: boolean;
-    method: HttpType;
+    bearer_authentication?: string | undefined | null;
+    disable_ssl_verification: boolean;
+    method: string;
     secret_token?: string | undefined | null;
     url: string;
   };
@@ -209,15 +178,6 @@ export namespace Schemas {
       .nonstrict();
   }
 
-  function zodSchemaBasicAuthentication() {
-    return z
-      .object({
-        password: z.string().optional().nullable(),
-        username: z.string().optional().nullable(),
-      })
-      .nonstrict();
-  }
-
   function zodSchemaBundle() {
     return z
       .object({
@@ -232,12 +192,9 @@ export namespace Schemas {
   function zodSchemaCamelProperties() {
     return z
       .object({
-        basicAuthentication: zodSchemaBasicAuthentication()
-          .optional()
-          .nullable(),
-        disableSslVerification: z.boolean(),
+        disable_ssl_verification: z.boolean(),
         extras: z.record(z.string()).optional().nullable(),
-        secretToken: z.string().optional().nullable(),
+        secret_token: z.string().optional().nullable(),
         url: z.string(),
       })
       .nonstrict();
@@ -256,15 +213,8 @@ export namespace Schemas {
           .nullable(),
         id: zodSchemaUUID().optional().nullable(),
         name: z.string(),
-        properties: z
-          .union([
-            zodSchemaCamelProperties(),
-            zodSchemaSystemSubscriptionProperties(),
-            zodSchemaWebhookProperties(),
-            zodSchemaPagerDutyProperties(),
-          ])
-          .optional()
-          .nullable(),
+        properties: zodSchemaEndpointProperties().optional().nullable(),
+        read_only: z.boolean().optional().nullable(),
         server_errors: z.number().int().optional().nullable(),
         status: zodSchemaEndpointStatus().optional().nullable(),
         sub_type: z.string().optional().nullable(),
@@ -289,14 +239,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointStatus() {
-    return z.enum([
-      'DELETING',
-      'FAILED',
-      'NEW',
-      'PROVISIONING',
-      'READY',
-      'UNKNOWN',
-    ]);
+    return z.enum(['DELETING', 'FAILED', 'NEW', 'PROVISIONING', 'READY', 'UNKNOWN']);
   }
 
   function zodSchemaEndpointTestRequest() {
@@ -308,14 +251,7 @@ export namespace Schemas {
   }
 
   function zodSchemaEndpointType() {
-    return z.enum([
-      'ansible',
-      'camel',
-      'drawer',
-      'email_subscription',
-      'webhook',
-      'pagerduty',
-    ]);
+    return z.enum(['ansible', 'camel', 'drawer', 'email_subscription', 'webhook', 'pagerduty']);
   }
 
   function zodSchemaEventType() {
@@ -331,10 +267,6 @@ export namespace Schemas {
         name: z.string(),
       })
       .nonstrict();
-  }
-
-  function zodSchemaHttpType() {
-    return z.enum(['GET', 'POST', 'PUT']);
   }
 
   function zodSchemaLocalDateTime() {
@@ -365,19 +297,13 @@ export namespace Schemas {
   }
 
   function zodSchemaNotificationStatus() {
-    return z.enum([
-      'FAILED_INTERNAL',
-      'FAILED_EXTERNAL',
-      'PROCESSING',
-      'SENT',
-      'SUCCESS',
-    ]);
+    return z.enum(['FAILED_INTERNAL', 'FAILED_EXTERNAL', 'PROCESSING', 'SENT', 'SUCCESS']);
   }
 
   function zodSchemaPagerDutyProperties() {
     return z
       .object({
-        secretToken: z.string(),
+        secret_token: z.string(),
         severity: zodSchemaPagerDutySeverity(),
       })
       .nonstrict();
@@ -399,9 +325,10 @@ export namespace Schemas {
   function zodSchemaSystemSubscriptionProperties() {
     return z
       .object({
-        groupId: zodSchemaUUID().optional().nullable(),
-        ignorePreferences: z.boolean().optional().nullable(),
-        onlyAdmins: z.boolean().optional().nullable(),
+        group_id: zodSchemaUUID().optional().nullable(),
+        group_ids: z.array(z.string()).optional().nullable(),
+        ignore_preferences: z.boolean().optional().nullable(),
+        only_admins: z.boolean().optional().nullable(),
       })
       .nonstrict();
   }
@@ -413,13 +340,10 @@ export namespace Schemas {
   function zodSchemaWebhookProperties() {
     return z
       .object({
-        basicAuthentication: zodSchemaBasicAuthentication()
-          .optional()
-          .nullable(),
-        bearerAuthentication: z.string().optional().nullable(),
-        disableSslVerification: z.boolean(),
-        method: zodSchemaHttpType(),
-        secretToken: z.string().optional().nullable(),
+        bearer_authentication: z.string().optional().nullable(),
+        disable_ssl_verification: z.boolean(),
+        method: z.string(),
+        secret_token: z.string().optional().nullable(),
         url: z.string(),
       })
       .nonstrict();
@@ -540,8 +464,7 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/integrations/v1.0/endpoints/system/drawer_subscription';
+      const path = '/api/integrations/v1.0/endpoints/system/drawer_subscription';
       const query = {} as Record<string, any>;
       return actionBuilder('POST', path)
         .queryParams(query)
@@ -575,74 +498,6 @@ export module Operations {
         .build();
     };
   }
-  // PUT /endpoints/{endpointId}/eventType/{eventTypeId}
-  // Add a link between an endpoint and an event type
-  export module EndpointResource$v1AddEventTypeToEndpoint {
-    const Response204 = z.string();
-    type Response204 = string;
-    const Response404 = z.string();
-    type Response404 = string;
-    export interface Params {
-      endpointId: Schemas.UUID;
-      eventTypeId: Schemas.UUID;
-    }
-
-    export type Payload =
-      | ValidatedResponse<'unknown', 204, Response204>
-      | ValidatedResponse<'unknown', 404, Response404>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/integrations/v1.0/endpoints/{endpointId}/eventType/{eventTypeId}'
-          .replace('{endpointId}', params['endpointId'].toString())
-          .replace('{eventTypeId}', params['eventTypeId'].toString());
-      const query = {} as Record<string, any>;
-      return actionBuilder('PUT', path)
-        .queryParams(query)
-        .config({
-          rules: [
-            new ValidateRule(Response204, 'unknown', 204),
-            new ValidateRule(Response404, 'unknown', 404),
-          ],
-        })
-        .build();
-    };
-  }
-  // DELETE /endpoints/{endpointId}/eventType/{eventTypeId}
-  // Delete the link between an endpoint and an event type
-  export module EndpointResource$v1DeleteEventTypeFromEndpoint {
-    const Response204 = z.string();
-    type Response204 = string;
-    const Response404 = z.string();
-    type Response404 = string;
-    export interface Params {
-      endpointId: Schemas.UUID;
-      eventTypeId: Schemas.UUID;
-    }
-
-    export type Payload =
-      | ValidatedResponse<'unknown', 204, Response204>
-      | ValidatedResponse<'unknown', 404, Response404>
-      | ValidatedResponse<'unknown', undefined, unknown>;
-    export type ActionCreator = Action<Payload, ActionValidatableConfig>;
-    export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/integrations/v1.0/endpoints/{endpointId}/eventType/{eventTypeId}'
-          .replace('{endpointId}', params['endpointId'].toString())
-          .replace('{eventTypeId}', params['eventTypeId'].toString());
-      const query = {} as Record<string, any>;
-      return actionBuilder('DELETE', path)
-        .queryParams(query)
-        .config({
-          rules: [
-            new ValidateRule(Response204, 'unknown', 204),
-            new ValidateRule(Response404, 'unknown', 404),
-          ],
-        })
-        .build();
-    };
-  }
   // PUT /endpoints/{endpointId}/eventTypes
   // Update  links between an endpoint and event types
   export module EndpointResource$v1UpdateEventTypesLinkedToEndpoint {
@@ -663,11 +518,10 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/integrations/v1.0/endpoints/{endpointId}/eventTypes'.replace(
-          '{endpointId}',
-          params['endpointId'].toString()
-        );
+      const path = '/api/integrations/v1.0/endpoints/{endpointId}/eventTypes'.replace(
+        '{endpointId}',
+        params['endpointId'].toString()
+      );
       const query = {} as Record<string, any>;
       return actionBuilder('PUT', path)
         .queryParams(query)
@@ -693,10 +547,7 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path = '/api/integrations/v1.0/endpoints/{id}'.replace(
-        '{id}',
-        params['id'].toString()
-      );
+      const path = '/api/integrations/v1.0/endpoints/{id}'.replace('{id}', params['id'].toString());
       const query = {} as Record<string, any>;
       return actionBuilder('GET', path)
         .queryParams(query)
@@ -721,10 +572,7 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path = '/api/integrations/v1.0/endpoints/{id}'.replace(
-        '{id}',
-        params['id'].toString()
-      );
+      const path = '/api/integrations/v1.0/endpoints/{id}'.replace('{id}', params['id'].toString());
       const query = {} as Record<string, any>;
       return actionBuilder('PUT', path)
         .queryParams(query)
@@ -747,10 +595,7 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path = '/api/integrations/v1.0/endpoints/{id}'.replace(
-        '{id}',
-        params['id'].toString()
-      );
+      const path = '/api/integrations/v1.0/endpoints/{id}'.replace('{id}', params['id'].toString());
       const query = {} as Record<string, any>;
       return actionBuilder('DELETE', path)
         .queryParams(query)
@@ -888,10 +733,9 @@ export module Operations {
       | ValidatedResponse<'unknown', undefined, unknown>;
     export type ActionCreator = Action<Payload, ActionValidatableConfig>;
     export const actionCreator = (params: Params): ActionCreator => {
-      const path =
-        '/api/integrations/v1.0/endpoints/{id}/history/{history_id}/details'
-          .replace('{history_id}', params['historyId'].toString())
-          .replace('{id}', params['id'].toString());
+      const path = '/api/integrations/v1.0/endpoints/{id}/history/{history_id}/details'
+        .replace('{history_id}', params['historyId'].toString())
+        .replace('{id}', params['id'].toString());
       const query = {} as Record<string, any>;
       return actionBuilder('GET', path)
         .queryParams(query)

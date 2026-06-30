@@ -168,4 +168,19 @@ export default defineMessages({
     description: 'Admin access required tooltip',
     defaultMessage: 'Admin-access required',
   },
+  markAsRead: {
+    id: 'markAsRead',
+    description: 'Mark notification as read',
+    defaultMessage: 'Mark as read',
+  },
+  markAsUnread: {
+    id: 'markAsUnread',
+    description: 'Mark notification as unread',
+    defaultMessage: 'Mark as unread',
+  },
+  viewInEventLog: {
+    id: 'viewInEventLog',
+    description: 'View in event log menu item',
+    defaultMessage: 'View in event log',
+  },
 });

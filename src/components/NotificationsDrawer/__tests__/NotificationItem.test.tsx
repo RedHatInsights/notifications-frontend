@@ -29,7 +29,8 @@ const renderNotificationItem = (
   notification: NotificationData,
   updateNotificationSelected = jest.fn(),
   updateNotificationRead = jest.fn(),
-  onNavigateTo = jest.fn()
+  onNavigateTo = jest.fn(),
+  isOrgAdmin = true
 ) => {
   return render(
     <NotificationItem
@@ -37,6 +38,7 @@ const renderNotificationItem = (
       onNavigateTo={onNavigateTo}
       updateNotificationSelected={updateNotificationSelected}
       updateNotificationRead={updateNotificationRead}
+      isOrgAdmin={isOrgAdmin}
     />
   );
 };
@@ -105,13 +107,13 @@ describe('NotificationItem interactions', () => {
     expect(updateNotificationSelected).toHaveBeenCalledWith('1', true);
   });
 
-  it('calls onNavigateTo when "Manage this event" is clicked', async () => {
+  it('calls onNavigateTo when "Manage event configuration" is clicked', async () => {
     const notification = makeNotification('1', false);
     const onNavigateTo = jest.fn();
     renderNotificationItem(notification, jest.fn(), jest.fn(), onNavigateTo);
 
     await userEvent.click(screen.getByRole('button', { name: 'Notification actions dropdown' }));
-    await userEvent.click(screen.getByText('Manage this event'));
+    await userEvent.click(screen.getByText('Manage event configuration'));
 
     expect(onNavigateTo).toHaveBeenCalledWith(
       expect.stringContaining('/settings/notifications/configure-events')
