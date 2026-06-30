@@ -2,7 +2,8 @@ import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner'
 import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
 import { Content } from '@patternfly/react-core/dist/dynamic/components/Content';
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
-import { SearchIcon } from '@patternfly/react-icons';
+import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
+import { LockIcon, SearchIcon } from '@patternfly/react-icons';
 import { css } from '@patternfly/react-styles';
 import { Table, TableBody, TableHeader } from '@patternfly/react-table/deprecated';
 import {
@@ -28,7 +29,12 @@ import { style } from 'typestyle';
 import Config from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
 import { Messages } from '../../properties/Messages';
-import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
+import {
+  IntegrationConnectionAttempt,
+  IntegrationEmailSubscription,
+  IntegrationType,
+  UserIntegration,
+} from '../../types/Integration';
 import {
   AggregatedConnectionAttemptStatus,
   aggregateConnectionAttemptStatus,
@@ -88,6 +94,10 @@ const getConnectionAlert = (attempts: Array<IntegrationConnectionAttempt>) => {
   }
 };
 
+const isReadOnlyEmail = (integration: IntegrationRow) =>
+  integration.type === IntegrationType.EMAIL_SUBSCRIPTION &&
+  (integration as IntegrationRow & IntegrationEmailSubscription).readOnly === true;
+
 const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): IRow[] => {
   return integrations.reduce((rows, integration, idx) => {
     rows.push({
@@ -97,7 +107,16 @@ const toTableRows = (integrations: Array<IntegrationRow>, onEnable?: OnEnable): 
       selected: integration.isSelected,
       cells: [
         {
-          title: integration.name,
+          title: isReadOnlyEmail(integration) ? (
+            <>
+              {integration.name}{' '}
+              <Tooltip content="This email integration is managed by your organization administrator and cannot be modified.">
+                <LockIcon className="pf-v5-u-ml-sm" />
+              </Tooltip>
+            </>
+          ) : (
+            integration.name
+          ),
         },
         {
           title: Config.integrations.types[integration.type].name,

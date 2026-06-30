@@ -117,8 +117,12 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     sort.sortBy,
     category
   );
-  const integrationsQuery = useListIntegrationsQuery(pageData.page);
-  const exportIntegrationsQuery = useListIntegrationPQuery();
+  const integrationsQuery = useListIntegrationsQuery(
+    pageData.page,
+    undefined,
+    isEmailIntegrationEnabled
+  );
+  const exportIntegrationsQuery = useListIntegrationPQuery(isEmailIntegrationEnabled);
 
   const integrations = React.useMemo(() => {
     const payload = integrationsQuery.payload;
