@@ -612,30 +612,22 @@ export async function fillBehaviorGroupForm(
   // Select recipient
   await page.waitForTimeout(500);
 
-  // Look for recipient dropdown by placeholder text or label
-  const recipientSelect = page
-    .locator(
-      'button:has-text("Select recipients"), ' +
-        '[role="combobox"]:has-text("Select recipients"), ' +
-        'select, button:has-text("Select"), [role="combobox"]'
-    )
+  // Scope to the dialog and find the recipient button by its table cell label
+  // This is stable for both create and edit modes (button text changes, but structure doesn't)
+  const dialog = page.locator('[role="dialog"]');
+  const recipientSelect = dialog
+    .locator('[data-label="Recipient"] button, td:has-text("Recipient") + td button')
     .first();
 
   await recipientSelect.waitFor({ state: 'visible', timeout: 5000 });
-  const isSelect = await recipientSelect.evaluate((el) => el.tagName === 'SELECT');
+  await recipientSelect.click();
 
-  if (isSelect) {
-    await recipientSelect.selectOption({ label: recipient });
-  } else {
-    // PatternFly dropdown - click to open, then select option
-    await recipientSelect.click();
-    await page.waitForTimeout(500);
-    const option = page
-      .locator(`li:has-text("${recipient}"), [role="option"]:has-text("${recipient}")`)
-      .first();
-    await option.waitFor({ state: 'visible', timeout: 5000 });
-    await option.click();
-  }
+  await page.waitForTimeout(500);
+  const option = page
+    .locator(`li:has-text("${recipient}"), [role="option"]:has-text("${recipient}")`)
+    .first();
+  await option.waitFor({ state: 'visible', timeout: 5000 });
+  await option.click();
 
   // Click Next
   nextButton = page.locator('button:has-text("Next")').first();

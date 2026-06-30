@@ -56,17 +56,20 @@ test.describe('Behavior Group Lifecycle', () => {
     await ensureLoggedIn(page);
   });
 
-  test('should create, verify, and delete behavior group for RHEL', async ({ page }) => {
+  test('should create, edit, and delete behavior group for RHEL', async ({ page }) => {
     /**
      * Test flow:
      * 1. Navigate to Configure Events > Behavior Groups tab
      * 2. Click "Create new group" → fills 4-step wizard (name, actions, event types, review)
      * 3. Verify new behavior group appears in card list
-     * 4. Delete behavior group via kebab menu with confirmation checkbox
-     * 5. Verify behavior group removed from list
+     * 4. Edit behavior group with new name and different action/recipient
+     * 5. Verify updated behavior group data appears in card list
+     * 6. Delete behavior group via kebab menu with confirmation checkbox
+     * 7. Verify behavior group removed from list
      */
     const bundleName = 'rhel';
-    const groupName = generateBehaviorGroupName(bundleName);
+    const initialGroupName = generateBehaviorGroupName(bundleName);
+    const updatedGroupName = `${initialGroupName}-edited`;
 
     // Step 1: Navigate to notifications page
     await page.goto(NOTIFICATIONS_PATH, { waitUntil: 'domcontentloaded' });
@@ -102,32 +105,68 @@ test.describe('Behavior Group Lifecycle', () => {
     await createButton.waitFor({ state: 'visible', timeout: 10000 });
     await createButton.click();
 
-    // Step 5: Fill and submit wizard
-    await fillBehaviorGroupForm(page, groupName, {
+    // Step 5: Fill and submit wizard with initial data
+    await fillBehaviorGroupForm(page, initialGroupName, {
       action: 'Send an email',
       recipient: 'Admins',
       skipEventTypes: true,
     });
 
-    // Wait for wizard to close and return to behavior groups list
-    const bgElement = page.locator(`text="${groupName}"`).first();
-    await expect(bgElement).toBeVisible({ timeout: 10000 });
+    // Step 6: Verify initial behavior group appears
+    const initialBgElement = page.locator(`text="${initialGroupName}"`).first();
+    await expect(initialBgElement).toBeVisible({ timeout: 10000 });
 
-    // Step 6: Delete behavior group
+    // Step 7: Edit behavior group
     const card = page
       .locator('[class*="card"], article', {
-        has: page.locator(`text="${groupName}"`),
+        has: page.locator(`text="${initialGroupName}"`),
       })
       .first();
 
-    const deleteButton = card
+    // Find and click Edit button (could be direct button or in kebab menu)
+    const editButton = card.locator('button[aria-label*="Edit"], button:has-text("Edit")').first();
+
+    if ((await editButton.count()) > 0) {
+      await editButton.click();
+    } else {
+      // Try kebab menu
+      const kebabButton = card
+        .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
+        .first();
+      await kebabButton.click();
+      const editMenuItem = page.locator('button:has-text("Edit")').first();
+      await editMenuItem.click();
+    }
+
+    // Step 8: Fill edit form with updated data
+    await fillBehaviorGroupForm(page, updatedGroupName, {
+      action: 'Send an email',
+      recipient: 'All',
+      skipEventTypes: true,
+    });
+
+    // Step 9: Verify updated behavior group appears with new name
+    const updatedBgElement = page.locator(`text="${updatedGroupName}"`).first();
+    await expect(updatedBgElement).toBeVisible({ timeout: 10000 });
+
+    // Verify old name is gone
+    await expect(initialBgElement).not.toBeVisible({ timeout: 5000 });
+
+    // Step 10: Delete behavior group
+    const updatedCard = page
+      .locator('[class*="card"], article', {
+        has: page.locator(`text="${updatedGroupName}"`),
+      })
+      .first();
+
+    const deleteButton = updatedCard
       .locator('button[aria-label*="Delete"], button:has-text("Delete")')
       .first();
 
     if ((await deleteButton.count()) > 0) {
       await deleteButton.click();
     } else {
-      const kebabButton = card
+      const kebabButton = updatedCard
         .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
         .first();
       await kebabButton.click();
@@ -135,7 +174,7 @@ test.describe('Behavior Group Lifecycle', () => {
       await deleteMenuItem.click();
     }
 
-    // Step 7: Confirm deletion
+    // Step 11: Confirm deletion
     const acknowledgeCheckbox = page.locator('input[type="checkbox"][id*="acknowledge"]').first();
     await acknowledgeCheckbox.waitFor({ state: 'visible', timeout: 5000 });
     await acknowledgeCheckbox.check();
@@ -146,8 +185,8 @@ test.describe('Behavior Group Lifecycle', () => {
     await confirmButton.waitFor({ state: 'visible', timeout: 5000 });
     await confirmButton.click();
 
-    // Step 8: Verify deletion
-    await expect(bgElement).not.toBeVisible({ timeout: 10000 });
+    // Step 12: Verify deletion
+    await expect(updatedBgElement).not.toBeVisible({ timeout: 10000 });
   });
 });
 
@@ -165,7 +204,22 @@ test.describe('Events Log', () => {
 
     await page.goto(eventLogUrl, { waitUntil: 'domcontentloaded' });
 
-    // Verify we're on the notifications event log route (URL check is sufficient for navigation test)
+    // Verify URL
     await expect(page).toHaveURL(/settings\/notifications\/eventlog/);
+
+    // Verify page header (level might vary, or use getByText for heading)
+    await expect(page.getByRole('heading', { name: 'Event Log' })).toBeVisible({ timeout: 30000 });
+
+    // Verify page subtitle
+    await expect(
+      page.getByText('View all events that have occurred in your organization.')
+    ).toBeVisible({ timeout: 30000 });
+
+    // Verify the EventLog table or toolbar is present (indicates page loaded correctly)
+    // The table may be empty, but the structure should exist
+    const tableOrEmptyState = page
+      .locator('[role="grid"], table, [data-ouia-component-type*="Table"]')
+      .or(page.getByText(/No events found|No results found/i));
+    await expect(tableOrEmptyState.first()).toBeVisible({ timeout: 30000 });
   });
 });
