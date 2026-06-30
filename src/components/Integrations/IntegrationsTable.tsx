@@ -120,7 +120,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<IntegrationsTabl
           <Split key={`name-${idx}`} hasGutter>
             <SplitItem>{integration.name}</SplitItem>
             <SplitItem>
-              <Tooltip content="This email integration is managed by your organization administrator and cannot be modified.">
+              <Tooltip content={intl.formatMessage(messages.readOnlyEmailTooltip)}>
                 <LockIcon />
               </Tooltip>
             </SplitItem>
