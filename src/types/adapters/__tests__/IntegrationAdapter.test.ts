@@ -233,8 +233,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'POST',
-          disableSslVerification: false,
-          secretToken: undefined,
+          disable_ssl_verification: false,
+          secret_token: undefined,
         },
         sub_type: undefined,
       });
@@ -261,8 +261,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'GET',
-          disableSslVerification: false,
-          secretToken: 'foobar',
+          disable_ssl_verification: false,
+          secret_token: 'foobar',
         },
       });
     });
