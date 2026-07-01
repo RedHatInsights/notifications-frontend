@@ -39,24 +39,17 @@ export const KesselRbacAccessProvider: React.FC<{
   }, [workspaceError]);
 
   // Build workspace resource for permission checks
-  // Only create resource if workspace ID is available
+  // Use a placeholder UUID when workspace isn't loaded to prevent 400 validation errors
   const workspace = useMemo(() => {
-    if (!defaultWorkspaceId) {
-      // Return a placeholder - permission hooks will handle undefined gracefully
-      return {
-        id: '',
-        type: 'workspace' as const,
-        reporter: { type: 'rbac' as const },
-      };
-    }
     return {
-      id: defaultWorkspaceId,
+      id: defaultWorkspaceId || '00000000-0000-0000-0000-000000000000',
       type: 'workspace' as const,
       reporter: { type: 'rbac' as const },
     };
   }, [defaultWorkspaceId]);
 
   // Permission checks - using v0.5.0 API which returns { loading, error, data }
+  // Note: When workspace isn't loaded (placeholder UUID), these will return false permissions
   const integrationsEndpointsEdit = useSelfAccessCheck({
     relation: KESSEL_WORKSPACE_RELATIONS.INTEGRATIONS_ENDPOINTS_EDIT,
     resource: workspace,
