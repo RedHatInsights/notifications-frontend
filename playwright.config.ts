@@ -1,4 +1,11 @@
 import { defineConfig, devices } from '@playwright/test';
+import * as dotenv from 'dotenv';
+import * as path from 'path';
+
+// Load environment variables from .env file
+dotenv.config();
+// Load .env.local to override .env (if it exists)
+dotenv.config({ path: path.resolve(__dirname, '.env.local') });
 
 /**
  * Playwright configuration for notifications-frontend E2E tests
