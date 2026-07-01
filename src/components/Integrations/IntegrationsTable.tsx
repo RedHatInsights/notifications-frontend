@@ -1,7 +1,7 @@
 import { Spinner } from '@patternfly/react-core/dist/dynamic/components/Spinner';
 import { Switch } from '@patternfly/react-core/dist/dynamic/components/Switch';
 import { EmptyStateVariant } from '@patternfly/react-core/dist/dynamic/components/EmptyState';
-import { SearchIcon } from '@patternfly/react-icons';
+import { LockIcon, SearchIcon } from '@patternfly/react-icons';
 import { ActionsColumn, IActions, ISortBy, SortByDirection } from '@patternfly/react-table';
 import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 
@@ -10,13 +10,14 @@ import { useIntl } from 'react-intl';
 
 import Config from '../../config/Config';
 import messages from '../../properties/DefinedMessages';
+import { IntegrationEmailSubscription, IntegrationType } from '../../types/Integration';
 import { IntegrationConnectionAttempt, UserIntegration } from '../../types/Integration';
 import { EmptyStateSearch } from '../EmptyStateSearch';
 import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { DataView } from '@patternfly/react-data-view/dist/dynamic/DataView';
 import { DataViewTable, DataViewTh } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import { getIntegrationIcon } from './IntegrationDetails';
-import { Split, SplitItem } from '@patternfly/react-core';
+import { Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { Direction, Sort, UseSortReturn } from '../../utils/insights-common-typescript';
 
@@ -109,9 +110,24 @@ export const DataViewIntegrationsTable: React.FunctionComponent<IntegrationsTabl
         setFocusedIntegration?.(integration);
       }
     };
+    const isReadOnlyEmail = (row: IntegrationRow) =>
+      row.type === IntegrationType.EMAIL_SUBSCRIPTION &&
+      (row as IntegrationRow & IntegrationEmailSubscription).readOnly === true;
+
     return integrations.map((integration, idx) => ({
       row: [
-        integration.name,
+        isReadOnlyEmail(integration) ? (
+          <Split key={`name-${idx}`} hasGutter>
+            <SplitItem>{integration.name}</SplitItem>
+            <SplitItem>
+              <Tooltip content={intl.formatMessage(messages.readOnlyEmailTooltip)}>
+                <LockIcon />
+              </Tooltip>
+            </SplitItem>
+          </Split>
+        ) : (
+          integration.name
+        ),
         <Split key={idx}>
           <SplitItem>{getIntegrationIcon(integration.type)}</SplitItem>
           <SplitItem> {Config.integrations.types[integration.type].name} </SplitItem>
@@ -137,7 +153,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<IntegrationsTabl
             aria-label="Enabled"
             isChecked={integration.isEnabled}
             onChange={(_e, isChecked) => onEnable?.(integration, idx, isChecked)}
-            isDisabled={!onEnable}
+            isDisabled={!onEnable || isReadOnlyEmail(integration)}
             ouiaId={`enabled-${integration.id}`}
           />
         ),
