@@ -1,4 +1,4 @@
-import { Page } from '@playwright/test';
+import { Locator, Page } from '@playwright/test';
 import {
   AnsiblePayload,
   CommunicationPayload,
@@ -7,11 +7,53 @@ import {
   SplunkPayload,
   WebhookPayload,
 } from './data-generators';
+import { TIMEOUTS } from '../test-constants';
 
 /**
  * Form interaction helpers for Playwright E2E tests
  * Provides utilities for filling out integration forms
  */
+
+/**
+ * Click an action button on a card (Edit, Delete, etc.)
+ * Handles both direct button and kebab menu patterns
+ */
+export async function clickCardAction(
+  card: Locator,
+  page: Page,
+  actionName: string
+): Promise<void> {
+  // Try to find direct action button first and verify it's visible
+  // Hidden responsive actions should fall back to kebab menu
+  const directButton = card
+    .locator(`button[aria-label*="${actionName}"], button:has-text("${actionName}")`)
+    .first();
+
+  if (await directButton.isVisible({ timeout: 1000 }).catch(() => false)) {
+    await directButton.click();
+  } else {
+    // Fall back to kebab menu
+    const kebabButton = card
+      .locator('button[aria-label*="Actions"], button[aria-label*="Kebab"]')
+      .first();
+    await kebabButton.click();
+
+    // PatternFly menus may render inside the card or in a portal outside it
+    // Try card-scoped menu first, then fall back to page menu (for portals)
+    const cardMenu = card.locator(
+      '[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]'
+    );
+    const pageMenu = page
+      .locator('[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]')
+      .last();
+
+    const menu = cardMenu.or(pageMenu);
+    await menu.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
+
+    const menuItem = menu.locator(`button:has-text("${actionName}")`).first();
+    await menuItem.click();
+  }
+}
 
 /**
  * Fill webhook form in the integration wizard
@@ -612,30 +654,23 @@ export async function fillBehaviorGroupForm(
   // Select recipient
   await page.waitForTimeout(500);
 
-  // Look for recipient dropdown by placeholder text or label
-  const recipientSelect = page
-    .locator(
-      'button:has-text("Select recipients"), ' +
-        '[role="combobox"]:has-text("Select recipients"), ' +
-        'select, button:has-text("Select"), [role="combobox"]'
-    )
+  // Scope to the dialog and find the recipient button by its table cell label
+  // This is stable for both create and edit modes (button text changes, but structure doesn't)
+  const dialog = page.locator('[role="dialog"]');
+  const recipientSelect = dialog
+    .locator('[data-label="Recipient"] button, td:has-text("Recipient") + td button')
     .first();
 
-  await recipientSelect.waitFor({ state: 'visible', timeout: 5000 });
-  const isSelect = await recipientSelect.evaluate((el) => el.tagName === 'SELECT');
+  await recipientSelect.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
+  await recipientSelect.click();
 
-  if (isSelect) {
-    await recipientSelect.selectOption({ label: recipient });
-  } else {
-    // PatternFly dropdown - click to open, then select option
-    await recipientSelect.click();
-    await page.waitForTimeout(500);
-    const option = page
-      .locator(`li:has-text("${recipient}"), [role="option"]:has-text("${recipient}")`)
-      .first();
-    await option.waitFor({ state: 'visible', timeout: 5000 });
-    await option.click();
-  }
+  await page.waitForTimeout(500);
+  // Scope the option lookup to the dialog to avoid clicking wrong item outside the modal
+  const option = dialog
+    .locator(`li:has-text("${recipient}"), [role="option"]:has-text("${recipient}")`)
+    .first();
+  await option.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
+  await option.click();
 
   // Click Next
   nextButton = page.locator('button:has-text("Next")').first();
