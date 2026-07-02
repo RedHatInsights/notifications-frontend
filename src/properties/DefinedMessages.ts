@@ -183,4 +183,10 @@ export default defineMessages({
     description: 'View in event log menu item',
     defaultMessage: 'View in event log',
   },
+  readOnlyEmailTooltip: {
+    id: 'readOnlyEmailTooltip',
+    description: 'Tooltip for read-only system email integrations',
+    defaultMessage:
+      'This email integration is managed by your organization administrator and cannot be modified.',
+  },
 });

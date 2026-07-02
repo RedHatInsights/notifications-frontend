@@ -95,12 +95,14 @@ const toIntegrationCamel = (
 
 const toIntegrationEmail = (
   integrationBase: IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
-  properties: Schemas.SystemSubscriptionProperties
+  properties: Schemas.SystemSubscriptionProperties,
+  readOnly?: boolean
 ): IntegrationEmailSubscription => ({
   ...integrationBase,
   ignorePreferences: properties.ignore_preferences,
   groupId: properties.group_id === null ? undefined : properties.group_id,
   onlyAdmin: properties.only_admins === null ? undefined : properties.only_admins,
+  readOnly,
 });
 
 const toIntegrationDrawer = (
@@ -153,7 +155,8 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
     case IntegrationType.EMAIL_SUBSCRIPTION:
       return toIntegrationEmail(
         integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
-        serverIntegration.properties as Schemas.SystemSubscriptionProperties
+        serverIntegration.properties as Schemas.SystemSubscriptionProperties,
+        (serverIntegration as { read_only?: boolean }).read_only
       );
     case IntegrationType.DRAWER:
       return toIntegrationDrawer(

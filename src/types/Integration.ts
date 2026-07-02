@@ -107,6 +107,7 @@ export interface IntegrationEmailSubscription
   onlyAdmin: boolean | null | undefined;
   ignorePreferences: boolean | null | undefined;
   groupId?: UUID;
+  readOnly?: boolean;
 }
 
 export type NameDisplayName = {

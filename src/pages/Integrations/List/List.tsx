@@ -32,6 +32,7 @@ import { useIntegrationFilter } from './useIntegrationFilter';
 import { useIntegrationRows } from './useIntegrationRows';
 import { useFlag } from '@unleash/proxy-client-react';
 import DopeBox from '../../../components/Integrations/DopeBox';
+import { UnauthorizedState } from './UnauthorizedState';
 import { DataViewIntegrationsTable } from '../../../components/Integrations/IntegrationsTable';
 import { DataViewEventsProvider } from '@patternfly/react-data-view/dist/dynamic/DataViewEventsContext';
 import { Drawer, DrawerContent, DrawerContentBody } from '@patternfly/react-core';
@@ -71,7 +72,7 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
   const [focusedIntegration, setFocusedIntegration] = useState<IntegrationRow>();
   const drawerRef = React.useRef<HTMLDivElement>(null);
   const {
-    rbac: { canWriteIntegrationsEndpoints },
+    rbac: { canWriteIntegrationsEndpoints, canReadIntegrationsEndpoints },
   } = useContext(AppContext);
 
   const { addDangerNotification } = useNotification();
@@ -117,8 +118,13 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     sort.sortBy,
     category
   );
-  const integrationsQuery = useListIntegrationsQuery(pageData.page);
-  const exportIntegrationsQuery = useListIntegrationPQuery();
+  // Only fetch integrations if user has read permissions
+  const integrationsQuery = useListIntegrationsQuery(
+    pageData.page,
+    canReadIntegrationsEndpoints,
+    isEmailIntegrationEnabled
+  );
+  const exportIntegrationsQuery = useListIntegrationPQuery(isEmailIntegrationEnabled);
 
   const integrations = React.useMemo(() => {
     const payload = integrationsQuery.payload;
@@ -260,6 +266,11 @@ const IntegrationsList: React.FunctionComponent<IntegrationListProps> = ({
     integrations.count < 1 &&
     !integrationsQuery.loading &&
     Object.values(integrationFilter.filters).every((filter) => !filter);
+
+  // If user doesn't have read permissions, show unauthorized state
+  if (!canReadIntegrationsEndpoints) {
+    return <UnauthorizedState />;
+  }
 
   return (
     <>

@@ -133,7 +133,14 @@ let getUser;
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
   return () => ({
-    auth: { getUser },
+    auth: { getUser, getToken: () => Promise.resolve('mock-token') },
+    getEnvironment: () => 'prod',
+    isBeta: () => false,
+    getApp: () => 'notifications',
+    getBundle: () => 'settings',
+    updateDocumentTitle: jest.fn(),
+    appNavClick: jest.fn(),
+    addWsEventListener: jest.fn(() => jest.fn()),
   });
 });
 

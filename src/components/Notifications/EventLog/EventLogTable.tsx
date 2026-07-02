@@ -30,6 +30,7 @@ import { Messages } from '../../../properties/Messages';
 import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
 import { GetIntegrationRecipient } from '../../../types/Integration';
 import {
+  hasDisplayableSeverity,
   severityDescription,
   severityDisplayName,
   toSeverityLabelProps,
@@ -169,19 +170,13 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
           </Td>
           {showSeverity && (
             <Td>
-              {e.severity ? (
+              {hasDisplayableSeverity(e.severity) ? (
                 <Tooltip content={severityDescription[e.severity]}>
                   <Label {...toSeverityLabelProps(e.severity)}>
                     {severityDisplayName[e.severity] ?? e.severity}
                   </Label>
                 </Tooltip>
-              ) : (
-                <Tooltip content={severityDescription.UNDEFINED}>
-                  <Label {...toSeverityLabelProps(undefined)}>
-                    {severityDisplayName.UNDEFINED}
-                  </Label>
-                </Tooltip>
-              )}
+              ) : null}
             </Td>
           )}
           <Td>

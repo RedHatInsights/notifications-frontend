@@ -136,7 +136,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       <NotificationDrawerList>
         <NotificationDrawerListItem
           aria-label={`Notification item ${notification.title}`}
-          variant={notification.read ? undefined : 'info'}
+          variant="info"
           isRead={notification.read}
         >
           <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">

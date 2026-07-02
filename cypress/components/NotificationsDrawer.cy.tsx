@@ -36,21 +36,10 @@ const notificationDrawerData: NotificationData[] = [
   },
 ];
 
-const notificationPerms = [
-  {
-    resourceDefinitions: [],
-    permission: 'notifications:*:*',
-  },
-  {
-    resourceDefinitions: [],
-    permission: 'notifications:notifications:read',
-  },
-];
-
 const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
   const drawerPanelRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { initialize, addNotification } = DrawerSingleton.Instance;
+  const { initialize, addNotification, setHasNotificationsPermissions } = DrawerSingleton.Instance;
   const toggleDrawer = () => setIsExpanded((prev) => !prev);
   const notificationProps = {
     panelRef: drawerPanelRef,
@@ -76,7 +65,8 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
         <button
           id="populate-notifications"
           onClick={async () => {
-            await initialize(true, notificationPerms, () => () => {});
+            setHasNotificationsPermissions(true);
+            await initialize(true, () => () => {});
             notificationDrawerData.map((item) => addNotification({ ...item, read: markAll }));
           }}
         >
@@ -94,9 +84,6 @@ const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
 describe('Notification Drawer', () => {
   beforeEach(() => {
     cy.viewport(1200, 800);
-    cy.intercept('GET', '/api/rbac/v1/access/?application=notifications&limit=1000', {
-      data: notificationPerms,
-    });
     cy.intercept('GET', '/api/notifications/v1/notifications/drawer?limit=50&startDate=*', {
       data: [],
     });

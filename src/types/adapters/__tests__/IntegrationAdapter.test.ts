@@ -90,6 +90,52 @@ describe('src/types/adapters/IntegrationAdapter', () => {
       expect(() => toIntegration(serverIntegration)).toThrow();
     });
 
+    it('Maps read_only=true for a system email subscription', () => {
+      const serverIntegration = {
+        id: 'system-email-id',
+        enabled: true,
+        name: 'System email endpoint',
+        description: 'System email endpoint',
+        type: Schemas.EndpointType.Enum.email_subscription,
+        properties: {
+          only_admins: false,
+          ignore_preferences: false,
+          group_id: null,
+        },
+        server_errors: 0,
+        status: 'READY',
+        read_only: true,
+      } as unknown as ServerIntegrationResponse;
+      const integration = toIntegration(serverIntegration);
+      expect(integration).toMatchObject({
+        type: IntegrationType.EMAIL_SUBSCRIPTION,
+        readOnly: true,
+      });
+    });
+
+    it('Maps read_only=false for an org-owned email subscription', () => {
+      const serverIntegration = {
+        id: 'org-email-id',
+        enabled: true,
+        name: 'Org email endpoint',
+        description: 'Org email endpoint',
+        type: Schemas.EndpointType.Enum.email_subscription,
+        properties: {
+          only_admins: false,
+          ignore_preferences: false,
+          group_id: null,
+        },
+        server_errors: 0,
+        status: 'READY',
+        read_only: false,
+      } as unknown as ServerIntegrationResponse;
+      const integration = toIntegration(serverIntegration);
+      expect(integration).toMatchObject({
+        type: IntegrationType.EMAIL_SUBSCRIPTION,
+        readOnly: false,
+      });
+    });
+
     it('Not supporting unknown types', () => {
       const serverIntegration = {
         id: 'meep',

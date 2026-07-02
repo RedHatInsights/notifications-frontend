@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from 'react';
 import { Environment, getInsightsEnvironment } from './Environment';
-import { InsightsType } from './InsightsType';
 import { FeatureFlagCallback, useFeatureFlag } from './useFeatureFlag';
 
 type EnvironmentFlagSignature = {
@@ -29,20 +28,20 @@ export const useEnvironmentFlag: EnvironmentFlagSignature = <T>(
     [currentEnvironment, targetEnvironments]
   );
 
-  // Both elements can't be undefined because we are guarded by EnvironmentFlagSignature.
-  // But we have to typecast because current declaration has both as possible undefined.
   return useFeatureFlag(resolver, ifTrue, ifFalse as FeatureFlagCallback<T>);
 };
 
 type InsightsEnvironmentFlagSignature = {
   <T>(
-    insights: InsightsType,
+    isBeta: boolean,
+    env: string,
     targetEnvironments: Environment | ReadonlyArray<Environment>,
     ifTrue: FeatureFlagCallback<T>,
     ifFalse?: FeatureFlagCallback<T>
   ): T | undefined;
   <T>(
-    insights: InsightsType,
+    isBeta: boolean,
+    env: string,
     targetEnvironments: Environment | ReadonlyArray<Environment>,
     ifTrue: FeatureFlagCallback<T> | undefined,
     ifFalse: FeatureFlagCallback<T>
@@ -50,13 +49,13 @@ type InsightsEnvironmentFlagSignature = {
 };
 
 export const useInsightsEnvironmentFlag: InsightsEnvironmentFlagSignature = <T>(
-  insights: InsightsType,
+  isBeta: boolean,
+  env: string,
   targetEnvironments: Environment | ReadonlyArray<Environment>,
   ifTrue: FeatureFlagCallback<T> | undefined,
   ifFalse: FeatureFlagCallback<T> | undefined
 ) => {
-  const current = useMemo(() => getInsightsEnvironment(insights), [insights]);
+  const current = useMemo(() => getInsightsEnvironment(isBeta, env), [isBeta, env]);
 
-  // Same as above
   return useEnvironmentFlag(current, targetEnvironments, ifTrue, ifFalse as FeatureFlagCallback<T>);
 };
