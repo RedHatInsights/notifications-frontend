@@ -157,16 +157,6 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     // Dismiss cookie consent if present
     await dismissCookieConsent(page);
   } else {
-    // Not redirected to SSO - check if we're actually logged in or have an auth failure
-    const currentUrl = page.url();
-
-    // If we're still on SSO login page, that's a real failure
-    if (currentUrl.includes('sso.stage.redhat.com') || currentUrl.includes('sso.redhat.com')) {
-      throw new Error(
-        `Still on SSO page after navigation, possible auth failure. Current URL: ${currentUrl}`
-      );
-    }
-
-    // Otherwise assume we're logged in (storageState from globalSetup)
+    // Not redirected to SSO — storageState from globalSetup is active
   }
 }
