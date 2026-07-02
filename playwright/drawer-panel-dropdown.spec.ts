@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { disableCookiePrompt } from '@redhat-cloud-services/playwright-test-auth';
+import { disableCookiePrompt } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 import { TIMEOUTS } from './utils/timeouts';
 
