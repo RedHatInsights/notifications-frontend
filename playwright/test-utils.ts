@@ -11,6 +11,23 @@ export const BUNDLES = ['rhel', 'console', 'openshift', 'ansible'];
 export const getBaseURL = () =>
   process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337';
 
+/**
+ * Symbolic timeout constants — avoid hard-coded values in test code.
+ * Centralised here so every spec uses the same set.
+ */
+export const TIMEOUTS = {
+  /** Full page/SSO load (navigation, first paint). */
+  PAGE_LOAD: 60_000,
+  /** Drawer / panel animation + data fetch. */
+  DRAWER_READY: 30_000,
+  /** Dropdown, tooltip, popover visibility. */
+  ELEMENT_VISIBLE: 5_000,
+  /** Server-side state change round-trip (mark read, bulk ops). */
+  API_RESPONSE: 10_000,
+  /** Spinner disappearance after data load. */
+  SPINNER_GONE: 30_000,
+} as const;
+
 function isTrustArcHost(hostname: string): boolean {
   return hostname === 'trustarc.com' || hostname.endsWith('.trustarc.com');
 }
@@ -99,12 +116,16 @@ export async function login(page: Page, user: string, password: string): Promise
 
 /**
  * Ensure user is logged in before running tests.
- * Handles SSO authentication manually.
+ *
+ * When `globalSetup` + `storageState` are configured in playwright.config.ts
+ * the session is already restored and this function only blocks cookie
+ * prompts + navigates to "/".  Falls back to a manual login flow when the
+ * session is missing (local dev runs without globalSetup).
  */
 export async function ensureLoggedIn(page: Page): Promise<void> {
   await disableCookiePrompt(page);
 
-  await page.goto('/', { waitUntil: 'load', timeout: 60000 });
+  await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
   await page.waitForTimeout(2000);
 
   // Check if we got redirected to SSO or are on login page
@@ -136,16 +157,6 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     // Dismiss cookie consent if present
     await dismissCookieConsent(page);
   } else {
-    // Not redirected to SSO - check if we're actually logged in or have an auth failure
-    const currentUrl = page.url();
-
-    // If we're still on SSO login page, that's a real failure
-    if (currentUrl.includes('sso.stage.redhat.com') || currentUrl.includes('sso.redhat.com')) {
-      throw new Error(
-        `Still on SSO page after navigation, possible auth failure. Current URL: ${currentUrl}`
-      );
-    }
-
-    // Otherwise assume we're logged in
+    // Not redirected to SSO — storageState from globalSetup is active
   }
 }
