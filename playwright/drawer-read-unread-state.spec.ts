@@ -1,5 +1,5 @@
-import { expect, test } from '@playwright/test';
-import { ensureLoggedIn, TIMEOUTS } from './test-utils';
+import { type Page, expect, test } from '@playwright/test';
+import { TIMEOUTS, ensureLoggedIn } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -32,7 +32,7 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
    * Open the drawer and return the notification list items.
    * Asserts that at least one notification exists (no silent skips).
    */
-  async function openDrawerWithNotifications(page: import('@playwright/test').Page) {
+  async function openDrawerWithNotifications(page: Page) {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -55,10 +55,7 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
     // Verify every visible notification carries the info variant data-testid
     for (let i = 0; i < count; i++) {
       const item = items.nth(i);
-      await expect(item).toHaveAttribute(
-        'data-testid',
-        /^notification-item-(read|unread)$/
-      );
+      await expect(item).toHaveAttribute('data-testid', /^notification-item-(read|unread)$/);
     }
   });
 
@@ -105,9 +102,9 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
 
     // Verify correct menu text
     const expectedText = wasRead ? 'Mark as unread' : 'Mark as read';
-    await expect(
-      page.getByRole('menuitem', { name: expectedText })
-    ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
+    await expect(page.getByRole('menuitem', { name: expectedText })).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
 
     // Close kebab
     await kebab.click();
@@ -150,9 +147,9 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
     await kebab.click();
 
     const expectedText = wasRead ? 'Mark as read' : 'Mark as unread';
-    await expect(
-      page.getByRole('menuitem', { name: expectedText })
-    ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
+    await expect(page.getByRole('menuitem', { name: expectedText })).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
     await kebab.click();
 
     // Toggle back to restore original state
