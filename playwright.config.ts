@@ -8,8 +8,8 @@ import { defineConfig, devices } from '@playwright/test';
 export default defineConfig({
   testDir: './playwright',
 
-  // Slow SSO in Konflux — align with widget-layout#298 / Konflux E2E rules
-  timeout: 180 * 1000,
+  // Test timeout reduced from 180s to 60s - if a test can't complete in 60s, something is fundamentally wrong
+  timeout: 60 * 1000,
 
   // Serial execution — parallel runs are flaky in CI (Konflux E2E rules; widget-layout#298)
   fullyParallel: false,

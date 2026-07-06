@@ -143,20 +143,20 @@ export const drawerHelpers = {
 
   // ── Bulk selection helpers ─────────────────────────────────────────
 
-  /** Locator for the BulkSelect container. */
-  bulkSelectContainer(page: Page): Locator {
-    return page.locator('#notifications-bulk-select');
+  /** Locator for the BulkSelect toggle button (FEC BulkSelect doesn't render the id prop). */
+  bulkSelectToggle(page: Page): Locator {
+    return page.locator('button[data-ouia-component-id="BulkSelect"]');
   },
 
   /** Click the BulkSelect main checkbox (toggle all/none). */
   async clickBulkSelectCheckbox(page: Page): Promise<void> {
-    const checkbox = this.bulkSelectContainer(page).locator('input[type="checkbox"]');
+    const checkbox = this.bulkSelectToggle(page).locator('input[type="checkbox"]');
     await checkbox.click();
   },
 
   /** Open the BulkSelect dropdown (the caret/arrow next to the checkbox). */
   async openBulkSelectDropdown(page: Page): Promise<void> {
-    const toggle = this.bulkSelectContainer(page).locator('button.pf-v6-c-menu-toggle');
+    const toggle = this.bulkSelectToggle(page);
     await toggle.click();
     // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
     await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 5000 });
@@ -176,21 +176,21 @@ export const drawerHelpers = {
 
   /** Get the count of currently selected notifications (from BulkSelect badge). */
   async getSelectedCount(page: Page): Promise<number> {
-    const container = this.bulkSelectContainer(page);
-    const text = await container.textContent();
+    const toggle = this.bulkSelectToggle(page);
+    const text = await toggle.textContent();
     const match = text?.match(/(\d+)/);
     return match ? parseInt(match[1], 10) : 0;
   },
 
   /** Check if the BulkSelect checkbox is in indeterminate state. */
   async isBulkSelectIndeterminate(page: Page): Promise<boolean> {
-    const checkbox = this.bulkSelectContainer(page).locator('input[type="checkbox"]');
+    const checkbox = this.bulkSelectToggle(page).locator('input[type="checkbox"]');
     return checkbox.evaluate((el: HTMLInputElement) => el.indeterminate);
   },
 
   /** Check if the BulkSelect checkbox is fully checked. */
   async isBulkSelectChecked(page: Page): Promise<boolean> {
-    const checkbox = this.bulkSelectContainer(page).locator('input[type="checkbox"]');
+    const checkbox = this.bulkSelectToggle(page).locator('input[type="checkbox"]');
     return checkbox.isChecked();
   },
 
