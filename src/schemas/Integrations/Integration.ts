@@ -53,7 +53,7 @@ export const IntegrationAnsibleSchema: Yup.SchemaOf<NewIntegrationTemplate<Integ
       url: Yup.string().url().required('Write a valid url for this Integration.'),
       sslVerificationEnabled: Yup.boolean().default(true),
       secretToken: Yup.string().notRequired(),
-      method: Yup.mixed<HttpMethod>().oneOf(['POST']).default('POST'),
+      method: Yup.mixed<'POST'>().oneOf(['POST']).default('POST'),
     })
   );
 
