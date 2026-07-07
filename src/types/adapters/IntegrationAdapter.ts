@@ -67,7 +67,7 @@ const toIntegrationWebhook = (
   url: properties?.url ?? '',
   sslVerificationEnabled: !properties?.disable_ssl_verification,
   secretToken: toSecretToken(properties?.secret_token),
-  method: (properties?.method as 'GET' | 'POST' | 'PUT') ?? 'GET',
+  method: (properties?.method as 'GET' | 'POST' | 'PUT') ?? 'POST',
 });
 
 const toIntegrationAnsible = (
@@ -78,7 +78,7 @@ const toIntegrationAnsible = (
   url: properties?.url ?? '',
   sslVerificationEnabled: !properties?.disable_ssl_verification,
   secretToken: toSecretToken(properties?.secret_token),
-  method: (properties?.method as 'GET' | 'POST' | 'PUT') ?? 'POST',
+  method: 'POST',
 });
 
 const toIntegrationCamel = (

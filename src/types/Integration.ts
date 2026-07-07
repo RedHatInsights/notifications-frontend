@@ -74,7 +74,7 @@ export interface IntegrationAnsible extends IntegrationBase<IntegrationType.ANSI
   url: string;
   sslVerificationEnabled: boolean;
   secretToken?: string;
-  method: HttpMethod;
+  method: 'POST';
 }
 
 export interface IntegrationPagerduty extends IntegrationBase<IntegrationType.PAGERDUTY> {
