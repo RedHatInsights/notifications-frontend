@@ -157,9 +157,19 @@ export const drawerHelpers = {
   /** Open the BulkSelect dropdown (the caret/arrow next to the checkbox). */
   async openBulkSelectDropdown(page: Page): Promise<void> {
     const toggle = this.bulkSelectToggle(page);
-    await toggle.click();
-    // Wait for toggle to indicate menu is open (avoids matching unrelated PF menus)
-    await expect(toggle).toHaveAttribute('aria-expanded', 'true', { timeout: 5000 });
+
+    // Wait for the toggle button to be visible
+    await toggle.waitFor({ state: 'visible', timeout: 5000 });
+
+    // Click the toggle icon (caret) to open the menu, not the checkbox
+    const toggleIcon = toggle.locator('.pf-v6-c-menu-toggle__toggle-icon');
+    await toggleIcon.click();
+
+    // Wait for the menu to open by checking for visible menu items
+    await page
+      .getByRole('menuitem', { name: /Select/ })
+      .first()
+      .waitFor({ state: 'visible', timeout: 5000 });
   },
 
   /** Click "Select all (N)" in the bulk select dropdown. */
