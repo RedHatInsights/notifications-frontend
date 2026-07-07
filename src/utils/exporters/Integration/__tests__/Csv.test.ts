@@ -1,4 +1,3 @@
-import { Schemas } from '../../../../generated/OpenapiIntegrations';
 import { IntegrationType } from '../../../../types/Integration';
 import { IntegrationExporterCsv } from '../Csv';
 import { ExporterType } from '../../../insights-common-typescript';
@@ -23,7 +22,7 @@ describe('src/utils/exporters/Policy/Csv', () => {
         type: IntegrationType.WEBHOOK,
         url: 'http://foo.bar',
         secretToken: 'foo',
-        method: Schemas.HttpType.Enum.GET,
+        method: 'GET',
         sslVerificationEnabled: false,
         status: 'READY',
         serverErrors: 5,

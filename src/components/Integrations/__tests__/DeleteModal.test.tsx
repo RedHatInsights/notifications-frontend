@@ -5,7 +5,6 @@ import { fn } from 'jest-mock';
 import * as React from 'react';
 
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { IntegrationType } from '../../../types/Integration';
 import { IntegrationDeleteModal } from '../DeleteModal';
 
@@ -23,7 +22,7 @@ describe('src/components/Integrations/DeleteModal', () => {
           url: 'url',
           id: '123',
           secretToken: 'foo',
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           sslVerificationEnabled: false,
           status: 'READY',
           serverErrors: 5,
@@ -85,7 +84,7 @@ describe('src/components/Integrations/DeleteModal', () => {
           url: 'url',
           id: '123',
           secretToken: 'foo',
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           sslVerificationEnabled: false,
           status: 'READY',
           serverErrors: 5,
@@ -111,7 +110,7 @@ describe('src/components/Integrations/DeleteModal', () => {
           url: 'url',
           id: '123',
           secretToken: 'foo',
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           sslVerificationEnabled: false,
           status: 'READY',
           serverErrors: 5,
@@ -174,7 +173,7 @@ describe('src/components/Integrations/DeleteModal', () => {
           url: 'url',
           id: '123',
           secretToken: 'foo',
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           sslVerificationEnabled: false,
           status: 'READY',
           serverErrors: 5,
@@ -210,7 +209,7 @@ describe('src/components/Integrations/DeleteModal', () => {
           url: 'url',
           id: '123',
           secretToken: 'foo',
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           sslVerificationEnabled: false,
           status: 'READY',
           serverErrors: 5,
@@ -240,7 +239,7 @@ describe('src/components/Integrations/DeleteModal', () => {
           url: 'url',
           id: '123',
           secretToken: 'foo',
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           sslVerificationEnabled: false,
           status: 'READY',
           serverErrors: 5,
