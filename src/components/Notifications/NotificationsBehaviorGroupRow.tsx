@@ -14,16 +14,16 @@ import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Noti
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 import { ThresholdConfigCell } from './Table/ThresholdConfigCell';
+import { CUSTOM_THRESHOLD_DISPLAY_NAME, DEFAULT_THRESHOLD } from './constants';
 
 export type OnNotificationIdHandler = (notificationId: UUID) => void;
-export type OnThresholdChangeHandler = (notificationId: UUID, threshold: number) => void;
 
 export type Callbacks = {
   onStartEditing: OnNotificationIdHandler;
   onFinishEditing: OnNotificationIdHandler;
   onCancelEditing: OnNotificationIdHandler;
   onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
-  onThresholdChange?: OnThresholdChangeHandler;
+  onThresholdChange?: (notificationId: UUID, threshold: number) => void;
 };
 
 export type OnBehaviorGroupLinkUpdated = (
@@ -131,7 +131,7 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
   const [isExpanded, setIsExpanded] = React.useState(false);
 
   const isSubscriptionThreshold =
-    notification.eventTypeDisplayName === 'Custom subscription threshold exceeded';
+    notification.eventTypeDisplayName === CUSTOM_THRESHOLD_DISPLAY_NAME;
 
   const handleThresholdChange = React.useCallback(
     (value: number) => {
@@ -167,7 +167,7 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
               selected={notification.behaviors ?? emptyImmutableArray}
               onSelect={onSelect}
               isEditMode={isEditMode}
-              thresholdValue={notification.thresholdValue ?? 80}
+              thresholdValue={notification.thresholdValue ?? DEFAULT_THRESHOLD}
               onThresholdChange={handleThresholdChange}
             />
           ) : (

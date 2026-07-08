@@ -14,6 +14,11 @@ import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotification
 import { ExporterType } from '../../../utils/insights-common-typescript';
 import { useGetOrgPreferences } from '../../../services/Notifications/GetOrgPreferences';
 import { useUpdateOrgPreferences } from '../../../services/Notifications/UpdateOrgPreferences';
+import {
+  CUSTOM_THRESHOLD_DISPLAY_NAME,
+  DEFAULT_THRESHOLD,
+} from '../../../components/Notifications/constants';
+import { useNotification } from '../../../utils/AlertUtils';
 
 interface BundlePageBehaviorGroupContentProps {
   applications: Array<Facet>;
@@ -51,14 +56,28 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   );
 
   const { rbac } = useAppContext();
+  const { addDangerNotification, addSuccessNotification } = useNotification();
 
   // Fetch org preferences for threshold value
-  const { data: orgPreferences } = useGetOrgPreferences();
+  const {
+    data: orgPreferences,
+    loading: orgPrefsLoading,
+    error: orgPrefsError,
+    refetch: refetchOrgPreferences,
+  } = useGetOrgPreferences();
   const updateOrgPreferencesMutation = useUpdateOrgPreferences();
 
   const currentThreshold = useMemo(() => {
-    return orgPreferences?.custom_threshold ?? 80; // Default value
-  }, [orgPreferences]);
+    if (orgPrefsLoading) {
+      return DEFAULT_THRESHOLD; // Use default while loading
+    }
+    if (orgPrefsError) {
+      // Log error but continue with default - non-blocking
+      console.error('Failed to load org preferences:', orgPrefsError);
+      return DEFAULT_THRESHOLD;
+    }
+    return orgPreferences?.custom_threshold ?? DEFAULT_THRESHOLD;
+  }, [orgPreferences, orgPrefsLoading, orgPrefsError]);
 
   const onExport = useCallback((type: ExporterType) => {
     console.log('Export to', type);
@@ -158,22 +177,47 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       // Find the notification to check if threshold changed
       const notification = notificationRows.find((row) => row.id === notificationId);
       const isSubscriptionThreshold =
-        notification?.eventTypeDisplayName === 'Custom subscription threshold exceeded';
+        notification?.eventTypeDisplayName === CUSTOM_THRESHOLD_DISPLAY_NAME;
 
       if (
         isSubscriptionThreshold &&
         notification?.isEditMode &&
         notification.thresholdValue !== notification.oldThresholdValue
       ) {
-        // Update org preferences with new threshold
-        await updateOrgPreferencesMutation.mutate({
-          customThreshold: notification.thresholdValue ?? 80,
-        });
+        try {
+          // Update org preferences with new threshold
+          await updateOrgPreferencesMutation.mutate({
+            customThreshold: notification.thresholdValue ?? DEFAULT_THRESHOLD,
+          });
+
+          // Refetch org preferences to stay in sync
+          refetchOrgPreferences();
+
+          addSuccessNotification(
+            'Threshold updated',
+            `Custom threshold set to ${notification.thresholdValue}%`
+          );
+        } catch (error) {
+          // Show error but still exit edit mode
+          addDangerNotification(
+            'Failed to update threshold',
+            'Your threshold change could not be saved. Please try again.'
+          );
+          console.error('Failed to update org preferences:', error);
+          // Note: We still call finishEditMode below to prevent UI from being stuck
+        }
       }
 
       finishEditMode(notificationId);
     },
-    [finishEditMode, notificationRows, updateOrgPreferencesMutation]
+    [
+      finishEditMode,
+      notificationRows,
+      updateOrgPreferencesMutation,
+      refetchOrgPreferences,
+      addSuccessNotification,
+      addDangerNotification,
+    ]
   );
 
   const onCancelEditing = useCallback(

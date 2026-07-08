@@ -12,6 +12,10 @@ import {
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { useNotification } from '../../../utils/AlertUtils';
+import {
+  CUSTOM_THRESHOLD_DISPLAY_NAME,
+  DEFAULT_THRESHOLD,
+} from '../../../components/Notifications/constants';
 
 export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
   readonly loadingActionStatus: 'loading' | 'done' | 'error';
@@ -46,7 +50,7 @@ const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
 export const useBehaviorGroupNotificationRows = (
   notifications: Array<Notification>,
   behaviorGroups: ReadonlyArray<BehaviorGroup> | undefined,
-  initialThreshold = 80
+  initialThreshold = DEFAULT_THRESHOLD
 ) => {
   const { addDangerNotification } = useNotification();
   const [notificationRows, setNotificationRows] = React.useState<
@@ -223,7 +227,7 @@ export const useBehaviorGroupNotificationRows = (
         notifications.map((notification) => {
           // Initialize threshold value for subscription custom threshold notification
           const isSubscriptionThreshold =
-            notification.eventTypeDisplayName === 'Custom subscription threshold exceeded';
+            notification.eventTypeDisplayName === CUSTOM_THRESHOLD_DISPLAY_NAME;
           return {
             ...notification,
             loadingActionStatus: 'done',

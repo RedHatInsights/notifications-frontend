@@ -5,6 +5,7 @@ import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/use
 import { NotificationsTableColumns } from './NotificationsBehaviorGroupTable';
 import { SortDirection } from '../../types/SortDirection';
 import { BehaviorGroup } from '../../types/Notification';
+import { CUSTOM_THRESHOLD_DISPLAY_NAME, DEFAULT_THRESHOLD } from './constants';
 
 const mockBehaviorGroups: BehaviorGroup[] = [
   {
@@ -30,13 +31,13 @@ const mockBehaviorGroups: BehaviorGroup[] = [
 const mockNotifications: BehaviorGroupNotificationRow[] = [
   {
     id: 'evt-1',
-    eventTypeDisplayName: 'Custom subscription threshold exceeded',
+    eventTypeDisplayName: CUSTOM_THRESHOLD_DISPLAY_NAME,
     applicationDisplayName: 'Subscriptions Usage',
     description: 'Notification triggered when subscription usage exceeds the configured threshold',
     loadingActionStatus: 'done',
     behaviors: [mockBehaviorGroups[0]],
     isEditMode: false,
-    thresholdValue: 80,
+    thresholdValue: DEFAULT_THRESHOLD,
   },
   {
     id: 'evt-2',
