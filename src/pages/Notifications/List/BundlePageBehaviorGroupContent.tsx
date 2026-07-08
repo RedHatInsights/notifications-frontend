@@ -12,6 +12,8 @@ import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import { useBehaviorGroupContent } from './useBehaviorGroupContent';
 import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotificationRows';
 import { ExporterType } from '../../../utils/insights-common-typescript';
+import { useGetOrgPreferences } from '../../../services/Notifications/GetOrgPreferences';
+import { useUpdateOrgPreferences } from '../../../services/Notifications/UpdateOrgPreferences';
 
 interface BundlePageBehaviorGroupContentProps {
   applications: Array<Facet>;
@@ -50,6 +52,14 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
 
   const { rbac } = useAppContext();
 
+  // Fetch org preferences for threshold value
+  const { data: orgPreferences } = useGetOrgPreferences();
+  const updateOrgPreferencesMutation = useUpdateOrgPreferences();
+
+  const currentThreshold = useMemo(() => {
+    return orgPreferences?.custom_threshold ?? 80; // Default value
+  }, [orgPreferences]);
+
   const onExport = useCallback((type: ExporterType) => {
     console.log('Export to', type);
   }, []);
@@ -75,6 +85,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   const {
     rows: notificationRows,
     updateBehaviorGroupLink,
+    updateThresholdValue,
     startEditMode,
     finishEditMode,
     cancelEditMode,
@@ -83,7 +94,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     !useNotifications.loading && useNotifications.payload?.type === 'eventTypesArray'
       ? useNotifications.payload.value.data
       : noEvents,
-    behaviorGroups
+    behaviorGroups,
+    currentThreshold
   );
 
   useEffect(() => {
@@ -142,10 +154,26 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   );
 
   const onFinishEditing = useCallback(
-    (notificationId: UUID) => {
+    async (notificationId: UUID) => {
+      // Find the notification to check if threshold changed
+      const notification = notificationRows.find((row) => row.id === notificationId);
+      const isSubscriptionThreshold =
+        notification?.eventTypeDisplayName === 'Custom subscription threshold exceeded';
+
+      if (
+        isSubscriptionThreshold &&
+        notification?.isEditMode &&
+        notification.thresholdValue !== notification.oldThresholdValue
+      ) {
+        // Update org preferences with new threshold
+        await updateOrgPreferencesMutation.mutate({
+          customThreshold: notification.thresholdValue ?? 80,
+        });
+      }
+
       finishEditMode(notificationId);
     },
-    [finishEditMode]
+    [finishEditMode, notificationRows, updateOrgPreferencesMutation]
   );
 
   const onCancelEditing = useCallback(
@@ -153,6 +181,13 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       cancelEditMode(notificationId);
     },
     [cancelEditMode]
+  );
+
+  const onThresholdChange = useCallback(
+    (notificationId: UUID, threshold: number) => {
+      updateThresholdValue(notificationId, threshold);
+    },
+    [updateThresholdValue]
   );
 
   useEffect(() => {
@@ -194,6 +229,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
             notifications={notificationRows}
             behaviorGroupContent={behaviorGroupContent}
             onBehaviorGroupLinkUpdated={onBehaviorGroupLinkUpdated}
+            onThresholdChange={rbac.canWriteNotifications ? onThresholdChange : undefined}
             onStartEditing={rbac.canWriteNotifications ? onStartEditing : undefined}
             onFinishEditing={rbac.canWriteNotifications ? onFinishEditing : undefined}
             onCancelEditing={rbac.canWriteNotifications ? onCancelEditing : undefined}

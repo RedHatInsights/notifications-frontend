@@ -13,14 +13,17 @@ import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/use
 import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Notification';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
+import { ThresholdConfigCell } from './Table/ThresholdConfigCell';
 
 export type OnNotificationIdHandler = (notificationId: UUID) => void;
+export type OnThresholdChangeHandler = (notificationId: UUID, threshold: number) => void;
 
 export type Callbacks = {
   onStartEditing: OnNotificationIdHandler;
   onFinishEditing: OnNotificationIdHandler;
   onCancelEditing: OnNotificationIdHandler;
   onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
+  onThresholdChange?: OnThresholdChangeHandler;
 };
 
 export type OnBehaviorGroupLinkUpdated = (
@@ -126,6 +129,17 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
   NotificationsBehaviorGroupRowProps
 > = ({ rowIndex, notification, behaviorGroupContent, onSelect, isEditMode, callbacks }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+
+  const isSubscriptionThreshold =
+    notification.eventTypeDisplayName === 'Custom subscription threshold exceeded';
+
+  const handleThresholdChange = React.useCallback(
+    (value: number) => {
+      callbacks?.onThresholdChange?.(notification.id, value);
+    },
+    [callbacks, notification.id]
+  );
+
   return (
     <>
       <Tr key={notification.id}>
@@ -146,6 +160,16 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
         <Td>
           {notification.loadingActionStatus === 'loading' ? (
             <Skeleton width="90%" />
+          ) : isSubscriptionThreshold ? (
+            <ThresholdConfigCell
+              notification={notification}
+              behaviorGroupContent={behaviorGroupContent}
+              selected={notification.behaviors ?? emptyImmutableArray}
+              onSelect={onSelect}
+              isEditMode={isEditMode}
+              thresholdValue={notification.thresholdValue ?? 80}
+              onThresholdChange={handleThresholdChange}
+            />
           ) : (
             <BehaviorGroupCell
               id={`behavior-group-cell-${notification.id}`}
