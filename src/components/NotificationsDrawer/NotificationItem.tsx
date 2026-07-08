@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 import {
-  NotificationDrawerList,
   NotificationDrawerListItem,
   NotificationDrawerListItemBody,
   NotificationDrawerListItemHeader,
@@ -132,54 +131,50 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     ),
   ];
   return (
-    <>
-      <NotificationDrawerList>
-        <NotificationDrawerListItem
-          aria-label={`Notification item ${notification.title}`}
-          variant="info"
-          isRead={notification.read}
-        >
-          <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
-            <Checkbox
-              isChecked={notification.selected}
-              onChange={onCheckboxToggle}
-              id="selected-checkbox"
-              name="selected-checkbox"
-            />
-            <Dropdown
-              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                <MenuToggle
-                  ref={toggleRef}
-                  aria-label="Notification actions dropdown"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  id="notification-item-toggle"
-                  isExpanded={isDropdownOpen}
-                  variant="plain"
-                >
-                  <EllipsisVIcon />
-                </MenuToggle>
-              )}
-              isOpen={isDropdownOpen}
-              onOpenChange={setIsDropdownOpen}
-              popperProps={{
-                position: PopoverPosition.right,
-              }}
-              id="notification-item-dropdown"
+    <NotificationDrawerListItem
+      aria-label={`Notification item ${notification.title}`}
+      variant="info"
+      isRead={notification.read}
+    >
+      <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
+        <Checkbox
+          isChecked={notification.selected}
+          onChange={onCheckboxToggle}
+          id="selected-checkbox"
+          name="selected-checkbox"
+        />
+        <Dropdown
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              aria-label="Notification actions dropdown"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              id="notification-item-toggle"
+              isExpanded={isDropdownOpen}
+              variant="plain"
             >
-              <DropdownList>{notificationDropdownItems}</DropdownList>
-            </Dropdown>
-          </NotificationDrawerListItemHeader>
-          <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
-            <Label variant="outline" isCompact className="pf-u-mb-md">
-              {notification.source}
-            </Label>
-            <span className="pf-u-display-block">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
-            </span>
-          </NotificationDrawerListItemBody>
-        </NotificationDrawerListItem>
-      </NotificationDrawerList>
-    </>
+              <EllipsisVIcon />
+            </MenuToggle>
+          )}
+          isOpen={isDropdownOpen}
+          onOpenChange={setIsDropdownOpen}
+          popperProps={{
+            position: PopoverPosition.right,
+          }}
+          id="notification-item-dropdown"
+        >
+          <DropdownList>{notificationDropdownItems}</DropdownList>
+        </Dropdown>
+      </NotificationDrawerListItemHeader>
+      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
+        <Label variant="outline" isCompact className="pf-u-mb-md">
+          {notification.source}
+        </Label>
+        <span className="pf-u-display-block">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
+        </span>
+      </NotificationDrawerListItemBody>
+    </NotificationDrawerListItem>
   );
 };
 
