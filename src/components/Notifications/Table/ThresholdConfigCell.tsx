@@ -81,7 +81,7 @@ export const ThresholdConfigCell: React.FunctionComponent<ThresholdConfigCellPro
       <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
         <FlexItem>
           <LockIcon className="pf-v6-u-mr-sm" />
-          <strong>{localThreshold} %</strong> {intl.formatMessage(messages.ofUsageThreshold)}
+          {localThreshold} % {intl.formatMessage(messages.ofUsageThreshold)}
         </FlexItem>
         {sortedSelected.length > 0 && (
           <FlexItem>

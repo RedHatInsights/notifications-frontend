@@ -84,7 +84,7 @@ type Story = StoryObj<typeof NotificationsBehaviorGroupTable>;
 
 /**
  * Default view showing the notifications table with the "Custom subscription threshold exceeded" event.
- * The threshold notification shows a lock icon followed by "80 % of usage threshold" with the
+ * The threshold notification shows: 🔒 80 % of usage threshold with the
  * "Subscription Usage" behavior group label inline. Labels wrap if they don't fit.
  */
 export const Default: Story = {
