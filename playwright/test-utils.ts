@@ -98,7 +98,13 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
 
   await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
 
-  const loggedIn = await page.getByText('Hi,').isVisible();
+  let loggedIn = false;
+  try {
+    await expect(page.getByText('Hi,')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
+    loggedIn = true;
+  } catch {
+    // Not logged in — proceed with login flow
+  }
 
   if (!loggedIn) {
     const user = process.env.E2E_USER!;
@@ -110,8 +116,6 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     await removeTrustArcOverlay(page);
     await login(page, user, password);
     await page.waitForLoadState('load');
-    await page.waitForTimeout(3000);
-    await expect(page.getByText('Invalid login')).not.toBeVisible();
     await expect(
       page.getByRole('button', { name: 'Add widgets' }),
       'dashboard not displayed'
