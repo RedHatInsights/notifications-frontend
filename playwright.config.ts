@@ -25,9 +25,6 @@ export default defineConfig({
   // Reporter to use
   reporter: 'html',
 
-  // Global setup: authenticate once and save session state
-  globalSetup: './playwright/global-setup.ts',
-
   // Shared settings for all the projects below
   use: {
     // PLAYWRIGHT_BASE_URL overrides for local runs against stage; default is the dev proxy (Konflux E2E rules)
@@ -47,11 +44,7 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: {
-        ...devices['Desktop Chrome'],
-        // Reuse authenticated state from global setup
-        storageState: 'playwright/.auth/user.json',
-      },
+      use: { ...devices['Desktop Chrome'] },
     },
   ],
 });

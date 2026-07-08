@@ -26,7 +26,6 @@ npx playwright test --headed
 
 - `integrations-ui.spec.ts` - Integration lifecycle tests (create, verify, delete webhooks/communications)
 - `notifications-ui.spec.ts` - Notification behavior group lifecycle tests
-- `global-setup.ts` - Global setup script that authenticates once before all tests and saves session state to `playwright/.auth/user.json`
 - `test-utils.ts` - Shared utilities (auth, navigation)
 - `utils/data-generators.ts` - Generate unique test data
 - `utils/form-helpers.ts` - Form filling helpers for wizards

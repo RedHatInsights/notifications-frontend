@@ -78,85 +78,46 @@ export async function login(page: Page, user: string, password: string): Promise
 
   await removeTrustArcOverlay(page);
 
-  // Use the visible, enabled input field (not the readonly one)
-  const usernameInput = page
-    .getByLabel('Red Hat login')
-    .and(page.locator('input:not([readonly])'))
-    .first();
-  await usernameInput.fill(user);
+  await page.getByLabel('Red Hat login').first().fill(user);
   await page.getByRole('button', { name: 'Next' }).click();
 
-  // Wait for password field to appear and be ready
-  const passwordInput = page.getByLabel('Password').first();
-  await passwordInput.waitFor({ state: 'visible', timeout: 10000 });
-  await page.waitForTimeout(500);
-
-  // Click into the field first to ensure it's focused
-  await passwordInput.click();
-  await page.waitForTimeout(200);
-
-  // Type the password character by character (more realistic)
-  await passwordInput.pressSequentially(password, { delay: 50 });
-
-  await page.waitForTimeout(500);
+  await page.getByLabel('Password').first().fill(password);
   await page.getByRole('button', { name: 'Log in' }).click();
 
-  // Wait a bit for login to process
-  await page.waitForTimeout(2000);
-
-  // Check if login failed
-  const invalidLoginVisible = await page
-    .getByText('Invalid login')
-    .isVisible()
-    .catch(() => false);
-  if (invalidLoginVisible) {
-    throw new Error(`Invalid login credentials for user: ${user}`);
-  }
+  await expect(page.getByText('Invalid login')).not.toBeVisible();
 }
 
 /**
  * Ensure user is logged in before running tests.
  *
- * When `globalSetup` + `storageState` are configured in playwright.config.ts
- * the session is already restored and this function only blocks cookie
- * prompts + navigates to "/".  Falls back to a manual login flow when the
- * session is missing (local dev runs without globalSetup).
+ * Navigates to "/" and checks whether the user is already authenticated.
+ * If not (SSO redirect), performs a full login flow.
  */
 export async function ensureLoggedIn(page: Page): Promise<void> {
   await disableCookiePrompt(page);
 
   await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
-  await page.waitForTimeout(2000);
 
-  // Check if we got redirected to SSO or are on login page
-  const currentUrl = page.url();
-  const isOnSSOPage =
-    currentUrl.includes('sso.stage.redhat.com') ||
-    currentUrl.includes('sso.redhat.com') ||
-    (await page
-      .getByLabel('Red Hat login')
-      .isVisible({ timeout: 2000 })
-      .catch(() => false));
+  const loggedIn = await page.getByText('Hi,').isVisible();
 
-  if (isOnSSOPage) {
-    const user = process.env.E2E_USER;
-    const password = process.env.E2E_PASSWORD;
-
-    if (!user || !password) {
-      throw new Error('E2E_USER and E2E_PASSWORD environment variables must be set');
-    }
-
+  if (!loggedIn) {
+    const user = process.env.E2E_USER!;
+    const password = process.env.E2E_PASSWORD!;
+    await page.waitForLoadState('load');
+    await expect(page.getByLabel('Red Hat login')).toBeVisible({
+      timeout: TIMEOUTS.API_RESPONSE,
+    });
     await removeTrustArcOverlay(page);
     await login(page, user, password);
     await page.waitForLoadState('load');
     await page.waitForTimeout(3000);
-
-    // Verify login succeeded (not still on SSO page with error)
     await expect(page.getByText('Invalid login')).not.toBeVisible();
+    await expect(
+      page.getByRole('button', { name: 'Add widgets' }),
+      'dashboard not displayed'
+    ).toBeVisible({ timeout: TIMEOUTS.DRAWER_READY });
 
     // Dismiss cookie consent if present
     await dismissCookieConsent(page);
-  } else {
-    // Not redirected to SSO — storageState from globalSetup is active
   }
 }
