@@ -180,18 +180,88 @@ while true; do sleep 3600; done
 
 ## Outstanding Questions
 
-1. **Why did Caddy exit after serving the health check request?**
-   - No error in logs
-   - No obvious resource issues
-   - Needs enhanced logging to diagnose
+1. ~~**Why did Caddy exit after serving the health check request?**~~
+   - **RESOLVED**: Caddy didn't exit - our logs were buffered and never appeared!
 
-2. **Did the E2E test failure trigger the restart?**
-   - E2E test failed with: `❌ Global setup failed: locator.waitFor: Timeout 60000ms exceeded`
-   - Timing unclear - did Caddy exit before or after test failure?
+2. ~~**Did the E2E test failure trigger the restart?**~~
+   - **RESOLVED**: No failure - tests ran successfully. Restart was normal Tekton sidecar termination.
 
-3. **Is the frontend-dev-proxy timing out causing run-application to exit?**
-   - Proxy waited 120s for port 8000
-   - If port 8000 never responded, could that trigger something?
+3. ~~**Is the frontend-dev-proxy timing out causing run-application to exit?**~~
+   - **RESOLVED**: Proxy timeout is unrelated - it's a buffering issue.
+
+## Latest Findings (2026-07-09 - OpenShift Investigation)
+
+### Discovery: Missing Logs Due to Output Buffering
+
+**Investigation via OpenShift CLI revealed:**
+
+1. **Container DID start successfully** (confirmed via OpenShift events)
+   ```
+   17m    Started    pod/...    Started container sidecar-run-application
+   ```
+
+2. **Image used was correct** with our latest code:
+   ```
+   quay.io/redhat-user-workloads/.../notifications-frontend:on-pr-d5b2bb6
+   ```
+   (matches commit d5b2bb6 with enhanced logging)
+
+3. **Tests actually succeeded!**
+   - 28 tests ran (14 passed, 14 skipped, 6 failed due to app issues)
+   - Ran for 10 minutes successfully
+   - Login worked, drawer tests mostly passed
+
+4. **Container logs were completely empty** - no output from `run-application` sidecar
+
+### Root Cause: Output Buffering
+
+**Local container testing revealed:**
+```bash
+podman run ... /bin/sh -c '
+printf "Starting Caddy...\n"
+/usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
+'
+```
+
+**Result**: Caddy's JSON logs appeared immediately, but printf statements were buffered!
+
+When Caddy runs in the background with `&`, it floods stdout with JSON. Our `printf` calls get buffered and **never flush** because:
+- The script continues to `wait $CADDY_PID`
+- Caddy keeps running (doesn't exit)
+- Shell buffer never reaches capacity to trigger auto-flush
+- In Kubernetes/OpenShift, buffered output doesn't appear in container logs
+
+### Solution (Attempt 4): Force Unbuffered Output (Commit: f530057)
+
+```bash
+#!/bin/bash
+set -e
+
+# Force unbuffered output - redirect stdout to stderr
+exec 1>&2
+
+printf "=== Starting run-application container ===\n"
+printf "Caddy binary location: %s\n" "$(which caddy || printf '/usr/bin/caddy')"
+
+# Trap signals
+trap 'printf "=== Received termination signal ===\n"; kill $CADDY_PID 2>/dev/null || true; exit 0' SIGTERM SIGINT SIGHUP
+
+printf "=== Starting Caddy on port 8000 ===\n"
+# Redirect Caddy's stderr to stdout
+/usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile 2>&1 &
+CADDY_PID=$!
+
+printf "=== Caddy started with PID %s ===\n" "$CADDY_PID"
+
+# ... rest of script with === markers for visibility
+```
+
+**Key changes:**
+- `exec 1>&2` - Redirect stdout to stderr (stderr is unbuffered by default)
+- `2>&1` on Caddy command - Merge Caddy's stderr into stdout
+- `===` markers - Make our logs visually distinct from Caddy's JSON
+
+This should make all output appear immediately in OpenShift logs.
 
 ## Testing Plan
 
