@@ -71,14 +71,16 @@ spec:
     - name: run-app-script
       value: |
         #!/bin/sh
-        set -ex
+        set -e
 
-        # Simple direct execution - no fancy redirection
         echo "=== Starting run-application container ==="
         echo "=== Checking /usr/bin/caddy before execution ==="
         ls -la /usr/bin/caddy
         echo "=== Starting Caddy on port 8000 ==="
-        exec /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+
+        # Run Caddy in foreground (not exec, not background)
+        # This keeps the script alive so Tekton can send SIGTERM when tests complete
+        /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
 
         printf "=== [%s] Caddy started with PID %s ===\n" "$(date)" "$CADDY_PID"
         printf "=== [%s] Waiting for Caddy process or termination signal ===\n" "$(date)"
