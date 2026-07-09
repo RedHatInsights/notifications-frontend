@@ -76,8 +76,8 @@ spec:
         # Trap termination signals to allow clean shutdown
         trap 'echo "Received termination signal, stopping Caddy..."; exit 0' SIGTERM SIGINT
 
-        # Start Caddy to serve app assets
-        caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
+        # Start Caddy to serve app assets (using full path for reliability)
+        /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
         CADDY_PID=$!
 
         # Wait for Caddy process or termination signal
