@@ -71,17 +71,33 @@ spec:
     - name: run-app-script
       value: |
         #!/bin/bash
-        set -ex
+        set -e
+
+        printf "Starting run-application container...\n"
+        printf "Caddy binary location: %s\n" "$(which caddy || printf '/usr/bin/caddy')"
 
         # Trap termination signals to allow clean shutdown
-        trap 'echo "Received termination signal, stopping Caddy..."; exit 0' SIGTERM SIGINT
+        trap 'printf "[%s] Received termination signal, stopping Caddy...\n" "$(date)"; kill $CADDY_PID 2>/dev/null || true; exit 0' SIGTERM SIGINT SIGHUP
 
-        # Start Caddy to serve app assets (using full path for reliability)
+        # Start Caddy to serve app assets
+        printf "[%s] Starting Caddy on port 8000...\n" "$(date)"
         /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile &
         CADDY_PID=$!
 
-        # Wait for Caddy process or termination signal
-        wait $CADDY_PID
+        printf "[%s] Caddy started with PID %s\n" "$(date)" "$CADDY_PID"
+        printf "[%s] Waiting for Caddy process or termination signal...\n" "$(date)"
+
+        # Wait for Caddy process - if it exits, log and stay alive
+        if wait $CADDY_PID; then
+          printf "[%s] Caddy exited successfully (exit code 0)\n" "$(date)"
+        else
+          EXIT_CODE=$?
+          printf "[%s] Caddy exited with code %s\n" "$(date)" "$EXIT_CODE"
+        fi
+
+        # Keep container alive even if Caddy exits to avoid restart loop
+        printf "[%s] Caddy process ended, keeping container alive to avoid restart...\n" "$(date)"
+        sleep infinity
 
     # E2E configuration
     - name: e2e-playwright-image
