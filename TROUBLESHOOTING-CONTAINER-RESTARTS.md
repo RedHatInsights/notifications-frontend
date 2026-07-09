@@ -263,14 +263,93 @@ printf "=== Caddy started with PID %s ===\n" "$CADDY_PID"
 
 This should make all output appear immediately in OpenShift logs.
 
-## Testing Plan
+## ROOT CAUSE IDENTIFIED (2026-07-09 - Pipeline n4j4l)
 
-Next pipeline run should show:
-1. Detailed timestamped logs from run-application container
-2. Whether Caddy starts successfully
-3. If/when Caddy exits and why (exit code)
-4. Whether the container stays alive after Caddy exits
-5. Whether the trap fires when tests complete
+**Issue**: Tekton Pipelines #1347 - Sidecar termination with RHEL-based nop images
+
+### How Tekton Terminates Sidecars
+
+When a main Step container completes, Tekton tries to terminate sidecars by:
+1. Sending SIGTERM to the sidecar process
+2. Replacing the sidecar's container image with a "nop" (no-operation) image: `pipelines-nop-rhel9`
+3. **Keeping the original command/args** from the sidecar definition
+
+### The Problem
+
+The `pipelines-nop-rhel9` image contains `/bin/sh`, so when Tekton replaces the image but keeps the original command (`/bin/sh -c "<our script>"`), the script attempts to execute AGAIN in the nop image:
+
+```bash
+#!/bin/sh
+set -e
+echo "=== Starting run-application container ==="
+echo "=== Checking /usr/bin/caddy before execution ==="
+ls -la /usr/bin/caddy  # ← FAILS: /usr/bin/caddy doesn't exist in pipelines-nop-rhel9
+echo "=== Starting Caddy on port 8000 ==="
+/usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+```
+
+This causes the error: `/usr/bin/caddy: No such file or directory`
+
+### Evidence from Pipeline Run n4j4l
+
+**Timeline:**
+- 20:25:52 - step-e2e-tests started
+- 20:25:57 - sidecar-run-application started (original image)
+- 20:35:58 - step-e2e-tests terminated with exit code 1
+- Pod event: `Container sidecar-frontend-dev-proxy definition changed, will be restarted`
+- **RestartCount remained 0** - this is NOT a crash/restart, it's Tekton's replacement mechanism
+
+**Key Observation:**
+Log streaming from sidecar-run-application showed the script only ran ONCE (in the original image). The grep for our `=== Starting run-application container ===` marker appeared exactly once.
+
+No second execution was visible because:
+1. Tekton sent SIGTERM to Caddy (which shut down cleanly)
+2. Tekton replaced the image with `pipelines-nop-rhel9`
+3. The nop replacement happens AFTER the log stream ends
+4. When the script tries to run in the nop image, `/usr/bin/caddy` doesn't exist
+5. Script fails immediately with "No such file or directory"
+
+### Upstream Issue
+
+**Link**: https://github.com/tektoncd/pipeline/issues/1347
+
+**Summary from issue:**
+- RHEL-based nop images (used in OpenShift) contain `/bin/sh`
+- Distroless nop images do NOT contain `/bin/sh` (fail immediately = proper termination)
+- When nop image has `/bin/sh`, the original sidecar command tries to re-execute
+- This is a known issue with Tekton's sidecar termination strategy
+
+### Why This Wasn't Caught Earlier
+
+1. **Buffered output**: Our diagnostic logs were buffered and never appeared in earlier runs
+2. **Timing**: The nop replacement happens AFTER tests complete, so it looked like a "post-test restart"
+3. **RestartCount=0**: We expected RestartCount to increase, but this is image replacement, not container restart
+4. **Interleaved logs**: Previous runs showed interleaved timestamps which we interpreted as multiple executions
+
+### Resolution
+
+**Option 1: Workaround - Make Script Nop-Safe**
+Add a guard at the start of the script to detect nop environment and exit gracefully:
+
+```bash
+#!/bin/sh
+set -e
+
+# Detect if running in nop image - if caddy doesn't exist, exit gracefully
+if ! command -v caddy >/dev/null 2>&1; then
+  echo "Running in nop image, exiting gracefully"
+  exit 0
+fi
+
+# Rest of script continues normally
+echo "=== Starting run-application container ==="
+/usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
+```
+
+**Option 2: Wait for Upstream Fix**
+Track https://github.com/tektoncd/pipeline/issues/1347 for a proper fix in Tekton Pipelines.
+
+The issue has been open since 2019 and affects all OpenShift/RHEL-based Tekton deployments.
 
 ## Related Files
 

@@ -73,29 +73,22 @@ spec:
         #!/bin/sh
         set -e
 
-        echo "=== Starting run-application container ==="
-        echo "=== Checking /usr/bin/caddy before execution ==="
-        ls -la /usr/bin/caddy
-        echo "=== Starting Caddy on port 8000 ==="
-
-        # Run Caddy in foreground (not exec, not background)
-        # This keeps the script alive so Tekton can send SIGTERM when tests complete
-        /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
-
-        printf "=== [%s] Caddy started with PID %s ===\n" "$(date)" "$CADDY_PID"
-        printf "=== [%s] Waiting for Caddy process or termination signal ===\n" "$(date)"
-
-        # Wait for Caddy process - if it exits, log and stay alive
-        if wait $CADDY_PID; then
-          printf "=== [%s] Caddy exited successfully (exit code 0) ===\n" "$(date)"
-        else
-          EXIT_CODE=$?
-          printf "=== [%s] Caddy exited with code %s ===\n" "$(date)" "$EXIT_CODE"
+        # Guard against Tekton's sidecar termination mechanism
+        # Tekton replaces sidecar images with pipelines-nop-rhel9 after tests complete
+        # The nop image contains /bin/sh, so this script tries to run again
+        # Detect nop environment and exit gracefully
+        # See: https://github.com/tektoncd/pipeline/issues/1347
+        if ! command -v caddy >/dev/null 2>&1; then
+          echo "Caddy not found - running in nop image, exiting gracefully"
+          exit 0
         fi
 
-        # Keep container alive even if Caddy exits to avoid restart loop
-        printf "=== [%s] Caddy process ended, keeping container alive to avoid restart ===\n" "$(date)"
-        while true; do sleep 3600; done
+        echo "=== Starting run-application container ==="
+        echo "=== Starting Caddy on port 8000 ==="
+
+        # Run Caddy in foreground
+        # When tests complete, Tekton will send SIGTERM and replace with nop image
+        /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile
 
     # E2E configuration
     - name: e2e-playwright-image
