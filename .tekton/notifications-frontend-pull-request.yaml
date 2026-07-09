@@ -84,6 +84,11 @@ spec:
 
         # Start Caddy to serve app assets
         printf "=== [%s] Starting Caddy on port 8000 ===\n" "$(date)"
+        printf "=== Checking Caddy binary right before execution ===\n"
+        ls -la /usr/bin/caddy || printf "ERROR: Cannot list /usr/bin/caddy\n"
+        printf "=== Checking /usr/bin directory ===\n"
+        ls -la /usr/bin/ | head -5 || printf "ERROR: Cannot list /usr/bin/\n"
+        printf "=== Executing Caddy ===\n"
         /usr/bin/caddy run --config /etc/caddy/Caddyfile --adapter caddyfile 2>&1 &
         CADDY_PID=$!
 
