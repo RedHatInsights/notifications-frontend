@@ -12,6 +12,13 @@ import { BehaviorGroupsSection } from './BehaviorGroupsSection';
 import { useBehaviorGroupContent } from './useBehaviorGroupContent';
 import { useBehaviorGroupNotificationRows } from './useBehaviorGroupNotificationRows';
 import { ExporterType } from '../../../utils/insights-common-typescript';
+import { useGetOrgPreferences } from '../../../services/Notifications/GetOrgPreferences';
+import { useUpdateOrgPreferences } from '../../../services/Notifications/UpdateOrgPreferences';
+import {
+  CUSTOM_THRESHOLD_DISPLAY_NAME,
+  DEFAULT_THRESHOLD,
+} from '../../../components/Notifications/constants';
+import { useNotification } from '../../../utils/AlertUtils';
 
 interface BundlePageBehaviorGroupContentProps {
   applications: Array<Facet>;
@@ -49,6 +56,28 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   );
 
   const { rbac } = useAppContext();
+  const { addDangerNotification, addSuccessNotification } = useNotification();
+
+  // Fetch org preferences for threshold value
+  const {
+    data: orgPreferences,
+    loading: orgPrefsLoading,
+    error: orgPrefsError,
+    refetch: refetchOrgPreferences,
+  } = useGetOrgPreferences();
+  const updateOrgPreferencesMutation = useUpdateOrgPreferences();
+
+  const currentThreshold = useMemo(() => {
+    if (orgPrefsLoading) {
+      return DEFAULT_THRESHOLD; // Use default while loading
+    }
+    if (orgPrefsError) {
+      // Log error but continue with default - non-blocking
+      console.error('Failed to load org preferences:', orgPrefsError);
+      return DEFAULT_THRESHOLD;
+    }
+    return orgPreferences?.custom_threshold ?? DEFAULT_THRESHOLD;
+  }, [orgPreferences, orgPrefsLoading, orgPrefsError]);
 
   const onExport = useCallback((type: ExporterType) => {
     console.log('Export to', type);
@@ -75,6 +104,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   const {
     rows: notificationRows,
     updateBehaviorGroupLink,
+    updateThresholdValue,
     startEditMode,
     finishEditMode,
     cancelEditMode,
@@ -83,7 +113,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
     !useNotifications.loading && useNotifications.payload?.type === 'eventTypesArray'
       ? useNotifications.payload.value.data
       : noEvents,
-    behaviorGroups
+    behaviorGroups,
+    currentThreshold
   );
 
   useEffect(() => {
@@ -142,10 +173,51 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   );
 
   const onFinishEditing = useCallback(
-    (notificationId: UUID) => {
+    async (notificationId: UUID) => {
+      // Find the notification to check if threshold changed
+      const notification = notificationRows.find((row) => row.id === notificationId);
+      const isSubscriptionThreshold =
+        notification?.eventTypeDisplayName === CUSTOM_THRESHOLD_DISPLAY_NAME;
+
+      if (
+        isSubscriptionThreshold &&
+        notification?.isEditMode &&
+        notification.thresholdValue !== notification.oldThresholdValue
+      ) {
+        try {
+          // Update org preferences with new threshold
+          await updateOrgPreferencesMutation.mutate({
+            customThreshold: notification.thresholdValue ?? DEFAULT_THRESHOLD,
+          });
+
+          // Refetch org preferences to stay in sync
+          refetchOrgPreferences();
+
+          addSuccessNotification(
+            'Threshold updated',
+            `Custom threshold set to ${notification.thresholdValue}%`
+          );
+        } catch (error) {
+          // Show error but still exit edit mode
+          addDangerNotification(
+            'Failed to update threshold',
+            'Your threshold change could not be saved. Please try again.'
+          );
+          console.error('Failed to update org preferences:', error);
+          // Note: We still call finishEditMode below to prevent UI from being stuck
+        }
+      }
+
       finishEditMode(notificationId);
     },
-    [finishEditMode]
+    [
+      finishEditMode,
+      notificationRows,
+      updateOrgPreferencesMutation,
+      refetchOrgPreferences,
+      addSuccessNotification,
+      addDangerNotification,
+    ]
   );
 
   const onCancelEditing = useCallback(
@@ -153,6 +225,13 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       cancelEditMode(notificationId);
     },
     [cancelEditMode]
+  );
+
+  const onThresholdChange = useCallback(
+    (notificationId: UUID, threshold: number) => {
+      updateThresholdValue(notificationId, threshold);
+    },
+    [updateThresholdValue]
   );
 
   useEffect(() => {
@@ -194,6 +273,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
             notifications={notificationRows}
             behaviorGroupContent={behaviorGroupContent}
             onBehaviorGroupLinkUpdated={onBehaviorGroupLinkUpdated}
+            onThresholdChange={rbac.canWriteNotifications ? onThresholdChange : undefined}
             onStartEditing={rbac.canWriteNotifications ? onStartEditing : undefined}
             onFinishEditing={rbac.canWriteNotifications ? onFinishEditing : undefined}
             onCancelEditing={rbac.canWriteNotifications ? onCancelEditing : undefined}
