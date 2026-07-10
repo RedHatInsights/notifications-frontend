@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { useSelfAccessCheck } from '@project-kessel/react-kessel-access-check';
 import type { SelfAccessCheckResourceWithRelation } from '@project-kessel/react-kessel-access-check';
+import { useFlag } from '@unleash/proxy-client-react';
 import { KesselRbacAccessContext, KesselRbacAccessContextValue } from './KesselRbacAccessContext';
 import {
   KESSEL_WORKSPACE_RELATIONS,
@@ -36,13 +37,14 @@ function buildAllowedMap(
 export const KesselRbacAccessProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
+  const isV2Org = useFlag('platform.rbac.workspaces');
   const [errors, setErrors] = useState<Error[]>([]);
 
   const {
     workspaceId: defaultWorkspaceId,
     isLoading: isLoadingWorkspace,
     error: workspaceError,
-  } = useDefaultWorkspace();
+  } = useDefaultWorkspace(isV2Org);
 
   useEffect(() => {
     if (workspaceError) {

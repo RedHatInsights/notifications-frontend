@@ -1,6 +1,18 @@
-import { Tab, TabTitleText, Tabs } from '@patternfly/react-core';
+import {
+  Bullseye,
+  Card,
+  CardBody,
+  EmptyState,
+  EmptyStateBody,
+  Spinner,
+  Tab,
+  TabTitleText,
+  Tabs,
+} from '@patternfly/react-core';
+import { LockIcon } from '@patternfly/react-icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useCallback, useEffect, useMemo } from 'react';
+import { useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
@@ -56,6 +68,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   );
 
   const { rbac } = useAppContext();
+  const intl = useIntl();
   const { addDangerNotification, addSuccessNotification } = useNotification();
 
   // Fetch org preferences for threshold value
@@ -86,6 +99,9 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
   const eventTypePage = useEventTypesPage(props.bundle, props.applications, true);
 
   const useNotifications = useListNotificationsOld(eventTypePage.pageController.page);
+
+  const isForbidden =
+    !useNotifications.loading && useNotifications.error && useNotifications.payload?.status !== 200;
 
   const count = useMemo(() => {
     const payload = useNotifications.payload;
@@ -260,37 +276,91 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       }}
     >
       <Tab eventKey={0} title={<TabTitleText>Configuration</TabTitleText>}>
-        <NotificationsToolbar
-          filters={eventTypePage.filters}
-          setFilters={eventTypePage.setFilters}
-          clearFilter={eventTypePage.clearFilters}
-          appFilterOptions={props.applications}
-          onExport={onExport}
-          count={count}
-          pageAdapter={eventTypePage.pageController}
-        >
-          <NotificationsBehaviorGroupTable
-            notifications={notificationRows}
-            behaviorGroupContent={behaviorGroupContent}
-            onBehaviorGroupLinkUpdated={onBehaviorGroupLinkUpdated}
-            onThresholdChange={rbac.canWriteNotifications ? onThresholdChange : undefined}
-            onStartEditing={rbac.canWriteNotifications ? onStartEditing : undefined}
-            onFinishEditing={rbac.canWriteNotifications ? onFinishEditing : undefined}
-            onCancelEditing={rbac.canWriteNotifications ? onCancelEditing : undefined}
-            onSort={eventTypePage.onSort}
-            sortBy={eventTypePage.sortBy}
-            sortDirection={eventTypePage.sortDirection}
-          />
-        </NotificationsToolbar>
+        {isForbidden ? (
+          <Card isPlain>
+            <CardBody>
+              <EmptyState
+                headingLevel="h2"
+                icon={LockIcon}
+                titleText={intl.formatMessage({
+                  id: 'configureEvents.unauthorized.title',
+                  defaultMessage: 'You do not have access to configure events',
+                })}
+              >
+                <EmptyStateBody>
+                  {intl.formatMessage({
+                    id: 'configureEvents.unauthorized.body',
+                    defaultMessage:
+                      'Contact your organization administrator to request the necessary permissions.',
+                  })}
+                </EmptyStateBody>
+              </EmptyState>
+            </CardBody>
+          </Card>
+        ) : useNotifications.loading ? (
+          <Bullseye>
+            <Spinner />
+          </Bullseye>
+        ) : (
+          <NotificationsToolbar
+            filters={eventTypePage.filters}
+            setFilters={eventTypePage.setFilters}
+            clearFilter={eventTypePage.clearFilters}
+            appFilterOptions={props.applications}
+            onExport={onExport}
+            count={count}
+            pageAdapter={eventTypePage.pageController}
+          >
+            <NotificationsBehaviorGroupTable
+              notifications={notificationRows}
+              behaviorGroupContent={behaviorGroupContent}
+              onBehaviorGroupLinkUpdated={onBehaviorGroupLinkUpdated}
+              onThresholdChange={rbac.canWriteNotifications ? onThresholdChange : undefined}
+              onStartEditing={rbac.canWriteNotifications ? onStartEditing : undefined}
+              onFinishEditing={rbac.canWriteNotifications ? onFinishEditing : undefined}
+              onCancelEditing={rbac.canWriteNotifications ? onCancelEditing : undefined}
+              onSort={eventTypePage.onSort}
+              sortBy={eventTypePage.sortBy}
+              sortDirection={eventTypePage.sortDirection}
+            />
+          </NotificationsToolbar>
+        )}
       </Tab>
       <Tab eventKey={1} title={<TabTitleText>Behavior Groups</TabTitleText>}>
-        <div className="pf-v5-u-mb-xl">
-          <BehaviorGroupsSection
-            bundle={props.bundle}
-            applications={props.applications}
-            behaviorGroupContent={behaviorGroupContent}
-          />
-        </div>
+        {isForbidden ? (
+          <Card isPlain>
+            <CardBody>
+              <EmptyState
+                headingLevel="h2"
+                icon={LockIcon}
+                titleText={intl.formatMessage({
+                  id: 'behaviorGroups.unauthorized.title',
+                  defaultMessage: 'You do not have access to behavior groups',
+                })}
+              >
+                <EmptyStateBody>
+                  {intl.formatMessage({
+                    id: 'behaviorGroups.unauthorized.body',
+                    defaultMessage:
+                      'Contact your organization administrator to request the necessary permissions.',
+                  })}
+                </EmptyStateBody>
+              </EmptyState>
+            </CardBody>
+          </Card>
+        ) : useNotifications.loading ? (
+          <Bullseye>
+            <Spinner />
+          </Bullseye>
+        ) : (
+          <div className="pf-v5-u-mb-xl">
+            <BehaviorGroupsSection
+              bundle={props.bundle}
+              applications={props.applications}
+              behaviorGroupContent={behaviorGroupContent}
+            />
+          </div>
+        )}
       </Tab>
     </Tabs>
   );

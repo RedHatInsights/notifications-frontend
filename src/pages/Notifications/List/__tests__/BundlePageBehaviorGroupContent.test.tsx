@@ -316,6 +316,8 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
   });
 
   it('Opens in the correct tab if parameter is present', async () => {
+    mockNotifications([]);
+    mockBehaviorGroups([]);
     const store = getNotificationsRegistry().getStore();
     render(
       <Provider store={store}>
@@ -325,7 +327,7 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
       </Provider>
     );
 
-    expect(screen.getByText('Behavior groups')).toBeInTheDocument();
+    expect(screen.getByText('Behavior Groups')).toBeInTheDocument();
   });
 
   it('Add group button should be disabled with no write permissions', async () => {
@@ -419,5 +421,58 @@ describe('src/pages/Notifications/List/BundlePageBehaviorGroupContent', () => {
 
     // When user doesn't have write permissions, the button should not exist at all
     expect(screen.queryByRole('button', { name: /Create new group/i })).not.toBeInTheDocument();
+  });
+
+  it('Shows unauthorized empty state when notifications API returns 403', async () => {
+    fetchMock.get(
+      (urlString: string) => {
+        const url = new URL(urlString, 'http://dummy-url.com');
+        return (
+          url.pathname === '/api/notifications/v1.0/notifications/eventTypes' &&
+          url.searchParams.get('bundleId') === bundle.id
+        );
+      },
+      {
+        status: 403,
+        body: { message: 'Forbidden' },
+      }
+    );
+    mockBehaviorGroups([]);
+
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
+
+    await waitForAsyncEvents();
+
+    expect(screen.getByText(/You do not have access to configure events/i)).toBeInTheDocument();
+  });
+
+  it('Shows unauthorized empty state in Behavior Groups tab when API returns 403', async () => {
+    fetchMock.get(
+      (urlString: string) => {
+        const url = new URL(urlString, 'http://dummy-url.com');
+        return (
+          url.pathname === '/api/notifications/v1.0/notifications/eventTypes' &&
+          url.searchParams.get('bundleId') === bundle.id
+        );
+      },
+      {
+        status: 403,
+        body: { message: 'Forbidden' },
+      }
+    );
+    mockBehaviorGroups([]);
+
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper(),
+    });
+
+    await waitForAsyncEvents();
+
+    await userEvent.click(screen.getByText('Behavior Groups'));
+    await waitForAsyncEvents();
+
+    expect(screen.getByText(/You do not have access to behavior groups/i)).toBeInTheDocument();
   });
 });

@@ -53,8 +53,10 @@ export const useApp = (): Partial<AppContext> => {
           to: new Date(),
         });
       }
+    } else if (serverStatus.error) {
+      setServer({ status: ServerStatus.RUNNING });
     }
-  }, [serverStatus.payload]);
+  }, [serverStatus.payload, serverStatus.error]);
 
   // Effect to fetch user info
   useEffect(() => {
@@ -80,9 +82,13 @@ export const useApp = (): Partial<AppContext> => {
   // fully migrated to Kessel v2, so v2 orgs don't need the v1 endpoint.
   useEffect(() => {
     if (userLoaded && !isV2Org) {
-      fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`).then((rbac) => {
-        setV1Rbac(rbac);
-      });
+      fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`)
+        .then((rbac) => {
+          setV1Rbac(rbac);
+        })
+        .catch(() => {
+          setV1Rbac(new Rbac({}));
+        });
     }
   }, [userLoaded, isV2Org]);
 
