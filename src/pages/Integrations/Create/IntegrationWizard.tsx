@@ -142,6 +142,12 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
             severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
+            // When severity field is hidden during edit, preserve the original value
+            // Access severity safely - it exists on IntegrationPagerduty but not in the typed template
+            const templateSeverity =
+              template && 'severity' in template ? template.severity : undefined;
+            const severityValue =
+              hidePagerDutySeverity && isEdit && templateSeverity ? templateSeverity : severity;
             const data = {
               name,
               enabled: true,
@@ -153,7 +159,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
                 url,
                 disable_ssl_verification: false,
                 secret_token,
-                severity,
+                severity: severityValue,
               },
               ...(isBehaviorGroupsEnabled && {
                 event_types: event_types
