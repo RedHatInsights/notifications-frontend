@@ -11,8 +11,8 @@ export const schema = (
   isBehaviorGroupsEnabled,
   isPagerDutyEnabled,
   isEmailIntegrationEnabled,
-  hidePagerDutySeverity,
-  intl
+  intl,
+  hidePagerDutySeverity = false
 ) => ({
   fields: [
     {
@@ -31,7 +31,7 @@ export const schema = (
           : []),
 
         // INTEGRATION DETAILS
-        ...detailSteps(isEdit, isBehaviorGroupsEnabled, hidePagerDutySeverity, intl),
+        ...detailSteps(isEdit, isBehaviorGroupsEnabled, intl, hidePagerDutySeverity),
 
         // ASSOCIATE EVENT TYPES
         ...(isBehaviorGroupsEnabled ? [eventTypesStep()] : []),

@@ -56,7 +56,7 @@ export interface IntegrationWizardProps {
  * Maps integration data from the server format to the form field format
  * This ensures that existing integration data is properly pre-populated in edit mode
  */
-const mapIntegrationToFormFields = (template) => {
+const mapIntegrationToFormFields = (template, hidePagerDutySeverity = false) => {
   if (!template) {
     return {};
   }
@@ -80,6 +80,11 @@ const mapIntegrationToFormFields = (template) => {
   // Handle camel integrations (Slack, Teams, etc.)
   if (template.extras?.channel) {
     formValues.channel = template.extras.channel;
+  }
+
+  // Omit severity from initial values when the field is hidden
+  if (hidePagerDutySeverity && formValues.severity !== undefined) {
+    delete formValues.severity;
   }
 
   return formValues;
@@ -123,8 +128,8 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
             isBehaviorGroupsEnabled,
             isPagerDutyEnabled,
             isEmailIntegrationEnabled,
-            hidePagerDutySeverity,
-            intl
+            intl,
+            hidePagerDutySeverity
           )}
           componentMapper={{ ...componentMapper, ...mapperExtension }}
           onSubmit={({
@@ -166,7 +171,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
               : createEndpoint(data, notifications, afterSubmit);
             closeModal();
           }}
-          initialValues={isEdit ? mapIntegrationToFormFields(template) : {}}
+          initialValues={isEdit ? mapIntegrationToFormFields(template, hidePagerDutySeverity) : {}}
           onCancel={closeModal}
         >
           {(props) => <Pf4FormTemplate {...props} showFormControls={false} />}

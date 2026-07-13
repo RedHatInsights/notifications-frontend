@@ -71,8 +71,8 @@ const sslAlert = {
 export const detailSteps = (
   isEdit: boolean,
   isBehaviorGroupsEnabled: boolean,
-  hidePagerDutySeverity: boolean,
-  intl: IntlShape
+  intl: IntlShape,
+  hidePagerDutySeverity: boolean = false
 ) => {
   const title = `${isEdit ? 'Edit' : 'Enter'} details`;
   return [
