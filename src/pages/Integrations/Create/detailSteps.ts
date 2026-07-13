@@ -68,7 +68,12 @@ const sslAlert = {
   variant: 'info',
 };
 
-export const detailSteps = (isEdit: boolean, isBehaviorGroupsEnabled: boolean, intl: IntlShape) => {
+export const detailSteps = (
+  isEdit: boolean,
+  isBehaviorGroupsEnabled: boolean,
+  hidePagerDutySeverity: boolean,
+  intl: IntlShape
+) => {
   const title = `${isEdit ? 'Edit' : 'Enter'} details`;
   return [
     // REPORTING - SPLUNK, ANSIBLE
@@ -156,32 +161,37 @@ export const detailSteps = (isEdit: boolean, isBehaviorGroupsEnabled: boolean, i
             },
           ],
         },
-        {
-          component: componentTypes.SELECT,
-          name: 'severity',
-          label: 'Alert severity',
-          helperText: 'Severity of the alert created in PagerDuty when this integration is used.',
-          isRequired: true,
-          simpleValue: true,
-          options: [
-            {
-              label: 'Info',
-              value: 'Info',
-            },
-            {
-              label: 'Warning',
-              value: 'Warning',
-            },
-            {
-              label: 'Error',
-              value: 'Error',
-            },
-            {
-              label: 'Critical',
-              value: 'Critical',
-            },
-          ],
-        },
+        ...(hidePagerDutySeverity
+          ? []
+          : [
+              {
+                component: componentTypes.SELECT,
+                name: 'severity',
+                label: 'Alert severity',
+                helperText:
+                  'Severity of the alert created in PagerDuty when this integration is used.',
+                isRequired: true,
+                simpleValue: true,
+                options: [
+                  {
+                    label: 'Info',
+                    value: 'Info',
+                  },
+                  {
+                    label: 'Warning',
+                    value: 'Warning',
+                  },
+                  {
+                    label: 'Error',
+                    value: 'Error',
+                  },
+                  {
+                    label: 'Critical',
+                    value: 'Critical',
+                  },
+                ],
+              },
+            ]),
       ],
     },
 

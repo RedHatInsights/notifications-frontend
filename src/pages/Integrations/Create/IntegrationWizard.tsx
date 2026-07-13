@@ -103,6 +103,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
   };
   const isBehaviorGroupsEnabled = useFlag('platform.integrations.behavior-groups-move');
   const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
+  const hidePagerDutySeverity = useFlag('platform.integrations.pager-duty.hide-severity');
   const isEmailIntegrationEnabled = useFlag('platform.notifications.email.integration');
   const notifications = useNotification();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
@@ -122,6 +123,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
             isBehaviorGroupsEnabled,
             isPagerDutyEnabled,
             isEmailIntegrationEnabled,
+            hidePagerDutySeverity,
             intl
           )}
           componentMapper={{ ...componentMapper, ...mapperExtension }}
