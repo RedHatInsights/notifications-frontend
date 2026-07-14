@@ -171,6 +171,11 @@ export const detailSteps = (
                 helperText:
                   'Severity of the alert created in PagerDuty when this integration is used.',
                 isRequired: true,
+                validate: [
+                  {
+                    type: validatorTypes.REQUIRED,
+                  },
+                ],
                 simpleValue: true,
                 options: [
                   {
