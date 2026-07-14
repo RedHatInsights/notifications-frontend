@@ -70,25 +70,27 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <Divider key="divider" />,
     <DropdownItem
       key="view-event-log"
-      onClick={() => {
-        const url = `/settings/notifications/eventlog?${new URLSearchParams({
-          service: notification.source,
-          event: notification.title,
-        }).toString()}`;
-        window.location.href = url;
-      }}
+      onClick={() =>
+        onNavigateTo(
+          `/settings/notifications/eventlog?${new URLSearchParams({
+            service: notification.source,
+            event: notification.title,
+          }).toString()}`
+        )
+      }
     >
       {intl.formatMessage(messages.viewInEventLog)}
     </DropdownItem>,
     <DropdownItem
       key="manage-my-notifications"
-      onClick={() => {
-        const url = `/settings/notifications/user-preferences?${new URLSearchParams({
-          bundle: notification.bundle,
-          ...(notification.application && { app: notification.application }),
-        }).toString()}`;
-        window.location.href = url;
-      }}
+      onClick={() =>
+        onNavigateTo(
+          `/settings/notifications/user-preferences?${new URLSearchParams({
+            bundle: notification.bundle,
+            ...(notification.application && { app: notification.application }),
+          }).toString()}`
+        )
+      }
     >
       {intl.formatMessage(messages.manageMyEventNotifications)}
     </DropdownItem>,
