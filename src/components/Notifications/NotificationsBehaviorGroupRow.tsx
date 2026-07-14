@@ -13,6 +13,8 @@ import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/use
 import { BehaviorGroup, NotificationBehaviorGroup, UUID } from '../../types/Notification';
 import { emptyImmutableArray } from '../../utils/Immutable';
 import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
+import { ThresholdConfigCell } from './Table/ThresholdConfigCell';
+import { CUSTOM_THRESHOLD_DISPLAY_NAME, DEFAULT_THRESHOLD } from './constants';
 
 export type OnNotificationIdHandler = (notificationId: UUID) => void;
 
@@ -21,6 +23,7 @@ export type Callbacks = {
   onFinishEditing: OnNotificationIdHandler;
   onCancelEditing: OnNotificationIdHandler;
   onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
+  onThresholdChange?: (notificationId: UUID, threshold: number) => void;
 };
 
 export type OnBehaviorGroupLinkUpdated = (
@@ -126,6 +129,17 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
   NotificationsBehaviorGroupRowProps
 > = ({ rowIndex, notification, behaviorGroupContent, onSelect, isEditMode, callbacks }) => {
   const [isExpanded, setIsExpanded] = React.useState(false);
+
+  const isSubscriptionThreshold =
+    notification.eventTypeDisplayName === CUSTOM_THRESHOLD_DISPLAY_NAME;
+
+  const handleThresholdChange = React.useCallback(
+    (value: number) => {
+      callbacks?.onThresholdChange?.(notification.id, value);
+    },
+    [callbacks, notification.id]
+  );
+
   return (
     <>
       <Tr key={notification.id}>
@@ -146,6 +160,16 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
         <Td>
           {notification.loadingActionStatus === 'loading' ? (
             <Skeleton width="90%" />
+          ) : isSubscriptionThreshold ? (
+            <ThresholdConfigCell
+              notification={notification}
+              behaviorGroupContent={behaviorGroupContent}
+              selected={notification.behaviors ?? emptyImmutableArray}
+              onSelect={onSelect}
+              isEditMode={isEditMode}
+              thresholdValue={notification.thresholdValue ?? DEFAULT_THRESHOLD}
+              onThresholdChange={handleThresholdChange}
+            />
           ) : (
             <BehaviorGroupCell
               id={`behavior-group-cell-${notification.id}`}

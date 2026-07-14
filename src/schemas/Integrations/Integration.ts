@@ -4,6 +4,7 @@ import Lazy from 'yup/lib/Lazy';
 import { Schemas } from '../../generated/OpenapiIntegrations';
 import {
   CamelIntegrationType,
+  HttpMethod,
   IntegrationAnsible,
   IntegrationCamel,
   IntegrationHttp,
@@ -41,9 +42,7 @@ export const IntegrationHttpSchema: Yup.SchemaOf<NewIntegrationTemplate<Integrat
       url: Yup.string().url().required('Write a valid url for this Integration.'),
       sslVerificationEnabled: Yup.boolean().default(true),
       secretToken: Yup.string().notRequired(),
-      method: Yup.mixed<Schemas.HttpType>()
-        .oneOf(Object.values(Schemas.HttpType.Enum))
-        .default(Schemas.HttpType.Enum.POST),
+      method: Yup.mixed<HttpMethod>().oneOf(['GET', 'POST', 'PUT']).default('POST'),
     })
   );
 
@@ -54,9 +53,7 @@ export const IntegrationAnsibleSchema: Yup.SchemaOf<NewIntegrationTemplate<Integ
       url: Yup.string().url().required('Write a valid url for this Integration.'),
       sslVerificationEnabled: Yup.boolean().default(true),
       secretToken: Yup.string().notRequired(),
-      method: Yup.mixed<Schemas.HttpType>()
-        .oneOf(Object.values([Schemas.HttpType.Enum.POST]))
-        .default(Schemas.HttpType.Enum.POST),
+      method: Yup.mixed<'POST'>().oneOf(['POST']).default('POST'),
     })
   );
 

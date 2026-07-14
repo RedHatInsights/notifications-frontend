@@ -1,6 +1,9 @@
 import { Schemas } from '../generated/OpenapiIntegrations';
 import { UUID } from './Notification';
 
+// HTTP method types (backend changed from enum to string)
+export type HttpMethod = 'GET' | 'POST' | 'PUT';
+
 // Integrations that exist
 // Value should always be type:sub_type or only type if doesn't use sub_types
 export enum IntegrationType {
@@ -64,14 +67,14 @@ export interface IntegrationHttp extends IntegrationBase<IntegrationType.WEBHOOK
   url: string;
   sslVerificationEnabled: boolean;
   secretToken?: string;
-  method: Schemas.HttpType;
+  method: HttpMethod;
 }
 
 export interface IntegrationAnsible extends IntegrationBase<IntegrationType.ANSIBLE> {
   url: string;
   sslVerificationEnabled: boolean;
   secretToken?: string;
-  method: Schemas.HttpType;
+  method: 'POST';
 }
 
 export interface IntegrationPagerduty extends IntegrationBase<IntegrationType.PAGERDUTY> {

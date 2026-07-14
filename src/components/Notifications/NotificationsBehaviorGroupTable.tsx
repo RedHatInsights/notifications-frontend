@@ -14,6 +14,7 @@ import * as React from 'react';
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
 import { SortDirection, sortDirectionFromString } from '../../types/SortDirection';
+import { UUID } from '../../types/Notification';
 import EmptyTableState from './EmptyTableState';
 import {
   Callbacks,
@@ -30,10 +31,13 @@ export enum NotificationsTableColumns {
   BEHAVIOR,
 }
 
+export type OnThresholdChange = (notificationId: UUID, threshold: number) => void;
+
 export interface NotificationsBehaviorGroupTableProps {
   behaviorGroupContent: BehaviorGroupContent;
   notifications: Array<BehaviorGroupNotificationRow>;
   onBehaviorGroupLinkUpdated: OnBehaviorGroupLinkUpdated;
+  onThresholdChange?: OnThresholdChange;
   onStartEditing?: OnNotificationIdHandler;
   onFinishEditing?: OnNotificationIdHandler;
   onCancelEditing?: OnNotificationIdHandler;
@@ -52,6 +56,7 @@ export const NotificationsBehaviorGroupTable = WithOuia<NotificationsBehaviorGro
           onFinishEditing: props.onFinishEditing,
           onCancelEditing: props.onCancelEditing,
           onBehaviorGroupLinkUpdated: props.onBehaviorGroupLinkUpdated,
+          onThresholdChange: props.onThresholdChange,
         };
       }
 
@@ -61,6 +66,7 @@ export const NotificationsBehaviorGroupTable = WithOuia<NotificationsBehaviorGro
       props.onFinishEditing,
       props.onCancelEditing,
       props.onBehaviorGroupLinkUpdated,
+      props.onThresholdChange,
     ]);
 
     const onSort = React.useCallback(

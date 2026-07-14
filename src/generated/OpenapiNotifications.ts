@@ -76,6 +76,7 @@ export module Schemas {
 
   export const DrawerEntryPayload = zodSchemaDrawerEntryPayload();
   export type DrawerEntryPayload = {
+    application?: string | undefined | null;
     bundle?: string | undefined | null;
     created?: LocalDateTime | undefined | null;
     description?: string | undefined | null;
@@ -341,6 +342,7 @@ export module Schemas {
   function zodSchemaDrawerEntryPayload() {
     return z
       .object({
+        application: z.string().optional().nullable(),
         bundle: z.string().optional().nullable(),
         created: zodSchemaLocalDateTime().optional().nullable(),
         description: z.string().optional().nullable(),

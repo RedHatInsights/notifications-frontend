@@ -72,9 +72,10 @@ test.describe('Behavior Group Lifecycle', () => {
     const initialGroupName = generateBehaviorGroupName(bundleName);
     const updatedGroupName = `${initialGroupName}-edited`;
 
-    // Step 1: Navigate to notifications page
-    await page.goto(NOTIFICATIONS_PATH, { waitUntil: 'domcontentloaded' });
-    await expect(page).toHaveURL(new RegExp(`notifications`));
+    // Step 1: Navigate directly to Configure Events page
+    await page.goto(`${NOTIFICATIONS_PATH}/configure-events?bundle=${bundleName}`, {
+      waitUntil: 'domcontentloaded',
+    });
 
     const acceptCookies = page
       .getByRole('button', { name: 'Accept all' })
@@ -83,13 +84,10 @@ test.describe('Behavior Group Lifecycle', () => {
       await acceptCookies.click();
     }
 
-    // Step 2: Navigate to Configure Events
-    const configureEventsLink = page
-      .locator('a:has-text("Configure Events"), button:has-text("Configure Events")')
-      .first();
-    await configureEventsLink.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
-    await configureEventsLink.click();
-    await page.waitForLoadState('domcontentloaded');
+    // Verify the page loaded
+    await expect(page.getByRole('heading', { name: 'Configure Events' })).toBeVisible({
+      timeout: TIMEOUTS.PAGE_LOAD,
+    });
 
     // Step 3: Navigate to Behavior Groups tab
     const behaviorGroupsTab = page

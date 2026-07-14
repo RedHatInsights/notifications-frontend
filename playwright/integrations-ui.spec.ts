@@ -115,7 +115,8 @@ test.describe('Webhook Integration Lifecycle', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Dual-timeout strategy: fast check (5s) → reload if needed → full retry (30s)
-    const heading = page.getByRole('heading', { name: 'Integrations' });
+    // Use exact: true to avoid strict mode violation (multiple "Integrations" headings exist)
+    const heading = page.getByRole('heading', { name: 'Integrations', exact: true });
     if (!(await heading.isVisible({ timeout: 5000 }))) {
       await page.reload();
       await page.waitForLoadState('domcontentloaded');
@@ -204,7 +205,8 @@ test.describe('Communication Integration Lifecycle', () => {
     await page.waitForLoadState('domcontentloaded');
 
     // Dual-timeout strategy: fast check (5s) → reload if needed → full retry (30s)
-    const heading = page.getByRole('heading', { name: 'Integrations' });
+    // Use exact: true to avoid strict mode violation (multiple "Integrations" headings exist)
+    const heading = page.getByRole('heading', { name: 'Integrations', exact: true });
     if (!(await heading.isVisible({ timeout: 5000 }))) {
       await page.reload();
       await page.waitForLoadState('domcontentloaded');

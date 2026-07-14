@@ -39,8 +39,7 @@ const notificationDrawerData: NotificationData[] = [
 const DrawerLayout = ({ markAll = false }: { markAll?: boolean }) => {
   const drawerPanelRef = useRef<HTMLDivElement>(null);
   const [isExpanded, setIsExpanded] = useState(false);
-  const { initialize, addNotification, setHasNotificationsPermissions } =
-    DrawerSingleton.Instance;
+  const { initialize, addNotification, setHasNotificationsPermissions } = DrawerSingleton.Instance;
   const toggleDrawer = () => setIsExpanded((prev) => !prev);
   const notificationProps = {
     panelRef: drawerPanelRef,

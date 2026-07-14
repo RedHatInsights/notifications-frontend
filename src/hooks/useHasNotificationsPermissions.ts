@@ -24,7 +24,6 @@ export const useV1HasNotificationsPermissions = (): boolean | undefined => {
 
 export const useV2HasNotificationsPermissions = (): boolean | undefined => {
   const { permissions, isLoading, workspaceId } = useKesselRbacAccess();
-  console.log('DEBUG permissions', permissions);
 
   if (isLoading) {
     return undefined;
