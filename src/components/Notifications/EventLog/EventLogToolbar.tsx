@@ -17,6 +17,7 @@ import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/Fil
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
+import { useIntl } from 'react-intl';
 
 import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -41,6 +42,7 @@ import {
 import { usePrimaryToolbarFilterConfigWrapper } from './usePrimaryToolbarFilterConfigWrapper';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { ColumnsMetada } from '../../../utils/insights-common-typescript';
+import messages from '../../../properties/DefinedMessages';
 
 interface EventLogToolbarProps extends OuiaProps {
   filters: EventLogFilters;
@@ -140,6 +142,7 @@ const actionStatusMetadata = [
 export const EventLogToolbar: React.FunctionComponent<
   React.PropsWithChildren<EventLogToolbarProps>
 > = (props) => {
+  const intl = useIntl();
   const notifications = useNotifications();
   const integrations = useIntegrations();
   const severitiesQuery = useGetSeverities();
@@ -287,16 +290,16 @@ export const EventLogToolbar: React.FunctionComponent<
             />
             {props.isOrgAdmin ? (
               <Checkbox
-                label="Only show events impacting me"
+                label={intl.formatMessage(messages.eventLogOnlyImpactingMe)}
                 isChecked={props.onlyImpactingMe}
                 onChange={(_e, checked) => props.setOnlyImpactingMe(checked)}
                 id="only-impacting-me"
               />
             ) : (
-              <Tooltip content="Org admin access required to view all organization events">
+              <Tooltip content={intl.formatMessage(messages.eventLogOrgAdminRequired)}>
                 <span>
                   <Checkbox
-                    label="Only show events impacting me"
+                    label={intl.formatMessage(messages.eventLogOnlyImpactingMe)}
                     isChecked={true}
                     isDisabled={true}
                     id="only-impacting-me"

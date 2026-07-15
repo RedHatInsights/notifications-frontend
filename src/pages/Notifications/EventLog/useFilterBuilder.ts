@@ -12,7 +12,8 @@ const DATE_FORMAT = 'yyyy-MM-dd';
 export const useFilterBuilder = (
   bundles: ReadonlyArray<Facet>,
   dateFilter: EventLogDateFilterValue,
-  period: EventPeriod
+  period: EventPeriod,
+  onlyImpactingMe?: boolean
 ) => {
   return useCallback(
     (filters?: EventLogFilters) => {
@@ -104,8 +105,12 @@ export const useFilterBuilder = (
         filter.and('end', Operator.EQUAL, format(filterPeriod[1], DATE_FORMAT));
       }
 
+      if (onlyImpactingMe !== undefined) {
+        filter.and('onlyImpactingMe', Operator.EQUAL, String(onlyImpactingMe));
+      }
+
       return filter;
     },
-    [bundles, dateFilter, period]
+    [bundles, dateFilter, period, onlyImpactingMe]
   );
 };

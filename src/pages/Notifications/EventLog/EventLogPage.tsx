@@ -3,6 +3,7 @@ import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { useParameterizedQuery } from 'react-fetching-library';
+import { useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
@@ -19,6 +20,7 @@ import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
+import definedMessages from '../../../properties/DefinedMessages';
 import { linkTo } from '../../../Routes';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
 import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
@@ -32,6 +34,7 @@ import { Direction, Sort } from '../../../utils/insights-common-typescript';
 const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
+  const intl = useIntl();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
   const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
   const getEndpoint = useParameterizedQuery(getEndpointAction);
@@ -69,7 +72,7 @@ export const EventLogPage: React.FunctionComponent = () => {
     [setSortDirection, setSortColumn]
   );
 
-  const filterBuilder = useFilterBuilder(bundles, dateFilter, period);
+  const filterBuilder = useFilterBuilder(bundles, dateFilter, period, onlyImpactingMe);
 
   const sort: Sort = React.useMemo(() => {
     const direction = sortDirection.toUpperCase() as Direction;
@@ -188,10 +191,9 @@ export const EventLogPage: React.FunctionComponent = () => {
           <Alert
             variant="info"
             isInline
-            title="Events are being filtered out due to your privileges"
+            title={intl.formatMessage(definedMessages.eventLogFilteredAlertTitle)}
           >
-            You are only seeing event instances that you have been given access to see. If you need
-            see all events for your entire organization, contact your org admin.
+            {intl.formatMessage(definedMessages.eventLogFilteredAlertBody)}
           </Alert>
         )}
         <EventLogTable
