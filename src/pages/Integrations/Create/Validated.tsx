@@ -24,7 +24,9 @@ export const validated = (_, { meta }) => {
       // FF sometimes does not set validating to 'false' on the field
       // So we need to also check the FormSpy.validating
       helperText: (
-        <FormSpy>{({ validating }) => <ValidatingSpinner validating={validating} />}</FormSpy>
+        <FormSpy>
+          {({ validating }) => <ValidatingSpinner validating={validating ?? false} />}
+        </FormSpy>
       ),
     };
   }

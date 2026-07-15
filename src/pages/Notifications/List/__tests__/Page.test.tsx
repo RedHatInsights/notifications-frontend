@@ -426,6 +426,8 @@ describe('src/pages/Notifications/List/Page', () => {
   it('Shows loading when loading bundles', async () => {
     let resolve: any;
     mockFacets(new Promise((_resolve) => (resolve = _resolve)), null);
+    mockEventTypes();
+    mockBehaviorGroup();
     render(
       <VerboseErrorBoundary>
         <BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />
@@ -446,6 +448,8 @@ describe('src/pages/Notifications/List/Page', () => {
   it('Shows loading when loading applications', async () => {
     let resolve: any;
     mockFacets(undefined, new Promise((_resolve) => (resolve = _resolve)));
+    mockEventTypes();
+    mockBehaviorGroup();
 
     render(
       <VerboseErrorBoundary>
@@ -565,6 +569,44 @@ describe('src/pages/Notifications/List/Page', () => {
       expect(queryAllByLabelText(table, /cancel/).length).toBe(0);
       expect(queryAllByLabelText(table, /done/).length).toBe(0);
     });
+  });
+
+  it('Without read permissions shows page structure, not full-page block', async () => {
+    mockEventTypes(defaultEventTypeId);
+    mockFacets();
+    mockBehaviorGroup();
+    mockBehaviorGroupsOfEventTypes();
+
+    fetchMock.get(
+      (urlString: string) => {
+        const url = new URL(urlString, 'http://dummy-url.com');
+        return url.pathname === '/api/notifications/v1.0/notifications/eventTypes';
+      },
+      {
+        status: 403,
+        body: { message: 'Forbidden' },
+      },
+      { overwriteRoutes: true }
+    );
+
+    render(<BundlePageBehaviorGroupContent applications={applications} bundle={bundle} />, {
+      wrapper: getConfiguredAppWrapper({
+        appContext: {
+          rbac: {
+            canReadNotifications: false,
+            canWriteNotifications: false,
+            canReadIntegrationsEndpoints: false,
+            canWriteIntegrationsEndpoints: false,
+            canReadEvents: false,
+          },
+        },
+      }),
+    });
+    await waitForAsyncEvents();
+
+    expect(screen.queryByText(/You do not have access to Notifications/i)).not.toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Configuration/i })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: /Behavior Groups/i })).toBeInTheDocument();
   });
 
   it('Without write permissions edit notification is disabled', async () => {
