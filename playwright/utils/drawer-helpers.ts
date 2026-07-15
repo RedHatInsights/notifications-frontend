@@ -76,13 +76,14 @@ export const drawerHelpers = {
     await filterToggle.click();
   },
 
-  /** Reset all active filters via the "Reset filters" button inside the filter dropdown. */
+  /** Reset all active filters via the "Reset filters" link inside the filter dropdown. */
   async resetFilters(page: Page): Promise<void> {
     const filterToggle = page.locator('#notifications-filter-toggle');
     await filterToggle.click();
-    const resetBtn = page.getByRole('menuitem', { name: 'Reset filters' });
+    const resetBtn = page.getByText('Reset filters');
     await resetBtn.click();
-    // Wait for dropdown to close after reset
+    // Close the dropdown (it doesn't auto-close on reset)
+    await filterToggle.click();
     await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({ timeout: 5000 });
   },
 
@@ -106,14 +107,14 @@ export const drawerHelpers = {
     await markItem.click();
   },
 
-  /** Open the per-notification kebab and click "Manage this event". */
+  /** Open the per-notification kebab and click "Manage event configuration". */
   async clickManageEvent(page: Page, notificationLocator: Locator): Promise<void> {
     const kebab = notificationLocator.locator('#notification-item-toggle');
     await kebab.click();
     await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
     const manageItem = page
       .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: 'Manage this event' });
+      .getByRole('menuitem', { name: 'Manage event configuration' });
     await manageItem.click();
   },
 
@@ -225,21 +226,21 @@ export const drawerHelpers = {
     }
   },
 
-  /** Open the actions dropdown and click "Mark selected as read". */
+  /** Open the actions dropdown and click "Mark selected (N) as read". */
   async markSelectedAsRead(page: Page): Promise<void> {
     await this.openActionsDropdown(page);
     const item = page
       .locator('#notifications-actions-dropdown')
-      .getByRole('menuitem', { name: 'Mark selected as read' });
+      .getByRole('menuitem', { name: /Mark selected.*as read/ });
     await item.click();
   },
 
-  /** Open the actions dropdown and click "Mark selected as unread". */
+  /** Open the actions dropdown and click "Mark selected (N) as unread". */
   async markSelectedAsUnread(page: Page): Promise<void> {
     await this.openActionsDropdown(page);
     const item = page
       .locator('#notifications-actions-dropdown')
-      .getByRole('menuitem', { name: 'Mark selected as unread' });
+      .getByRole('menuitem', { name: /Mark selected.*as unread/ });
     await item.click();
   },
 

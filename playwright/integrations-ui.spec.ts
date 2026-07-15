@@ -22,13 +22,12 @@ test.describe('Integrations Navigation', () => {
     await ensureLoggedIn(page);
   });
 
-  test.skip('should navigate across all tabs', async ({ page }) => {
-    /**
-     * SKIPPED: Tab clicks currently clear the category URL parameter
-     * This test verifies the correct behavior (URL should update with category param)
-     * Once RHCLOUD-48620 is fixed, remove the .skip to enable this test
-     * See: https://redhat.atlassian.net/browse/RHCLOUD-48620
-     */
+  test('should navigate across all tabs', async ({ page }) => {
+    // RHCLOUD-48620: chrome tab clicks don't reliably set ?category= URL param.
+    // Marked as expected failure until the chrome fix lands — when it passes,
+    // Playwright will flag it so we can remove test.fail().
+    test.fail();
+
     // Navigate to integrations page
     await page.goto(INTEGRATIONS_PATH);
     await page.waitForLoadState('domcontentloaded');
@@ -59,8 +58,8 @@ test.describe('Integrations Navigation', () => {
       await expect(communicationsTab).toBeVisible({ timeout: 5000 });
       await communicationsTab.click();
       await page.waitForLoadState('domcontentloaded');
-      await expect(page).toHaveURL(/settings\/integrations\?.*category=Communications/);
       await expect(communicationsTab).toHaveAttribute('aria-selected', 'true');
+      await expect(page).toHaveURL(/settings\/integrations\?.*category=Communications/);
     });
 
     // Test: Navigate to Reporting tab
@@ -71,8 +70,8 @@ test.describe('Integrations Navigation', () => {
       await expect(reportingTab).toBeVisible({ timeout: 5000 });
       await reportingTab.click();
       await page.waitForLoadState('domcontentloaded');
-      await expect(page).toHaveURL(/settings\/integrations\?.*category=Reporting/);
       await expect(reportingTab).toHaveAttribute('aria-selected', 'true');
+      await expect(page).toHaveURL(/settings\/integrations\?.*category=Reporting/);
     });
 
     // Test: Navigate to Webhooks tab
@@ -83,8 +82,8 @@ test.describe('Integrations Navigation', () => {
       await expect(webhooksTab).toBeVisible({ timeout: 5000 });
       await webhooksTab.click();
       await page.waitForLoadState('domcontentloaded');
-      await expect(page).toHaveURL(/settings\/integrations\?.*category=Webhooks/);
       await expect(webhooksTab).toHaveAttribute('aria-selected', 'true');
+      await expect(page).toHaveURL(/settings\/integrations\?.*category=Webhooks/);
     });
   });
 });
