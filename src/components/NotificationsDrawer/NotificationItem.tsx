@@ -44,8 +44,18 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const intl = useIntl();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const onCheckboxToggle = () =>
+  const onCheckboxToggle = (e: React.FormEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     updateNotificationSelected(notification.id, !notification.selected);
+  };
+
+  const onNotificationClick = () => {
+    const url = `/settings/notifications/user-preferences?${new URLSearchParams({
+      bundle: notification.bundle,
+      ...(notification.application && { app: notification.application }),
+    }).toString()}`;
+    window.location.href = url;
+  };
 
   const onMarkAsRead = () => {
     updateNotificationReadStatus({
@@ -135,6 +145,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       aria-label={`Notification item ${notification.title}`}
       variant="info"
       isRead={notification.read}
+      onClick={onNotificationClick}
+      style={{ cursor: 'pointer' }}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
         <Checkbox
@@ -148,7 +160,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             <MenuToggle
               ref={toggleRef}
               aria-label="Notification actions dropdown"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDropdownOpen(!isDropdownOpen);
+              }}
               id="notification-item-toggle"
               isExpanded={isDropdownOpen}
               variant="plain"
