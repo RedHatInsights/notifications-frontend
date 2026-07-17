@@ -25,6 +25,9 @@ export default defineConfig({
   // Reporter to use
   reporter: 'html',
 
+  // Authenticate once via shared SSO helper, reuse session across all tests
+  globalSetup: require.resolve('@redhat-cloud-services/playwright-test-auth/global-setup'),
+
   // Shared settings for all the projects below
   use: {
     // PLAYWRIGHT_BASE_URL overrides for local runs against stage; default is the dev proxy (Konflux E2E rules)
@@ -44,7 +47,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // Reuse authenticated state from global setup
+        storageState: 'playwright/.auth/user.json',
+      },
     },
   ],
 });

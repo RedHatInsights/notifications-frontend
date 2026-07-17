@@ -1,5 +1,5 @@
 import { type Page, expect, test } from '@playwright/test';
-import { TIMEOUTS, ensureLoggedIn } from './test-utils';
+import { TIMEOUTS, disableCookiePrompt } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -21,7 +21,8 @@ import { drawerHelpers } from './utils/drawer-helpers';
  */
 test.describe('Notification Item — Read/Unread Visual Changes', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
+    await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
       timeout: TIMEOUTS.PAGE_LOAD,

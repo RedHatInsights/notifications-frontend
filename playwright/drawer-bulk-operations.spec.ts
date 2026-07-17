@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ensureLoggedIn } from './test-utils';
+import { disableCookiePrompt } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -15,7 +15,8 @@ import { drawerHelpers } from './utils/drawer-helpers';
  */
 test.describe('Notifications Drawer — Bulk Operations', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
+    await page.goto('/', { waitUntil: 'load', timeout: 60000 });
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
       timeout: 60000,

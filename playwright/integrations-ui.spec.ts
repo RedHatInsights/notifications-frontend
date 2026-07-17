@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { INTEGRATIONS_PATH, dismissCookieConsent, ensureLoggedIn } from './test-utils';
+import { INTEGRATIONS_PATH, disableCookiePrompt, dismissCookieConsent } from './test-utils';
 import { generateCommunicationPayload, generateWebhookPayload } from './utils/data-generators';
 import { deleteIntegration, fillCommunicationForm, fillWebhookForm } from './utils/form-helpers';
 
@@ -19,7 +19,7 @@ import { deleteIntegration, fillCommunicationForm, fillWebhookForm } from './uti
 
 test.describe('Integrations Navigation', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test.skip('should navigate across all tabs', async ({ page }) => {
@@ -95,7 +95,7 @@ test.describe('Integrations Navigation', () => {
 
 test.describe('Webhook Integration Lifecycle', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test('should create, verify, and delete webhook integration', async ({ page }) => {
@@ -185,7 +185,7 @@ test.describe('Webhook Integration Lifecycle', () => {
 
 test.describe('Communication Integration Lifecycle', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test('should create, verify, and delete Slack integration', async ({ page }) => {

@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { INTEGRATIONS_PATH, NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
+import { INTEGRATIONS_PATH, NOTIFICATIONS_PATH, disableCookiePrompt } from './test-utils';
 
 /**
  * Example E2E test for notifications-frontend
@@ -9,8 +9,7 @@ import { INTEGRATIONS_PATH, NOTIFICATIONS_PATH, ensureLoggedIn } from './test-ut
  */
 test.describe('Notifications Frontend', () => {
   test.beforeEach(async ({ page }) => {
-    // Ensure user is logged in before each test
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test('should load the notifications page', async ({ page }) => {

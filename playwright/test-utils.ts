@@ -1,4 +1,22 @@
-import { Page, expect } from '@playwright/test';
+/**
+ * Re-export shared auth utilities from @redhat-cloud-services/playwright-test-auth.
+ * Authentication is handled globally via globalSetup + storageState in playwright.config.ts.
+ * Individual tests only need `disableCookiePrompt` to prevent cookie banners from interfering.
+ */
+import type { Page } from '@playwright/test';
+
+export { disableCookiePrompt } from '@redhat-cloud-services/playwright-test-auth';
+
+/** Dismiss cookie consent banner if visible (belt-and-suspenders alongside disableCookiePrompt). */
+export async function dismissCookieConsent(page: Page): Promise<void> {
+  const acceptCookies = page
+    .getByRole('button', { name: 'Accept all' })
+    .or(page.getByRole('button', { name: 'Accept' }));
+  if (await acceptCookies.isVisible({ timeout: 2000 }).catch(() => false)) {
+    await acceptCookies.click();
+    await page.waitForTimeout(500);
+  }
+}
 
 /** Paths relative to `use.baseURL` in playwright.config.ts */
 export const NOTIFICATIONS_PATH = '/settings/notifications';
@@ -27,101 +45,3 @@ export const TIMEOUTS = {
   /** Spinner disappearance after data load. */
   SPINNER_GONE: 30_000,
 } as const;
-
-function isTrustArcHost(hostname: string): boolean {
-  return hostname === 'trustarc.com' || hostname.endsWith('.trustarc.com');
-}
-
-/**
- * Block TrustArc consent iframes/overlays (consent.trustarc.com, consent-pref.trustarc.com, …).
- * Must run before the first navigation so the overlay never loads (CI: iframe intercepts SSO clicks).
- */
-export async function disableCookiePrompt(page: Page) {
-  await page.route('**/*', async (route, request) => {
-    try {
-      const url = new URL(request.url());
-      if (isTrustArcHost(url.hostname)) {
-        await route.abort();
-      } else {
-        await route.continue();
-      }
-    } catch {
-      await route.continue();
-    }
-  });
-}
-
-/** Best-effort DOM cleanup if TrustArc slipped through before routes applied. */
-async function removeTrustArcOverlay(page: Page) {
-  await page
-    .evaluate(() => {
-      document
-        .querySelectorAll('.truste_box_overlay, iframe[name="trustarc_cm"], iframe.truste_popframe')
-        .forEach((el) => el.remove());
-    })
-    .catch(() => undefined);
-}
-
-/** Dismiss cookie consent banner if visible */
-export async function dismissCookieConsent(page: Page): Promise<void> {
-  const acceptCookies = page
-    .getByRole('button', { name: 'Accept all' })
-    .or(page.getByRole('button', { name: 'Accept' }));
-  if (await acceptCookies.isVisible({ timeout: 2000 }).catch(() => false)) {
-    await acceptCookies.click();
-    await page.waitForTimeout(500);
-  }
-}
-
-export async function login(page: Page, user: string, password: string): Promise<void> {
-  await expect(page.locator('text=Lockdown'), 'proxy config incorrect').toHaveCount(0);
-
-  await removeTrustArcOverlay(page);
-
-  await page.getByLabel('Red Hat login').first().fill(user);
-  await page.getByRole('button', { name: 'Next' }).click();
-
-  await page.getByLabel('Password').first().fill(password);
-  await page.getByRole('button', { name: 'Log in' }).click();
-
-  await expect(page.getByText('Invalid login')).not.toBeVisible();
-}
-
-/**
- * Ensure user is logged in before running tests.
- *
- * Navigates to "/" and checks whether the user is already authenticated.
- * If not (SSO redirect), performs a full login flow.
- */
-export async function ensureLoggedIn(page: Page): Promise<void> {
-  await disableCookiePrompt(page);
-
-  await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
-
-  let loggedIn = false;
-  try {
-    await expect(page.getByText('Hi,')).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
-    loggedIn = true;
-  } catch {
-    // Not logged in — proceed with login flow
-  }
-
-  if (!loggedIn) {
-    const user = process.env.E2E_USER!;
-    const password = process.env.E2E_PASSWORD!;
-    await page.waitForLoadState('load');
-    await expect(page.getByLabel('Red Hat login')).toBeVisible({
-      timeout: TIMEOUTS.API_RESPONSE,
-    });
-    await removeTrustArcOverlay(page);
-    await login(page, user, password);
-    await page.waitForLoadState('load');
-    await expect(
-      page.getByRole('button', { name: 'Add widgets' }),
-      'dashboard not displayed'
-    ).toBeVisible({ timeout: TIMEOUTS.DRAWER_READY });
-
-    // Dismiss cookie consent if present
-    await dismissCookieConsent(page);
-  }
-}

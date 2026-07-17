@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { ensureLoggedIn } from './test-utils';
+import { disableCookiePrompt } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -15,7 +15,8 @@ import { drawerHelpers } from './utils/drawer-helpers';
  */
 test.describe('Notifications Drawer — Basic Usage', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
+    await page.goto('/', { waitUntil: 'load', timeout: 60000 });
     // Wait for the bell to appear (chrome must be fully loaded)
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',

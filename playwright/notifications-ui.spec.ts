@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
+import { NOTIFICATIONS_PATH, disableCookiePrompt } from './test-utils';
 import { TIMEOUTS } from './test-constants';
 import { generateBehaviorGroupName } from './utils/data-generators';
 import { clickCardAction, fillBehaviorGroupForm } from './utils/form-helpers';
@@ -22,7 +22,7 @@ const BUNDLES = ['rhel', 'console', 'openshift', 'ansible'];
 
 test.describe('Notifications Bundle Navigation', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test('should navigate to each bundle and Configure Events', async ({ page }) => {
@@ -54,7 +54,7 @@ test.describe('Notifications Bundle Navigation', () => {
 
 test.describe('Behavior Group Lifecycle', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test('should create, edit, and delete behavior group for RHEL', async ({ page }) => {
@@ -171,7 +171,7 @@ test.describe('Behavior Group Lifecycle', () => {
 
 test.describe('Events Log', () => {
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    await disableCookiePrompt(page);
   });
 
   test('should display events log page', async ({ page }) => {
