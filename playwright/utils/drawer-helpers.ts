@@ -160,7 +160,10 @@ export const drawerHelpers = {
 
   /** Locator for the BulkSelect toggle button (FEC BulkSelect). */
   bulkSelectToggle(page: Page): Locator {
-    return page.locator('[data-ouia-component-id="BulkSelect"]');
+    // FEC BulkSelect renders a single MenuToggle <button> (not split-button).
+    // Use element+attribute selector to match only the button, not the Menu
+    // which also carries the same data-ouia-component-id.
+    return page.locator('button[data-ouia-component-id="BulkSelect"]');
   },
 
   /** Click the BulkSelect main checkbox (toggle all/none). */
@@ -174,10 +177,11 @@ export const drawerHelpers = {
     const toggle = this.bulkSelectToggle(page);
     await toggle.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-    // Click the split-button toggle (the button portion, not the checkbox).
-    // In PF6 split-button MenuToggle, the caret is inside a nested button element.
-    const caretButton = toggle.locator('button').last();
-    await caretButton.click();
+    // FEC BulkSelect renders MenuToggleCheckbox as children (not splitButtonItems),
+    // so PF6 renders a single <button> — no nested caret button exists.
+    // Click the controls/caret area to open the dropdown without toggling the checkbox.
+    const caret = toggle.locator('.pf-v6-c-menu-toggle__controls');
+    await caret.click();
 
     // Wait for the menu to open by checking for visible menu items (portal-safe)
     await page

@@ -348,7 +348,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    const bulkSelect = page.locator('[data-ouia-component-id="BulkSelect"]');
+    const bulkSelect = drawerHelpers.bulkSelectToggle(page);
     await expect(bulkSelect).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
     console.log('Bulk select control present');
   });
