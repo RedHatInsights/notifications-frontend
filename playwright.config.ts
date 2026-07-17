@@ -20,6 +20,9 @@ export default defineConfig({
   // Retry on CI only
   retries: process.env.CI ? 2 : 0,
 
+  // Fail fast — stop the run after 2 failures to avoid long waits (PR #971 review feedback)
+  maxFailures: process.env.CI ? 2 : 0,
+
   workers: 1,
 
   // Reporter to use
