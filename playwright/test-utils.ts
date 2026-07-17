@@ -38,8 +38,8 @@ export const TIMEOUTS = {
   PAGE_LOAD: 60_000,
   /** Drawer / panel animation + data fetch. */
   DRAWER_READY: 30_000,
-  /** Dropdown, tooltip, popover visibility. */
-  ELEMENT_VISIBLE: 5_000,
+  /** Dropdown, tooltip, popover visibility — generous for CI resource limits. */
+  ELEMENT_VISIBLE: 10_000,
   /** Server-side state change round-trip (mark read, bulk ops). */
   API_RESPONSE: 10_000,
   /** Spinner disappearance after data load. */

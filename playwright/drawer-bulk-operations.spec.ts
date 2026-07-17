@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { disableCookiePrompt } from './test-utils';
+import { TIMEOUTS, disableCookiePrompt } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -16,10 +16,10 @@ import { drawerHelpers } from './utils/drawer-helpers';
 test.describe('Notifications Drawer — Bulk Operations', () => {
   test.beforeEach(async ({ page }) => {
     await disableCookiePrompt(page);
-    await page.goto('/', { waitUntil: 'load', timeout: 60000 });
+    await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
   });
 
@@ -96,7 +96,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Verify all checkboxes are checked
     for (let i = 0; i < count; i++) {
       const checkbox = drawerHelpers.notificationCheckbox(items.nth(i));
-      await expect(checkbox).toBeChecked({ timeout: 3000 });
+      await expect(checkbox).toBeChecked({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
     }
 
     // Verify the bulk select checkbox itself is fully checked
@@ -128,7 +128,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Verify all checkboxes are unchecked
     for (let i = 0; i < Math.min(count, 5); i++) {
       const checkbox = drawerHelpers.notificationCheckbox(items.nth(i));
-      await expect(checkbox).not.toBeChecked({ timeout: 3000 });
+      await expect(checkbox).not.toBeChecked({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
     }
 
     // Verify count is 0
@@ -291,7 +291,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Wait for filter to apply (web-first assertion instead of fixed delay)
     const filteredItems = drawerHelpers.notificationItems(page);
     await expect
-      .poll(() => filteredItems.count(), { timeout: 10_000 })
+      .poll(() => filteredItems.count(), { timeout: TIMEOUTS.API_RESPONSE })
       .toBeLessThanOrEqual(totalCount);
     const filteredCount = await filteredItems.count();
 
@@ -375,7 +375,9 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Step 3: Mark selected as read
     await drawerHelpers.markSelectedAsRead(page);
     await expect
-      .poll(() => drawerHelpers.isNotificationRead(items.first()), { timeout: 10000 })
+      .poll(() => drawerHelpers.isNotificationRead(items.first()), {
+        timeout: TIMEOUTS.API_RESPONSE,
+      })
       .toBe(true);
 
     // Step 4: Verify first notification is now read

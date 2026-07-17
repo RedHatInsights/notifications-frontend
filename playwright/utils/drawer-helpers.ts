@@ -1,18 +1,20 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { TIMEOUTS } from '../test-utils';
 
 /**
  * Helper utilities for interacting with the notifications drawer in E2E tests.
  *
- * Selectors are derived from the actual component source:
- *   - DrawerBell.tsx: NotificationBadge with aria-label="Notifications"
- *   - DrawerPanel.tsx: NotificationDrawerHeader with title="Notifications"
- *   - Dropdowns.tsx: filter/action dropdowns with specific IDs
- *   - NotificationItem.tsx: per-notification actions
+ * Selectors use semantic approaches (roles, aria-labels, data attributes)
+ * rather than PatternFly CSS classes for resilience across PF version upgrades.
+ *
+ * PF6 Dropdown menus render via Popper portal to document.body, so menuitem
+ * lookups use page-scoped `getByRole` instead of scoping to the dropdown
+ * container element.
  */
 export const drawerHelpers = {
   /** Locator for the notification bell button in the header toolbar. */
   bellButton(page: Page): Locator {
-    return page.locator('button[aria-label="Notifications"]');
+    return page.getByRole('button', { name: 'Notifications' });
   },
 
   /** Locator for the drawer panel (visible after opening). */
@@ -22,19 +24,17 @@ export const drawerHelpers = {
 
   /** Locator for the drawer header close button. */
   closeButton(page: Page): Locator {
-    return this.drawerPanel(page).locator(
-      'button.pf-v6-c-notification-drawer__header-action-close, button[aria-label="Close"]'
-    );
+    return this.drawerPanel(page).getByRole('button', { name: 'Close' });
   },
 
   /** Open the notifications drawer by clicking the bell icon. */
   async openDrawer(page: Page): Promise<void> {
     const bell = this.bellButton(page);
-    await bell.waitFor({ state: 'visible', timeout: 30000 });
+    await bell.waitFor({ state: 'visible', timeout: TIMEOUTS.DRAWER_READY });
     await bell.click();
     // Wait for the drawer header to appear
     await expect(this.drawerPanel(page).getByText('Notifications').first()).toBeVisible({
-      timeout: 15000,
+      timeout: TIMEOUTS.DRAWER_READY,
     });
   },
 
@@ -43,14 +43,17 @@ export const drawerHelpers = {
     const closeBtn = this.closeButton(page);
     if (await closeBtn.isVisible()) {
       await closeBtn.click();
-      await expect(this.drawerPanel(page)).not.toBeVisible({ timeout: 10000 });
+      await expect(this.drawerPanel(page)).not.toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
   },
 
   /** Return the unread notification count shown on the badge (0 if hidden). */
   async getUnreadCount(page: Page): Promise<number> {
     const bell = this.bellButton(page);
-    const badge = bell.locator('.pf-v6-c-notification-badge__count');
+    // PF6 NotificationBadge renders count inside a child span
+    const badge = bell.locator('span').filter({ hasText: /^\d+$/ });
     if (await badge.isVisible().catch(() => false)) {
       const text = await badge.textContent();
       return parseInt(text ?? '0', 10) || 0;
@@ -70,7 +73,7 @@ export const drawerHelpers = {
     const filterToggle = page.locator('#notifications-filter-toggle');
     await filterToggle.click();
     const filterItem = page.getByRole('menuitem', { name: filterName });
-    await filterItem.waitFor({ state: 'visible', timeout: 5000 });
+    await filterItem.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await filterItem.click();
     // Close the dropdown by clicking the toggle again
     await filterToggle.click();
@@ -80,10 +83,12 @@ export const drawerHelpers = {
   async resetFilters(page: Page): Promise<void> {
     const filterToggle = page.locator('#notifications-filter-toggle');
     await filterToggle.click();
-    const resetBtn = page.getByRole('menuitem', { name: 'Reset filters' });
+    const resetBtn = page.getByRole('button', { name: 'Reset filters' });
     await resetBtn.click();
     // Wait for dropdown to close after reset
-    await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
   },
 
   /**
@@ -94,26 +99,35 @@ export const drawerHelpers = {
     return page.locator('[aria-label^="Notification item"]');
   },
 
-  /** Open the per-notification kebab menu and click "Mark as read" or "Mark as unread". */
+  /**
+   * Open the per-notification kebab menu and click "Mark as read" or "Mark as unread".
+   *
+   * Uses page-scoped menuitem lookup because PF6 Dropdown renders via Popper
+   * portal — menu items are not DOM children of the dropdown container.
+   */
   async toggleReadStatus(page: Page, notificationLocator: Locator): Promise<void> {
-    const kebab = notificationLocator.locator('#notification-item-toggle');
+    const kebab = notificationLocator.getByRole('button', {
+      name: 'Notification actions dropdown',
+    });
     await kebab.click();
-    await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
-    // The menu item text is dynamic: "Mark as read" or "Mark as unread"
-    const markItem = page
-      .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: /Mark as/ });
+
+    // Wait for the kebab menu to render (portal)
+    const markItem = page.getByRole('menuitem', { name: /Mark as/ });
+    await markItem.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await markItem.click();
   },
 
-  /** Open the per-notification kebab and click "Manage this event". */
+  /** Open the per-notification kebab and click "Manage my event notifications". */
   async clickManageEvent(page: Page, notificationLocator: Locator): Promise<void> {
-    const kebab = notificationLocator.locator('#notification-item-toggle');
+    const kebab = notificationLocator.getByRole('button', {
+      name: 'Notification actions dropdown',
+    });
     await kebab.click();
-    await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
-    const manageItem = page
-      .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: 'Manage this event' });
+
+    const manageItem = page.getByRole('menuitem', {
+      name: 'Manage my event notifications',
+    });
+    await manageItem.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await manageItem.click();
   },
 
@@ -121,55 +135,55 @@ export const drawerHelpers = {
   async openActionsDropdown(page: Page): Promise<void> {
     const toggle = page.locator('#notifications-actions-toggle');
     await toggle.click();
-    await expect(page.locator('#notifications-actions-dropdown')).toBeVisible({ timeout: 5000 });
+    // Wait for a menuitem to appear (portal-safe)
+    await page
+      .getByRole('menuitem', { name: 'View event log' })
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
   },
 
   /** Click an item inside the actions dropdown by its visible text. */
   async clickActionItem(page: Page, itemText: string): Promise<void> {
     await this.openActionsDropdown(page);
-    const item = page
-      .locator('#notifications-actions-dropdown')
-      .getByRole('menuitem', { name: itemText });
+    const item = page.getByRole('menuitem', { name: itemText });
+    await item.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await item.click();
   },
 
   /** Wait for the drawer to finish loading (spinner gone). */
   async waitForDrawerReady(page: Page): Promise<void> {
-    // Wait until the spinner disappears — indicates data is loaded
-    await expect(this.drawerPanel(page).locator('.pf-v6-c-spinner')).not.toBeVisible({
-      timeout: 30000,
-    });
+    // PF6 Spinner renders with role="progressbar" — use semantic selector
+    const spinner = this.drawerPanel(page).getByRole('progressbar');
+    await expect(spinner).not.toBeVisible({ timeout: TIMEOUTS.SPINNER_GONE });
   },
 
   // ── Bulk selection helpers ─────────────────────────────────────────
 
-  /** Locator for the BulkSelect toggle button (FEC BulkSelect doesn't render the id prop). */
+  /** Locator for the BulkSelect toggle button (FEC BulkSelect). */
   bulkSelectToggle(page: Page): Locator {
-    return page.locator('button[data-ouia-component-id="BulkSelect"]');
+    return page.locator('[data-ouia-component-id="BulkSelect"]');
   },
 
   /** Click the BulkSelect main checkbox (toggle all/none). */
   async clickBulkSelectCheckbox(page: Page): Promise<void> {
-    const checkbox = this.bulkSelectToggle(page).locator('input[type="checkbox"]');
+    const checkbox = this.bulkSelectToggle(page).getByRole('checkbox');
     await checkbox.click();
   },
 
   /** Open the BulkSelect dropdown (the caret/arrow next to the checkbox). */
   async openBulkSelectDropdown(page: Page): Promise<void> {
     const toggle = this.bulkSelectToggle(page);
+    await toggle.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-    // Wait for the toggle button to be visible
-    await toggle.waitFor({ state: 'visible', timeout: 5000 });
+    // Click the split-button toggle (the button portion, not the checkbox).
+    // In PF6 split-button MenuToggle, the caret is inside a nested button element.
+    const caretButton = toggle.locator('button').last();
+    await caretButton.click();
 
-    // Click the toggle icon (caret) to open the menu, not the checkbox
-    const toggleIcon = toggle.locator('.pf-v6-c-menu-toggle__toggle-icon');
-    await toggleIcon.click();
-
-    // Wait for the menu to open by checking for visible menu items
+    // Wait for the menu to open by checking for visible menu items (portal-safe)
     await page
       .getByRole('menuitem', { name: /Select/ })
       .first()
-      .waitFor({ state: 'visible', timeout: 5000 });
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
   },
 
   /** Click "Select all (N)" in the bulk select dropdown. */
@@ -194,19 +208,19 @@ export const drawerHelpers = {
 
   /** Check if the BulkSelect checkbox is in indeterminate state. */
   async isBulkSelectIndeterminate(page: Page): Promise<boolean> {
-    const checkbox = this.bulkSelectToggle(page).locator('input[type="checkbox"]');
+    const checkbox = this.bulkSelectToggle(page).getByRole('checkbox');
     return checkbox.evaluate((el: HTMLInputElement) => el.indeterminate);
   },
 
   /** Check if the BulkSelect checkbox is fully checked. */
   async isBulkSelectChecked(page: Page): Promise<boolean> {
-    const checkbox = this.bulkSelectToggle(page).locator('input[type="checkbox"]');
+    const checkbox = this.bulkSelectToggle(page).getByRole('checkbox');
     return checkbox.isChecked();
   },
 
   /** Get the checkbox locator for a specific notification item. */
   notificationCheckbox(notificationLocator: Locator): Locator {
-    return notificationLocator.locator('input[type="checkbox"]');
+    return notificationLocator.getByRole('checkbox');
   },
 
   /** Select a specific notification by clicking its checkbox. */
@@ -228,18 +242,16 @@ export const drawerHelpers = {
   /** Open the actions dropdown and click "Mark selected as read". */
   async markSelectedAsRead(page: Page): Promise<void> {
     await this.openActionsDropdown(page);
-    const item = page
-      .locator('#notifications-actions-dropdown')
-      .getByRole('menuitem', { name: 'Mark selected as read' });
+    const item = page.getByRole('menuitem', { name: /Mark selected.*as read/ });
+    await item.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await item.click();
   },
 
   /** Open the actions dropdown and click "Mark selected as unread". */
   async markSelectedAsUnread(page: Page): Promise<void> {
     await this.openActionsDropdown(page);
-    const item = page
-      .locator('#notifications-actions-dropdown')
-      .getByRole('menuitem', { name: 'Mark selected as unread' });
+    const item = page.getByRole('menuitem', { name: /Mark selected.*as unread/ });
+    await item.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     await item.click();
   },
 

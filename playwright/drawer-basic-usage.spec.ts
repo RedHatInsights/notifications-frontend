@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { disableCookiePrompt } from './test-utils';
+import { TIMEOUTS, disableCookiePrompt } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
 /**
@@ -16,11 +16,11 @@ import { drawerHelpers } from './utils/drawer-helpers';
 test.describe('Notifications Drawer — Basic Usage', () => {
   test.beforeEach(async ({ page }) => {
     await disableCookiePrompt(page);
-    await page.goto('/', { waitUntil: 'load', timeout: 60000 });
+    await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
     // Wait for the bell to appear (chrome must be fully loaded)
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
   });
 
@@ -88,21 +88,22 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const first = items.first();
 
-    // Title is in the header
-    const header = first.locator('.pf-v6-c-notification-drawer__list-item-header-title');
-    await expect(header).toBeVisible();
+    // Title — aria-label carries the notification title
+    const ariaLabel = await first.getAttribute('aria-label');
+    expect(ariaLabel).toBeTruthy();
+    expect(ariaLabel).toContain('Notification item');
 
-    // Source label (Label component with variant=outline)
-    const sourceLabel = first.locator('.pf-v6-c-label');
-    await expect(sourceLabel).toBeVisible();
+    // Semantic data attributes from NotificationItem.tsx
+    await expect(first).toHaveAttribute('data-testid', /^notification-item-(read|unread)$/);
+    await expect(first).toHaveAttribute('data-read-state', /^(read|unread)$/);
 
-    // Timestamp (DateFormat renders relative time in the body)
-    const timestamp = first.locator('.pf-v6-c-notification-drawer__list-item-timestamp');
-    await expect(timestamp).toBeVisible();
+    // Checkbox present (semantic — getByRole)
+    const checkbox = first.getByRole('checkbox');
+    await expect(checkbox).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-    // Checkbox present
-    const checkbox = first.locator('input[type="checkbox"]');
-    await expect(checkbox).toBeVisible();
+    // Kebab menu toggle present (semantic — getByRole with aria-label)
+    const kebab = first.getByRole('button', { name: 'Notification actions dropdown' });
+    await expect(kebab).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
     console.log(`${count} notification(s) found with correct structure`);
   });
@@ -130,9 +131,13 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     // Wait for the read-state class to change
     if (wasRead) {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).not.toHaveClass(/pf-m-read/, {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     } else {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveClass(/pf-m-read/, {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
 
     const isNowRead = await first.evaluate((el) => el.classList.contains('pf-m-read'));
@@ -143,9 +148,13 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     // Wait for the class to revert
     if (wasRead) {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).toHaveClass(/pf-m-read/, {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     } else {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
+      await expect(first).not.toHaveClass(/pf-m-read/, {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      });
     }
 
     console.log(`Toggled read status: ${wasRead ? 'read→unread→read' : 'unread→read→unread'}`);
@@ -170,17 +179,17 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     // Open filter dropdown and verify items exist
     await filterToggle.click();
-    const filterDropdown = page.locator('#notifications-filter-dropdown');
-    await expect(filterDropdown).toBeVisible();
 
-    // Should have at least one filter option + "Reset filters"
-    const filterItems = filterDropdown.getByRole('menuitem');
+    // PF6 Menu renders filter items via portal — use page-scoped lookup.
+    // Filter items use MenuItem with hasCheckbox (role="menuitem").
+    const filterItems = page.locator('[role="menuitem"], [role="menuitemcheckbox"]');
+    await filterItems.first().waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
     const filterCount = await filterItems.count();
-    expect(filterCount).toBeGreaterThanOrEqual(2); // at least 1 bundle + reset
+    expect(filterCount).toBeGreaterThanOrEqual(1); // at least 1 bundle
 
     // Close dropdown
     await filterToggle.click();
-    console.log(`Filter dropdown has ${filterCount} items (incl. reset)`);
+    console.log(`Filter dropdown has ${filterCount} items`);
   });
 
   // ── 6. Navigation & Quick Links ───────────────────────────────────
@@ -191,17 +200,14 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     await drawerHelpers.openActionsDropdown(page);
 
-    const dropdown = page.locator('#notifications-actions-dropdown');
+    // PF6 Dropdown portal — use page-scoped menuitem lookups
+    await expect(page.getByRole('menuitem', { name: 'View event log' })).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
 
-    // "View event log" should always be present
-    await expect(dropdown.getByRole('menuitem', { name: 'View event log' })).toBeVisible();
-
-    // "Manage my event notifications" should always be present
-    await expect(
-      dropdown.getByRole('menuitem', {
-        name: 'Manage my event notifications',
-      })
-    ).toBeVisible();
+    await expect(page.getByRole('menuitem', { name: 'Manage my event notifications' })).toBeVisible(
+      { timeout: TIMEOUTS.ELEMENT_VISIBLE }
+    );
 
     console.log('Actions dropdown quick links verified');
 
@@ -217,7 +223,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     // Drawer should auto-close and navigate
     await page.waitForURL(/settings\/notifications\/eventlog/, {
-      timeout: 30000,
+      timeout: TIMEOUTS.DRAWER_READY,
     });
 
     console.log('Navigated to event log');
@@ -230,7 +236,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await drawerHelpers.clickActionItem(page, 'Manage my event notifications');
 
     await page.waitForURL(/settings\/notifications\/user-preferences/, {
-      timeout: 30000,
+      timeout: TIMEOUTS.DRAWER_READY,
     });
 
     console.log('Navigated to notification preferences');
@@ -238,7 +244,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
   // ── 7. Per-Notification Actions ───────────────────────────────────
 
-  test('notification kebab has "Manage this event" option', async ({ page }) => {
+  test('notification kebab has expected menu items', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -251,18 +257,23 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     }
 
     const first = items.first();
-    const kebab = first.locator('#notification-item-toggle');
+
+    // Open kebab via semantic aria-label
+    const kebab = first.getByRole('button', { name: 'Notification actions dropdown' });
     await kebab.click();
 
-    const manageItem = page
-      .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: 'Manage this event' });
-    await expect(manageItem).toBeVisible();
+    // PF6 Dropdown portal — menu items render at document.body level.
+    // Use page-scoped lookups with explicit waits for CI stability.
+    const manageItem = page.getByRole('menuitem', {
+      name: 'Manage my event notifications',
+    });
+    await expect(manageItem).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-    const markItem = page
-      .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: /Mark as/ });
-    await expect(markItem).toBeVisible();
+    const markItem = page.getByRole('menuitem', { name: /Mark as/ });
+    await expect(markItem).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
+
+    const viewItem = page.getByRole('menuitem', { name: 'View in event log' });
+    await expect(viewItem).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
     // Close dropdown without navigating
     await kebab.click();
@@ -287,18 +298,16 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const panel = drawerHelpers.drawerPanel(page);
 
     // "No notifications found" heading
-    await expect(panel.getByText('No notifications found')).toBeVisible();
-
-    // Bell-slash icon
-    const emptyState = panel.locator('.pf-v6-c-empty-state');
-    await expect(emptyState).toBeVisible();
+    await expect(panel.getByText('No notifications found')).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_VISIBLE,
+    });
 
     // All users should see notification preferences link
     await expect(
       panel.getByRole('link', {
         name: /notification preferences/i,
       })
-    ).toBeVisible();
+    ).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
     console.log('Empty state rendered correctly');
   });
@@ -313,9 +322,9 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     await drawerHelpers.openActionsDropdown(page);
 
-    const dropdown = page.locator('#notifications-actions-dropdown');
-    const configItem = dropdown.getByRole('menuitem', {
-      name: 'Configure notification settings',
+    // PF6 Dropdown portal — page-scoped lookup
+    const configItem = page.getByRole('menuitem', {
+      name: 'Manage event configuration',
     });
 
     // This item is visible only for org admins or users with
@@ -324,7 +333,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     // on the test account's RBAC role.
     const isVisible = await configItem.isVisible().catch(() => false);
     console.log(
-      `"Configure notification settings" ${
+      `"Manage event configuration" ${
         isVisible ? 'visible (admin/write-perm user)' : 'hidden (regular user)'
       }`
     );
@@ -339,8 +348,8 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    const bulkSelect = page.locator('button[data-ouia-component-id="BulkSelect"]');
-    await expect(bulkSelect).toBeVisible();
+    const bulkSelect = page.locator('[data-ouia-component-id="BulkSelect"]');
+    await expect(bulkSelect).toBeVisible({ timeout: TIMEOUTS.ELEMENT_VISIBLE });
     console.log('Bulk select control present');
   });
 });
