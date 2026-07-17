@@ -64,18 +64,21 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     // Ensure none selected initially
     await drawerHelpers.bulkSelectNone(page);
-    const initialCount = await drawerHelpers.getSelectedCount(page);
-    expect(initialCount).toBe(0);
+    await expect
+      .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(0);
 
     // Select first notification
     await drawerHelpers.selectNotification(items.first());
-    const afterSelect = await drawerHelpers.getSelectedCount(page);
-    expect(afterSelect).toBe(1);
+    await expect
+      .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(1);
 
     // Deselect to restore state
     await drawerHelpers.deselectNotification(items.first());
-    const afterDeselect = await drawerHelpers.getSelectedCount(page);
-    expect(afterDeselect).toBe(0);
+    await expect
+      .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(0);
 
     console.log('Selection count updates correctly with individual selection');
   });
@@ -100,12 +103,14 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     }
 
     // Verify the bulk select checkbox itself is fully checked
-    const isChecked = await drawerHelpers.isBulkSelectChecked(page);
-    expect(isChecked).toBe(true);
+    await expect
+      .poll(() => drawerHelpers.isBulkSelectChecked(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(true);
 
     // Verify count matches total
-    const selectedCount = await drawerHelpers.getSelectedCount(page);
-    expect(selectedCount).toBe(count);
+    await expect
+      .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(count);
 
     // Clean up: deselect all
     await drawerHelpers.bulkSelectNone(page);
@@ -132,8 +137,9 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     }
 
     // Verify count is 0
-    const selectedCount = await drawerHelpers.getSelectedCount(page);
-    expect(selectedCount).toBe(0);
+    await expect
+      .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(0);
 
     console.log('Bulk select none: all notifications deselected');
   });
@@ -156,12 +162,16 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.selectNotification(items.first());
 
     // The bulk select checkbox should be indeterminate (some selected, not all)
-    const isIndeterminate = await drawerHelpers.isBulkSelectIndeterminate(page);
-    expect(isIndeterminate).toBe(true);
+    await expect
+      .poll(() => drawerHelpers.isBulkSelectIndeterminate(page), {
+        timeout: TIMEOUTS.ELEMENT_VISIBLE,
+      })
+      .toBe(true);
 
     // Should not be fully checked
-    const isChecked = await drawerHelpers.isBulkSelectChecked(page);
-    expect(isChecked).toBe(false);
+    await expect
+      .poll(() => drawerHelpers.isBulkSelectChecked(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(false);
 
     // Clean up
     await drawerHelpers.bulkSelectNone(page);
@@ -299,8 +309,9 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       // Select all in filtered view
       await drawerHelpers.bulkSelectAll(page);
 
-      const selectedCount = await drawerHelpers.getSelectedCount(page);
-      expect(selectedCount).toBeGreaterThan(0);
+      await expect
+        .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+        .toBeGreaterThan(0);
 
       // Deselect all
       await drawerHelpers.bulkSelectNone(page);
@@ -311,8 +322,10 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     // After reset, total count should be restored
     const restoredItems = drawerHelpers.notificationItems(page);
+    await expect
+      .poll(() => restoredItems.count(), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBe(totalCount);
     const restoredCount = await restoredItems.count();
-    expect(restoredCount).toBe(totalCount);
 
     console.log(
       `Filter + selection workflow: ${totalCount} total → ${filteredCount} filtered → ${restoredCount} restored`
@@ -473,8 +486,9 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.clickBulkSelectCheckbox(page);
 
     // Verify some or all are now selected
-    const afterCheck = await drawerHelpers.getSelectedCount(page);
-    expect(afterCheck).toBeGreaterThan(0);
+    await expect
+      .poll(() => drawerHelpers.getSelectedCount(page), { timeout: TIMEOUTS.ELEMENT_VISIBLE })
+      .toBeGreaterThan(0);
 
     // Click again to deselect
     await drawerHelpers.clickBulkSelectCheckbox(page);

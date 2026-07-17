@@ -85,7 +85,9 @@ export const drawerHelpers = {
     await filterToggle.click();
     const resetBtn = page.getByRole('button', { name: 'Reset filters' });
     await resetBtn.click();
-    // Wait for dropdown to close after reset
+    // "Reset filters" clears the filter state but does NOT auto-close the
+    // dropdown — close it manually by clicking the toggle again.
+    await filterToggle.click();
     await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({
       timeout: TIMEOUTS.ELEMENT_VISIBLE,
     });
@@ -170,6 +172,16 @@ export const drawerHelpers = {
   async clickBulkSelectCheckbox(page: Page): Promise<void> {
     const checkbox = this.bulkSelectToggle(page).getByRole('checkbox');
     await checkbox.click();
+
+    // PF6 MenuToggleCheckbox click bubbles to the parent button's onClick,
+    // which toggles the dropdown open. Dismiss it with Escape if it opened.
+    const menuItem = page.getByRole('menuitem', { name: /Select/ }).first();
+    try {
+      await menuItem.waitFor({ state: 'visible', timeout: 1000 });
+      await page.keyboard.press('Escape');
+    } catch {
+      // Dropdown didn't open — nothing to dismiss
+    }
   },
 
   /** Open the BulkSelect dropdown (the caret/arrow next to the checkbox). */
@@ -177,17 +189,19 @@ export const drawerHelpers = {
     const toggle = this.bulkSelectToggle(page);
     await toggle.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
 
-    // FEC BulkSelect renders MenuToggleCheckbox as children (not splitButtonItems),
-    // so PF6 renders a single <button> — no nested caret button exists.
-    // Click the controls/caret area to open the dropdown without toggling the checkbox.
-    const caret = toggle.locator('.pf-v6-c-menu-toggle__controls');
-    await caret.click();
+    // Check if the dropdown is already open (e.g. from a prior checkbox click
+    // where PF6's click-bubble opened it unintentionally).
+    const menuItem = page.getByRole('menuitem', { name: /Select/ }).first();
+    if (!(await menuItem.isVisible().catch(() => false))) {
+      // FEC BulkSelect renders MenuToggleCheckbox as children (not splitButtonItems),
+      // so PF6 renders a single <button> — no nested caret button exists.
+      // Click the controls/caret area to open the dropdown without toggling the checkbox.
+      const caret = toggle.locator('.pf-v6-c-menu-toggle__controls');
+      await caret.click();
+    }
 
     // Wait for the menu to open by checking for visible menu items (portal-safe)
-    await page
-      .getByRole('menuitem', { name: /Select/ })
-      .first()
-      .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
+    await menuItem.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_VISIBLE });
   },
 
   /** Click "Select all (N)" in the bulk select dropdown. */
