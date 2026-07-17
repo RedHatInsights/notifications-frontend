@@ -189,4 +189,25 @@ export default defineMessages({
     defaultMessage:
       'You are only seeing event instances that you have been given access to see. If you need to see all events for your entire organization, contact your org admin.',
   },
+  markAsRead: {
+    id: 'markAsRead',
+    description: 'Mark notification as read',
+    defaultMessage: 'Mark as read',
+  },
+  markAsUnread: {
+    id: 'markAsUnread',
+    description: 'Mark notification as unread',
+    defaultMessage: 'Mark as unread',
+  },
+  viewInEventLog: {
+    id: 'viewInEventLog',
+    description: 'View in event log menu item',
+    defaultMessage: 'View in event log',
+  },
+  readOnlyEmailTooltip: {
+    id: 'readOnlyEmailTooltip',
+    description: 'Tooltip for read-only system email integrations',
+    defaultMessage:
+      'This email integration is managed by your organization administrator and cannot be modified.',
+  },
 });

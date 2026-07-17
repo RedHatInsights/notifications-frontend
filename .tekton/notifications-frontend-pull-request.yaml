@@ -57,21 +57,15 @@ spec:
         #!/bin/bash
         set -ex
 
-        # TODO: Re-enable e2e tests once SSO login issue is resolved
-        # See: https://github.com/RedHatInsights/notifications-frontend/pull/893
-        echo "E2E tests temporarily disabled - SSO login page element selectors need update"
-        echo "Skipping Playwright tests..."
-        exit 0
-
         # Wait for dev server to be ready
-        # timeout 120s bash -c 'until curl -k https://stage.foo.redhat.com:1337 > /dev/null 2>&1; do
-        #   echo "Waiting for dev server to be ready"
-        #   sleep 5
-        # done'
-        # echo "Dev server ready!"
+        timeout 120s bash -c 'until curl -fk https://stage.foo.redhat.com:1337 > /dev/null 2>&1; do
+          echo "Waiting for dev server to be ready"
+          sleep 5
+        done'
+        echo "Dev server ready!"
 
         # Run Playwright tests
-        # npx playwright test
+        npx playwright test
 
     # Run app script - start Caddy to serve app assets
     - name: run-app-script
@@ -83,7 +77,7 @@ spec:
 
     # E2E configuration
     - name: e2e-playwright-image
-      value: 'mcr.microsoft.com/playwright:v1.58.2-jammy'
+      value: 'mcr.microsoft.com/playwright:v1.61.1-jammy'
 
     - name: frontend-proxy-routes-configmap
       value: 'notifications-frontend-dev-proxy-caddyfile'

@@ -98,12 +98,13 @@ const SelectableTable = (props) => {
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
   const { input } = useFieldApi<Record<string, unknown>>(props);
-  const inputRef = React.useRef(input);
-  inputRef.current = input;
   const [loaded, setLoaded] = useState<boolean>(false);
   let value: readonly EventType[] = [];
   const productFamily = getState().values[props.bundleFieldName];
   const integrationId = getState().values['id'];
+
+  const inputRef = React.useRef(input);
+  inputRef.current = input;
 
   useEffect(() => {
     const getAllBundles = async () => {

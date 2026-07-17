@@ -7,7 +7,6 @@ import * as React from 'react';
 import { IntlProvider } from 'react-intl';
 
 import { waitForAsyncEvents } from '../../../../test/TestUtils';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { IntegrationType } from '../../../types/Integration';
 import { IntegrationRow, IntegrationsTable } from '../Table';
 
@@ -17,7 +16,7 @@ describe('components/Integrations/Table', () => {
     name: 'integration-name',
     type: IntegrationType.WEBHOOK,
     isEnabled: true,
-    method: Schemas.HttpType.Enum.GET,
+    method: 'GET',
     url: 'http://foobar.com',
     isOpen: false,
     secretToken: 'my secret',

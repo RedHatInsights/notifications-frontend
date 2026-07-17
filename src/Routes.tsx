@@ -11,7 +11,6 @@ const NotificationsLogRedirect: React.FunctionComponent = () => {
   return null;
 };
 
-import { CheckReadPermissions } from './components/CheckReadPermissions';
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
@@ -105,17 +104,9 @@ export const Routes: React.FunctionComponent = () => {
     <DomRoutes>
       <Route path={linkTo.notificationsLog()} element={<NotificationsLogRedirect />} />
       {pathRoutes.map((pathRoute) => (
-        <Route
-          key={pathRoute.path}
-          path={pathRoute.path}
-          element={
-            <CheckReadPermissions>
-              <pathRoute.component />
-            </CheckReadPermissions>
-          }
-        />
+        <Route key={pathRoute.path} path={pathRoute.path} element={<pathRoute.component />} />
       ))}
-      {!notificationsOverhaul && <Route path="*" element={<Navigate to="/" replace />} />}
+      <Route path="*" element={<Navigate to="/settings/notifications" replace />} />
     </DomRoutes>
   );
 };

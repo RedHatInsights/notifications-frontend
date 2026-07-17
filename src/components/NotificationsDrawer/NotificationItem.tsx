@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
+import { useIntl } from 'react-intl';
 import {
-  NotificationDrawerList,
   NotificationDrawerListItem,
   NotificationDrawerListItemBody,
   NotificationDrawerListItemHeader,
@@ -17,25 +17,31 @@ import {
   DropdownItem,
   DropdownList,
 } from '@patternfly/react-core/dist/dynamic/components/Dropdown';
+import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
+import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import { NotificationData } from '../../types/Drawer';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { updateNotificationReadStatus } from '../../api/helpers/notifications/update-read-status-helper';
+import messages from '../../properties/DefinedMessages';
 
 interface NotificationItemProps {
   notification: NotificationData;
   onNavigateTo: (link: string) => void;
   updateNotificationSelected: (id: string, selected: boolean) => void;
   updateNotificationRead: (id: string, read: boolean) => void;
+  isOrgAdmin: boolean;
 }
 const NotificationItem: React.FC<NotificationItemProps> = ({
   notification,
   onNavigateTo,
   updateNotificationSelected,
   updateNotificationRead,
+  isOrgAdmin,
 }) => {
+  const intl = useIntl();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
   const onCheckboxToggle = () =>
@@ -56,75 +62,121 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   };
 
   const notificationDropdownItems = [
-    <DropdownItem key="read" onClick={onMarkAsRead}>{`Mark as ${
-      !notification.read ? 'read' : 'unread'
-    }`}</DropdownItem>,
+    <DropdownItem key="read" onClick={onMarkAsRead}>
+      {notification.read
+        ? intl.formatMessage(messages.markAsUnread)
+        : intl.formatMessage(messages.markAsRead)}
+    </DropdownItem>,
+    <Divider key="divider" />,
     <DropdownItem
-      key="manage-event"
+      key="view-event-log"
       onClick={() =>
         onNavigateTo(
-          `/settings/notifications/configure-events?${new URLSearchParams({
-            bundle: notification.bundle,
-            tab: 'configuration',
-            app: notification.source,
-            name: notification.title,
-            autoEdit: 'true',
+          `/settings/notifications/eventlog?${new URLSearchParams({
+            service: notification.source,
+            event: notification.title,
           }).toString()}`
         )
       }
     >
-      Manage this event
+      {intl.formatMessage(messages.viewInEventLog)}
     </DropdownItem>,
+    <DropdownItem
+      key="manage-my-notifications"
+      onClick={() =>
+        onNavigateTo(
+          `/settings/notifications/user-preferences?${new URLSearchParams({
+            bundle: notification.bundle,
+            ...(notification.application && { app: notification.application }),
+          }).toString()}`
+        )
+      }
+    >
+      {intl.formatMessage(messages.manageMyEventNotifications)}
+    </DropdownItem>,
+    !isOrgAdmin ? (
+      <Tooltip
+        key="manage-event-config-tooltip"
+        content={intl.formatMessage(messages.adminAccessRequired)}
+      >
+        <span>
+          <DropdownItem
+            key="manage-event-config"
+            onClick={() =>
+              onNavigateTo(
+                `/settings/notifications/configure-events?${new URLSearchParams({
+                  bundle: notification.bundle,
+                  tab: 'configuration',
+                }).toString()}`
+              )
+            }
+            isDisabled={true}
+          >
+            {intl.formatMessage(messages.manageEventConfiguration)}
+          </DropdownItem>
+        </span>
+      </Tooltip>
+    ) : (
+      <DropdownItem
+        key="manage-event-config"
+        onClick={() =>
+          onNavigateTo(
+            `/settings/notifications/configure-events?${new URLSearchParams({
+              bundle: notification.bundle,
+              tab: 'configuration',
+            }).toString()}`
+          )
+        }
+      >
+        {intl.formatMessage(messages.manageEventConfiguration)}
+      </DropdownItem>
+    ),
   ];
   return (
-    <>
-      <NotificationDrawerList>
-        <NotificationDrawerListItem
-          aria-label={`Notification item ${notification.title}`}
-          variant="info"
-          isRead={notification.read}
-        >
-          <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
-            <Checkbox
-              isChecked={notification.selected}
-              onChange={onCheckboxToggle}
-              id="selected-checkbox"
-              name="selected-checkbox"
-            />
-            <Dropdown
-              toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-                <MenuToggle
-                  ref={toggleRef}
-                  aria-label="Notification actions dropdown"
-                  onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                  id="notification-item-toggle"
-                  isExpanded={isDropdownOpen}
-                  variant="plain"
-                >
-                  <EllipsisVIcon />
-                </MenuToggle>
-              )}
-              isOpen={isDropdownOpen}
-              onOpenChange={setIsDropdownOpen}
-              popperProps={{
-                position: PopoverPosition.right,
-              }}
-              id="notification-item-dropdown"
+    <NotificationDrawerListItem
+      aria-label={`Notification item ${notification.title}`}
+      variant="info"
+      isRead={notification.read}
+    >
+      <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
+        <Checkbox
+          isChecked={notification.selected}
+          onChange={onCheckboxToggle}
+          id="selected-checkbox"
+          name="selected-checkbox"
+        />
+        <Dropdown
+          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+            <MenuToggle
+              ref={toggleRef}
+              aria-label="Notification actions dropdown"
+              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              id="notification-item-toggle"
+              isExpanded={isDropdownOpen}
+              variant="plain"
             >
-              <DropdownList>{notificationDropdownItems}</DropdownList>
-            </Dropdown>
-          </NotificationDrawerListItemHeader>
-          <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
-            <Label variant="outline" isCompact className="pf-u-mb-md">
-              {notification.source}
-            </Label>
-            <span className="pf-u-display-block">
-              <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
-            </span>
-          </NotificationDrawerListItemBody>
-        </NotificationDrawerListItem>
-      </NotificationDrawerList>
-    </>
+              <EllipsisVIcon />
+            </MenuToggle>
+          )}
+          isOpen={isDropdownOpen}
+          onOpenChange={setIsDropdownOpen}
+          popperProps={{
+            position: PopoverPosition.right,
+          }}
+          id="notification-item-dropdown"
+        >
+          <DropdownList>{notificationDropdownItems}</DropdownList>
+        </Dropdown>
+      </NotificationDrawerListItemHeader>
+      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
+        <Label variant="outline" isCompact className="pf-u-mb-md">
+          {notification.source}
+        </Label>
+        <span className="pf-u-display-block">
+          <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
+        </span>
+      </NotificationDrawerListItemBody>
+    </NotificationDrawerListItem>
   );
 };
 

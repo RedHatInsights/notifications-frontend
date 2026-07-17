@@ -129,6 +129,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         onNavigateTo={onNavigateTo}
         updateNotificationSelected={updateNotificationSelected}
         updateNotificationRead={updateNotificationRead}
+        isOrgAdmin={isOrgAdmin}
       />
     ));
   };

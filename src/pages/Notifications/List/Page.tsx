@@ -104,11 +104,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     throw new Error('Unable to load bundle information');
   }
 
-  if (applications === null) {
-    throw new Error('Unable to load application facets');
-  }
-
-  if (bundle === BundleStatus.LOADING || !applications) {
+  if (bundle === BundleStatus.LOADING || applications === undefined) {
     return <AppSkeleton />;
   }
 
@@ -116,7 +112,7 @@ export const NotificationsListPage: React.FunctionComponent = () => {
     <NotificationListBundlePage
       bundleTabs={bundleTabs}
       bundle={bundle}
-      applications={applications}
+      applications={applications ?? []}
     />
   );
 };

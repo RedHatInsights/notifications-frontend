@@ -59,6 +59,7 @@ const mockNotifications: NotificationData[] = [
     read: false,
     source: 'advisor',
     bundle: 'rhel',
+    application: 'advisor',
     created: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
   },
   {
@@ -68,6 +69,7 @@ const mockNotifications: NotificationData[] = [
     read: false,
     source: 'openshift',
     bundle: 'openshift',
+    application: 'cluster-manager',
     created: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
   },
   {
@@ -77,6 +79,7 @@ const mockNotifications: NotificationData[] = [
     read: false,
     source: 'compliance',
     bundle: 'rhel',
+    application: 'compliance',
     created: new Date(Date.now() - 1000 * 60 * 60 * 5).toISOString(),
   },
   {
@@ -86,6 +89,7 @@ const mockNotifications: NotificationData[] = [
     read: true,
     source: 'automation',
     bundle: 'ansible',
+    application: 'automation-analytics',
     created: new Date(Date.now() - 1000 * 60 * 60 * 12).toISOString(),
   },
   {
@@ -95,6 +99,7 @@ const mockNotifications: NotificationData[] = [
     read: true,
     source: 'integrations',
     bundle: 'console',
+    application: 'integrations',
     created: new Date(Date.now() - 1000 * 60 * 60 * 24).toISOString(),
   },
 ];
@@ -239,6 +244,7 @@ export const RealtimeNotificationArrival: Story = {
       read: false,
       source: 'advisor',
       bundle: 'rhel',
+      application: 'advisor',
       created: new Date().toISOString(),
     });
 
@@ -291,6 +297,7 @@ export const RealtimeNotificationSortOrder: Story = {
       read: false,
       source: 'insights',
       bundle: 'rhel',
+      application: 'advisor',
       created: new Date().toISOString(),
     });
 
@@ -348,6 +355,7 @@ export const RealtimeMultipleRapidNotifications: Story = {
       read: false,
       source: 'advisor',
       bundle: 'rhel',
+      application: 'advisor',
       created: new Date(Date.now() + 1).toISOString(),
     });
 
@@ -358,6 +366,7 @@ export const RealtimeMultipleRapidNotifications: Story = {
       read: false,
       source: 'advisor',
       bundle: 'rhel',
+      application: 'advisor',
       created: new Date(Date.now() + 2).toISOString(),
     });
 
@@ -368,6 +377,7 @@ export const RealtimeMultipleRapidNotifications: Story = {
       read: false,
       source: 'vulnerability',
       bundle: 'rhel',
+      application: 'advisor',
       created: new Date(Date.now() + 3).toISOString(),
     });
 
@@ -422,6 +432,7 @@ export const RealtimeReadNotificationArrival: Story = {
       read: true,
       source: 'console',
       bundle: 'console',
+      application: 'console',
       created: new Date().toISOString(),
     });
 
@@ -475,6 +486,7 @@ export const RealtimeFromEmptyState: Story = {
       read: false,
       source: 'console',
       bundle: 'console',
+      application: 'console',
       created: new Date().toISOString(),
     });
 

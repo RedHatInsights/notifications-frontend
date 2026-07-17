@@ -25,11 +25,13 @@ export default defineConfig({
   // Reporter to use
   reporter: 'html',
 
+  // Global setup: authenticate once and save session state
+  globalSetup: './playwright/global-setup.ts',
+
   // Shared settings for all the projects below
   use: {
     // PLAYWRIGHT_BASE_URL overrides for local runs against stage; default is the dev proxy (Konflux E2E rules)
-    baseURL:
-      process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337',
+    baseURL: process.env.PLAYWRIGHT_BASE_URL || 'https://stage.foo.redhat.com:1337',
 
     // Ignore HTTPS errors for local dev server
     ignoreHTTPSErrors: true,
@@ -45,7 +47,11 @@ export default defineConfig({
   projects: [
     {
       name: 'chromium',
-      use: { ...devices['Desktop Chrome'] },
+      use: {
+        ...devices['Desktop Chrome'],
+        // Reuse authenticated state from global setup
+        storageState: 'playwright/.auth/user.json',
+      },
     },
   ],
 });

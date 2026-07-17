@@ -146,7 +146,7 @@ describe('src/app/App', () => {
     expect(screen.queryAllByText('content')).toBeTruthy();
   });
 
-  it('Shows error when RBAC does not have read access when /notifications', async () => {
+  it('Shows overview page even without read access at /', async () => {
     jest.useFakeTimers();
     const rbac = new Rbac({
       integrations: {
@@ -178,6 +178,6 @@ describe('src/app/App', () => {
       await jest.advanceTimersToNextTimer();
     });
 
-    expect(screen.getByText(/You do not have access to Notifications/i)).toBeInTheDocument();
+    expect(screen.queryByText(/You do not have access to Notifications/i)).not.toBeInTheDocument();
   });
 });

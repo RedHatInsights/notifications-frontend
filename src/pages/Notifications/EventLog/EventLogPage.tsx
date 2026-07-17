@@ -1,4 +1,12 @@
-import { Alert, ButtonVariant } from '@patternfly/react-core';
+import {
+  Alert,
+  ButtonVariant,
+  Card,
+  CardBody,
+  EmptyState,
+  EmptyStateBody,
+} from '@patternfly/react-core';
+import { LockIcon } from '@patternfly/react-icons';
 import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
@@ -97,6 +105,9 @@ export const EventLogPage: React.FunctionComponent = () => {
   );
   const eventsQuery = useGetEvents(eventsPage.page);
 
+  const isForbidden =
+    !eventsQuery.loading && eventsQuery.error && eventsQuery.payload?.status !== 200;
+
   const events = React.useMemo(() => {
     if (eventsQuery.payload?.status === 200) {
       return {
@@ -169,43 +180,66 @@ export const EventLogPage: React.FunctionComponent = () => {
           )
         }
       />
-      <EventLogToolbar
-        {...eventLogFilters}
-        bundleOptions={bundles}
-        dateFilter={dateFilter}
-        setDateFilter={setDateFilter}
-        count={events.count}
-        perPageChanged={eventsPage.changeItemsPerPage}
-        pageChanged={eventsPage.changePage}
-        perPage={eventsPage.page.size}
-        page={eventsPage.page.index}
-        pageCount={events.data.length}
-        retentionDays={RETENTION_DAYS}
-        period={period}
-        setPeriod={setPeriod}
-        isOrgAdmin={isOrgAdmin}
-        onlyImpactingMe={onlyImpactingMe}
-        setOnlyImpactingMe={setOnlyImpactingMe}
-      >
-        {!isOrgAdmin && (
-          <Alert
-            variant="info"
-            isInline
-            title={intl.formatMessage(definedMessages.eventLogFilteredAlertTitle)}
-          >
-            {intl.formatMessage(definedMessages.eventLogFilteredAlertBody)}
-          </Alert>
-        )}
-        <EventLogTable
-          events={events.data}
-          loading={eventsQuery.loading}
-          showSeverity={isEventLogSeverityEnabled}
-          onSort={onSort}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
-          getIntegrationRecipient={getIntegrationRecipient}
-        />
-      </EventLogToolbar>
+      {isForbidden ? (
+        <Card isPlain>
+          <CardBody>
+            <EmptyState
+              headingLevel="h2"
+              icon={LockIcon}
+              titleText={intl.formatMessage({
+                id: 'eventLog.unauthorized.title',
+                defaultMessage: 'You do not have access to the event log',
+              })}
+            >
+              <EmptyStateBody>
+                {intl.formatMessage({
+                  id: 'eventLog.unauthorized.body',
+                  defaultMessage:
+                    'Contact your organization administrator to request the necessary permissions.',
+                })}
+              </EmptyStateBody>
+            </EmptyState>
+          </CardBody>
+        </Card>
+      ) : (
+        <EventLogToolbar
+          {...eventLogFilters}
+          bundleOptions={bundles}
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          count={events.count}
+          perPageChanged={eventsPage.changeItemsPerPage}
+          pageChanged={eventsPage.changePage}
+          perPage={eventsPage.page.size}
+          page={eventsPage.page.index}
+          pageCount={events.data.length}
+          retentionDays={RETENTION_DAYS}
+          period={period}
+          setPeriod={setPeriod}
+          isOrgAdmin={isOrgAdmin}
+          onlyImpactingMe={onlyImpactingMe}
+          setOnlyImpactingMe={setOnlyImpactingMe}
+        >
+          {!isOrgAdmin && (
+            <Alert
+              variant="info"
+              isInline
+              title={intl.formatMessage(definedMessages.eventLogFilteredAlertTitle)}
+            >
+              {intl.formatMessage(definedMessages.eventLogFilteredAlertBody)}
+            </Alert>
+          )}
+          <EventLogTable
+            events={events.data}
+            loading={eventsQuery.loading}
+            showSeverity={isEventLogSeverityEnabled}
+            onSort={onSort}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+            getIntegrationRecipient={getIntegrationRecipient}
+          />
+        </EventLogToolbar>
+      )}
     </>
   );
 };

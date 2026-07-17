@@ -21,7 +21,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://my-cool-webhook.com',
           disableSslVerification: false,
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           secretToken: undefined,
         },
         server_errors: 5,
@@ -52,7 +52,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://foobarbaz.com',
           disableSslVerification: false,
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           secretToken: '',
         },
         server_errors: 5,
@@ -83,11 +83,57 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://foobarbaz.com',
           disableSslVerification: false,
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           secretToken: '',
         },
       };
       expect(() => toIntegration(serverIntegration)).toThrow();
+    });
+
+    it('Maps read_only=true for a system email subscription', () => {
+      const serverIntegration = {
+        id: 'system-email-id',
+        enabled: true,
+        name: 'System email endpoint',
+        description: 'System email endpoint',
+        type: Schemas.EndpointType.Enum.email_subscription,
+        properties: {
+          only_admins: false,
+          ignore_preferences: false,
+          group_id: null,
+        },
+        server_errors: 0,
+        status: 'READY',
+        read_only: true,
+      } as unknown as ServerIntegrationResponse;
+      const integration = toIntegration(serverIntegration);
+      expect(integration).toMatchObject({
+        type: IntegrationType.EMAIL_SUBSCRIPTION,
+        readOnly: true,
+      });
+    });
+
+    it('Maps read_only=false for an org-owned email subscription', () => {
+      const serverIntegration = {
+        id: 'org-email-id',
+        enabled: true,
+        name: 'Org email endpoint',
+        description: 'Org email endpoint',
+        type: Schemas.EndpointType.Enum.email_subscription,
+        properties: {
+          only_admins: false,
+          ignore_preferences: false,
+          group_id: null,
+        },
+        server_errors: 0,
+        status: 'READY',
+        read_only: false,
+      } as unknown as ServerIntegrationResponse;
+      const integration = toIntegration(serverIntegration);
+      expect(integration).toMatchObject({
+        type: IntegrationType.EMAIL_SUBSCRIPTION,
+        readOnly: false,
+      });
     });
 
     it('Not supporting unknown types', () => {
@@ -100,7 +146,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://foobarbaz.com',
           disable_ssl_verification: false,
-          method: Schemas.HttpType.Enum.GET,
+          method: 'GET',
           secret_token: '',
         },
       } as unknown as ServerIntegrationResponse;
@@ -120,7 +166,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           properties: {
             url: 'https://my-cool-webhook.com',
             disable_ssl_verification: false,
-            method: Schemas.HttpType.Enum.GET,
+            method: 'GET',
             secret_token: 'my-token',
           },
           server_errors: 3,
@@ -135,7 +181,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           properties: {
             url: 'https://foobarbaz.com',
             disableSslVerification: false,
-            method: Schemas.HttpType.Enum.GET,
+            method: 'GET',
             secret_token: '',
           },
           server_errors: 7,
@@ -181,7 +227,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           properties: {
             url: 'https://my-cool-webhook.com',
             disableSslVerification: false,
-            method: Schemas.HttpType.Enum.GET,
+            method: 'GET',
             secretToken: '',
           },
         },
@@ -195,7 +241,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
           properties: {
             url: 'https://foobarbaz.com',
             disableSslVerification: false,
-            method: Schemas.HttpType.Enum.GET,
+            method: 'GET',
             secretToken: '',
           },
         },
@@ -217,7 +263,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         isEnabled: false,
         name: 'meep',
         type: IntegrationType.WEBHOOK,
-        method: Schemas.HttpType.Enum.POST,
+        method: 'POST',
         secretToken: undefined,
         sslVerificationEnabled: true,
         serverErrors: 5,
@@ -233,8 +279,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'POST',
-          disableSslVerification: false,
-          secretToken: undefined,
+          disable_ssl_verification: false,
+          secret_token: undefined,
         },
         sub_type: undefined,
       });
@@ -249,7 +295,7 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         type: IntegrationType.WEBHOOK,
         sslVerificationEnabled: true,
         secretToken: 'foobar',
-        method: Schemas.HttpType.Enum.GET,
+        method: 'GET',
       };
 
       expect(toServerIntegrationRequest(integration)).toEqual({
@@ -261,8 +307,8 @@ describe('src/types/adapters/IntegrationAdapter', () => {
         properties: {
           url: 'https://myurl.com',
           method: 'GET',
-          disableSslVerification: false,
-          secretToken: 'foobar',
+          disable_ssl_verification: false,
+          secret_token: 'foobar',
         },
       });
     });

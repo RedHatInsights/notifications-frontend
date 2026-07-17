@@ -12,10 +12,15 @@ import {
 } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { useNotification } from '../../../utils/AlertUtils';
+import {
+  CUSTOM_THRESHOLD_DISPLAY_NAME,
+  DEFAULT_THRESHOLD,
+} from '../../../components/Notifications/constants';
 
 export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
   readonly loadingActionStatus: 'loading' | 'done' | 'error';
   readonly behaviors: ReadonlyArray<BehaviorGroup>;
+  readonly thresholdValue?: number;
 } & (
     | {
         readonly isEditMode: false;
@@ -23,6 +28,7 @@ export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
     | {
         readonly isEditMode: true;
         readonly oldBehaviors: ReadonlyArray<BehaviorGroup>;
+        readonly oldThresholdValue?: number;
       }
   );
 
@@ -43,7 +49,8 @@ const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
 
 export const useBehaviorGroupNotificationRows = (
   notifications: Array<Notification>,
-  behaviorGroups: ReadonlyArray<BehaviorGroup> | undefined
+  behaviorGroups: ReadonlyArray<BehaviorGroup> | undefined,
+  initialThreshold = DEFAULT_THRESHOLD
 ) => {
   const { addDangerNotification } = useNotification();
   const [notificationRows, setNotificationRows] = React.useState<
@@ -110,6 +117,18 @@ export const useBehaviorGroupNotificationRows = (
     [removeBehaviorGroup, setNotificationRows]
   );
 
+  const updateThresholdValue = React.useCallback(
+    (notificationId: UUID, thresholdValue: number) => {
+      setNotificationRows(
+        produce((draft) => {
+          const notification = getNotification(draft, notificationId);
+          notification.thresholdValue = thresholdValue;
+        })
+      );
+    },
+    [setNotificationRows]
+  );
+
   const setEditMode = React.useCallback(
     async (notificationId: UUID, command: 'edit' | 'finish' | 'cancel') => {
       if (command === 'finish') {
@@ -163,11 +182,15 @@ export const useBehaviorGroupNotificationRows = (
 
             if (notification.isEditMode && command === 'cancel') {
               notification.behaviors = notification.oldBehaviors;
+              if (notification.oldThresholdValue !== undefined) {
+                notification.thresholdValue = notification.oldThresholdValue;
+              }
             }
 
             notification.isEditMode = command === 'edit';
             if (notification.isEditMode) {
               notification.oldBehaviors = notification.behaviors;
+              notification.oldThresholdValue = notification.thresholdValue;
             }
           })
         );
@@ -201,12 +224,18 @@ export const useBehaviorGroupNotificationRows = (
     if (notifications !== prevNotificationInput) {
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       setNotificationRows((_prev) =>
-        notifications.map((notification) => ({
-          ...notification,
-          loadingActionStatus: 'done',
-          behaviors: [],
-          isEditMode: false,
-        }))
+        notifications.map((notification) => {
+          // Initialize threshold value for subscription custom threshold notification
+          const isSubscriptionThreshold =
+            notification.eventTypeDisplayName === CUSTOM_THRESHOLD_DISPLAY_NAME;
+          return {
+            ...notification,
+            loadingActionStatus: 'done',
+            behaviors: [],
+            isEditMode: false,
+            thresholdValue: isSubscriptionThreshold ? initialThreshold : undefined,
+          };
+        })
       );
 
       if (behaviorGroups) {
@@ -219,12 +248,14 @@ export const useBehaviorGroupNotificationRows = (
     prevNotificationInput,
     setNotificationRows,
     updateBehaviorGroups,
+    initialThreshold,
   ]);
 
   return {
     rows: notificationRows,
     updateBehaviorGroupLink,
     updateBehaviorGroups,
+    updateThresholdValue,
     startEditMode,
     finishEditMode,
     cancelEditMode,

@@ -65,9 +65,9 @@ const toIntegrationWebhook = (
 ): IntegrationHttp => ({
   ...integrationBase,
   url: properties?.url ?? '',
-  sslVerificationEnabled: !properties?.disableSslVerification,
+  sslVerificationEnabled: !properties?.disable_ssl_verification,
   secretToken: toSecretToken(properties?.secret_token),
-  method: properties?.method ?? Schemas.HttpType.Enum.GET,
+  method: (properties?.method as 'GET' | 'POST' | 'PUT') ?? 'POST',
 });
 
 const toIntegrationAnsible = (
@@ -76,9 +76,9 @@ const toIntegrationAnsible = (
 ): IntegrationAnsible => ({
   ...integrationBase,
   url: properties?.url ?? '',
-  sslVerificationEnabled: !properties?.disableSslVerification,
+  sslVerificationEnabled: !properties?.disable_ssl_verification,
   secretToken: toSecretToken(properties?.secret_token),
-  method: properties?.method ?? Schemas.HttpType.Enum.POST,
+  method: 'POST',
 });
 
 const toIntegrationCamel = (
@@ -87,26 +87,22 @@ const toIntegrationCamel = (
 ): IntegrationCamel => ({
   ...integrationBase,
   url: properties?.url ?? '',
-  sslVerificationEnabled: !properties?.disableSslVerification,
-  secretToken: toSecretToken(properties?.secretToken),
-  basicAuth:
-    properties?.basicAuthentication === null
-      ? undefined
-      : {
-          user: notNull(properties?.basicAuthentication?.username, ''),
-          pass: notNull(properties?.basicAuthentication?.password, ''),
-        },
+  sslVerificationEnabled: !properties?.disable_ssl_verification,
+  secretToken: toSecretToken(properties?.secret_token),
+  basicAuth: undefined, // basicAuthentication removed from API
   extras: notNull(properties?.extras),
 });
 
 const toIntegrationEmail = (
   integrationBase: IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
-  properties: Schemas.SystemSubscriptionProperties
+  properties: Schemas.SystemSubscriptionProperties,
+  readOnly?: boolean
 ): IntegrationEmailSubscription => ({
   ...integrationBase,
   ignorePreferences: properties.ignore_preferences,
   groupId: properties.group_id === null ? undefined : properties.group_id,
   onlyAdmin: properties.only_admins === null ? undefined : properties.only_admins,
+  readOnly,
 });
 
 const toIntegrationDrawer = (
@@ -121,10 +117,10 @@ const toIntegrationDrawer = (
 
 const toIntegrationPagerDuty = (
   integrationBase: IntegrationBase<IntegrationType.PAGERDUTY>,
-  properties: Schemas.PagerDutyProperties & { secret_token?: string }
+  properties: Schemas.PagerDutyProperties
 ): IntegrationPagerduty => ({
   ...integrationBase,
-  secretToken: properties.secret_token || properties.secretToken,
+  secretToken: properties.secret_token,
   severity: properties.severity,
 });
 
@@ -159,7 +155,8 @@ export const toIntegration = (serverIntegration: ServerIntegrationResponse): Int
     case IntegrationType.EMAIL_SUBSCRIPTION:
       return toIntegrationEmail(
         integrationBase as IntegrationBase<IntegrationType.EMAIL_SUBSCRIPTION>,
-        serverIntegration.properties as Schemas.SystemSubscriptionProperties
+        serverIntegration.properties as Schemas.SystemSubscriptionProperties,
+        (serverIntegration as { read_only?: boolean }).read_only
       );
     case IntegrationType.DRAWER:
       return toIntegrationDrawer(
@@ -197,14 +194,8 @@ export const toIntegrationProperties = (
     const integrationCamel: IntegrationCamel = integration as IntegrationCamel;
     return {
       url: integrationCamel.url,
-      disableSslVerification: !integrationCamel.sslVerificationEnabled,
-      secretToken: toSecretToken(integrationCamel.secretToken),
-      basicAuthentication: integrationCamel.basicAuth
-        ? {
-            username: integrationCamel.basicAuth.user,
-            password: integrationCamel.basicAuth.pass,
-          }
-        : undefined,
+      disable_ssl_verification: !integrationCamel.sslVerificationEnabled,
+      secret_token: toSecretToken(integrationCamel.secretToken),
       extras: integrationCamel.extras,
     };
   }
@@ -215,16 +206,16 @@ export const toIntegrationProperties = (
       return {
         url: integrationHttp.url,
         method: integrationHttp.method,
-        disableSslVerification: !integrationHttp.sslVerificationEnabled,
-        secretToken: toSecretToken(integrationHttp.secretToken),
+        disable_ssl_verification: !integrationHttp.sslVerificationEnabled,
+        secret_token: toSecretToken(integrationHttp.secretToken),
       };
     }
     case IntegrationType.ANSIBLE: {
       const integrationAnsible = integration as IntegrationAnsible;
       return {
         url: integrationAnsible.url,
-        disableSslVerification: !integrationAnsible.sslVerificationEnabled,
-        secretToken: toSecretToken(integrationAnsible.secretToken),
+        disable_ssl_verification: !integrationAnsible.sslVerificationEnabled,
+        secret_token: toSecretToken(integrationAnsible.secretToken),
         method: integrationAnsible.method,
       };
     }
@@ -248,7 +239,7 @@ export const toIntegrationProperties = (
     case IntegrationType.PAGERDUTY: {
       const integrationPagerDuty: IntegrationPagerduty = integration as IntegrationPagerduty;
       return {
-        secretToken: integrationPagerDuty.secretToken,
+        secret_token: integrationPagerDuty.secretToken,
         severity: integrationPagerDuty.severity,
       };
     }
