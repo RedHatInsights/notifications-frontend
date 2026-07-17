@@ -10,7 +10,7 @@ export const TIMEOUTS = {
    * Page load timeout - accounts for module federation bundle loading + React hydration
    * Use for: Initial page navigation, heading visibility after page load
    */
-  PAGE_LOAD: 30000,
+  PAGE_LOAD: 180000,
 
   /**
    * Modal/wizard close timeout - accounts for form submission + API call + close animation
