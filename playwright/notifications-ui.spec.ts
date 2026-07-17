@@ -85,9 +85,15 @@ test.describe('Behavior Group Lifecycle', () => {
     }
 
     // Verify the page loaded
-    await expect(page.getByRole('heading', { name: 'Configure Events' })).toBeVisible({
-      timeout: TIMEOUTS.PAGE_LOAD,
-    });
+    const configureEventsHeading = page.getByRole('heading', { name: 'Configure Events' });
+    if (!(await configureEventsHeading.isVisible({ timeout: TIMEOUTS.PAGE_LOAD }))) {
+      console.log('[DEBUG] Configure Events heading not found');
+      console.log('[DEBUG] Current URL:', page.url());
+      console.log('[DEBUG] Page title:', await page.title());
+      const bodyText = await page.evaluate(() => document.body.innerText.substring(0, 1000));
+      console.log('[DEBUG] Page content:', bodyText);
+      throw new Error('Configure Events heading not visible — see debug output above');
+    }
 
     // Step 3: Navigate to Behavior Groups tab
     const behaviorGroupsTab = page
@@ -183,9 +189,15 @@ test.describe('Events Log', () => {
     await expect(page).toHaveURL(/settings\/notifications\/eventlog/);
 
     // Verify page header (level might vary, or use getByText for heading)
-    await expect(page.getByRole('heading', { name: 'Event Log' })).toBeVisible({
-      timeout: TIMEOUTS.PAGE_LOAD,
-    });
+    const eventLogHeading = page.getByRole('heading', { name: 'Event Log' });
+    if (!(await eventLogHeading.isVisible({ timeout: TIMEOUTS.PAGE_LOAD }))) {
+      console.log('[DEBUG] Event Log heading not found');
+      console.log('[DEBUG] Current URL:', page.url());
+      console.log('[DEBUG] Page title:', await page.title());
+      const bodyText = await page.evaluate(() => document.body.innerText.substring(0, 1000));
+      console.log('[DEBUG] Page content:', bodyText);
+      throw new Error('Event Log heading not visible — see debug output above');
+    }
 
     // Verify page subtitle
     await expect(
