@@ -118,7 +118,12 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
   }) => {
     const items = await openDrawerWithNotifications(page);
 
-    const first = items.first();
+    // Pin the first item by its aria-label so the locator survives re-sorting.
+    // DrawerPanel sorts unread items first — toggling read state moves the
+    // item in the DOM, causing items.first() to resolve to a different element.
+    const firstLabel = await items.first().getAttribute('aria-label');
+    expect(firstLabel, 'notification aria-label must be set').toBeTruthy();
+    const first = page.locator(`[aria-label="${firstLabel}"]`).first();
     const wasRead = await drawerHelpers.isNotificationRead(first);
 
     // Verify initial state has info variant via data-testid
@@ -176,8 +181,10 @@ test.describe('Notification Item — Read/Unread Visual Changes', () => {
     // Get initial counts
     const before = await drawerHelpers.getReadUnreadCounts(page);
 
-    // Toggle first item
-    const first = items.first();
+    // Pin the first item by its aria-label (same re-sort issue as test above)
+    const firstLabel = await items.first().getAttribute('aria-label');
+    expect(firstLabel, 'notification aria-label must be set').toBeTruthy();
+    const first = page.locator(`[aria-label="${firstLabel}"]`).first();
     const wasRead = await drawerHelpers.isNotificationRead(first);
     await drawerHelpers.toggleReadStatus(page, first);
 
