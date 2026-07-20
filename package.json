@@ -63,7 +63,7 @@
     "@commitlint/cli": "^20.5.0",
     "@commitlint/config-conventional": "^20.5.0",
     "@cypress/code-coverage": "^3.14.7",
-    "@playwright/test": "^1.58.2",
+    "@playwright/test": "^1.61.1",
     "@redhat-cloud-services/eslint-config-redhat-cloud-services": "1.3.0",
     "@redhat-cloud-services/frontend-components-config": "^6.8.3",
     "@redhat-cloud-services/frontend-components-testing": "0.1.7",
