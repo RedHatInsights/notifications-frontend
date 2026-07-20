@@ -56,7 +56,7 @@ export interface IntegrationWizardProps {
  * Maps integration data from the server format to the form field format
  * This ensures that existing integration data is properly pre-populated in edit mode
  */
-const mapIntegrationToFormFields = (template) => {
+const mapIntegrationToFormFields = (template, hidePagerDutySeverity = false) => {
   if (!template) {
     return {};
   }
@@ -82,6 +82,11 @@ const mapIntegrationToFormFields = (template) => {
     formValues.channel = template.extras.channel;
   }
 
+  // Omit severity from initial values when the field is hidden
+  if (hidePagerDutySeverity && formValues.severity !== undefined) {
+    delete formValues.severity;
+  }
+
   return formValues;
 };
 
@@ -103,6 +108,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
   };
   const isBehaviorGroupsEnabled = useFlag('platform.integrations.behavior-groups-move');
   const isPagerDutyEnabled = useFlag('platform.integrations.pager-duty');
+  const hidePagerDutySeverity = useFlag('platform.integrations.pager-duty.hide-severity');
   const isEmailIntegrationEnabled = useFlag('platform.notifications.email.integration');
   const notifications = useNotification();
   const [wizardOpen, setWizardOpen] = React.useState<boolean>(isOpen);
@@ -122,7 +128,8 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
             isBehaviorGroupsEnabled,
             isPagerDutyEnabled,
             isEmailIntegrationEnabled,
-            intl
+            intl,
+            hidePagerDutySeverity
           )}
           componentMapper={{ ...componentMapper, ...mapperExtension }}
           onSubmit={({
@@ -135,6 +142,12 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
             severity,
           }) => {
             const [type, sub_type] = intType?.split(':') || ['webhook'];
+            // When severity field is hidden during edit, preserve the original value
+            // Access severity safely - it exists on IntegrationPagerduty but not in the typed template
+            const templateSeverity =
+              template && 'severity' in template ? template.severity : undefined;
+            const severityValue =
+              hidePagerDutySeverity && isEdit && templateSeverity ? templateSeverity : severity;
             const data = {
               name,
               enabled: true,
@@ -146,7 +159,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
                 url,
                 disable_ssl_verification: false,
                 secret_token,
-                severity,
+                severity: severityValue,
               },
               ...(isBehaviorGroupsEnabled && {
                 event_types: event_types
@@ -164,7 +177,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
               : createEndpoint(data, notifications, afterSubmit);
             closeModal();
           }}
-          initialValues={isEdit ? mapIntegrationToFormFields(template) : {}}
+          initialValues={isEdit ? mapIntegrationToFormFields(template, hidePagerDutySeverity) : {}}
           onCancel={closeModal}
         >
           {(props) => <Pf4FormTemplate {...props} showFormControls={false} />}
