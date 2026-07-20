@@ -1,4 +1,11 @@
-import { ButtonVariant, Card, CardBody, EmptyState, EmptyStateBody } from '@patternfly/react-core';
+import {
+  Alert,
+  ButtonVariant,
+  Card,
+  CardBody,
+  EmptyState,
+  EmptyStateBody,
+} from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
 import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
@@ -21,6 +28,7 @@ import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
+import definedMessages from '../../../properties/DefinedMessages';
 import { linkTo } from '../../../Routes';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
 import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
@@ -34,11 +42,12 @@ import { Direction, Sort } from '../../../utils/insights-common-typescript';
 const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
+  const intl = useIntl();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
   const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
   const getEndpoint = useParameterizedQuery(getEndpointAction);
-  const { rbac } = useAppContext();
-  const intl = useIntl();
+  const { rbac, isOrgAdmin } = useAppContext();
+  const [onlyImpactingMe, setOnlyImpactingMe] = React.useState(!isOrgAdmin);
 
   const getBundles = useGetBundles(true);
   const bundles = React.useMemo(() => {
@@ -71,7 +80,7 @@ export const EventLogPage: React.FunctionComponent = () => {
     [setSortDirection, setSortColumn]
   );
 
-  const filterBuilder = useFilterBuilder(bundles, dateFilter, period);
+  const filterBuilder = useFilterBuilder(bundles, dateFilter, period, onlyImpactingMe);
 
   const sort: Sort = React.useMemo(() => {
     const direction = sortDirection.toUpperCase() as Direction;
@@ -207,7 +216,19 @@ export const EventLogPage: React.FunctionComponent = () => {
           retentionDays={RETENTION_DAYS}
           period={period}
           setPeriod={setPeriod}
+          isOrgAdmin={isOrgAdmin}
+          onlyImpactingMe={onlyImpactingMe}
+          setOnlyImpactingMe={setOnlyImpactingMe}
         >
+          {!isOrgAdmin && (
+            <Alert
+              variant="info"
+              isInline
+              title={intl.formatMessage(definedMessages.eventLogFilteredAlertTitle)}
+            >
+              {intl.formatMessage(definedMessages.eventLogFilteredAlertBody)}
+            </Alert>
+          )}
           <EventLogTable
             events={events.data}
             loading={eventsQuery.loading}

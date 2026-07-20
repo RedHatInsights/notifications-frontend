@@ -97,7 +97,7 @@ const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
 const SelectableTable = (props) => {
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
-  const { input } = useFieldApi(props);
+  const { input } = useFieldApi<Record<string, unknown>>(props);
   const [loaded, setLoaded] = useState<boolean>(false);
   let value: readonly EventType[] = [];
   const productFamily = getState().values[props.bundleFieldName];

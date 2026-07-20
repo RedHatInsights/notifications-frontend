@@ -54,24 +54,33 @@ const setFilters = {
   severities: jest.fn(),
 };
 
-const renderToolbar = () =>
+const defaultToolbarProps = {
+  filters: {} as EventLogFilters,
+  setFilters: setFilters as unknown as SetEventLogFilters,
+  clearFilter: jest.fn(),
+  bundleOptions: [],
+  pageCount: 0,
+  count: 0,
+  page: 0,
+  perPage: 0,
+  pageChanged: jest.fn(),
+  perPageChanged: jest.fn(),
+  dateFilter: {} as EventLogDateFilterValue,
+  setDateFilter: jest.fn(),
+  retentionDays: 0,
+  period: {} as EventPeriod,
+  setPeriod: jest.fn(),
+  isOrgAdmin: true,
+  onlyImpactingMe: false,
+  setOnlyImpactingMe: jest.fn(),
+};
+
+const renderToolbar = (isOrgAdmin = true) =>
   render(
     <EventLogToolbar
-      filters={{} as EventLogFilters}
-      setFilters={setFilters as unknown as SetEventLogFilters}
-      clearFilter={jest.fn()}
-      bundleOptions={[]}
-      pageCount={0}
-      count={0}
-      page={0}
-      perPage={0}
-      pageChanged={jest.fn()}
-      perPageChanged={jest.fn()}
-      dateFilter={{} as EventLogDateFilterValue}
-      setDateFilter={jest.fn()}
-      retentionDays={0}
-      period={{} as EventPeriod}
-      setPeriod={jest.fn()}
+      {...defaultToolbarProps}
+      isOrgAdmin={isOrgAdmin}
+      onlyImpactingMe={!isOrgAdmin}
     />
   );
 
@@ -125,5 +134,37 @@ describe('src/components/Notifications/EventLog', () => {
     const firstDropdown = screen.getAllByRole('button')[1];
     await userEvent.click(firstDropdown);
     expect(screen.getByText(/Policies/i)).toBeVisible();
+  });
+
+  describe('"Only show events impacting me" checkbox', () => {
+    it('is enabled and unchecked for org admins by default', () => {
+      renderToolbar(true);
+      const checkbox = screen.getByRole('checkbox', { name: /only show events impacting me/i });
+      expect(checkbox).not.toBeChecked();
+      expect(checkbox).toBeEnabled();
+    });
+
+    it('is checked and disabled for non-org-admins', () => {
+      renderToolbar(false);
+      const checkbox = screen.getByRole('checkbox', { name: /only show events impacting me/i });
+      expect(checkbox).toBeChecked();
+      expect(checkbox).toBeDisabled();
+    });
+
+    it('calls setOnlyImpactingMe when an org admin toggles it', async () => {
+      const setOnlyImpactingMe = jest.fn();
+      render(
+        <EventLogToolbar
+          {...defaultToolbarProps}
+          isOrgAdmin={true}
+          onlyImpactingMe={false}
+          setOnlyImpactingMe={setOnlyImpactingMe}
+        />
+      );
+      await userEvent.click(
+        screen.getByRole('checkbox', { name: /only show events impacting me/i })
+      );
+      expect(setOnlyImpactingMe).toHaveBeenCalledWith(true);
+    });
   });
 });

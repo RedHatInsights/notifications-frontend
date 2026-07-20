@@ -1,11 +1,11 @@
 # Chromatic Visual Testing Workflow
 # Documentation: https://www.chromatic.com/docs/github-actions/
 
-name: "Chromatic"
+name: 'Chromatic'
 
 on:
   workflow_run:
-    workflows: ["Storybook"]
+    workflows: ['Storybook']
     types: [completed]
 
 permissions:
