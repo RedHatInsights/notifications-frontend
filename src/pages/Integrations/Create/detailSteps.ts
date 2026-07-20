@@ -17,6 +17,7 @@ import {
 import { IntlShape } from 'react-intl';
 import { validated } from './Validated';
 import { asyncValidatorDebouncedWrapper } from './nameValidator';
+import messages from '../messages';
 
 const commonFields = (isSlack: boolean, isEdit: boolean, intl: IntlShape) => [
   {
@@ -167,9 +168,8 @@ export const detailSteps = (
               {
                 component: componentTypes.SELECT,
                 name: 'severity',
-                label: 'Alert severity',
-                helperText:
-                  'Severity of the alert created in PagerDuty when this integration is used.',
+                label: intl.formatMessage(messages.pagerDutySeverityLabel),
+                helperText: intl.formatMessage(messages.pagerDutySeverityHelperText),
                 isRequired: true,
                 validate: [
                   {
@@ -179,19 +179,19 @@ export const detailSteps = (
                 simpleValue: true,
                 options: [
                   {
-                    label: 'Info',
+                    label: intl.formatMessage(messages.pagerDutySeverityInfo),
                     value: 'Info',
                   },
                   {
-                    label: 'Warning',
+                    label: intl.formatMessage(messages.pagerDutySeverityWarning),
                     value: 'Warning',
                   },
                   {
-                    label: 'Error',
+                    label: intl.formatMessage(messages.pagerDutySeverityError),
                     value: 'Error',
                   },
                   {
-                    label: 'Critical',
+                    label: intl.formatMessage(messages.pagerDutySeverityCritical),
                     value: 'Critical',
                   },
                 ],

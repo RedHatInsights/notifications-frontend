@@ -132,6 +132,38 @@ export default defineMessages({
     defaultMessage: 'Filter by group name...',
   },
 
+  // PagerDuty severity
+  pagerDutySeverityLabel: {
+    id: 'integrations.pagerduty.severity.label',
+    description: 'Label for the PagerDuty alert severity select field',
+    defaultMessage: 'Alert severity',
+  },
+  pagerDutySeverityHelperText: {
+    id: 'integrations.pagerduty.severity.helperText',
+    description: 'Helper text for the PagerDuty alert severity select field',
+    defaultMessage: 'Severity of the alert created in PagerDuty when this integration is used.',
+  },
+  pagerDutySeverityInfo: {
+    id: 'integrations.pagerduty.severity.info',
+    description: 'Info option for PagerDuty alert severity',
+    defaultMessage: 'Info',
+  },
+  pagerDutySeverityWarning: {
+    id: 'integrations.pagerduty.severity.warning',
+    description: 'Warning option for PagerDuty alert severity',
+    defaultMessage: 'Warning',
+  },
+  pagerDutySeverityError: {
+    id: 'integrations.pagerduty.severity.error',
+    description: 'Error option for PagerDuty alert severity',
+    defaultMessage: 'Error',
+  },
+  pagerDutySeverityCritical: {
+    id: 'integrations.pagerduty.severity.critical',
+    description: 'Critical option for PagerDuty alert severity',
+    defaultMessage: 'Critical',
+  },
+
   // Permission messages
   usersCountWithoutPrincipalRead: {
     id: 'integrations.userAccessGroups.usersCountWithoutPermission',
