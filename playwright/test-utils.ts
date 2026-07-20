@@ -114,6 +114,7 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     currentUrl.includes('sso.redhat.com') ||
     (await page
       .getByLabel('Red Hat login')
+      .first()
       .isVisible({ timeout: 2000 })
       .catch(() => false));
 

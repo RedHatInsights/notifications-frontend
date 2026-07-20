@@ -38,16 +38,9 @@ export async function clickCardAction(
       .first();
     await kebabButton.click();
 
-    // PatternFly menus may render inside the card or in a portal outside it
-    // Try card-scoped menu first, then fall back to page menu (for portals)
-    const cardMenu = card.locator(
-      '[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]'
-    );
-    const pageMenu = page
-      .locator('[role="menu"], .pf-v6-c-menu, [data-ouia-component-type*="Menu"]')
-      .last();
-
-    const menu = cardMenu.or(pageMenu);
+    // PF6 menus render via portal outside the card. Use ul[role="menu"]
+    // to avoid matching the MenuToggle button (which also has Menu OUIA type).
+    const menu = page.locator('ul[role="menu"]').last();
     await menu.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
 
     const menuItem = menu.locator(`button:has-text("${actionName}")`).first();
@@ -665,8 +658,9 @@ export async function fillBehaviorGroupForm(
   await recipientSelect.click();
 
   await page.waitForTimeout(500);
-  // Scope the option lookup to the dialog to avoid clicking wrong item outside the modal
-  const option = dialog
+  // PF6 Select renders the dropdown via a popper/portal outside [role="dialog"],
+  // so search on the page level, not scoped to the dialog.
+  const option = page
     .locator(`li:has-text("${recipient}"), [role="option"]:has-text("${recipient}")`)
     .first();
   await option.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });

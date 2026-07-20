@@ -72,10 +72,9 @@ test.describe('Behavior Group Lifecycle', () => {
     const initialGroupName = generateBehaviorGroupName(bundleName);
     const updatedGroupName = `${initialGroupName}-edited`;
 
-    // Step 1: Navigate directly to Configure Events page
-    await page.goto(`${NOTIFICATIONS_PATH}/configure-events?bundle=${bundleName}`, {
-      waitUntil: 'domcontentloaded',
-    });
+    // Step 1: Navigate to base notifications path first (direct sub-route
+    // navigation can fail in CI when Chrome hasn't initialized the micro-frontend)
+    await page.goto(NOTIFICATIONS_PATH, { waitUntil: 'domcontentloaded' });
 
     const acceptCookies = page
       .getByRole('button', { name: 'Accept all' })
@@ -83,6 +82,19 @@ test.describe('Behavior Group Lifecycle', () => {
     if ((await acceptCookies.count()) > 0) {
       await acceptCookies.click();
     }
+
+    // Wait for the app to initialize
+    await page.waitForLoadState('networkidle');
+
+    // Step 2: Navigate to Configure Events via the nav link
+    const configureEventsLink = page
+      .locator(
+        'a:has-text("Configure Events"), button:has-text("Configure Events"), [role="tab"]:has-text("Configure Events")'
+      )
+      .first();
+    await configureEventsLink.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
+    await configureEventsLink.click();
+    await page.waitForLoadState('domcontentloaded');
 
     // Verify the page loaded
     await expect(page.getByRole('heading', { name: 'Configure Events' })).toBeVisible({
@@ -175,14 +187,22 @@ test.describe('Events Log', () => {
   });
 
   test('should display events log page', async ({ page }) => {
-    const eventLogUrl = `${NOTIFICATIONS_PATH}/eventlog`;
+    // Navigate to base notifications path first, then use nav link
+    await page.goto(NOTIFICATIONS_PATH, { waitUntil: 'domcontentloaded' });
+    await page.waitForLoadState('networkidle');
 
-    await page.goto(eventLogUrl, { waitUntil: 'domcontentloaded' });
+    // Navigate to Event Log via the nav link
+    const eventLogLink = page
+      .locator('a:has-text("Event Log"), button:has-text("Event Log")')
+      .first();
+    await eventLogLink.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
+    await eventLogLink.click();
+    await page.waitForLoadState('domcontentloaded');
 
     // Verify URL
     await expect(page).toHaveURL(/settings\/notifications\/eventlog/);
 
-    // Verify page header (level might vary, or use getByText for heading)
+    // Verify page header
     await expect(page.getByRole('heading', { name: 'Event Log' })).toBeVisible({
       timeout: TIMEOUTS.PAGE_LOAD,
     });
