@@ -143,12 +143,8 @@ describe('NotificationItem menu actions', () => {
     expect(params.get('tab')).toBe('configuration');
   });
 
-  it('Manage my event notifications uses window.location.href with bundle and app', async () => {
-    const originalLocation = window.location;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    delete (window as any).location;
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    window.location = { ...originalLocation, href: '' } as any;
+  it('Manage my event notifications uses navigate with bundle and app', async () => {
+    mockNavigate.mockClear();
 
     const notification = { ...makeNotification('1', false), application: 'advisor' };
     renderDrawerPanel([notification]);
@@ -165,10 +161,10 @@ describe('NotificationItem menu actions', () => {
     const menuItem = await screen.findByRole('menuitem', { name: 'Manage my event notifications' });
     await userEvent.click(menuItem);
 
-    expect(window.location.href).toContain('/settings/notifications/user-preferences');
-    expect(window.location.href).toContain('bundle=rhel');
-    expect(window.location.href).toContain('app=advisor');
-
-    window.location = originalLocation;
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    const url = mockNavigate.mock.calls[0][0];
+    expect(url).toContain('/settings/notifications/user-preferences');
+    expect(url).toContain('bundle=rhel');
+    expect(url).toContain('app=advisor');
   });
 });
