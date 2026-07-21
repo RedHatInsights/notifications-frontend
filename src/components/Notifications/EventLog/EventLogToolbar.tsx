@@ -1,4 +1,10 @@
-import { Icon, PaginationProps, PaginationVariant } from '@patternfly/react-core';
+import {
+  Checkbox,
+  Icon,
+  PaginationProps,
+  PaginationVariant,
+  Tooltip,
+} from '@patternfly/react-core';
 import {
   CheckCircleIcon,
   ExclamationCircleIcon,
@@ -11,6 +17,7 @@ import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/Fil
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
+import { useIntl } from 'react-intl';
 
 import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -35,6 +42,7 @@ import {
 import { usePrimaryToolbarFilterConfigWrapper } from './usePrimaryToolbarFilterConfigWrapper';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { ColumnsMetada } from '../../../utils/insights-common-typescript';
+import messages from '../../../properties/DefinedMessages';
 
 interface EventLogToolbarProps extends OuiaProps {
   filters: EventLogFilters;
@@ -56,6 +64,10 @@ interface EventLogToolbarProps extends OuiaProps {
   retentionDays: number;
   period: EventPeriod;
   setPeriod: Dispatch<SetStateAction<EventPeriod>>;
+
+  isOrgAdmin: boolean;
+  onlyImpactingMe: boolean;
+  setOnlyImpactingMe: (value: boolean) => void;
 }
 
 const notificationTypes: Record<NotificationType, { name: string }> = {
@@ -130,6 +142,7 @@ const actionStatusMetadata = [
 export const EventLogToolbar: React.FunctionComponent<
   React.PropsWithChildren<EventLogToolbarProps>
 > = (props) => {
+  const intl = useIntl();
   const notifications = useNotifications();
   const integrations = useIntegrations();
   const severitiesQuery = useGetSeverities();
@@ -267,13 +280,34 @@ export const EventLogToolbar: React.FunctionComponent<
         filterConfig={primaryToolbarFilterConfig.filterConfig as ConditionalFilterProps}
         activeFiltersConfig={primaryToolbarFilterConfig.activeFiltersConfig as FilterChipsProps}
         dedicatedAction={
-          <EventLogDateFilter
-            value={props.dateFilter}
-            setValue={props.setDateFilter}
-            retentionDays={props.retentionDays}
-            setPeriod={props.setPeriod}
-            period={props.period}
-          />
+          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+            <EventLogDateFilter
+              value={props.dateFilter}
+              setValue={props.setDateFilter}
+              retentionDays={props.retentionDays}
+              setPeriod={props.setPeriod}
+              period={props.period}
+            />
+            {props.isOrgAdmin ? (
+              <Checkbox
+                label={intl.formatMessage(messages.eventLogOnlyImpactingMe)}
+                isChecked={props.onlyImpactingMe}
+                onChange={(_e, checked) => props.setOnlyImpactingMe(checked)}
+                id="only-impacting-me"
+              />
+            ) : (
+              <Tooltip content={intl.formatMessage(messages.eventLogOrgAdminRequired)}>
+                <span>
+                  <Checkbox
+                    label={intl.formatMessage(messages.eventLogOnlyImpactingMe)}
+                    isChecked={true}
+                    isDisabled={true}
+                    id="only-impacting-me"
+                  />
+                </span>
+              </Tooltip>
+            )}
+          </div>
         }
         pagination={topPaginationProps}
       />

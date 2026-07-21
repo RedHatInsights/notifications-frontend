@@ -144,8 +144,6 @@ describe('NotificationItem menu actions', () => {
   });
 
   it('Manage my event notifications uses navigate with bundle and app', async () => {
-    mockNavigate.mockClear();
-
     const notification = { ...makeNotification('1', false), application: 'advisor' };
     renderDrawerPanel([notification]);
 

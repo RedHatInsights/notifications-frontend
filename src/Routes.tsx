@@ -1,14 +1,20 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
-import { Routes as DomRoutes, Navigate, Route } from 'react-router-dom';
+import { Routes as DomRoutes, Navigate, Route, useNavigate } from 'react-router-dom';
 
-import { CheckReadPermissions } from './components/CheckReadPermissions';
+const NotificationsLogRedirect: React.FunctionComponent = () => {
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    navigate('/settings/notifications/eventlog', { replace: true });
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
+  return null;
+};
+
 import { IntegrationsListPage } from './pages/Integrations/List/Page';
 import { SplunkSetupPage } from './pages/Integrations/SplunkSetup/SplunkSetupPage';
 import { EventLogPage } from './pages/Notifications/EventLog/EventLogPage';
 import { NotificationsListPage } from './pages/Notifications/List/Page';
-import { NotificationsLogPage } from './pages/Notifications/NotificationsLog/Page';
 import { NotificationsOverviewPage } from './pages/Notifications/Overview/Page';
 
 interface Path {
@@ -56,10 +62,6 @@ const legacyRoutes: Path[] = [
     path: linkTo.splunk(),
     component: SplunkSetupPage,
   },
-  {
-    path: linkTo.notificationsLog(),
-    component: NotificationsLogPage,
-  },
 ];
 
 const routesOverhaul: Path[] = [
@@ -78,10 +80,6 @@ const routesOverhaul: Path[] = [
   {
     path: linkTo.eventLog(),
     component: EventLogPage,
-  },
-  {
-    path: linkTo.notificationsLog(),
-    component: NotificationsLogPage,
   },
 ];
 
@@ -104,18 +102,11 @@ export const Routes: React.FunctionComponent = () => {
 
   return (
     <DomRoutes>
+      <Route path={linkTo.notificationsLog()} element={<NotificationsLogRedirect />} />
       {pathRoutes.map((pathRoute) => (
-        <Route
-          key={pathRoute.path}
-          path={pathRoute.path}
-          element={
-            <CheckReadPermissions>
-              <pathRoute.component />
-            </CheckReadPermissions>
-          }
-        />
+        <Route key={pathRoute.path} path={pathRoute.path} element={<pathRoute.component />} />
       ))}
-      {!notificationsOverhaul && <Route path="*" element={<Navigate to="/" replace />} />}
+      <Route path="*" element={<Navigate to="/settings/notifications" replace />} />
     </DomRoutes>
   );
 };

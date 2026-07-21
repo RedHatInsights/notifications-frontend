@@ -4,6 +4,7 @@
  * Based on learning-resources pattern
  */
 import { type FullConfig, type Page, type Request, type Route, chromium } from 'playwright';
+import { seedNotificationsIfNeeded } from './utils/seed-notifications';
 
 async function disableCookiePrompt(page: Page) {
   await page.route('**/*', async (route: Route, request: Request) => {
@@ -93,6 +94,9 @@ async function globalSetup(config: FullConfig) {
     await context.storageState({ path: storageState as string });
 
     console.log('✅ Authentication state saved to', storageState);
+
+    // Seed drawer notifications if the test account has none
+    await seedNotificationsIfNeeded(context);
   } catch (error) {
     console.error('❌ Global setup failed:', error);
     throw error;

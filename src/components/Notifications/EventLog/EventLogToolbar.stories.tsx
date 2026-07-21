@@ -386,6 +386,9 @@ const ToolbarWithEvents: React.FC<ToolbarWithEventsProps> = ({
       retentionDays={retentionDays}
       period={period}
       setPeriod={setPeriod}
+      isOrgAdmin={true}
+      onlyImpactingMe={false}
+      setOnlyImpactingMe={() => undefined}
     >
       <EventLogTable
         events={pageEvents}

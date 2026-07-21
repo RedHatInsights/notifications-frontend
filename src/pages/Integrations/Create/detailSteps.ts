@@ -17,6 +17,7 @@ import {
 import { IntlShape } from 'react-intl';
 import { validated } from './Validated';
 import { asyncValidatorDebouncedWrapper } from './nameValidator';
+import messages from '../messages';
 
 const commonFields = (isSlack: boolean, isEdit: boolean, intl: IntlShape) => [
   {
@@ -68,7 +69,12 @@ const sslAlert = {
   variant: 'info',
 };
 
-export const detailSteps = (isEdit: boolean, isBehaviorGroupsEnabled: boolean, intl: IntlShape) => {
+export const detailSteps = (
+  isEdit: boolean,
+  isBehaviorGroupsEnabled: boolean,
+  intl: IntlShape,
+  hidePagerDutySeverity: boolean = false
+) => {
   const title = `${isEdit ? 'Edit' : 'Enter'} details`;
   return [
     // REPORTING - SPLUNK, ANSIBLE
@@ -156,32 +162,41 @@ export const detailSteps = (isEdit: boolean, isBehaviorGroupsEnabled: boolean, i
             },
           ],
         },
-        {
-          component: componentTypes.SELECT,
-          name: 'severity',
-          label: 'Alert severity',
-          helperText: 'Severity of the alert created in PagerDuty when this integration is used.',
-          isRequired: true,
-          simpleValue: true,
-          options: [
-            {
-              label: 'Info',
-              value: 'Info',
-            },
-            {
-              label: 'Warning',
-              value: 'Warning',
-            },
-            {
-              label: 'Error',
-              value: 'Error',
-            },
-            {
-              label: 'Critical',
-              value: 'Critical',
-            },
-          ],
-        },
+        ...(hidePagerDutySeverity
+          ? []
+          : [
+              {
+                component: componentTypes.SELECT,
+                name: 'severity',
+                label: intl.formatMessage(messages.pagerDutySeverityLabel),
+                helperText: intl.formatMessage(messages.pagerDutySeverityHelperText),
+                isRequired: true,
+                validate: [
+                  {
+                    type: validatorTypes.REQUIRED,
+                  },
+                ],
+                simpleValue: true,
+                options: [
+                  {
+                    label: intl.formatMessage(messages.pagerDutySeverityInfo),
+                    value: 'Info',
+                  },
+                  {
+                    label: intl.formatMessage(messages.pagerDutySeverityWarning),
+                    value: 'Warning',
+                  },
+                  {
+                    label: intl.formatMessage(messages.pagerDutySeverityError),
+                    value: 'Error',
+                  },
+                  {
+                    label: intl.formatMessage(messages.pagerDutySeverityCritical),
+                    value: 'Critical',
+                  },
+                ],
+              },
+            ]),
       ],
     },
 

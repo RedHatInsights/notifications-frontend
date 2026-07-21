@@ -13,12 +13,14 @@ import {
 import { BellSlashIcon, LockIcon } from '@patternfly/react-icons';
 import { TableText } from '@patternfly/react-table';
 import * as React from 'react';
+import { useIntl } from 'react-intl';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
 import { findById } from '../../../utils/Find';
 import { emptyImmutableObject } from '../../../utils/Immutable';
 import { join } from '../../../utils/insights-common-typescript';
+import messages from '../messages';
 
 interface BehaviorGroupCellProps {
   id: string;
@@ -57,6 +59,7 @@ const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (props) =>
 };
 
 export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> = (props) => {
+  const intl = useIntl();
   const [isOpen, setOpen] = React.useState(false);
 
   const onSelected = React.useCallback(
@@ -93,7 +96,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     if (props.behaviorGroupContent.isLoading || props.behaviorGroupContent.hasError) {
       return [
         <MenuItem key="is-loading" isDisabled>
-          Loading
+          {intl.formatMessage(messages.loading)}
         </MenuItem>,
       ];
     }
@@ -101,10 +104,8 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
     if (props.behaviorGroupContent.content.length === 0) {
       return [
         <MenuItem key="empty" isDisabled>
-          <span className="pf-v5-u-text-align-left">
-            You have no behavior groups. <br />
-            Create a new group by clicking on the <br />
-            &apos;Create new group&apos; button above.
+          <span className="pf-v6-u-text-align-left">
+            {intl.formatMessage(messages.noBehaviorGroups)}
           </span>
         </MenuItem>,
       ];
@@ -128,15 +129,15 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             data-behavior-group-id={bg.id}
             isSelected={selected}
             isDisabled={bg.isDefault}
-            className="pf-v5-u-ml-sm"
+            className="pf-v6-u-ml-sm"
           >
-            {bg.isDefault && <LockIcon className="pf-v5-u-ml-sm" />}{' '}
-            <span className="pf-v5-u-ml-sm"> {bg.displayName}</span>
+            {bg.isDefault && <LockIcon className="pf-v6-u-ml-sm" />}{' '}
+            <span className="pf-v6-u-ml-sm"> {bg.displayName}</span>
           </MenuItem>
         );
       }),
     ];
-  }, [props.behaviorGroupContent, props.selected, onSelected]);
+  }, [props.behaviorGroupContent, props.selected, onSelected, intl]);
 
   const sortedSelected = React.useMemo(
     () => [
@@ -149,8 +150,10 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
   const toggleContent = React.useMemo(() => {
     return sortedSelected.length === 0 ? (
       <>
-        <span className="pf-v5-u-disabled-color-100">Select behavior group</span>
-        <Badge className="pf-v5-u-ml-xs" isRead>
+        <span className="pf-v6-u-disabled-color-100">
+          {intl.formatMessage(messages.selectBehaviorGroup)}
+        </span>
+        <Badge className="pf-v6-u-ml-xs" isRead>
           {sortedSelected.length}
         </Badge>
       </>
@@ -166,21 +169,21 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
             />
           ))}
         </LabelGroup>
-        <Badge className="pf-v5-u-ml-xs" isRead>
+        <Badge className="pf-v6-u-ml-xs" isRead>
           {sortedSelected.length}
         </Badge>
       </>
     );
-  }, [sortedSelected, props.notification, props.onSelect]);
+  }, [sortedSelected, props.notification, props.onSelect, intl]);
 
   const readonlyText = React.useMemo(() => {
     if (sortedSelected.length === 0) {
       return (
         <span>
-          <Icon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" isInline>
+          <Icon className="pf-v6-u-mr-sm pf-v6-u-disabled-color-100" isInline>
             <BellSlashIcon />
           </Icon>
-          Mute
+          {intl.formatMessage(messages.mute)}
         </span>
       );
     }
@@ -190,10 +193,11 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
         <React.Fragment key={b.id}>
           {b.isDefault && (
             <Tooltip
-              content={`${b.displayName} behavior is attached to this event and cannot be changed.
-                Add additional behavior groups to assign different actions or recipients.`}
+              content={intl.formatMessage(messages.defaultBehaviorTooltip, {
+                displayName: b.displayName,
+              })}
             >
-              <LockIcon className="pf-v5-u-mr-sm pf-v5-u-disabled-color-100" />
+              <LockIcon className="pf-v6-u-mr-sm pf-v6-u-disabled-color-100" />
             </Tooltip>
           )}{' '}
           <Label isCompact>{b.displayName}</Label>
@@ -201,7 +205,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
       )),
       CommaSeparator
     );
-  }, [sortedSelected]);
+  }, [sortedSelected, intl]);
 
   if (!props.isEditMode) {
     return <TableText wrapModifier="truncate"> {readonlyText} </TableText>;

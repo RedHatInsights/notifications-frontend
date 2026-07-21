@@ -31,7 +31,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     const first = items.first();
     const checkbox = drawerHelpers.notificationCheckbox(first);
@@ -59,7 +59,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Ensure none selected initially
     await drawerHelpers.bulkSelectNone(page);
@@ -88,7 +88,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     await drawerHelpers.bulkSelectAll(page);
 
@@ -118,7 +118,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // First select all, then select none
     await drawerHelpers.bulkSelectAll(page);
@@ -146,7 +146,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count < 2, 'Need at least 2 notifications for indeterminate state test');
+    expect(count, 'Need at least 2 notifications').toBeGreaterThanOrEqual(2);
 
     // Start fresh
     await drawerHelpers.bulkSelectNone(page);
@@ -169,15 +169,13 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
   // ── 4. Bulk Mark as Read ──────────────────────────────────────────
 
-  test.skip('bulk mark selected as read updates notification state', async ({ page }) => {
-    // Skipping this for now as it has potential to remove notifications needed for testing
+  test('bulk mark selected as read updates notification state', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Record initial state
     const initialCounts = await drawerHelpers.getReadUnreadCounts(page);
@@ -219,15 +217,13 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
   // ── 5. Bulk Mark as Unread ────────────────────────────────────────
 
-  test.skip('bulk mark selected as unread updates notification state', async ({ page }) => {
-    // Skipping this for now as it has potential to remove notifications needed for testing
+  test('bulk mark selected as unread updates notification state', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Ensure all are read first
     await drawerHelpers.bulkSelectAll(page);
@@ -265,7 +261,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const totalCount = await items.count();
 
-    test.skip(totalCount === 0, 'No notifications available');
+    expect(totalCount, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Open filter dropdown and check available filters
     const filterToggle = page.locator('#notifications-filter-toggle');
@@ -277,10 +273,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const filterItems = filterDropdown.locator('[role="menuitem"]');
     const filterCount = await filterItems.count();
 
-    if (filterCount < 1) {
-      await filterToggle.click();
-    }
-    test.skip(filterCount < 1, 'No filter options available');
+    expect(filterCount, 'No filter options available').toBeGreaterThanOrEqual(1);
 
     // Click the first available filter
     await filterItems.first().click();
@@ -305,17 +298,28 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       await drawerHelpers.bulkSelectNone(page);
     }
 
-    // Reset filters
-    await drawerHelpers.resetFilters(page);
+    // Only reset if the filter actually changed the visible count.
+    // When all notifications match the selected filter, Reset is disabled.
+    if (filteredCount < totalCount) {
+      await drawerHelpers.resetFilters(page);
 
-    // After reset, total count should be restored
-    const restoredItems = drawerHelpers.notificationItems(page);
-    const restoredCount = await restoredItems.count();
-    expect(restoredCount).toBe(totalCount);
+      const restoredItems = drawerHelpers.notificationItems(page);
+      const restoredCount = await restoredItems.count();
+      expect(restoredCount).toBe(totalCount);
 
-    console.log(
-      `Filter + selection workflow: ${totalCount} total → ${filteredCount} filtered → ${restoredCount} restored`
-    );
+      console.log(
+        `Filter + selection workflow: ${totalCount} total → ${filteredCount} filtered → ${restoredCount} restored`
+      );
+    } else {
+      // Filter matched everything — deselect the filter to restore state
+      await filterToggle.click();
+      await expect(filterDropdown).toBeVisible();
+      await filterItems.first().click();
+      await filterToggle.click();
+      console.log(
+        `Filter matched all ${totalCount} notifications — Reset disabled (expected), deselected filter manually`
+      );
+    }
   });
 
   // ── 7. Drawer Close/Reopen Sanity Check ──────────────────────────
@@ -327,7 +331,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Select first notification
     await drawerHelpers.bulkSelectNone(page);
@@ -351,40 +355,52 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
   // ── 8. Complex Multi-Step Workflow ────────────────────────────────
 
-  test.skip('multi-step: select some, mark read, select remaining, mark unread', async ({
-    page,
-  }) => {
-    // Skipping this for now as it has potential to remove notifications needed for testing
+  test('multi-step: select some, mark read, select remaining, mark unread', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
+    expect(count, 'Need at least 2 notifications').toBeGreaterThanOrEqual(2);
 
-    test.skip(count < 2, 'Need at least 2 notifications for multi-step workflow');
+    const initialCounts = await drawerHelpers.getReadUnreadCounts(page);
 
     // Step 1: Select none first
     await drawerHelpers.bulkSelectNone(page);
 
-    // Step 2: Select first notification only
-    await drawerHelpers.selectNotification(items.first());
-    const firstSelected = await drawerHelpers.getSelectedCount(page);
-    expect(firstSelected).toBe(1);
-
-    // Step 3: Mark selected as read
-    await drawerHelpers.markSelectedAsRead(page);
-    await expect
-      .poll(() => drawerHelpers.isNotificationRead(items.first()), { timeout: 10000 })
-      .toBe(true);
-
-    // Step 4: Verify first notification is now read
+    // Step 2: Ensure the first notification is unread so marking it read
+    // produces an observable count change
     const firstIsRead = await drawerHelpers.isNotificationRead(items.first());
-    expect(firstIsRead).toBe(true);
+    if (firstIsRead) {
+      await drawerHelpers.selectNotification(items.first());
+      await drawerHelpers.markSelectedAsUnread(page);
+      await expect
+        .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
+          timeout: 10000,
+        })
+        .toBe(initialCounts.read - 1);
+      // Refresh counts after the prep step
+      const refreshed = await drawerHelpers.getReadUnreadCounts(page);
+      initialCounts.read = refreshed.read;
+      initialCounts.unread = refreshed.unread;
+    }
 
-    // Step 5: Select all remaining (select all then the first is already selected)
+    // Step 3: Select first notification only
+    await drawerHelpers.selectNotification(items.first());
+    expect(await drawerHelpers.getSelectedCount(page)).toBe(1);
+
+    // Step 4: Mark selected as read
+    await drawerHelpers.markSelectedAsRead(page);
+
+    // Verify read count increased by 1 (drawer re-sorts, can't track by position)
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
+        timeout: 10000,
+      })
+      .toBe(initialCounts.read + 1);
+
+    // Step 5: Select all and mark as unread to restore
     await drawerHelpers.bulkSelectAll(page);
-
-    // Step 6: Mark all as unread to restore
     await drawerHelpers.markSelectedAsUnread(page);
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
@@ -392,7 +408,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       })
       .toBe(count);
 
-    // Step 7: Verify all are unread now
+    // Step 6: Verify all are unread now
     const finalCounts = await drawerHelpers.getReadUnreadCounts(page);
     expect(finalCounts.unread).toBe(finalCounts.total);
 
@@ -401,15 +417,13 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
   // ── 9. Performance — Large Notification Set ───────────────────────
 
-  test.skip('bulk operations handle available notifications efficiently', async ({ page }) => {
-    // Skipping this for now as it has potential to remove notifications needed for testing
+  test('bulk operations handle available notifications efficiently', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
-
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Measure select all timing
     const selectStart = Date.now();
@@ -461,7 +475,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    test.skip(count === 0, 'No notifications available');
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Start with none selected
     await drawerHelpers.bulkSelectNone(page);

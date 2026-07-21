@@ -124,7 +124,7 @@ export const EmptyNotifications = ({
                 </Link>
               </StackItem>
               <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
-                <Link onClick={onLinkClick} to="/settings/notifications/notificationslog">
+                <Link onClick={onLinkClick} to="/settings/notifications/eventlog">
                   View the Event log to see all fired events
                 </Link>
               </StackItem>

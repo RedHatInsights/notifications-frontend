@@ -15,7 +15,7 @@ jest.mock('../pages/Integrations/List/Page', () => ({
 
 jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
   return () => ({
-    getApp: () => 'foo',
+    getApp: () => 'notifications',
     isBeta: () => false,
     getEnvironment: () => 'bar',
   });
@@ -36,38 +36,19 @@ describe('src/Routes', () => {
       appWrapperCleanup();
     });
 
-    it('Nothing is rendered in /', async () => {
+    it('Overview renders without permission check', async () => {
       jest.useFakeTimers();
-      const getLocation = jest.fn();
       const Wrapper = getConfiguredAppWrapper({
         router: {
-          initialEntries: ['/'],
+          initialEntries: ['/settings/notifications'],
+          basename: '/settings/notifications',
         },
-        getLocation,
       });
       render(<Routes />, {
         wrapper: Wrapper,
       });
 
-      expect(getLocation().pathname).toBe('/');
-      expect(screen.getByRole('link', { name: 'Go to landing page' })).toBeVisible();
-    });
-
-    it('Should render on /notifications/foobar', async () => {
-      jest.useFakeTimers();
-      const getLocation = jest.fn();
-      const Wrapper = getConfiguredAppWrapper({
-        router: {
-          initialEntries: ['/notifications/foobar'],
-        },
-        getLocation,
-      });
-      render(<Routes />, {
-        wrapper: Wrapper,
-      });
-
-      expect(getLocation().pathname).toBe('/notifications/foobar');
-      expect(screen.getByText(/notifications/i)).toBeVisible();
+      expect(screen.queryByRole('link', { name: 'Go to landing page' })).not.toBeInTheDocument();
     });
   });
 });

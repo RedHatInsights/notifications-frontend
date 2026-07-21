@@ -168,6 +168,27 @@ export default defineMessages({
     description: 'Admin access required tooltip',
     defaultMessage: 'Admin-access required',
   },
+  eventLogOnlyImpactingMe: {
+    id: 'eventLogOnlyImpactingMe',
+    description: 'Event log checkbox label to filter events impacting the current user',
+    defaultMessage: 'Only show events impacting me',
+  },
+  eventLogOrgAdminRequired: {
+    id: 'eventLogOrgAdminRequired',
+    description: 'Tooltip shown when org admin access is required to view all organization events',
+    defaultMessage: 'Org admin access required to view all organization events',
+  },
+  eventLogFilteredAlertTitle: {
+    id: 'eventLogFilteredAlertTitle',
+    description: 'Alert title shown to non-admin users whose events are filtered by privileges',
+    defaultMessage: 'Events are being filtered out due to your privileges',
+  },
+  eventLogFilteredAlertBody: {
+    id: 'eventLogFilteredAlertBody',
+    description: 'Alert body shown to non-admin users explaining how to see all events',
+    defaultMessage:
+      'You are only seeing event instances that you have been given access to see. If you need to see all events for your entire organization, contact your org admin.',
+  },
   markAsRead: {
     id: 'markAsRead',
     description: 'Mark notification as read',

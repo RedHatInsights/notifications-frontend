@@ -1,8 +1,17 @@
-import { ButtonVariant } from '@patternfly/react-core';
+import {
+  Alert,
+  ButtonVariant,
+  Card,
+  CardBody,
+  EmptyState,
+  EmptyStateBody,
+} from '@patternfly/react-core';
+import { LockIcon } from '@patternfly/react-icons';
 import { useFlag } from '@unleash/proxy-client-react';
 import assertNever from 'assert-never';
 import * as React from 'react';
 import { useParameterizedQuery } from 'react-fetching-library';
+import { useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
@@ -19,6 +28,7 @@ import Config from '../../../config/Config';
 import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
+import definedMessages from '../../../properties/DefinedMessages';
 import { linkTo } from '../../../Routes';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
 import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
@@ -32,10 +42,12 @@ import { Direction, Sort } from '../../../utils/insights-common-typescript';
 const RETENTION_DAYS = 14;
 
 export const EventLogPage: React.FunctionComponent = () => {
+  const intl = useIntl();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
   const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
   const getEndpoint = useParameterizedQuery(getEndpointAction);
-  const { rbac } = useAppContext();
+  const { rbac, isOrgAdmin } = useAppContext();
+  const [onlyImpactingMe, setOnlyImpactingMe] = React.useState(!isOrgAdmin);
 
   const getBundles = useGetBundles(true);
   const bundles = React.useMemo(() => {
@@ -68,7 +80,7 @@ export const EventLogPage: React.FunctionComponent = () => {
     [setSortDirection, setSortColumn]
   );
 
-  const filterBuilder = useFilterBuilder(bundles, dateFilter, period);
+  const filterBuilder = useFilterBuilder(bundles, dateFilter, period, onlyImpactingMe);
 
   const sort: Sort = React.useMemo(() => {
     const direction = sortDirection.toUpperCase() as Direction;
@@ -92,6 +104,9 @@ export const EventLogPage: React.FunctionComponent = () => {
     sort
   );
   const eventsQuery = useGetEvents(eventsPage.page);
+
+  const isForbidden =
+    !eventsQuery.loading && eventsQuery.error && eventsQuery.payload?.status !== 200;
 
   const events = React.useMemo(() => {
     if (eventsQuery.payload?.status === 200) {
@@ -165,31 +180,66 @@ export const EventLogPage: React.FunctionComponent = () => {
           )
         }
       />
-      <EventLogToolbar
-        {...eventLogFilters}
-        bundleOptions={bundles}
-        dateFilter={dateFilter}
-        setDateFilter={setDateFilter}
-        count={events.count}
-        perPageChanged={eventsPage.changeItemsPerPage}
-        pageChanged={eventsPage.changePage}
-        perPage={eventsPage.page.size}
-        page={eventsPage.page.index}
-        pageCount={events.data.length}
-        retentionDays={RETENTION_DAYS}
-        period={period}
-        setPeriod={setPeriod}
-      >
-        <EventLogTable
-          events={events.data}
-          loading={eventsQuery.loading}
-          showSeverity={isEventLogSeverityEnabled}
-          onSort={onSort}
-          sortColumn={sortColumn}
-          sortDirection={sortDirection}
-          getIntegrationRecipient={getIntegrationRecipient}
-        />
-      </EventLogToolbar>
+      {isForbidden ? (
+        <Card isPlain>
+          <CardBody>
+            <EmptyState
+              headingLevel="h2"
+              icon={LockIcon}
+              titleText={intl.formatMessage({
+                id: 'eventLog.unauthorized.title',
+                defaultMessage: 'You do not have access to the event log',
+              })}
+            >
+              <EmptyStateBody>
+                {intl.formatMessage({
+                  id: 'eventLog.unauthorized.body',
+                  defaultMessage:
+                    'Contact your organization administrator to request the necessary permissions.',
+                })}
+              </EmptyStateBody>
+            </EmptyState>
+          </CardBody>
+        </Card>
+      ) : (
+        <EventLogToolbar
+          {...eventLogFilters}
+          bundleOptions={bundles}
+          dateFilter={dateFilter}
+          setDateFilter={setDateFilter}
+          count={events.count}
+          perPageChanged={eventsPage.changeItemsPerPage}
+          pageChanged={eventsPage.changePage}
+          perPage={eventsPage.page.size}
+          page={eventsPage.page.index}
+          pageCount={events.data.length}
+          retentionDays={RETENTION_DAYS}
+          period={period}
+          setPeriod={setPeriod}
+          isOrgAdmin={isOrgAdmin}
+          onlyImpactingMe={onlyImpactingMe}
+          setOnlyImpactingMe={setOnlyImpactingMe}
+        >
+          {!isOrgAdmin && (
+            <Alert
+              variant="info"
+              isInline
+              title={intl.formatMessage(definedMessages.eventLogFilteredAlertTitle)}
+            >
+              {intl.formatMessage(definedMessages.eventLogFilteredAlertBody)}
+            </Alert>
+          )}
+          <EventLogTable
+            events={events.data}
+            loading={eventsQuery.loading}
+            showSeverity={isEventLogSeverityEnabled}
+            onSort={onSort}
+            sortColumn={sortColumn}
+            sortDirection={sortDirection}
+            getIntegrationRecipient={getIntegrationRecipient}
+          />
+        </EventLogToolbar>
+      )}
     </>
   );
 };

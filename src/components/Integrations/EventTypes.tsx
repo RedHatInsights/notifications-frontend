@@ -349,7 +349,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
                         rowIndex: index,
                         onSelect: (_event, isSelecting) =>
                           setSelected(isSelecting, [row], selected),
-                        isSelected: selected.find(({ id }) => id === row.id),
+                        isSelected: !!selected.find(({ id }) => id === row.id),
                       }}
                     />
                     <Td dataLabel="event-type">{row.eventTypeDisplayName}</Td>

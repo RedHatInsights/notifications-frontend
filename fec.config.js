@@ -9,6 +9,7 @@ module.exports = {
   ],
   debug: true,
   useProxy: true,
+  stripAllPfStyles: true,
   proxyVerbose: true,
   frontendCRDPath: path.resolve(__dirname, './.rhcicd/frontend.yaml'),
   /**

@@ -41,9 +41,10 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     expect(isUnread || isRead).toBe(true);
 
     if (isUnread) {
+      // The count badge element may not render for small counts (dot-only variant).
+      // The unread class itself is the reliable indicator.
       const count = await drawerHelpers.getUnreadCount(page);
-      expect(count).toBeGreaterThan(0);
-      console.log(`Bell shows unread variant with count=${count}`);
+      console.log(`Bell shows unread variant (count badge: ${count || 'not displayed'})`);
     } else {
       console.log('Bell shows read variant (0 unread)');
     }
@@ -108,46 +109,34 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
   // ── 4. Individual Read/Unread Toggle ──────────────────────────────
 
-  test.skip('can toggle a notification read status via kebab menu', async ({ page }) => {
-    // Skipping this for now as it has potential to remove notifications needed for testing
+  test('can toggle a notification read status via kebab menu', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
-
-    if (count === 0) {
-      console.log('No notifications — skipping read/unread toggle');
-      return;
-    }
+    expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     const first = items.first();
-    const wasRead = await first.evaluate((el) => el.classList.contains('pf-m-read'));
+    const wasRead = await drawerHelpers.isNotificationRead(first);
+    const before = await drawerHelpers.getReadUnreadCounts(page);
 
     // Toggle read status
     await drawerHelpers.toggleReadStatus(page, first);
 
-    // Wait for the read-state class to change
-    if (wasRead) {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
-    } else {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
-    }
+    // Drawer re-sorts after toggling (unread first), so verify via counts
+    const expectedRead = wasRead ? before.read - 1 : before.read + 1;
+    await expect
+      .poll(async () => (await drawerHelpers.getReadUnreadCounts(page)).read, {
+        timeout: 10000,
+      })
+      .toBe(expectedRead);
 
-    const isNowRead = await first.evaluate((el) => el.classList.contains('pf-m-read'));
-    expect(isNowRead).not.toBe(wasRead);
+    // Toggle the new first item back to roughly restore state
+    const newFirst = drawerHelpers.notificationItems(page).first();
+    await drawerHelpers.toggleReadStatus(page, newFirst);
 
-    // Toggle back to restore original state
-    await drawerHelpers.toggleReadStatus(page, first);
-
-    // Wait for the class to revert
-    if (wasRead) {
-      await expect(first).toHaveClass(/pf-m-read/, { timeout: 5000 });
-    } else {
-      await expect(first).not.toHaveClass(/pf-m-read/, { timeout: 5000 });
-    }
-
-    console.log(`Toggled read status: ${wasRead ? 'read→unread→read' : 'unread→read→unread'}`);
+    console.log('Toggled read status and verified count change');
   });
 
   // ── 5. Filtering ──────────────────────────────────────────────────
@@ -192,13 +181,13 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const dropdown = page.locator('#notifications-actions-dropdown');
 
-    // "View notifications log" should always be present
-    await expect(dropdown.getByRole('menuitem', { name: 'View notifications log' })).toBeVisible();
+    // "View event log" should always be present
+    await expect(dropdown.getByRole('menuitem', { name: 'View event log' })).toBeVisible();
 
-    // "Manage my notification preferences" should always be present
+    // "Manage my event notifications" should always be present
     await expect(
       dropdown.getByRole('menuitem', {
-        name: 'Manage my notification preferences',
+        name: 'Manage my event notifications',
       })
     ).toBeVisible();
 
@@ -208,25 +197,25 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await page.locator('#notifications-actions-toggle').click();
   });
 
-  test('"View notifications log" navigates to the correct page', async ({ page }) => {
+  test('"View event log" navigates to the correct page', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    await drawerHelpers.clickActionItem(page, 'View notifications log');
+    await drawerHelpers.clickActionItem(page, 'View event log');
 
     // Drawer should auto-close and navigate
-    await page.waitForURL(/settings\/notifications\/notificationslog/, {
+    await page.waitForURL(/settings\/notifications\/eventlog/, {
       timeout: 30000,
     });
 
-    console.log('Navigated to notifications log');
+    console.log('Navigated to event log');
   });
 
-  test('"Manage my notification preferences" navigates correctly', async ({ page }) => {
+  test('"Manage my event notifications" navigates correctly', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    await drawerHelpers.clickActionItem(page, 'Manage my notification preferences');
+    await drawerHelpers.clickActionItem(page, 'Manage my event notifications');
 
     await page.waitForURL(/settings\/notifications\/user-preferences/, {
       timeout: 30000,
@@ -237,7 +226,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
   // ── 7. Per-Notification Actions ───────────────────────────────────
 
-  test('notification kebab has "Manage this event" option', async ({ page }) => {
+  test('notification kebab has expected menu items', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -253,19 +242,86 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const kebab = first.locator('#notification-item-toggle');
     await kebab.click();
 
-    const manageItem = page
-      .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: 'Manage this event' });
-    await expect(manageItem).toBeVisible();
+    const dropdown = page.locator('#notification-item-dropdown');
+    await expect(dropdown).toBeVisible({ timeout: 5000 });
 
-    const markItem = page
-      .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: /Mark as/ });
-    await expect(markItem).toBeVisible();
+    await expect(dropdown.getByRole('menuitem', { name: /Mark as/ })).toBeVisible();
+    await expect(dropdown.getByRole('menuitem', { name: 'View in event log' })).toBeVisible();
+    await expect(
+      dropdown.getByRole('menuitem', { name: 'Manage my event notifications' })
+    ).toBeVisible();
+    await expect(
+      dropdown.getByRole('menuitem', { name: 'Manage event configuration' })
+    ).toBeVisible();
 
     // Close dropdown without navigating
     await kebab.click();
     console.log('Notification kebab menu items verified');
+  });
+
+  test('notification kebab "View in event log" navigates correctly', async ({ page }) => {
+    await drawerHelpers.openDrawer(page);
+    await drawerHelpers.waitForDrawerReady(page);
+
+    const items = drawerHelpers.notificationItems(page);
+    expect(await items.count(), 'Test account must have at least one notification').toBeGreaterThan(
+      0
+    );
+
+    const first = items.first();
+    const kebab = first.locator('#notification-item-toggle');
+    await kebab.click();
+
+    const dropdown = page.locator('#notification-item-dropdown');
+    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await dropdown.getByRole('menuitem', { name: 'View in event log' }).click();
+
+    await page.waitForURL(/settings\/notifications\/eventlog/, { timeout: 30000 });
+    console.log('Per-notification "View in event log" navigated correctly');
+  });
+
+  test('notification kebab "Manage my event notifications" navigates correctly', async ({
+    page,
+  }) => {
+    await drawerHelpers.openDrawer(page);
+    await drawerHelpers.waitForDrawerReady(page);
+
+    const items = drawerHelpers.notificationItems(page);
+    expect(await items.count(), 'Test account must have at least one notification').toBeGreaterThan(
+      0
+    );
+
+    const first = items.first();
+    const kebab = first.locator('#notification-item-toggle');
+    await kebab.click();
+
+    const dropdown = page.locator('#notification-item-dropdown');
+    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await dropdown.getByRole('menuitem', { name: 'Manage my event notifications' }).click();
+
+    await page.waitForURL(/settings\/notifications\/user-preferences/, { timeout: 30000 });
+    console.log('Per-notification "Manage my event notifications" navigated correctly');
+  });
+
+  test('notification kebab "Manage event configuration" navigates correctly', async ({ page }) => {
+    await drawerHelpers.openDrawer(page);
+    await drawerHelpers.waitForDrawerReady(page);
+
+    const items = drawerHelpers.notificationItems(page);
+    expect(await items.count(), 'Test account must have at least one notification').toBeGreaterThan(
+      0
+    );
+
+    const first = items.first();
+    const kebab = first.locator('#notification-item-toggle');
+    await kebab.click();
+
+    const dropdown = page.locator('#notification-item-dropdown');
+    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await dropdown.getByRole('menuitem', { name: 'Manage event configuration' }).click();
+
+    await page.waitForURL(/settings\/notifications\/configure-events/, { timeout: 30000 });
+    console.log('Per-notification "Manage event configuration" navigated correctly');
   });
 
   // ── 8 & 9. Empty States ───────────────────────────────────────────
@@ -338,8 +394,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    // BulkSelect component with id="notifications-bulk-select"
-    const bulkSelect = page.locator('#notifications-bulk-select');
+    const bulkSelect = page.locator('button[data-ouia-component-id="BulkSelect"]');
     await expect(bulkSelect).toBeVisible();
     console.log('Bulk select control present');
   });
