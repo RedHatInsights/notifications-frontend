@@ -205,7 +205,10 @@ export async function fillCommunicationForm(
       .locator('select[name="integration-type"], [name="integration-type"]')
       .first();
     if (await typeSelector.isVisible({ timeout: 2000 }).catch(() => false)) {
-      const typeValue = `camel:${payload.type === 'gchat' ? 'google_chat' : payload.type}`;
+      const typeValue =
+        payload.type === 'email'
+          ? 'email_subscription'
+          : `camel:${payload.type === 'gchat' ? 'google_chat' : payload.type}`;
       await typeSelector.selectOption(typeValue);
       await page.locator('button:has-text("Next")').first().click();
       await page.waitForTimeout(1000);
@@ -217,11 +220,54 @@ export async function fillCommunicationForm(
   await nameInput.waitFor({ state: 'visible' });
   await nameInput.fill(payload.name);
 
-  const urlInput = page.locator('input[name="url"], input[id="url"]').first();
-  await urlInput.waitFor({ state: 'visible' });
-  await urlInput.fill(payload.url);
+  if (payload.type !== 'email') {
+    const urlInput = page.locator('input[name="url"], input[id="url"]').first();
+    await urlInput.waitFor({ state: 'visible' });
+    await urlInput.fill(payload.url!);
+  }
 
-  await page.locator('button:has-text("Next")').first().click();
+  await page.waitForTimeout(500);
+
+  {
+    const nextButton = page.locator('button:has-text("Next")').first();
+    await nextButton.waitFor({ state: 'visible' });
+    await page.waitForFunction(
+      (btn) => !btn.hasAttribute('disabled'),
+      await nextButton.elementHandle(),
+      { timeout: 10000 }
+    );
+    await nextButton.click();
+    await page.waitForTimeout(1000);
+  }
+
+  // Step 2b (Email only): Email Config - select user access group
+  if (payload.type === 'email') {
+    const configHeader = page.locator('h3:has-text("Configure email settings")').first();
+    await configHeader.waitFor({ state: 'visible', timeout: 10000 });
+
+    // Wait for the user access groups table to load (skeleton disappears, rows appear)
+    const tableBody = page.locator(
+      'table[aria-label*="User Access Groups"] tbody, ' +
+        '[data-ouia-component-type="PF6/Table"] tbody'
+    );
+    await tableBody.waitFor({ state: 'visible', timeout: 30000 });
+
+    // Select the first available group checkbox
+    const firstCheckbox = tableBody.locator('input[type="checkbox"]').first();
+    await firstCheckbox.waitFor({ state: 'visible', timeout: 10000 });
+    await firstCheckbox.check();
+    await page.waitForTimeout(500);
+
+    const nextButton = page.locator('button:has-text("Next")').first();
+    await nextButton.waitFor({ state: 'visible' });
+    await page.waitForFunction(
+      (btn) => !btn.hasAttribute('disabled'),
+      await nextButton.elementHandle(),
+      { timeout: 10000 }
+    );
+    await nextButton.click();
+    await page.waitForTimeout(1000);
+  }
 
   // Step 3: Event Types (if enabled)
   // Target the h4 header specifically to avoid matching the nav text

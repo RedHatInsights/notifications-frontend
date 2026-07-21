@@ -182,90 +182,87 @@ test.describe('Webhook Integration Lifecycle', () => {
 // Communication Integration Tests
 // =============================================================================
 
+const communicationTypes = ['slack', 'teams', 'gchat', 'email'] as const;
+
 test.describe('Communication Integration Lifecycle', () => {
   test.beforeEach(async ({ page }) => {
     await ensureLoggedIn(page);
   });
 
-  test('should create, verify, and delete Slack integration', async ({ page }) => {
-    /**
-     * Test flow:
-     * 1. Open Create Integration dropdown
-     * 2. Select Communications → fills 4-step wizard (type, details, event types, review)
-     * 3. Navigate to Communications tab
-     * 4. Verify new Slack integration appears in table
-     * 5. Delete integration via kebab menu
-     * 6. Verify integration removed from table
-     */
-    const payload = generateCommunicationPayload('slack', { eventTypes: ['New recommendation'] });
+  for (const type of communicationTypes) {
+    test(`should create, verify, and delete ${type} integration`, async ({ page }) => {
+      const payload = generateCommunicationPayload(type, {
+        eventTypes: ['New recommendation'],
+      });
 
-    // Step 1: Navigate to integrations page
-    await page.goto(INTEGRATIONS_PATH);
-    await page.waitForLoadState('domcontentloaded');
-
-    // Dual-timeout strategy: fast check (5s) → reload if needed → full retry (30s)
-    // Use exact: true to avoid strict mode violation (multiple "Integrations" headings exist)
-    const heading = page.getByRole('heading', { name: 'Integrations', exact: true });
-    if (!(await heading.isVisible({ timeout: 5000 }))) {
-      await page.reload();
+      // Step 1: Navigate to integrations page
+      await page.goto(INTEGRATIONS_PATH);
       await page.waitForLoadState('domcontentloaded');
-    }
-    await expect(heading).toBeVisible({ timeout: 30000 });
 
-    await dismissCookieConsent(page);
+      // Dual-timeout strategy: fast check (5s) → reload if needed → full retry (30s)
+      const heading = page.getByRole('heading', { name: 'Integrations', exact: true });
+      if (!(await heading.isVisible({ timeout: 5000 }))) {
+        await page.reload();
+        await page.waitForLoadState('domcontentloaded');
+      }
+      await expect(heading).toBeVisible({ timeout: 30000 });
 
-    // Step 2: Open wizard - click "Create Integration" dropdown
-    // Wait for button to be visible and actionable (module federation can be slow to hydrate)
-    const createButton = page.getByRole('button', { name: 'Create Integration' }).first();
-    await expect(createButton).toBeVisible({ timeout: 30000 });
-    await createButton.click();
+      await dismissCookieConsent(page);
 
-    const communicationsMenuItem = page
-      .getByRole('menuitem', { name: 'Communications' })
-      .or(page.locator('a:has-text("Communications")'));
-    await communicationsMenuItem.waitFor({ state: 'visible', timeout: 5000 });
-    await communicationsMenuItem.click();
+      // Step 2: Open wizard - click "Create Integration" dropdown
+      const createButton = page.getByRole('button', { name: 'Create Integration' }).first();
+      await expect(createButton).toBeVisible({ timeout: 30000 });
+      await createButton.click();
 
-    await page.waitForSelector('[role="dialog"]', { state: 'visible', timeout: 10000 });
+      const communicationsMenuItem = page
+        .getByRole('menuitem', { name: 'Communications' })
+        .or(page.locator('a:has-text("Communications")'));
+      await communicationsMenuItem.waitFor({ state: 'visible', timeout: 5000 });
+      await communicationsMenuItem.click();
 
-    // Step 3: Fill and submit wizard
-    await fillCommunicationForm(page, payload);
+      await page.waitForSelector('[role="dialog"]', { state: 'visible', timeout: 10000 });
 
-    // Wait for wizard to close
-    const wizardDialog = page.locator('[role="dialog"][aria-labelledby="add-integration-wizard"]');
-    if ((await wizardDialog.count()) > 0) {
-      await wizardDialog.waitFor({ state: 'hidden', timeout: 15000 });
-    }
+      // Step 3: Fill and submit wizard
+      await fillCommunicationForm(page, payload);
 
-    // Wait for backdrop to disappear if present
-    const backdrop = page.locator('.pf-v6-c-backdrop__open, .pf-c-backdrop');
-    if ((await backdrop.count()) > 0) {
-      await backdrop.waitFor({ state: 'detached', timeout: 5000 });
-    }
+      // Wait for wizard to close
+      const wizardDialog = page.locator(
+        '[role="dialog"][aria-labelledby="add-integration-wizard"]'
+      );
+      if ((await wizardDialog.count()) > 0) {
+        await wizardDialog.waitFor({ state: 'hidden', timeout: 15000 });
+      }
 
-    // Step 4: Navigate to Communications tab
-    const communicationsTab = page
-      .locator('button:has-text("Communications"), a:has-text("Communications")')
-      .first();
-    await communicationsTab.click();
-    await page.waitForLoadState('domcontentloaded');
+      // Wait for backdrop to disappear if present
+      const backdrop = page.locator('.pf-v6-c-backdrop__open, .pf-c-backdrop');
+      if ((await backdrop.count()) > 0) {
+        await backdrop.waitFor({ state: 'detached', timeout: 5000 });
+      }
 
-    // Wait for table and scroll into view
-    const table = page
-      .locator('table, [data-ouia-component-type="PF6/Table"]')
-      .or(page.locator('text="No integrations"'))
-      .first();
-    await table.waitFor({ state: 'visible', timeout: 10000 });
-    await table.scrollIntoViewIfNeeded();
+      // Step 4: Navigate to Communications tab
+      const communicationsTab = page
+        .locator('button:has-text("Communications"), a:has-text("Communications")')
+        .first();
+      await communicationsTab.click();
+      await page.waitForLoadState('domcontentloaded');
 
-    // Step 5: Verify integration appears in table
-    const integrationElement = page.locator(`text="${payload.name}"`).first();
-    await expect(integrationElement).toBeVisible({ timeout: 15000 });
+      // Wait for table and scroll into view
+      const table = page
+        .locator('table, [data-ouia-component-type="PF6/Table"]')
+        .or(page.locator('text="No integrations"'))
+        .first();
+      await table.waitFor({ state: 'visible', timeout: 10000 });
+      await table.scrollIntoViewIfNeeded();
 
-    // Step 6: Delete integration
-    await deleteIntegration(page, payload.name);
+      // Step 5: Verify integration appears in table
+      const integrationElement = page.locator(`text="${payload.name}"`).first();
+      await expect(integrationElement).toBeVisible({ timeout: 15000 });
 
-    // Step 7: Verify deletion
-    await expect(integrationElement).not.toBeVisible({ timeout: 10000 });
-  });
+      // Step 6: Delete integration
+      await deleteIntegration(page, payload.name);
+
+      // Step 7: Verify deletion
+      await expect(integrationElement).not.toBeVisible({ timeout: 10000 });
+    });
+  }
 });
