@@ -139,6 +139,7 @@ const ActionDropdownItems = ({
           key="read selected"
           onClick={() => onUpdateSelectedStatus(true)}
           isDisabled={isBulkActionDisabled}
+          data-selected-count={selectedCount}
         >
           {intl.formatMessage(messages.markSelectedAsRead, { count: selectedCount })}
         </DropdownItem>
@@ -146,6 +147,7 @@ const ActionDropdownItems = ({
           key="unread selected"
           onClick={() => onUpdateSelectedStatus(false)}
           isDisabled={isBulkActionDisabled}
+          data-selected-count={selectedCount}
         >
           {intl.formatMessage(messages.markSelectedAsUnread, { count: selectedCount })}
         </DropdownItem>
