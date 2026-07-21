@@ -54,7 +54,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       bundle: notification.bundle,
       ...(notification.application && { app: notification.application }),
     }).toString()}`;
-    window.location.href = url;
+    onNavigateTo(url);
   };
 
   const onMarkAsRead = () => {
@@ -85,7 +85,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           service: notification.source,
           event: notification.title,
         }).toString()}`;
-        window.location.href = url;
+        onNavigateTo(url);
       }}
     >
       {intl.formatMessage(messages.viewInEventLog)}
@@ -97,7 +97,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           bundle: notification.bundle,
           ...(notification.application && { app: notification.application }),
         }).toString()}`;
-        window.location.href = url;
+        onNavigateTo(url);
       }}
     >
       {intl.formatMessage(messages.manageMyEventNotifications)}
@@ -145,8 +145,6 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       aria-label={`Notification item ${notification.title}`}
       variant="info"
       isRead={notification.read}
-      onClick={onNotificationClick}
-      style={{ cursor: 'pointer' }}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
         <div onClick={(e) => e.stopPropagation()}>
@@ -183,7 +181,11 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <DropdownList>{notificationDropdownItems}</DropdownList>
         </Dropdown>
       </NotificationDrawerListItemHeader>
-      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
+      <NotificationDrawerListItemBody
+        timestamp={<DateFormat date={notification.created} />}
+        onClick={onNotificationClick}
+        style={{ cursor: 'pointer' }}
+      >
         <Label variant="outline" isCompact className="pf-u-mb-md">
           {notification.source}
         </Label>
