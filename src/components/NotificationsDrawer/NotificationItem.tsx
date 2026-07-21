@@ -184,6 +184,13 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       <NotificationDrawerListItemBody
         timestamp={<DateFormat date={notification.created} />}
         onClick={onNotificationClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onNotificationClick();
+          }
+        }}
+        tabIndex={0}
         style={{ cursor: 'pointer' }}
       >
         <Label variant="outline" isCompact className="pf-u-mb-md">

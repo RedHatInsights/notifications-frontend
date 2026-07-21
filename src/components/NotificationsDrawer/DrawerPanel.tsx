@@ -82,7 +82,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     if (drawerBody) {
       drawerBodyRef.current = drawerBody as HTMLDivElement;
     }
-  }, []);
+  }, [ready]);
 
   const filteredNotifications = useMemo(() => {
     const notificationsByBundle = state.notificationData.reduce((acc, notification) => {
