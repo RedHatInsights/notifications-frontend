@@ -149,12 +149,14 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       style={{ cursor: 'pointer' }}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
-        <Checkbox
-          isChecked={notification.selected}
-          onChange={onCheckboxToggle}
-          id="selected-checkbox"
-          name="selected-checkbox"
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            isChecked={notification.selected}
+            onChange={onCheckboxToggle}
+            id="selected-checkbox"
+            name="selected-checkbox"
+          />
+        </div>
         <Dropdown
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
