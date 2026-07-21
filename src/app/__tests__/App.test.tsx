@@ -12,13 +12,19 @@ import {
 } from '../../../test/AppWrapper';
 import { waitForAsyncEvents } from '../../../test/TestUtils';
 import App from '../App';
-import { Rbac, fetchRBAC } from '../../utils/insights-common-typescript';
+import { KESSEL_WORKSPACE_RELATIONS } from '../rbac/kesselWorkspaceRelations';
 
-jest.mock('../../utils/insights-common-typescript', () => {
-  const real = jest.requireActual('../../utils/insights-common-typescript');
+import * as kesselSdk from '@project-kessel/react-kessel-access-check';
+
+jest.mock('@project-kessel/react-kessel-access-check', () => {
+  const actual = jest.requireActual('@project-kessel/react-kessel-access-check');
   return {
-    ...real,
-    fetchRBAC: jest.fn(real.fetchRBAC),
+    ...actual,
+    AccessCheck: {
+      Provider: ({ children }: { children: React.ReactNode }) => <>{children}</>,
+    },
+    useSelfAccessCheck: jest.fn().mockReturnValue({ data: undefined, loading: true }),
+    fetchDefaultWorkspace: jest.fn().mockResolvedValue({ id: 'test-workspace-id' }),
   };
 });
 
@@ -47,6 +53,19 @@ jest.mock('@redhat-cloud-services/frontend-components/useChrome', () => {
     },
   });
 });
+
+const allPermissionsAllowed = Object.values(KESSEL_WORKSPACE_RELATIONS).map((relation) => ({
+  allowed: true,
+  relation,
+}));
+
+const limitedPermissions = Object.values(KESSEL_WORKSPACE_RELATIONS).map((relation) => ({
+  allowed:
+    relation === KESSEL_WORKSPACE_RELATIONS.NOTIFICATIONS_NOTIFICATIONS_EDIT ||
+    relation === KESSEL_WORKSPACE_RELATIONS.INTEGRATIONS_ENDPOINTS_VIEW ||
+    relation === KESSEL_WORKSPACE_RELATIONS.INTEGRATIONS_ENDPOINTS_EDIT,
+  relation,
+}));
 
 const mockMaintenance = (isUp: boolean) => {
   const response = isUp
@@ -81,15 +100,17 @@ describe('src/app/App', () => {
 
   it('Shows loading when RBAC is not set', async () => {
     jest.useFakeTimers();
-    const promise = new Promise<Rbac>(() => {
-      return 'foo';
+
+    (kesselSdk.useSelfAccessCheck as jest.Mock).mockReturnValue({
+      data: undefined,
+      loading: true,
     });
+
     const Wrapper = getConfiguredAppWrapper({
       route: {
         path: '/',
       },
     });
-    (fetchRBAC as jest.Mock).mockImplementation(() => promise);
     render(
       <IntlProvider locale={navigator.language} messages={messages}>
         <App />
@@ -113,21 +134,17 @@ describe('src/app/App', () => {
     jest.useFakeTimers();
     mockMaintenance(true);
 
+    (kesselSdk.useSelfAccessCheck as jest.Mock).mockReturnValue({
+      data: allPermissionsAllowed,
+      loading: false,
+    });
+
     const Wrapper = getConfiguredAppWrapper({
       route: {
         path: '/',
       },
     });
 
-    const rbac = new Rbac({
-      integrations: {
-        endpoints: ['read', 'write'],
-      },
-      notifications: {
-        notifications: ['read', 'write'],
-      },
-    });
-    (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(rbac));
     render(
       <IntlProvider locale={navigator.language} messages={messages}>
         <App />
@@ -148,15 +165,12 @@ describe('src/app/App', () => {
 
   it('Shows overview page even without read access at /', async () => {
     jest.useFakeTimers();
-    const rbac = new Rbac({
-      integrations: {
-        endpoints: ['read', 'write'],
-      },
-      notifications: {
-        notifications: ['write'],
-      },
+
+    (kesselSdk.useSelfAccessCheck as jest.Mock).mockReturnValue({
+      data: limitedPermissions,
+      loading: false,
     });
-    (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(rbac));
+
     mockMaintenance(true);
 
     const Wrapper = getConfiguredAppWrapper({

@@ -45,68 +45,29 @@ objects:
         - segmentId: notifications-settings
           bundleId: settings
           navItems:
-            # V1 navigation (workspaces flag off)
             - title: Notifications
-              id: notifications-v1
+              id: notifications
               expandable: true
-              permissions:
-                - method: featureFlag
-                  args:
-                    - platform.rbac.workspaces
-                    - false
               routes:
-                - id: notificationOverview-v1
+                - id: notificationOverview
                   icon: PlaceholderIcon
                   title: Overview
                   href: '/settings/notifications'
-                - id: configureEvents-v1
-                  title: Configure Events
-                  href: '/settings/notifications/configure-events'
-                  permissions:
-                    - method: loosePermissions
-                      args:
-                        - - notifications:*:*
-                          - notifications:notifications:read
-                - id: eventLog-v1
-                  title: Event Log
-                  href: '/settings/notifications/eventlog'
-                  permissions:
-                    - method: loosePermissions
-                      args:
-                        - - notifications:*:*
-                          - notifications:events:read
-                - id: myUserPreferences-v1
-                  title: Notification Preferences
-                  href: '/settings/notifications/user-preferences'
-            # V2 navigation (workspaces flag on)
-            - title: Notifications
-              id: notifications-v2
-              expandable: true
-              permissions:
-                - method: featureFlag
-                  args:
-                    - platform.rbac.workspaces
-                    - true
-              routes:
-                - id: notificationOverview-v2
-                  icon: PlaceholderIcon
-                  title: Overview
-                  href: '/settings/notifications'
-                - id: configureEvents-v2
+                - id: configureEvents
                   title: Configure Events
                   href: '/settings/notifications/configure-events'
                   permissions:
                     - method: loosePermissionsKessel
                       args:
                         - - notifications_notifications_view
-                - id: eventLog-v2
+                - id: eventLog
                   title: Event Log
                   href: '/settings/notifications/eventlog'
                   permissions:
                     - method: loosePermissionsKessel
                       args:
                         - - notifications_events_view
-                - id: myUserPreferences-v2
+                - id: myUserPreferences
                   title: Notification Preferences
                   href: '/settings/notifications/user-preferences'
           position: 1000

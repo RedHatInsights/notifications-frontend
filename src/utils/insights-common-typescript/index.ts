@@ -34,5 +34,4 @@ export type { Filters, SetFilters, ClearFilters, ClearFilterElement } from './Fi
 export { arrayValue, stringValue } from './Filters';
 export { useFilters } from './useFilters';
 export { localUrl } from './LocalUrl';
-export { fetchRBAC, Rbac } from './RbacUtils';
 export { useSyncInterval } from './useSyncInterval';
