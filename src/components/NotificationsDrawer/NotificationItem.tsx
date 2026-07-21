@@ -44,8 +44,18 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   const intl = useIntl();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
 
-  const onCheckboxToggle = () =>
+  const onCheckboxToggle = (e: React.FormEvent<HTMLInputElement>) => {
+    e.stopPropagation();
     updateNotificationSelected(notification.id, !notification.selected);
+  };
+
+  const onNotificationClick = () => {
+    const url = `/settings/notifications/user-preferences?${new URLSearchParams({
+      bundle: notification.bundle,
+      ...(notification.application && { app: notification.application }),
+    }).toString()}`;
+    onNavigateTo(url);
+  };
 
   const onMarkAsRead = () => {
     updateNotificationReadStatus({
@@ -70,27 +80,25 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <Divider key="divider" />,
     <DropdownItem
       key="view-event-log"
-      onClick={() =>
-        onNavigateTo(
-          `/settings/notifications/eventlog?${new URLSearchParams({
-            service: notification.source,
-            event: notification.title,
-          }).toString()}`
-        )
-      }
+      onClick={() => {
+        const url = `/settings/notifications/eventlog?${new URLSearchParams({
+          service: notification.source,
+          event: notification.title,
+        }).toString()}`;
+        onNavigateTo(url);
+      }}
     >
       {intl.formatMessage(messages.viewInEventLog)}
     </DropdownItem>,
     <DropdownItem
       key="manage-my-notifications"
-      onClick={() =>
-        onNavigateTo(
-          `/settings/notifications/user-preferences?${new URLSearchParams({
-            bundle: notification.bundle,
-            ...(notification.application && { app: notification.application }),
-          }).toString()}`
-        )
-      }
+      onClick={() => {
+        const url = `/settings/notifications/user-preferences?${new URLSearchParams({
+          bundle: notification.bundle,
+          ...(notification.application && { app: notification.application }),
+        }).toString()}`;
+        onNavigateTo(url);
+      }}
     >
       {intl.formatMessage(messages.manageMyEventNotifications)}
     </DropdownItem>,
@@ -139,18 +147,23 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       isRead={notification.read}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
-        <Checkbox
-          isChecked={notification.selected}
-          onChange={onCheckboxToggle}
-          id="selected-checkbox"
-          name="selected-checkbox"
-        />
+        <div onClick={(e) => e.stopPropagation()}>
+          <Checkbox
+            isChecked={notification.selected}
+            onChange={onCheckboxToggle}
+            id="selected-checkbox"
+            name="selected-checkbox"
+          />
+        </div>
         <Dropdown
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle
               ref={toggleRef}
               aria-label="Notification actions dropdown"
-              onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDropdownOpen(!isDropdownOpen);
+              }}
               id="notification-item-toggle"
               isExpanded={isDropdownOpen}
               variant="plain"
@@ -168,7 +181,18 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <DropdownList>{notificationDropdownItems}</DropdownList>
         </Dropdown>
       </NotificationDrawerListItemHeader>
-      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
+      <NotificationDrawerListItemBody
+        timestamp={<DateFormat date={notification.created} />}
+        onClick={onNotificationClick}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onNotificationClick();
+          }
+        }}
+        tabIndex={0}
+        style={{ cursor: 'pointer' }}
+      >
         <Label variant="outline" isCompact className="pf-u-mb-md">
           {notification.source}
         </Label>

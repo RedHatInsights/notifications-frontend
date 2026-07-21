@@ -15,7 +15,7 @@
  *
  * These Storybook stories provide coverage for the UI response layer:
  *   - New notification insertion and rendering
- *   - Sort order (unread before read, then by created date)
+ *   - Sort order (snapshot on open: unread first; maintains position when marked read during session)
  *   - Multiple rapid arrivals
  *   - Visual read/unread state
  *   - Interaction with newly arrived notifications

@@ -143,7 +143,7 @@ describe('NotificationItem menu actions', () => {
     expect(params.get('tab')).toBe('configuration');
   });
 
-  it('Manage my event notifications navigates with bundle and app', async () => {
+  it('Manage my event notifications uses navigate with bundle and app', async () => {
     const notification = { ...makeNotification('1', false), application: 'advisor' };
     renderDrawerPanel([notification]);
 
@@ -159,10 +159,10 @@ describe('NotificationItem menu actions', () => {
     const menuItem = await screen.findByRole('menuitem', { name: 'Manage my event notifications' });
     await userEvent.click(menuItem);
 
-    const url = mockNavigate.mock.calls[0][0] as string;
+    expect(mockNavigate).toHaveBeenCalledTimes(1);
+    const url = mockNavigate.mock.calls[0][0];
     expect(url).toContain('/settings/notifications/user-preferences');
-    const params = new URLSearchParams(url.split('?')[1]);
-    expect(params.get('bundle')).toBe('rhel');
-    expect(params.get('app')).toBe('advisor');
+    expect(url).toContain('bundle=rhel');
+    expect(url).toContain('app=advisor');
   });
 });
