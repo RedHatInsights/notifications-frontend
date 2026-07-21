@@ -245,12 +245,37 @@ export async function fillCommunicationForm(
     const configHeader = page.locator('h3:has-text("Configure email settings")').first();
     await configHeader.waitFor({ state: 'visible', timeout: 10000 });
 
-    // Wait for the user access groups table to load (skeleton disappears, rows appear)
-    const tableBody = page.locator(
-      'table[aria-label*="User Access Groups"] tbody, ' +
-        '[data-ouia-component-type="PF6/Table"] tbody'
-    );
-    await tableBody.waitFor({ state: 'visible', timeout: 30000 });
+    // Wait for either the groups table or the empty state to appear.
+    // Empty state renders when Kessel canReadRbacGroups is false (e.g. v1 orgs).
+    const tableBody = page.locator('table[aria-label*="User Access Groups"] tbody');
+    const emptyState = page.getByRole('heading', { name: 'No User Access Groups' });
+
+    const which = await Promise.race([
+      tableBody
+        .waitFor({ state: 'visible', timeout: 30000 })
+        .then(() => 'table' as const)
+        .catch(() => null),
+      emptyState
+        .waitFor({ state: 'visible', timeout: 30000 })
+        .then(() => 'empty' as const)
+        .catch(() => null),
+    ]);
+
+    if (!which) {
+      throw new Error(
+        'Email integration wizard: neither the User Access Groups table nor the empty state appeared within 30s.'
+      );
+    }
+
+    if (which === 'empty') {
+      throw new Error(
+        'EMAIL_NO_GROUPS: Email wizard shows "No User Access Groups". ' +
+          'For v1 orgs (platform.rbac.workspaces flag off), KesselRbacAccessProvider ' +
+          'never fetches the workspace, so canReadRbacGroups defaults to false and ' +
+          'RbacGroupContextProvider returns empty groups — even though the user has ' +
+          'v1 RBAC group-read permission.'
+      );
+    }
 
     // Select the first available group checkbox
     const firstCheckbox = tableBody.locator('input[type="checkbox"]').first();
