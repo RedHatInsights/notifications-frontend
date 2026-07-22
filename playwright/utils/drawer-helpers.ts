@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { TIMEOUTS } from '../test-constants';
 
 /**
  * Helper utilities for interacting with the notifications drawer in E2E tests.
@@ -133,13 +134,16 @@ export const drawerHelpers = {
     const toggle = this.actionsToggle(page);
     await toggle.click();
     const dropdown = this.actionsDropdown(page);
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
     return dropdown;
   },
 
   /** Close the actions dropdown by clicking the toggle again. */
   async closeActionsDropdown(page: Page): Promise<void> {
     await this.actionsToggle(page).click();
+    await expect(this.actionsDropdown(page)).not.toBeVisible({
+      timeout: TIMEOUTS.QUICK_CHECK,
+    });
   },
 
   /** Click an item inside the actions dropdown by its visible text. */

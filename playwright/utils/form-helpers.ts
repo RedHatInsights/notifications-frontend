@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import {
   AnsiblePayload,
   CommunicationPayload,
@@ -231,11 +231,7 @@ export async function fillCommunicationForm(
   {
     const nextButton = page.locator('button:has-text("Next")').first();
     await nextButton.waitFor({ state: 'visible' });
-    await page.waitForFunction(
-      (btn) => !btn.hasAttribute('disabled'),
-      await nextButton.elementHandle(),
-      { timeout: 10000 }
-    );
+    await expect(nextButton).toBeEnabled({ timeout: 10000 });
     await nextButton.click();
     await page.waitForTimeout(1000);
   }
@@ -285,11 +281,7 @@ export async function fillCommunicationForm(
 
     const nextButton = page.locator('button:has-text("Next")').first();
     await nextButton.waitFor({ state: 'visible' });
-    await page.waitForFunction(
-      (btn) => !btn.hasAttribute('disabled'),
-      await nextButton.elementHandle(),
-      { timeout: 10000 }
-    );
+    await expect(nextButton).toBeEnabled({ timeout: 10000 });
     await nextButton.click();
     await page.waitForTimeout(1000);
   }

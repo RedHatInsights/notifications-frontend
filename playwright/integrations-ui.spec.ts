@@ -140,15 +140,11 @@ test.describe('Webhook Integration Lifecycle', () => {
 
     // Wait for wizard to close
     const wizardDialog = page.locator('[role="dialog"][aria-labelledby="add-integration-wizard"]');
-    if ((await wizardDialog.count()) > 0) {
-      await wizardDialog.waitFor({ state: 'hidden', timeout: 15000 });
-    }
+    await wizardDialog.waitFor({ state: 'hidden', timeout: 15000 });
 
     // Wait for backdrop to disappear if present
     const backdrop = page.locator('.pf-v6-c-backdrop__open, .pf-c-backdrop');
-    if ((await backdrop.count()) > 0) {
-      await backdrop.waitFor({ state: 'detached', timeout: 5000 });
-    }
+    await backdrop.waitFor({ state: 'detached', timeout: 5000 });
 
     // Step 4: Navigate to Webhooks tab
     const webhooksTab = page.locator('button:has-text("Webhooks"), a:has-text("Webhooks")').first();
@@ -292,15 +288,11 @@ test.describe('Communication Integration Lifecycle', () => {
       const wizardDialog = page.locator(
         '[role="dialog"][aria-labelledby="add-integration-wizard"]'
       );
-      if ((await wizardDialog.count()) > 0) {
-        await wizardDialog.waitFor({ state: 'hidden', timeout: 15000 });
-      }
+      await wizardDialog.waitFor({ state: 'hidden', timeout: 15000 });
 
       // Wait for backdrop to disappear if present
       const backdrop = page.locator('.pf-v6-c-backdrop__open, .pf-c-backdrop');
-      if ((await backdrop.count()) > 0) {
-        await backdrop.waitFor({ state: 'detached', timeout: 5000 });
-      }
+      await backdrop.waitFor({ state: 'detached', timeout: 5000 });
 
       // Step 4: Navigate to Communications tab
       const communicationsTab = page

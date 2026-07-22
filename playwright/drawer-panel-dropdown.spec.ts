@@ -192,5 +192,14 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
       reopened.getByRole('menuitem', { name: /Mark selected \(0\) as read/ })
     ).toBeVisible();
     await drawerHelpers.closeActionsDropdown(page);
+
+    // Restore: mark the notification back to unread so shared account state is clean
+    await drawerHelpers.selectNotification(items.first());
+    await drawerHelpers.markSelectedAsUnread(page);
+    await expect
+      .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
+        timeout: TIMEOUTS.PAGE_LOAD,
+      })
+      .toBe(count);
   });
 });
