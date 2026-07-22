@@ -193,8 +193,8 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     ).toBeVisible();
     await drawerHelpers.closeActionsDropdown(page);
 
-    // Restore: mark the notification back to unread so shared account state is clean
-    await drawerHelpers.selectNotification(items.first());
+    // Restore: mark all notifications back to unread so shared account state is clean
+    await drawerHelpers.bulkSelectAll(page);
     await drawerHelpers.markSelectedAsUnread(page);
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
