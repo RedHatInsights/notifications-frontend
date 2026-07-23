@@ -98,25 +98,6 @@ export async function login(page: Page, user: string, password: string): Promise
 }
 
 /**
- * Navigate within the app using client-side routing (pushState + popstate).
- *
- * In CI the Caddy proxy routes /settings/notifications* to the local webpack
- * dev server, which returns an empty HTML body — page.goto() triggers a full
- * page load that gets that empty body, so Chrome never mounts. This helper
- * avoids that by changing the URL client-side and dispatching a popstate event,
- * which React Router picks up without a server round-trip.
- *
- * Call ensureLoggedIn() first so the Chrome shell is loaded from stage.
- */
-export async function navigateInApp(page: Page, path: string): Promise<void> {
-  await page.evaluate((targetPath) => {
-    window.history.pushState({}, '', targetPath);
-    window.dispatchEvent(new PopStateEvent('popstate', { state: {} }));
-  }, path);
-  await page.waitForLoadState('networkidle');
-}
-
-/**
  * Ensure user is logged in before running tests.
  * Handles SSO authentication manually.
  */

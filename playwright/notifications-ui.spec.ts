@@ -1,5 +1,5 @@
 import { expect, test } from '@playwright/test';
-import { NOTIFICATIONS_PATH, ensureLoggedIn, navigateInApp } from './test-utils';
+import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
 import { TIMEOUTS } from './test-constants';
 import { generateBehaviorGroupName } from './utils/data-generators';
 import { clickCardAction, fillBehaviorGroupForm } from './utils/form-helpers';
@@ -10,10 +10,9 @@ import { clickCardAction, fillBehaviorGroupForm } from './utils/form-helpers';
  * Tests sidebar navigation, behavior group lifecycle, and event log display.
  * Sidebar nav tests verify Chrome renders the correct nav items from frontend.yaml.
  *
- * Navigation uses navigateInApp() (pushState + popstate) instead of page.goto()
- * because CI's Caddy proxy routes /settings/notifications* to the local webpack
- * dev server, which returns an empty HTML body for page-level requests. Client-side
- * navigation avoids that server round-trip.
+ * Uses page.goto() for navigation — CI's Caddy proxy routes /apps/notifications*
+ * to the local dev server for JS bundles, while page-level routes fall through
+ * to stage for the Chrome shell. Module federation loads the PR's code.
  */
 
 const EXPECTED_NAV_ITEMS = [
@@ -33,7 +32,8 @@ test.describe('Notifications Sidebar Navigation', () => {
   });
 
   test('sidebar shows all expected nav items', async ({ page }) => {
-    await navigateInApp(page, NOTIFICATIONS_PATH);
+    await page.goto(NOTIFICATIONS_PATH);
+    await page.waitForLoadState('domcontentloaded');
 
     for (const { title } of EXPECTED_NAV_ITEMS) {
       const navItem = page.locator(`nav [data-ouia-component-id="${title}"]`);
@@ -44,7 +44,8 @@ test.describe('Notifications Sidebar Navigation', () => {
   });
 
   test('nav items appear in the correct order', async ({ page }) => {
-    await navigateInApp(page, NOTIFICATIONS_PATH);
+    await page.goto(NOTIFICATIONS_PATH);
+    await page.waitForLoadState('domcontentloaded');
 
     const navLinks = page.locator('nav [data-ouia-component-id]');
     const titles: string[] = [];
@@ -61,7 +62,8 @@ test.describe('Notifications Sidebar Navigation', () => {
   });
 
   test('each nav item navigates to the correct URL', async ({ page }) => {
-    await navigateInApp(page, NOTIFICATIONS_PATH);
+    await page.goto(NOTIFICATIONS_PATH);
+    await page.waitForLoadState('domcontentloaded');
 
     for (const { title, path } of EXPECTED_NAV_ITEMS) {
       const navLink = page.locator(`nav [data-ouia-component-id="${title}"]`);
@@ -73,7 +75,8 @@ test.describe('Notifications Sidebar Navigation', () => {
 
   test('direct navigation highlights the correct nav item', async ({ page }) => {
     for (const { title, path } of EXPECTED_NAV_ITEMS) {
-      await navigateInApp(page, path);
+      await page.goto(path);
+      await page.waitForLoadState('domcontentloaded');
 
       const navLink = page.locator(`nav [data-ouia-component-id="${title}"] a`);
       await expect(
@@ -108,7 +111,8 @@ test.describe('Behavior Group Lifecycle', () => {
     const initialGroupName = generateBehaviorGroupName(bundleName);
     const updatedGroupName = `${initialGroupName}-edited`;
 
-    await navigateInApp(page, `${NOTIFICATIONS_PATH}/configure-events`);
+    await page.goto(`${NOTIFICATIONS_PATH}/configure-events`);
+    await page.waitForLoadState('domcontentloaded');
 
     await expect(page.getByRole('heading', { name: 'Configure Events' })).toBeVisible({
       timeout: TIMEOUTS.PAGE_LOAD,
@@ -200,7 +204,8 @@ test.describe('Events Log', () => {
   });
 
   test('should display events log page', async ({ page }) => {
-    await navigateInApp(page, `${NOTIFICATIONS_PATH}/eventlog`);
+    await page.goto(`${NOTIFICATIONS_PATH}/eventlog`);
+    await page.waitForLoadState('domcontentloaded');
 
     // Verify URL
     await expect(page).toHaveURL(/settings\/notifications\/eventlog/);
