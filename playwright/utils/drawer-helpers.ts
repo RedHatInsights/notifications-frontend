@@ -1,4 +1,5 @@
 import { Locator, Page, expect } from '@playwright/test';
+import { TIMEOUTS } from '../test-constants';
 
 /**
  * Helper utilities for interacting with the notifications drawer in E2E tests.
@@ -118,11 +119,31 @@ export const drawerHelpers = {
     await manageItem.click();
   },
 
-  /** Open the actions dropdown (header ellipsis). */
-  async openActionsDropdown(page: Page): Promise<void> {
-    const toggle = page.locator('#notifications-actions-toggle');
+  /** Locator for the actions dropdown toggle (ellipsis button). */
+  actionsToggle(page: Page): Locator {
+    return page.locator('#notifications-actions-toggle');
+  },
+
+  /** Locator for the actions dropdown menu container. */
+  actionsDropdown(page: Page): Locator {
+    return page.locator('#notifications-actions-dropdown');
+  },
+
+  /** Open the actions dropdown (header ellipsis) and return the dropdown locator. */
+  async openActionsDropdown(page: Page): Promise<Locator> {
+    const toggle = this.actionsToggle(page);
     await toggle.click();
-    await expect(page.locator('#notifications-actions-dropdown')).toBeVisible({ timeout: 5000 });
+    const dropdown = this.actionsDropdown(page);
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
+    return dropdown;
+  },
+
+  /** Close the actions dropdown by clicking the toggle again. */
+  async closeActionsDropdown(page: Page): Promise<void> {
+    await this.actionsToggle(page).click();
+    await expect(this.actionsDropdown(page)).not.toBeVisible({
+      timeout: TIMEOUTS.QUICK_CHECK,
+    });
   },
 
   /** Click an item inside the actions dropdown by its visible text. */

@@ -1,4 +1,4 @@
-import { Locator, Page } from '@playwright/test';
+import { Locator, Page, expect } from '@playwright/test';
 import {
   AnsiblePayload,
   CommunicationPayload,
@@ -205,7 +205,10 @@ export async function fillCommunicationForm(
       .locator('select[name="integration-type"], [name="integration-type"]')
       .first();
     if (await typeSelector.isVisible({ timeout: 2000 }).catch(() => false)) {
-      const typeValue = `camel:${payload.type === 'gchat' ? 'google_chat' : payload.type}`;
+      const typeValue =
+        payload.type === 'email'
+          ? 'email_subscription'
+          : `camel:${payload.type === 'gchat' ? 'google_chat' : payload.type}`;
       await typeSelector.selectOption(typeValue);
       await page.locator('button:has-text("Next")').first().click();
       await page.waitForTimeout(1000);
@@ -217,11 +220,71 @@ export async function fillCommunicationForm(
   await nameInput.waitFor({ state: 'visible' });
   await nameInput.fill(payload.name);
 
-  const urlInput = page.locator('input[name="url"], input[id="url"]').first();
-  await urlInput.waitFor({ state: 'visible' });
-  await urlInput.fill(payload.url);
+  if (payload.type !== 'email') {
+    const urlInput = page.locator('input[name="url"], input[id="url"]').first();
+    await urlInput.waitFor({ state: 'visible' });
+    await urlInput.fill(payload.url!);
+  }
 
-  await page.locator('button:has-text("Next")').first().click();
+  await page.waitForTimeout(500);
+
+  {
+    const nextButton = page.locator('button:has-text("Next")').first();
+    await nextButton.waitFor({ state: 'visible' });
+    await expect(nextButton).toBeEnabled({ timeout: 10000 });
+    await nextButton.click();
+    await page.waitForTimeout(1000);
+  }
+
+  // Step 2b (Email only): Email Config - select user access group
+  if (payload.type === 'email') {
+    const configHeader = page.locator('h3:has-text("Configure email settings")').first();
+    await configHeader.waitFor({ state: 'visible', timeout: 10000 });
+
+    // Wait for either the groups table or the empty state to appear.
+    // Empty state renders when Kessel canReadRbacGroups is false (e.g. v1 orgs).
+    const tableBody = page.locator('table[aria-label*="User Access Groups"] tbody');
+    const emptyState = page.getByRole('heading', { name: 'No User Access Groups' });
+
+    const which = await Promise.race([
+      tableBody
+        .waitFor({ state: 'visible', timeout: 30000 })
+        .then(() => 'table' as const)
+        .catch(() => null),
+      emptyState
+        .waitFor({ state: 'visible', timeout: 30000 })
+        .then(() => 'empty' as const)
+        .catch(() => null),
+    ]);
+
+    if (!which) {
+      throw new Error(
+        'Email integration wizard: neither the User Access Groups table nor the empty state appeared within 30s.'
+      );
+    }
+
+    if (which === 'empty') {
+      throw new Error(
+        'EMAIL_NO_GROUPS: Email wizard shows "No User Access Groups". ' +
+          'For v1 orgs (platform.rbac.workspaces flag off), KesselRbacAccessProvider ' +
+          'never fetches the workspace, so canReadRbacGroups defaults to false and ' +
+          'RbacGroupContextProvider returns empty groups — even though the user has ' +
+          'v1 RBAC group-read permission.'
+      );
+    }
+
+    // Select the first available group checkbox
+    const firstCheckbox = tableBody.locator('input[type="checkbox"]').first();
+    await firstCheckbox.waitFor({ state: 'visible', timeout: 10000 });
+    await firstCheckbox.check();
+    await page.waitForTimeout(500);
+
+    const nextButton = page.locator('button:has-text("Next")').first();
+    await nextButton.waitFor({ state: 'visible' });
+    await expect(nextButton).toBeEnabled({ timeout: 10000 });
+    await nextButton.click();
+    await page.waitForTimeout(1000);
+  }
 
   // Step 3: Event Types (if enabled)
   // Target the h4 header specifically to avoid matching the nav text

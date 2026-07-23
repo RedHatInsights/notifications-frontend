@@ -7,43 +7,82 @@ import { clickCardAction, fillBehaviorGroupForm } from './utils/form-helpers';
 /**
  * Notifications UI E2E Test Suite
  *
- * Tests the complete behavior group lifecycle through the UI:
- * 1. Navigation - verify bundle pages and Configure Events loads
- * 2. Create - fill behavior group wizard (name, actions, event types, review)
- * 3. Verify - check behavior group appears in list
- * 4. Delete - remove behavior group with confirmation and verify deletion
+ * Tests sidebar navigation, behavior group lifecycle, and event log display.
+ * Sidebar nav tests verify Chrome renders the correct nav items from frontend.yaml.
+ *
+ * Uses page.goto() for navigation — CI's Caddy proxy routes /apps/notifications*
+ * to the local dev server for JS bundles, while page-level routes fall through
+ * to stage for the Chrome shell. Module federation loads the PR's code.
  */
 
-const BUNDLES = ['rhel', 'console', 'openshift', 'ansible'];
+const EXPECTED_NAV_ITEMS = [
+  { title: 'Overview', path: `${NOTIFICATIONS_PATH}` },
+  { title: 'Configure Events', path: `${NOTIFICATIONS_PATH}/configure-events` },
+  { title: 'Event Log', path: `${NOTIFICATIONS_PATH}/eventlog` },
+  { title: 'Notification Preferences', path: `${NOTIFICATIONS_PATH}/user-preferences` },
+];
 
 // =============================================================================
-// Bundle Navigation Tests
+// Sidebar Navigation Tests
 // =============================================================================
 
-test.describe('Notifications Bundle Navigation', () => {
+test.describe('Notifications Sidebar Navigation', () => {
   test.beforeEach(async ({ page }) => {
     await ensureLoggedIn(page);
   });
 
-  test('should navigate to each bundle and Configure Events', async ({ page }) => {
-    for (const bundleName of BUNDLES) {
-      // Navigate to bundle page
-      const bundleUrl = `${NOTIFICATIONS_PATH}/${bundleName}`;
-      await page.goto(bundleUrl, { waitUntil: 'domcontentloaded' });
-      await expect(page).toHaveURL(new RegExp(`notifications/${bundleName}`));
+  test('sidebar shows all expected nav items', async ({ page }) => {
+    await page.goto(NOTIFICATIONS_PATH);
+    await page.waitForLoadState('domcontentloaded');
 
-      // Navigate to Configure Events if available
-      const configureEventsLink = page
-        .locator(
-          'a:has-text("Configure Events"), button:has-text("Configure Events"), [role="tab"]:has-text("Configure Events")'
-        )
-        .first();
+    for (const { title } of EXPECTED_NAV_ITEMS) {
+      const navItem = page.locator(`nav [data-ouia-component-id="${title}"]`);
+      await expect(navItem, `Nav item "${title}" should be visible`).toBeVisible({
+        timeout: TIMEOUTS.PAGE_LOAD,
+      });
+    }
+  });
 
-      // Only some bundles have Configure Events - skip if not present
-      if ((await configureEventsLink.count()) > 0) {
-        await configureEventsLink.click();
-        await page.waitForLoadState('domcontentloaded');
+  test('nav items appear in the correct order', async ({ page }) => {
+    await page.goto(NOTIFICATIONS_PATH);
+    await page.waitForLoadState('domcontentloaded');
+
+    const navLinks = page.locator('nav [data-ouia-component-id]');
+    const titles: string[] = [];
+
+    const count = await navLinks.count();
+    for (let i = 0; i < count; i++) {
+      const ouiaId = await navLinks.nth(i).getAttribute('data-ouia-component-id');
+      if (ouiaId && EXPECTED_NAV_ITEMS.some((item) => item.title === ouiaId)) {
+        titles.push(ouiaId);
       }
+    }
+
+    expect(titles).toEqual(EXPECTED_NAV_ITEMS.map((item) => item.title));
+  });
+
+  test('each nav item navigates to the correct URL', async ({ page }) => {
+    await page.goto(NOTIFICATIONS_PATH);
+    await page.waitForLoadState('domcontentloaded');
+
+    for (const { title, path } of EXPECTED_NAV_ITEMS) {
+      const navLink = page.locator(`nav [data-ouia-component-id="${title}"]`);
+      await expect(navLink).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+      await navLink.click();
+      await expect(page).toHaveURL(new RegExp(path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
+    }
+  });
+
+  test('direct navigation highlights the correct nav item', async ({ page }) => {
+    for (const { title, path } of EXPECTED_NAV_ITEMS) {
+      await page.goto(path);
+      await page.waitForLoadState('domcontentloaded');
+
+      const navLink = page.locator(`nav [data-ouia-component-id="${title}"] a`);
+      await expect(
+        navLink,
+        `"${title}" should be active after navigating to ${path}`
+      ).toHaveAttribute('aria-current', 'page', { timeout: TIMEOUTS.PAGE_LOAD });
     }
   });
 });
@@ -72,31 +111,9 @@ test.describe('Behavior Group Lifecycle', () => {
     const initialGroupName = generateBehaviorGroupName(bundleName);
     const updatedGroupName = `${initialGroupName}-edited`;
 
-    // Step 1: Navigate to base notifications path first (direct sub-route
-    // navigation can fail in CI when Chrome hasn't initialized the micro-frontend)
-    await page.goto(NOTIFICATIONS_PATH, { waitUntil: 'domcontentloaded' });
-
-    const acceptCookies = page
-      .getByRole('button', { name: 'Accept all' })
-      .or(page.getByRole('button', { name: 'Accept' }));
-    if ((await acceptCookies.count()) > 0) {
-      await acceptCookies.click();
-    }
-
-    // Wait for the app to initialize
-    await page.waitForLoadState('networkidle');
-
-    // Step 2: Navigate to Configure Events via the nav link
-    const configureEventsLink = page
-      .locator(
-        'a:has-text("Configure Events"), button:has-text("Configure Events"), [role="tab"]:has-text("Configure Events")'
-      )
-      .first();
-    await configureEventsLink.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
-    await configureEventsLink.click();
+    await page.goto(`${NOTIFICATIONS_PATH}/configure-events`);
     await page.waitForLoadState('domcontentloaded');
 
-    // Verify the page loaded
     await expect(page.getByRole('heading', { name: 'Configure Events' })).toBeVisible({
       timeout: TIMEOUTS.PAGE_LOAD,
     });
@@ -187,16 +204,7 @@ test.describe('Events Log', () => {
   });
 
   test('should display events log page', async ({ page }) => {
-    // Navigate to base notifications path first, then use nav link
-    await page.goto(NOTIFICATIONS_PATH, { waitUntil: 'domcontentloaded' });
-    await page.waitForLoadState('networkidle');
-
-    // Navigate to Event Log via the nav link
-    const eventLogLink = page
-      .locator('a:has-text("Event Log"), button:has-text("Event Log")')
-      .first();
-    await eventLogLink.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
-    await eventLogLink.click();
+    await page.goto(`${NOTIFICATIONS_PATH}/eventlog`);
     await page.waitForLoadState('domcontentloaded');
 
     // Verify URL
