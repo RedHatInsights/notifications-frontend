@@ -71,6 +71,7 @@ objects:
                       args:
                         - - notifications_notifications_view
                           - notifications_notifications_edit
+                          - notifications_events_view
                 # V1 permission check (RBAC)
                 - id: eventLog-v1
                   title: Event Log
@@ -88,6 +89,8 @@ objects:
                     - method: loosePermissionsKessel
                       args:
                         - - notifications_events_view
+                          - notifications_notifications_view
+                          - notifications_notifications_edit
                 - id: myUserPreferences
                   title: Notification Preferences
                   href: '/settings/notifications/user-preferences'
