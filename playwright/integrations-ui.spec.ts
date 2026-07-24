@@ -23,6 +23,11 @@ test.describe('Integrations Navigation', () => {
   });
 
   test('should navigate across all tabs', async ({ page }) => {
+    // RHCLOUD-48620: chrome tab clicks don't reliably set ?category= URL param.
+    // Marked as expected failure until the chrome fix lands — when it passes,
+    // Playwright will flag it so we can remove test.fail().
+    test.fail();
+
     // Navigate to integrations page
     await page.goto(INTEGRATIONS_PATH);
     await page.waitForLoadState('domcontentloaded');
