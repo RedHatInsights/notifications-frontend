@@ -47,6 +47,12 @@ test.describe('Notifications Sidebar Navigation', () => {
     await page.goto(NOTIFICATIONS_PATH);
     await page.waitForLoadState('domcontentloaded');
 
+    // Wait for the last expected nav item to be visible before collecting order
+    const lastExpected = EXPECTED_NAV_ITEMS[EXPECTED_NAV_ITEMS.length - 1];
+    await page
+      .locator(`nav [data-ouia-component-id="${lastExpected.title}"]`)
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
+
     const navLinks = page.locator('nav [data-ouia-component-id]');
     const titles: string[] = [];
 
