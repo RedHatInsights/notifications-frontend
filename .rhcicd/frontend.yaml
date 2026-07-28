@@ -53,7 +53,7 @@ objects:
                   icon: PlaceholderIcon
                   title: Overview
                   href: '/settings/notifications'
-                # V1 permission check (RBAC)
+                # FedRAMP/Commercial: v1 RBAC
                 - id: configureEvents-v1
                   title: Configure Events
                   href: '/settings/notifications/configure-events'
@@ -62,7 +62,10 @@ objects:
                       args:
                         - - notifications:*:*
                           - notifications:notifications:read
-                # V2 permission check (Kessel)
+                    - method: isITLess
+                      args:
+                        - - true
+                # Regular cloud: v2 Kessel
                 - id: configureEvents-v2
                   title: Configure Events
                   href: '/settings/notifications/configure-events'
@@ -72,7 +75,10 @@ objects:
                         - - notifications_notifications_view
                           - notifications_notifications_edit
                           - notifications_events_view
-                # V1 permission check (RBAC)
+                    - method: isITLess
+                      args:
+                        - - false
+                # FedRAMP/Commercial: v1 RBAC
                 - id: eventLog-v1
                   title: Event Log
                   href: '/settings/notifications/eventlog'
@@ -81,7 +87,10 @@ objects:
                       args:
                         - - notifications:*:*
                           - notifications:events:read
-                # V2 permission check (Kessel)
+                    - method: isITLess
+                      args:
+                        - - true
+                # Regular cloud: v2 Kessel
                 - id: eventLog-v2
                   title: Event Log
                   href: '/settings/notifications/eventlog'
@@ -91,6 +100,9 @@ objects:
                         - - notifications_events_view
                           - notifications_notifications_view
                           - notifications_notifications_edit
+                    - method: isITLess
+                      args:
+                        - - false
                 - id: myUserPreferences
                   title: Notification Preferences
                   href: '/settings/notifications/user-preferences'
