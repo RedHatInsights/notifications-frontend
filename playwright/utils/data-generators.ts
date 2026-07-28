@@ -48,16 +48,16 @@ export function generateWebhookPayload(
  */
 export interface CommunicationPayload {
   name: string;
-  type: 'slack' | 'teams' | 'gchat';
-  url: string;
+  type: 'slack' | 'teams' | 'gchat' | 'email';
+  url?: string;
   eventTypes?: string[];
 }
 
 export function generateCommunicationPayload(
-  type: 'slack' | 'teams' | 'gchat',
+  type: 'slack' | 'teams' | 'gchat' | 'email',
   options: { eventTypes?: string[] } = {}
 ): CommunicationPayload {
-  const urlMap = {
+  const urlMap: Record<string, string> = {
     slack: `https://hooks.slack.com/services/T00/B00/test-${Date.now()}`,
     teams: `https://outlook.office.com/webhook/test-${Date.now()}`,
     gchat: `https://chat.googleapis.com/v1/spaces/test-${Date.now()}`,
@@ -66,7 +66,7 @@ export function generateCommunicationPayload(
   return {
     name: generateIntegrationName(type),
     type,
-    url: urlMap[type],
+    ...(urlMap[type] && { url: urlMap[type] }),
     ...(options.eventTypes && { eventTypes: options.eventTypes }),
   };
 }
