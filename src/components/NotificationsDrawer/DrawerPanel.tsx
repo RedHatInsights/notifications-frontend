@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ChromeWsEventTypes, ChromeWsPayload } from '@redhat-cloud-services/types';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import BulkSelect from '@redhat-cloud-services/frontend-components/BulkSelect';
@@ -30,6 +30,9 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
+  const [initialOrderSnapshot, setInitialOrderSnapshot] = useState<string[]>([]);
+  const drawerBodyRef = useRef<HTMLDivElement | null>(null);
+  const scrollPositionRef = useRef<number>(0);
   const {
     state: { ready, ...state },
     addNotification,
@@ -65,6 +68,22 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     });
   }, [auth]);
 
+  // Capture initial sort order when notifications load (only if snapshot is empty)
+  useEffect(() => {
+    if (state.notificationData.length > 0 && initialOrderSnapshot.length === 0) {
+      const sorted = orderBy(state.notificationData, ['read', 'created'], ['asc', 'desc']);
+      setInitialOrderSnapshot(sorted.map((n) => n.id));
+    }
+  }, [state.notificationData, initialOrderSnapshot.length]);
+
+  // Find and store the scrollable drawer body element
+  useEffect(() => {
+    const drawerBody = document.querySelector('.pf-v6-c-notification-drawer__body');
+    if (drawerBody) {
+      drawerBodyRef.current = drawerBody as HTMLDivElement;
+    }
+  }, [ready]);
+
   const filteredNotifications = useMemo(() => {
     const notificationsByBundle = state.notificationData.reduce((acc, notification) => {
       if (!acc[notification.bundle]) {
@@ -84,12 +103,30 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
 
   const onNotificationsDrawerClose = () => {
     setFilters([]);
+    setInitialOrderSnapshot([]);
     toggleDrawer();
   };
 
   const onUpdateSelectedStatus = (read: boolean) => {
     updateSelectedStatus(read);
     setIsDropdownOpen(false);
+  };
+
+  const onUpdateNotificationRead = (id: string, read: boolean) => {
+    // Capture current scroll position
+    if (drawerBodyRef.current) {
+      scrollPositionRef.current = drawerBodyRef.current.scrollTop;
+    }
+
+    // Update the notification
+    updateNotificationRead(id, read);
+
+    // Restore scroll position after React has rendered
+    requestAnimationFrame(() => {
+      if (drawerBodyRef.current) {
+        drawerBodyRef.current.scrollTop = scrollPositionRef.current;
+      }
+    });
   };
 
   const selectAllNotifications = (selected: boolean) => {
@@ -116,11 +153,27 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
       );
     }
 
-    const sortedNotifications = orderBy(
-      state.filters?.length > 0 ? filteredNotifications : state.notificationData,
-      ['read', 'created'],
-      ['asc', 'asc']
-    );
+    const notificationsToSort =
+      state.filters?.length > 0 ? filteredNotifications : state.notificationData;
+
+    // Use snapshot order if available, otherwise sort by read status
+    const sortedNotifications =
+      initialOrderSnapshot.length > 0
+        ? notificationsToSort.slice().sort((a, b) => {
+            const indexA = initialOrderSnapshot.indexOf(a.id);
+            const indexB = initialOrderSnapshot.indexOf(b.id);
+            // If both are in snapshot, maintain snapshot order
+            if (indexA !== -1 && indexB !== -1) {
+              return indexA - indexB;
+            }
+            // If only A is in snapshot, it comes first
+            if (indexA !== -1) return -1;
+            // If only B is in snapshot, it comes first
+            if (indexB !== -1) return 1;
+            // If neither is in snapshot (new notifications), sort by created desc
+            return new Date(b.created).getTime() - new Date(a.created).getTime();
+          })
+        : orderBy(notificationsToSort, ['read', 'created'], ['asc', 'desc']);
 
     return sortedNotifications.map((notification) => (
       <NotificationItem
@@ -128,7 +181,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         notification={notification}
         onNavigateTo={onNavigateTo}
         updateNotificationSelected={updateNotificationSelected}
-        updateNotificationRead={updateNotificationRead}
+        updateNotificationRead={onUpdateNotificationRead}
         isOrgAdmin={isOrgAdmin}
       />
     ));
