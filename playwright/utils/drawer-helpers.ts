@@ -31,11 +31,11 @@ export const drawerHelpers = {
   /** Open the notifications drawer by clicking the bell icon. */
   async openDrawer(page: Page): Promise<void> {
     const bell = this.bellButton(page);
-    await bell.waitFor({ state: 'visible', timeout: 30000 });
+    await bell.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
     await bell.click();
     // Wait for the drawer header to appear
     await expect(this.drawerPanel(page).getByText('Notifications').first()).toBeVisible({
-      timeout: 15000,
+      timeout: TIMEOUTS.TABLE_LOAD,
     });
   },
 
@@ -44,7 +44,7 @@ export const drawerHelpers = {
     const closeBtn = this.closeButton(page);
     if (await closeBtn.isVisible()) {
       await closeBtn.click();
-      await expect(this.drawerPanel(page)).not.toBeVisible({ timeout: 10000 });
+      await expect(this.drawerPanel(page)).not.toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
     }
   },
 
@@ -71,7 +71,7 @@ export const drawerHelpers = {
     const filterToggle = page.locator('#notifications-filter-toggle');
     await filterToggle.click();
     const filterItem = page.getByRole('menuitem', { name: filterName });
-    await filterItem.waitFor({ state: 'visible', timeout: 5000 });
+    await filterItem.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
     await filterItem.click();
     // Close the dropdown by clicking the toggle again
     await filterToggle.click();
@@ -85,7 +85,9 @@ export const drawerHelpers = {
     await resetBtn.click();
     // Close the dropdown (it doesn't auto-close on reset)
     await filterToggle.click();
-    await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({
+      timeout: TIMEOUTS.QUICK_CHECK,
+    });
   },
 
   /**
@@ -100,7 +102,9 @@ export const drawerHelpers = {
   async toggleReadStatus(page: Page, notificationLocator: Locator): Promise<void> {
     const kebab = notificationLocator.locator('#notification-item-toggle');
     await kebab.click();
-    await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notification-item-dropdown')).toBeVisible({
+      timeout: TIMEOUTS.QUICK_CHECK,
+    });
     // The menu item text is dynamic: "Mark as read" or "Mark as unread"
     const markItem = page
       .locator('#notification-item-dropdown')
@@ -112,7 +116,9 @@ export const drawerHelpers = {
   async clickManageEvent(page: Page, notificationLocator: Locator): Promise<void> {
     const kebab = notificationLocator.locator('#notification-item-toggle');
     await kebab.click();
-    await expect(page.locator('#notification-item-dropdown')).toBeVisible({ timeout: 5000 });
+    await expect(page.locator('#notification-item-dropdown')).toBeVisible({
+      timeout: TIMEOUTS.QUICK_CHECK,
+    });
     const manageItem = page
       .locator('#notification-item-dropdown')
       .getByRole('menuitem', { name: 'Manage event configuration' });
@@ -159,7 +165,7 @@ export const drawerHelpers = {
   async waitForDrawerReady(page: Page): Promise<void> {
     // Wait until the spinner disappears — indicates data is loaded
     await expect(this.drawerPanel(page).locator('.pf-v6-c-spinner')).not.toBeVisible({
-      timeout: 30000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
   },
 
@@ -181,7 +187,7 @@ export const drawerHelpers = {
     const toggle = this.bulkSelectToggle(page);
 
     // Wait for the toggle button to be visible
-    await toggle.waitFor({ state: 'visible', timeout: 5000 });
+    await toggle.waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
 
     // Click the toggle icon (caret) to open the menu, not the checkbox
     const toggleIcon = toggle.locator('.pf-v6-c-menu-toggle__toggle-icon');
@@ -191,7 +197,7 @@ export const drawerHelpers = {
     await page
       .getByRole('menuitem', { name: /Select/ })
       .first()
-      .waitFor({ state: 'visible', timeout: 5000 });
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK });
   },
 
   /** Click "Select all (N)" in the bulk select dropdown. */

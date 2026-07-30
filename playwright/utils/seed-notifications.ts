@@ -1,5 +1,6 @@
 import { readFileSync } from 'fs';
 import { type BrowserContext } from 'playwright';
+import { TIMEOUTS } from '../test-constants';
 import { createUniqueArchive } from './archive-helper';
 
 const POLL_INTERVAL_MS = 5_000;
@@ -29,11 +30,11 @@ export async function seedNotificationsIfNeeded(context: BrowserContext): Promis
 
   try {
     // Navigate to the app and wait for chrome's auth to initialize
-    await page.goto('/', { waitUntil: 'load', timeout: 60000 });
+    await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
     await page.waitForFunction(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       () => typeof (window as any).insights?.chrome?.auth?.getToken === 'function',
-      { timeout: 30000 }
+      { timeout: TIMEOUTS.PAGE_LOAD }
     );
 
     // Check if notifications already exist
@@ -45,7 +46,8 @@ export async function seedNotificationsIfNeeded(context: BrowserContext): Promis
       return Array.isArray(data) ? data.length : 0;
     }, getDrawerApiUrl());
 
-    if (existing > 0) {
+    const MIN_NOTIFICATIONS = 2;
+    if (existing >= MIN_NOTIFICATIONS) {
       console.log(`✅ Drawer already has ${existing} notification(s), skipping seed`);
       return;
     }
