@@ -201,6 +201,52 @@ test.describe('Behavior Group Lifecycle', () => {
 });
 
 // =============================================================================
+// Configure Events — Bundle Tab Navigation
+// =============================================================================
+
+test.describe('Configure Events — Bundle Tabs', () => {
+  test.beforeEach(async ({ page }) => {
+    await ensureLoggedIn(page);
+  });
+
+  test('should navigate across all bundle tabs', async ({ page }) => {
+    await page.goto(`${NOTIFICATIONS_PATH}/configure-events`);
+    await page.waitForLoadState('domcontentloaded');
+
+    const heading = page.getByRole('heading', { name: 'Configure Events' });
+    if (!(await heading.isVisible({ timeout: TIMEOUTS.QUICK_CHECK }))) {
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+    }
+    await expect(heading).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    // The first tablist on the page contains the bundle tabs;
+    // sub-tabs (Configuration / Behavior Groups) are inside each bundle's content.
+    const bundleTablist = page.locator('[role="tablist"]').first();
+    await bundleTablist.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
+
+    const tabs = bundleTablist.locator('[role="tab"]');
+    const tabCount = await tabs.count();
+    expect(tabCount, 'Configure Events should have bundle tabs').toBeGreaterThanOrEqual(2);
+
+    for (let i = 0; i < tabCount; i++) {
+      const tab = tabs.nth(i);
+      const tabName = await tab.textContent();
+      await tab.click();
+      await expect(tab).toHaveAttribute('aria-selected', 'true');
+      await expect(page).toHaveURL(/bundle=/);
+
+      // Verify bundle content loaded — the Configuration / Behavior Groups
+      // sub-tabs should appear inside the selected bundle's tab panel.
+      const configSubTab = page.getByRole('tab', { name: 'Configuration' });
+      await expect(configSubTab).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+
+      console.log(`Bundle tab "${tabName}" selected and content loaded`);
+    }
+  });
+});
+
+// =============================================================================
 // Events Log Tests
 // =============================================================================
 
