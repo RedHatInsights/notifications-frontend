@@ -1,4 +1,5 @@
 import { Page, expect } from '@playwright/test';
+import { TIMEOUTS } from './test-constants';
 
 /** Paths relative to `use.baseURL` in playwright.config.ts */
 export const NOTIFICATIONS_PATH = '/settings/notifications';
@@ -50,7 +51,7 @@ export async function dismissCookieConsent(page: Page): Promise<void> {
   const acceptCookies = page
     .getByRole('button', { name: 'Accept all' })
     .or(page.getByRole('button', { name: 'Accept' }));
-  if (await acceptCookies.isVisible({ timeout: 2000 }).catch(() => false)) {
+  if (await acceptCookies.isVisible({ timeout: TIMEOUTS.QUICK_CHECK }).catch(() => false)) {
     await acceptCookies.click();
     await page.waitForTimeout(500);
   }
@@ -71,7 +72,7 @@ export async function login(page: Page, user: string, password: string): Promise
 
   // Wait for password field to appear and be ready
   const passwordInput = page.getByLabel('Password').first();
-  await passwordInput.waitFor({ state: 'visible', timeout: 10000 });
+  await passwordInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
   await page.waitForTimeout(500);
 
   // Click into the field first to ensure it's focused
@@ -104,7 +105,7 @@ export async function login(page: Page, user: string, password: string): Promise
 export async function ensureLoggedIn(page: Page): Promise<void> {
   await disableCookiePrompt(page);
 
-  await page.goto('/', { waitUntil: 'load', timeout: 60000 });
+  await page.goto('/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
   await page.waitForTimeout(2000);
 
   // Check if we got redirected to SSO or are on login page
@@ -115,7 +116,7 @@ export async function ensureLoggedIn(page: Page): Promise<void> {
     (await page
       .getByLabel('Red Hat login')
       .first()
-      .isVisible({ timeout: 2000 })
+      .isVisible({ timeout: TIMEOUTS.QUICK_CHECK })
       .catch(() => false));
 
   if (isOnSSOPage) {

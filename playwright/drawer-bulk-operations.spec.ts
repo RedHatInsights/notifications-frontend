@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { TIMEOUTS } from './test-constants';
 import { ensureLoggedIn } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
@@ -18,7 +19,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await ensureLoggedIn(page);
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
   });
 
@@ -95,7 +96,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Verify all checkboxes are checked
     for (let i = 0; i < count; i++) {
       const checkbox = drawerHelpers.notificationCheckbox(items.nth(i));
-      await expect(checkbox).toBeChecked({ timeout: 3000 });
+      await expect(checkbox).toBeChecked({ timeout: TIMEOUTS.QUICK_CHECK });
     }
 
     // Verify the bulk select checkbox itself is fully checked
@@ -127,7 +128,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Verify all checkboxes are unchecked
     for (let i = 0; i < Math.min(count, 5); i++) {
       const checkbox = drawerHelpers.notificationCheckbox(items.nth(i));
-      await expect(checkbox).not.toBeChecked({ timeout: 3000 });
+      await expect(checkbox).not.toBeChecked({ timeout: TIMEOUTS.QUICK_CHECK });
     }
 
     // Verify count is 0
@@ -187,7 +188,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       // Wait for state to update
       await expect
         .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-          timeout: 10000,
+          timeout: TIMEOUTS.ELEMENT_APPEAR,
         })
         .toBeGreaterThan(0);
     }
@@ -199,7 +200,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Wait for the API call to complete and state to update
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(0);
 
@@ -230,7 +231,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.markSelectedAsRead(page);
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(count);
 
@@ -239,7 +240,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.markSelectedAsUnread(page);
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(count);
 
@@ -283,7 +284,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Wait for filter to apply (web-first assertion instead of fixed delay)
     const filteredItems = drawerHelpers.notificationItems(page);
     await expect
-      .poll(() => filteredItems.count(), { timeout: 10_000 })
+      .poll(() => filteredItems.count(), { timeout: TIMEOUTS.ELEMENT_APPEAR })
       .toBeLessThanOrEqual(totalCount);
     const filteredCount = await filteredItems.count();
 
@@ -376,7 +377,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       await drawerHelpers.markSelectedAsUnread(page);
       await expect
         .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
-          timeout: 10000,
+          timeout: TIMEOUTS.ELEMENT_APPEAR,
         })
         .toBe(initialCounts.read - 1);
       // Refresh counts after the prep step
@@ -395,7 +396,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     // Verify read count increased by 1 (drawer re-sorts, can't track by position)
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(initialCounts.read + 1);
 
@@ -404,7 +405,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.markSelectedAsUnread(page);
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(count);
 
@@ -443,7 +444,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
 
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(0);
 
@@ -452,7 +453,7 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     await drawerHelpers.markSelectedAsUnread(page);
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.unread), {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(count);
 

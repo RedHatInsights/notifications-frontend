@@ -4,6 +4,7 @@
  * Based on learning-resources pattern
  */
 import { type FullConfig, type Page, type Request, type Route, chromium } from 'playwright';
+import { TIMEOUTS } from './test-constants';
 import { seedNotificationsIfNeeded } from './utils/seed-notifications';
 
 async function disableCookiePrompt(page: Page) {
@@ -43,16 +44,16 @@ async function login(page: Page, user: string, password: string) {
 
   // Wait for navigation back to the app
   await page
-    .waitForURL('**/settings/**', { timeout: 60000 })
-    .catch(() => page.waitForURL('**/', { timeout: 60000 }));
+    .waitForURL('**/settings/**', { timeout: TIMEOUTS.PAGE_LOAD })
+    .catch(() => page.waitForURL('**/', { timeout: TIMEOUTS.PAGE_LOAD }));
 
   // Wait for console to be ready
   try {
-    await page.getByText('Hi,').waitFor({ state: 'visible', timeout: 60000 });
+    await page.getByText('Hi,').waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
   } catch {
     await page
       .getByRole('button', { name: 'Add widgets' })
-      .waitFor({ state: 'visible', timeout: 60000 });
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
   }
 
   console.log('✓ Login successful');
@@ -78,7 +79,7 @@ async function globalSetup(config: FullConfig) {
     await disableCookiePrompt(page);
 
     // Navigate to home
-    await page.goto((baseURL as string) || '/', { waitUntil: 'load', timeout: 60000 });
+    await page.goto((baseURL as string) || '/', { waitUntil: 'load', timeout: TIMEOUTS.PAGE_LOAD });
 
     const user = process.env.E2E_USER;
     const password = process.env.E2E_PASSWORD;

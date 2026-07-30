@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { TIMEOUTS } from './test-constants';
 import { ensureLoggedIn } from './test-utils';
 import { drawerHelpers } from './utils/drawer-helpers';
 
@@ -19,7 +20,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     // Wait for the bell to appear (chrome must be fully loaded)
     await drawerHelpers.bellButton(page).waitFor({
       state: 'visible',
-      timeout: 60000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
   });
 
@@ -124,7 +125,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const expectedRead = wasRead ? before.read - 1 : before.read + 1;
     await expect
       .poll(async () => (await drawerHelpers.getReadUnreadCounts(page)).read, {
-        timeout: 10000,
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
       })
       .toBe(expectedRead);
 
@@ -198,7 +199,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     // Drawer should auto-close and navigate
     await page.waitForURL(/settings\/notifications\/eventlog/, {
-      timeout: 30000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
 
     console.log('Navigated to event log');
@@ -211,7 +212,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await drawerHelpers.clickActionItem(page, 'Manage my event notifications');
 
     await page.waitForURL(/settings\/notifications\/user-preferences/, {
-      timeout: 30000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
 
     console.log('Navigated to notification preferences');
@@ -244,7 +245,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await configItem.click();
 
     await page.waitForURL(/settings\/notifications\/configure-events/, {
-      timeout: 30000,
+      timeout: TIMEOUTS.PAGE_LOAD,
     });
 
     console.log('Navigated to event configuration');
@@ -266,7 +267,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await kebab.click();
 
     const dropdown = page.locator('#notification-item-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
 
     await expect(dropdown.getByRole('menuitem', { name: /Mark as/ })).toBeVisible();
     await expect(dropdown.getByRole('menuitem', { name: 'View in event log' })).toBeVisible();
@@ -296,10 +297,10 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await kebab.click();
 
     const dropdown = page.locator('#notification-item-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
     await dropdown.getByRole('menuitem', { name: 'View in event log' }).click();
 
-    await page.waitForURL(/settings\/notifications\/eventlog/, { timeout: 30000 });
+    await page.waitForURL(/settings\/notifications\/eventlog/, { timeout: TIMEOUTS.PAGE_LOAD });
     console.log('Per-notification "View in event log" navigated correctly');
   });
 
@@ -319,10 +320,12 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await kebab.click();
 
     const dropdown = page.locator('#notification-item-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
     await dropdown.getByRole('menuitem', { name: 'Manage my event notifications' }).click();
 
-    await page.waitForURL(/settings\/notifications\/user-preferences/, { timeout: 30000 });
+    await page.waitForURL(/settings\/notifications\/user-preferences/, {
+      timeout: TIMEOUTS.PAGE_LOAD,
+    });
     console.log('Per-notification "Manage my event notifications" navigated correctly');
   });
 
@@ -340,10 +343,12 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await kebab.click();
 
     const dropdown = page.locator('#notification-item-dropdown');
-    await expect(dropdown).toBeVisible({ timeout: 5000 });
+    await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
     await dropdown.getByRole('menuitem', { name: 'Manage event configuration' }).click();
 
-    await page.waitForURL(/settings\/notifications\/configure-events/, { timeout: 30000 });
+    await page.waitForURL(/settings\/notifications\/configure-events/, {
+      timeout: TIMEOUTS.PAGE_LOAD,
+    });
     console.log('Per-notification "Manage event configuration" navigated correctly');
   });
 
