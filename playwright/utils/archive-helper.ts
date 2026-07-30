@@ -25,8 +25,7 @@ export function createUniqueArchive(): {
   cleanup: () => void;
 } {
   const workDir = mkdtempSync(join(tmpdir(), 'pw-archive-'));
-  const random = Math.random().toString(36).substring(2, 8);
-  const hostname = `pw-${random}-notif-test`;
+  const hostname = `notifications-fe-seeder-${Date.now()}`;
 
   execSync(`tar xzf ${SAMPLE_ARCHIVE}`, { cwd: workDir });
 
@@ -44,6 +43,21 @@ export function createUniqueArchive(): {
     const content = relPath === 'etc/machine-id' ? hexId : newUUID;
     writeFileSync(fullPath, content + '\n');
   }
+
+  // Rewrite subscription-manager identity so inventory treats this as a new system
+  const submanIdentityPath = join(
+    workDir,
+    newDir,
+    'insights_commands/subscription-manager_identity'
+  );
+  const submanUUID = randomUUID();
+  writeFileSync(
+    submanIdentityPath,
+    `system identity: ${submanUUID}\nname: ${hostname}\norg name: 16540440\norg ID: 16540440\n`
+  );
+
+  // Rewrite hostname so inventory displays the correct name
+  writeFileSync(join(workDir, newDir, 'insights_commands/hostname_-f'), hostname + '\n');
 
   const archivePath = join(workDir, 'rewritten_archive.tar.gz');
   execSync(`tar czf rewritten_archive.tar.gz "${newDir}"`, { cwd: workDir });

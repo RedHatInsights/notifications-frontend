@@ -80,11 +80,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      // Empty state — verified in a separate test
-      console.log('No notifications present — skipping structure check');
-      return;
-    }
+    test.skip(count === 0, 'No notifications present — cannot verify structure');
 
     const first = items.first();
 
@@ -151,10 +147,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const items = drawerHelpers.notificationItems(page);
     const totalCount = await items.count();
 
-    if (totalCount === 0) {
-      console.log('No notifications — filter toggle should be disabled');
-      return;
-    }
+    test.skip(totalCount === 0, 'No notifications — cannot verify filter functionality');
 
     // Open filter dropdown and verify items exist
     await filterToggle.click();
@@ -224,6 +217,39 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     console.log('Navigated to notification preferences');
   });
 
+  test('"Manage event configuration" navigates correctly (admin only)', async ({ page }) => {
+    await drawerHelpers.openDrawer(page);
+    await drawerHelpers.waitForDrawerReady(page);
+
+    await drawerHelpers.openActionsDropdown(page);
+
+    const dropdown = page.locator('#notifications-actions-dropdown');
+    const configItem = dropdown.getByRole('menuitem', {
+      name: 'Manage event configuration',
+    });
+
+    await expect(configItem).toBeVisible();
+
+    const isDisabled = await configItem.evaluate(
+      (el) => el.getAttribute('aria-disabled') === 'true' || el.classList.contains('pf-m-disabled')
+    );
+
+    if (isDisabled) {
+      // Non-admin account — item is present but disabled; navigation tested via RBAC test
+      await drawerHelpers.closeActionsDropdown(page);
+      test.skip(true, 'Test account is non-admin — "Manage event configuration" is disabled');
+      return;
+    }
+
+    await configItem.click();
+
+    await page.waitForURL(/settings\/notifications\/configure-events/, {
+      timeout: 30000,
+    });
+
+    console.log('Navigated to event configuration');
+  });
+
   // ── 7. Per-Notification Actions ───────────────────────────────────
 
   test('notification kebab has expected menu items', async ({ page }) => {
@@ -233,10 +259,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count === 0) {
-      console.log('No notifications — skipping kebab menu check');
-      return;
-    }
+    test.skip(count === 0, 'No notifications — cannot verify kebab menu items');
 
     const first = items.first();
     const kebab = first.locator('#notification-item-toggle');
@@ -333,10 +356,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     const items = drawerHelpers.notificationItems(page);
     const count = await items.count();
 
-    if (count > 0) {
-      console.log(`${count} notifications present — empty state not applicable`);
-      return;
-    }
+    test.skip(count > 0, 'Notifications present — empty state not applicable');
 
     // Verify empty state content
     const panel = drawerHelpers.drawerPanel(page);
@@ -358,11 +378,9 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     console.log('Empty state rendered correctly');
   });
 
-  // ── 10. RBAC — Configure notification settings visibility ─────────
+  // ── 10. RBAC — "Manage event configuration" admin/non-admin state ──
 
-  test('actions dropdown conditionally shows "Configure notification settings"', async ({
-    page,
-  }) => {
+  test('"Manage event configuration" is visible and reflects RBAC state', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -370,22 +388,24 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const dropdown = page.locator('#notifications-actions-dropdown');
     const configItem = dropdown.getByRole('menuitem', {
-      name: 'Configure notification settings',
+      name: 'Manage event configuration',
     });
 
-    // This item is visible only for org admins or users with
-    // notifications:notifications:write permission.
-    // We simply verify the item exists or not — both are valid depending
-    // on the test account's RBAC role.
-    const isVisible = await configItem.isVisible().catch(() => false);
+    // The item is always rendered — disabled for non-admin, enabled for admin
+    await expect(configItem).toBeVisible();
+
+    const isDisabled = await configItem.evaluate(
+      (el) => el.getAttribute('aria-disabled') === 'true' || el.classList.contains('pf-m-disabled')
+    );
+
+    expect(typeof isDisabled).toBe('boolean');
     console.log(
-      `"Configure notification settings" ${
-        isVisible ? 'visible (admin/write-perm user)' : 'hidden (regular user)'
+      `"Manage event configuration" ${
+        isDisabled ? 'disabled (non-admin user)' : 'enabled (admin user)'
       }`
     );
 
-    // Close dropdown
-    await page.locator('#notifications-actions-toggle').click();
+    await drawerHelpers.closeActionsDropdown(page);
   });
 
   // ── Bulk selection ────────────────────────────────────────────────
