@@ -229,19 +229,33 @@ test.describe('Configure Events — Bundle Tabs', () => {
     const tabCount = await tabs.count();
     expect(tabCount, 'Configure Events should have bundle tabs').toBeGreaterThanOrEqual(2);
 
+    let previousBundle = '';
     for (let i = 0; i < tabCount; i++) {
       const tab = tabs.nth(i);
       const tabName = await tab.textContent();
       await tab.click();
       await expect(tab).toHaveAttribute('aria-selected', 'true');
+
+      // Verify URL bundle param is set and distinct from the previous tab
       await expect(page).toHaveURL(/bundle=/);
+      const currentBundle = new URL(page.url()).searchParams.get('bundle') ?? '';
+      expect(currentBundle, `Tab "${tabName}" should set a bundle URL param`).toBeTruthy();
+      if (i > 0) {
+        expect(currentBundle, `Tab "${tabName}" should navigate to a different bundle`).not.toBe(
+          previousBundle
+        );
+      }
+      previousBundle = currentBundle;
 
-      // Verify bundle content loaded — the Configuration / Behavior Groups
-      // sub-tabs should appear inside the selected bundle's tab panel.
-      const configSubTab = page.getByRole('tab', { name: 'Configuration' });
-      await expect(configSubTab).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+      // Verify bundle content loaded — scope to the active tab's panel
+      // via aria-controls to avoid matching sub-tabs from other mounted panels.
+      const panelId = await tab.getAttribute('aria-controls');
+      const bundlePanel = page.locator(`#${panelId}`);
+      await expect(bundlePanel.getByRole('tab', { name: 'Configuration' })).toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
+      });
 
-      console.log(`Bundle tab "${tabName}" selected and content loaded`);
+      console.log(`Bundle tab "${tabName}" (bundle=${currentBundle}) loaded`);
     }
   });
 });
