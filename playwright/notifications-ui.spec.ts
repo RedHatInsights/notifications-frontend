@@ -249,10 +249,14 @@ test.describe('Configure Events — Bundle Tabs', () => {
 
       // Verify bundle content loaded — scope to the active tab's panel
       // via aria-controls to avoid matching sub-tabs from other mounted panels.
+      // PF6 renders all panels in the DOM with `hidden`; the active one has it removed.
       const panelId = await tab.getAttribute('aria-controls');
       const bundlePanel = page.locator(`#${panelId}`);
+      await expect(bundlePanel).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+
+      // Wait for the bundle's data to load (spinner disappears, sub-tabs render).
       await expect(bundlePanel.getByRole('tab', { name: 'Configuration' })).toBeVisible({
-        timeout: TIMEOUTS.ELEMENT_APPEAR,
+        timeout: TIMEOUTS.PAGE_LOAD,
       });
 
       console.log(`Bundle tab "${tabName}" (bundle=${currentBundle}) loaded`);
