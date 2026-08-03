@@ -201,6 +201,70 @@ test.describe('Behavior Group Lifecycle', () => {
 });
 
 // =============================================================================
+// Configure Events — Bundle Tab Navigation
+// =============================================================================
+
+test.describe('Configure Events — Bundle Tabs', () => {
+  test.beforeEach(async ({ page }) => {
+    await ensureLoggedIn(page);
+  });
+
+  test('should navigate across all bundle tabs', async ({ page }) => {
+    await page.goto(`${NOTIFICATIONS_PATH}/configure-events`);
+    await page.waitForLoadState('domcontentloaded');
+
+    const heading = page.getByRole('heading', { name: 'Configure Events' });
+    if (!(await heading.isVisible({ timeout: TIMEOUTS.QUICK_CHECK }))) {
+      await page.reload();
+      await page.waitForLoadState('domcontentloaded');
+    }
+    await expect(heading).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+    // The first tablist on the page contains the bundle tabs;
+    // sub-tabs (Configuration / Behavior Groups) are inside each bundle's content.
+    const bundleTablist = page.locator('[role="tablist"]').first();
+    await bundleTablist.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
+
+    const tabs = bundleTablist.locator('[role="tab"]');
+    const tabCount = await tabs.count();
+    expect(tabCount, 'Configure Events should have bundle tabs').toBeGreaterThanOrEqual(2);
+
+    let previousBundle = '';
+    for (let i = 0; i < tabCount; i++) {
+      const tab = tabs.nth(i);
+      const tabName = await tab.textContent();
+      await tab.click();
+      await expect(tab).toHaveAttribute('aria-selected', 'true');
+
+      // Verify URL bundle param is set and distinct from the previous tab
+      await expect(page).toHaveURL(/bundle=/);
+      const currentBundle = new URL(page.url()).searchParams.get('bundle') ?? '';
+      expect(currentBundle, `Tab "${tabName}" should set a bundle URL param`).toBeTruthy();
+      if (i > 0) {
+        expect(currentBundle, `Tab "${tabName}" should navigate to a different bundle`).not.toBe(
+          previousBundle
+        );
+      }
+      previousBundle = currentBundle;
+
+      // Verify bundle content loaded — scope to the active tab's panel
+      // via aria-controls to avoid matching sub-tabs from other mounted panels.
+      // PF6 renders all panels in the DOM with `hidden`; the active one has it removed.
+      const panelId = await tab.getAttribute('aria-controls');
+      const bundlePanel = page.locator(`#${panelId}`);
+      await expect(bundlePanel).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+
+      // Wait for the bundle's data to load (spinner disappears, sub-tabs render).
+      await expect(bundlePanel.getByRole('tab', { name: 'Configuration' })).toBeVisible({
+        timeout: TIMEOUTS.PAGE_LOAD,
+      });
+
+      console.log(`Bundle tab "${tabName}" (bundle=${currentBundle}) loaded`);
+    }
+  });
+});
+
+// =============================================================================
 // Events Log Tests
 // =============================================================================
 
