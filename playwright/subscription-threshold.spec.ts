@@ -1,6 +1,7 @@
 import { Page, expect, test } from '@playwright/test';
 import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
 import { TIMEOUTS } from './test-constants';
+import { waitForSuccessNotification } from './utils/form-helpers';
 
 /**
  * Subscription Threshold E2E Test Suite
@@ -91,7 +92,7 @@ async function getCurrentThresholdValue(
  * Enter edit mode on the threshold row by clicking the pencil icon.
  */
 async function enterEditMode(thresholdRow: ReturnType<Page['locator']>) {
-  const editButton = thresholdRow.locator('button[aria-label="edit"]');
+  const editButton = thresholdRow.getByRole('button', { name: 'edit' });
   await editButton.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
   await editButton.click();
 }
@@ -100,7 +101,9 @@ async function enterEditMode(thresholdRow: ReturnType<Page['locator']>) {
  * Set the threshold to a specific value using the NumberInput.
  */
 async function setThresholdValue(thresholdRow: ReturnType<Page['locator']>, value: number) {
-  const thresholdInput = thresholdRow.locator('input[name="threshold-input"]');
+  const thresholdInput = thresholdRow.getByRole('spinbutton', {
+    name: 'Usage threshold percentage',
+  });
   await thresholdInput.waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR });
   await thresholdInput.fill(String(value));
 }
@@ -109,7 +112,7 @@ async function setThresholdValue(thresholdRow: ReturnType<Page['locator']>, valu
  * Save changes by clicking the check (done) icon.
  */
 async function saveChanges(thresholdRow: ReturnType<Page['locator']>) {
-  const doneButton = thresholdRow.locator('button[aria-label="done"]');
+  const doneButton = thresholdRow.getByRole('button', { name: 'done' });
   await doneButton.click();
 }
 
@@ -117,7 +120,7 @@ async function saveChanges(thresholdRow: ReturnType<Page['locator']>) {
  * Cancel changes by clicking the close (cancel) icon.
  */
 async function cancelChanges(thresholdRow: ReturnType<Page['locator']>) {
-  const cancelButton = thresholdRow.locator('button[aria-label="cancel"]');
+  const cancelButton = thresholdRow.getByRole('button', { name: 'cancel' });
   await cancelButton.click();
 }
 
@@ -165,65 +168,77 @@ test.describe('Subscription Threshold — Org Admin', () => {
     const newThreshold = pickDifferentThreshold(originalThreshold);
     console.log(`Setting threshold to: ${newThreshold}%`);
 
-    await enterEditMode(thresholdRow);
-    await setThresholdValue(thresholdRow, newThreshold);
-    await saveChanges(thresholdRow);
+    // Track whether the test value may have been persisted (for cleanup)
+    let needsCleanup = false;
 
-    // Step 5: Verify success notification appears
-    const successAlert = page
-      .locator('.pf-v6-c-alert.pf-m-success')
-      .or(page.locator('[class*="pf-v6-c-alert"][class*="success"]'));
-    await expect(successAlert.first()).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+    try {
+      await enterEditMode(thresholdRow);
+      await setThresholdValue(thresholdRow, newThreshold);
 
-    // Verify the notification message mentions the new threshold
-    await expect(page.getByText(`Custom threshold set to ${newThreshold}%`)).toBeVisible({
-      timeout: TIMEOUTS.ELEMENT_APPEAR,
-    });
+      // Flag cleanup before save — after this point the value may be persisted
+      needsCleanup = true;
+      await saveChanges(thresholdRow);
 
-    // Step 6: Navigate to Notification Preferences page
-    await page.goto(USER_PREFERENCES_PATH);
-    await page.waitForLoadState('domcontentloaded');
+      // Step 5: Verify success notification appears
+      await waitForSuccessNotification(page);
 
-    // Step 7: Find Subscription Services section
-    // The preferences page groups by bundle > application.
-    // Look for "Subscription Services" or "Subscriptions usage" text.
-    const subscriptionSection = page
-      .getByText('Subscription Services')
-      .or(page.getByText('Subscriptions usage'));
-    await expect(subscriptionSection.first()).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+      // Verify the notification message mentions the new threshold
+      await expect(page.getByText(`Custom threshold set to ${newThreshold}%`)).toBeVisible({
+        timeout: TIMEOUTS.ELEMENT_APPEAR,
+      });
 
-    // Click on the section to expand it if collapsed
-    const subscriptionServicesLink = page
-      .locator('a, button, [role="tab"]')
-      .filter({ hasText: /Subscription Services/i })
-      .first();
-    if (
-      await subscriptionServicesLink.isVisible({ timeout: TIMEOUTS.QUICK_CHECK }).catch(() => false)
-    ) {
-      await subscriptionServicesLink.click();
-      await page.waitForTimeout(1000);
+      // Step 6: Navigate to Notification Preferences page
+      await page.goto(USER_PREFERENCES_PATH);
+      await page.waitForLoadState('domcontentloaded');
+
+      // Step 7: Find the preference item for the threshold event type
+      // Scope assertions to the item containing THRESHOLD_ROW_TEXT to avoid
+      // matching unrelated "Subscription Services" controls on the page.
+      const thresholdPreferenceItem = page
+        .locator('section, [class*="preference"], tr, li', {
+          hasText: THRESHOLD_ROW_TEXT,
+        })
+        .first();
+
+      // If the section is collapsed, expand it by clicking the bundle/application toggle
+      const subscriptionServicesToggle = page
+        .getByRole('button', { name: /Subscription Services/i })
+        .or(page.getByRole('tab', { name: /Subscription Services/i }));
+      if (
+        await subscriptionServicesToggle
+          .isVisible({ timeout: TIMEOUTS.QUICK_CHECK })
+          .catch(() => false)
+      ) {
+        await subscriptionServicesToggle.click();
+      }
+
+      // Wait for the threshold preference item to be visible (replaces hard-coded timeout)
+      await expect(thresholdPreferenceItem).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+      // Step 8: Verify the newly set value is reflected within the scoped item
+      await expect(
+        thresholdPreferenceItem
+          .getByText(`${newThreshold}%`)
+          .or(thresholdPreferenceItem.getByText(`${newThreshold} %`))
+      ).toBeVisible({
+        timeout: TIMEOUTS.PAGE_LOAD,
+      });
+    } finally {
+      // Step 9: Restore original threshold (always runs to keep stage clean)
+      if (needsCleanup) {
+        const restoreRow = await navigateToSubscriptionServicesConfig(page);
+        await enterEditMode(restoreRow);
+        await setThresholdValue(restoreRow, originalThreshold);
+        await saveChanges(restoreRow);
+
+        // Verify restoration succeeded
+        await expect(page.getByText(`Custom threshold set to ${originalThreshold}%`)).toBeVisible({
+          timeout: TIMEOUTS.ELEMENT_APPEAR,
+        });
+
+        console.log(`✓ Threshold restored to ${originalThreshold}%`);
+      }
     }
-
-    // Step 8: Verify the newly set value is reflected
-    await expect(
-      page.getByText(`${newThreshold}%`).or(page.getByText(`${newThreshold} %`))
-    ).toBeVisible({
-      timeout: TIMEOUTS.PAGE_LOAD,
-    });
-
-    // Step 9: Restore original threshold
-    // Navigate back to Configure Events to restore
-    const restoreRow = await navigateToSubscriptionServicesConfig(page);
-    await enterEditMode(restoreRow);
-    await setThresholdValue(restoreRow, originalThreshold);
-    await saveChanges(restoreRow);
-
-    // Verify restoration succeeded
-    await expect(page.getByText(`Custom threshold set to ${originalThreshold}%`)).toBeVisible({
-      timeout: TIMEOUTS.ELEMENT_APPEAR,
-    });
-
-    console.log(`✓ Threshold restored to ${originalThreshold}%`);
   });
 });
 
@@ -261,7 +276,9 @@ test.describe('Subscription Threshold — Cancel Editing', () => {
     await setThresholdValue(thresholdRow, tempThreshold);
 
     // Verify the input shows the new value before cancelling
-    const thresholdInput = thresholdRow.locator('input[name="threshold-input"]');
+    const thresholdInput = thresholdRow.getByRole('spinbutton', {
+      name: 'Usage threshold percentage',
+    });
     await expect(thresholdInput).toHaveValue(String(tempThreshold));
 
     // Step 4: Cancel editing
@@ -269,7 +286,7 @@ test.describe('Subscription Threshold — Cancel Editing', () => {
 
     // Step 5: Verify value reverted — row should be back in read-only mode
     // Wait for edit mode to exit (pencil icon reappears)
-    const editButton = thresholdRow.locator('button[aria-label="edit"]');
+    const editButton = thresholdRow.getByRole('button', { name: 'edit' });
     await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
     // Verify the displayed value matches the original
