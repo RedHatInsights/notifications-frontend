@@ -250,6 +250,8 @@ test.describe('Configure Events — Bundle Tabs', () => {
       // Verify bundle content loaded — scope to the active tab's panel
       // via aria-controls to avoid matching sub-tabs from other mounted panels.
       // PF6 renders all panels in the DOM with `hidden`; the active one has it removed.
+      // The Tabs component must have a stable `id` prop, otherwise PF regenerates
+      // panel IDs on every render and this lookup races with React re-renders.
       const panelId = await tab.getAttribute('aria-controls');
       const bundlePanel = page.locator(`#${panelId}`);
       await expect(bundlePanel).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });

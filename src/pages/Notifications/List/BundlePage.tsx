@@ -167,6 +167,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
         <Flex direction={{ default: 'column' }}>
           <FlexItem>
             <Tabs
+              id="bundle-tabs"
               activeKey={props.bundleTabs.findIndex(({ name }) => name === bundle)}
               onSelect={(event, tabIndex) => {
                 const newSearchParams = new URLSearchParams(location.search);
