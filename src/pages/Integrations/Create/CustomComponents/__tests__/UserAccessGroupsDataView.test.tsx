@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any, testing-library/no-container, testing-library/no-node-access */
 import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import * as React from 'react';
 import { IntlProvider } from 'react-intl';
 import UserAccessGroupsDataView from '../UserAccessGroupsDataView';
@@ -128,7 +129,7 @@ describe('UserAccessGroupsDataView', () => {
   });
 
   describe('Filtered empty state', () => {
-    it('displays "No matching User Access Groups" when search has no results', () => {
+    it('displays "No matching User Access Groups" when search has no results', async () => {
       // Mock groups that would be filtered out
       mockUseRbacGroups.mockReturnValue({
         groups: [
@@ -150,9 +151,22 @@ describe('UserAccessGroupsDataView', () => {
         </IntlProvider>
       );
 
-      // Simulate filtering by entering text in the search field
-      const searchInput = container.querySelector('input[placeholder="Filter by group name..."]');
+      // Find and type in the search field to filter out all groups
+      const searchInput = container.querySelector(
+        'input[placeholder="Filter by group name..."]'
+      ) as HTMLInputElement;
       expect(searchInput).toBeInTheDocument();
+
+      // Type a search term that won't match "Admin Group"
+      await userEvent.type(searchInput, 'NonexistentGroup');
+
+      // Verify the filtered empty state appears
+      expect(screen.getByText('No matching User Access Groups')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'No User Access Groups match the current search criteria. Try adjusting your search term.'
+        )
+      ).toBeInTheDocument();
     });
   });
 
