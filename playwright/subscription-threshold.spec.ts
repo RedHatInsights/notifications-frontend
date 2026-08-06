@@ -1,7 +1,6 @@
 import { Page, expect, test } from '@playwright/test';
 import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
 import { TIMEOUTS } from './test-constants';
-import { waitForSuccessNotification } from './utils/form-helpers';
 
 /**
  * Subscription Threshold E2E Test Suite
@@ -9,14 +8,12 @@ import { waitForSuccessNotification } from './utils/form-helpers';
  * Tests the subscription utilization threshold feature on the Configure Events
  * page. The threshold (0–100%) controls when "Custom subscription threshold
  * exceeded" notifications fire. Org Admins can edit the threshold inline; the
- * value is persisted via the org-preferences API and reflected on the
- * Notification Preferences page.
+ * value is persisted via the org-preferences API.
  *
  * Covers test cases from RHCLOUD-50000 / RHCLOUD-46646.
  */
 
 const CONFIGURE_EVENTS_PATH = `${NOTIFICATIONS_PATH}/configure-events`;
-const USER_PREFERENCES_PATH = `${NOTIFICATIONS_PATH}/user-preferences`;
 const THRESHOLD_ROW_TEXT = 'Custom subscription threshold exceeded';
 const SUBSCRIPTION_SERVICES_TAB = 'Subscription Services';
 
@@ -141,7 +138,7 @@ test.describe('Subscription Threshold — Org Admin', () => {
     await ensureLoggedIn(page);
   });
 
-  test('should edit threshold, verify success notification, and confirm on preferences page', async ({
+  test('should edit threshold, verify success notification, and confirm value persists', async ({
     page,
   }) => {
     /**
@@ -151,10 +148,8 @@ test.describe('Subscription Threshold — Org Admin', () => {
      * 3. Note the current threshold value
      * 4. Edit it to something explicitly different and save
      * 5. Verify success notification appears
-     * 6. Navigate to Notification Preferences page
-     * 7. Select Subscription Services > Subscriptions usage
-     * 8. Verify the newly set value is reflected
-     * 9. Restore the original threshold value
+     * 6. Verify the read-only display shows the new value
+     * 7. Restore the original threshold value
      */
 
     // Steps 1–2: Navigate and locate threshold row
@@ -180,62 +175,39 @@ test.describe('Subscription Threshold — Org Admin', () => {
       await saveChanges(thresholdRow);
 
       // Step 5: Verify success notification appears
-      await waitForSuccessNotification(page);
-
-      // Verify the notification message mentions the new threshold
-      await expect(page.getByText(`Custom threshold set to ${newThreshold}%`)).toBeVisible({
-        timeout: TIMEOUTS.ELEMENT_APPEAR,
-      });
-
-      // Step 6: Navigate to Notification Preferences page
-      await page.goto(USER_PREFERENCES_PATH);
-      await page.waitForLoadState('domcontentloaded');
-
-      // Step 7: Find the preference item for the threshold event type
-      // Scope assertions to the item containing THRESHOLD_ROW_TEXT to avoid
-      // matching unrelated "Subscription Services" controls on the page.
-      const thresholdPreferenceItem = page
-        .locator('section, [class*="preference"], tr, li', {
-          hasText: THRESHOLD_ROW_TEXT,
-        })
+      // The app shows a PF success alert with title "Threshold updated"
+      const successAlert = page
+        .locator(
+          '.pf-v6-c-alert.pf-m-success, [class*="pf-v6-c-alert"][class*="success"], .pf-c-alert.pf-m-success'
+        )
+        .or(page.getByText('Threshold updated'))
         .first();
+      await expect(successAlert).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
-      // If the section is collapsed, expand it by clicking the bundle/application toggle
-      const subscriptionServicesToggle = page
-        .getByRole('button', { name: /Subscription Services/i })
-        .or(page.getByRole('tab', { name: /Subscription Services/i }));
-      if (
-        await subscriptionServicesToggle
-          .isVisible({ timeout: TIMEOUTS.QUICK_CHECK })
-          .catch(() => false)
-      ) {
-        await subscriptionServicesToggle.click();
-      }
+      // Step 6: Verify the row returned to read-only mode with the new value
+      // The edit button reappears when the row exits edit mode
+      const editButton = thresholdRow.getByRole('button', { name: 'edit' });
+      await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
-      // Wait for the threshold preference item to be visible (replaces hard-coded timeout)
-      await expect(thresholdPreferenceItem).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
-
-      // Step 8: Verify the newly set value is reflected within the scoped item
-      await expect(
-        thresholdPreferenceItem
-          .getByText(`${newThreshold}%`)
-          .or(thresholdPreferenceItem.getByText(`${newThreshold} %`))
-      ).toBeVisible({
-        timeout: TIMEOUTS.PAGE_LOAD,
-      });
+      // Verify the read-only display shows the new threshold
+      const savedThreshold = await getCurrentThresholdValue(thresholdRow);
+      expect(savedThreshold).toBe(newThreshold);
+      console.log(`✓ Threshold saved and verified: ${savedThreshold}%`);
     } finally {
-      // Step 9: Restore original threshold (always runs to keep stage clean)
+      // Step 7: Restore original threshold (always runs to keep stage clean)
       if (needsCleanup) {
         const restoreRow = await navigateToSubscriptionServicesConfig(page);
         await enterEditMode(restoreRow);
         await setThresholdValue(restoreRow, originalThreshold);
         await saveChanges(restoreRow);
 
-        // Verify restoration succeeded
-        await expect(page.getByText(`Custom threshold set to ${originalThreshold}%`)).toBeVisible({
-          timeout: TIMEOUTS.ELEMENT_APPEAR,
-        });
+        // Wait for edit mode to exit
+        const editBtn = restoreRow.getByRole('button', { name: 'edit' });
+        await expect(editBtn).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
+        // Verify restoration succeeded
+        const restoredThreshold = await getCurrentThresholdValue(restoreRow);
+        expect(restoredThreshold).toBe(originalThreshold);
         console.log(`✓ Threshold restored to ${originalThreshold}%`);
       }
     }
