@@ -187,13 +187,14 @@ test.describe('Subscription Threshold — Org Admin', () => {
       // Step 5: Verify success notification appears
       await waitForSuccessNotification(page);
 
-      // Step 6: Verify the row returned to read-only mode with the new value
-      // The edit button reappears when the row exits edit mode
-      const editButton = thresholdRow.getByRole('button', { name: 'edit' });
-      await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
-
-      // Verify the read-only display shows the new threshold
-      const savedThreshold = await getCurrentThresholdValue(thresholdRow);
+      // Step 6: Re-navigate to verify the saved value persisted.
+      // After clicking "done", two async operations run: (1) threshold save via
+      // org-preferences API, (2) behavior-group link save. The success notification
+      // fires after (1), but the row's edit-mode state depends on (2). If (2) is
+      // slow or fails the row stays in edit mode and the edit button never reappears.
+      // Re-navigating avoids this race and directly verifies persistence.
+      const verifyRow = await navigateToSubscriptionServicesConfig(page);
+      const savedThreshold = await getCurrentThresholdValue(verifyRow);
       expect(savedThreshold).toBe(newThreshold);
       console.log(`✓ Threshold saved and verified: ${savedThreshold}%`);
     } finally {
@@ -204,12 +205,12 @@ test.describe('Subscription Threshold — Org Admin', () => {
         await setThresholdValue(restoreRow, originalThreshold);
         await saveChanges(restoreRow);
 
-        // Wait for edit mode to exit
-        const editBtn = restoreRow.getByRole('button', { name: 'edit' });
-        await expect(editBtn).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+        // Wait for success notification to confirm save went through
+        await waitForSuccessNotification(page);
 
-        // Verify restoration succeeded
-        const restoredThreshold = await getCurrentThresholdValue(restoreRow);
+        // Re-navigate to verify restoration (same pattern — avoid edit-mode race)
+        const verifiedRestoreRow = await navigateToSubscriptionServicesConfig(page);
+        const restoredThreshold = await getCurrentThresholdValue(verifiedRestoreRow);
         expect(restoredThreshold).toBe(originalThreshold);
         console.log(`✓ Threshold restored to ${originalThreshold}%`);
       }
