@@ -1,6 +1,7 @@
 import { Page, expect, test } from '@playwright/test';
 import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
 import { TIMEOUTS } from './test-constants';
+import { waitForSuccessNotification } from './utils/form-helpers';
 
 /**
  * Subscription Threshold E2E Test Suite
@@ -39,8 +40,8 @@ async function navigateToSubscriptionServicesConfig(page: Page) {
   }
   await expect(heading).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
 
-  // Click "Subscription Services" bundle tab
-  const bundleTablist = page.locator('[role="tablist"]').first();
+  // Click "Subscription Services" bundle tab — use #bundle-tabs for stable targeting
+  const bundleTablist = page.locator('#bundle-tabs [role="tablist"]');
   await bundleTablist.waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD });
 
   const subscriptionTab = bundleTablist.getByRole('tab', {
@@ -52,6 +53,9 @@ async function navigateToSubscriptionServicesConfig(page: Page) {
 
   // Wait for bundle panel content to load (Configuration sub-tab renders)
   const panelId = await subscriptionTab.getAttribute('aria-controls');
+  if (!panelId) {
+    throw new Error('Subscription Services tab missing aria-controls attribute');
+  }
   const bundlePanel = page.locator(`#${panelId}`);
   await expect(bundlePanel).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
 
@@ -72,12 +76,18 @@ async function navigateToSubscriptionServicesConfig(page: Page) {
 /**
  * Read the current threshold value from the read-only display.
  * In read-only mode the cell shows: "{value} % of usage threshold"
+ * Waits for the cell to finish loading (Skeleton → actual value).
  */
 async function getCurrentThresholdValue(
   thresholdRow: ReturnType<Page['locator']>
 ): Promise<number> {
   // The threshold cell is the 4th td (index 3): expand | name | application | behavior/threshold | actions
-  const cellText = await thresholdRow.locator('td').nth(3).textContent();
+  const thresholdCell = thresholdRow.locator('td').nth(3);
+  // Wait for the "of usage threshold" text to appear (indicates data loaded, not Skeleton)
+  await expect(thresholdCell.getByText('of usage threshold')).toBeVisible({
+    timeout: TIMEOUTS.TABLE_LOAD,
+  });
+  const cellText = await thresholdCell.textContent();
   const match = cellText?.match(/(\d+)\s*%/);
   if (!match) {
     throw new Error(`Could not parse threshold value from cell text: "${cellText}"`);
@@ -175,14 +185,7 @@ test.describe('Subscription Threshold — Org Admin', () => {
       await saveChanges(thresholdRow);
 
       // Step 5: Verify success notification appears
-      // The app shows a PF success alert with title "Threshold updated"
-      const successAlert = page
-        .locator(
-          '.pf-v6-c-alert.pf-m-success, [class*="pf-v6-c-alert"][class*="success"], .pf-c-alert.pf-m-success'
-        )
-        .or(page.getByText('Threshold updated'))
-        .first();
-      await expect(successAlert).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+      await waitForSuccessNotification(page);
 
       // Step 6: Verify the row returned to read-only mode with the new value
       // The edit button reappears when the row exits edit mode
