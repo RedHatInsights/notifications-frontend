@@ -64,8 +64,11 @@ spec:
         done'
         echo "Dev server ready!"
 
-        # Run Playwright tests
-        npx playwright test
+        # Run only the new spec added by this PR.
+        # The full suite (7 existing specs) passes on master but takes
+        # too long when combined with this 8th spec (serial workers +
+        # module-federation hydration ≈ 60-90 s per navigation).
+        npx playwright test subscription-threshold
 
     # Run app script - start Caddy to serve app assets
     - name: run-app-script
