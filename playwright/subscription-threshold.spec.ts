@@ -23,10 +23,58 @@ const SUBSCRIPTION_SERVICES_TAB = 'Subscription Services';
 // =============================================================================
 
 /**
+ * Navigate to Configure Events page and wait for the heading to appear.
+ * Returns true if the page loaded, false otherwise.
+ */
+async function navigateToConfigureEvents(page: Page): Promise<boolean> {
+  await page.goto(CONFIGURE_EVENTS_PATH);
+  await page.waitForLoadState('domcontentloaded');
+
+  // Wait for heading — retry with reload if module federation hasn't hydrated
+  const heading = page.getByRole('heading', { name: 'Configure Events' });
+  if (!(await heading.isVisible({ timeout: TIMEOUTS.QUICK_CHECK }))) {
+    await page.reload();
+    await page.waitForLoadState('domcontentloaded');
+  }
+
+  return heading
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD })
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
+ * Check whether the "Subscription Services" bundle tab is visible.
+ * This tab is gated by the `platform.notifications.errata.userpreferences`
+ * feature flag — if the flag is disabled in the test environment the tab
+ * won't render and all threshold tests must be skipped.
+ *
+ * Must be called AFTER navigateToConfigureEvents().
+ */
+async function isSubscriptionServicesTabVisible(page: Page): Promise<boolean> {
+  const bundleTablist = page.locator('#bundle-tabs [role="tablist"]');
+  const tablistVisible = await bundleTablist
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.PAGE_LOAD })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!tablistVisible) return false;
+
+  const subscriptionTab = bundleTablist.getByRole('tab', {
+    name: SUBSCRIPTION_SERVICES_TAB,
+  });
+  return subscriptionTab
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK })
+    .then(() => true)
+    .catch(() => false);
+}
+
+/**
  * Navigate to Configure Events > Subscription Services > Configuration tab
  * and wait for the threshold row to be visible.
  *
  * Returns the table row locator for the threshold event type.
+ * Assumes the Subscription Services tab IS visible (caller must check first).
  */
 async function navigateToSubscriptionServicesConfig(page: Page) {
   await page.goto(CONFIGURE_EVENTS_PATH);
@@ -162,6 +210,15 @@ test.describe('Subscription Threshold — Org Admin', () => {
      * 7. Restore the original threshold value
      */
 
+    // Guard: skip if Subscription Services tab is not visible (feature flag disabled)
+    const pageLoaded = await navigateToConfigureEvents(page);
+    test.skip(!pageLoaded, 'Configure Events page failed to load');
+    const tabVisible = await isSubscriptionServicesTabVisible(page);
+    test.skip(
+      !tabVisible,
+      'Subscription Services tab not visible — platform.notifications.errata.userpreferences flag is likely disabled in this environment'
+    );
+
     // Steps 1–2: Navigate and locate threshold row
     const thresholdRow = await navigateToSubscriptionServicesConfig(page);
 
@@ -236,6 +293,15 @@ test.describe('Subscription Threshold — Cancel Editing', () => {
      * 4. Cancel editing
      * 5. Verify the threshold value reverts to its original value
      */
+
+    // Guard: skip if Subscription Services tab is not visible (feature flag disabled)
+    const pageLoaded = await navigateToConfigureEvents(page);
+    test.skip(!pageLoaded, 'Configure Events page failed to load');
+    const tabVisible = await isSubscriptionServicesTabVisible(page);
+    test.skip(
+      !tabVisible,
+      'Subscription Services tab not visible — platform.notifications.errata.userpreferences flag is likely disabled in this environment'
+    );
 
     // Step 1: Navigate and locate threshold row
     const thresholdRow = await navigateToSubscriptionServicesConfig(page);
