@@ -31,6 +31,7 @@ import {
   Spinner,
   Title,
 } from '@patternfly/react-core';
+import { Tbody, Td, Tr } from '@patternfly/react-table';
 import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { useFieldApi } from '@data-driven-forms/react-form-renderer';
 import { useClient } from 'react-fetching-library';
@@ -306,18 +307,24 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
   ]);
 
   const emptyState = (
-    <EmptyState>
-      <Title headingLevel="h4">
-        {searchTerm.trim()
-          ? intl.formatMessage(messages.noMatchingUserAccessGroups)
-          : intl.formatMessage(messages.noUserAccessGroups)}
-      </Title>
-      <EmptyStateBody>
-        {searchTerm.trim()
-          ? intl.formatMessage(messages.noMatchingGroupsMessage)
-          : intl.formatMessage(messages.noGroupsAvailableMessage)}
-      </EmptyStateBody>
-    </EmptyState>
+    <Tbody>
+      <Tr>
+        <Td colSpan={columns.length}>
+          <EmptyState>
+            <Title headingLevel="h4">
+              {searchTerm.trim()
+                ? intl.formatMessage(messages.noMatchingUserAccessGroups)
+                : intl.formatMessage(messages.noUserAccessGroups)}
+            </Title>
+            <EmptyStateBody>
+              {searchTerm.trim()
+                ? intl.formatMessage(messages.noMatchingGroupsMessage)
+                : intl.formatMessage(messages.noGroupsAvailableMessage)}
+            </EmptyStateBody>
+          </EmptyState>
+        </Td>
+      </Tr>
+    </Tbody>
   );
 
   const loadingStateHeader = <SkeletonTableHead columns={columns.map((c) => c.label)} />;
