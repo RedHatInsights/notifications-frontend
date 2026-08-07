@@ -1,5 +1,5 @@
 import { Page, expect, test } from '@playwright/test';
-import { NOTIFICATIONS_PATH, ensureLoggedIn } from './test-utils';
+import { NOTIFICATIONS_PATH, disableCookiePrompt } from './test-utils';
 import { TIMEOUTS } from './test-constants';
 import { waitForSuccessNotification } from './utils/form-helpers';
 
@@ -285,7 +285,10 @@ test.describe('Subscription Threshold — Org Admin', () => {
   test.describe.configure({ retries: 0 });
 
   test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
+    // Only block TrustArc — do NOT call ensureLoggedIn() which navigates to
+    // '/' (60-90 s in Konflux CI). Auth is handled by storageState from
+    // global-setup. The test's own navigate call is the only navigation needed.
+    await disableCookiePrompt(page);
   });
 
   test('should edit threshold and verify success notification', async ({ page }) => {
