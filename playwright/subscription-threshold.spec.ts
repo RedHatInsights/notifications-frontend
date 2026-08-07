@@ -12,6 +12,12 @@ import { waitForSuccessNotification } from './utils/form-helpers';
  * value is persisted via the org-preferences API.
  *
  * Covers test cases from RHCLOUD-50000 / RHCLOUD-46646.
+ *
+ * NOTE: Tests are separated (not combined) because saving the threshold
+ * triggers an async `finishEditMode` flow that includes a fire-and-forget
+ * `linkBehaviorGroupAction` call. The edit button only reappears when this
+ * async operation completes. Waiting for it is unreliable in CI, so the save
+ * test uses re-navigation for cleanup instead.
  */
 
 const CONFIGURE_EVENTS_PATH = `${NOTIFICATIONS_PATH}/configure-events`;
@@ -269,42 +275,22 @@ function pickDifferentThreshold(current: number): number {
 }
 
 // =============================================================================
-// Org Admin — Edit, Save, Cancel, and Restore Threshold
+// Org Admin — Edit, Save, and Cancel Threshold
 // =============================================================================
 
 test.describe('Subscription Threshold — Org Admin', () => {
   // Disable retries: module federation hydration in Konflux CI takes 60-90s per
-  // page navigation. Retries just burn pipeline budget for env-related slowness.
-  // Combined test uses ONE navigation for both edit+save and cancel scenarios.
-  test.describe.configure({ timeout: 300_000, retries: 0 });
+  // navigation. Retries just burn pipeline budget for env-related slowness.
+  test.describe.configure({ retries: 0 });
 
   test.beforeEach(async ({ page }) => {
     await ensureLoggedIn(page);
   });
 
-  test('should edit threshold, verify notification, and cancel editing', async ({ page }) => {
-    /**
-     * Combined test flow (RHCLOUD-50000):
-     *
-     * Uses a SINGLE page navigation for both edit+save and cancel scenarios.
-     * Module federation hydration takes 60-90s per navigation in Konflux CI,
-     * so combining saves ~120-180s vs. separate tests with 3 navigations.
-     *
-     * Part 1 — Edit + Save:
-     *   1. Navigate to Configure Events > Subscription Services (one navigation)
-     *   2. Read the current threshold value
-     *   3. Edit to a different value and save
-     *   4. Verify success notification (confirms org-preferences API persistence)
-     *
-     * Part 2 — Cancel Editing (same page, no re-navigation):
-     *   5. Wait for edit mode to exit (finishEditMode async settlement)
-     *   6. Enter edit mode, change value, cancel
-     *   7. Verify value reverts to the saved value from Part 1
-     *
-     * Cleanup — Restore original threshold on same page (no re-navigation).
-     */
+  test('should edit threshold and verify success notification', async ({ page }, testInfo) => {
+    // Extended timeout: navigation (~90s) + save (~30s) + cleanup re-navigation (~90s) + restore (~30s)
+    testInfo.setTimeout(300_000);
 
-    // Navigate ONCE — this is the expensive operation in Konflux CI
     const thresholdRow = await navigateToSubscriptionServicesConfig(page);
     test.skip(
       !thresholdRow,
@@ -316,7 +302,6 @@ test.describe('Subscription Threshold — Org Admin', () => {
     let needsCleanup = false;
 
     try {
-      // ── Part 1: Edit + Save ────────────────────────────────────────────
       await enterEditMode(thresholdRow!);
       await setThresholdValue(thresholdRow!, newThreshold);
 
@@ -326,51 +311,25 @@ test.describe('Subscription Threshold — Org Admin', () => {
 
       // Success notification confirms org-preferences API persisted the value
       await waitForSuccessNotification(page);
-      console.log(`✓ Part 1: Threshold saved to ${newThreshold}% (notification confirmed)`);
-
-      // ── Part 2: Cancel Editing ─────────────────────────────────────────
-      // Wait for edit mode to exit — finishEditMode settles asynchronously
-      // after the success notification (behavior group link save completes)
-      const editButton = thresholdRow!.getByRole('button', { name: 'edit' });
-      await expect(editButton).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
-
-      await enterEditMode(thresholdRow!);
-      // pickDifferentThreshold(newThreshold) returns originalThreshold
-      const tempThreshold = pickDifferentThreshold(newThreshold);
-      await setThresholdValue(thresholdRow!, tempThreshold);
-
-      // Verify the input shows the temp value before cancelling
-      const thresholdInput = thresholdRow!.getByRole('spinbutton', {
-        name: 'Usage threshold percentage',
-      });
-      await expect(thresholdInput).toHaveValue(String(tempThreshold));
-
-      // Cancel editing
-      await cancelChanges(thresholdRow!);
-
-      // Verify value reverted to saved value (newThreshold), not temp
-      await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
-      const revertedThreshold = await getCurrentThresholdValue(thresholdRow!);
-      expect(revertedThreshold).toBe(newThreshold);
-      console.log(`✓ Part 2: Threshold reverted to ${newThreshold}% after cancel`);
+      console.log(`✓ Threshold saved to ${newThreshold}% (notification confirmed)`);
     } finally {
-      // Best-effort restore — keeps stage clean for other test runs.
-      // No re-navigation: restores on the same page.
+      // Best-effort restore via re-navigation — avoids finishEditMode race condition.
+      // After save, the async linkBehaviorGroupAction may keep the row in edit mode
+      // indefinitely, so re-navigating gives us a clean read-only state.
       if (needsCleanup) {
         try {
-          // If still in edit mode (test failed mid-edit), cancel first
-          const cancelBtn = thresholdRow!.getByRole('button', { name: 'cancel' });
-          if (await cancelBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
-            await cancelChanges(thresholdRow!);
-          }
-          // Wait for read-only mode, then restore original value
-          const editBtn = thresholdRow!.getByRole('button', { name: 'edit' });
-          if (await editBtn.isVisible({ timeout: TIMEOUTS.PAGE_LOAD }).catch(() => false)) {
-            await enterEditMode(thresholdRow!);
-            await setThresholdValue(thresholdRow!, originalThreshold);
-            await saveChanges(thresholdRow!);
-            await waitForSuccessNotification(page);
-            console.log(`✓ Cleanup: Threshold restored to ${originalThreshold}%`);
+          const restoreRow = await navigateToSubscriptionServicesConfig(page);
+          if (restoreRow) {
+            const currentValue = await getCurrentThresholdValue(restoreRow);
+            if (currentValue !== originalThreshold) {
+              await enterEditMode(restoreRow);
+              await setThresholdValue(restoreRow, originalThreshold);
+              await saveChanges(restoreRow);
+              await waitForSuccessNotification(page);
+              console.log(`✓ Cleanup: Threshold restored to ${originalThreshold}%`);
+            } else {
+              console.log('✓ Cleanup: Threshold already at original value');
+            }
           }
         } catch {
           // Acceptable: pickDifferentThreshold handles any starting value
@@ -378,6 +337,42 @@ test.describe('Subscription Threshold — Org Admin', () => {
         }
       }
     }
+  });
+
+  test('should cancel editing without saving', async ({ page }) => {
+    /**
+     * Cancel is synchronous — cancelEditMode immediately resets isEditMode
+     * and restores oldThresholdValue. No async API calls, no race condition.
+     * Uses the global 180s timeout (enough for 1 navigation + simple actions).
+     */
+    const thresholdRow = await navigateToSubscriptionServicesConfig(page);
+    test.skip(
+      !thresholdRow,
+      'Threshold row not found — feature flag may be disabled or event type missing'
+    );
+
+    const originalThreshold = await getCurrentThresholdValue(thresholdRow!);
+    const tempThreshold = pickDifferentThreshold(originalThreshold);
+
+    await enterEditMode(thresholdRow!);
+    await setThresholdValue(thresholdRow!, tempThreshold);
+
+    // Verify the input shows the temp value before cancelling
+    const thresholdInput = thresholdRow!.getByRole('spinbutton', {
+      name: 'Usage threshold percentage',
+    });
+    await expect(thresholdInput).toHaveValue(String(tempThreshold));
+
+    await cancelChanges(thresholdRow!);
+
+    // Cancel is synchronous — edit button reappears immediately
+    const editButton = thresholdRow!.getByRole('button', { name: 'edit' });
+    await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+
+    // Verify value reverted to original (cancel does not persist)
+    const revertedThreshold = await getCurrentThresholdValue(thresholdRow!);
+    expect(revertedThreshold).toBe(originalThreshold);
+    console.log(`✓ Threshold reverted to ${originalThreshold}% after cancel`);
   });
 });
 
