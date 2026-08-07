@@ -16,8 +16,9 @@ import { waitForSuccessNotification } from './utils/form-helpers';
  * NOTE: Tests are separated (not combined) because saving the threshold
  * triggers an async `finishEditMode` flow that includes a fire-and-forget
  * `linkBehaviorGroupAction` call. The edit button only reappears when this
- * async operation completes. Waiting for it is unreliable in CI, so the save
- * test uses re-navigation for cleanup instead.
+ * async operation completes. Waiting for it is unreliable in CI. The save
+ * test skips cleanup entirely — pickDifferentThreshold toggles between
+ * 42/58 so each run works regardless of the starting value.
  */
 
 const CONFIGURE_EVENTS_PATH = `${NOTIFICATIONS_PATH}/configure-events`;
@@ -287,10 +288,14 @@ test.describe('Subscription Threshold — Org Admin', () => {
     await ensureLoggedIn(page);
   });
 
-  test('should edit threshold and verify success notification', async ({ page }, testInfo) => {
-    // Extended timeout: navigation (~90s) + save (~30s) + cleanup re-navigation (~90s) + restore (~30s)
-    testInfo.setTimeout(300_000);
-
+  test('should edit threshold and verify success notification', async ({ page }) => {
+    /**
+     * No cleanup navigation — each full page navigation takes 60-90s in
+     * Konflux CI (module federation hydration). A cleanup re-navigation
+     * would push total time past the 180s global timeout.
+     * pickDifferentThreshold toggles between 42/58, so every run works
+     * regardless of the starting value left by a previous run.
+     */
     const thresholdRow = await navigateToSubscriptionServicesConfig(page);
     test.skip(
       !thresholdRow,
@@ -299,44 +304,14 @@ test.describe('Subscription Threshold — Org Admin', () => {
 
     const originalThreshold = await getCurrentThresholdValue(thresholdRow!);
     const newThreshold = pickDifferentThreshold(originalThreshold);
-    let needsCleanup = false;
 
-    try {
-      await enterEditMode(thresholdRow!);
-      await setThresholdValue(thresholdRow!, newThreshold);
+    await enterEditMode(thresholdRow!);
+    await setThresholdValue(thresholdRow!, newThreshold);
+    await saveChanges(thresholdRow!);
 
-      // Flag cleanup before save — after this point the value may be persisted
-      needsCleanup = true;
-      await saveChanges(thresholdRow!);
-
-      // Success notification confirms org-preferences API persisted the value
-      await waitForSuccessNotification(page);
-      console.log(`✓ Threshold saved to ${newThreshold}% (notification confirmed)`);
-    } finally {
-      // Best-effort restore via re-navigation — avoids finishEditMode race condition.
-      // After save, the async linkBehaviorGroupAction may keep the row in edit mode
-      // indefinitely, so re-navigating gives us a clean read-only state.
-      if (needsCleanup) {
-        try {
-          const restoreRow = await navigateToSubscriptionServicesConfig(page);
-          if (restoreRow) {
-            const currentValue = await getCurrentThresholdValue(restoreRow);
-            if (currentValue !== originalThreshold) {
-              await enterEditMode(restoreRow);
-              await setThresholdValue(restoreRow, originalThreshold);
-              await saveChanges(restoreRow);
-              await waitForSuccessNotification(page);
-              console.log(`✓ Cleanup: Threshold restored to ${originalThreshold}%`);
-            } else {
-              console.log('✓ Cleanup: Threshold already at original value');
-            }
-          }
-        } catch {
-          // Acceptable: pickDifferentThreshold handles any starting value
-          console.log('Cleanup: failed to restore threshold — next run handles any value');
-        }
-      }
-    }
+    // Success notification confirms org-preferences API persisted the value
+    await waitForSuccessNotification(page);
+    console.log(`✓ Threshold saved to ${newThreshold}% (notification confirmed)`);
   });
 
   test('should cancel editing without saving', async ({ page }) => {
