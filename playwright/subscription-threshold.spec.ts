@@ -131,20 +131,93 @@ async function navigateToSubscriptionServicesConfig(
     return null;
   }
 
-  // Now look for the specific threshold row
+  // Search for the threshold row across all table pages.
+  // The table paginates (default 20 items/page), so the threshold event type
+  // may not be on the first page.
   const thresholdRow = page
     .locator('tr', {
       has: page.locator(`text="${THRESHOLD_ROW_TEXT}"`),
     })
     .first();
 
-  const rowFound = await thresholdRow
-    .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR })
+  // 1. Quick check — is it on the current (first) page?
+  let rowFound = await thresholdRow
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK })
     .then(() => true)
     .catch(() => false);
 
+  // 2. Not on first page — try the event type text filter (fastest approach)
   if (!rowFound) {
-    console.log(`Threshold row ("${THRESHOLD_ROW_TEXT}") not found in Configuration table`);
+    console.log('Threshold row not on first page — searching via event type filter');
+    const filterInput = page.getByPlaceholder('Filter by event type');
+    const filterAvailable = await filterInput
+      .waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK })
+      .then(() => true)
+      .catch(() => false);
+
+    if (filterAvailable) {
+      await filterInput.fill('threshold');
+      await filterInput.press('Enter');
+
+      // Wait for filtered results to load
+      rowFound = await thresholdRow
+        .waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_LOAD })
+        .then(() => true)
+        .catch(() => false);
+
+      if (rowFound) {
+        console.log('Found threshold row via event type filter');
+      } else {
+        // Clear the filter so pagination fallback sees all rows
+        await filterInput.clear();
+        await filterInput.press('Enter');
+        await bundlePanel
+          .locator('tr')
+          .first()
+          .waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_LOAD })
+          .catch(() => {});
+      }
+    }
+  }
+
+  // 3. Fallback — paginate through remaining pages
+  if (!rowFound) {
+    console.log('Trying pagination to find threshold row');
+    // Use the first (top) pagination's "Go to next page" button
+    const nextPageButtons = page.getByRole('button', { name: 'Go to next page' });
+
+    for (let pageNum = 2; pageNum <= 50; pageNum++) {
+      const nextBtn = nextPageButtons.first();
+      const canGoNext = await nextBtn.isEnabled().catch(() => false);
+      if (!canGoNext) {
+        console.log(`Exhausted all pages (checked through page ${pageNum - 1})`);
+        break;
+      }
+
+      await nextBtn.click();
+      // Wait for new rows to render
+      await bundlePanel
+        .locator('tr')
+        .first()
+        .waitFor({ state: 'visible', timeout: TIMEOUTS.TABLE_LOAD })
+        .catch(() => {});
+
+      rowFound = await thresholdRow
+        .waitFor({ state: 'visible', timeout: TIMEOUTS.QUICK_CHECK })
+        .then(() => true)
+        .catch(() => false);
+
+      if (rowFound) {
+        console.log(`Found threshold row on page ${pageNum}`);
+        break;
+      }
+    }
+  }
+
+  if (!rowFound) {
+    console.log(
+      `Threshold row ("${THRESHOLD_ROW_TEXT}") not found after filter + pagination`
+    );
     return null;
   }
 
