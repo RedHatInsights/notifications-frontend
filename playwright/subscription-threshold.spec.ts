@@ -269,55 +269,54 @@ function pickDifferentThreshold(current: number): number {
 }
 
 // =============================================================================
-// Org Admin — Edit Threshold and Verify
+// Org Admin — Edit, Save, Cancel, and Restore Threshold
 // =============================================================================
 
 test.describe('Subscription Threshold — Org Admin', () => {
-  // Disable retries: this test is slow due to module federation hydration in
-  // Konflux CI (~60-90s per page navigation). With retries=2 (global default),
-  // a single timeout wastes 900s (3 × 300s). Since timeouts are environment-
-  // related (not flaky), retrying doesn't help — it just burns pipeline budget.
+  // Disable retries: module federation hydration in Konflux CI takes 60-90s per
+  // page navigation. Retries just burn pipeline budget for env-related slowness.
+  // Combined test uses ONE navigation for both edit+save and cancel scenarios.
   test.describe.configure({ timeout: 300_000, retries: 0 });
 
   test.beforeEach(async ({ page }) => {
     await ensureLoggedIn(page);
   });
 
-  test('should edit threshold and verify success notification', async ({ page }) => {
+  test('should edit threshold, verify notification, and cancel editing', async ({ page }) => {
     /**
-     * Test flow (RHCLOUD-50000 — Org Admin):
-     * 1. Navigate to Configure Events > Subscription Services
-     * 2. Locate the "Custom subscription threshold exceeded" row
-     * 3. Note the current threshold value
-     * 4. Edit it to something explicitly different and save
-     * 5. Verify success notification appears (confirms API persistence)
-     * 6. Restore the original threshold value (re-navigate once)
+     * Combined test flow (RHCLOUD-50000):
      *
-     * NOTE: Re-navigation for persistence verification was removed to stay
-     * within Konflux CI timeout budget. The success notification confirms the
-     * org-preferences API call succeeded. If full persistence verification is
-     * needed, re-enable the verify navigation when CI environment is faster.
+     * Uses a SINGLE page navigation for both edit+save and cancel scenarios.
+     * Module federation hydration takes 60-90s per navigation in Konflux CI,
+     * so combining saves ~120-180s vs. separate tests with 3 navigations.
+     *
+     * Part 1 — Edit + Save:
+     *   1. Navigate to Configure Events > Subscription Services (one navigation)
+     *   2. Read the current threshold value
+     *   3. Edit to a different value and save
+     *   4. Verify success notification (confirms org-preferences API persistence)
+     *
+     * Part 2 — Cancel Editing (same page, no re-navigation):
+     *   5. Wait for edit mode to exit (finishEditMode async settlement)
+     *   6. Enter edit mode, change value, cancel
+     *   7. Verify value reverts to the saved value from Part 1
+     *
+     * Cleanup — Restore original threshold on same page (no re-navigation).
      */
 
-    // Navigate and locate threshold row (includes all guards)
+    // Navigate ONCE — this is the expensive operation in Konflux CI
     const thresholdRow = await navigateToSubscriptionServicesConfig(page);
     test.skip(
       !thresholdRow,
       'Threshold row not found — feature flag may be disabled or event type missing'
     );
 
-    // Note current threshold value
     const originalThreshold = await getCurrentThresholdValue(thresholdRow!);
-    console.log(`Current threshold: ${originalThreshold}%`);
-
-    // Edit threshold to a different value
     const newThreshold = pickDifferentThreshold(originalThreshold);
-    console.log(`Setting threshold to: ${newThreshold}%`);
-
-    // Track whether the test value may have been persisted (for cleanup)
     let needsCleanup = false;
 
     try {
+      // ── Part 1: Edit + Save ────────────────────────────────────────────
       await enterEditMode(thresholdRow!);
       await setThresholdValue(thresholdRow!, newThreshold);
 
@@ -325,88 +324,60 @@ test.describe('Subscription Threshold — Org Admin', () => {
       needsCleanup = true;
       await saveChanges(thresholdRow!);
 
-      // Verify success notification — confirms org-preferences API persisted
-      // the new threshold value. This is the primary assertion.
+      // Success notification confirms org-preferences API persisted the value
       await waitForSuccessNotification(page);
-      console.log(`✓ Threshold saved: ${newThreshold}% (success notification confirmed)`);
+      console.log(`✓ Part 1: Threshold saved to ${newThreshold}% (notification confirmed)`);
+
+      // ── Part 2: Cancel Editing ─────────────────────────────────────────
+      // Wait for edit mode to exit — finishEditMode settles asynchronously
+      // after the success notification (behavior group link save completes)
+      const editButton = thresholdRow!.getByRole('button', { name: 'edit' });
+      await expect(editButton).toBeVisible({ timeout: TIMEOUTS.PAGE_LOAD });
+
+      await enterEditMode(thresholdRow!);
+      // pickDifferentThreshold(newThreshold) returns originalThreshold
+      const tempThreshold = pickDifferentThreshold(newThreshold);
+      await setThresholdValue(thresholdRow!, tempThreshold);
+
+      // Verify the input shows the temp value before cancelling
+      const thresholdInput = thresholdRow!.getByRole('spinbutton', {
+        name: 'Usage threshold percentage',
+      });
+      await expect(thresholdInput).toHaveValue(String(tempThreshold));
+
+      // Cancel editing
+      await cancelChanges(thresholdRow!);
+
+      // Verify value reverted to saved value (newThreshold), not temp
+      await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
+      const revertedThreshold = await getCurrentThresholdValue(thresholdRow!);
+      expect(revertedThreshold).toBe(newThreshold);
+      console.log(`✓ Part 2: Threshold reverted to ${newThreshold}% after cancel`);
     } finally {
-      // Restore original threshold (always runs to keep stage clean).
-      // Single re-navigation to get a fresh page state and avoid the
-      // edit-mode race condition (finishEditMode async settlement).
+      // Best-effort restore — keeps stage clean for other test runs.
+      // No re-navigation: restores on the same page.
       if (needsCleanup) {
-        const restoreRow = await navigateToSubscriptionServicesConfig(page);
-        if (restoreRow) {
-          await enterEditMode(restoreRow);
-          await setThresholdValue(restoreRow, originalThreshold);
-          await saveChanges(restoreRow);
-          await waitForSuccessNotification(page);
-          console.log(`✓ Threshold restored to ${originalThreshold}%`);
+        try {
+          // If still in edit mode (test failed mid-edit), cancel first
+          const cancelBtn = thresholdRow!.getByRole('button', { name: 'cancel' });
+          if (await cancelBtn.isVisible({ timeout: 2000 }).catch(() => false)) {
+            await cancelChanges(thresholdRow!);
+          }
+          // Wait for read-only mode, then restore original value
+          const editBtn = thresholdRow!.getByRole('button', { name: 'edit' });
+          if (await editBtn.isVisible({ timeout: TIMEOUTS.PAGE_LOAD }).catch(() => false)) {
+            await enterEditMode(thresholdRow!);
+            await setThresholdValue(thresholdRow!, originalThreshold);
+            await saveChanges(thresholdRow!);
+            await waitForSuccessNotification(page);
+            console.log(`✓ Cleanup: Threshold restored to ${originalThreshold}%`);
+          }
+        } catch {
+          // Acceptable: pickDifferentThreshold handles any starting value
+          console.log('Cleanup: failed to restore threshold — next run handles any value');
         }
       }
     }
-  });
-});
-
-// =============================================================================
-// Org Admin — Cancel Editing
-// =============================================================================
-
-test.describe('Subscription Threshold — Cancel Editing', () => {
-  // Disable retries: same rationale as Org Admin test — slow module federation
-  // hydration means timeouts are environmental, not flaky. One attempt is enough.
-  test.describe.configure({ retries: 0 });
-
-  test.beforeEach(async ({ page }) => {
-    await ensureLoggedIn(page);
-  });
-
-  test('should revert threshold value when editing is cancelled', async ({ page }) => {
-    /**
-     * Test flow (RHCLOUD-50000 — Org Admin Cancel):
-     * 1. Navigate to Configure Events > Subscription Services
-     * 2. Enter edit mode on the threshold row
-     * 3. Change the threshold value
-     * 4. Cancel editing
-     * 5. Verify the threshold value reverts to its original value
-     */
-
-    // Navigate and locate threshold row (includes all guards)
-    const thresholdRow = await navigateToSubscriptionServicesConfig(page);
-    test.skip(
-      !thresholdRow,
-      'Threshold row not found — feature flag may be disabled or event type missing'
-    );
-
-    // Note the original value
-    const originalThreshold = await getCurrentThresholdValue(thresholdRow!);
-    console.log(`Original threshold: ${originalThreshold}%`);
-
-    // Enter edit mode
-    await enterEditMode(thresholdRow!);
-
-    // Change value to something different
-    const tempThreshold = pickDifferentThreshold(originalThreshold);
-    await setThresholdValue(thresholdRow!, tempThreshold);
-
-    // Verify the input shows the new value before cancelling
-    const thresholdInput = thresholdRow!.getByRole('spinbutton', {
-      name: 'Usage threshold percentage',
-    });
-    await expect(thresholdInput).toHaveValue(String(tempThreshold));
-
-    // Cancel editing
-    await cancelChanges(thresholdRow!);
-
-    // Verify value reverted — row should be back in read-only mode
-    // Wait for edit mode to exit (pencil icon reappears)
-    const editButton = thresholdRow!.getByRole('button', { name: 'edit' });
-    await expect(editButton).toBeVisible({ timeout: TIMEOUTS.ELEMENT_APPEAR });
-
-    // Verify the displayed value matches the original
-    const revertedThreshold = await getCurrentThresholdValue(thresholdRow!);
-    expect(revertedThreshold).toBe(originalThreshold);
-
-    console.log(`✓ Threshold reverted to ${originalThreshold}% after cancel`);
   });
 });
 
