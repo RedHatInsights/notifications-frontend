@@ -64,11 +64,8 @@ spec:
         done'
         echo "Dev server ready!"
 
-        # Run only subscription-threshold tests for now.
-        # Other specs (drawer, integrations, notifications) were added with E2E
-        # disabled on master and have not been validated in Konflux CI yet.
-        # Enable them incrementally once each spec is confirmed to pass.
-        npx playwright test subscription-threshold
+        # Run Playwright tests
+        npx playwright test
 
     # Run app script - start Caddy to serve app assets
     - name: run-app-script
