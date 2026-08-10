@@ -152,7 +152,10 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
 
   return (
     <>
-      <div className="pf-v6-u-background-color-100 pf-v6-u-pt-lg pf-v6-u-px-lg">
+      <div
+        className="pf-v6-u-pt-lg pf-v6-u-px-lg"
+        style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}
+      >
         <Split className="pf-v6-u-mb-md" hasGutter>
           <SplitItem>
             <Content>

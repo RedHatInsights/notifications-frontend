@@ -80,10 +80,10 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <Content>
           <Content
             component="p"
-            className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-link-color-hover"
+            className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-text-color-link-hover"
           >
             <Icon size="md" className="pf-v6-u-pl-sm pf-v6-u-pr-md">
-              <CogIcon className="pf-v6-u-primary-color-100" />
+              <CogIcon className="pf-v6-u-icon-color-brand" />
             </Icon>
             Configure applications
           </Content>
@@ -98,7 +98,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
           {category === IntegrationCategory.COMMUNICATIONS && (
             <Content
               component="ul"
-              className="pf-v6-u-font-size-sm pf-v6-u-link-color pf-v6-u-ml-0"
+              className="pf-v6-u-font-size-sm pf-v6-u-text-color-link pf-v6-u-ml-0"
             >
               {communicationsDetails.map((communication) => (
                 <Content component="li" key={communication.id}>
@@ -118,7 +118,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
           {category === IntegrationCategory.REPORTING && (
             <Content
               component="ul"
-              className="pf-v6-u-font-size-sm pf-v6-u-link-color pf-v6-u-ml-0"
+              className="pf-v6-u-font-size-sm pf-v6-u-text-color-link pf-v6-u-ml-0"
             >
               {reportingDetails.map((reporting) => (
                 <Content component="li" key={reporting.id}>
@@ -154,10 +154,10 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <Content>
           <Content
             component="p"
-            className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-link-color-hover"
+            className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-text-color-link-hover"
           >
             <Icon size="md" className="pf-v6-u-pl-sm pf-v6-u-pr-md">
-              <LockIcon className="pf-v6-u-primary-color-100" />
+              <LockIcon className="pf-v6-u-icon-color-brand" />
             </Icon>
             Configure user access
           </Content>
@@ -196,10 +196,10 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             <Content>
               <Content
                 component="p"
-                className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-link-color-hover"
+                className="pf-v6-u-font-size-sm pf-v6-u-font-weight-bold pf-v6-u-mb-sm pf-v6-u-text-color-link-hover"
               >
                 <Icon size="md" className="pf-v6-u-pl-sm pf-v6-u-pr-md">
-                  <BellIcon className="pf-v6-u-primary-color-100" />
+                  <BellIcon className="pf-v6-u-icon-color-brand" />
                 </Icon>
                 Configure notifications portal
               </Content>

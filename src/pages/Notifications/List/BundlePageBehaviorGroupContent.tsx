@@ -263,7 +263,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
 
   return (
     <Tabs
-      className="pf-v6-u-background-color-100 pf-v6-u-pl-lg"
+      className="pf-v6-u-pl-lg"
+      style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}
       activeKey={tabMapping[tab]}
       onSelect={(event, tabIndex) => {
         const newSearchParams = new URLSearchParams(location.search);

@@ -59,7 +59,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
   if (!props.action) {
     return (
       <ActionComponentWrapper {...props}>
-        <span className="pf-v6-u-color-200">
+        <span className="pf-v6-u-text-color-subtle">
           <div>No actions.</div>
           <div>Users will not be notified.</div>
         </span>

@@ -44,12 +44,12 @@ interface CustomDataListItemProps {
 }
 
 const IconMapper = {
-  [IconName.USER]: <UserIcon className="pf-v6-u-primary-color-100" />,
-  [IconName.RUNNING]: <RunningIcon className="pf-v6-u-primary-color-100" />,
-  [IconName.INTEGRATION]: <IntegrationIcon className="pf-v6-u-primary-color-100" />,
-  [IconName.USERS]: <UsersIcon className="pf-v6-u-primary-color-100" />,
-  [IconName.BELL]: <BellIcon className="pf-v6-u-primary-color-100" />,
-  [IconName.BUG]: <BugIcon className="pf-v6-u-primary-color-100" />,
+  [IconName.USER]: <UserIcon className="pf-v6-u-icon-color-brand" />,
+  [IconName.RUNNING]: <RunningIcon className="pf-v6-u-icon-color-brand" />,
+  [IconName.INTEGRATION]: <IntegrationIcon className="pf-v6-u-icon-color-brand" />,
+  [IconName.USERS]: <UsersIcon className="pf-v6-u-icon-color-brand" />,
+  [IconName.BELL]: <BellIcon className="pf-v6-u-icon-color-brand" />,
+  [IconName.BUG]: <BugIcon className="pf-v6-u-icon-color-brand" />,
 };
 
 const CustomDataListItem: React.FC<CustomDataListItemProps> = ({

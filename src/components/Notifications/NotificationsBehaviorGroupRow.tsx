@@ -187,7 +187,7 @@ export const NotificationsBehaviorGroupRow: React.FunctionComponent<
         <Tr>
           <Td />
           <Td colSpan={4}>
-            <Content component="p" className="pf-v6-u-color-200 pf-v6-u-p-0">
+            <Content component="p" className="pf-v6-u-text-color-subtle pf-v6-u-p-0">
               {notification.description}
             </Content>
           </Td>

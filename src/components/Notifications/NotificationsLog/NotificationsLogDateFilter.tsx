@@ -156,7 +156,7 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = ({
           ref={startDateRef}
         />
       </SplitItem>
-      <SplitItem className="pf-v6-u-align-self-center pf-v6-u-px-sm pf-v6-u-color-300">
+      <SplitItem className="pf-v6-u-align-self-center pf-v6-u-px-sm pf-v6-u-text-color-subtle">
         to
       </SplitItem>
       <SplitItem>

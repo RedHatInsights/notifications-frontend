@@ -150,7 +150,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                     <Flex className="pf-v6-u-flex-nowrap">
                       <FlexItem>
                         <Icon size="lg">
-                          <UserIcon className="pf-v6-u-primary-color-100" />
+                          <UserIcon className="pf-v6-u-icon-color-brand" />
                         </Icon>
                       </FlexItem>
                       <FlexItem>
@@ -191,7 +191,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                     <Flex className="pf-v6-u-flex-nowrap">
                       <FlexItem>
                         <Icon size="lg">
-                          <RunningIcon className="pf-v6-u-primary-color-100" />
+                          <RunningIcon className="pf-v6-u-icon-color-brand" />
                         </Icon>
                       </FlexItem>
                       <FlexItem>
@@ -353,7 +353,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   <Td>
                     <Label color="orange">Documentation</Label>
                   </Td>
-                  <Td className="pf-v6-u-text-align-right">
+                  <Td className="pf-v6-u-text-align-end">
                     <a
                       href={LEARN_MORE}
                       onClick={(e) => {
@@ -370,7 +370,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   <Td>
                     <Label color="orange">Documentation</Label>
                   </Td>
-                  <Td className="pf-v6-u-text-align-right">
+                  <Td className="pf-v6-u-text-align-end">
                     <a
                       href={CONFIGURE_INTEGRATIONS}
                       onClick={(e) => {
@@ -387,7 +387,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   <Td>
                     <Label color="green">Quick start</Label>
                   </Td>
-                  <Td className="pf-v6-u-text-align-right">
+                  <Td className="pf-v6-u-text-align-end">
                     <a
                       href={`${
                         isBeta() ? '/preview' : ''
@@ -409,7 +409,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   <Td>
                     <Label color="orange">Documentation</Label>
                   </Td>
-                  <Td className="pf-v6-u-text-align-right">
+                  <Td className="pf-v6-u-text-align-end">
                     <a
                       href={CONFIGURE_INTEGRATIONS}
                       onClick={(e) => {
@@ -426,7 +426,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   <Td>
                     <Label color="orange">Documentation</Label>
                   </Td>
-                  <Td className="pf-v6-u-text-align-right">
+                  <Td className="pf-v6-u-text-align-end">
                     <a
                       href={CONFIGURE_SOURCES}
                       onClick={(e) => {

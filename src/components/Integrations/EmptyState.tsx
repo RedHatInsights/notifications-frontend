@@ -37,7 +37,7 @@ const EmptyIntegrationCard: React.FunctionComponent<{
     <Card isFullHeight isPlain style={{ maxWidth: isOrgAdmin ? '106ch' : '70ch' }}>
       <CardHeader>
         <Icon className="pf-v6-u-pl-sm pf-v6-u-pr-lg">
-          <TitleIcon className="pf-v6-u-link-color" />
+          <TitleIcon className="pf-v6-u-text-color-link" />
         </Icon>
         <Content>
           <Content component={ContentVariants.h4}>{title}</Content>

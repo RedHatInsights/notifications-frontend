@@ -21,7 +21,7 @@ export const TabComponent: React.FunctionComponent<
   };
 
   return (
-    <div className="pf-v6-u-background-color-100">
+    <div style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}>
       <Tabs
         className="pf-v6-u-pl-lg"
         activeKey={activeTabKey}
