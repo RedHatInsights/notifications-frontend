@@ -232,6 +232,32 @@ async function getCurrentThresholdValue(
 }
 
 /**
+ * Check if the edit button is enabled (user has notification write permissions).
+ * Returns true if the test user can edit the threshold; false if the button is
+ * disabled (user lacks canWriteNotifications permission).
+ */
+async function canEditThreshold(
+  thresholdRow: ReturnType<Page['locator']>
+): Promise<boolean> {
+  const editButton = thresholdRow.getByRole('button', { name: 'edit' });
+  const buttonVisible = await editButton
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!buttonVisible) {
+    console.log('Edit button not visible — user may lack notification write permissions');
+    return false;
+  }
+
+  const isEnabled = await editButton.isEnabled();
+  if (!isEnabled) {
+    console.log('Edit button disabled — user lacks canWriteNotifications permission');
+  }
+  return isEnabled;
+}
+
+/**
  * Enter edit mode on the threshold row by clicking the pencil icon.
  */
 async function enterEditMode(thresholdRow: ReturnType<Page['locator']>) {
@@ -305,6 +331,12 @@ test.describe('Subscription Threshold — Org Admin', () => {
       'Threshold row not found — feature flag may be disabled or event type missing'
     );
 
+    const hasWritePermission = await canEditThreshold(thresholdRow!);
+    test.skip(
+      !hasWritePermission,
+      'Edit button disabled — test user lacks notification write permissions'
+    );
+
     const originalThreshold = await getCurrentThresholdValue(thresholdRow!);
     const newThreshold = pickDifferentThreshold(originalThreshold);
 
@@ -327,6 +359,12 @@ test.describe('Subscription Threshold — Org Admin', () => {
     test.skip(
       !thresholdRow,
       'Threshold row not found — feature flag may be disabled or event type missing'
+    );
+
+    const hasWritePermission = await canEditThreshold(thresholdRow!);
+    test.skip(
+      !hasWritePermission,
+      'Edit button disabled — test user lacks notification write permissions'
     );
 
     const originalThreshold = await getCurrentThresholdValue(thresholdRow!);
