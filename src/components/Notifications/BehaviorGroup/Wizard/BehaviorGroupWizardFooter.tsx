@@ -40,7 +40,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
           variant={ButtonVariant.secondary}
           onClick={onBack}
           isDisabled={wizardContext.activeStep.id === 0 || props.isLoading}
-          className="pf-v5-u-ml-xs"
+          className="pf-v6-u-ml-xs"
         >
           Back
         </Button>
@@ -55,14 +55,14 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
         </Button>
       )}
       {props.isLoading ? (
-        <div className="pf-v5-u-mt-auto pf-v5-u-mb-md">
+        <div className="pf-v6-u-mt-auto pf-v6-u-mb-md">
           <Spinner size="md" />
         </div>
       ) : (
         props.error && (
           <Split>
             <SplitItem>
-              <Icon status="danger" className="pf-v5-u-mr-xs">
+              <Icon status="danger" className="pf-v6-u-mr-xs">
                 <ExclamationCircleIcon />
               </Icon>
             </SplitItem>

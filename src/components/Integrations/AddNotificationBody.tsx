@@ -19,7 +19,7 @@ export const AddNotificationBody: React.FunctionComponent<AddNotificationBodyPro
     <>
       <div>{text}</div>
       <Button
-        className="pf-v5-u-pl-0"
+        className="pf-v6-u-pl-0"
         isDisabled={props.isLoading}
         variant={ButtonVariant.link}
         onClick={props.switchEnabled}

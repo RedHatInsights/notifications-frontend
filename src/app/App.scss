@@ -2,15 +2,15 @@
 @import '~@redhat-cloud-services/frontend-components/index.css';
 @import '~@redhat-cloud-services/frontend-components-notifications/index.css';
 
-.pf-c-wizard__main-body {
+.pf-v6-c-wizard__main-body {
   max-height: 100%;
 }
 
 .page__notifications#root {
-  --pf-c-page__main-section--BackgroundColor: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--Color--light-100 */);
+  --pf-v6-c-page__main-section--BackgroundColor: var(--pf-t--global--background--color--primary--default);
 }
 
-.pf-c-card__cover-image {
+.pf-v6-c-card__cover-image {
   position: relative;
   background-image: url('../assets/images/notifications-image.svg');
   background-size: contain;
@@ -20,9 +20,9 @@
 }
 
 .noti-c-card-getting-started {
-  .pf-c-expandable-section {
+  .pf-v6-c-expandable-section {
     &__toggle {
-      border-bottom: 1px solid var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--disabled-color--200 */);
+      border-bottom: 1px solid var(--pf-t--global--border--color--default);
       padding: var(--pf-t--global--spacer--md) 0 var(--pf-t--global--spacer--lg) var(--pf-t--global--spacer--md);
       width: 100%;
     }
@@ -30,24 +30,24 @@
       padding-top: var(--pf-t--global--spacer--xs);
     }
     &__toggle-text {
-      color: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--Color--100 */);
+      color: var(--pf-t--global--text--color--regular);
       font-size: var(--pf-t--global--font--size--lg);
     }
     &__content {
       margin-top: 0;
-      .pf-c-icon__content {
-        --pf-c-icon__content--Color: var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--primary-color--100 */);
+      .pf-v6-c-icon__content {
+        --pf-v6-c-icon__content--Color: var(--pf-t--global--text--color--link--default);
       }
     }
   }
 }
 
 .noti-c-card-configure {
-  border-left: 1px solid var(--pf-t--temp--dev--tbd /* CODEMODS: original v5 color was:--pf-v5-global--disabled-color--200 */);
+  border-left: 1px solid var(--pf-t--global--border--color--default);
 }
 
 .noti-c-table-border-top {
-  border-top: var(--pf-c-table--border-width--base) solid var(--pf-c-table--BorderColor);
+  border-top: var(--pf-v6-c-table--border-width--base) solid var(--pf-v6-c-table--BorderColor);
 }
 
 .pf-v6-c-notification-drawer__header-action > .pf-v6-c-menu-toggle {

@@ -116,7 +116,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                       </div>
                     }
                   >
-                    <LockIcon className="pf-v5-u-mr-sm" />
+                    <LockIcon className="pf-v6-u-mr-sm" />
                   </Tooltip>
                 )}
               </SplitItem>
