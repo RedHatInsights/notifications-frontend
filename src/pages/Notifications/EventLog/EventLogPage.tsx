@@ -180,6 +180,13 @@ export const EventLogPage: React.FunctionComponent = () => {
           )
         }
       />
+      <Alert
+        className="pf-v6-u-mb-md"
+        variant="info"
+        isInline
+        isPlain
+        title={intl.formatMessage(definedMessages.eventLogScopeBanner)}
+      />
       {isForbidden ? (
         <Card isPlain>
           <CardBody>

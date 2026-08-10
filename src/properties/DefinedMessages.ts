@@ -189,6 +189,13 @@ export default defineMessages({
     defaultMessage:
       'You are only seeing event instances that you have been given access to see. If you need to see all events for your entire organization, contact your org admin.',
   },
+  eventLogScopeBanner: {
+    id: 'eventLogScopeBanner',
+    description:
+      'Informational banner explaining that the event log only shows email and drawer events',
+    defaultMessage:
+      'This log only captures events sent via email or the notification drawer. Events received through other methods are not included.',
+  },
   markAsRead: {
     id: 'markAsRead',
     description: 'Mark notification as read',
