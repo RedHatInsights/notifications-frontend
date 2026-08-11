@@ -263,7 +263,8 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
 
   return (
     <Tabs
-      className="pf-v5-u-background-color-100 pf-v5-u-pl-lg"
+      className="pf-v6-u-pl-lg"
+      style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}
       activeKey={tabMapping[tab]}
       onSelect={(event, tabIndex) => {
         const newSearchParams = new URLSearchParams(location.search);
@@ -353,7 +354,7 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
             <Spinner />
           </Bullseye>
         ) : (
-          <div className="pf-v5-u-mb-xl">
+          <div className="pf-v6-u-mb-xl">
             <BehaviorGroupsSection
               bundle={props.bundle}
               applications={props.applications}

@@ -25,8 +25,8 @@ import {
 
 cssRaw(`
     @media only screen and (max-width: 768px) {
-        .pf-c-select .pf-c-select__toggle-typeahead {
-            --pf-c-select__toggle-typeahead--FlexBasis: 0;
+        .pf-v6-c-select .pf-v6-c-select__toggle-typeahead {
+            --pf-v6-c-select__toggle-typeahead--FlexBasis: 0;
         }
     }
 `);

@@ -152,8 +152,11 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
 
   return (
     <>
-      <div className="pf-v5-u-background-color-100 pf-v5-u-pt-lg pf-v5-u-px-lg">
-        <Split className="pf-v5-u-mb-md" hasGutter>
+      <div
+        className="pf-v6-u-pt-lg pf-v6-u-px-lg"
+        style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}
+      >
+        <Split className="pf-v6-u-mb-md" hasGutter>
           <SplitItem>
             <Content>
               <Content component={ContentVariants.p}>
@@ -172,7 +175,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
         </Split>
         <Stack hasGutter>
           <StackItem>
-            <Split hasGutter className="pf-v5-u-mb-md">
+            <Split hasGutter className="pf-v6-u-mb-md">
               <SplitItem>
                 <SearchInput
                   value={filter}

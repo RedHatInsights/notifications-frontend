@@ -94,7 +94,7 @@ const EventsWidget: React.FunctionComponent = () => {
         <Button
           component="a"
           variant={ButtonVariant.secondary}
-          className="pf-v5-u-mt-lg"
+          className="pf-v6-u-mt-lg"
           href="settings/notifications"
         >
           {intl.formatMessage(messages.manageEvents)}
@@ -146,7 +146,7 @@ const EventsWidget: React.FunctionComponent = () => {
       <DataViewToolbar
         ouiaId="EventsWidgetFooter"
         aria-label="Events widget footer"
-        className="pf-v5-u-mt-sm"
+        className="pf-v6-u-mt-sm"
         pagination={
           <Pagination
             aria-label="Events widget footer pagination"

@@ -20,14 +20,14 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
     return (
       <>
         {!props.action.integration.isEnabled ? (
-          <span className="pf-v5-u-color-300">
+          <span className="pf-v6-u-text-color-subtle">
             {' '}
             {props.action.integration.name}
             <Tooltip
               content="This integration has been disabled. This action wil not fire until it is enabled."
               position="bottom"
             >
-              <BanIcon className="pf-v5-u-color-300" />
+              <BanIcon className="pf-v6-u-icon-color-subtle" />
             </Tooltip>
           </span>
         ) : (
@@ -60,7 +60,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
                       content="You may still receive forced notifications for this service"
                       position="bottom"
                     >
-                      <LockIcon className="pf-v5-u-ml-sm pf-v5-u-color-300" />
+                      <LockIcon className="pf-v6-u-ml-sm pf-v6-u-icon-color-subtle" />
                     </Tooltip>
                   </span>
                 )}{' '}

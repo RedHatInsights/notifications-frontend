@@ -56,7 +56,7 @@ export const UnauthorizedState: React.FunctionComponent = () => {
       </StackItem>
       <StackItem>
         <Card isPlain>
-          <CardBody className="pf-v5-u-text-align-center">
+          <CardBody className="pf-v6-u-text-align-center">
             <EmptyState
               headingLevel={ContentVariants.h2}
               icon={LockIcon}

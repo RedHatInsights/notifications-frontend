@@ -18,7 +18,8 @@ export const EmptyStateSearch: React.FunctionComponent<EmptyStateSearchProps> = 
       headingLevel={props.headingLevel ?? 'h3'}
       icon={props.icon ?? SearchIcon}
       titleText={<>{props.title}</>}
-      className={`pf-v5-u-background-color-100 ${props.className}`}
+      style={{ backgroundColor: 'var(--pf-t--global--background--color--primary--default)' }}
+      className={props.className}
       variant={props.variant}
     >
       <EmptyStateBody>{props.description}</EmptyStateBody>
