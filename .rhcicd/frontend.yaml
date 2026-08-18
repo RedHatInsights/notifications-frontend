@@ -50,9 +50,8 @@ objects:
               id: notifications-v1
               expandable: true
               permissions:
-                - method: featureFlag
+                - method: isKesselEnabled
                   args:
-                    - platform.rbac.workspaces
                     - false
               routes:
                 - id: notificationOverview-v1
@@ -83,9 +82,8 @@ objects:
               id: notifications-v2
               expandable: true
               permissions:
-                - method: featureFlag
+                - method: isKesselEnabled
                   args:
-                    - platform.rbac.workspaces
                     - true
               routes:
                 - id: notificationOverview-v2

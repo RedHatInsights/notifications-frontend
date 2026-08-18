@@ -22,11 +22,13 @@ const PermissionsSyncBranch = ({ usePermissions }: { usePermissions: UsePermissi
 };
 
 const DrawerPermissionsSync = () => {
-  const isV2Org = useFlag('platform.rbac.workspaces');
+  const isKesselEnabled = useFlag('platform.chrome.kessel');
 
   return (
     <PermissionsSyncBranch
-      usePermissions={isV2Org ? useV2HasNotificationsPermissions : useV1HasNotificationsPermissions}
+      usePermissions={
+        isKesselEnabled ? useV2HasNotificationsPermissions : useV1HasNotificationsPermissions
+      }
     />
   );
 };

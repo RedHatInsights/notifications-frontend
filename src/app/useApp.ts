@@ -23,8 +23,7 @@ export const useApp = (): Partial<AppContext> => {
   const kesselRbacContext = useKesselRbacAccess();
   const { permissions: kesselPermissions, isLoading: isKesselLoading } = kesselRbacContext;
 
-  // Determine org version using feature flag (v2 if flag enabled, v1 otherwise)
-  const isV2Org = useFlag('platform.rbac.workspaces');
+  const isKesselEnabled = useFlag('platform.chrome.kessel');
 
   useEffect(() => {
     const appId = chrome.getApp();
@@ -81,7 +80,7 @@ export const useApp = (): Partial<AppContext> => {
   // Fetch v1 RBAC only for v1 orgs. All notifications/integrations permissions are
   // fully migrated to Kessel v2, so v2 orgs don't need the v1 endpoint.
   useEffect(() => {
-    if (userLoaded && !isV2Org) {
+    if (userLoaded && !isKesselEnabled) {
       fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`)
         .then((rbac) => {
           setV1Rbac(rbac);
@@ -90,10 +89,10 @@ export const useApp = (): Partial<AppContext> => {
           setV1Rbac(new Rbac({}));
         });
     }
-  }, [userLoaded, isV2Org]);
+  }, [userLoaded, isKesselEnabled]);
 
   const rbac = React.useMemo(() => {
-    if (isV2Org) {
+    if (isKesselEnabled) {
       if (isKesselLoading) {
         return undefined;
       }
@@ -119,7 +118,7 @@ export const useApp = (): Partial<AppContext> => {
         canReadEvents: v1Rbac.hasPermission('notifications', 'events', 'read'),
       };
     }
-  }, [isV2Org, isKesselLoading, kesselPermissions, v1Rbac]);
+  }, [isKesselEnabled, isKesselLoading, kesselPermissions, v1Rbac]);
 
   return {
     rbac,
