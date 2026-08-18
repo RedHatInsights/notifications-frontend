@@ -15,6 +15,7 @@ export interface NotificationEventAction {
   endpointType: IntegrationType;
   successCount: number;
   errorCount: number;
+  recipientsCount?: number;
 }
 
 export interface NotificationEvent {

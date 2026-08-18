@@ -8,9 +8,7 @@ import {
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
 import { useFlag } from '@unleash/proxy-client-react';
-import assertNever from 'assert-never';
 import * as React from 'react';
-import { useParameterizedQuery } from 'react-fetching-library';
 import { useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
@@ -25,16 +23,13 @@ import {
 import { EventLogToolbar } from '../../../components/Notifications/EventLog/EventLogToolbar';
 import { PageHeader } from '../../../components/PageHeader';
 import Config from '../../../config/Config';
-import { Schemas } from '../../../generated/OpenapiIntegrations';
 import { usePage } from '../../../hooks/usePage';
 import { Messages } from '../../../properties/Messages';
 import definedMessages from '../../../properties/DefinedMessages';
 import { linkTo } from '../../../Routes';
 import { useGetEvents } from '../../../services/EventLog/GetNotificationEvents';
-import { getEndpointAction } from '../../../services/Integrations/GetEndpoint';
 import { useGetBundles } from '../../../services/Notifications/GetBundles';
 import { EventPeriod } from '../../../types/Event';
-import { UUID } from '../../../types/Notification';
 import { useEventLogFilter } from './useEventLogFilter';
 import { useFilterBuilder } from './useFilterBuilder';
 import { Direction, Sort } from '../../../utils/insights-common-typescript';
@@ -45,7 +40,6 @@ export const EventLogPage: React.FunctionComponent = () => {
   const intl = useIntl();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
   const isEventLogSeverityEnabled = useFlag('platform.notifications.severity');
-  const getEndpoint = useParameterizedQuery(getEndpointAction);
   const { rbac, isOrgAdmin } = useAppContext();
   const [onlyImpactingMe, setOnlyImpactingMe] = React.useState(!isOrgAdmin);
 
@@ -131,38 +125,6 @@ export const EventLogPage: React.FunctionComponent = () => {
     return linkTo.notifications('');
   }, [eventLogFilters.filters]);
 
-  const getIntegrationRecipient = React.useCallback(
-    async (id: UUID) => {
-      const query = getEndpoint.query;
-      const endpoint = await query(id);
-      if (endpoint.payload?.type === 'Endpoint') {
-        const type = endpoint.payload.value.type;
-        switch (type) {
-          case 'camel':
-          case 'webhook':
-          case 'ansible':
-          case 'pagerduty':
-            return endpoint.payload.value.name;
-          case 'email_subscription':
-          case 'drawer': {
-            const properties = endpoint.payload.value
-              .properties as Schemas.SystemSubscriptionProperties;
-            if (properties.only_admins) {
-              return 'Users: Admin';
-            }
-
-            return 'Users: All';
-          }
-          default:
-            assertNever(type);
-        }
-      }
-
-      return 'Error while loading';
-    },
-    [getEndpoint.query]
-  );
-
   return (
     <>
       <PageHeader
@@ -236,7 +198,6 @@ export const EventLogPage: React.FunctionComponent = () => {
             onSort={onSort}
             sortColumn={sortColumn}
             sortDirection={sortDirection}
-            getIntegrationRecipient={getIntegrationRecipient}
           />
         </EventLogToolbar>
       )}

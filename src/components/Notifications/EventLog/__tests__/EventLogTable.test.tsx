@@ -11,8 +11,6 @@ import {
   toSeverityLabelProps,
 } from '../EventLogTable';
 
-const mockGetIntegrationRecipient = jest.fn(async () => 'mock integration');
-
 const baseEvent: NotificationEvent = {
   id: 'evt-1',
   event: 'Test event',
@@ -32,7 +30,6 @@ const renderEventLogTable = (events: NotificationEvent[]) =>
         onSort={jest.fn()}
         sortColumn={EventLogTableColumns.DATE}
         sortDirection="desc"
-        getIntegrationRecipient={mockGetIntegrationRecipient}
       />
     </IntlProvider>
   );

@@ -169,8 +169,6 @@ export interface IntegrationConnectionAttempt {
   isSuccess: boolean;
 }
 
-export type GetIntegrationRecipient = (integrationId: UUID) => Promise<string> | string;
-
 export type IntegrationIcon = {
   icon_url: string;
   name: string;
