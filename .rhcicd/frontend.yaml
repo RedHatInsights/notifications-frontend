@@ -45,7 +45,39 @@ objects:
         - segmentId: notifications-settings
           bundleId: settings
           navItems:
-            # V1 navigation (workspaces flag off)
+            # FedRAMP/ITLess navigation (Kessel never available)
+            - title: Notifications
+              id: notifications-fedramp
+              expandable: true
+              permissions:
+                - method: isITLess
+                  args:
+                    - true
+              routes:
+                - id: notificationOverview-fedramp
+                  icon: PlaceholderIcon
+                  title: Overview
+                  href: '/settings/notifications'
+                - id: configureEvents-fedramp
+                  title: Configure Events
+                  href: '/settings/notifications/configure-events'
+                  permissions:
+                    - method: loosePermissions
+                      args:
+                        - - notifications:*:*
+                          - notifications:notifications:read
+                - id: eventLog-fedramp
+                  title: Event Log
+                  href: '/settings/notifications/eventlog'
+                  permissions:
+                    - method: loosePermissions
+                      args:
+                        - - notifications:*:*
+                          - notifications:events:read
+                - id: myUserPreferences-fedramp
+                  title: Notification Preferences
+                  href: '/settings/notifications/user-preferences'
+            # V1 navigation (commercial, Kessel not available)
             - title: Notifications
               id: notifications-v1
               expandable: true
@@ -77,7 +109,7 @@ objects:
                 - id: myUserPreferences-v1
                   title: Notification Preferences
                   href: '/settings/notifications/user-preferences'
-            # V2 navigation (workspaces flag on)
+            # V2 navigation (commercial, Kessel available)
             - title: Notifications
               id: notifications-v2
               expandable: true
