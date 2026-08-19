@@ -37,14 +37,14 @@ function buildAllowedMap(
 export const KesselRbacAccessProvider: React.FC<{
   children: React.ReactNode;
 }> = ({ children }) => {
-  const isV2Org = useFlag('platform.rbac.workspaces');
+  const isKesselEnabled = useFlag('platform.chrome.kessel');
   const [errors, setErrors] = useState<Error[]>([]);
 
   const {
     workspaceId: defaultWorkspaceId,
     isLoading: isLoadingWorkspace,
     error: workspaceError,
-  } = useDefaultWorkspace(isV2Org);
+  } = useDefaultWorkspace(isKesselEnabled);
 
   useEffect(() => {
     if (workspaceError) {

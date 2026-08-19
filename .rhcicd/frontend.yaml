@@ -45,14 +45,14 @@ objects:
         - segmentId: notifications-settings
           bundleId: settings
           navItems:
-            # V1 navigation (workspaces flag off)
+            # V1 navigation (FedRAMP + commercial without Kessel)
             - title: Notifications
               id: notifications-v1
               expandable: true
               permissions:
                 - method: featureFlag
                   args:
-                    - platform.rbac.workspaces
+                    - platform.chrome.kessel
                     - false
               routes:
                 - id: notificationOverview-v1
@@ -78,14 +78,13 @@ objects:
                 - id: myUserPreferences-v1
                   title: Notification Preferences
                   href: '/settings/notifications/user-preferences'
-            # V2 navigation (workspaces flag on)
+            # V2 navigation (commercial, Kessel available)
             - title: Notifications
               id: notifications-v2
               expandable: true
               permissions:
-                - method: featureFlag
+                - method: isKesselEnabled
                   args:
-                    - platform.rbac.workspaces
                     - true
               routes:
                 - id: notificationOverview-v2
