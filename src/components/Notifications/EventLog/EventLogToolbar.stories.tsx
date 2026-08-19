@@ -367,8 +367,6 @@ const ToolbarWithEvents: React.FC<ToolbarWithEventsProps> = ({
     setSortDirection(direction);
   }, []);
 
-  const getIntegrationRecipient = useCallback(async () => 'Mock integration', []);
-
   return (
     <EventLogToolbar
       filters={filters}
@@ -397,7 +395,6 @@ const ToolbarWithEvents: React.FC<ToolbarWithEventsProps> = ({
         onSort={onSort}
         sortColumn={sortColumn}
         sortDirection={sortDirection}
-        getIntegrationRecipient={getIntegrationRecipient}
       />
     </EventLogToolbar>
   );

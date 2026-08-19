@@ -28,7 +28,6 @@ import { style } from 'typestyle';
 import Config from '../../../config/Config';
 import { Messages } from '../../../properties/Messages';
 import { NotificationEvent, NotificationEventStatus } from '../../../types/Event';
-import { GetIntegrationRecipient } from '../../../types/Integration';
 import {
   hasDisplayableSeverity,
   severityDescription,
@@ -48,7 +47,6 @@ export interface EventLogTableProps {
   onSort: (column: EventLogTableColumns, direction: SortDirection) => void;
   sortColumn: EventLogTableColumns;
   sortDirection: SortDirection;
-  getIntegrationRecipient: GetIntegrationRecipient;
 }
 
 export enum EventLogTableColumns {
@@ -186,12 +184,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
                   <Popover
                     key={a.id}
                     hasAutoWidth
-                    bodyContent={
-                      <EventLogActionPopoverContent
-                        action={a}
-                        getIntegrationRecipient={props.getIntegrationRecipient}
-                      />
-                    }
+                    bodyContent={<EventLogActionPopoverContent action={a} />}
                   >
                     <Label className={labelClassName} variant="outline" {...toLabelProps(a.status)}>
                       {Config.integrations.types[a.endpointType].action}
@@ -209,7 +202,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         </Tr>
       ));
     }
-  }, [props.events, props.loading, props.showSeverity, props.getIntegrationRecipient]);
+  }, [props.events, props.loading, props.showSeverity]);
 
   if (rows.length === 0) {
     return (

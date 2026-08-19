@@ -45,6 +45,10 @@ const groupActions = (actions: ServerEvent['actions']): Array<NotificationEventA
 
       current.errorCount += newAction.errorCount;
       current.successCount += newAction.successCount;
+
+      if (newAction.recipientsCount !== undefined) {
+        current.recipientsCount = newAction.recipientsCount;
+      }
     }
   });
 
@@ -63,6 +67,7 @@ const initAction = (action: ServerEvent['actions'][number]): NotificationEventAc
   },
   successCount: isFailed(action.status) ? 0 : 1,
   errorCount: isFailed(action.status) ? 1 : 0,
+  recipientsCount: action.recipients_count ?? undefined,
 });
 
 const isFailed = (status: ServerEvent['actions'][number]['status']): boolean => status === 'FAILED';

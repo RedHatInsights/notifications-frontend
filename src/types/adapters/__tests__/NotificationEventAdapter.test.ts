@@ -20,6 +20,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'email_subscription',
           details: {},
           status: 'PROCESSING',
+          recipients_count: 5,
         },
         {
           id: 'ignored',
@@ -27,6 +28,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'email_subscription',
           details: {},
           status: 'SENT',
+          recipients_count: 10,
         },
         {
           id: 'ignored',
@@ -34,6 +36,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'email_subscription',
           details: {},
           status: 'FAILED',
+          recipients_count: 3,
         },
         {
           id: 'ignored',
@@ -41,6 +44,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'webhook',
           details: {},
           status: 'SUCCESS',
+          recipients_count: 1,
         },
         {
           id: 'ignored',
@@ -48,6 +52,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'webhook',
           details: {},
           status: 'FAILED',
+          recipients_count: 2,
         },
         {
           id: 'ignored',
@@ -55,6 +60,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'email_subscription',
           details: {},
           status: 'SUCCESS',
+          recipients_count: 7,
         },
         {
           id: 'ignored',
@@ -62,6 +68,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpoint_type: 'email_subscription',
           details: {},
           status: 'SUCCESS',
+          recipients_count: 8,
         },
       ],
     };
@@ -83,6 +90,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
           successCount: 2,
           errorCount: 1,
+          recipientsCount: 3,
         },
         {
           id: 'id-04',
@@ -93,6 +101,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpointType: IntegrationType.EMAIL_SUBSCRIPTION,
           successCount: 2,
           errorCount: 0,
+          recipientsCount: 8,
         },
         {
           id: 'id-02',
@@ -103,6 +112,7 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpointType: IntegrationType.WEBHOOK,
           successCount: 1,
           errorCount: 0,
+          recipientsCount: 1,
         },
         {
           id: 'id-03',
@@ -113,9 +123,73 @@ describe('src/types/adapters/NotificationEventAdapter', () => {
           endpointType: IntegrationType.WEBHOOK,
           successCount: 0,
           errorCount: 1,
+          recipientsCount: 2,
         },
       ],
     });
+  });
+
+  it('toNotificationEvent handles null/undefined recipients_count', () => {
+    const event: ServerEvent = {
+      id: 'no-recipients-id',
+      event_type: 'test-event',
+      application: 'test-app',
+      bundle: 'test-bundle',
+      created: '2024-01-01 12:00:00.000',
+      actions: [
+        {
+          id: 'ignored',
+          endpoint_id: 'id-01',
+          endpoint_type: 'webhook',
+          details: {},
+          status: 'SUCCESS',
+          recipients_count: null,
+        },
+        {
+          id: 'ignored',
+          endpoint_id: 'id-02',
+          endpoint_type: 'email_subscription',
+          details: {},
+          status: 'SUCCESS',
+        },
+      ],
+    };
+
+    const result = toNotificationEvent(event);
+    expect(result.actions[0].recipientsCount).toBeUndefined();
+    expect(result.actions[1].recipientsCount).toBeUndefined();
+  });
+
+  it('toNotificationEvent uses latest recipientsCount when grouping', () => {
+    const event: ServerEvent = {
+      id: 'grouped-id',
+      event_type: 'test-event',
+      application: 'test-app',
+      bundle: 'test-bundle',
+      created: '2024-01-01 12:00:00.000',
+      actions: [
+        {
+          id: 'ignored',
+          endpoint_id: 'id-01',
+          endpoint_type: 'email_subscription',
+          details: {},
+          status: 'SUCCESS',
+          recipients_count: 5,
+        },
+        {
+          id: 'ignored',
+          endpoint_id: 'id-01',
+          endpoint_type: 'email_subscription',
+          details: {},
+          status: 'SUCCESS',
+          recipients_count: 12,
+        },
+      ],
+    };
+
+    const result = toNotificationEvent(event);
+    expect(result.actions).toHaveLength(1);
+    expect(result.actions[0].recipientsCount).toBe(12);
   });
 
   it('toNotificationEvent maps severity', () => {
