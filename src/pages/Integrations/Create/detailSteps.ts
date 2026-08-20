@@ -310,9 +310,18 @@ export const detailSteps = (
           component: componentTypes.TEXT_FIELD,
           name: 'secret-token',
           type: 'text',
-          label: 'Secret token',
+          label: 'Splunk HEC token',
           helperText: "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
-          isRequired: false,
+          isRequired: true,
+          validate: [
+            { type: validatorTypes.REQUIRED },
+            (value: string | undefined) => {
+              if (value && !value.trim()) {
+                return 'Splunk HEC token is required.';
+              }
+              return undefined;
+            },
+          ],
         },
         sslAlert,
       ],

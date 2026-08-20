@@ -20,6 +20,8 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
         return (
           <IntegrationTypeCamelExtrasForm
             secretTokenDescription="The defined secret token is sent as a Splunk's HTTP Event Collector token."
+            secretTokenLabel="Splunk HEC token"
+            secretTokenRequired={true}
             {...props}
           />
         );
