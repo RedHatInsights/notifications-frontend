@@ -7,6 +7,8 @@ import { Checkbox, FormTextInput } from '../../../utils/insights-common-typescri
 
 interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
   secretTokenDescription: string;
+  secretTokenLabel?: string;
+  secretTokenRequired?: boolean;
 }
 
 export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
@@ -30,8 +32,8 @@ export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
       />
       <FormGroup fieldId="integration-type-camel-secret-token">
         <FormTextInput
-          isRequired={false}
-          label="Secret token"
+          isRequired={props.secretTokenRequired ?? false}
+          label={props.secretTokenLabel ?? 'Secret token'}
           id="integration-type-camel-secret-token"
           name="secretToken"
           ouiaId={ouiaIdConcat(props.ouiaId, 'secret-token')}

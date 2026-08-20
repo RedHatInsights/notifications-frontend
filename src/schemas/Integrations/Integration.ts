@@ -69,7 +69,11 @@ export const IntegrationCamelSchema: Yup.SchemaOf<NewIntegrationTemplate<Integra
         .required(),
       url: Yup.string().url().required('Provide a url/host for this Integration.'),
       sslVerificationEnabled: Yup.boolean().default(true),
-      secretToken: Yup.string().optional(),
+      secretToken: Yup.string().when('type', {
+        is: (type: string) => type === 'camel:splunk',
+        then: Yup.string().trim().required('Splunk HEC token is required.'),
+        otherwise: Yup.string().optional(),
+      }),
       basicAuth: Yup.object()
         .shape(
           {
