@@ -1,7 +1,7 @@
 import { Page, expect, test } from '@playwright/test';
 import { NOTIFICATIONS_PATH, disableCookiePrompt } from './test-utils';
 import { TIMEOUTS } from './test-constants';
-import { waitForSuccessNotification } from './utils/form-helpers';
+import { waitForSpecificNotification } from './utils/form-helpers';
 
 /**
  * Subscription Threshold E2E Test Suite
@@ -236,9 +236,7 @@ async function getCurrentThresholdValue(
  * Returns true if the test user can edit the threshold; false if the button is
  * disabled (user lacks canWriteNotifications permission).
  */
-async function canEditThreshold(
-  thresholdRow: ReturnType<Page['locator']>
-): Promise<boolean> {
+async function canEditThreshold(thresholdRow: ReturnType<Page['locator']>): Promise<boolean> {
   const editButton = thresholdRow.getByRole('button', { name: 'edit' });
   const buttonVisible = await editButton
     .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR })
@@ -345,8 +343,11 @@ test.describe('Subscription Threshold — Org Admin', () => {
     await saveChanges(thresholdRow!);
 
     // Success notification confirms org-preferences API persisted the value
-    await waitForSuccessNotification(page);
-    console.log(`✓ Threshold saved to ${newThreshold}% (notification confirmed)`);
+    await waitForSpecificNotification(
+      page,
+      'Threshold updated',
+      new RegExp(`Custom threshold set to ${newThreshold}%`, 'i')
+    );
   });
 
   test('should cancel editing without saving', async ({ page }) => {
