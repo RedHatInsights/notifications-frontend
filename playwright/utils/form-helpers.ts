@@ -595,6 +595,71 @@ export async function waitForSuccessNotification(page: Page): Promise<void> {
 }
 
 /**
+ * Wait for a specific success notification to appear in the DOM.
+ * Uses a web-first approach by checking the actual PatternFly alert elements.
+ *
+ * @param page - Playwright page object
+ * @param title - Expected notification title (exact text or regex)
+ * @param description - Expected notification description (exact text or regex)
+ * @returns Promise that resolves when the notification is found
+ */
+export async function waitForSpecificNotification(
+  page: Page,
+  title: string | RegExp,
+  description?: string | RegExp
+): Promise<void> {
+  // Build the success alert locator with title filter
+  let successAlert = page.locator('.pf-v6-c-alert.pf-m-success, .pf-c-alert.pf-m-success').filter({
+    hasText: title,
+  });
+
+  // Add description filter if provided
+  if (description) {
+    successAlert = successAlert.filter({
+      hasText: description,
+    });
+  }
+
+  const notificationFound = await successAlert
+    .first()
+    .waitFor({ state: 'visible', timeout: TIMEOUTS.ELEMENT_APPEAR })
+    .then(() => true)
+    .catch(() => false);
+
+  if (!notificationFound) {
+    // Check what notification DID appear to provide better diagnostics
+    const anyAlert = page.locator('.pf-v6-c-alert, .pf-c-alert').first();
+    const alertVisible = await anyAlert.isVisible().catch(() => false);
+
+    let diagnosticInfo = '';
+    if (alertVisible) {
+      const alertText = await anyAlert.textContent().catch(() => '');
+      const alertType = (await anyAlert.getAttribute('class')) || '';
+      const severity = alertType.includes('pf-m-danger')
+        ? 'danger'
+        : alertType.includes('pf-m-warning')
+        ? 'warning'
+        : alertType.includes('pf-m-info')
+        ? 'info'
+        : 'unknown';
+      diagnosticInfo = `\n\nFound ${severity} alert instead:\n"${alertText.trim()}"`;
+    }
+
+    const titleStr = typeof title === 'string' ? title : title.toString();
+    const descStr = description
+      ? typeof description === 'string'
+        ? description
+        : description.toString()
+      : '';
+    throw new Error(
+      `Expected success notification with title "${titleStr}"${
+        descStr ? ` and description "${descStr}"` : ''
+      } but it was not found within ${TIMEOUTS.ELEMENT_APPEAR}ms${diagnosticInfo}`
+    );
+  }
+}
+
+/**
  * Close the integration wizard modal
  */
 export async function closeWizardModal(page: Page): Promise<void> {
