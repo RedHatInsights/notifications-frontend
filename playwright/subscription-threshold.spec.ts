@@ -348,6 +348,15 @@ test.describe('Subscription Threshold — Org Admin', () => {
       'Threshold updated',
       new RegExp(`Custom threshold set to ${newThreshold}%`, 'i')
     );
+
+    // Verify the threshold value persisted in the UI
+    // Wait for row to exit edit mode and show read-only value
+    const thresholdCell = thresholdRow!.locator('td').nth(3);
+    await expect(thresholdCell.getByText('of usage threshold')).toBeVisible({
+      timeout: TIMEOUTS.ELEMENT_APPEAR,
+    });
+    const persistedThreshold = await getCurrentThresholdValue(thresholdRow!);
+    expect(persistedThreshold).toBe(newThreshold);
   });
 
   test('should cancel editing without saving', async ({ page }) => {
