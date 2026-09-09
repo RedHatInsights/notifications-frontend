@@ -1,5 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ChromeWsEventTypes, ChromeWsPayload } from '@redhat-cloud-services/types';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import BulkSelect from '@redhat-cloud-services/frontend-components/BulkSelect';
 
@@ -26,7 +25,7 @@ export type DrawerPanelProps = {
 };
 
 const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
-  const { addWsEventListener, auth } = useChrome();
+  const { auth } = useChrome();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
@@ -35,7 +34,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   const scrollPositionRef = useRef<number>(0);
   const {
     state: { ready, ...state },
-    addNotification,
     updateNotificationRead,
     updateSelectedStatus,
     updateNotificationsSelected,
@@ -44,21 +42,8 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   } = useNotificationDrawer();
   const navigate = useNavigate();
 
-  const eventType: ChromeWsEventTypes = 'com.redhat.console.notifications.drawer';
-
-  const handleWsEvent = useCallback(
-    (event: ChromeWsPayload<NotificationData>) => {
-      addNotification(event.data as NotificationData);
-    },
-    [addNotification]
-  );
-
-  useEffect(() => {
-    const unregister = addWsEventListener(eventType, handleWsEvent);
-    return () => {
-      unregister();
-    };
-  }, [addWsEventListener, handleWsEvent]);
+  // Live notifications arrive through the listener DrawerSingleton registers on init, which
+  // is active from page load rather than only while this panel is mounted.
 
   useEffect(() => {
     auth.getUser().then((user) => {
@@ -83,6 +68,11 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
       drawerBodyRef.current = drawerBody as HTMLDivElement;
     }
   }, [ready]);
+
+  const snapshotPositions = useMemo(
+    () => new Map(initialOrderSnapshot.map((id, index) => [id, index])),
+    [initialOrderSnapshot]
+  );
 
   const filteredNotifications = useMemo(() => {
     const notificationsByBundle = state.notificationData.reduce((acc, notification) => {
@@ -160,18 +150,18 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     const sortedNotifications =
       initialOrderSnapshot.length > 0
         ? notificationsToSort.slice().sort((a, b) => {
-            const indexA = initialOrderSnapshot.indexOf(a.id);
-            const indexB = initialOrderSnapshot.indexOf(b.id);
+            const indexA = snapshotPositions.get(a.id) ?? -1;
+            const indexB = snapshotPositions.get(b.id) ?? -1;
             // If both are in snapshot, maintain snapshot order
             if (indexA !== -1 && indexB !== -1) {
               return indexA - indexB;
             }
-            // If only A is in snapshot, it comes first
-            if (indexA !== -1) return -1;
-            // If only B is in snapshot, it comes first
-            if (indexB !== -1) return 1;
-            // If neither is in snapshot (new notifications), sort by created desc
-            return new Date(b.created).getTime() - new Date(a.created).getTime();
+            // If neither is in snapshot (arrived since the drawer opened), sort by created desc
+            if (indexA === -1 && indexB === -1) {
+              return new Date(b.created).getTime() - new Date(a.created).getTime();
+            }
+            // Otherwise the one missing from the snapshot is new, so it comes first
+            return indexA === -1 ? -1 : 1;
           })
         : orderBy(notificationsToSort, ['read', 'created'], ['asc', 'desc']);
 

@@ -48,7 +48,7 @@ const makeNotification = (id: string, read: boolean, selected = false): Notifica
   created: new Date().toISOString(),
 });
 
-const renderDrawerPanel = (notificationData: NotificationData[]) => {
+const setDrawerData = (notificationData: NotificationData[]) => {
   (useNotificationDrawer as jest.Mock).mockReturnValue({
     state: {
       notificationData,
@@ -67,12 +67,18 @@ const renderDrawerPanel = (notificationData: NotificationData[]) => {
     updateNotificationSelected: fn(),
     setFilters: fn(),
   });
+};
 
-  return render(
-    <MemoryRouter>
-      <DrawerPanel panelRef={React.createRef()} toggleDrawer={fn()} />
-    </MemoryRouter>
-  );
+const drawerPanelTree = () => (
+  <MemoryRouter>
+    <DrawerPanel panelRef={React.createRef()} toggleDrawer={fn()} />
+  </MemoryRouter>
+);
+
+const renderDrawerPanel = (notificationData: NotificationData[]) => {
+  setDrawerData(notificationData);
+
+  return render(drawerPanelTree());
 };
 
 describe('DrawerPanel bulk select checkbox', () => {
@@ -107,6 +113,67 @@ describe('DrawerPanel bulk select checkbox', () => {
 
     const checkbox = screen.getByRole('checkbox', { name: 'Select all' });
     expect(checkbox).toBePartiallyChecked();
+  });
+});
+
+describe('DrawerPanel live notification ordering', () => {
+  const makeAged = (id: string, minutesAgo: number): NotificationData => ({
+    ...makeNotification(id, false),
+    created: new Date(Date.now() - minutesAgo * 60_000).toISOString(),
+  });
+
+  const renderedTitles = () =>
+    screen
+      .getAllByLabelText(/^Notification item /)
+      .map((item) => item.getAttribute('aria-label')?.replace('Notification item ', ''));
+
+  it('puts a notification that arrives while the drawer is open at the top of the list', () => {
+    const existing = [makeAged('1', 60), makeAged('2', 120), makeAged('3', 180)];
+    const { rerender } = renderDrawerPanel(existing);
+
+    expect(renderedTitles()).toEqual(['Notification 1', 'Notification 2', 'Notification 3']);
+
+    // A live WS event appends to notificationData via DrawerSingleton.addNotification
+    setDrawerData([...existing, makeAged('live', 0)]);
+    rerender(drawerPanelTree());
+
+    expect(renderedTitles()).toEqual([
+      'Notification live',
+      'Notification 1',
+      'Notification 2',
+      'Notification 3',
+    ]);
+  });
+
+  it('keeps the order of already listed notifications stable as live ones arrive', () => {
+    // Read notification sorts below the unread ones in the snapshot taken on open
+    const existing = [makeNotification('read', true), makeAged('unread', 60)];
+    const { rerender } = renderDrawerPanel(existing);
+
+    expect(renderedTitles()).toEqual(['Notification unread', 'Notification read']);
+
+    setDrawerData([...existing, makeAged('live', 0)]);
+    rerender(drawerPanelTree());
+
+    expect(renderedTitles()).toEqual([
+      'Notification live',
+      'Notification unread',
+      'Notification read',
+    ]);
+  });
+
+  it('orders multiple live notifications newest first', () => {
+    const existing = [makeAged('1', 60)];
+    const { rerender } = renderDrawerPanel(existing);
+
+    setDrawerData([...existing, makeAged('older-live', 10), makeAged('newer-live', 1)]);
+    rerender(drawerPanelTree());
+
+    expect(renderedTitles()).toEqual([
+      'Notification newer-live',
+      'Notification older-live',
+      'Notification 1',
+    ]);
   });
 });
 

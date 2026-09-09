@@ -32,8 +32,9 @@ const initialState: NotificationDrawerState = {
 
 export class DrawerSingleton {
   private static _instance: DrawerSingleton;
-  private static _subs: { id: string; rerenderer: () => void }[];
+  private static _subs: { id: string; rerenderer: () => void }[] = [];
   private static _state: NotificationDrawerState = initialState;
+  private static _unregisterWsListener?: () => void;
 
   static subscribe(rerenderer: () => void, addWsEventListener?: ChromeAPI['addWsEventListener']) {
     const id = crypto.randomUUID();
@@ -63,7 +64,6 @@ export class DrawerSingleton {
   public static get Instance() {
     if (!DrawerSingleton._instance) {
       DrawerSingleton._instance = new DrawerSingleton();
-      DrawerSingleton._subs = [];
     }
 
     return DrawerSingleton._instance;
@@ -76,11 +76,16 @@ export class DrawerSingleton {
     await this.fetchFilterConfig(mounted);
     await this.getNotifications();
     if (addWsEventListener) {
-      addWsEventListener('com.redhat.console.notifications.drawer', (event) => {
-        if (isNotificationData(event.data)) {
-          this.addNotification(event.data);
+      // initialize is public, so guard against stacking listeners if it is called again
+      DrawerSingleton._unregisterWsListener?.();
+      DrawerSingleton._unregisterWsListener = addWsEventListener(
+        'com.redhat.console.notifications.drawer',
+        (event) => {
+          if (isNotificationData(event.data)) {
+            this.addNotification(event.data);
+          }
         }
-      });
+      );
     } else {
       console.warn('WebSocket event listener not available - live notifications disabled');
     }
@@ -152,7 +157,18 @@ export class DrawerSingleton {
   };
 
   public addNotification = (notification: NotificationData) => {
-    DrawerSingleton._state.notificationData.push(notification);
+    const isDuplicate = DrawerSingleton._state.notificationData.some(
+      (item) => item.id === notification.id
+    );
+    if (isDuplicate) {
+      return;
+    }
+    // Reassign rather than push: consumers memoize on the array reference, so an in-place
+    // mutation leaves derived lists such as filteredNotifications stale
+    DrawerSingleton._state.notificationData = [
+      ...DrawerSingleton._state.notificationData,
+      notification,
+    ];
     DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
