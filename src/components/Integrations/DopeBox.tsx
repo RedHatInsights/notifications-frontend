@@ -37,12 +37,12 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
     {
       id: 1,
       name: 'Configure Google Chat',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-gchat_integrating-communications',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-set_up_google_chat_integration',
     },
     {
       id: 2,
       name: 'Configure Microsoft Teams',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-teams_integrating-communications',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-set_up_microsoft_teams_integration',
     },
   ];
 
@@ -50,22 +50,22 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
     {
       id: 3,
       name: 'Configure Event-Driven Ansible',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-eda_integrating-communications',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-configure_eda_integration',
     },
     {
       id: 4,
       name: 'Configure PagerDuty',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-pagerduty_integrating-communications',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-configure_pagerduty_integration',
     },
     {
       id: 5,
       name: 'Configure ServiceNow',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-installing-configuring-insights-for-snow_integrating-communications',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-configure_servicenow_integration',
     },
     {
       id: 6,
       name: 'Configure Splunk',
-      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-installing-configuring-insights-for-splunk_integrating-communications',
+      url: 'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-configure_splunk_integration',
     },
   ];
 
@@ -135,7 +135,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             <Content component="p">
               <Button variant="link" isInline>
                 <Link
-                  to="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index#assembly-configuring-integration-with-webhooks_integrating-communications"
+                  to="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-integrate_other_apps_with_webhooks"
                   target="_blank"
                 >
                   Learn more
@@ -172,7 +172,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
         <Content component="p">
           <Button variant="link" isInline>
             <Link
-              to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/user_access_configuration_guide_for_role-based_access_control_rbac/index"
+              to="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/administer-manage_user_permissions_rbac_models"
               target="_blank"
             >
               Learn more
@@ -213,7 +213,7 @@ const DopeBox: React.FunctionComponent<DopeBoxProps> = ({ category }) => {
             <Content component="p">
               <Button variant="link" isInline>
                 <Link
-                  to="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index"
+                  to="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services"
                   target="_blank"
                 >
                   Learn more

@@ -32,14 +32,12 @@ import notificationsProductIcon from '../../../assets/icons/notifications-produc
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 
-// eslint-disable-next-line max-len
 const LEARN_MORE =
-  'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/1-latest/html-single/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
-// eslint-disable-next-line max-len
+  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services';
 const CONFIGURE_INTEGRATIONS =
-  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index';
+  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform';
 const CONFIGURE_SOURCES =
-  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/html-single/configuring_notifications_on_the_red_hat_hybrid_cloud_console/index';
+  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const navigate = useNavigate();
@@ -271,7 +269,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                     ServiceNow,{' '}
                     <a
                       href={
-                        'https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications/index'
+                        'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform'
                       }
                     >
                       and more

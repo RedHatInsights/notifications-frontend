@@ -85,14 +85,14 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
               TitleIcon={HelpIcon}
               title="Why integrate?"
               body="Integrating third-party applications expands the scope of notifications beyond emails and messages, so that you can view and manage Hybrid Cloud Console events from your preferred platform dashboard."
-              link="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/integrating_the_red_hat_hybrid_cloud_console_with_third-party_applications"
+              link="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform"
             />
             <EmptyIntegrationCard
               isOrgAdmin={isOrgAdmin}
               TitleIcon={CogIcon}
               title="Configure applications"
               body="To prepare for integration with the Hybrid Cloud Console, you must configure incoming webhooks in your third-party applications."
-              link="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/assembly-intro_notifications"
+              link="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services"
             />
             {isOrgAdmin && (
               <EmptyIntegrationCard
@@ -100,7 +100,7 @@ export const IntegrationsEmptyState: React.FunctionComponent<{
                 TitleIcon={InfrastructureIcon}
                 title="Create behavior groups"
                 body="A behavior group defines which notifications will be sent to external services when a specific event is received by the notifications service. You can link events from any Hybrid Cloud Console service to your behavior group."
-                link="https://access.redhat.com/documentation/en-us/red_hat_hybrid_cloud_console/2023/html/configuring_notifications_on_the_red_hat_hybrid_cloud_console/assembly-config-behavior-groups_notifications"
+                link="https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services"
               />
             )}
           </Gallery>
