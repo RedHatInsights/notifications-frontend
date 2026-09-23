@@ -135,17 +135,17 @@ describe('Timezone Calculation', () => {
     });
 
     it('demonstrates the bug: timestamps without Z are parsed as local time', () => {
-      // Get current timezone offset in milliseconds
-      // getTimezoneOffset() returns positive for behind UTC, negative for ahead
-      // e.g., GMT-5 returns 300, GMT+2 returns -120
-      const timezoneOffsetMs = new Date().getTimezoneOffset() * 60 * 1000;
-
       // Create a timestamp without Z
       const timeWithoutZ = '2026-09-23T14:30:00';
       const timeWithZ = '2026-09-23T14:30:00Z';
 
       const parsedWithoutZ = new Date(timeWithoutZ);
       const parsedWithZ = new Date(timeWithZ);
+
+      // Get timezone offset from the parsed timestamp (accounts for DST)
+      // getTimezoneOffset() returns positive for behind UTC, negative for ahead
+      // e.g., GMT-5 returns 300, GMT+2 returns -120
+      const timezoneOffsetMs = parsedWithoutZ.getTimezoneOffset() * 60 * 1000;
 
       // Without Z: parsed as local time, so UTC value is shifted by timezone offset
       // With Z: parsed as UTC time
@@ -292,8 +292,8 @@ describe('Timezone Calculation', () => {
       expect(parsedWithZ).toBe('2026-09-23T14:30:00.000Z');
 
       // Without Z will vary by timezone
-      // The difference should equal the timezone offset in milliseconds
-      const timezoneOffset = new Date().getTimezoneOffset();
+      // Get timezone offset from the parsed timestamp (accounts for DST)
+      const timezoneOffset = new Date(parsedWithoutZ).getTimezoneOffset();
       const parsedDiff = new Date(parsedWithoutZ).getTime() - new Date(parsedWithZ).getTime();
       const expectedDiff = timezoneOffset * 60 * 1000;
 
