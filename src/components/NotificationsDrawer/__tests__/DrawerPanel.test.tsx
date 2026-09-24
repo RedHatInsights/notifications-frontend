@@ -48,15 +48,20 @@ const makeNotification = (id: string, read: boolean, selected = false): Notifica
   created: new Date().toISOString(),
 });
 
-const setDrawerData = (notificationData: NotificationData[]) => {
+const setDrawerData = (
+  notificationData: NotificationData[],
+  filters: string[] = [],
+  bundleIdToNameMap = new Map<string, string>()
+) => {
   (useNotificationDrawer as jest.Mock).mockReturnValue({
     state: {
       notificationData,
       hasUnread: notificationData.some((n) => !n.read),
       ready: true,
       count: notificationData.length,
-      filters: [],
+      filters,
       filterConfig: [],
+      bundleIdToNameMap,
       hasNotificationsPermissions: false,
       initializing: false,
     },
@@ -174,6 +179,47 @@ describe('DrawerPanel live notification ordering', () => {
       'Notification older-live',
       'Notification 1',
     ]);
+  });
+});
+
+describe('DrawerPanel filtering with UUIDs', () => {
+  it('filters notifications using bundleIdToNameMap', () => {
+    const bundleIdToNameMap = new Map([
+      ['uuid-rhel-123', 'rhel'],
+      ['uuid-openshift-456', 'openshift'],
+    ]);
+
+    const notifications = [
+      makeNotification('1', false),
+      { ...makeNotification('2', false), bundle: 'openshift' },
+      makeNotification('3', false),
+    ];
+
+    // Filter by RHEL UUID
+    setDrawerData(notifications, ['uuid-rhel-123'], bundleIdToNameMap);
+
+    render(drawerPanelTree());
+
+    // Should only show RHEL notifications (ids 1 and 3)
+    const items = screen.getAllByLabelText(/^Notification item /);
+    expect(items).toHaveLength(2);
+  });
+
+  it('shows all notifications when filters are empty', () => {
+    const bundleIdToNameMap = new Map([['uuid-rhel-123', 'rhel']]);
+
+    const notifications = [
+      makeNotification('1', false),
+      makeNotification('2', false),
+      makeNotification('3', false),
+    ];
+
+    setDrawerData(notifications, [], bundleIdToNameMap);
+
+    render(drawerPanelTree());
+
+    const items = screen.getAllByLabelText(/^Notification item /);
+    expect(items).toHaveLength(3);
   });
 });
 

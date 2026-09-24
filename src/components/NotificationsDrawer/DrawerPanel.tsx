@@ -15,7 +15,6 @@ import orderBy from 'lodash/orderBy';
 import { useNavigate } from 'react-router-dom';
 import NotificationItem from './NotificationItem';
 import { EmptyNotifications } from './EmptyNotifications';
-import { NotificationData } from '../../types/Drawer';
 import useNotificationDrawer from '../../hooks/useNotificationDrawer';
 import { ActionDropdown, FilterDropdown } from './Dropdowns';
 
@@ -74,22 +73,24 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     [initialOrderSnapshot]
   );
 
+  // Client-side filtering for WebSocket notifications that arrive after filter is applied
+  // Backend filtering happens in DrawerSingleton.setFilters() via API refetch
   const filteredNotifications = useMemo(() => {
-    const notificationsByBundle = state.notificationData.reduce((acc, notification) => {
-      if (!acc[notification.bundle]) {
-        acc[notification.bundle] = [];
-      }
-      acc[notification.bundle].push(notification);
-      return acc;
-    }, {});
+    if (!state.filters || state.filters.length === 0) {
+      return state.notificationData;
+    }
 
-    return (state.filters || []).reduce((acc, chosenFilter) => {
-      if (notificationsByBundle[chosenFilter]) {
-        acc.push(...notificationsByBundle[chosenFilter]);
-      }
-      return acc;
-    }, [] as NotificationData[]);
-  }, [state.filters, state.notificationData]);
+    // Map bundle IDs (UUIDs) to bundle names for matching
+    const selectedBundleNames = state.filters
+      .map((bundleId) => state.bundleIdToNameMap.get(bundleId))
+      .filter((name): name is string => name !== undefined);
+
+    // Filter only newly arrived WebSocket notifications
+    // (API-fetched notifications are already filtered by backend)
+    return state.notificationData.filter((notification) =>
+      selectedBundleNames.includes(notification.bundle)
+    );
+  }, [state.filters, state.notificationData, state.bundleIdToNameMap]);
 
   const onNotificationsDrawerClose = () => {
     setFilters([]);

@@ -38,10 +38,19 @@ const seedState = (
 ) => {
   // Ensure Instance is created — initializes _subs array needed by subscribe()
   void DrawerSingleton.Instance;
+
+  // Build bundleIdToNameMap from filter config
+  const bundleIdToNameMap = new Map<string, string>();
+  bundleIdToNameMap.set(BUNDLE_UUIDS.rhel, 'rhel');
+  bundleIdToNameMap.set(BUNDLE_UUIDS.openshift, 'openshift');
+  bundleIdToNameMap.set(BUNDLE_UUIDS.ansible, 'ansible');
+  bundleIdToNameMap.set(BUNDLE_UUIDS.console, 'console');
+
   Object.assign(DrawerSingleton.getState(), {
     notificationData,
     filterConfig,
     filters,
+    bundleIdToNameMap,
     hasUnread: notificationData.some((n) => !n.read),
     ready,
     initializing: !ready,
@@ -104,11 +113,19 @@ const mockNotifications: NotificationData[] = [
   },
 ];
 
+// Mock bundle UUIDs (production values from backend)
+const BUNDLE_UUIDS = {
+  rhel: 'b63d98cf-4679-4d59-b7c2-4f5d85f8e5a2',
+  openshift: 'a24c7fb1-3eb9-4c7d-9a4f-6e9c8d2b4f1a',
+  ansible: 'f3e4d5c6-b7a8-9f0e-1d2c-3b4a5f6e7d8c',
+  console: 'e8f9a0b1-c2d3-4e5f-6a7b-8c9d0e1f2a3b',
+};
+
 const mockFilterConfig: FilterConfigItem[] = [
-  { title: 'Red Hat Enterprise Linux', value: 'rhel' },
-  { title: 'OpenShift', value: 'openshift' },
-  { title: 'Ansible Automation Platform', value: 'ansible' },
-  { title: 'Console', value: 'console' },
+  { title: 'Red Hat Enterprise Linux', value: BUNDLE_UUIDS.rhel },
+  { title: 'OpenShift', value: BUNDLE_UUIDS.openshift },
+  { title: 'Ansible Automation Platform', value: BUNDLE_UUIDS.ansible },
+  { title: 'Console', value: BUNDLE_UUIDS.console },
 ];
 
 const meta: Meta<typeof DrawerPanel> = {
@@ -144,7 +161,7 @@ export const Default: Story = {
 };
 
 export const WithSingleFilter: Story = {
-  loaders: [async () => seedState(mockNotifications, mockFilterConfig, ['rhel'])],
+  loaders: [async () => seedState(mockNotifications, mockFilterConfig, [BUNDLE_UUIDS.rhel])],
   args: {
     toggleDrawer: () => console.log('Toggle drawer'),
   },
@@ -152,15 +169,37 @@ export const WithSingleFilter: Story = {
     docs: {
       description: {
         story:
-          'Drawer panel with one active filter (RHEL). Shows a blue filter chip below the header that can be removed.',
+          'Drawer panel with one active filter (RHEL). Shows a blue filter chip below the header that can be removed. Only RHEL notifications (ids 1 and 3) should be visible.',
       },
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for notifications to render
+    await waitFor(() => {
+      const notifications = canvas.queryAllByLabelText(/^Notification item /);
+      expect(notifications.length).toBeGreaterThan(0);
+    });
+
+    // Should show filter chip
+    const filterChip = canvas.getByText('Red Hat Enterprise Linux');
+    expect(filterChip).toBeInTheDocument();
+
+    // Should only show RHEL notifications (2 out of 5 total)
+    const notifications = canvas.getAllByLabelText(/^Notification item /);
+    expect(notifications).toHaveLength(2);
   },
 };
 
 export const WithMultipleFilters: Story = {
   loaders: [
-    async () => seedState(mockNotifications, mockFilterConfig, ['rhel', 'openshift', 'ansible']),
+    async () =>
+      seedState(mockNotifications, mockFilterConfig, [
+        BUNDLE_UUIDS.rhel,
+        BUNDLE_UUIDS.openshift,
+        BUNDLE_UUIDS.ansible,
+      ]),
   ],
   args: {
     toggleDrawer: () => console.log('Toggle drawer'),
@@ -169,9 +208,27 @@ export const WithMultipleFilters: Story = {
     docs: {
       description: {
         story:
-          'Drawer panel with multiple active filters (RHEL, OpenShift, Ansible). Shows multiple filter chips that wrap to the next line if needed.',
+          'Drawer panel with multiple active filters (RHEL, OpenShift, Ansible). Shows multiple filter chips that wrap to the next line if needed. Should show 4 notifications (all except Console).',
       },
     },
+  },
+  play: async ({ canvasElement }) => {
+    const canvas = within(canvasElement);
+
+    // Wait for notifications
+    await waitFor(() => {
+      const notifications = canvas.queryAllByLabelText(/^Notification item /);
+      expect(notifications.length).toBeGreaterThan(0);
+    });
+
+    // Should show 3 filter chips
+    expect(canvas.getByText('Red Hat Enterprise Linux')).toBeInTheDocument();
+    expect(canvas.getByText('OpenShift')).toBeInTheDocument();
+    expect(canvas.getByText('Ansible Automation Platform')).toBeInTheDocument();
+
+    // Should show 4 notifications (rhel:2, openshift:1, ansible:1)
+    const notifications = canvas.getAllByLabelText(/^Notification item /);
+    expect(notifications).toHaveLength(4);
   },
 };
 

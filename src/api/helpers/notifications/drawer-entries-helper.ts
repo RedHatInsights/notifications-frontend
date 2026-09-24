@@ -4,16 +4,16 @@ import { NotificationData } from '../../../types/Drawer';
 
 const notificationsApi = getNotificationsApi();
 
-interface GetDrawerEntriesConfig {
+export interface GetDrawerEntriesConfig {
   limit?: number;
   sort_by?: string;
   startDate?: string;
   endDate?: string;
   offset?: number;
   pageNumber?: number;
-  appIds?: string[];
-  bundleIds?: string[];
-  eventTypeIds?: string[];
+  appIds?: Set<string>;
+  bundleIds?: Set<string>;
+  eventTypeIds?: Set<string>;
   readStatus?: boolean;
 }
 

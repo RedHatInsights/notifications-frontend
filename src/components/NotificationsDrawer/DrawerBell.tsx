@@ -18,6 +18,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
     state: { hasUnread, ready, notificationData },
   } = useNotificationDrawer();
   const unreadCount = (notificationData ?? []).filter((n) => !n.read).length;
+
   return (
     <ToolbarItem className="pf-v6-u-mx-0">
       <Tooltip
