@@ -107,10 +107,12 @@ export class DrawerSingleton {
     }
     try {
       const response = await getBundleFacets({});
-      DrawerSingleton._state.filterConfig = response.map((bundle: Bundle) => ({
-        title: bundle.displayName,
-        value: bundle.name,
-      }));
+      DrawerSingleton._state.filterConfig = response
+        .filter((bundle: Bundle) => bundle.name !== 'lightwell')
+        .map((bundle: Bundle) => ({
+          title: bundle.displayName,
+          value: bundle.name,
+        }));
 
       DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
     } catch (error) {
