@@ -36,8 +36,6 @@ const LEARN_MORE =
   'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services';
 const CONFIGURE_INTEGRATIONS =
   'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform';
-const CONFIGURE_SOURCES =
-  'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services';
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const navigate = useNavigate();
@@ -409,10 +407,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
-                      href={CONFIGURE_INTEGRATIONS}
+                      href={LEARN_MORE}
                       onClick={(e) => {
                         e.preventDefault();
-                        window.open(CONFIGURE_INTEGRATIONS, '_blank');
+                        window.open(LEARN_MORE, '_blank');
                       }}
                     >
                       View documentation <ExternalLinkAltIcon />
@@ -426,10 +424,10 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
-                      href={CONFIGURE_SOURCES}
+                      href={CONFIGURE_INTEGRATIONS}
                       onClick={(e) => {
                         e.preventDefault();
-                        window.open(CONFIGURE_SOURCES, '_blank');
+                        window.open(CONFIGURE_INTEGRATIONS, '_blank');
                       }}
                     >
                       View documentation <ExternalLinkAltIcon />
