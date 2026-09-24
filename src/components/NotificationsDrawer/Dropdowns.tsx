@@ -33,6 +33,33 @@ export const FilterDropdown = ({
   setActiveFilters,
   onFilterSelect,
 }) => {
+  const isSelectingFilter = React.useRef(false);
+
+  const handleFilterSelect = (_event?: React.MouseEvent, itemId?: string | number | undefined) => {
+    // Mark that we're selecting a filter (don't close dropdown)
+    isSelectingFilter.current = true;
+
+    // Call filter selection handler
+    if (itemId) {
+      onFilterSelect(itemId as string);
+    }
+
+    // Reset the flag after a brief delay
+    setTimeout(() => {
+      isSelectingFilter.current = false;
+    }, 10);
+  };
+
+  const handleOpenChange = (isOpen: boolean) => {
+    // If closing due to filter selection, ignore it (keep dropdown open for multi-select)
+    if (!isOpen && isSelectingFilter.current) {
+      return;
+    }
+
+    // Otherwise, allow the state change (toggle button, click outside, escape, etc.)
+    setIsFilterDropdownOpen(isOpen);
+  };
+
   return (
     <Dropdown
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
@@ -47,13 +74,14 @@ export const FilterDropdown = ({
         </MenuToggle>
       )}
       isOpen={isFilterDropdownOpen}
-      onOpenChange={setIsFilterDropdownOpen}
+      onOpenChange={handleOpenChange}
+      shouldFocusToggleOnSelect={false}
       popperProps={{
         position: PopoverPosition.right,
       }}
       id="notifications-filter-dropdown"
     >
-      <Menu onSelect={(_event, itemId) => onFilterSelect(itemId as string)}>
+      <Menu onSelect={handleFilterSelect} selected={activeFilters}>
         <MenuList>
           <MenuGroup key="filter-label" label="Show notifications for...">
             {filterConfig.map((source: { value: string; title: string }) => (
@@ -75,7 +103,10 @@ export const FilterDropdown = ({
             variant="link"
             isInline
             isDisabled={activeFilters.length === 0}
-            onClick={() => setActiveFilters([])}
+            onClick={() => {
+              setActiveFilters([]);
+              setIsFilterDropdownOpen(false);
+            }}
           >
             Reset filters
           </Button>
