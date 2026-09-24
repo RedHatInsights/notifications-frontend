@@ -4,6 +4,7 @@ import { getDateDaysAgo } from '../UtcDate';
 import { getBundleFacets } from '../../api/helpers/notifications/bundle-facets-helper';
 import { getDrawerEntries } from '../../api/helpers/notifications/drawer-entries-helper';
 import { updateNotificationReadStatus } from '../../api/helpers/notifications/update-read-status-helper';
+import { ensureUtcTimestamp } from '../../utils/dateUtils';
 
 import {
   FilterConfigItem,
@@ -82,7 +83,12 @@ export class DrawerSingleton {
         'com.redhat.console.notifications.drawer',
         (event) => {
           if (isNotificationData(event.data)) {
-            this.addNotification(event.data);
+            // Normalize timestamp: backend sends LocalDateTime without 'Z' suffix
+            const normalizedNotification = {
+              ...event.data,
+              created: ensureUtcTimestamp(event.data.created),
+            };
+            this.addNotification(normalizedNotification);
           }
         }
       );
