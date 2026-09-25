@@ -228,7 +228,7 @@ describe('NotificationItem menu actions', () => {
     mockNavigate.mockClear();
   });
 
-  it('clicking Manage event configuration navigates with bundle and tab=configuration (org admin)', async () => {
+  it('clicking Configure events navigates with bundle and tab=configuration (org admin)', async () => {
     // Set up admin user before rendering
     mockGetUser.mockResolvedValue({
       identity: { user: { is_org_admin: true } },
@@ -246,7 +246,7 @@ describe('NotificationItem menu actions', () => {
     await userEvent.click(itemToggle);
 
     // Wait for menu to appear and click the item
-    const menuItem = await screen.findByRole('menuitem', { name: 'Manage event configuration' });
+    const menuItem = await screen.findByRole('menuitem', { name: 'Configure events' });
     await userEvent.click(menuItem);
 
     const url = mockNavigate.mock.calls[0][0] as string;
@@ -256,7 +256,7 @@ describe('NotificationItem menu actions', () => {
     expect(params.get('tab')).toBe('configuration');
   });
 
-  it('Manage my event notifications uses navigate with bundle and app', async () => {
+  it('Manage my notification preferences uses navigate with bundle and app', async () => {
     const notification = { ...makeNotification('1', false), application: 'advisor' };
     renderDrawerPanel([notification]);
 
@@ -269,7 +269,9 @@ describe('NotificationItem menu actions', () => {
     await userEvent.click(itemToggle);
 
     // Click the menu item
-    const menuItem = await screen.findByRole('menuitem', { name: 'Manage my event notifications' });
+    const menuItem = await screen.findByRole('menuitem', {
+      name: 'Manage my notification preferences',
+    });
     await userEvent.click(menuItem);
 
     expect(mockNavigate).toHaveBeenCalledTimes(1);

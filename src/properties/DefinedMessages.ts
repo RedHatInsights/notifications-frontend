@@ -155,13 +155,13 @@ export default defineMessages({
   },
   manageMyEventNotifications: {
     id: 'manageMyEventNotifications',
-    description: 'Manage my event notifications menu item',
-    defaultMessage: 'Manage my event notifications',
+    description: 'Manage my notification preferences menu item',
+    defaultMessage: 'Manage my notification preferences',
   },
   manageEventConfiguration: {
     id: 'manageEventConfiguration',
-    description: 'Manage event configuration menu item',
-    defaultMessage: 'Manage event configuration',
+    description: 'Configure events menu item',
+    defaultMessage: 'Configure events',
   },
   adminAccessRequired: {
     id: 'adminAccessRequired',
