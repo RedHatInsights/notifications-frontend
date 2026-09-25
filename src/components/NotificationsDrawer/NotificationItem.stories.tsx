@@ -114,8 +114,8 @@ export const AdminKebabMenu: Story = {
     expect(menuItems).toHaveLength(4);
     expect(menuItems[0]).toHaveTextContent('Mark as read');
     expect(menuItems[1]).toHaveTextContent('View in event log');
-    expect(menuItems[2]).toHaveTextContent('Manage my event notifications');
-    expect(menuItems[3]).toHaveTextContent('Manage event configuration');
+    expect(menuItems[2]).toHaveTextContent('Manage my notification preferences');
+    expect(menuItems[3]).toHaveTextContent('Configure events');
 
     const divider = await page.findByRole('separator');
     expect(divider).toBeInTheDocument();
@@ -150,7 +150,7 @@ export const NonAdminKebabMenu: Story = {
 
     const menuItems = await openKebabMenu(canvasElement);
     expect(menuItems).toHaveLength(4);
-    expect(menuItems[3]).toHaveTextContent('Manage event configuration');
+    expect(menuItems[3]).toHaveTextContent('Configure events');
     expect(menuItems[3]).toBeDisabled();
 
     const tooltipTrigger = menuItems[3].closest('span') ?? menuItems[3];

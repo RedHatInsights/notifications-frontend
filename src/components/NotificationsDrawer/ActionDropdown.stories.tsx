@@ -79,7 +79,7 @@ export const NonAdminUser: Story = {
     docs: {
       description: {
         story:
-          'Action dropdown for non-admin user. "Manage event configuration" is disabled with "Admin-access required" tooltip.',
+          'Action dropdown for non-admin user. "Configure events" is disabled with "Admin-access required" tooltip.',
       },
     },
   },
@@ -91,7 +91,7 @@ export const AdminUser: Story = {
     docs: {
       description: {
         story:
-          'Action dropdown for admin user. All menu items including "Manage event configuration" are enabled.',
+          'Action dropdown for admin user. All menu items including "Configure events" are enabled.',
       },
     },
   },

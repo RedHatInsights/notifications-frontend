@@ -178,10 +178,10 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     // "View event log" should always be present
     await expect(dropdown.getByRole('menuitem', { name: 'View event log' })).toBeVisible();
 
-    // "Manage my event notifications" should always be present
+    // "Manage my notification preferences" should always be present
     await expect(
       dropdown.getByRole('menuitem', {
-        name: 'Manage my event notifications',
+        name: 'Manage my notification preferences',
       })
     ).toBeVisible();
 
@@ -205,11 +205,11 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     console.log('Navigated to event log');
   });
 
-  test('"Manage my event notifications" navigates correctly', async ({ page }) => {
+  test('"Manage my notification preferences" navigates correctly', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
-    await drawerHelpers.clickActionItem(page, 'Manage my event notifications');
+    await drawerHelpers.clickActionItem(page, 'Manage my notification preferences');
 
     await page.waitForURL(/settings\/notifications\/user-preferences/, {
       timeout: TIMEOUTS.PAGE_LOAD,
@@ -218,7 +218,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     console.log('Navigated to notification preferences');
   });
 
-  test('"Manage event configuration" navigates correctly (admin only)', async ({ page }) => {
+  test('"Configure events" navigates correctly (admin only)', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -226,7 +226,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const dropdown = page.locator('#notifications-actions-dropdown');
     const configItem = dropdown.getByRole('menuitem', {
-      name: 'Manage event configuration',
+      name: 'Configure events',
     });
 
     await expect(configItem).toBeVisible();
@@ -238,7 +238,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     if (isDisabled) {
       // Non-admin account — item is present but disabled; navigation tested via RBAC test
       await drawerHelpers.closeActionsDropdown(page);
-      test.skip(true, 'Test account is non-admin — "Manage event configuration" is disabled');
+      test.skip(true, 'Test account is non-admin — "Configure events" is disabled');
       return;
     }
 
@@ -272,11 +272,9 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     await expect(dropdown.getByRole('menuitem', { name: /Mark as/ })).toBeVisible();
     await expect(dropdown.getByRole('menuitem', { name: 'View in event log' })).toBeVisible();
     await expect(
-      dropdown.getByRole('menuitem', { name: 'Manage my event notifications' })
+      dropdown.getByRole('menuitem', { name: 'Manage my notification preferences' })
     ).toBeVisible();
-    await expect(
-      dropdown.getByRole('menuitem', { name: 'Manage event configuration' })
-    ).toBeVisible();
+    await expect(dropdown.getByRole('menuitem', { name: 'Configure events' })).toBeVisible();
 
     // Close dropdown without navigating
     await kebab.click();
@@ -304,7 +302,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
     console.log('Per-notification "View in event log" navigated correctly');
   });
 
-  test('notification kebab "Manage my event notifications" navigates correctly', async ({
+  test('notification kebab "Manage my notification preferences" navigates correctly', async ({
     page,
   }) => {
     await drawerHelpers.openDrawer(page);
@@ -321,15 +319,15 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const dropdown = page.locator('#notification-item-dropdown');
     await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
-    await dropdown.getByRole('menuitem', { name: 'Manage my event notifications' }).click();
+    await dropdown.getByRole('menuitem', { name: 'Manage my notification preferences' }).click();
 
     await page.waitForURL(/settings\/notifications\/user-preferences/, {
       timeout: TIMEOUTS.PAGE_LOAD,
     });
-    console.log('Per-notification "Manage my event notifications" navigated correctly');
+    console.log('Per-notification "Manage my notification preferences" navigated correctly');
   });
 
-  test('notification kebab "Manage event configuration" navigates correctly', async ({ page }) => {
+  test('notification kebab "Configure events" navigates correctly', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -344,12 +342,12 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const dropdown = page.locator('#notification-item-dropdown');
     await expect(dropdown).toBeVisible({ timeout: TIMEOUTS.QUICK_CHECK });
-    await dropdown.getByRole('menuitem', { name: 'Manage event configuration' }).click();
+    await dropdown.getByRole('menuitem', { name: 'Configure events' }).click();
 
     await page.waitForURL(/settings\/notifications\/configure-events/, {
       timeout: TIMEOUTS.PAGE_LOAD,
     });
-    console.log('Per-notification "Manage event configuration" navigated correctly');
+    console.log('Per-notification "Configure events" navigated correctly');
   });
 
   // ── 8 & 9. Empty States ───────────────────────────────────────────
@@ -385,7 +383,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
   // ── 10. RBAC — "Manage event configuration" admin/non-admin state ──
 
-  test('"Manage event configuration" is visible and reflects RBAC state', async ({ page }) => {
+  test('"Configure events" is visible and reflects RBAC state', async ({ page }) => {
     await drawerHelpers.openDrawer(page);
     await drawerHelpers.waitForDrawerReady(page);
 
@@ -393,7 +391,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     const dropdown = page.locator('#notifications-actions-dropdown');
     const configItem = dropdown.getByRole('menuitem', {
-      name: 'Manage event configuration',
+      name: 'Configure events',
     });
 
     // The item is always rendered — disabled for non-admin, enabled for admin
@@ -405,9 +403,7 @@ test.describe('Notifications Drawer — Basic Usage', () => {
 
     expect(typeof isDisabled).toBe('boolean');
     console.log(
-      `"Manage event configuration" ${
-        isDisabled ? 'disabled (non-admin user)' : 'enabled (admin user)'
-      }`
+      `"Configure events" ${isDisabled ? 'disabled (non-admin user)' : 'enabled (admin user)'}`
     );
 
     await drawerHelpers.closeActionsDropdown(page);

@@ -107,13 +107,13 @@ describe('NotificationItem interactions', () => {
     expect(updateNotificationSelected).toHaveBeenCalledWith('1', true);
   });
 
-  it('calls onNavigateTo when "Manage event configuration" is clicked', async () => {
+  it('calls onNavigateTo when "Configure events" is clicked', async () => {
     const notification = makeNotification('1', false);
     const onNavigateTo = jest.fn();
     renderNotificationItem(notification, jest.fn(), jest.fn(), onNavigateTo);
 
     await userEvent.click(screen.getByRole('button', { name: 'Notification actions dropdown' }));
-    await userEvent.click(screen.getByText('Manage event configuration'));
+    await userEvent.click(screen.getByText('Configure events'));
 
     expect(onNavigateTo).toHaveBeenCalledWith(
       expect.stringContaining('/settings/notifications/configure-events')
