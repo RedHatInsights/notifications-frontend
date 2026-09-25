@@ -141,15 +141,15 @@ export const MultiSelectBehavior: Story = {
   },
 };
 
-export const Disabled: Story = {
+export const AlwaysEnabled: Story = {
   render: () => (
-    <InteractiveFilterDropdown initialFilters={[BUNDLE_UUIDS.rhel]} isDisabled={true} />
+    <InteractiveFilterDropdown initialFilters={[BUNDLE_UUIDS.rhel]} isDisabled={false} />
   ),
   parameters: {
     docs: {
       description: {
         story:
-          'Filter dropdown in disabled state (e.g., when there are no notifications). All menu items are disabled and cannot be interacted with.',
+          'Filter dropdown remains enabled even when there are no results. This ensures users can always change filters without getting stuck. Previously, empty results would disable the filter menu, requiring a "Reset" to recover.',
       },
     },
   },
