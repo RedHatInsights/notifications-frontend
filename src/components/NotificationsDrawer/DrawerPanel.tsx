@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import BulkSelect from '@redhat-cloud-services/frontend-components/BulkSelect';
 
@@ -29,8 +29,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
   const [initialOrderSnapshot, setInitialOrderSnapshot] = useState<string[]>([]);
-  const drawerBodyRef = useRef<HTMLDivElement | null>(null);
-  const scrollPositionRef = useRef<number>(0);
   const {
     state: { ready, ...state },
     updateNotificationRead,
@@ -59,14 +57,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
       setInitialOrderSnapshot(sorted.map((n) => n.id));
     }
   }, [state.notificationData, initialOrderSnapshot.length]);
-
-  // Find and store the scrollable drawer body element
-  useEffect(() => {
-    const drawerBody = document.querySelector('.pf-v6-c-notification-drawer__body');
-    if (drawerBody) {
-      drawerBodyRef.current = drawerBody as HTMLDivElement;
-    }
-  }, [ready]);
 
   const snapshotPositions = useMemo(
     () => new Map(initialOrderSnapshot.map((id, index) => [id, index])),
@@ -103,23 +93,6 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     setIsDropdownOpen(false);
   };
 
-  const onUpdateNotificationRead = (id: string, read: boolean) => {
-    // Capture current scroll position
-    if (drawerBodyRef.current) {
-      scrollPositionRef.current = drawerBodyRef.current.scrollTop;
-    }
-
-    // Update the notification
-    updateNotificationRead(id, read);
-
-    // Restore scroll position after React has rendered
-    requestAnimationFrame(() => {
-      if (drawerBodyRef.current) {
-        drawerBodyRef.current.scrollTop = scrollPositionRef.current;
-      }
-    });
-  };
-
   const selectAllNotifications = (selected: boolean) => {
     updateNotificationsSelected(selected);
   };
@@ -137,7 +110,10 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
 
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
 
-  const RenderNotifications = () => {
+  // Rendered by calling this function rather than as a <Component />: a component declared inside
+  // the render body is a new type on every render, so React would unmount and remount the whole
+  // list on each state change, resetting the drawer body's scroll position to the top.
+  const renderNotifications = () => {
     if (state.notificationData.length === 0) {
       return (
         <EmptyNotifications isOrgAdmin={isOrgAdmin} onLinkClick={onNotificationsDrawerClose} />
@@ -172,7 +148,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         notification={notification}
         onNavigateTo={onNavigateTo}
         updateNotificationSelected={updateNotificationSelected}
-        updateNotificationRead={onUpdateNotificationRead}
+        updateNotificationRead={updateNotificationRead}
         isOrgAdmin={isOrgAdmin}
       />
     ));
@@ -253,9 +229,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
         </div>
       )}
       <NotificationDrawerBody>
-        <NotificationDrawerList>
-          <RenderNotifications />
-        </NotificationDrawerList>
+        <NotificationDrawerList>{renderNotifications()}</NotificationDrawerList>
       </NotificationDrawerBody>
     </>
   );

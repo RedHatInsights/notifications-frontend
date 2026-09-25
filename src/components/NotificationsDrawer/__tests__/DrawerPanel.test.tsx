@@ -182,6 +182,29 @@ describe('DrawerPanel live notification ordering', () => {
   });
 });
 
+describe('DrawerPanel list stability', () => {
+  // RHCLOUD-51631: the list used to be rendered through a component declared inside the render
+  // body, so every state change remounted it and reset the drawer body's scroll to the top.
+  it('keeps the existing list DOM nodes when a notification is selected', () => {
+    const notifications = [
+      makeNotification('1', false),
+      makeNotification('2', false),
+      makeNotification('3', false),
+    ];
+    const { rerender } = renderDrawerPanel(notifications);
+
+    const itemsBefore = screen.getAllByLabelText(/^Notification item /);
+
+    // Checking an item's checkbox flips `selected` in the drawer state and re-renders the panel
+    setDrawerData([notifications[0], { ...notifications[1], selected: true }, notifications[2]]);
+    rerender(drawerPanelTree());
+
+    const itemsAfter = screen.getAllByLabelText(/^Notification item /);
+    expect(itemsAfter).toHaveLength(itemsBefore.length);
+    itemsAfter.forEach((item, index) => expect(item).toBe(itemsBefore[index]));
+  });
+});
+
 describe('DrawerPanel filtering with UUIDs', () => {
   it('filters notifications using bundleIdToNameMap', () => {
     const bundleIdToNameMap = new Map([
