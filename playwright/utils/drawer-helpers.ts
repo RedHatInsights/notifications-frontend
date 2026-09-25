@@ -112,7 +112,7 @@ export const drawerHelpers = {
     await markItem.click();
   },
 
-  /** Open the per-notification kebab and click "Manage event configuration". */
+  /** Open the per-notification kebab and click "Configure events". */
   async clickManageEvent(page: Page, notificationLocator: Locator): Promise<void> {
     const kebab = notificationLocator.locator('#notification-item-toggle');
     await kebab.click();
@@ -121,7 +121,7 @@ export const drawerHelpers = {
     });
     const manageItem = page
       .locator('#notification-item-dropdown')
-      .getByRole('menuitem', { name: 'Manage event configuration' });
+      .getByRole('menuitem', { name: 'Configure events' });
     await manageItem.click();
   },
 
