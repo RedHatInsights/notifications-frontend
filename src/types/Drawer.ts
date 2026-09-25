@@ -24,8 +24,9 @@ export type NotificationsPayload = {
 export type NotificationDrawerState = {
   notificationData: NotificationData[];
   count: number;
-  filters: string[];
+  filters: string[]; // Bundle IDs (UUIDs)
   filterConfig: FilterConfigItem[];
+  bundleIdToNameMap: Map<string, string>; // Maps bundle ID (UUID) to bundle name
   hasNotificationsPermissions: boolean;
   hasUnread: boolean;
   ready: boolean;
@@ -33,8 +34,8 @@ export type NotificationDrawerState = {
 };
 
 export interface FilterConfigItem {
-  title: string;
-  value: string;
+  title: string; // Display name (e.g., "Red Hat Enterprise Linux")
+  value: string; // Bundle ID (UUID)
 }
 
 export function isNotificationData(data: unknown): data is NotificationData {

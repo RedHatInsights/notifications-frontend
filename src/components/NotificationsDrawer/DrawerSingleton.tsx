@@ -25,6 +25,7 @@ const initialState: NotificationDrawerState = {
   count: 0,
   filters: [],
   filterConfig: [],
+  bundleIdToNameMap: new Map(),
   hasNotificationsPermissions: false,
   hasUnread: false,
   ready: false,
@@ -107,12 +108,24 @@ export class DrawerSingleton {
     }
     try {
       const response = await getBundleFacets({});
+
+      // Build mapping from bundle ID (UUID) to bundle name for client-side filtering
+      const bundleIdToNameMap = new Map<string, string>();
+
+      // Filter out lightwell bundle and build filter config with UUIDs
       DrawerSingleton._state.filterConfig = response
         .filter((bundle: Bundle) => bundle.name !== 'lightwell')
-        .map((bundle: Bundle) => ({
-          title: bundle.displayName,
-          value: bundle.name,
-        }));
+        .map((bundle: Bundle) => {
+          if (bundle.id) {
+            bundleIdToNameMap.set(bundle.id, bundle.name);
+          }
+          return {
+            title: bundle.displayName,
+            value: bundle.id || bundle.name, // Use ID (UUID) for API filtering
+          };
+        });
+
+      DrawerSingleton._state.bundleIdToNameMap = bundleIdToNameMap;
 
       DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
     } catch (error) {
@@ -120,15 +133,29 @@ export class DrawerSingleton {
     }
   };
 
-  private getNotifications = async () => {
+  private getNotifications = async (bundleIds?: string[]) => {
     try {
-      const data = await getDrawerEntries({
+      const params: {
+        limit: number;
+        sort_by: string;
+        startDate: string;
+        bundleIds?: Set<string>;
+      } = {
         limit: 50,
         sort_by: 'read:asc',
         startDate: getDateDaysAgo(7),
-      });
+      };
+
+      // Add bundle filter if provided
+      // API client expects Set<string>, not string[]
+      if (bundleIds && bundleIds.length > 0) {
+        params.bundleIds = new Set(bundleIds);
+      }
+
+      const data = await getDrawerEntries(params);
       DrawerSingleton._state.notificationData = data.data || [];
       DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
+
       DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
     } catch (error) {
       console.error('Unable to get Notifications ', error);
@@ -140,6 +167,7 @@ export class DrawerSingleton {
       const selected = DrawerSingleton._state.notificationData.filter(
         (notification) => notification.selected
       );
+
       await updateNotificationReadStatus({
         notification_ids: selected.map((notification) => notification.id),
         read_status: read,
@@ -152,6 +180,7 @@ export class DrawerSingleton {
               : notification
         );
         DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
+
         DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
       });
     } catch (e) {
@@ -161,7 +190,10 @@ export class DrawerSingleton {
 
   // helpers
   private hasUnreadNotifications = () => {
-    return DrawerSingleton._state.notificationData.some((notification) => !notification.read);
+    const hasUnread = DrawerSingleton._state.notificationData.some(
+      (notification) => !notification.read
+    );
+    return hasUnread;
   };
 
   public addNotification = (notification: NotificationData) => {
@@ -171,6 +203,7 @@ export class DrawerSingleton {
     if (isDuplicate) {
       return;
     }
+
     // Reassign rather than push: consumers memoize on the array reference, so an in-place
     // mutation leaves derived lists such as filteredNotifications stale
     DrawerSingleton._state.notificationData = [
@@ -185,6 +218,7 @@ export class DrawerSingleton {
       (notification) => (notification.id === id ? { ...notification, read } : notification)
     );
     DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
+
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
   public updateNotificationsSelected = (selected: boolean) => {
@@ -202,9 +236,15 @@ export class DrawerSingleton {
     );
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
-  public setFilters = (filters: string[]) => {
+  public setFilters = async (filters: string[]) => {
     DrawerSingleton.getState().filters = filters;
+
+    // Trigger immediate re-render to update UI (checkboxes, etc.)
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
+
+    // Re-fetch notifications from backend with the new filter
+    // Pass filters as bundleIds parameter
+    await this.getNotifications(filters.length > 0 ? filters : undefined);
   };
   public setHasNotificationsPermissions = (hasPermissions: boolean) => {
     DrawerSingleton.getState().hasNotificationsPermissions = hasPermissions;

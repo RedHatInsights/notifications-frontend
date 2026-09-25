@@ -80,6 +80,7 @@ describe('drawer live notifications over the websocket', () => {
       count: 0,
       filters: [],
       filterConfig: [],
+      bundleIdToNameMap: new Map(),
       hasNotificationsPermissions: false,
       hasUnread: false,
       ready: false,
@@ -129,10 +130,15 @@ describe('drawer live notifications over the websocket', () => {
 
   it('renders a live notification that matches an active filter', async () => {
     await renderDrawer([makeNotification('1', 60)]);
+
+    // Set up UUID-based filtering
+    const RHEL_UUID = 'uuid-rhel-123';
+    DrawerSingleton.getState().bundleIdToNameMap.set(RHEL_UUID, 'rhel');
+
     // The filtered list is memoized on the notificationData reference, so an in-place push
     // would leave it stale and the live notification would never appear
-    act(() => {
-      DrawerSingleton.Instance.setFilters(['rhel']);
+    await act(async () => {
+      await DrawerSingleton.Instance.setFilters([RHEL_UUID]);
     });
     expect(renderedTitles()).toEqual(['Notification 1']);
 
