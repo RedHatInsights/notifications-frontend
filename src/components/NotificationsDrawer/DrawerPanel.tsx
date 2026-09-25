@@ -200,7 +200,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
       >
         <FilterDropdown
           filterConfig={state.filterConfig}
-          isDisabled={state.notificationData.length === 0}
+          isDisabled={false}
           activeFilters={state.filters}
           setActiveFilters={setFilters}
           onFilterSelect={onFilterSelect}
