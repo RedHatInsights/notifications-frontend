@@ -197,7 +197,7 @@ export const DynamicURLGeneration: Story = {
 
     await userEvent.click(menuItems[1]);
     expect(onNavigateToSpy).toHaveBeenCalledWith(
-      '/settings/notifications/eventlog?service=vulnerability&event=Critical+vulnerability+detected'
+      '/settings/notifications/eventlog?service=rhel.vulnerability&event=Critical+vulnerability+detected'
     );
 
     onNavigateToSpy.mockClear();

@@ -32,6 +32,15 @@ export const linkTo = {
   splunk: () => '/integrations/splunk-setup',
 };
 
+/**
+ * Paths that live under our basename but are served by a different micro-frontend.
+ * They must not fall through to the catch-all redirect below: that redirect strips
+ * the query string, so deep links such as
+ * `/settings/notifications/user-preferences?bundle=console&app=rbac` would lose their
+ * params before Chrome finishes swapping in the owning module.
+ */
+const foreignModuleRoutes: string[] = ['user-preferences/*'];
+
 const EmptyPage: React.FunctionComponent = () => {
   const { getApp } = useChrome();
   if (getApp() === 'integrations') {
@@ -105,6 +114,9 @@ export const Routes: React.FunctionComponent = () => {
       <Route path={linkTo.notificationsLog()} element={<NotificationsLogRedirect />} />
       {pathRoutes.map((pathRoute) => (
         <Route key={pathRoute.path} path={pathRoute.path} element={<pathRoute.component />} />
+      ))}
+      {foreignModuleRoutes.map((path) => (
+        <Route key={path} path={path} element={null} />
       ))}
       <Route path="*" element={<Navigate to="/settings/notifications" replace />} />
     </DomRoutes>

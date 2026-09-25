@@ -119,4 +119,30 @@ describe('NotificationItem interactions', () => {
       expect.stringContaining('/settings/notifications/configure-events')
     );
   });
+
+  it('builds the "View in event log" service filter as "<bundle>.<application>"', async () => {
+    const notification = { ...makeNotification('1', false), application: 'vulnerability' };
+    const onNavigateTo = jest.fn();
+    renderNotificationItem(notification, jest.fn(), jest.fn(), onNavigateTo);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Notification actions dropdown' }));
+    await userEvent.click(screen.getByText('View in event log'));
+
+    const url = new URL(onNavigateTo.mock.calls[0][0], 'https://console.redhat.com');
+    expect(url.searchParams.get('service')).toBe('rhel.vulnerability');
+    expect(url.searchParams.get('event')).toBe('Notification 1');
+  });
+
+  it('falls back to a bundle filter when the notification has no application', async () => {
+    const notification = makeNotification('1', false);
+    const onNavigateTo = jest.fn();
+    renderNotificationItem(notification, jest.fn(), jest.fn(), onNavigateTo);
+
+    await userEvent.click(screen.getByRole('button', { name: 'Notification actions dropdown' }));
+    await userEvent.click(screen.getByText('View in event log'));
+
+    const url = new URL(onNavigateTo.mock.calls[0][0], 'https://console.redhat.com');
+    expect(url.searchParams.get('service')).toBeNull();
+    expect(url.searchParams.get('bundle')).toBe('rhel');
+  });
 });

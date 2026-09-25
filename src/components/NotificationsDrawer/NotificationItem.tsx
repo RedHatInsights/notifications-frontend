@@ -81,11 +81,15 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     <DropdownItem
       key="view-event-log"
       onClick={() => {
-        const url = `/settings/notifications/eventlog?${new URLSearchParams({
-          service: notification.source,
-          event: notification.title,
-        }).toString()}`;
-        onNavigateTo(url);
+        // The event log's service filter is keyed on "<bundle>.<application>"; `source` is a
+        // display label that does not reliably match either one.
+        const params = new URLSearchParams(
+          notification.application
+            ? { service: `${notification.bundle}.${notification.application}` }
+            : { bundle: notification.bundle }
+        );
+        params.set('event', notification.title);
+        onNavigateTo(`/settings/notifications/eventlog?${params.toString()}`);
       }}
     >
       {intl.formatMessage(messages.viewInEventLog)}
