@@ -50,16 +50,19 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
   };
 
   const onNotificationBodyClick = () => {
-    updateNotificationReadStatus({
-      notification_ids: [notification.id],
-      read_status: !notification.read,
-    })
-      .then(() => {
-        updateNotificationRead(notification.id, !notification.read);
+    // Only mark as read if not already read
+    if (!notification.read) {
+      updateNotificationReadStatus({
+        notification_ids: [notification.id],
+        read_status: true,
       })
-      .catch((e) => {
-        console.error('failed to update notification read status', e);
-      });
+        .then(() => {
+          updateNotificationRead(notification.id, true);
+        })
+        .catch((e) => {
+          console.error('failed to update notification read status', e);
+        });
+    }
   };
 
   const onMarkAsRead = () => {
@@ -197,7 +200,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           }
         }}
         onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+          const target = e.target as HTMLElement;
+          const isKeyboardOnLink = target.closest('a') !== null;
+          if ((e.key === 'Enter' || e.key === ' ') && !isKeyboardOnLink) {
             e.preventDefault();
             onNotificationBodyClick();
           }
@@ -206,15 +211,17 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         style={{ cursor: 'pointer' }}
       >
         <a
-          href="#"
+          href={`/settings/notifications/user-preferences?${new URLSearchParams({
+            bundle: notification.bundle,
+            ...(notification.application && { app: notification.application }),
+          }).toString()}`}
           onClick={(e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const url = `/settings/notifications/user-preferences?${new URLSearchParams({
-              bundle: notification.bundle,
-              ...(notification.application && { app: notification.application }),
-            }).toString()}`;
-            onNavigateTo(url);
+            // Only intercept ordinary clicks; let browser handle context menu, new tab, etc.
+            if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
+              e.preventDefault();
+              e.stopPropagation();
+              onNavigateTo(e.currentTarget.href);
+            }
           }}
           style={{ textDecoration: 'none' }}
         >
