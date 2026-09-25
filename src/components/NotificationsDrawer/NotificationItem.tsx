@@ -49,12 +49,20 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     updateNotificationSelected(notification.id, !notification.selected);
   };
 
-  const onNotificationClick = () => {
-    const url = `/settings/notifications/user-preferences?${new URLSearchParams({
-      bundle: notification.bundle,
-      ...(notification.application && { app: notification.application }),
-    }).toString()}`;
-    onNavigateTo(url);
+  const onNotificationBodyClick = () => {
+    // Only mark as read if not already read
+    if (!notification.read) {
+      updateNotificationReadStatus({
+        notification_ids: [notification.id],
+        read_status: true,
+      })
+        .then(() => {
+          updateNotificationRead(notification.id, true);
+        })
+        .catch((e) => {
+          console.error('failed to update notification read status', e);
+        });
+    }
   };
 
   const onMarkAsRead = () => {
@@ -187,19 +195,44 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       </NotificationDrawerListItemHeader>
       <NotificationDrawerListItemBody
         timestamp={<DateFormat date={notification.created} />}
-        onClick={onNotificationClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
+        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
+          const target = e.target as HTMLElement;
+          // Check if click target or any parent is a link
+          const isClickOnLink = target.closest('a') !== null;
+          if (!isClickOnLink) {
+            onNotificationBodyClick();
+          }
+        }}
+        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
+          const target = e.target as HTMLElement;
+          const isKeyboardOnLink = target.closest('a') !== null;
+          if ((e.key === 'Enter' || e.key === ' ') && !isKeyboardOnLink) {
             e.preventDefault();
-            onNotificationClick();
+            onNotificationBodyClick();
           }
         }}
         tabIndex={0}
         style={{ cursor: 'pointer' }}
       >
-        <Label variant="outline" isCompact className="pf-u-mb-md">
-          {notification.source}
-        </Label>
+        <a
+          href={`/settings/notifications/user-preferences?${new URLSearchParams({
+            bundle: notification.bundle,
+            ...(notification.application && { app: notification.application }),
+          }).toString()}`}
+          onClick={(e) => {
+            // Only intercept ordinary clicks; let browser handle context menu, new tab, etc.
+            if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
+              e.preventDefault();
+              e.stopPropagation();
+              onNavigateTo(e.currentTarget.href);
+            }
+          }}
+          style={{ textDecoration: 'none' }}
+        >
+          <Label variant="outline" isCompact className="pf-u-mb-md">
+            {notification.source}
+          </Label>
+        </a>
         <span className="pf-u-display-block">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
         </span>
