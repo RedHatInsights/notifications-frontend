@@ -145,6 +145,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       aria-label={`Notification item ${notification.title}`}
       variant="info"
       isRead={notification.read}
+      onClick={onNotificationClick}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
         <div onClick={(e) => e.stopPropagation()}>
@@ -181,18 +182,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <DropdownList>{notificationDropdownItems}</DropdownList>
         </Dropdown>
       </NotificationDrawerListItemHeader>
-      <NotificationDrawerListItemBody
-        timestamp={<DateFormat date={notification.created} />}
-        onClick={onNotificationClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onNotificationClick();
-          }
-        }}
-        tabIndex={0}
-        style={{ cursor: 'pointer' }}
-      >
+      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
         <Label variant="outline" isCompact className="pf-u-mb-md">
           {notification.source}
         </Label>
