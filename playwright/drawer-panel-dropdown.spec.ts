@@ -43,11 +43,9 @@ test.describe('Notifications Drawer — Panel Dropdown Menu', () => {
     // Navigation items
     await expect(dropdown.getByRole('menuitem', { name: 'View event log' })).toBeVisible();
     await expect(
-      dropdown.getByRole('menuitem', { name: 'Manage my event notifications' })
+      dropdown.getByRole('menuitem', { name: 'Manage my notification preferences' })
     ).toBeVisible();
-    await expect(
-      dropdown.getByRole('menuitem', { name: 'Manage event configuration' })
-    ).toBeVisible();
+    await expect(dropdown.getByRole('menuitem', { name: 'Configure events' })).toBeVisible();
 
     await drawerHelpers.closeActionsDropdown(page);
   });
