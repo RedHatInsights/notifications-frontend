@@ -49,14 +49,6 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     updateNotificationSelected(notification.id, !notification.selected);
   };
 
-  const onNotificationClick = () => {
-    const url = `/settings/notifications/user-preferences?${new URLSearchParams({
-      bundle: notification.bundle,
-      ...(notification.application && { app: notification.application }),
-    }).toString()}`;
-    onNavigateTo(url);
-  };
-
   const onMarkAsRead = () => {
     updateNotificationReadStatus({
       notification_ids: [notification.id],
@@ -185,21 +177,28 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <DropdownList>{notificationDropdownItems}</DropdownList>
         </Dropdown>
       </NotificationDrawerListItemHeader>
-      <NotificationDrawerListItemBody
-        timestamp={<DateFormat date={notification.created} />}
-        onClick={onNotificationClick}
-        onKeyDown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            onNotificationClick();
-          }
-        }}
-        tabIndex={0}
-        style={{ cursor: 'pointer' }}
-      >
-        <Label variant="outline" isCompact className="pf-u-mb-md">
-          {notification.source}
-        </Label>
+      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
+        <a
+          href={`/settings/notifications/user-preferences?${new URLSearchParams({
+            bundle: notification.bundle,
+            ...(notification.application && { app: notification.application }),
+          }).toString()}`}
+          onClick={(e) => {
+            // Only intercept ordinary clicks; let browser handle context menu, new tab, etc.
+            if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
+              e.preventDefault();
+              e.stopPropagation();
+              // Extract pathname and search from the computed href
+              const url = new URL(e.currentTarget.href);
+              onNavigateTo(url.pathname + url.search);
+            }
+          }}
+          style={{ textDecoration: 'none' }}
+        >
+          <Label variant="outline" isCompact className="pf-u-mb-md">
+            {notification.source}
+          </Label>
+        </a>
         <span className="pf-u-display-block">
           <ReactMarkdown remarkPlugins={[remarkGfm]}>{notification.description}</ReactMarkdown>
         </span>
