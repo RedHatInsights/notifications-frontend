@@ -49,22 +49,6 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
     updateNotificationSelected(notification.id, !notification.selected);
   };
 
-  const onNotificationBodyClick = () => {
-    // Only mark as read if not already read
-    if (!notification.read) {
-      updateNotificationReadStatus({
-        notification_ids: [notification.id],
-        read_status: true,
-      })
-        .then(() => {
-          updateNotificationRead(notification.id, true);
-        })
-        .catch((e) => {
-          console.error('failed to update notification read status', e);
-        });
-    }
-  };
-
   const onMarkAsRead = () => {
     updateNotificationReadStatus({
       notification_ids: [notification.id],
@@ -189,27 +173,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
           <DropdownList>{notificationDropdownItems}</DropdownList>
         </Dropdown>
       </NotificationDrawerListItemHeader>
-      <NotificationDrawerListItemBody
-        timestamp={<DateFormat date={notification.created} />}
-        onClick={(e: React.MouseEvent<HTMLDivElement>) => {
-          const target = e.target as HTMLElement;
-          // Check if click target or any parent is a link
-          const isClickOnLink = target.closest('a') !== null;
-          if (!isClickOnLink) {
-            onNotificationBodyClick();
-          }
-        }}
-        onKeyDown={(e: React.KeyboardEvent<HTMLDivElement>) => {
-          const target = e.target as HTMLElement;
-          const isKeyboardOnLink = target.closest('a') !== null;
-          if ((e.key === 'Enter' || e.key === ' ') && !isKeyboardOnLink) {
-            e.preventDefault();
-            onNotificationBodyClick();
-          }
-        }}
-        tabIndex={0}
-        style={{ cursor: 'pointer' }}
-      >
+      <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
         <a
           href={`/settings/notifications/user-preferences?${new URLSearchParams({
             bundle: notification.bundle,
