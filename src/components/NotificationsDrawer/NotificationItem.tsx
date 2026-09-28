@@ -220,7 +220,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             if (e.button === 0 && !e.metaKey && !e.ctrlKey) {
               e.preventDefault();
               e.stopPropagation();
-              onNavigateTo(e.currentTarget.href);
+              // Extract pathname and search from the computed href
+              const url = new URL(e.currentTarget.href);
+              onNavigateTo(url.pathname + url.search);
             }
           }}
           style={{ textDecoration: 'none' }}
