@@ -119,4 +119,17 @@ describe('NotificationItem interactions', () => {
       expect.stringContaining('/settings/notifications/configure-events')
     );
   });
+
+  it('calls onNavigateTo when source label link is clicked', async () => {
+    const notification = makeNotification('1', false);
+    const onNavigateTo = jest.fn();
+    renderNotificationItem(notification, jest.fn(), jest.fn(), onNavigateTo);
+
+    const sourceLink = screen.getByRole('link');
+    await userEvent.click(sourceLink);
+
+    expect(onNavigateTo).toHaveBeenCalledWith(
+      expect.stringContaining('/settings/notifications/user-preferences')
+    );
+  });
 });
