@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NotificationBadge } from '@patternfly/react-core/dist/dynamic/components/NotificationBadge';
 import { ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
@@ -18,12 +18,14 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
     state: { hasUnread, ready, notificationData },
   } = useNotificationDrawer();
   const [shouldNotify, setShouldNotify] = useState(false);
+  const prevCountRef = useRef(0);
   const unreadCount = (notificationData ?? []).filter((n) => !n.read).length;
 
   useEffect(() => {
-    if (unreadCount > 0) {
+    if (unreadCount > prevCountRef.current) {
       setShouldNotify(true);
     }
+    prevCountRef.current = unreadCount;
   }, [unreadCount]);
 
   return (
