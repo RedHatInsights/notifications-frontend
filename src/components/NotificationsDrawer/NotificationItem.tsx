@@ -18,6 +18,7 @@ import {
   DropdownList,
 } from '@patternfly/react-core/dist/dynamic/components/Dropdown';
 import { Divider } from '@patternfly/react-core/dist/dynamic/components/Divider';
+import { Flex } from '@patternfly/react-core/dist/dynamic/layouts/Flex';
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
@@ -143,39 +144,45 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       isRead={notification.read}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
-        <div onClick={(e) => e.stopPropagation()}>
-          <Checkbox
-            isChecked={notification.selected}
-            onChange={onCheckboxToggle}
-            id="selected-checkbox"
-            name="selected-checkbox"
-          />
-        </div>
-        <Dropdown
-          toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
-            <MenuToggle
-              ref={toggleRef}
-              aria-label="Notification actions dropdown"
-              onClick={(e) => {
-                e.stopPropagation();
-                setIsDropdownOpen(!isDropdownOpen);
-              }}
-              id="notification-item-toggle"
-              isExpanded={isDropdownOpen}
-              variant="plain"
-            >
-              <EllipsisVIcon />
-            </MenuToggle>
-          )}
-          isOpen={isDropdownOpen}
-          onOpenChange={setIsDropdownOpen}
-          popperProps={{
-            position: PopoverPosition.right,
-          }}
-          id="notification-item-dropdown"
+        <Flex
+          flexWrap={{ default: 'nowrap' }}
+          alignItems={{ default: 'alignItemsCenter' }}
+          spaceItems={{ default: 'spaceItemsXs' }}
         >
-          <DropdownList>{notificationDropdownItems}</DropdownList>
-        </Dropdown>
+          <div onClick={(e) => e.stopPropagation()}>
+            <Checkbox
+              isChecked={notification.selected}
+              onChange={onCheckboxToggle}
+              id="selected-checkbox"
+              name="selected-checkbox"
+            />
+          </div>
+          <Dropdown
+            toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
+              <MenuToggle
+                ref={toggleRef}
+                aria-label="Notification actions dropdown"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDropdownOpen(!isDropdownOpen);
+                }}
+                id="notification-item-toggle"
+                isExpanded={isDropdownOpen}
+                variant="plain"
+              >
+                <EllipsisVIcon />
+              </MenuToggle>
+            )}
+            isOpen={isDropdownOpen}
+            onOpenChange={setIsDropdownOpen}
+            popperProps={{
+              position: PopoverPosition.right,
+            }}
+            id="notification-item-dropdown"
+          >
+            <DropdownList>{notificationDropdownItems}</DropdownList>
+          </Dropdown>
+        </Flex>
       </NotificationDrawerListItemHeader>
       <NotificationDrawerListItemBody timestamp={<DateFormat date={notification.created} />}>
         <a
