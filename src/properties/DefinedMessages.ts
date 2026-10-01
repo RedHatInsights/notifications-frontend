@@ -204,6 +204,16 @@ export default defineMessages({
     description: 'View in event log menu item',
     defaultMessage: 'View in event log',
   },
+  drawerSubtitle: {
+    id: 'drawerSubtitle',
+    description: 'Subtitle below the notifications drawer header',
+    defaultMessage: 'Showing up to {count} most recent notifications.',
+  },
+  viewAll: {
+    id: 'viewAll',
+    description: 'Link to the event log from the notifications drawer subtitle',
+    defaultMessage: 'View all',
+  },
   readOnlyEmailTooltip: {
     id: 'readOnlyEmailTooltip',
     description: 'Tooltip for read-only system email integrations',

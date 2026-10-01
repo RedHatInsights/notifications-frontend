@@ -9,14 +9,19 @@ import {
 } from '@patternfly/react-core/dist/dynamic/components/NotificationDrawer';
 import { LabelGroup } from '@patternfly/react-core/dist/dynamic/components/Label';
 import { Label } from '@patternfly/react-core/dist/dynamic/components/Label';
+import { Button } from '@patternfly/react-core/dist/dynamic/components/Button';
+import { Content } from '@patternfly/react-core/dist/dynamic/components/Content';
 import Spinner from '@redhat-cloud-services/frontend-components/Spinner';
 
 import orderBy from 'lodash/orderBy';
+import { useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 import NotificationItem from './NotificationItem';
 import { EmptyNotifications } from './EmptyNotifications';
 import useNotificationDrawer from '../../hooks/useNotificationDrawer';
 import { ActionDropdown, FilterDropdown } from './Dropdowns';
+import { MAX_NOTIFICATIONS } from './DrawerSingleton';
+import messages from '../../properties/DefinedMessages';
 
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
@@ -25,6 +30,7 @@ export type DrawerPanelProps = {
 
 const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
   const { auth } = useChrome();
+  const intl = useIntl();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [isOrgAdmin, setIsOrgAdmin] = useState(false);
   const [isFilterDropdownOpen, setIsFilterDropdownOpen] = useState(false);
@@ -217,6 +223,18 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
           isOrgAdmin={isOrgAdmin}
         />
       </NotificationDrawerHeader>
+      <div className="pf-v6-u-px-md pf-v6-u-pb-sm">
+        <Content component="small">
+          {intl.formatMessage(messages.drawerSubtitle, { count: MAX_NOTIFICATIONS })}{' '}
+          <Button
+            variant="link"
+            isInline
+            onClick={() => onNavigateTo('/settings/notifications/eventlog')}
+          >
+            {intl.formatMessage(messages.viewAll)}
+          </Button>
+        </Content>
+      </div>
       {state.filters.length > 0 && (
         <div className="pf-v6-u-px-md pf-v6-u-pb-sm">
           <LabelGroup>

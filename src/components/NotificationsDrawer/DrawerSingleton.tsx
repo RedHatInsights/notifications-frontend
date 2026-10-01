@@ -20,7 +20,7 @@ interface Bundle {
   children: Bundle[];
 }
 
-const MAX_NOTIFICATIONS = 50;
+export const MAX_NOTIFICATIONS = 50;
 
 // Live arrivals are appended to the fetched page, so drop the oldest to keep the drawer
 // showing the same newest MAX_NOTIFICATIONS entries a page refresh would load
