@@ -246,6 +246,32 @@ describe('DrawerPanel filtering with UUIDs', () => {
   });
 });
 
+describe('DrawerPanel subtitle', () => {
+  beforeEach(() => {
+    mockNavigate.mockClear();
+  });
+
+  it('tells the user the list is capped at the newest 50 notifications', () => {
+    renderDrawerPanel([makeNotification('1', false)]);
+
+    expect(screen.getByText(/Showing up to 50 most recent notifications\./)).toBeInTheDocument();
+  });
+
+  it('shows the subtitle even when there are no notifications', () => {
+    renderDrawerPanel([]);
+
+    expect(screen.getByText(/Showing up to 50 most recent notifications\./)).toBeInTheDocument();
+  });
+
+  it('navigates to the event log when View all is clicked', async () => {
+    renderDrawerPanel([makeNotification('1', false)]);
+
+    await userEvent.click(screen.getByRole('button', { name: 'View all' }));
+
+    expect(mockNavigate).toHaveBeenCalledWith('/settings/notifications/eventlog');
+  });
+});
+
 describe('NotificationItem menu actions', () => {
   beforeEach(() => {
     mockNavigate.mockClear();
