@@ -66,3 +66,62 @@ describe('DrawerSingleton.addNotification', () => {
     expect(DrawerSingleton.getState().notificationData.map((n) => n.id)).toEqual(['1', '2']);
   });
 });
+
+describe('DrawerSingleton live notification cap', () => {
+  // Minute-spaced timestamps, oldest first: aged(0) is the oldest
+  const aged = (id: string, index: number, read = false): NotificationData => ({
+    ...makeNotification(id, read),
+    created: new Date(Date.UTC(2026, 0, 1, 0, index)).toISOString(),
+  });
+
+  const fillToCap = (DrawerSingleton: ReturnType<typeof loadSingleton>) => {
+    for (let i = 0; i < 50; i++) {
+      DrawerSingleton.Instance.addNotification(aged(`${i}`, i));
+    }
+  };
+
+  it('keeps at most 50 notifications as live ones arrive', () => {
+    const DrawerSingleton = loadSingleton();
+    fillToCap(DrawerSingleton);
+    expect(DrawerSingleton.getState().notificationData).toHaveLength(50);
+
+    DrawerSingleton.Instance.addNotification(aged('live-1', 100));
+    DrawerSingleton.Instance.addNotification(aged('live-2', 101));
+
+    expect(DrawerSingleton.getState().notificationData).toHaveLength(50);
+  });
+
+  it('evicts the oldest notification and keeps the newest arrival', () => {
+    const DrawerSingleton = loadSingleton();
+    fillToCap(DrawerSingleton);
+
+    DrawerSingleton.Instance.addNotification(aged('live', 100));
+
+    const ids = DrawerSingleton.getState().notificationData.map((n) => n.id);
+    expect(ids).toContain('live');
+    expect(ids).not.toContain('0');
+    expect(ids).toContain('1');
+  });
+
+  it('evicts by creation time, not arrival order', () => {
+    const DrawerSingleton = loadSingleton();
+    fillToCap(DrawerSingleton);
+
+    // A late-arriving but older-than-everything notification is the one that drops out
+    DrawerSingleton.Instance.addNotification(aged('stale', -100));
+
+    const ids = DrawerSingleton.getState().notificationData.map((n) => n.id);
+    expect(ids).not.toContain('stale');
+    expect(ids).toContain('0');
+  });
+
+  it('caps the unread count that drives the bell badge', () => {
+    const DrawerSingleton = loadSingleton();
+    for (let i = 0; i < 60; i++) {
+      DrawerSingleton.Instance.addNotification(aged(`${i}`, i));
+    }
+
+    const unread = DrawerSingleton.getState().notificationData.filter((n) => !n.read);
+    expect(unread).toHaveLength(50);
+  });
+});

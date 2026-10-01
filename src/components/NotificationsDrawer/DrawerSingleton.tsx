@@ -20,6 +20,26 @@ interface Bundle {
   children: Bundle[];
 }
 
+const MAX_NOTIFICATIONS = 50;
+
+// Live arrivals are appended to the fetched page, so drop the oldest to keep the drawer
+// showing the same newest MAX_NOTIFICATIONS entries a page refresh would load
+const trimToNewest = (notifications: NotificationData[]) => {
+  if (notifications.length <= MAX_NOTIFICATIONS) {
+    return notifications;
+  }
+
+  const keptIds = new Set(
+    notifications
+      .slice()
+      .sort((a, b) => new Date(b.created).getTime() - new Date(a.created).getTime())
+      .slice(0, MAX_NOTIFICATIONS)
+      .map((notification) => notification.id)
+  );
+
+  return notifications.filter((notification) => keptIds.has(notification.id));
+};
+
 const initialState: NotificationDrawerState = {
   notificationData: [],
   count: 0,
@@ -141,7 +161,7 @@ export class DrawerSingleton {
         startDate: string;
         bundleIds?: Set<string>;
       } = {
-        limit: 50,
+        limit: MAX_NOTIFICATIONS,
         sort_by: 'read:asc',
         startDate: getDateDaysAgo(7),
       };
@@ -206,10 +226,10 @@ export class DrawerSingleton {
 
     // Reassign rather than push: consumers memoize on the array reference, so an in-place
     // mutation leaves derived lists such as filteredNotifications stale
-    DrawerSingleton._state.notificationData = [
+    DrawerSingleton._state.notificationData = trimToNewest([
       ...DrawerSingleton._state.notificationData,
       notification,
-    ];
+    ]);
     DrawerSingleton._state.hasUnread = this.hasUnreadNotifications();
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
