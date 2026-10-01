@@ -47,6 +47,7 @@ const initialState: NotificationDrawerState = {
   filterConfig: [],
   bundleIdToNameMap: new Map(),
   hasNotificationsPermissions: false,
+  isNotificationsAdmin: undefined,
   hasUnread: false,
   ready: false,
   initializing: false,
@@ -268,6 +269,10 @@ export class DrawerSingleton {
   };
   public setHasNotificationsPermissions = (hasPermissions: boolean) => {
     DrawerSingleton.getState().hasNotificationsPermissions = hasPermissions;
+    DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
+  };
+  public setIsNotificationsAdmin = (isAdmin: boolean | undefined) => {
+    DrawerSingleton.getState().isNotificationsAdmin = isAdmin;
     DrawerSingleton._subs.forEach((sub) => sub.rerenderer());
   };
   public setFilterConfig = (filterConfig: FilterConfigItem[]) => {
