@@ -28,6 +28,9 @@ export type NotificationDrawerState = {
   filterConfig: FilterConfigItem[];
   bundleIdToNameMap: Map<string, string>; // Maps bundle ID (UUID) to bundle name
   hasNotificationsPermissions: boolean;
+  // `undefined` until the permission check resolves, so the bell can tell "still loading" apart
+  // from "denied" and avoid flashing the no-access state at an admin during page load
+  isNotificationsAdmin: boolean | undefined;
   hasUnread: boolean;
   ready: boolean;
   initializing: boolean;
