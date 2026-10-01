@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import React from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { NotificationBadge } from '@patternfly/react-core/dist/dynamic/components/NotificationBadge';
 import { ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
@@ -17,7 +17,16 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
   const {
     state: { hasUnread, ready, notificationData },
   } = useNotificationDrawer();
+  const [shouldNotify, setShouldNotify] = useState(false);
+  const prevCountRef = useRef(0);
   const unreadCount = (notificationData ?? []).filter((n) => !n.read).length;
+
+  useEffect(() => {
+    if (unreadCount > prevCountRef.current) {
+      setShouldNotify(true);
+    }
+    prevCountRef.current = unreadCount;
+  }, [unreadCount]);
 
   return (
     <ToolbarItem className="pf-v6-u-mx-0">
@@ -41,6 +50,8 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
           isDisabled={!ready}
           aria-label="Notifications"
           isExpanded={isNotificationDrawerExpanded}
+          shouldNotify={shouldNotify}
+          onAnimationEnd={() => setShouldNotify(false)}
         ></NotificationBadge>
       </Tooltip>
     </ToolbarItem>
