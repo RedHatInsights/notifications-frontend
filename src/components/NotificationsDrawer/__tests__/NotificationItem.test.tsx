@@ -77,6 +77,18 @@ describe('NotificationItem variant based on read status', () => {
   });
 });
 
+describe('NotificationItem hover styling', () => {
+  // pf-m-hoverable applies `cursor: pointer` to the whole item, which is misleading
+  // because only the source label, description links, checkbox and kebab are clickable.
+  it('is not hoverable', () => {
+    const notification = makeNotification('1', false);
+    renderNotificationItem(notification);
+
+    const listItem = screen.getByRole('listitem');
+    expect(listItem).not.toHaveClass('pf-m-hoverable');
+  });
+});
+
 describe('NotificationItem read/unread toggle', () => {
   it('shows "Mark as read" option when notification is unread', async () => {
     const notification = makeNotification('1', false);

@@ -142,6 +142,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       aria-label={`Notification item ${notification.title}`}
       variant="info"
       isRead={notification.read}
+      // The item itself is not clickable (only the source label, links in the
+      // description, the checkbox and the kebab are), so suppress PatternFly's
+      // hoverable styling, which applies `cursor: pointer` to the whole item.
+      isHoverable={false}
     >
       <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
         <Flex
