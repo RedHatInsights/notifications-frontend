@@ -6,6 +6,7 @@ import { important } from 'csx';
 import { FieldArrayRenderProps, FormikProps } from 'formik';
 import produce, { Draft, castDraft } from 'immer';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { DeepPartial } from 'ts-essentials';
 import { cssRaw, style } from 'typestyle';
 
@@ -36,6 +37,16 @@ export type BehaviorGroupFormTableProps = FieldArrayRenderProps & {
 };
 
 type FormType = DeepPartial<BehaviorGroup | NewBehaviorGroup>;
+
+const messages = defineMessages({
+  addAction: {
+    id: 'behaviorGroup.formActionsTable.addAction',
+    defaultMessage: 'Add action',
+  },
+});
+
+const DELETE_ACTION_ARIA = 'delete-action';
+const FORM_ARIA = 'behavior-group-actions-form';
 
 const tableHeaderClassName = style({
   $nest: {
@@ -154,6 +165,7 @@ const emptySpan = () => <span />;
 export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGroupFormTableProps> = (
   props
 ) => {
+  const intl = useIntl();
   const { values, setValues, errors, touched, setFieldTouched } = props.form;
   const actions = React.useMemo<ReadonlyArray<Action | undefined>>(
     () => values.actions ?? ([] as ReadonlyArray<Action>),
@@ -225,7 +237,7 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
             title: (
               <Button
                 icon={<MinusCircleIcon />}
-                aria-label="delete-action"
+                aria-label={DELETE_ACTION_ARIA}
                 variant={ButtonVariant.plain}
               />
             ),
@@ -243,7 +255,7 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
   return (
     <>
       <Table
-        aria-label="behavior-group-actions-form"
+        aria-label={FORM_ARIA}
         rows={rows}
         cells={cells}
         actionResolver={actionResolver}
@@ -264,7 +276,7 @@ export const BehaviorGroupFormActionsTable: React.FunctionComponent<BehaviorGrou
           icon={<PlusCircleIcon />}
           onClick={addAction}
         >
-          Add action
+          {intl.formatMessage(messages.addAction)}
         </Button>
       </GridItem>
     </>

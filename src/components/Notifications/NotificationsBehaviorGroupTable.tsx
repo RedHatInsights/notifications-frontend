@@ -10,6 +10,7 @@ import {
   Tr,
 } from '@patternfly/react-table/dist/dynamic/components/Table';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { BehaviorGroupContent } from '../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroupNotificationRow } from '../../pages/Notifications/List/useBehaviorGroupNotificationRows';
@@ -33,6 +34,25 @@ export enum NotificationsTableColumns {
 
 export type OnThresholdChange = (notificationId: UUID, threshold: number) => void;
 
+const messages = defineMessages({
+  tableAria: {
+    id: 'notifications.behaviorGroupTable.tableAria',
+    defaultMessage: 'Notifications',
+  },
+  eventType: {
+    id: 'notifications.behaviorGroupTable.eventType',
+    defaultMessage: 'Event Type',
+  },
+  service: {
+    id: 'notifications.behaviorGroupTable.service',
+    defaultMessage: 'Service',
+  },
+  configuration: {
+    id: 'notifications.behaviorGroupTable.configuration',
+    defaultMessage: 'Configuration',
+  },
+});
+
 export interface NotificationsBehaviorGroupTableProps {
   behaviorGroupContent: BehaviorGroupContent;
   notifications: Array<BehaviorGroupNotificationRow>;
@@ -49,6 +69,7 @@ export interface NotificationsBehaviorGroupTableProps {
 
 export const NotificationsBehaviorGroupTable = WithOuia<NotificationsBehaviorGroupTableProps>(
   (props) => {
+    const intl = useIntl();
     const callbacks: Callbacks | undefined = React.useMemo(() => {
       if (props.onStartEditing && props.onFinishEditing && props.onCancelEditing) {
         return {
@@ -123,7 +144,7 @@ export const NotificationsBehaviorGroupTable = WithOuia<NotificationsBehaviorGro
 
     return (
       <TableComposable
-        aria-label="Notifications"
+        aria-label={intl.formatMessage(messages.tableAria)}
         isStickyHeader={true}
         variant={TableVariant.compact}
         id="configure-events-table"
@@ -131,10 +152,14 @@ export const NotificationsBehaviorGroupTable = WithOuia<NotificationsBehaviorGro
         <Thead>
           <Tr>
             <Th />
-            <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>Event Type</Th>
-            <Th sort={sortOptions[NotificationsTableColumns.APPLICATION]}>Service</Th>
+            <Th sort={sortOptions[NotificationsTableColumns.EVENT]}>
+              {intl.formatMessage(messages.eventType)}
+            </Th>
+            <Th sort={sortOptions[NotificationsTableColumns.APPLICATION]}>
+              {intl.formatMessage(messages.service)}
+            </Th>
             <Th sort={sortOptions[NotificationsTableColumns.BEHAVIOR]} width={35}>
-              Configuration
+              {intl.formatMessage(messages.configuration)}
             </Th>
             <Th />
           </Tr>

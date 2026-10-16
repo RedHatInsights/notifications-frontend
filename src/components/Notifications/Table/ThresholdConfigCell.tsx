@@ -9,7 +9,7 @@ import {
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
 import * as React from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { BehaviorGroupContent } from '../../../pages/Notifications/List/useBehaviorGroupContent';
 import { BehaviorGroup, NotificationBehaviorGroup } from '../../../types/Notification';
@@ -28,6 +28,16 @@ interface ThresholdConfigCellProps {
   thresholdValue: number;
   onThresholdChange?: (value: number) => void;
 }
+
+const THRESHOLD_INPUT_NAME = 'threshold-input';
+const PERCENT_UNIT = '%';
+
+const localMessages = defineMessages({
+  thresholdValue: {
+    id: 'notifications.thresholdConfig.thresholdValue',
+    defaultMessage: '{threshold} %',
+  },
+});
 
 export const ThresholdConfigCell: React.FunctionComponent<ThresholdConfigCellProps> = (props) => {
   const intl = useIntl();
@@ -81,7 +91,8 @@ export const ThresholdConfigCell: React.FunctionComponent<ThresholdConfigCellPro
       <Flex spaceItems={{ default: 'spaceItemsSm' }} alignItems={{ default: 'alignItemsCenter' }}>
         <FlexItem>
           <LockIcon className="pf-v6-u-mr-sm" />
-          {localThreshold} % {intl.formatMessage(messages.ofUsageThreshold)}
+          {intl.formatMessage(localMessages.thresholdValue, { threshold: localThreshold })}{' '}
+          {intl.formatMessage(messages.ofUsageThreshold)}
         </FlexItem>
         {sortedSelected.length > 0 && (
           <FlexItem>
@@ -110,12 +121,12 @@ export const ThresholdConfigCell: React.FunctionComponent<ThresholdConfigCellPro
           onMinus={handleMinus}
           onPlus={handlePlus}
           onChange={handleChange}
-          inputName="threshold-input"
+          inputName={THRESHOLD_INPUT_NAME}
           inputAriaLabel={intl.formatMessage(messages.usageThresholdPercentage)}
           minusBtnAriaLabel={intl.formatMessage(messages.decreaseThreshold)}
           plusBtnAriaLabel={intl.formatMessage(messages.increaseThreshold)}
           widthChars={4}
-          unit="%"
+          unit={PERCENT_UNIT}
         />
       </StackItem>
       {sortedSelected.length > 0 && (

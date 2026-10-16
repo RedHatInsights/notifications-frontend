@@ -16,6 +16,8 @@ import { BehaviorGroupCell } from './Table/BehaviorGroupCell';
 import { ThresholdConfigCell } from './Table/ThresholdConfigCell';
 import { CUSTOM_THRESHOLD_DISPLAY_NAME, DEFAULT_THRESHOLD } from './constants';
 
+const DONE_ARIA = 'done';
+
 export type OnNotificationIdHandler = (notificationId: UUID) => void;
 
 export type Callbacks = {
@@ -89,7 +91,7 @@ const getActions = (
         title: (
           <Button
             icon={<CheckIcon />}
-            aria-label="done"
+            aria-label={DONE_ARIA}
             variant={ButtonVariant.plain}
             isDisabled={isDisabled}
           />

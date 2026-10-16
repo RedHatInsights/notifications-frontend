@@ -44,6 +44,8 @@ import { Operations } from '../../../../generated/OpenapiRbac';
 
 // Column configuration will be dynamic based on intl
 
+const REQUIRED_MARKER = ' *';
+
 interface UserAccessGroupsDataViewProps {
   name: string;
   label?: string;
@@ -258,7 +260,7 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                     ? intl.formatMessage(messages.adminDefaultGroupDescription)
                     : intl.formatMessage(messages.platformDefaultGroupDescription)
                 }
-                aria-label="user-group-popover"
+                aria-label={intl.formatMessage(messages.groupPopoverAria)}
                 hideOnOutsideClick
                 appendTo={popoverRootRef.current || undefined}
               >
@@ -283,7 +285,8 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               onClick={() => handleViewUsers(group)}
               icon={<UsersIcon />}
             >
-              {intl.formatMessage(messages.viewUsers)} ({group.userCount}){' '}
+              {intl.formatMessage(messages.viewUsers)}{' '}
+              {intl.formatMessage(messages.countParens, { count: group.userCount })}{' '}
               {group.userCount !== 1
                 ? intl.formatMessage(messages.userPlural)
                 : intl.formatMessage(messages.userSingular)}
@@ -374,7 +377,9 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
               <div className="pf-v6-c-form__label">
                 <label className="pf-v6-c-form__label-text">
                   {label}
-                  {isRequired && <span className="pf-v6-c-form__label-required"> *</span>}
+                  {isRequired && (
+                    <span className="pf-v6-c-form__label-required">{REQUIRED_MARKER}</span>
+                  )}
                 </label>
               </div>
               <DataView
@@ -432,11 +437,10 @@ const UserAccessGroupsDataView: React.FC<UserAccessGroupsDataViewProps> = ({
                       <Alert
                         variant="info"
                         isInline
-                        title="Custom default access group selected"
+                        title={intl.formatMessage(messages.customDefaultSelectedTitle)}
                         className="pf-v6-u-mt-md"
                       >
-                        The custom default access group includes all users in your organization.
-                        Additional access group selections are not necessary.
+                        {intl.formatMessage(messages.customDefaultSelectedBody)}
                       </Alert>
                     )}
                   </div>

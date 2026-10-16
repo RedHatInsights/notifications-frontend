@@ -12,7 +12,7 @@ import {
 import { LockIcon } from '@patternfly/react-icons';
 import { useLocation, useNavigate } from 'react-router-dom';
 import React, { useCallback, useEffect, useMemo } from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
 import { NotificationsBehaviorGroupTable } from '../../../components/Notifications/NotificationsBehaviorGroupTable';
@@ -31,6 +31,36 @@ import {
   DEFAULT_THRESHOLD,
 } from '../../../components/Notifications/constants';
 import { useNotification } from '../../../utils/AlertUtils';
+
+const DEFAULT_TAB = 'configuration';
+const TAB_PARAM = 'tab';
+
+const tabMessages = defineMessages({
+  configurationTab: {
+    id: 'notifications.bundlePage.tab.configuration',
+    defaultMessage: 'Configuration',
+  },
+  behaviorGroupsTab: {
+    id: 'notifications.bundlePage.tab.behaviorGroups',
+    defaultMessage: 'Behavior Groups',
+  },
+  configureEventsUnauthorizedTitle: {
+    id: 'configureEvents.unauthorized.title',
+    defaultMessage: 'You do not have access to configure events',
+  },
+  configureEventsUnauthorizedBody: {
+    id: 'configureEvents.unauthorized.body',
+    defaultMessage: 'Contact your organization administrator to request the necessary permissions.',
+  },
+  behaviorGroupsUnauthorizedTitle: {
+    id: 'behaviorGroups.unauthorized.title',
+    defaultMessage: 'You do not have access to behavior groups',
+  },
+  behaviorGroupsUnauthorizedBody: {
+    id: 'behaviorGroups.unauthorized.body',
+    defaultMessage: 'Contact your organization administrator to request the necessary permissions.',
+  },
+});
 
 interface BundlePageBehaviorGroupContentProps {
   applications: Array<Facet>;
@@ -269,31 +299,27 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
       onSelect={(event, tabIndex) => {
         const newSearchParams = new URLSearchParams(location.search);
         const selectedTab =
-          Object.keys(tabMapping).find((key) => tabMapping[key] === tabIndex) ?? 'configuration';
-        newSearchParams.set('tab', selectedTab);
+          Object.keys(tabMapping).find((key) => tabMapping[key] === tabIndex) ?? DEFAULT_TAB;
+        newSearchParams.set(TAB_PARAM, selectedTab);
         navigate(`${location.pathname}?${newSearchParams.toString()}`, {
           replace: true,
         });
       }}
     >
-      <Tab eventKey={0} title={<TabTitleText>Configuration</TabTitleText>}>
+      <Tab
+        eventKey={0}
+        title={<TabTitleText>{intl.formatMessage(tabMessages.configurationTab)}</TabTitleText>}
+      >
         {isForbidden ? (
           <Card isPlain>
             <CardBody>
               <EmptyState
                 headingLevel="h2"
                 icon={LockIcon}
-                titleText={intl.formatMessage({
-                  id: 'configureEvents.unauthorized.title',
-                  defaultMessage: 'You do not have access to configure events',
-                })}
+                titleText={intl.formatMessage(tabMessages.configureEventsUnauthorizedTitle)}
               >
                 <EmptyStateBody>
-                  {intl.formatMessage({
-                    id: 'configureEvents.unauthorized.body',
-                    defaultMessage:
-                      'Contact your organization administrator to request the necessary permissions.',
-                  })}
+                  {intl.formatMessage(tabMessages.configureEventsUnauthorizedBody)}
                 </EmptyStateBody>
               </EmptyState>
             </CardBody>
@@ -327,24 +353,20 @@ export const BundlePageBehaviorGroupContent: React.FunctionComponent<
           </NotificationsToolbar>
         )}
       </Tab>
-      <Tab eventKey={1} title={<TabTitleText>Behavior Groups</TabTitleText>}>
+      <Tab
+        eventKey={1}
+        title={<TabTitleText>{intl.formatMessage(tabMessages.behaviorGroupsTab)}</TabTitleText>}
+      >
         {isForbidden ? (
           <Card isPlain>
             <CardBody>
               <EmptyState
                 headingLevel="h2"
                 icon={LockIcon}
-                titleText={intl.formatMessage({
-                  id: 'behaviorGroups.unauthorized.title',
-                  defaultMessage: 'You do not have access to behavior groups',
-                })}
+                titleText={intl.formatMessage(tabMessages.behaviorGroupsUnauthorizedTitle)}
               >
                 <EmptyStateBody>
-                  {intl.formatMessage({
-                    id: 'behaviorGroups.unauthorized.body',
-                    defaultMessage:
-                      'Contact your organization administrator to request the necessary permissions.',
-                  })}
+                  {intl.formatMessage(tabMessages.behaviorGroupsUnauthorizedBody)}
                 </EmptyStateBody>
               </EmptyState>
             </CardBody>

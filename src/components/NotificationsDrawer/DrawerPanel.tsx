@@ -23,6 +23,10 @@ import { ActionDropdown, FilterDropdown } from './Dropdowns';
 import { MAX_NOTIFICATIONS } from './DrawerSingleton';
 import messages from '../../properties/DefinedMessages';
 
+const EVENT_LOG_PATH = '/settings/notifications/eventlog';
+const SELECT_NONE_KEY = 'select-none';
+const SELECT_ALL_KEY = 'select-all';
+
 export type DrawerPanelProps = {
   panelRef: React.Ref<unknown>;
   toggleDrawer: () => void;
@@ -177,7 +181,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
     <>
       <NotificationDrawerHeader
         onClose={onNotificationsDrawerClose}
-        title="Notifications"
+        title={intl.formatMessage(messages.notificationsTitle)}
         className="pf-u-align-items-center"
       >
         <FilterDropdown
@@ -194,13 +198,15 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
           onSelect={(checked) => selectAllNotifications(checked)}
           items={[
             {
-              title: 'Select none (0)',
-              key: 'select-none',
+              title: intl.formatMessage(messages.selectNone),
+              key: SELECT_NONE_KEY,
               onClick: () => selectAllNotifications(false),
             },
             {
-              title: `Select all (${state.notificationData.length})`,
-              key: 'select-all',
+              title: intl.formatMessage(messages.selectAll, {
+                count: state.notificationData.length,
+              }),
+              key: SELECT_ALL_KEY,
               onClick: () => selectAllNotifications(true),
             },
           ]}
@@ -226,11 +232,7 @@ const DrawerPanelBase = ({ toggleDrawer }: DrawerPanelProps) => {
       <div className="pf-v6-u-px-md pf-v6-u-pb-sm">
         <Content component="small">
           {intl.formatMessage(messages.drawerSubtitle, { count: MAX_NOTIFICATIONS })}{' '}
-          <Button
-            variant="link"
-            isInline
-            onClick={() => onNavigateTo('/settings/notifications/eventlog')}
-          >
+          <Button variant="link" isInline onClick={() => onNavigateTo(EVENT_LOG_PATH)}>
             {intl.formatMessage(messages.viewAll)}
           </Button>
         </Content>

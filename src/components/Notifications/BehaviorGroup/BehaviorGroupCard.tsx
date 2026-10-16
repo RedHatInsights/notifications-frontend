@@ -17,6 +17,7 @@ import {
 import { LockIcon } from '@patternfly/react-icons';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { MarkRequired } from 'ts-essentials';
 import { style } from 'typestyle';
 
@@ -50,6 +51,7 @@ export interface BehaviorGroupCardLayout {
 const BehaviorGroupCardLayout: React.FunctionComponent<
   React.PropsWithChildren<BehaviorGroupCardLayout>
 > = (props) => {
+  const intl = useIntl();
   const [isOpen, setOpen] = React.useState(false);
 
   return (
@@ -66,7 +68,7 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                       onClick={() => setOpen(!isOpen)}
                       isExpanded={isOpen}
                       icon={<span>&#8942;</span>}
-                      aria-label="Actions"
+                      aria-label={intl.formatMessage(messages.actionsAria)}
                     />
                   }
                   popper={
@@ -108,11 +110,10 @@ const BehaviorGroupCardLayout: React.FunctionComponent<
                     // eslint-disable-next-line max-len
                     content={
                       <div>
-                        System required behavior group
-                        <br></br>
-                        <br></br>
-                        This group is system generated and can not be edited, deleted, or removed
-                        from being applied to an event
+                        {intl.formatMessage(messages.systemRequired)}
+                        <br />
+                        <br />
+                        {intl.formatMessage(messages.systemRequiredDetail)}
                       </div>
                     }
                   >
@@ -185,6 +186,22 @@ const BehaviorGroupCardSkeleton: React.FunctionComponent = () => {
     </BehaviorGroupCardLayout>
   );
 };
+
+const messages = defineMessages({
+  actionsAria: {
+    id: 'behaviorGroup.card.actionsAria',
+    defaultMessage: 'Actions',
+  },
+  systemRequired: {
+    id: 'behaviorGroup.card.systemRequired',
+    defaultMessage: 'System required behavior group',
+  },
+  systemRequiredDetail: {
+    id: 'behaviorGroup.card.systemRequiredDetail',
+    defaultMessage:
+      'This group is system generated and can not be edited, deleted, or removed from being applied to an event',
+  },
+});
 
 export const BehaviorGroupCard: React.FunctionComponent<BehaviorGroupProps> = (props) => {
   if (props.behaviorGroup) {

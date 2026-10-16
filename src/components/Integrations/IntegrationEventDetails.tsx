@@ -1,4 +1,5 @@
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { AssignedEventType, NameDisplayName, UserIntegration } from '../../types/Integration';
 import { getEndpoint } from '../../api/helpers/integrations/endpoints-helper';
 import { DataViewTable } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
@@ -18,6 +19,21 @@ import {
   useDataViewSort,
 } from '@patternfly/react-data-view/dist/dynamic/Hooks';
 import { DataViewToolbar } from '@patternfly/react-data-view';
+
+const localMessages = defineMessages({
+  noEvents: {
+    id: 'integrations.eventDetails.noEvents',
+    defaultMessage: 'There are no Events assigned to this integration.',
+  },
+  editIntegration: {
+    id: 'integrations.eventDetails.editIntegration',
+    defaultMessage: 'Edit integration',
+  },
+  eventTypesAria: {
+    id: 'integrations.eventDetails.eventTypesAria',
+    defaultMessage: 'Event types',
+  },
+});
 
 const columns = [
   { label: 'Event Type', key: 'event-type' },
@@ -69,29 +85,33 @@ const perPageOptions = [
   { title: '100', value: 100 },
 ];
 
-const EmptyTable: React.FC<{ onEdit?: (event?: React.MouseEvent) => void }> = ({ onEdit }) => (
-  <Tbody>
-    <Tr key="loading" ouiaId={`${ouiaId}-tr-loading`}>
-      <Td colSpan={columns.length}>
-        <EmptyState>
-          <EmptyStateBody>There are no Events assigned to this integration.</EmptyStateBody>
-          <EmptyStateFooter>
-            <EmptyStateActions>
-              <Button variant="primary" onClick={() => onEdit?.()}>
-                Edit integration
-              </Button>
-            </EmptyStateActions>
-          </EmptyStateFooter>
-        </EmptyState>
-      </Td>
-    </Tr>
-  </Tbody>
-);
+const EmptyTable: React.FC<{ onEdit?: (event?: React.MouseEvent) => void }> = ({ onEdit }) => {
+  const intl = useIntl();
+  return (
+    <Tbody>
+      <Tr key="loading" ouiaId={`${ouiaId}-tr-loading`}>
+        <Td colSpan={columns.length}>
+          <EmptyState>
+            <EmptyStateBody>{intl.formatMessage(localMessages.noEvents)}</EmptyStateBody>
+            <EmptyStateFooter>
+              <EmptyStateActions>
+                <Button variant="primary" onClick={() => onEdit?.()}>
+                  {intl.formatMessage(localMessages.editIntegration)}
+                </Button>
+              </EmptyStateActions>
+            </EmptyStateFooter>
+          </EmptyState>
+        </Td>
+      </Tr>
+    </Tbody>
+  );
+};
 
 const IntegrationEventDetails: React.FC<{
   id: string;
   onEdit?: (event?: React.MouseEvent) => void;
 }> = ({ id, onEdit }) => {
+  const intl = useIntl();
   const [activeIntegration, setActiveIntegration] = React.useState<
     | (UserIntegration & {
         eventTypes?: EventTypes[];
@@ -161,7 +181,7 @@ const IntegrationEventDetails: React.FC<{
       />
 
       <DataViewTable
-        aria-label="Event types"
+        aria-label={intl.formatMessage(localMessages.eventTypesAria)}
         variant="compact"
         columns={columns.map((column, index) => ({
           cell: column.label,

@@ -17,7 +17,7 @@ import { FilterChipsProps } from '@redhat-cloud-services/frontend-components/Fil
 import * as React from 'react';
 import { Dispatch } from 'react';
 import { SetStateAction } from 'react';
-import { useIntl } from 'react-intl';
+import { MessageDescriptor, defineMessages, useIntl } from 'react-intl';
 
 import Config from '../../../config/Config';
 import { useIntegrations } from '../../../hooks/useIntegrations';
@@ -70,74 +70,46 @@ interface EventLogToolbarProps extends OuiaProps {
   setOnlyImpactingMe: (value: boolean) => void;
 }
 
-const notificationTypes: Record<NotificationType, { name: string }> = {
-  [NotificationType.EMAIL_SUBSCRIPTION]: {
-    name: 'Email',
+const localMessages = defineMessages({
+  email: {
+    id: 'eventLog.toolbar.email',
+    defaultMessage: 'Email',
   },
-  [NotificationType.DRAWER]: {
-    name: 'Drawer',
+  drawer: {
+    id: 'eventLog.toolbar.drawer',
+    defaultMessage: 'Drawer',
   },
-  [NotificationType.INTEGRATION]: {
-    name: 'Integration',
+  integration: {
+    id: 'eventLog.toolbar.integration',
+    defaultMessage: 'Integration',
   },
-};
+  success: {
+    id: 'eventLog.toolbar.success',
+    defaultMessage: 'Success',
+  },
+  sent: {
+    id: 'eventLog.toolbar.sent',
+    defaultMessage: 'Sent',
+  },
+  warning: {
+    id: 'eventLog.toolbar.warning',
+    defaultMessage: 'Warning',
+  },
+  processing: {
+    id: 'eventLog.toolbar.processing',
+    defaultMessage: 'Processing',
+  },
+  failure: {
+    id: 'eventLog.toolbar.failure',
+    defaultMessage: 'Failure',
+  },
+});
 
-const actionStatusMetadata = [
-  {
-    value: 'SUCCESS',
-    chipValue: 'Success',
-    label: (
-      <span>
-        <Icon status="success">
-          <CheckCircleIcon />
-        </Icon>{' '}
-        Success
-      </span>
-    ),
-  },
-  {
-    value: 'SENT',
-    chipValue: 'Sent',
-    label: (
-      <span>
-        <Icon status="success">
-          <CheckCircleIcon />
-        </Icon>{' '}
-        Sent
-      </span>
-    ),
-  },
-  {
-    value: 'UNKNOWN',
-    chipValue: 'Warning',
-    label: (
-      <span>
-        <ExclamationTriangleIcon className="pf-v6-u-warning-color-100" /> Warning{' '}
-      </span>
-    ),
-  },
-  {
-    value: 'PROCESSING',
-    chipValue: 'Processing',
-    label: (
-      <span>
-        <InProgressIcon /> Processing{' '}
-      </span>
-    ),
-  },
-  {
-    value: 'FAILED',
-    chipValue: 'Failure',
-    label: (
-      <span>
-        <Icon status="danger">
-          <ExclamationCircleIcon />
-        </Icon>{' '}
-        Failure
-      </span>
-    ),
-  },
-];
+const notificationTypeMessages: Record<NotificationType, MessageDescriptor> = {
+  [NotificationType.EMAIL_SUBSCRIPTION]: localMessages.email,
+  [NotificationType.DRAWER]: localMessages.drawer,
+  [NotificationType.INTEGRATION]: localMessages.integration,
+};
 
 export const EventLogToolbar: React.FunctionComponent<
   React.PropsWithChildren<EventLogToolbarProps>
@@ -147,12 +119,73 @@ export const EventLogToolbar: React.FunctionComponent<
   const integrations = useIntegrations();
   const severitiesQuery = useGetSeverities();
 
+  const actionStatusMetadata = React.useMemo(
+    () => [
+      {
+        value: 'SUCCESS',
+        chipValue: intl.formatMessage(localMessages.success),
+        label: (
+          <span>
+            <Icon status="success">
+              <CheckCircleIcon />
+            </Icon>{' '}
+            {intl.formatMessage(localMessages.success)}
+          </span>
+        ),
+      },
+      {
+        value: 'SENT',
+        chipValue: intl.formatMessage(localMessages.sent),
+        label: (
+          <span>
+            <Icon status="success">
+              <CheckCircleIcon />
+            </Icon>{' '}
+            {intl.formatMessage(localMessages.sent)}
+          </span>
+        ),
+      },
+      {
+        value: 'UNKNOWN',
+        chipValue: intl.formatMessage(localMessages.warning),
+        label: (
+          <span>
+            <ExclamationTriangleIcon className="pf-v6-u-warning-color-100" />{' '}
+            {intl.formatMessage(localMessages.warning)}
+          </span>
+        ),
+      },
+      {
+        value: 'PROCESSING',
+        chipValue: intl.formatMessage(localMessages.processing),
+        label: (
+          <span>
+            <InProgressIcon /> {intl.formatMessage(localMessages.processing)}
+          </span>
+        ),
+      },
+      {
+        value: 'FAILED',
+        chipValue: intl.formatMessage(localMessages.failure),
+        label: (
+          <span>
+            <Icon status="danger">
+              <ExclamationCircleIcon />
+            </Icon>{' '}
+            {intl.formatMessage(localMessages.failure)}
+          </span>
+        ),
+      },
+    ],
+    [intl]
+  );
+
   const actionTypeMetadata = React.useMemo(() => {
     return notifications
       .map((notification) => ({
         value: notification.toUpperCase(),
-        chipValue: notificationTypes[notification].name,
-        label: notificationTypes[notification].name,
+        chipValue: intl.formatMessage(notificationTypeMessages[notification]),
+        label: intl.formatMessage(notificationTypeMessages[notification]),
       }))
       .concat(
         integrations.map((integration) => ({

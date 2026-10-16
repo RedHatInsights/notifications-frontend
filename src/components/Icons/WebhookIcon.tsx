@@ -3,6 +3,8 @@ import * as React from 'react';
 import { style } from 'typestyle';
 
 import icon from './WebhookIcon.svg';
+
+const WEBHOOK_ALT = 'Webhook';
 const className = style({
   verticalAlign: '-0.125em',
   width: '1em',
@@ -10,5 +12,5 @@ const className = style({
 });
 
 export const WebhookIcon: React.FunctionComponent<SVGIconProps> = () => {
-  return <img alt="Webhook" className={className} src={icon} />;
+  return <img alt={WEBHOOK_ALT} className={className} src={icon} />;
 };

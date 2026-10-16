@@ -5,6 +5,7 @@ import Maintenance from '@redhat-cloud-services/frontend-components/Maintenance'
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import format from 'date-fns/format';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 
 import { Routes } from '../Routes';
@@ -18,6 +19,13 @@ import { useApp } from './useApp';
 import { InsightsEnvDetector, RenderIfTrue, toUtc } from '../utils/insights-common-typescript';
 import NotificationsProvider from '@redhat-cloud-services/frontend-components-notifications/NotificationsProvider';
 
+const messages = defineMessages({
+  disableExperimental: {
+    id: 'app.disableExperimentalFeatures',
+    defaultMessage: 'Disable experimental features',
+  },
+});
+
 const utcFormat = 'HH:mm';
 const regularFormat = 'hh:mma';
 const timezoneFormat = 'O';
@@ -27,6 +35,7 @@ const timezoneFormat = 'O';
  * Must be rendered inside KesselRbacAccessProvider.
  */
 const AppContent: React.FC = () => {
+  const intl = useIntl();
   const chrome = useChrome();
 
   chrome.updateDocumentTitle?.('Notifications');
@@ -85,7 +94,7 @@ const AppContent: React.FC = () => {
                 className="pf-v6-u-p-sm"
                 isChecked={usingExperimental}
                 onChange={toggleExperimental}
-                label="Disable experimental features"
+                label={intl.formatMessage(messages.disableExperimental)}
               />
             </RenderIfTrue>
           </InsightsEnvDetector>

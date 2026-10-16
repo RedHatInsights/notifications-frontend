@@ -9,6 +9,7 @@ import {
   Tr,
 } from '@patternfly/react-table/dist/dynamic/components/Table';
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
 
 import NotificationsLogEmptyState from './NotificationsLogEmptyState';
@@ -39,6 +40,21 @@ export type DrawerType = {
   source: string;
 }[];
 
+const messages = defineMessages({
+  eventType: {
+    id: 'notificationsLog.table.eventType',
+    defaultMessage: 'Event type',
+  },
+  service: {
+    id: 'notificationsLog.table.service',
+    defaultMessage: 'Service',
+  },
+  timestamp: {
+    id: 'notificationsLog.table.timestamp',
+    defaultMessage: 'Timestamp',
+  },
+});
+
 const NotificationsLogTable = ({
   isEmptyState,
   onSort,
@@ -54,6 +70,7 @@ const NotificationsLogTable = ({
   onPagination: OnPagination;
   pagination: PaginationType;
 }) => {
+  const intl = useIntl();
   const getSortParams = (columnIndex: number): ThProps['sort'] => ({
     sortBy: {
       index: sort.columnIndex,
@@ -71,9 +88,9 @@ const NotificationsLogTable = ({
       <TableComposable>
         <Thead>
           <Tr>
-            <Th sort={getSortParams(0)}>Event type</Th>
-            <Th>Service</Th>
-            <Th sort={getSortParams(2)}>Timestamp</Th>
+            <Th sort={getSortParams(0)}>{intl.formatMessage(messages.eventType)}</Th>
+            <Th>{intl.formatMessage(messages.service)}</Th>
+            <Th sort={getSortParams(2)}>{intl.formatMessage(messages.timestamp)}</Th>
           </Tr>
         </Thead>
         <Tbody>

@@ -1,5 +1,6 @@
 import { Content, ContentVariants, Grid, GridItem, Skeleton } from '@patternfly/react-core';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { Action } from '../../../types/Notification';
 import { ActionComponent } from '../ActionComponent';
@@ -11,21 +12,33 @@ interface BehaviorGroupActionsSummaryProps {
 
 type BehaviorGroupActionSummaryImplProps = Required<BehaviorGroupActionsSummaryProps>;
 
+const messages = defineMessages({
+  action: {
+    id: 'behaviorGroup.actionsSummary.action',
+    defaultMessage: 'Action',
+  },
+  recipient: {
+    id: 'behaviorGroup.actionsSummary.recipient',
+    defaultMessage: 'Recipient',
+  },
+});
+
 const skeletonActions = 3;
 
 const BehaviorGroupActionsSummaryLayout: React.FunctionComponent<React.PropsWithChildren> = (
   props
 ) => {
+  const intl = useIntl();
   return (
     <Grid>
       <GridItem span={6}>
         <Content>
-          <Content component={ContentVariants.h6}>Action</Content>
+          <Content component={ContentVariants.h6}>{intl.formatMessage(messages.action)}</Content>
         </Content>
       </GridItem>
       <GridItem span={6}>
         <Content>
-          <Content component={ContentVariants.h6}>Recipient</Content>
+          <Content component={ContentVariants.h6}>{intl.formatMessage(messages.recipient)}</Content>
         </Content>
       </GridItem>
       {props.children}

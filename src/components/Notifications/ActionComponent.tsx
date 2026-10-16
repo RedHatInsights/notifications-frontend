@@ -3,12 +3,30 @@ import { EnvelopeIcon } from '@patternfly/react-icons';
 import BellIcon from '@patternfly/react-icons/dist/js/icons/bell-icon';
 import { assertNever } from 'assert-never';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import Config from '../../config/Config';
 import { Action, NotificationType } from '../../types/Notification';
 import { getOuiaProps } from '../../utils/getOuiaProps';
 import { WebhookIcon } from '../Icons/WebhookIcon';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+
+const messages = defineMessages({
+  errorLoading: {
+    id: 'notifications.actionComponent.errorLoading',
+    defaultMessage: 'Error loading actions',
+  },
+  noActions: {
+    id: 'notifications.actionComponent.noActions',
+    defaultMessage: 'No actions.',
+  },
+  usersNotNotified: {
+    id: 'notifications.actionComponent.usersNotNotified',
+    defaultMessage: 'Users will not be notified.',
+  },
+});
+
+const COLON_SEPARATOR = ': ';
 
 export interface ActionComponentText extends OuiaProps {
   action: Action | undefined;
@@ -40,6 +58,8 @@ const ActionComponentWrapper: React.FunctionComponent<
 );
 
 export const ActionComponent: React.FunctionComponent<ActionComponentText> = (props) => {
+  const intl = useIntl();
+
   if (props.loading) {
     return (
       <ActionComponentWrapper {...props}>
@@ -51,7 +71,7 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
   if (props.hasError) {
     return (
       <ActionComponentWrapper {...props}>
-        <span>Error loading actions</span>
+        <span>{intl.formatMessage(messages.errorLoading)}</span>
       </ActionComponentWrapper>
     );
   }
@@ -60,8 +80,8 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
     return (
       <ActionComponentWrapper {...props}>
         <span className="pf-v6-u-text-color-subtle">
-          <div>No actions.</div>
-          <div>Users will not be notified.</div>
+          <div>{intl.formatMessage(messages.noActions)}</div>
+          <div>{intl.formatMessage(messages.usersNotNotified)}</div>
         </span>
       </ActionComponentWrapper>
     );
@@ -72,7 +92,10 @@ export const ActionComponent: React.FunctionComponent<ActionComponentText> = (pr
       <ActionTypeToIcon actionType={props.action.type} />
       <span className="pf-v6-u-ml-sm">{Config.notifications.types[props.action.type].name}</span>
       {props.action.type === NotificationType.INTEGRATION && (
-        <span>: {Config.integrations.types[props.action.integration.type].name}</span>
+        <span>
+          {COLON_SEPARATOR}
+          {Config.integrations.types[props.action.integration.type].name}
+        </span>
       )}
     </ActionComponentWrapper>
   );

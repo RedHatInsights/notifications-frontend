@@ -1,6 +1,7 @@
 import { FormSelectOption } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import Config from '../../config/Config';
 import { useIntegrations } from '../../hooks/useIntegrations';
@@ -11,7 +12,19 @@ import { IntegrationTypeForm } from './Form/IntegrationTypeForm';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { Form, FormSelect, FormTextInput } from '../../utils/insights-common-typescript';
 
+const messages = defineMessages({
+  integrationName: {
+    id: 'integrations.form.integrationName',
+    defaultMessage: 'Integration name',
+  },
+  type: {
+    id: 'integrations.form.type',
+    defaultMessage: 'Type',
+  },
+});
+
 export const IntegrationsForm: React.FunctionComponent<OuiaProps> = (props) => {
+  const intl = useIntl();
   const { values } = useFormikContext<NewUserIntegration>();
   const userIntegrations = useIntegrations();
 
@@ -26,7 +39,7 @@ export const IntegrationsForm: React.FunctionComponent<OuiaProps> = (props) => {
       <FormTextInput
         maxLength={maxIntegrationNameLength}
         isRequired={true}
-        label="Integration name"
+        label={intl.formatMessage(messages.integrationName)}
         type="text"
         name="name"
         id="name"
@@ -34,7 +47,7 @@ export const IntegrationsForm: React.FunctionComponent<OuiaProps> = (props) => {
       />
       <FormSelect
         isRequired={true}
-        label="Type"
+        label={intl.formatMessage(messages.type)}
         name="type"
         id="integration-type"
         ouiaId={ouiaIdConcat(props.ouiaId, 'type')}

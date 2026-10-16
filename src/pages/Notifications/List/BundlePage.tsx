@@ -13,6 +13,7 @@ import Main from '@redhat-cloud-services/frontend-components/Main';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import { default as React, useEffect, useMemo, useState } from 'react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { style } from 'typestyle';
 
 import { useAppContext } from '../../../app/AppContext';
@@ -26,6 +27,39 @@ import { useGetApplicationsLazy } from '../../../services/Notifications/GetAppli
 import { Facet } from '../../../types/Notification';
 import { BundlePageBehaviorGroupContent } from './BundlePageBehaviorGroupContent';
 import { useLocation, useNavigate } from 'react-router-dom';
+
+const DEFAULT_BUNDLE = 'rhel';
+const BUNDLE_PARAM = 'bundle';
+
+const bundleMessages = defineMessages({
+  orgAdminSubtitle: {
+    id: 'notifications.bundlePage.orgAdminSubtitle',
+    defaultMessage:
+      'Configure which event notifications different users within your organization are entitled to receive. To manage your own personal notification settings, go to {link}.',
+  },
+  nonAdminSubtitle: {
+    id: 'notifications.bundlePage.nonAdminSubtitle',
+    defaultMessage:
+      'View how notifications are configured by your organization admin. Contact your organization admin if you need access to edit these configurations. To manage your own personal notification settings, go to {link}.',
+  },
+  notificationPreferences: {
+    id: 'notifications.bundlePage.notificationPreferences',
+    defaultMessage: 'Notification Preferences',
+  },
+  legacySubtitle: {
+    id: 'notifications.bundlePage.legacySubtitle',
+    defaultMessage:
+      'Configure which event notifications different users within your organization are entitled to receive.',
+  },
+  configurationTab: {
+    id: 'notifications.bundlePage.configurationTab',
+    defaultMessage: 'Configuration',
+  },
+  settingsTab: {
+    id: 'notifications.bundlePage.settingsTab',
+    defaultMessage: 'Settings',
+  },
+});
 
 interface NotificationListBundlePageProps {
   bundle: Facet;
@@ -57,6 +91,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
 
   updateDocumentTitle?.(`${props.bundle.displayName} - Notifications`);
 
+  const intl = useIntl();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
 
   const { rbac } = useAppContext();
@@ -137,28 +172,35 @@ export const NotificationListBundlePage: React.FunctionComponent<
           subtitle={
             isOrgAdmin ? (
               <span>
-                Configure which event notifications different users within your organization are
-                entitled to receive. To manage your own personal notification settings, go to{' '}
-                <Content
-                  component={ContentVariants.a}
-                  href="/settings/notifications/user-preferences/"
-                >
-                  Notification Preferences
-                </Content>
-                .
+                <FormattedMessage
+                  {...bundleMessages.orgAdminSubtitle}
+                  values={{
+                    link: (
+                      <Content
+                        component={ContentVariants.a}
+                        href="/settings/notifications/user-preferences/"
+                      >
+                        {intl.formatMessage(bundleMessages.notificationPreferences)}
+                      </Content>
+                    ),
+                  }}
+                />
               </span>
             ) : (
               <span>
-                View how notifications are configured by your organization admin. Contact your
-                organization admin if you need access to edit these configurations. To manage your
-                own personal notification settings, go to{' '}
-                <Content
-                  component={ContentVariants.a}
-                  href="/settings/notifications/user-preferences/"
-                >
-                  Notification Preferences
-                </Content>
-                .
+                <FormattedMessage
+                  {...bundleMessages.nonAdminSubtitle}
+                  values={{
+                    link: (
+                      <Content
+                        component={ContentVariants.a}
+                        href="/settings/notifications/user-preferences/"
+                      >
+                        {intl.formatMessage(bundleMessages.notificationPreferences)}
+                      </Content>
+                    ),
+                  }}
+                />
               </span>
             )
           }
@@ -172,7 +214,7 @@ export const NotificationListBundlePage: React.FunctionComponent<
               onSelect={(event, tabIndex) => {
                 const newSearchParams = new URLSearchParams(location.search);
                 const selectedBundle = props.bundleTabs[tabIndex]?.name;
-                newSearchParams.set('bundle', selectedBundle ?? 'rhel');
+                newSearchParams.set(BUNDLE_PARAM, selectedBundle ?? DEFAULT_BUNDLE);
                 navigate(`${location.pathname}?${newSearchParams.toString()}`, {
                   replace: true,
                 });
@@ -203,20 +245,23 @@ export const NotificationListBundlePage: React.FunctionComponent<
       <>
         <PageHeader
           title={`${Messages.pages.notifications.list.title} | ${props.bundle.displayName}`}
-          subtitle={
-            <span>
-              Configure which event notifications different users within your organization are
-              entitled to receive.
-            </span>
-          }
+          subtitle={<span>{intl.formatMessage(bundleMessages.legacySubtitle)}</span>}
           action={eventLogButton()}
         />
 
         <TabComponent configuration={props.children} settings={props.children}>
-          <Tab eventKey={0} title={<TabTitleText>Configuration</TabTitleText>}>
+          <Tab
+            eventKey={0}
+            title={
+              <TabTitleText>{intl.formatMessage(bundleMessages.configurationTab)}</TabTitleText>
+            }
+          >
             {mainPage}
           </Tab>
-          <Tab eventKey={1} title={<TabTitleText>Settings</TabTitleText>}>
+          <Tab
+            eventKey={1}
+            title={<TabTitleText>{intl.formatMessage(bundleMessages.settingsTab)}</TabTitleText>}
+          >
             {timeConfigPage}
           </Tab>
         </TabComponent>

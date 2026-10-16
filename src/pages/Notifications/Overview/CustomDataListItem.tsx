@@ -22,6 +22,7 @@ import {
   UsersIcon,
 } from '@patternfly/react-icons';
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 export enum IconName {
@@ -52,6 +53,21 @@ const IconMapper = {
   [IconName.BUG]: <BugIcon className="pf-v6-u-icon-color-brand" />,
 };
 
+const messages = defineMessages({
+  actionsAria: {
+    id: 'overview.dataListItem.actionsAria',
+    defaultMessage: 'Actions',
+  },
+  detailedExplanationAria: {
+    id: 'overview.dataListItem.detailedExplanationAria',
+    defaultMessage: '{heading} - Detailed Explanation',
+  },
+});
+
+const ACTIONS_LABELLEDBY = 'item1 action1';
+const ACTION_ID = 'action1';
+const PREVIEW_PREFIX = '/preview';
+
 const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
   icon,
   heading,
@@ -61,6 +77,7 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
   isRedirect,
   isExpanded,
 }) => {
+  const intl = useIntl();
   const navigate = useNavigate();
   const iconElement: React.ReactNode | null = IconMapper[icon] || null;
   const [expanded, setExpanded] = React.useState(isExpanded || false);
@@ -97,7 +114,11 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
             ]}
           />
           {linkTitle && linkTarget && (
-            <DataListAction aria-labelledby="item1 action1" id="action1" aria-label="Actions">
+            <DataListAction
+              aria-labelledby={ACTIONS_LABELLEDBY}
+              id={ACTION_ID}
+              aria-label={intl.formatMessage(messages.actionsAria)}
+            >
               <Button
                 component="a"
                 href={linkTarget}
@@ -105,7 +126,7 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
                 onClick={(e) => {
                   if (!isRedirect) {
                     e.preventDefault();
-                    navigate(linkTarget.replace('/preview', ''));
+                    navigate(linkTarget.replace(PREVIEW_PREFIX, ''));
                   }
                 }}
               >
@@ -115,7 +136,7 @@ const CustomDataListItem: React.FC<CustomDataListItemProps> = ({
           )}
         </DataListItemRow>
         <DataListContent
-          aria-label={heading + ' - Detailed Explanation'}
+          aria-label={intl.formatMessage(messages.detailedExplanationAria, { heading })}
           id="expand1"
           isHidden={!expanded}
         >

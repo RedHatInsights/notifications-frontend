@@ -5,13 +5,22 @@ import Section from '@redhat-cloud-services/frontend-components/Section';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 
 import { Messages } from '../../../properties/Messages';
 import { linkTo } from '../../../Routes';
 import IntegrationsList from './List';
 
+const messages = defineMessages({
+  viewEventLog: {
+    id: 'integrations.list.viewEventLog',
+    defaultMessage: 'View event log',
+  },
+});
+
 export const IntegrationsListPage: React.FunctionComponent = () => {
+  const intl = useIntl();
   const { updateDocumentTitle, getBundle } = useChrome();
 
   updateDocumentTitle?.('Integrations');
@@ -31,8 +40,7 @@ export const IntegrationsListPage: React.FunctionComponent = () => {
                 variant="secondary"
                 component={() => <Link to={`/${getBundle()}/notifications${linkTo.eventLog()}`} />}
               >
-                {' '}
-                View event log{' '}
+                {intl.formatMessage(messages.viewEventLog)}
               </Button>
             </SplitItem>
           )}

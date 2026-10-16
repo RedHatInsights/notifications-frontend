@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { useEffect } from 'react';
 
 import {
@@ -9,6 +10,33 @@ import { useDeleteBehaviorGroupMutation } from '../../../services/Notifications/
 import { useGetAffectedNotificationsByBehaviorGroupQuery } from '../../../services/Notifications/GetAffectedNotificationsByBehaviorGroup';
 import { BehaviorGroup } from '../../../types/Notification';
 import { useNotification } from '../../../utils/AlertUtils';
+
+const messages = defineMessages({
+  deleteSuccessTitle: {
+    id: 'behaviorGroup.delete.successTitle',
+    defaultMessage: 'Behavior group deleted',
+  },
+  deleteSuccessBody: {
+    id: 'behaviorGroup.delete.successBody',
+    defaultMessage: 'Group {name} deleted successfully.',
+  },
+  deleteFailTitle: {
+    id: 'behaviorGroup.delete.failTitle',
+    defaultMessage: 'Behavior group failed to be deleted',
+  },
+  deleteFailBody: {
+    id: 'behaviorGroup.delete.failBody',
+    defaultMessage: 'Failed to delete group {name}. Please try again.',
+  },
+  eventsFailTitle: {
+    id: 'behaviorGroup.delete.eventsFailTitle',
+    defaultMessage: 'Associated events failed to load',
+  },
+  eventsFailBody: {
+    id: 'behaviorGroup.delete.eventsFailBody',
+    defaultMessage: 'Failed to load associated events for group {name}. Please try again.',
+  },
+});
 
 export interface DeleteBehaviorGroupPageProps {
   behaviorGroup: BehaviorGroup;
@@ -21,6 +49,7 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
   const deleteBehaviorGroup = useDeleteBehaviorGroupMutation();
   const affected = useGetAffectedNotificationsByBehaviorGroupQuery(props.behaviorGroup.id);
   const { addDangerNotification, addSuccessNotification } = useNotification();
+  const intl = useIntl();
 
   const onDelete = React.useCallback(
     async (behaviorGroup: BehaviorGroup) => {
@@ -29,26 +58,26 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
 
       if (response.payload?.status === 200) {
         addSuccessNotification(
-          'Behavior group deleted',
-          <>
-            Group <b>{behaviorGroup.displayName}</b> deleted successfully.
-          </>
+          intl.formatMessage(messages.deleteSuccessTitle),
+          <FormattedMessage
+            {...messages.deleteSuccessBody}
+            values={{ name: <b>{behaviorGroup.displayName}</b> }}
+          />
         );
         return true;
       }
 
       addDangerNotification(
-        'Behavior group failed to be deleted',
-        <>
-          Failed to delete group <b> {behaviorGroup.displayName}</b>.
-          <br />
-          Please try again.
-        </>
+        intl.formatMessage(messages.deleteFailTitle),
+        <FormattedMessage
+          {...messages.deleteFailBody}
+          values={{ name: <b>{behaviorGroup.displayName}</b> }}
+        />
       );
 
       return false;
     },
-    [deleteBehaviorGroup.mutate, addDangerNotification, addSuccessNotification]
+    [deleteBehaviorGroup.mutate, addDangerNotification, addSuccessNotification, intl]
   );
 
   useEffect(() => {
@@ -56,17 +85,16 @@ export const DeleteBehaviorGroupPage: React.FunctionComponent<DeleteBehaviorGrou
     const onClose = props.onClose;
     if (payload && payload.status !== 200) {
       addDangerNotification(
-        'Associated events failed to load ',
-        <>
-          Failed to load associated events for group <b> {props.behaviorGroup.displayName}</b>.
-          <br />
-          Please try again.
-        </>
+        intl.formatMessage(messages.eventsFailTitle),
+        <FormattedMessage
+          {...messages.eventsFailBody}
+          values={{ name: <b>{props.behaviorGroup.displayName}</b> }}
+        />
       );
 
       onClose(false);
     }
-  }, [addDangerNotification, affected.payload, props.behaviorGroup, props.onClose]);
+  }, [addDangerNotification, affected.payload, props.behaviorGroup, props.onClose, intl]);
 
   if (affected.loading) {
     return <BehaviorGroupDeleteModalSkeleton onClose={props.onClose} />;

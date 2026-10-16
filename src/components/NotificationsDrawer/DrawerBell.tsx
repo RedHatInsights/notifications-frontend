@@ -5,12 +5,24 @@ import { ToolbarItem } from '@patternfly/react-core/dist/dynamic/components/Tool
 import { Tooltip } from '@patternfly/react-core/dist/dynamic/components/Tooltip';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import useNotificationDrawer from '../../hooks/useNotificationDrawer';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  notifications: {
+    id: 'notificationsDrawer.bell.notifications',
+    defaultMessage: 'Notifications',
+  },
+});
+
+const DRAWER_SCOPE = 'notifications';
+const DRAWER_MODULE = './DrawerPanel';
 
 interface DrawerBellProps {
   isNotificationDrawerExpanded: boolean;
 }
 
 const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawerExpanded }) => {
+  const intl = useIntl();
   const {
     drawerActions: { toggleDrawerContent },
   } = useChrome();
@@ -33,7 +45,7 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
       <Tooltip
         aria="none"
         aria-live="polite"
-        content={'Notifications'}
+        content={intl.formatMessage(messages.notifications)}
         flipBehavior={['bottom']}
         className="tooltip-inner-settings-cy"
       >
@@ -43,12 +55,12 @@ const DrawerBell: React.ComponentType<DrawerBellProps> = ({ isNotificationDrawer
           count={unreadCount}
           onClick={() => {
             toggleDrawerContent({
-              scope: 'notifications',
-              module: './DrawerPanel',
+              scope: DRAWER_SCOPE,
+              module: DRAWER_MODULE,
             });
           }}
           isDisabled={!ready}
-          aria-label="Notifications"
+          aria-label={intl.formatMessage(messages.notifications)}
           isExpanded={isNotificationDrawerExpanded}
           shouldNotify={shouldNotify}
           onAnimationEnd={() => setShouldNotify(false)}

@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import useFieldApi, {
   UseFieldApiProps,
 } from '@data-driven-forms/react-form-renderer/use-field-api';
@@ -10,6 +11,18 @@ import { Bullseye, EmptyState, EmptyStateBody } from '@patternfly/react-core';
 import CubesIcon from '@patternfly/react-icons/dist/dynamic/icons/cube-icon';
 import { getEndpoint } from '../../../../api/helpers/integrations/endpoints-helper';
 import EventTypes from '../../../../components/Integrations/EventTypes';
+
+const messages = defineMessages({
+  selectProductFamily: {
+    id: 'integrations.selectableTable.selectProductFamily',
+    defaultMessage: 'Select product family',
+  },
+  selectProductFamilyBody: {
+    id: 'integrations.selectableTable.selectProductFamilyBody',
+    defaultMessage:
+      'Before you can assign events to integration you have to select from which bundle events should be assignable.',
+  },
+});
 
 const BUNDLE_DEFAULTS = {
   OpenShift: {},
@@ -95,6 +108,7 @@ const mapEventTypesToInput = (events: EventTypeFromGroup[]) => {
 };
 
 const SelectableTable = (props) => {
+  const intl = useIntl();
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
   const { input } = useFieldApi<Record<string, unknown>>(props);
@@ -171,11 +185,12 @@ const SelectableTable = (props) => {
     />
   ) : (
     <Bullseye>
-      <EmptyState headingLevel="h4" icon={CubesIcon} titleText="Select product family">
-        <EmptyStateBody>
-          Before you can assign events to integration you have to select from which bundle events
-          should be assignable.
-        </EmptyStateBody>
+      <EmptyState
+        headingLevel="h4"
+        icon={CubesIcon}
+        titleText={intl.formatMessage(messages.selectProductFamily)}
+      >
+        <EmptyStateBody>{intl.formatMessage(messages.selectProductFamilyBody)}</EmptyStateBody>
       </EmptyState>
     </Bullseye>
   );

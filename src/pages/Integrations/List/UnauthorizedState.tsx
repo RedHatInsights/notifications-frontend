@@ -12,7 +12,32 @@ import {
 } from '@patternfly/react-core';
 import { LockIcon } from '@patternfly/react-icons';
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  alertTitle: {
+    id: 'integrations.unauthorizedState.alertTitle',
+    defaultMessage: 'Need to create an integration?',
+  },
+  alertLink: {
+    id: 'integrations.unauthorizedState.alertLink',
+    defaultMessage: 'Learn about requesting access via the Virtual Assistant',
+  },
+  alertParagraph: {
+    id: 'integrations.unauthorizedState.alertParagraph',
+    defaultMessage:
+      'You do not have the permissions for integration management. Contact your organization admin if you need these permissions updated.',
+  },
+  heading: {
+    id: 'integrations.unauthorizedState.heading',
+    defaultMessage: 'No integrations available',
+  },
+  description: {
+    id: 'integrations.unauthorizedState.description',
+    defaultMessage:
+      'You need read permissions to view integrations. Contact your organization administrator to request access.',
+  },
+});
 
 export const UnauthorizedState: React.FunctionComponent = () => {
   const intl = useIntl();
@@ -25,10 +50,7 @@ export const UnauthorizedState: React.FunctionComponent = () => {
           variant="info"
           isInline
           isExpandable
-          title={intl.formatMessage({
-            id: 'integrations.unauthorizedState.alertTitle',
-            defaultMessage: 'Need to create an integration?',
-          })}
+          title={intl.formatMessage(messages.alertTitle)}
           actionLinks={
             <AlertActionLink
               component="a"
@@ -36,20 +58,13 @@ export const UnauthorizedState: React.FunctionComponent = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
-              {intl.formatMessage({
-                id: 'integrations.unauthorizedState.alertLink',
-                defaultMessage: 'Learn about requesting access via the Virtual Assistant',
-              })}
+              {intl.formatMessage(messages.alertLink)}
             </AlertActionLink>
           }
         >
           <Content>
             <Content component={ContentVariants.p}>
-              {intl.formatMessage({
-                id: 'integrations.unauthorizedState.alertParagraph',
-                defaultMessage:
-                  'You do not have the permissions for integration management. Contact your organization admin if you need these permissions updated.',
-              })}
+              {intl.formatMessage(messages.alertParagraph)}
             </Content>
           </Content>
         </Alert>
@@ -60,18 +75,9 @@ export const UnauthorizedState: React.FunctionComponent = () => {
             <EmptyState
               headingLevel={ContentVariants.h2}
               icon={LockIcon}
-              titleText={intl.formatMessage({
-                id: 'integrations.unauthorizedState.heading',
-                defaultMessage: 'No integrations available',
-              })}
+              titleText={intl.formatMessage(messages.heading)}
             >
-              <EmptyStateBody>
-                {intl.formatMessage({
-                  id: 'integrations.unauthorizedState.description',
-                  defaultMessage:
-                    'You need read permissions to view integrations. Contact your organization administrator to request access.',
-                })}
-              </EmptyStateBody>
+              <EmptyStateBody>{intl.formatMessage(messages.description)}</EmptyStateBody>
             </EmptyState>
           </CardBody>
         </Card>

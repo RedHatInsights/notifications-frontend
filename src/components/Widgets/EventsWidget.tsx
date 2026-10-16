@@ -14,7 +14,7 @@ import { DataView, DataViewToolbar, useDataViewPagination } from '@patternfly/re
 import { DataViewTable, DataViewTh } from '@patternfly/react-data-view/dist/dynamic/DataViewTable';
 import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { DateFormat } from '@redhat-cloud-services/frontend-components/DateFormat';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import messages from '../../properties/DefinedMessages';
 import { perPageOptions } from '../../config/Config';
 
@@ -29,6 +29,21 @@ export type Notification = {
   bundle: string;
   created: string;
 };
+
+const localMessages = defineMessages({
+  tableAria: {
+    id: 'widgets.events.tableAria',
+    defaultMessage: 'Events widget table',
+  },
+  footerAria: {
+    id: 'widgets.events.footerAria',
+    defaultMessage: 'Events widget footer',
+  },
+  footerPaginationAria: {
+    id: 'widgets.events.footerPaginationAria',
+    defaultMessage: 'Events widget footer pagination',
+  },
+});
 
 const EmptyStateBellIcon: React.FunctionComponent = () => (
   <svg
@@ -133,7 +148,7 @@ const EventsWidget: React.FunctionComponent = () => {
   return (
     <DataView activeState={loading ? 'loading' : notifications.length === 0 ? 'empty' : undefined}>
       <DataViewTable
-        aria-label="Events widget table"
+        aria-label={intl.formatMessage(localMessages.tableAria)}
         variant="compact"
         columns={columns}
         rows={rows}
@@ -145,11 +160,11 @@ const EventsWidget: React.FunctionComponent = () => {
       />
       <DataViewToolbar
         ouiaId="EventsWidgetFooter"
-        aria-label="Events widget footer"
+        aria-label={intl.formatMessage(localMessages.footerAria)}
         className="pf-v6-u-mt-sm"
         pagination={
           <Pagination
-            aria-label="Events widget footer pagination"
+            aria-label={intl.formatMessage(localMessages.footerPaginationAria)}
             perPageOptions={perPageOptions}
             itemCount={totalCount}
             page={page}

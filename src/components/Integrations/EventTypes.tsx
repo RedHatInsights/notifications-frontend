@@ -23,6 +23,7 @@ import {
 } from '@patternfly/react-component-groups/dist/dynamic/BulkSelect';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { useFlag } from '@unleash/proxy-client-react';
+import { defineMessages, useIntl } from 'react-intl';
 import DataViewFilters from '@patternfly/react-data-view/dist/cjs/DataViewFilters';
 import { SkeletonTableBody, SkeletonTableHead } from '@patternfly/react-component-groups';
 import { toNotifications } from '../../types/adapters/NotificationAdapter';
@@ -36,6 +37,97 @@ import {
   severityDisplayName,
   toSeverityLabelProps,
 } from '../../utils/severityUtils';
+
+const messages = defineMessages({
+  title: {
+    id: 'integrations.eventTypes.title',
+    defaultMessage: 'Associate event types',
+  },
+  description: {
+    id: 'integrations.eventTypes.description',
+    defaultMessage: 'Select event types you would like to assign this behavior group to.',
+  },
+  toolbarAria: {
+    id: 'integrations.eventTypes.toolbarAria',
+    defaultMessage: 'Events type top toolbar',
+  },
+  bulkSelectAria: {
+    id: 'integrations.eventTypes.bulkSelectAria',
+    defaultMessage: 'Event types bulk select',
+  },
+  filtersAria: {
+    id: 'integrations.eventTypes.filtersAria',
+    defaultMessage: 'Event types filters',
+  },
+  eventTypeFilterAria: {
+    id: 'integrations.eventTypes.eventTypeFilterAria',
+    defaultMessage: 'Filter by event type',
+  },
+  eventTypeFilterTitle: {
+    id: 'integrations.eventTypes.eventTypeFilterTitle',
+    defaultMessage: 'Event type',
+  },
+  eventTypeFilterPlaceholder: {
+    id: 'integrations.eventTypes.eventTypeFilterPlaceholder',
+    defaultMessage: 'Filter by event type',
+  },
+  serviceFilterAria: {
+    id: 'integrations.eventTypes.serviceFilterAria',
+    defaultMessage: 'Filter by event Service',
+  },
+  serviceFilterTitle: {
+    id: 'integrations.eventTypes.serviceFilterTitle',
+    defaultMessage: 'Service',
+  },
+  serviceFilterPlaceholder: {
+    id: 'integrations.eventTypes.serviceFilterPlaceholder',
+    defaultMessage: 'Filter by service',
+  },
+  topPaginationAria: {
+    id: 'integrations.eventTypes.topPaginationAria',
+    defaultMessage: 'Event types top pagination',
+  },
+  tableAria: {
+    id: 'integrations.eventTypes.tableAria',
+    defaultMessage: 'Event types table',
+  },
+  tableHeadAria: {
+    id: 'integrations.eventTypes.tableHeadAria',
+    defaultMessage: 'Event types table head',
+  },
+  eventTypeColumn: {
+    id: 'integrations.eventTypes.eventTypeColumn',
+    defaultMessage: 'Event type',
+  },
+  serviceColumn: {
+    id: 'integrations.eventTypes.serviceColumn',
+    defaultMessage: 'Service',
+  },
+  severityColumn: {
+    id: 'integrations.eventTypes.severityColumn',
+    defaultMessage: 'Severity',
+  },
+  rowSelectionSr: {
+    id: 'integrations.eventTypes.rowSelectionSr',
+    defaultMessage: 'Row selection',
+  },
+  rowExpansionSr: {
+    id: 'integrations.eventTypes.rowExpansionSr',
+    defaultMessage: 'Row expansion',
+  },
+  footerAria: {
+    id: 'integrations.eventTypes.footerAria',
+    defaultMessage: 'Event types footer',
+  },
+  eventTypeDescriptionAria: {
+    id: 'integrations.eventTypes.eventTypeDescriptionAria',
+    defaultMessage: 'Event type description',
+  },
+  footerPaginationAria: {
+    id: 'integrations.eventTypes.footerPaginationAria',
+    defaultMessage: 'Event types footer pagination',
+  },
+});
 
 interface EventTypeFilters {
   filterEventFilterName?: string;
@@ -56,6 +148,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
   applications,
 }) => {
   const isSeverityEnabled = useFlag('platform.notifications.severity');
+  const intl = useIntl();
   const [loading, setLoading] = useState(true);
   const [response, setResponse] = useState<{
     meta?: { count: number };
@@ -175,12 +268,10 @@ const EventTypes: React.FC<EventTypesProps> = ({
     <Stack hasGutter>
       <StackItem>
         <Title headingLevel="h4" size="xl">
-          Associate event types
+          {intl.formatMessage(messages.title)}
         </Title>
         <Content className="pf-v6-u-pt-sm">
-          <Content component="p">
-            Select event types you would like to assign this behavior group to.
-          </Content>
+          <Content component="p">{intl.formatMessage(messages.description)}</Content>
         </Content>
       </StackItem>
       <StackItem>
@@ -189,7 +280,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
           activeState={loading ? 'loading' : displayData.length > 0 ? undefined : 'empty'}
         >
           <DataViewToolbar
-            aria-label="Events type top toolbar"
+            aria-label={intl.formatMessage(messages.toolbarAria)}
             ouiaId="LayoutExampleHeader"
             clearAllFilters={() => {
               fetchNotifications(
@@ -203,7 +294,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
             }}
             bulkSelect={
               <BulkSelect
-                aria-label="Event types bulk select"
+                aria-label={intl.formatMessage(messages.bulkSelectAria)}
                 canSelectAll
                 pageCount={displayData.length}
                 totalCount={response.meta?.count}
@@ -220,7 +311,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
             }
             filters={
               <DataViewFilters
-                aria-label="Event types filters"
+                aria-label={intl.formatMessage(messages.filtersAria)}
                 onChange={(_e, values) => {
                   if (values.filterEventFilterName !== filters.filterEventFilterName) {
                     debouncedFetchNotifications(
@@ -247,16 +338,16 @@ const EventTypes: React.FC<EventTypesProps> = ({
                 values={filters}
               >
                 <DataViewTextFilter
-                  aria-label="Filter by event type"
+                  aria-label={intl.formatMessage(messages.eventTypeFilterAria)}
                   filterId="filterEventFilterName"
-                  title="Event type"
-                  placeholder="Filter by event type"
+                  title={intl.formatMessage(messages.eventTypeFilterTitle)}
+                  placeholder={intl.formatMessage(messages.eventTypeFilterPlaceholder)}
                 />
                 <DataViewCheckboxFilter
-                  aria-label="Filter by event Service"
+                  aria-label={intl.formatMessage(messages.serviceFilterAria)}
                   filterId="filterApplicationId"
-                  title="Service"
-                  placeholder="Filter by service"
+                  title={intl.formatMessage(messages.serviceFilterTitle)}
+                  placeholder={intl.formatMessage(messages.serviceFilterPlaceholder)}
                   options={
                     applications?.map(({ id, displayName }) => ({
                       label: displayName,
@@ -268,7 +359,7 @@ const EventTypes: React.FC<EventTypesProps> = ({
             }
             pagination={
               <Pagination
-                aria-label="Event types top pagination"
+                aria-label={intl.formatMessage(messages.topPaginationAria)}
                 isCompact
                 perPageOptions={perPageOptions}
                 itemCount={response.meta?.count}
@@ -298,23 +389,30 @@ const EventTypes: React.FC<EventTypesProps> = ({
               />
             }
           />
-          <Table variant={'compact'} aria-label="Event types table">
+          <Table variant={'compact'} aria-label={intl.formatMessage(messages.tableAria)}>
             {loading ? (
               <SkeletonTableHead
                 columns={
                   isSeverityEnabled
-                    ? ['Event type', 'Service', 'Severity']
-                    : ['Event type', 'Service']
+                    ? [
+                        intl.formatMessage(messages.eventTypeColumn),
+                        intl.formatMessage(messages.serviceColumn),
+                        intl.formatMessage(messages.severityColumn),
+                      ]
+                    : [
+                        intl.formatMessage(messages.eventTypeColumn),
+                        intl.formatMessage(messages.serviceColumn),
+                      ]
                 }
               />
             ) : (
-              <Thead aria-label="Event types table head">
+              <Thead aria-label={intl.formatMessage(messages.tableHeadAria)}>
                 <Tr>
-                  <Th screenReaderText="Row selection" />
-                  <Th screenReaderText="Row expansion" />
-                  <Th>Event type</Th>
-                  <Th>Service</Th>
-                  {isSeverityEnabled && <Th>Severity</Th>}
+                  <Th screenReaderText={intl.formatMessage(messages.rowSelectionSr)} />
+                  <Th screenReaderText={intl.formatMessage(messages.rowExpansionSr)} />
+                  <Th>{intl.formatMessage(messages.eventTypeColumn)}</Th>
+                  <Th>{intl.formatMessage(messages.serviceColumn)}</Th>
+                  {isSeverityEnabled && <Th>{intl.formatMessage(messages.severityColumn)}</Th>}
                 </Tr>
               </Thead>
             )}
@@ -357,8 +455,14 @@ const EventTypes: React.FC<EventTypesProps> = ({
                     {isSeverityEnabled && <Td dataLabel="severity">{renderSeverityCell(row)}</Td>}
                   </Tr>
                   {row.description ? (
-                    <Tr aria-label="Event type description" isExpanded={isEventExpanded(row)}>
-                      <Td dataLabel="Event type description" colSpan={isSeverityEnabled ? 5 : 4}>
+                    <Tr
+                      aria-label={intl.formatMessage(messages.eventTypeDescriptionAria)}
+                      isExpanded={isEventExpanded(row)}
+                    >
+                      <Td
+                        dataLabel={intl.formatMessage(messages.eventTypeDescriptionAria)}
+                        colSpan={isSeverityEnabled ? 5 : 4}
+                      >
                         <ExpandableRowContent>{row.description}</ExpandableRowContent>
                       </Td>
                     </Tr>
@@ -369,10 +473,10 @@ const EventTypes: React.FC<EventTypesProps> = ({
           </Table>
           <DataViewToolbar
             ouiaId="EventTypesFooter"
-            aria-label="Event types footer"
+            aria-label={intl.formatMessage(messages.footerAria)}
             pagination={
               <Pagination
-                aria-label="Event types footer pagination"
+                aria-label={intl.formatMessage(messages.footerPaginationAria)}
                 perPageOptions={perPageOptions}
                 itemCount={response.meta?.count}
                 page={page}

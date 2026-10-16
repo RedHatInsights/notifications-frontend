@@ -2,20 +2,45 @@ import { Skeleton, Tooltip } from '@patternfly/react-core';
 import { BanIcon, LockIcon } from '@patternfly/react-icons';
 
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { Action, NotificationType } from '../../types/Notification';
 import { NotificationRbacGroupRecipient, NotificationUserRecipient } from '../../types/Recipient';
 import { GroupNotFound } from './Rbac/GroupNotFound';
 import { join } from '../../utils/insights-common-typescript';
 
+const messages = defineMessages({
+  integrationDisabled: {
+    id: 'notifications.recipient.integrationDisabled',
+    defaultMessage:
+      'This integration has been disabled. This action will not fire until it is enabled.',
+  },
+  forcedNotifications: {
+    id: 'notifications.recipient.forcedNotifications',
+    defaultMessage: 'You may still receive forced notifications for this service',
+  },
+  users: {
+    id: 'notifications.recipient.users',
+    defaultMessage: 'Users:',
+  },
+  userAccessGroups: {
+    id: 'notifications.recipient.userAccessGroups',
+    defaultMessage: 'User Access Groups:',
+  },
+});
+
+const COMMA_SEPARATOR = ', ';
+
 interface RecipientProps {
   action: Action;
   hasOutline?: boolean;
 }
 
-const CommaSeparator = () => <span>, </span>;
+const CommaSeparator = () => <span>{COMMA_SEPARATOR}</span>;
 
 export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
+  const intl = useIntl();
+
   if (props.action.type === NotificationType.INTEGRATION) {
     return (
       <>
@@ -23,10 +48,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
           <span className="pf-v6-u-text-color-subtle">
             {' '}
             {props.action.integration.name}
-            <Tooltip
-              content="This integration has been disabled. This action wil not fire until it is enabled."
-              position="bottom"
-            >
+            <Tooltip content={intl.formatMessage(messages.integrationDisabled)} position="bottom">
               <BanIcon className="pf-v6-u-icon-color-subtle" />
             </Tooltip>
           </span>
@@ -49,7 +71,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
     <span>
       {users.length > 0 && (
         <div>
-          Users:{' '}
+          {intl.formatMessage(messages.users)}{' '}
           {join(
             users.map((u) => (
               <>
@@ -57,7 +79,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
                 {u.ignorePreferences && (
                   <span>
                     <Tooltip
-                      content="You may still receive forced notifications for this service"
+                      content={intl.formatMessage(messages.forcedNotifications)}
                       position="bottom"
                     >
                       <LockIcon className="pf-v6-u-ml-sm pf-v6-u-icon-color-subtle" />
@@ -72,7 +94,7 @@ export const Recipient: React.FunctionComponent<RecipientProps> = (props) => {
       )}
       {groups.length > 0 && (
         <div>
-          User Access Groups:{' '}
+          {intl.formatMessage(messages.userAccessGroups)}{' '}
           {join(
             groups.map((g) => {
               if (g.hasError) {

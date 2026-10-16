@@ -5,11 +5,11 @@ import { DataViewFilters } from '@patternfly/react-data-view/dist/dynamic/DataVi
 import { DataViewTextFilter } from '@patternfly/react-data-view/dist/dynamic/DataViewTextFilter';
 import { DataViewCheckboxFilter } from '@patternfly/react-data-view/dist/dynamic/DataViewCheckboxFilter';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { Messages } from '../../properties/Messages';
 import { ExporterType } from '../../utils/insights-common-typescript';
 import { getOuiaProps } from '../../utils/getOuiaProps';
-import { DisabledIntegrationIcon, EnabledIntegrationIcon } from '../Icons';
 import { IntegrationFilterColumn, IntegrationFilters, SetIntegrationFilters } from './Filters';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
@@ -25,24 +25,40 @@ interface IntegrationsToolbarProps extends OuiaProps {
   perPageChanged: (page: number) => void;
 }
 
-const enabledFilterOptions = [
-  {
-    value: 'Enabled',
-    label: (
-      <>
-        <EnabledIntegrationIcon /> Enabled
-      </>
-    ),
+const messages = defineMessages({
+  name: {
+    id: 'integrations.toolbar.name',
+    defaultMessage: 'Name',
   },
-  {
-    value: 'Disabled',
-    label: (
-      <>
-        <DisabledIntegrationIcon /> Disabled
-      </>
-    ),
+  filterByName: {
+    id: 'integrations.toolbar.filterByName',
+    defaultMessage: 'Filter by name',
   },
-];
+  enabled: {
+    id: 'integrations.toolbar.enabled',
+    defaultMessage: 'Enabled',
+  },
+  filterByEnabled: {
+    id: 'integrations.toolbar.filterByEnabled',
+    defaultMessage: 'Filter by enabled',
+  },
+  enabledOption: {
+    id: 'integrations.toolbar.enabledOption',
+    defaultMessage: 'Enabled',
+  },
+  disabledOption: {
+    id: 'integrations.toolbar.disabledOption',
+    defaultMessage: 'Disabled',
+  },
+  exportCsv: {
+    id: 'integrations.toolbar.exportCsv',
+    defaultMessage: 'Export as CSV',
+  },
+  exportJson: {
+    id: 'integrations.toolbar.exportJson',
+    defaultMessage: 'Export as JSON',
+  },
+});
 
 export const IntegrationsToolbar: React.FunctionComponent<
   React.PropsWithChildren<IntegrationsToolbarProps>
@@ -59,6 +75,22 @@ export const IntegrationsToolbar: React.FunctionComponent<
   children,
   ...ouiaProps
 }) => {
+  const intl = useIntl();
+
+  const enabledFilterOptions = React.useMemo(
+    () => [
+      {
+        value: 'Enabled',
+        label: intl.formatMessage(messages.enabledOption),
+      },
+      {
+        value: 'Disabled',
+        label: intl.formatMessage(messages.disabledOption),
+      },
+    ],
+    [intl]
+  );
+
   const filterValues = React.useMemo(
     () => ({
       [IntegrationFilterColumn.NAME]: (typeof filters.name === 'string' ? filters.name : '') || '',
@@ -111,13 +143,13 @@ export const IntegrationsToolbar: React.FunctionComponent<
           <DataViewFilters onChange={handleFilterChange} values={filterValues}>
             <DataViewTextFilter
               filterId={IntegrationFilterColumn.NAME}
-              title="Name"
-              placeholder="Filter by name"
+              title={intl.formatMessage(messages.name)}
+              placeholder={intl.formatMessage(messages.filterByName)}
             />
             <DataViewCheckboxFilter
               filterId={IntegrationFilterColumn.ENABLED}
-              title="Enabled"
-              placeholder="Filter by enabled"
+              title={intl.formatMessage(messages.enabled)}
+              placeholder={intl.formatMessage(messages.filterByEnabled)}
               options={enabledFilterOptions}
             />
           </DataViewFilters>
@@ -133,10 +165,10 @@ export const IntegrationsToolbar: React.FunctionComponent<
               {Messages.components.integrations.toolbar.actions.addIntegration}
             </ResponsiveAction>
             <ResponsiveAction onClick={() => onExport(ExporterType.CSV)}>
-              Export as CSV
+              {intl.formatMessage(messages.exportCsv)}
             </ResponsiveAction>
             <ResponsiveAction onClick={() => onExport(ExporterType.JSON)}>
-              Export as JSON
+              {intl.formatMessage(messages.exportJson)}
             </ResponsiveAction>
           </ResponsiveActions>
         }

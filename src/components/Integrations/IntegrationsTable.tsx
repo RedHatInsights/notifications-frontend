@@ -21,6 +21,8 @@ import { Split, SplitItem, Tooltip } from '@patternfly/react-core';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { Direction, Sort, UseSortReturn } from '../../utils/insights-common-typescript';
 
+const ENABLED_ARIA = 'Enabled';
+
 export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
 interface IntegrationsTableProps extends OuiaProps {
@@ -150,7 +152,7 @@ export const DataViewIntegrationsTable: React.FunctionComponent<IntegrationsTabl
         ) : (
           <Switch
             id={`table-row-switch-id-${integration.id}`}
-            aria-label="Enabled"
+            aria-label={ENABLED_ARIA}
             isChecked={integration.isEnabled}
             onChange={(_e, isChecked) => onEnable?.(integration, idx, isChecked)}
             isDisabled={!onEnable || isReadOnlyEmail(integration)}

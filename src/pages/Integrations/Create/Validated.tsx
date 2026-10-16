@@ -1,7 +1,14 @@
 import React from 'react';
 import FormSpy from '@data-driven-forms/react-form-renderer/form-spy';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { FormHelperText, Spinner } from '@patternfly/react-core';
+
+const localMessages = defineMessages({
+  validating: {
+    id: 'wizard.validating',
+    defaultMessage: 'Validating',
+  },
+});
 
 export const ValidatingSpinner: React.FC<{ validating: boolean }> = ({ validating }) => {
   const intl = useIntl();
@@ -9,10 +16,7 @@ export const ValidatingSpinner: React.FC<{ validating: boolean }> = ({ validatin
   return (
     <FormHelperText hidden={!validating}>
       <Spinner size="md" className="pf-v6-u-mr-md" />
-      {intl.formatMessage({
-        id: 'wizard.validating',
-        defaultMessage: 'Validating',
-      })}
+      {intl.formatMessage(localMessages.validating)}
     </FormHelperText>
   );
 };

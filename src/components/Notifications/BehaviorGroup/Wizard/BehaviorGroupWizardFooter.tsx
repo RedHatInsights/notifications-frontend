@@ -2,6 +2,25 @@ import { Button, ButtonVariant, Icon, Spinner, Split, SplitItem } from '@pattern
 import { WizardContext, WizardFooter } from '@patternfly/react-core/deprecated';
 import { ExclamationCircleIcon } from '@patternfly/react-icons';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  next: {
+    id: 'behaviorGroup.wizard.footer.next',
+    defaultMessage: 'Next',
+  },
+  back: {
+    id: 'behaviorGroup.wizard.footer.back',
+    defaultMessage: 'Back',
+  },
+  cancel: {
+    id: 'behaviorGroup.wizard.footer.cancel',
+    defaultMessage: 'Cancel',
+  },
+});
+
+const ARIA_DISABLED_TRUE = 'true';
+
 export interface BehaviorGroupWizardFooterProps {
   isLoading: boolean;
   error?: string;
@@ -12,6 +31,7 @@ export interface BehaviorGroupWizardFooterProps {
 export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWizardFooterProps> = (
   props
 ) => {
+  const intl = useIntl();
   const wizardContext = React.useContext(WizardContext);
 
   const onNext = () => {
@@ -30,10 +50,10 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
         onClick={onNext}
         isDisabled={props.isLoading || !wizardContext.activeStep.enableNext}
         {...((props.isLoading || !wizardContext.activeStep.enableNext) && {
-          'aria-disabled': 'true',
+          'aria-disabled': ARIA_DISABLED_TRUE,
         })}
       >
-        {wizardContext.activeStep.nextButtonText ?? 'Next'}
+        {wizardContext.activeStep.nextButtonText ?? intl.formatMessage(messages.next)}
       </Button>
       {!wizardContext.activeStep.hideBackButton && (
         <Button
@@ -42,7 +62,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
           isDisabled={wizardContext.activeStep.id === 0 || props.isLoading}
           className="pf-v6-u-ml-xs"
         >
-          Back
+          {intl.formatMessage(messages.back)}
         </Button>
       )}
       {!wizardContext.activeStep.hideCancelButton && (
@@ -51,7 +71,7 @@ export const BehaviorGroupWizardFooter: React.FunctionComponent<BehaviorGroupWiz
           onClick={wizardContext.onClose}
           isDisabled={props.isLoading}
         >
-          Cancel
+          {intl.formatMessage(messages.cancel)}
         </Button>
       )}
       {props.isLoading ? (
