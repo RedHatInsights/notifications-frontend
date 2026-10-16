@@ -15,6 +15,7 @@ import { important } from 'csx';
 import { add, format, isAfter, isBefore, min, parseISO } from 'date-fns';
 import produce from 'immer';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { Dispatch, useRef } from 'react';
 import { SetStateAction } from 'react';
 import { style } from 'typestyle';
@@ -28,6 +29,13 @@ export enum EventLogDateFilterValue {
   LAST_14 = 'last_14',
   CUSTOM = 'custom',
 }
+
+const messages = defineMessages({
+  to: {
+    id: 'dateFilter.to',
+    defaultMessage: 'to',
+  },
+});
 
 const labels: Record<EventLogDateFilterValue, string> = {
   [EventLogDateFilterValue.TODAY]: 'Today',
@@ -82,6 +90,7 @@ interface CustomDateFilterProps {
 }
 
 const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (props) => {
+  const intl = useIntl();
   const maxDate = React.useMemo(() => new Date(), []);
   const minDate = React.useMemo(
     () =>
@@ -202,7 +211,7 @@ const CustomDateFilter: React.FunctionComponent<CustomDateFilterProps> = (props)
         />
       </SplitItem>
       <SplitItem className="pf-v6-u-align-self-center pf-v6-u-px-sm pf-v6-u-text-color-subtle">
-        to
+        {intl.formatMessage(messages.to)}
       </SplitItem>
       <SplitItem>
         <DatePicker

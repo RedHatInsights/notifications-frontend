@@ -1,6 +1,9 @@
 import { Label, LabelProps, Tooltip } from '@patternfly/react-core';
 import * as React from 'react';
 
+const GROUP_NOT_FOUND =
+  'This User Access group was not found, and may have been deleted. Remove it from your behavior group to stop seeing it.';
+
 interface GroupNotFoundProps {
   onClose?: LabelProps['onClose'];
 }
@@ -8,7 +11,7 @@ interface GroupNotFoundProps {
 export const GroupNotFound: React.FunctionComponent<GroupNotFoundProps> = (props) => {
   const text = 'User Access group (Not found)';
   return (
-    <Tooltip content="This User Access group was not found, and may have been deleted. Remove it from your behavior group to stop seeing it.">
+    <Tooltip content={GROUP_NOT_FOUND}>
       {props.onClose ? (
         <Label variant="outline" color="red" onClose={props.onClose}>
           {text}

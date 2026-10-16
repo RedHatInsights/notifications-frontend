@@ -1,6 +1,7 @@
 import { Formik, useFormikContext } from 'formik';
 import * as React from 'react';
 import * as Yup from 'yup';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import { BehaviorGroupWizard } from '../../../components/Notifications/BehaviorGroup/Wizard/BehaviorGroupWizard';
 import { RecipientContextProvider } from '../../../components/Notifications/RecipientContext';
@@ -11,6 +12,45 @@ import { Facet } from '../../../types/Notification';
 import { useNotification } from '../../../utils/AlertUtils';
 import { SaveBehaviorGroupOperation, useSaveBehaviorGroup } from './useSaveBehaviorGroup';
 import { useSteps } from './useSteps';
+
+const messages = defineMessages({
+  createSuccessTitle: {
+    id: 'behaviorGroup.wizard.createSuccessTitle',
+    defaultMessage: 'New behavior group created',
+  },
+  createSuccessBody: {
+    id: 'behaviorGroup.wizard.createSuccessBody',
+    defaultMessage: 'Group {name} created successfully.',
+  },
+  saveSuccessTitle: {
+    id: 'behaviorGroup.wizard.saveSuccessTitle',
+    defaultMessage: 'Behavior group saved',
+  },
+  saveSuccessBody: {
+    id: 'behaviorGroup.wizard.saveSuccessBody',
+    defaultMessage: 'Group {name} was saved successfully.',
+  },
+  createFailTitle: {
+    id: 'behaviorGroup.wizard.createFailTitle',
+    defaultMessage: 'Behavior group failed to be created',
+  },
+  createFailDuplicateBody: {
+    id: 'behaviorGroup.wizard.createFailDuplicateBody',
+    defaultMessage: 'A behavior group with display name {name} already exists.',
+  },
+  createFailBody: {
+    id: 'behaviorGroup.wizard.createFailBody',
+    defaultMessage: 'Failed to create group {name}. Please try again.',
+  },
+  saveFailTitle: {
+    id: 'behaviorGroup.wizard.saveFailTitle',
+    defaultMessage: 'Behavior group failed to save',
+  },
+  saveFailBody: {
+    id: 'behaviorGroup.wizard.saveFailBody',
+    defaultMessage: 'Failed to save group {name}. Please try again.',
+  },
+});
 
 interface BehaviorGroupWizardProps {
   bundle: Facet;
@@ -35,6 +75,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
   const saving = useSaveBehaviorGroup(props.behaviorGroup);
   const { values } = useFormikContext<CreateBehaviorGroup>();
   const { addDangerNotification, addSuccessNotification } = useNotification();
+  const intl = useIntl();
 
   const associateEventTypeStepProps = {
     bundle: props.bundle,
@@ -68,17 +109,19 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
     if (result.status) {
       if (result.operation === SaveBehaviorGroupOperation.CREATE) {
         addSuccessNotification(
-          'New behavior group created',
-          <>
-            Group <b> {behaviorGroup.displayName} </b> created successfully.
-          </>
+          intl.formatMessage(messages.createSuccessTitle),
+          <FormattedMessage
+            {...messages.createSuccessBody}
+            values={{ name: <b>{behaviorGroup.displayName}</b> }}
+          />
         );
       } else {
         addSuccessNotification(
-          'Behavior group saved',
-          <>
-            Group <b> {behaviorGroup.displayName} </b> was saved successfully.
-          </>
+          intl.formatMessage(messages.saveSuccessTitle),
+          <FormattedMessage
+            {...messages.saveSuccessBody}
+            values={{ name: <b>{behaviorGroup.displayName}</b> }}
+          />
         );
       }
 
@@ -86,29 +129,28 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
     } else {
       if (result.duplicate && result.operation === SaveBehaviorGroupOperation.CREATE) {
         addDangerNotification(
-          'Behavior group failed to be created',
-          <>
-            A behavior group with display name <b>{behaviorGroup.displayName}</b> already exists.
-          </>
+          intl.formatMessage(messages.createFailTitle),
+          <FormattedMessage
+            {...messages.createFailDuplicateBody}
+            values={{ name: <b>{behaviorGroup.displayName}</b> }}
+          />
         );
       } else {
         if (result.operation === SaveBehaviorGroupOperation.CREATE) {
           addDangerNotification(
-            'Behavior group failed to be created',
-            <>
-              Failed to create group <b> {behaviorGroup.displayName}</b>.
-              <br />
-              Please try again.
-            </>
+            intl.formatMessage(messages.createFailTitle),
+            <FormattedMessage
+              {...messages.createFailBody}
+              values={{ name: <b>{behaviorGroup.displayName}</b> }}
+            />
           );
         } else {
           addDangerNotification(
-            'Behavior group failed to save',
-            <>
-              Failed to save group <b> {behaviorGroup.displayName}</b>.
-              <br />
-              Please try again.
-            </>
+            intl.formatMessage(messages.saveFailTitle),
+            <FormattedMessage
+              {...messages.saveFailBody}
+              values={{ name: <b>{behaviorGroup.displayName}</b> }}
+            />
           );
         }
       }
@@ -120,6 +162,7 @@ const InternalBehaviorGroupWizardPage: React.FunctionComponent<BehaviorGroupWiza
     props.onClose,
     addDangerNotification,
     addSuccessNotification,
+    intl,
   ]);
 
   const onNext = async (goNext) => {

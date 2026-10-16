@@ -1,5 +1,6 @@
 import produce, { castDraft } from 'immer';
 import * as React from 'react';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import { ClientContext } from 'react-fetching-library';
 import { usePrevious } from 'react-use';
 
@@ -33,6 +34,19 @@ export type BehaviorGroupNotificationRow = NotificationBehaviorGroup & {
   );
 
 class NotificationNotFound extends Error {}
+
+const DASH_SEPARATOR = ' - ';
+
+const messages = defineMessages({
+  savingBehavior: {
+    id: 'behaviorGroup.notificationRows.savingBehavior',
+    defaultMessage: 'Saving behavior',
+  },
+  savingBehaviorError: {
+    id: 'behaviorGroup.notificationRows.savingBehaviorError',
+    defaultMessage: 'There was an error saving the behavior of {eventType}.',
+  },
+});
 
 const getNotification = <T extends ReadonlyArray<BehaviorGroupNotificationRow>>(
   rows: T,
@@ -157,14 +171,19 @@ export const useBehaviorGroupNotificationRows = (
             );
           } else {
             addDangerNotification(
-              'Saving behavior',
-              <>
-                There was an error saving the behavior of{' '}
-                <b>
-                  {notification.applicationDisplayName} - {notification.eventTypeDisplayName}
-                </b>
-                .
-              </>
+              messages.savingBehavior.defaultMessage as string,
+              <FormattedMessage
+                {...messages.savingBehaviorError}
+                values={{
+                  eventType: (
+                    <b>
+                      {notification.applicationDisplayName}
+                      {DASH_SEPARATOR}
+                      {notification.eventTypeDisplayName}
+                    </b>
+                  ),
+                }}
+              />
             );
             setNotificationRows(
               produce((draft) => {

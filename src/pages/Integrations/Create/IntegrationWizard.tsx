@@ -90,6 +90,10 @@ const mapIntegrationToFormFields = (template, hidePagerDutySeverity = false) => 
   return formValues;
 };
 
+const TYPE_SEPARATOR = ':';
+const DEFAULT_INTEGRATION_TYPE = 'webhook';
+const HTTP_POST = 'POST';
+
 export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> = ({
   isOpen,
   isEdit,
@@ -141,7 +145,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
             'user-access-groups': userAccessGroups,
             severity,
           }) => {
-            const [type, sub_type] = intType?.split(':') || ['webhook'];
+            const [type, sub_type] = intType?.split(TYPE_SEPARATOR) || [DEFAULT_INTEGRATION_TYPE];
             // When severity field is hidden during edit, preserve the original value
             // Access severity safely - it exists on IntegrationPagerduty but not in the typed template
             const templateSeverity =
@@ -155,7 +159,7 @@ export const IntegrationWizard: React.FunctionComponent<IntegrationWizardProps> 
               ...(sub_type && { sub_type }),
               description: '',
               properties: {
-                method: 'POST',
+                method: HTTP_POST,
                 url,
                 disable_ssl_verification: false,
                 secret_token,

@@ -1,5 +1,6 @@
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { DeepPartial } from 'ts-essentials';
 
 import Config from '../../../config/Config';
@@ -30,6 +31,17 @@ function isRecipientOption(option: unknown): option is RecipientOption {
   return (option as RecipientOption).recipient !== undefined;
 }
 
+const messages = defineMessages({
+  alreadyAdded: {
+    id: 'notifications.recipientTypeahead.alreadyAdded',
+    defaultMessage: 'This integration has already been added',
+  },
+  choose: {
+    id: 'notifications.recipientTypeahead.choose',
+    defaultMessage: 'Choose {type}',
+  },
+});
+
 export interface IntegrationRecipientTypeaheadProps extends OuiaProps {
   selected: Partial<IntegrationRef> | undefined;
   integrationType: UserIntegrationType;
@@ -42,8 +54,13 @@ export interface IntegrationRecipientTypeaheadProps extends OuiaProps {
 export const IntegrationRecipientTypeahead: React.FunctionComponent<
   IntegrationRecipientTypeaheadProps
 > = ({ integrationType, selected, onSelected, isDisabled }) => {
+  const intl = useIntl();
+
   const chooseText = React.useMemo(
-    () => `Choose ${Config.integrations.types[integrationType].name.toLowerCase()}`,
+    () =>
+      intl.formatMessage(messages.choose, {
+        type: Config.integrations.types[integrationType].name.toLowerCase(),
+      }),
     [integrationType]
   );
   const [isOpen, setIsOpen] = React.useState(false);
@@ -105,7 +122,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
           <SelectOption
             key={recipient.integration.id}
             value={currRecipient}
-            description={isDisabled ? 'This integration has already been added' : undefined}
+            description={isDisabled ? intl.formatMessage(messages.alreadyAdded) : undefined}
             isDisabled={isDisabled}
             isSelected={selected?.id === recipient.integration.id}
             isFocused={focusedItemIndex === index}

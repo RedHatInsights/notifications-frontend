@@ -26,16 +26,215 @@ import PageHeader from '@redhat-cloud-services/frontend-components/PageHeader/Pa
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { useFlag } from '@unleash/proxy-client-react';
 import React from 'react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { useNavigate } from 'react-router-dom';
 
 import notificationsProductIcon from '../../../assets/icons/notifications-product-icon.svg';
 import CustomDataListItem, { IconName } from './CustomDataListItem';
 import { Table, Tbody, Td, Tr } from '@patternfly/react-table';
 
+const VERTICAL = { default: 'vertical' } as const;
 const LEARN_MORE =
   'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/observe-configure_notifications_hcc_services';
 const CONFIGURE_INTEGRATIONS =
   'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform';
+
+const messages = defineMessages({
+  pageTitle: {
+    id: 'notifications.overview.pageTitle',
+    defaultMessage: 'Notifications',
+  },
+  pageDescription: {
+    id: 'notifications.overview.pageDescription',
+    defaultMessage:
+      'Receive notifications about events that occur in your console services. You can choose to receive notifications by email, in third-party applications, or from a combination of these methods.',
+  },
+  manageEventsTitle: {
+    id: 'notifications.overview.manageEvents.title',
+    defaultMessage: 'Manage events for your organization',
+  },
+  manageEventsBody: {
+    id: 'notifications.overview.manageEvents.body',
+    defaultMessage:
+      'Control which notifications different users within your organization can receive by creating behavior groups and associating them with specific events. Users can then select the event notifications they want to receive and how to be notified in their {link}.',
+  },
+  notificationPreferencesLink: {
+    id: 'notifications.overview.manageEvents.notificationPreferencesLink',
+    defaultMessage: 'Notification Preferences',
+  },
+  configureEventsButton: {
+    id: 'notifications.overview.manageEvents.configureEventsButton',
+    defaultMessage: 'Configure events',
+  },
+  getStartedTitle: {
+    id: 'notifications.overview.getStarted.title',
+    defaultMessage: 'Get started with Notifications on the Hybrid Cloud Console',
+  },
+  manageOwnTitle: {
+    id: 'notifications.overview.getStarted.manageOwn.title',
+    defaultMessage: 'Manage your own notifications with Notification Preferences',
+  },
+  manageOwnBody: {
+    id: 'notifications.overview.getStarted.manageOwn.body',
+    defaultMessage:
+      'This service allows you to opt-in and out of receiving notifications. Your Organization Administrator has configured which notifications you can or can not receive in their Settings.',
+  },
+  goToPreferencesButton: {
+    id: 'notifications.overview.getStarted.manageOwn.button',
+    defaultMessage: 'Go to Notification Preferences',
+  },
+  eventLogTitle: {
+    id: 'notifications.overview.getStarted.eventLog.title',
+    defaultMessage: 'Monitor all fired events with the Event log',
+  },
+  eventLogBody: {
+    id: 'notifications.overview.getStarted.eventLog.body',
+    defaultMessage:
+      'See all the events affecting your organization and view details around the events fired.',
+  },
+  viewEventLogButton: {
+    id: 'notifications.overview.getStarted.eventLog.button',
+    defaultMessage: 'View Event log',
+  },
+  supportingFeaturesTitle: {
+    id: 'notifications.overview.supportingFeatures.title',
+    defaultMessage: 'Supporting features',
+  },
+  supportingFeaturesAria: {
+    id: 'notifications.overview.supportingFeatures.aria',
+    defaultMessage: 'Supporting features list',
+  },
+  supportingPrefsHeading: {
+    id: 'notifications.overview.supportingFeatures.prefs.heading',
+    defaultMessage: 'Manage your own notifications with Notification Preferences',
+  },
+  supportingPrefsLink: {
+    id: 'notifications.overview.supportingFeatures.prefs.link',
+    defaultMessage: 'Go to Notification Preferences',
+  },
+  supportingPrefsContent: {
+    id: 'notifications.overview.supportingFeatures.prefs.content',
+    defaultMessage:
+      'Select the events you want to be notified about, and how to receive notifications. Your Organization Administrator has configured which notifications you can or can\u2019t receive in their Settings.',
+  },
+  supportingEventLogHeading: {
+    id: 'notifications.overview.supportingFeatures.eventLog.heading',
+    defaultMessage: 'Monitor all fired events with the Event log',
+  },
+  supportingEventLogLink: {
+    id: 'notifications.overview.supportingFeatures.eventLog.link',
+    defaultMessage: 'View Event log',
+  },
+  supportingEventLogContent: {
+    id: 'notifications.overview.supportingFeatures.eventLog.content',
+    defaultMessage:
+      'See all the events occurring in your organization and view details about the triggered events.',
+  },
+  supportingIntegrationsHeading: {
+    id: 'notifications.overview.supportingFeatures.integrations.heading',
+    defaultMessage: 'Set up Integrations to customize your notifications',
+  },
+  supportingIntegrationsLink: {
+    id: 'notifications.overview.supportingFeatures.integrations.link',
+    defaultMessage: 'Set up Integrations',
+  },
+  supportingIntegrationsContent: {
+    id: 'notifications.overview.supportingFeatures.integrations.content',
+    defaultMessage:
+      'The notifications and integrations services work together to transmit messages to third-party applications, such as instant messaging platforms and external ticketing systems, when events occur. Integrations include Splunk, Slack, ServiceNow, {link}.',
+  },
+  supportingIntegrationsMoreLink: {
+    id: 'notifications.overview.supportingFeatures.integrations.moreLink',
+    defaultMessage: 'and more',
+  },
+  supportingBehaviorGroupsHeading: {
+    id: 'notifications.overview.supportingFeatures.behaviorGroups.heading',
+    defaultMessage: 'Create behavior groups to easily notify the right users',
+  },
+  supportingBehaviorGroupsLink: {
+    id: 'notifications.overview.supportingFeatures.behaviorGroups.link',
+    defaultMessage: 'Create new behavior group',
+  },
+  supportingBehaviorGroupsContent: {
+    id: 'notifications.overview.supportingFeatures.behaviorGroups.content',
+    defaultMessage:
+      'Configure which notifications different users in your organization can receive, and how to notify groups of users when selected events occur.',
+  },
+  supportingErrataHeading: {
+    id: 'notifications.overview.supportingFeatures.errata.heading',
+    defaultMessage: 'Manage errata for your Subscriptions',
+  },
+  supportingErrataLink: {
+    id: 'notifications.overview.supportingFeatures.errata.link',
+    defaultMessage: 'Manage subscriptions errata',
+  },
+  supportingErrataContent: {
+    id: 'notifications.overview.supportingFeatures.errata.content',
+    defaultMessage:
+      'Configure notifications for product advisories that affect your purchased subscriptions. Managing these notifications can be done in your {link}.',
+  },
+  supportingErrataPrefsLink: {
+    id: 'notifications.overview.supportingFeatures.errata.prefsLink',
+    defaultMessage: 'Notifications preferences',
+  },
+  aboutNotificationsHeading: {
+    id: 'notifications.overview.about.heading',
+    defaultMessage: 'About Notifications',
+  },
+  aboutNotificationsContent: {
+    id: 'notifications.overview.about.content',
+    defaultMessage:
+      'Notifications are a way for users to be alerted of important events that occur in the Hybrid Cloud Console. You can receive notifications through email and third-party integrations, such as Slack or ServiceNow.',
+  },
+  recommendedContentTitle: {
+    id: 'notifications.overview.recommendedContent.title',
+    defaultMessage: 'Recommended content',
+  },
+  recommendedContentAria: {
+    id: 'notifications.overview.recommendedContent.aria',
+    defaultMessage: 'Recommended content',
+  },
+  configuringNotificationsLabel: {
+    id: 'notifications.overview.recommendedContent.configuringNotifications',
+    defaultMessage: 'Configuring Notifications',
+  },
+  configuringIntegrationsLabel: {
+    id: 'notifications.overview.recommendedContent.configuringIntegrations',
+    defaultMessage: 'Configuring Integrations',
+  },
+  restrictingAccessLabel: {
+    id: 'notifications.overview.recommendedContent.restrictingAccess',
+    defaultMessage: 'Restricting access to a service to a team',
+  },
+  configuringNotificationsIntegrationsLabel: {
+    id: 'notifications.overview.recommendedContent.configuringNotificationsIntegrations',
+    defaultMessage: 'Configuring notifications and integrations',
+  },
+  configuringIntegrationsServicesLabel: {
+    id: 'notifications.overview.recommendedContent.configuringIntegrationsServices',
+    defaultMessage: 'Configuring integrations for Red Hat services',
+  },
+  documentationLabel: {
+    id: 'notifications.overview.recommendedContent.documentation',
+    defaultMessage: 'Documentation',
+  },
+  quickStartLabel: {
+    id: 'notifications.overview.recommendedContent.quickStart',
+    defaultMessage: 'Quick start',
+  },
+  viewDocumentationLink: {
+    id: 'notifications.overview.recommendedContent.viewDocumentation',
+    defaultMessage: 'View documentation',
+  },
+  beginQuickStartLink: {
+    id: 'notifications.overview.recommendedContent.beginQuickStart',
+    defaultMessage: 'Begin Quick start',
+  },
+  viewAllLearningResources: {
+    id: 'notifications.overview.recommendedContent.viewAll',
+    defaultMessage: 'View all Settings Learning Resources',
+  },
+});
 
 export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const navigate = useNavigate();
@@ -44,6 +243,8 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
   const { auth, isBeta, getBundle } = useChrome();
   const notificationsOverhaul = useFlag('platform.notifications.overhaul');
   const errataNotifications = useFlag('platform.notifications.errata.userpreferences');
+  const intl = useIntl();
+  const basePath = isBeta() ? '/preview' : '';
   React.useEffect(() => {
     const getUser = async () => {
       const {
@@ -65,17 +266,14 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           <FlexItem>
             <img src={notificationsProductIcon} />
           </FlexItem>
-          <Divider
-            orientation={{
-              default: 'vertical',
-            }}
-          />
+          <Divider orientation={VERTICAL} />
           <FlexItem className="pf-v6-u-align-self-flex-start">
-            <PageHeaderTitle title="Notifications" className="pf-v6-u-mb-sm" />
+            <PageHeaderTitle
+              title={intl.formatMessage(messages.pageTitle)}
+              className="pf-v6-u-mb-sm"
+            />
             <p className="pf-v6-u-mb-sm">
-              Receive notifications about events that occur in your console services. You can choose
-              to receive notifications by email, in third-party applications, or from a combination
-              of these methods.
+              <FormattedMessage {...messages.pageDescription} />
             </p>
           </FlexItem>
         </Flex>
@@ -87,42 +285,42 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
               <Grid hasGutter>
                 <GridItem sm={12} md={6} lg={8}>
                   <CardTitle>
-                    <Title headingLevel="h2">Manage events for your organization</Title>
+                    <Title headingLevel="h2">
+                      <FormattedMessage {...messages.manageEventsTitle} />
+                    </Title>
                   </CardTitle>
                   <CardBody>
                     <p>
-                      Control which notifications different users within your organization can
-                      receive by creating behavior groups and associating them with specific events.
-                      Users can then select the event notifications they want to receive and how to
-                      be notified in their{' '}
-                      <a
-                        href={`${
-                          isBeta() ? '/preview' : ''
-                        }/${getBundle()}/notifications/user-preferences`}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigate(`/${getBundle()}/notifications/user-preferences`);
+                      <FormattedMessage
+                        {...messages.manageEventsBody}
+                        values={{
+                          link: (
+                            <a
+                              href={`${basePath}/${getBundle()}/notifications/user-preferences`}
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(`/${getBundle()}/notifications/user-preferences`);
+                              }}
+                            >
+                              <FormattedMessage {...messages.notificationPreferencesLink} />
+                            </a>
+                          ),
                         }}
-                      >
-                        Notification Preferences
-                      </a>
-                      .
+                      />
                     </p>
                   </CardBody>
                   <CardFooter>
                     <Button
                       variant="primary"
                       component="a"
-                      href={`${
-                        isBeta() ? '/preview' : ''
-                      }/${getBundle()}/notifications/configure-events`}
+                      href={`${basePath}/${getBundle()}/notifications/configure-events`}
                       size="lg"
                       onClick={(e) => {
                         e.preventDefault();
                         navigate(`/${getBundle()}/notifications/configure-events`);
                       }}
                     >
-                      Configure events
+                      <FormattedMessage {...messages.configureEventsButton} />
                     </Button>
                   </CardFooter>
                 </GridItem>
@@ -137,7 +335,7 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
         ) : (
           <React.Fragment>
             <Title headingLevel="h2" className="pf-v6-u-mb-md">
-              Get started with Notifications on the Hybrid Cloud Console
+              <FormattedMessage {...messages.getStartedTitle} />
             </Title>
             <Grid hasGutter className="pf-v6-u-mb-lg">
               <GridItem sm={12} md={6}>
@@ -151,16 +349,14 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       </FlexItem>
                       <FlexItem>
                         <Title headingLevel="h2">
-                          Manage your own notifications with Notification Preferences
+                          <FormattedMessage {...messages.manageOwnTitle} />
                         </Title>
                       </FlexItem>
                     </Flex>
                   </CardTitle>
                   <CardBody>
                     <p>
-                      This service allows you to opt-in and out of receiving notifications. Your
-                      Organization Administrator has configured which notifications you can or can
-                      not receive in their Settings.
+                      <FormattedMessage {...messages.manageOwnBody} />
                     </p>
                   </CardBody>
                   <CardFooter>
@@ -168,15 +364,13 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                       variant="primary"
                       size="lg"
                       component="a"
-                      href={`${
-                        isBeta() ? '/preview' : ''
-                      }/${getBundle()}/notifications/user-preferences`}
+                      href={`${basePath}/${getBundle()}/notifications/user-preferences`}
                       onClick={(e) => {
                         e.preventDefault();
                         navigate(`/${getBundle()}/notifications/user-preferences`);
                       }}
                     >
-                      Go to Notification Preferences
+                      <FormattedMessage {...messages.goToPreferencesButton} />
                     </Button>
                   </CardFooter>
                 </Card>
@@ -191,14 +385,15 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         </Icon>
                       </FlexItem>
                       <FlexItem>
-                        <Title headingLevel="h2">Monitor all fired events with the Event log</Title>
+                        <Title headingLevel="h2">
+                          <FormattedMessage {...messages.eventLogTitle} />
+                        </Title>
                       </FlexItem>
                     </Flex>
                   </CardTitle>
                   <CardBody>
                     <p>
-                      See all the events affecting your organization and view details around the
-                      events fired.
+                      <FormattedMessage {...messages.eventLogBody} />
                     </p>
                   </CardBody>
                   <CardFooter>
@@ -207,15 +402,13 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         variant="secondary"
                         size="lg"
                         component="a"
-                        href={`${
-                          isBeta() ? '/preview' : ''
-                        }/${getBundle()}/notifications/user-preferences`}
+                        href={`${basePath}/${getBundle()}/notifications/user-preferences`}
                         onClick={(e) => {
                           e.preventDefault();
                           navigate(`/${getBundle()}/notifications/eventlog`);
                         }}
                       >
-                        View Event log
+                        <FormattedMessage {...messages.viewEventLogButton} />
                       </Button>
                     )}
                   </CardFooter>
@@ -228,94 +421,93 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
         {isOrgAdmin ? (
           <React.Fragment>
             <Title headingLevel="h2" className="pf-v6-u-mb-md">
-              Supporting features
+              <FormattedMessage {...messages.supportingFeaturesTitle} />
             </Title>
 
-            <DataList aria-label="Supporting features list" className="pf-v6-u-mb-lg">
+            <DataList
+              aria-label={intl.formatMessage(messages.supportingFeaturesAria)}
+              className="pf-v6-u-mb-lg"
+            >
               <CustomDataListItem
                 icon={IconName.USER}
                 isExpanded
-                heading="Manage your own notifications with Notification Preferences"
-                linkTitle="Go to Notification Preferences"
-                linkTarget={`${
-                  isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/user-preferences`}
-                expandableContent="Select the events you want to be notified about, and how to receive notifications. Your Organization Administrator has configured which notifications you can or can’t receive in their Settings."
+                heading={intl.formatMessage(messages.supportingPrefsHeading)}
+                linkTitle={intl.formatMessage(messages.supportingPrefsLink)}
+                linkTarget={`${basePath}/${getBundle()}/notifications/user-preferences`}
+                expandableContent={intl.formatMessage(messages.supportingPrefsContent)}
               />
               <CustomDataListItem
                 icon={IconName.RUNNING}
-                heading="Monitor all fired events with the Event log"
-                linkTitle="View Event log"
-                linkTarget={`${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/eventlog `}
-                expandableContent="See all the events occurring in your organization and view details about the triggered events."
+                heading={intl.formatMessage(messages.supportingEventLogHeading)}
+                linkTitle={intl.formatMessage(messages.supportingEventLogLink)}
+                linkTarget={`${basePath}/${getBundle()}/notifications/eventlog `}
+                expandableContent={intl.formatMessage(messages.supportingEventLogContent)}
               />
               <CustomDataListItem
                 icon={IconName.INTEGRATION}
-                heading="Set up Integrations to customize your notifications"
-                linkTitle="Set up Integrations"
+                heading={intl.formatMessage(messages.supportingIntegrationsHeading)}
+                linkTitle={intl.formatMessage(messages.supportingIntegrationsLink)}
                 {...(isSourcesIntegrations && { isRedirect: true })}
                 linkTarget={
                   isSourcesIntegrations
-                    ? `${isBeta() ? '/preview' : ''}/settings/sources?category=Communications`
-                    : `${isBeta() ? '/preview' : ''}/${getBundle()}/notifications/integrations`
+                    ? `${basePath}/settings/sources?category=Communications`
+                    : `${basePath}/${getBundle()}/notifications/integrations`
                 }
                 expandableContent={
                   <span>
-                    The notifications and integrations services work together to transmit messages
-                    to third-party applications, such as instant messaging platforms and external
-                    ticketing systems, when events occur. Integrations include Splunk, Slack,
-                    ServiceNow,{' '}
-                    <a
-                      href={
-                        'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform'
-                      }
-                    >
-                      and more
-                    </a>
-                    .
+                    <FormattedMessage
+                      {...messages.supportingIntegrationsContent}
+                      values={{
+                        link: (
+                          <a
+                            href={
+                              'https://docs.redhat.com/en/documentation/red_hat_hybrid_cloud_console/1-latest/extend-manage_alerts_preferred_platform'
+                            }
+                          >
+                            <FormattedMessage {...messages.supportingIntegrationsMoreLink} />
+                          </a>
+                        ),
+                      }}
+                    />
                   </span>
                 }
               />
               <CustomDataListItem
                 icon={IconName.USERS}
-                heading="Create behavior groups to easily notify the right users"
-                linkTitle="Create new behavior group"
-                linkTarget={`${
-                  isBeta() ? '/preview' : ''
-                }/${getBundle()}/notifications/configure-events?activeTab=behaviorGroups`}
-                expandableContent="Configure which notifications different users in your organization can receive, and how to notify groups of users when selected events occur."
+                heading={intl.formatMessage(messages.supportingBehaviorGroupsHeading)}
+                linkTitle={intl.formatMessage(messages.supportingBehaviorGroupsLink)}
+                linkTarget={`${basePath}/${getBundle()}/notifications/configure-events?activeTab=behaviorGroups`}
+                expandableContent={intl.formatMessage(messages.supportingBehaviorGroupsContent)}
               />
               {errataNotifications && (
                 <CustomDataListItem
                   icon={IconName.BUG}
-                  heading="Manage errata for your Subscriptions"
-                  linkTitle="Manage subscriptions errata"
-                  linkTarget={`${
-                    isBeta() ? '/preview' : ''
-                  }/${getBundle()}/notifications/user-preferences?bundle=subscription-services&app=errata-notifications`}
+                  heading={intl.formatMessage(messages.supportingErrataHeading)}
+                  linkTitle={intl.formatMessage(messages.supportingErrataLink)}
+                  linkTarget={`${basePath}/${getBundle()}/notifications/user-preferences?bundle=subscription-services&app=errata-notifications`}
                   expandableContent={
                     <span>
-                      Configure notifications for product advisories that affect your purchased
-                      subscriptions. Managing these notifications can be done in your{' '}
-                      <Button
-                        component="a"
-                        href={`${
-                          isBeta() ? '/preview' : ''
-                        }/${getBundle()}/notifications/user-preferences`}
-                        className="pf-v6-u-px-0"
-                        variant="link"
-                        onClick={(e) => {
-                          e.preventDefault();
-                          navigate(
-                            `${
-                              isBeta() ? '/preview' : ''
-                            }/${getBundle()}/notifications/user-preferences`
-                          );
+                      <FormattedMessage
+                        {...messages.supportingErrataContent}
+                        values={{
+                          link: (
+                            <Button
+                              component="a"
+                              href={`${basePath}/${getBundle()}/notifications/user-preferences`}
+                              className="pf-v6-u-px-0"
+                              variant="link"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                navigate(
+                                  `${basePath}/${getBundle()}/notifications/user-preferences`
+                                );
+                              }}
+                            >
+                              <FormattedMessage {...messages.supportingErrataPrefsLink} />
+                            </Button>
+                          ),
                         }}
-                      >
-                        Notifications preferences
-                      </Button>
-                      .
+                      />
                     </span>
                   }
                 />
@@ -324,30 +516,38 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <DataList aria-label="Supporting features list" className="pf-v6-u-mb-lg">
+            <DataList
+              aria-label={intl.formatMessage(messages.supportingFeaturesAria)}
+              className="pf-v6-u-mb-lg"
+            >
               <CustomDataListItem
                 icon={IconName.BELL}
-                heading="About Notifications"
-                expandableContent="Notifications are a way for users to be alerted of important events that occur in the Hybrid Cloud
-                            Console. You can receive notifications through email and
-                            third-party integrations, such as Slack or ServiceNow."
+                heading={intl.formatMessage(messages.aboutNotificationsHeading)}
+                expandableContent={intl.formatMessage(messages.aboutNotificationsContent)}
               />
             </DataList>
           </React.Fragment>
         )}
 
         <Title headingLevel="h2" className="pf-v6-u-mb-md">
-          Recommended content
+          <FormattedMessage {...messages.recommendedContentTitle} />
         </Title>
 
         {isOrgAdmin ? (
           <React.Fragment>
-            <Table aria-label="Recommended content" className="pf-v6-u-mb-lg">
+            <Table
+              aria-label={intl.formatMessage(messages.recommendedContentAria)}
+              className="pf-v6-u-mb-lg"
+            >
               <Tbody>
                 <Tr className="noti-c-table-border-top">
-                  <Td>Configuring Notifications</Td>
                   <Td>
-                    <Label color="orange">Documentation</Label>
+                    <FormattedMessage {...messages.configuringNotificationsLabel} />
+                  </Td>
+                  <Td>
+                    <Label color="orange">
+                      <FormattedMessage {...messages.documentationLabel} />
+                    </Label>
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
@@ -357,14 +557,19 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         window.open(LEARN_MORE, '_blank');
                       }}
                     >
-                      View documentation <ExternalLinkAltIcon />
+                      <FormattedMessage {...messages.viewDocumentationLink} />
+                      <ExternalLinkAltIcon />
                     </a>
                   </Td>
                 </Tr>
                 <Tr>
-                  <Td>Configuring Integrations</Td>
                   <Td>
-                    <Label color="orange">Documentation</Label>
+                    <FormattedMessage {...messages.configuringIntegrationsLabel} />
+                  </Td>
+                  <Td>
+                    <Label color="orange">
+                      <FormattedMessage {...messages.documentationLabel} />
+                    </Label>
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
@@ -374,22 +579,26 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         window.open(CONFIGURE_INTEGRATIONS, '_blank');
                       }}
                     >
-                      View documentation <ExternalLinkAltIcon />
+                      <FormattedMessage {...messages.viewDocumentationLink} />
+                      <ExternalLinkAltIcon />
                     </a>
                   </Td>
                 </Tr>
                 <Tr>
-                  <Td>Restricting access to a service to a team</Td>
                   <Td>
-                    <Label color="green">Quick start</Label>
+                    <FormattedMessage {...messages.restrictingAccessLabel} />
+                  </Td>
+                  <Td>
+                    <Label color="green">
+                      <FormattedMessage {...messages.quickStartLabel} />
+                    </Label>
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
-                      href={`${
-                        isBeta() ? '/preview' : ''
-                      }/iam/my-user-access?bundle=rhel&quickstart=rbac-admin-vuln-permissions`}
+                      href={`${basePath}/iam/my-user-access?bundle=rhel&quickstart=rbac-admin-vuln-permissions`}
                     >
-                      Begin Quick start <ArrowRightIcon />
+                      <FormattedMessage {...messages.beginQuickStartLink} />
+                      <ArrowRightIcon />
                     </a>
                   </Td>
                 </Tr>
@@ -398,12 +607,19 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
           </React.Fragment>
         ) : (
           <React.Fragment>
-            <Table aria-label="Recommended content" className="pf-v6-u-mb-lg">
+            <Table
+              aria-label={intl.formatMessage(messages.recommendedContentAria)}
+              className="pf-v6-u-mb-lg"
+            >
               <Tbody>
                 <Tr className="noti-c-table-border-top">
-                  <Td>Configuring notifications and integrations</Td>
                   <Td>
-                    <Label color="orange">Documentation</Label>
+                    <FormattedMessage {...messages.configuringNotificationsIntegrationsLabel} />
+                  </Td>
+                  <Td>
+                    <Label color="orange">
+                      <FormattedMessage {...messages.documentationLabel} />
+                    </Label>
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
@@ -413,14 +629,19 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         window.open(LEARN_MORE, '_blank');
                       }}
                     >
-                      View documentation <ExternalLinkAltIcon />
+                      <FormattedMessage {...messages.viewDocumentationLink} />
+                      <ExternalLinkAltIcon />
                     </a>
                   </Td>
                 </Tr>
                 <Tr>
-                  <Td>Configuring integrations for Red Hat services</Td>
                   <Td>
-                    <Label color="orange">Documentation</Label>
+                    <FormattedMessage {...messages.configuringIntegrationsServicesLabel} />
+                  </Td>
+                  <Td>
+                    <Label color="orange">
+                      <FormattedMessage {...messages.documentationLabel} />
+                    </Label>
                   </Td>
                   <Td className="pf-v6-u-text-align-end">
                     <a
@@ -430,7 +651,8 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
                         window.open(CONFIGURE_INTEGRATIONS, '_blank');
                       }}
                     >
-                      View documentation <ExternalLinkAltIcon />
+                      <FormattedMessage {...messages.viewDocumentationLink} />
+                      <ExternalLinkAltIcon />
                     </a>
                   </Td>
                 </Tr>
@@ -438,11 +660,8 @@ export const NotificationsOverviewPage: React.FunctionComponent = () => {
             </Table>
           </React.Fragment>
         )}
-        <a
-          href={`${isBeta() ? '/preview' : ''}/settings/learning-resources`}
-          className="pf-v6-u-mb-lg"
-        >
-          View all Settings Learning Resources
+        <a href={`${basePath}/settings/learning-resources`} className="pf-v6-u-mb-lg">
+          <FormattedMessage {...messages.viewAllLearningResources} />
         </a>
       </Main>
     </React.Fragment>

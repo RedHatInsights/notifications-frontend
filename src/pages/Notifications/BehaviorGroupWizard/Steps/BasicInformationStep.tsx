@@ -5,6 +5,8 @@ import * as Yup from 'yup';
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
 import { Form, FormTextInput } from '../../../../utils/insights-common-typescript';
 
+const BEHAVIOR_GROUP_NAME = 'Behavior group name';
+
 const title = 'Name';
 
 const BasicInformationStep: React.FunctionComponent = () => {
@@ -17,7 +19,7 @@ const BasicInformationStep: React.FunctionComponent = () => {
         ouiaId="name"
         id="name"
         name="displayName"
-        label="Behavior group name"
+        label={BEHAVIOR_GROUP_NAME}
         isRequired
       />
     </Form>

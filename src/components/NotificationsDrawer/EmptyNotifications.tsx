@@ -10,6 +10,47 @@ import { Link } from 'react-router-dom';
 import { Stack, StackItem } from '@patternfly/react-core/dist/dynamic/layouts/Stack';
 import { useLoadModule, useRemoteHook } from '@scalprum/react-core';
 import { useFlag } from '@unleash/proxy-client-react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  noNotifications: {
+    id: 'notificationsDrawer.empty.noNotifications',
+    defaultMessage: 'No notifications found',
+  },
+  noNotificationsForYou: {
+    id: 'notificationsDrawer.empty.noNotificationsForYou',
+    defaultMessage: 'There are currently no notifications for you.',
+  },
+  tryChecking: {
+    id: 'notificationsDrawer.empty.tryChecking',
+    defaultMessage:
+      'Try {preferencesLink} and managing the {configurationLink} for your organization.',
+  },
+  checkingPreferences: {
+    id: 'notificationsDrawer.empty.checkingPreferences',
+    defaultMessage: 'checking your notification preferences',
+  },
+  notificationConfiguration: {
+    id: 'notificationsDrawer.empty.notificationConfiguration',
+    defaultMessage: 'notification configuration',
+  },
+  checkPreferences: {
+    id: 'notificationsDrawer.empty.checkPreferences',
+    defaultMessage: 'Check your Notification Preferences',
+  },
+  viewEventLog: {
+    id: 'notificationsDrawer.empty.viewEventLog',
+    defaultMessage: 'View the Event log to see all fired events',
+  },
+  contactAdmin: {
+    id: 'notificationsDrawer.empty.contactAdmin',
+    defaultMessage: 'Contact your organization administrator',
+  },
+  contactAdminVAMessage: {
+    id: 'notificationsDrawer.empty.contactAdminVAMessage',
+    defaultMessage: 'Contact my org admin.',
+  },
+});
 
 type ModelsType = {
   VA: string;
@@ -27,6 +68,7 @@ type VirtualAssistantState = {
  * when the feature flag is disabled (FedRAMP compliance).
  */
 export const EmptyNotificationsVAButton = ({ onLinkClick }: { onLinkClick: () => void }) => {
+  const intl = useIntl();
   const { hookResult: useVirtualAssistant, loading } = useRemoteHook<
     [VirtualAssistantState, Dispatch<SetStateAction<VirtualAssistantState>>]
   >({
@@ -54,13 +96,13 @@ export const EmptyNotificationsVAButton = ({ onLinkClick }: { onLinkClick: () =>
       setVAState({
         isOpen: true,
         currentModel: Models.VA,
-        message: 'Contact my org admin.',
+        message: intl.formatMessage(messages.contactAdminVAMessage),
       });
     }
   };
 
   if (!isVAAvailable) {
-    return <Content component="p">Contact your organization administrator</Content>;
+    return <Content component="p">{intl.formatMessage(messages.contactAdmin)}</Content>;
   }
 
   return (
@@ -69,7 +111,7 @@ export const EmptyNotificationsVAButton = ({ onLinkClick }: { onLinkClick: () =>
       onClick={handleContactAdmin}
       className="pf-v6-c-button pf-m-link pf-m-inline"
     >
-      Contact your organization administrator
+      {intl.formatMessage(messages.contactAdmin)}
     </button>
   );
 };
@@ -82,12 +124,13 @@ export const EmptyNotifications = ({
   isOrgAdmin?: boolean;
 }) => {
   const isVAEnabled = useFlag('platform.va.environment.enabled');
+  const intl = useIntl();
 
   return (
     <EmptyState
       titleText={
         <Title headingLevel="h4" size="lg">
-          No notifications found
+          {intl.formatMessage(messages.noNotifications)}
         </Title>
       }
       icon={BellSlashIcon}
@@ -96,19 +139,25 @@ export const EmptyNotifications = ({
         {isOrgAdmin ? (
           <Stack>
             <StackItem>
-              <Content component="p">There are currently no notifications for you.</Content>
+              <Content component="p">{intl.formatMessage(messages.noNotificationsForYou)}</Content>
             </StackItem>
             <StackItem>
               <Content component="p">
-                Try&nbsp;
-                <Link onClick={onLinkClick} to="/settings/notifications/user-preferences">
-                  checking your notification preferences
-                </Link>
-                &nbsp;and managing the&nbsp;
-                <Link onClick={onLinkClick} to="/settings/notifications/configure-events">
-                  notification configuration
-                </Link>
-                &nbsp;for your organization.
+                <FormattedMessage
+                  {...messages.tryChecking}
+                  values={{
+                    preferencesLink: (
+                      <Link onClick={onLinkClick} to="/settings/notifications/user-preferences">
+                        {intl.formatMessage(messages.checkingPreferences)}
+                      </Link>
+                    ),
+                    configurationLink: (
+                      <Link onClick={onLinkClick} to="/settings/notifications/configure-events">
+                        {intl.formatMessage(messages.notificationConfiguration)}
+                      </Link>
+                    ),
+                  }}
+                />
               </Content>
             </StackItem>
           </Stack>
@@ -116,23 +165,25 @@ export const EmptyNotifications = ({
           <>
             <Stack>
               <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
-                <Content component="p">There are currently no notifications for you.</Content>
+                <Content component="p">
+                  {intl.formatMessage(messages.noNotificationsForYou)}
+                </Content>
               </StackItem>
               <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
                 <Link onClick={onLinkClick} to="/settings/notifications/user-preferences">
-                  Check your Notification Preferences
+                  {intl.formatMessage(messages.checkPreferences)}
                 </Link>
               </StackItem>
               <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
                 <Link onClick={onLinkClick} to="/settings/notifications/eventlog">
-                  View the Event log to see all fired events
+                  {intl.formatMessage(messages.viewEventLog)}
                 </Link>
               </StackItem>
               <StackItem className="pf-v6-u-pl-lg pf-v6-u-pb-sm">
                 {isVAEnabled ? (
                   <EmptyNotificationsVAButton onLinkClick={onLinkClick} />
                 ) : (
-                  <Content component="p">Contact your organization administrator</Content>
+                  <Content component="p">{intl.formatMessage(messages.contactAdmin)}</Content>
                 )}
               </StackItem>
             </Stack>

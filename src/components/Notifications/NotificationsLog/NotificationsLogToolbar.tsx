@@ -9,12 +9,20 @@ import {
 import { Pagination } from '@patternfly/react-core';
 import { FilterIcon } from '@patternfly/react-icons';
 import React, { Dispatch, SetStateAction } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { EventPeriod } from '../../../types/Event';
 import {
   NotificationsLogDateFilter,
   NotificationsLogDateFilterValue,
 } from './NotificationsLogDateFilter';
+
+const messages = defineMessages({
+  event: {
+    id: 'notificationsLog.toolbar.event',
+    defaultMessage: 'Event',
+  },
+});
 
 const NotificationsLogToolbar: React.FC<{
   retentionDays: number;
@@ -25,6 +33,7 @@ const NotificationsLogToolbar: React.FC<{
   dateFilter: NotificationsLogDateFilterValue;
   setDateFilter: (value: NotificationsLogDateFilterValue) => void;
 }> = ({ onPagination, pagination, ...props }) => {
+  const intl = useIntl();
   return (
     <React.Fragment>
       <Toolbar>
@@ -37,7 +46,7 @@ const NotificationsLogToolbar: React.FC<{
                 </Icon>
               }
             >
-              Event
+              {intl.formatMessage(messages.event)}
             </MenuToggle>
           </ToolbarItem>
         </ToolbarContent>

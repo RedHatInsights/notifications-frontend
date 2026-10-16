@@ -6,6 +6,7 @@ import {
   SelectList,
 } from '@patternfly/react-core';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { IntegrationType } from '../../../types/Integration';
 import { Action, NotificationType } from '../../../types/Notification';
@@ -22,7 +23,15 @@ interface RecipientFormProps {
   error?: string;
 }
 
+const messages = defineMessages({
+  selectRecipients: {
+    id: 'behaviorGroup.recipientForm.selectRecipients',
+    defaultMessage: 'Select recipients...',
+  },
+});
+
 export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (props) => {
+  const intl = useIntl();
   let recipient: React.ReactNode;
 
   if (!props.action) {
@@ -34,7 +43,7 @@ export const RecipientForm: React.FunctionComponent<RecipientFormProps> = (props
           onOpenChange={() => {}}
           toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
             <MenuToggle ref={toggleRef} isDisabled isExpanded={false}>
-              Select recipients...
+              {intl.formatMessage(messages.selectRecipients)}
             </MenuToggle>
           )}
         >

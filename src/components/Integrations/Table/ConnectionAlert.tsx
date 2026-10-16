@@ -1,5 +1,6 @@
 import { Alert, AlertVariant } from '@patternfly/react-core';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { IntegrationConnectionAttempt } from '../../../types/Integration';
 import { getOuiaProps } from '../../../utils/getOuiaProps';
@@ -13,13 +14,21 @@ interface ConnectionAlertProps extends OuiaProps {
   title: string;
 }
 
+const messages = defineMessages({
+  lastAttempts: {
+    id: 'integrations.connectionAlert.lastAttempts',
+    defaultMessage: 'Last attempts:',
+  },
+});
+
 export const ConnectionAlert: React.FunctionComponent<ConnectionAlertProps> = (props) => {
+  const intl = useIntl();
   return (
     <div {...getOuiaProps('ConnectionAlert', props)}>
       <Alert title={props.title} variant={props.alertVariant} isInline>
         <p className="pf-v6-u-mt-sm">{props.description}</p>
         <p className="pf-v6-u-mt-sm">
-          Last attempts:{' '}
+          {intl.formatMessage(messages.lastAttempts)}{' '}
           {props.attempts.map((attempt, index) => (
             <span key={index} className="pf-v6-u-ml-sm">
               <ConnectionAttempt

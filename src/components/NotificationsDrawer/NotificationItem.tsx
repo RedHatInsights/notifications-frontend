@@ -28,6 +28,11 @@ import remarkGfm from 'remark-gfm';
 import { updateNotificationReadStatus } from '../../api/helpers/notifications/update-read-status-helper';
 import messages from '../../properties/DefinedMessages';
 
+const EVENT_LOG_PATH = '/settings/notifications/eventlog';
+const CONFIGURE_EVENTS_PATH = '/settings/notifications/configure-events';
+const EVENT_PARAM = 'event';
+const TAB_PARAM = 'configuration';
+
 interface NotificationItemProps {
   notification: NotificationData;
   onNavigateTo: (link: string) => void;
@@ -81,8 +86,8 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             ? { service: `${notification.bundle}.${notification.application}` }
             : { bundle: notification.bundle }
         );
-        params.set('event', notification.title);
-        onNavigateTo(`/settings/notifications/eventlog?${params.toString()}`);
+        params.set(EVENT_PARAM, notification.title);
+        onNavigateTo(`${EVENT_LOG_PATH}?${params.toString()}`);
       }}
     >
       {intl.formatMessage(messages.viewInEventLog)}
@@ -109,9 +114,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             key="manage-event-config"
             onClick={() =>
               onNavigateTo(
-                `/settings/notifications/configure-events?${new URLSearchParams({
+                `${CONFIGURE_EVENTS_PATH}?${new URLSearchParams({
                   bundle: notification.bundle,
-                  tab: 'configuration',
+                  tab: TAB_PARAM,
                 }).toString()}`
               )
             }
@@ -126,9 +131,9 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
         key="manage-event-config"
         onClick={() =>
           onNavigateTo(
-            `/settings/notifications/configure-events?${new URLSearchParams({
+            `${CONFIGURE_EVENTS_PATH}?${new URLSearchParams({
               bundle: notification.bundle,
-              tab: 'configuration',
+              tab: TAB_PARAM,
             }).toString()}`
           )
         }
@@ -143,7 +148,10 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
       variant="info"
       isRead={notification.read}
     >
-      <NotificationDrawerListItemHeader title={notification.title} srTitle="Info notification:">
+      <NotificationDrawerListItemHeader
+        title={notification.title}
+        srTitle={intl.formatMessage(messages.infoNotificationSrTitle)}
+      >
         <Flex
           flexWrap={{ default: 'nowrap' }}
           alignItems={{ default: 'alignItemsCenter' }}
@@ -161,7 +169,7 @@ const NotificationItem: React.FC<NotificationItemProps> = ({
             toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
               <MenuToggle
                 ref={toggleRef}
-                aria-label="Notification actions dropdown"
+                aria-label={intl.formatMessage(messages.notificationActionsAria)}
                 onClick={(e) => {
                   e.stopPropagation();
                   setIsDropdownOpen(!isDropdownOpen);

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
 
@@ -34,6 +35,25 @@ interface AddNotificationBodyContainer {
   reduxDispatch: Dispatch;
   savedNotificationScope: SavedNotificationScopeState;
 }
+
+const messages = defineMessages({
+  failedToUpdateTitle: {
+    id: 'integrations.create.failedToUpdateTitle',
+    defaultMessage: 'Integration failed to update',
+  },
+  failedToUpdateBody: {
+    id: 'integrations.create.failedToUpdateBody',
+    defaultMessage: 'There was an error trying to update the Integration. Please try again.',
+  },
+  failedToCreateTitle: {
+    id: 'integrations.create.failedToCreateTitle',
+    defaultMessage: 'Failed to create Integration',
+  },
+  failedToCreateBody: {
+    id: 'integrations.create.failedToCreateBody',
+    defaultMessage: 'There was an error trying to create the Integration. Please try again.',
+  },
+});
 
 const AddNotificationBodyContainer: React.FunctionComponent<AddNotificationBodyContainer> = (
   props
@@ -88,6 +108,7 @@ const ConnectedAddNotificationBodyContainer = connect(
 )(AddNotificationBodyContainer);
 
 export const CreatePage: React.FunctionComponent<CreatePageProps> = (props) => {
+  const intl = useIntl();
   const saveIntegrationMutation = useSaveIntegrationMutation();
   const [hasError, setError] = React.useState(false);
   const { addSuccessNotification } = useNotification();
@@ -134,17 +155,13 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = (props) => {
     if (hasError) {
       if (props.isEdit) {
         return {
-          title: 'Integration failed to update',
-          description: (
-            <p>There was an error trying to update the Integration. Please try again.</p>
-          ),
+          title: intl.formatMessage(messages.failedToUpdateTitle),
+          description: <p>{intl.formatMessage(messages.failedToUpdateBody)}</p>,
         };
       } else {
         return {
-          title: 'Failed to create Integration',
-          description: (
-            <p>There was an error trying to create the Integration. Please try again.</p>
-          ),
+          title: intl.formatMessage(messages.failedToCreateTitle),
+          description: <p>{intl.formatMessage(messages.failedToCreateBody)}</p>,
         };
       }
     }

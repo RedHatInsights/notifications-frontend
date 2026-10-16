@@ -15,7 +15,8 @@
     "noImplicitAny": false,
     "sourceMap": true,
     "resolveJsonModule": true,
-    "types": ["node", "jest", "@testing-library/jest-dom"]
+    "types": ["node", "jest", "@testing-library/jest-dom"],
+    "module": "esnext"
   },
   "include": ["./src/**/**.*", "./config/setupTests.ts"]
 }

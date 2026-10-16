@@ -1,5 +1,5 @@
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import {
   MenuToggle,
@@ -24,6 +24,29 @@ import FilterIcon from '@patternfly/react-icons/dist/dynamic/icons/filter-icon';
 import EllipsisVIcon from '@patternfly/react-icons/dist/dynamic/icons/ellipsis-v-icon';
 import messages from '../../properties/DefinedMessages';
 
+const EVENT_LOG_PATH = '/settings/notifications/eventlog';
+const USER_PREFERENCES_PATH = '/settings/notifications/user-preferences';
+const CONFIGURE_EVENTS_PATH = '/settings/notifications/configure-events';
+
+const localMessages = defineMessages({
+  notificationsFilterAria: {
+    id: 'notificationsDrawer.dropdowns.notificationsFilterAria',
+    defaultMessage: 'Notifications filter',
+  },
+  showNotificationsFor: {
+    id: 'notificationsDrawer.dropdowns.showNotificationsFor',
+    defaultMessage: 'Show notifications for...',
+  },
+  resetFilters: {
+    id: 'notificationsDrawer.dropdowns.resetFilters',
+    defaultMessage: 'Reset filters',
+  },
+  actionsDropdownAria: {
+    id: 'notificationsDrawer.dropdowns.actionsDropdownAria',
+    defaultMessage: 'Notifications actions dropdown',
+  },
+});
+
 export const FilterDropdown = ({
   isFilterDropdownOpen,
   setIsFilterDropdownOpen,
@@ -33,6 +56,7 @@ export const FilterDropdown = ({
   setActiveFilters,
   onFilterSelect,
 }) => {
+  const intl = useIntl();
   const isSelectingFilter = React.useRef(false);
 
   const handleFilterSelect = (_event?: React.MouseEvent, itemId?: string | number | undefined) => {
@@ -68,7 +92,7 @@ export const FilterDropdown = ({
           onClick={() => setIsFilterDropdownOpen(!isFilterDropdownOpen)}
           id="notifications-filter-toggle"
           variant="plain"
-          aria-label="Notifications filter"
+          aria-label={intl.formatMessage(localMessages.notificationsFilterAria)}
         >
           <FilterIcon />
         </MenuToggle>
@@ -83,7 +107,10 @@ export const FilterDropdown = ({
     >
       <Menu onSelect={handleFilterSelect} selected={activeFilters}>
         <MenuList>
-          <MenuGroup key="filter-label" label="Show notifications for...">
+          <MenuGroup
+            key="filter-label"
+            label={intl.formatMessage(localMessages.showNotificationsFor)}
+          >
             {filterConfig.map((source: { value: string; title: string }) => (
               <MenuItem
                 key={source.value}
@@ -108,7 +135,7 @@ export const FilterDropdown = ({
               setIsFilterDropdownOpen(false);
             }}
           >
-            Reset filters
+            {intl.formatMessage(localMessages.resetFilters)}
           </Button>
         </MenuFooter>
       </Menu>
@@ -124,6 +151,7 @@ export const ActionDropdown = ({
   onNavigateTo,
   isOrgAdmin,
 }) => {
+  const intl = useIntl();
   return (
     <Dropdown
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
@@ -132,7 +160,7 @@ export const ActionDropdown = ({
           onClick={() => setIsDropdownOpen(!isDropdownOpen)}
           variant="plain"
           id="notifications-actions-toggle"
-          aria-label="Notifications actions dropdown"
+          aria-label={intl.formatMessage(localMessages.actionsDropdownAria)}
         >
           <EllipsisVIcon />
         </MenuToggle>
@@ -183,16 +211,10 @@ const ActionDropdownItems = ({
       </DropdownList>
       <Divider />
       <DropdownList>
-        <DropdownItem
-          key="event log"
-          onClick={() => onNavigateTo('/settings/notifications/eventlog')}
-        >
+        <DropdownItem key="event log" onClick={() => onNavigateTo(EVENT_LOG_PATH)}>
           {intl.formatMessage(messages.viewEventLog)}
         </DropdownItem>
-        <DropdownItem
-          key="event notifications"
-          onClick={() => onNavigateTo('/settings/notifications/user-preferences')}
-        >
+        <DropdownItem key="event notifications" onClick={() => onNavigateTo(USER_PREFERENCES_PATH)}>
           {intl.formatMessage(messages.manageMyEventNotifications)}
         </DropdownItem>
         {!isOrgAdmin ? (
@@ -200,7 +222,7 @@ const ActionDropdownItems = ({
             <span>
               <DropdownItem
                 key="event configuration"
-                onClick={() => onNavigateTo('/settings/notifications/configure-events')}
+                onClick={() => onNavigateTo(CONFIGURE_EVENTS_PATH)}
                 isDisabled={true}
               >
                 {intl.formatMessage(messages.manageEventConfiguration)}
@@ -210,7 +232,7 @@ const ActionDropdownItems = ({
         ) : (
           <DropdownItem
             key="event configuration"
-            onClick={() => onNavigateTo('/settings/notifications/configure-events')}
+            onClick={() => onNavigateTo(CONFIGURE_EVENTS_PATH)}
           >
             {intl.formatMessage(messages.manageEventConfiguration)}
           </DropdownItem>
