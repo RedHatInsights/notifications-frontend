@@ -1,6 +1,6 @@
 import produce, { castDraft } from 'immer';
 import * as React from 'react';
-import { FormattedMessage, defineMessages } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { ClientContext } from 'react-fetching-library';
 import { usePrevious } from 'react-use';
 
@@ -66,6 +66,7 @@ export const useBehaviorGroupNotificationRows = (
   behaviorGroups: ReadonlyArray<BehaviorGroup> | undefined,
   initialThreshold = DEFAULT_THRESHOLD
 ) => {
+  const intl = useIntl();
   const { addDangerNotification } = useNotification();
   const [notificationRows, setNotificationRows] = React.useState<
     Array<BehaviorGroupNotificationRow>
@@ -171,7 +172,7 @@ export const useBehaviorGroupNotificationRows = (
             );
           } else {
             addDangerNotification(
-              messages.savingBehavior.defaultMessage as string,
+              intl.formatMessage(messages.savingBehavior),
               <FormattedMessage
                 {...messages.savingBehaviorError}
                 values={{
@@ -215,7 +216,7 @@ export const useBehaviorGroupNotificationRows = (
         );
       }
     },
-    [notificationRows, query, addDangerNotification]
+    [notificationRows, query, addDangerNotification, intl]
   );
 
   const startEditMode = React.useCallback(

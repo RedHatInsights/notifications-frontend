@@ -60,7 +60,7 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<
     }
 
     return undefined;
-  }, [hasError]);
+  }, [hasError, intl]);
 
   React.useEffect(() => {
     const query = getBehaviorGroupsQuery.query;

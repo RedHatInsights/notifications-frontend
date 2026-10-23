@@ -7,13 +7,19 @@ import { Form, FormTextInput } from '../../../../utils/insights-common-typescrip
 
 const BEHAVIOR_GROUP_NAME = 'Behavior group name';
 
-const title = 'Name';
+const titleMessages = {
+  title: {
+    id: 'behaviorGroup.wizard.basicInformation.title',
+    defaultMessage: 'Name',
+  },
+} as const;
 
 const BasicInformationStep: React.FunctionComponent = () => {
+  const intl = useIntl();
   return (
     <Form ouiaId="basic-information-step">
       <Title headingLevel="h4" size="xl">
-        {title}
+        {intl.formatMessage(titleMessages.title)}
       </Title>
       <FormTextInput
         ouiaId="name"
@@ -34,12 +40,15 @@ export const schema = Yup.object({
 });
 
 export const useBasicInformationStep: IntegrationWizardStep = () => {
+  const intl = useIntl();
   return React.useMemo(
     () => ({
-      name: title,
+      name: intl.formatMessage(titleMessages.title),
       component: <BasicInformationStep />,
       schema,
     }),
-    []
+    [intl]
   );
 };
+
+import { useIntl } from 'react-intl';

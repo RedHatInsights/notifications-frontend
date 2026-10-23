@@ -194,7 +194,7 @@ export const EventLogToolbar: React.FunctionComponent<
           label: Config.integrations.types[integration].name,
         }))
       );
-  }, [notifications, integrations]);
+  }, [notifications, integrations, intl]);
 
   const severityMetadata = React.useMemo(() => {
     const severities: EventSeverity[] =
@@ -253,7 +253,7 @@ export const EventLogToolbar: React.FunctionComponent<
         },
       },
     };
-  }, [actionTypeMetadata, severityMetadata]);
+  }, [actionTypeMetadata, severityMetadata, actionStatusMetadata]);
 
   const primaryToolbarFilterConfig = usePrimaryToolbarFilterConfigWrapper(
     props.bundleOptions,
