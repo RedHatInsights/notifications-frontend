@@ -1,3 +1,4 @@
+import { useIntl } from 'react-intl';
 import { useFormikContext } from 'formik';
 import produce from 'immer';
 import * as React from 'react';
@@ -7,7 +8,12 @@ import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType, Facet } from '../../../../types/Notification';
 import EventTypes from '../../../../components/Integrations/EventTypes';
 
-const title = 'Associate event types';
+const titleMessages = {
+  title: {
+    id: 'behaviorGroup.wizard.associateEventTypes.title',
+    defaultMessage: 'Associate event types',
+  },
+} as const;
 
 export interface AssociateEventTypesStepProps {
   applications: ReadonlyArray<Facet>;
@@ -23,9 +29,10 @@ export const useAssociateEventTypesStep: IntegrationWizardStep<AssociateEventTyp
   bundle,
 }: AssociateEventTypesStepProps) => {
   const { setValues, values } = useFormikContext<CreateBehaviorGroup>();
+  const intl = useIntl();
   return React.useMemo(
     () => ({
-      name: title,
+      name: intl.formatMessage(titleMessages.title),
       component: (
         <EventTypes
           applications={applications}
@@ -42,6 +49,6 @@ export const useAssociateEventTypesStep: IntegrationWizardStep<AssociateEventTyp
         />
       ),
     }),
-    [applications, bundle] // eslint-disable-line react-hooks/exhaustive-deps
+    [applications, bundle, intl] // eslint-disable-line react-hooks/exhaustive-deps
   );
 };

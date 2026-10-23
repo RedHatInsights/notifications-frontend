@@ -61,7 +61,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       intl.formatMessage(messages.choose, {
         type: Config.integrations.types[integrationType].name.toLowerCase(),
       }),
-    [integrationType]
+    [integrationType, intl]
   );
   const [isOpen, setIsOpen] = React.useState(false);
   const [inputValue, setInputValue] = React.useState<string>('');
@@ -139,6 +139,7 @@ export const IntegrationRecipientTypeahead: React.FunctionComponent<
       selected?.id,
       state.loadingDefault,
       state.loadingFilter,
+      intl,
     ]
   );
 

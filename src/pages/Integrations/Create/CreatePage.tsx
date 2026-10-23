@@ -167,7 +167,7 @@ export const CreatePage: React.FunctionComponent<CreatePageProps> = (props) => {
     }
 
     return undefined;
-  }, [hasError, props.isEdit]);
+  }, [hasError, props.isEdit, intl]);
 
   return (
     <IntegrationSaveModal

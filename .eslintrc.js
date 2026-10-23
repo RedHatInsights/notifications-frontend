@@ -108,6 +108,7 @@ module.exports = {
     },
   ],
   rules: {
+    'react-hooks/exhaustive-deps': 'error',
     'sort-imports': [
       'error',
       {
