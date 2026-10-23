@@ -1,9 +1,25 @@
 import { FormGroup, FormHelperText, HelperText, HelperTextItem } from '@patternfly/react-core';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { getOuiaProps, ouiaIdConcat } from '../../../utils/getOuiaProps';
 import { IntegrationTypeForm } from './IntegrationTypeForm';
 import { Checkbox, FormTextInput } from '../../../utils/insights-common-typescript';
+
+const messages = defineMessages({
+  endpointUrl: {
+    id: 'integrations.camelExtrasForm.endpointUrl',
+    defaultMessage: 'Endpoint URL',
+  },
+  enableSslVerification: {
+    id: 'integrations.camelExtrasForm.enableSslVerification',
+    defaultMessage: 'Enable SSL verification',
+  },
+  secretToken: {
+    id: 'integrations.camelExtrasForm.secretToken',
+    defaultMessage: 'Secret token',
+  },
+});
 
 interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
   secretTokenDescription: string;
@@ -14,11 +30,12 @@ interface IntegrationTypeCamelExtrasForm extends IntegrationTypeForm {
 export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
   IntegrationTypeCamelExtrasForm
 > = (props) => {
+  const intl = useIntl();
   return (
     <div className="pf-c-form" {...getOuiaProps('Integrations/Camel/Splunk', props)}>
       <FormTextInput
         isRequired={true}
-        label="Endpoint URL"
+        label={intl.formatMessage(messages.endpointUrl)}
         type="text"
         name="url"
         id="integration-type-camel-url"
@@ -26,14 +43,14 @@ export const IntegrationTypeCamelExtrasForm: React.FunctionComponent<
       />
       <Checkbox
         id="integration-type-camel-ssl-verification-enabled"
-        label="Enable SSL verification"
+        label={intl.formatMessage(messages.enableSslVerification)}
         name="sslVerificationEnabled"
         ouiaId={ouiaIdConcat(props.ouiaId, 'is-ssl-verification-enabled')}
       />
       <FormGroup fieldId="integration-type-camel-secret-token">
         <FormTextInput
           isRequired={props.secretTokenRequired ?? false}
-          label={props.secretTokenLabel ?? 'Secret token'}
+          label={props.secretTokenLabel ?? intl.formatMessage(messages.secretToken)}
           id="integration-type-camel-secret-token"
           name="secretToken"
           ouiaId={ouiaIdConcat(props.ouiaId, 'secret-token')}

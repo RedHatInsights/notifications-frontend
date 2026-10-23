@@ -1,4 +1,3 @@
-import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
 import { enableMapSet } from 'immer';
 import { validateSchemaResponseInterceptor } from 'openapi2typescript/react-fetching-library';
@@ -7,10 +6,10 @@ import { ClientContextProvider } from 'react-fetching-library';
 import { Provider } from 'react-redux';
 import * as Redux from 'redux';
 
-import messages from '../locales/data.json';
 import App from './app/App';
 import { getNotificationsRegistry } from './store/Store';
 import { createFetchingClient } from './utils/insights-common-typescript';
+import { IntlMessagesProvider, useChromeLocale } from './shared/i18n';
 
 export interface AppEntryProps {
   logger?: Redux.Middleware;
@@ -20,6 +19,7 @@ enableMapSet();
 
 const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
   const { auth } = useChrome();
+  const locale = useChromeLocale();
 
   const client = React.useMemo(
     () =>
@@ -37,13 +37,13 @@ const AppEntry: React.FunctionComponent<AppEntryProps> = (props) => {
   }, [props.logger]);
 
   return (
-    <IntlProvider locale={navigator.language.slice(0, 2)} messages={messages} onError={console.log}>
+    <IntlMessagesProvider locale={locale}>
       <Provider store={store}>
         <ClientContextProvider client={client}>
           <App />
         </ClientContextProvider>
       </Provider>
-    </IntlProvider>
+    </IntlMessagesProvider>
   );
 };
 

@@ -1,3 +1,4 @@
+const KEBAB_TOGGLE_ARIA = 'kebab dropdown toggle';
 import React from 'react';
 import {
   DrawerActions,
@@ -53,7 +54,7 @@ const ActionDropdown: React.FunctionComponent<{
       toggle={(toggleRef: React.Ref<MenuToggleElement>) => (
         <MenuToggle
           ref={toggleRef}
-          aria-label="kebab dropdown toggle"
+          aria-label={KEBAB_TOGGLE_ARIA}
           variant="plain"
           onClick={onToggleClick}
           isExpanded={isOpen}

@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { IntegrationDeleteModal } from '../../../components/Integrations/DeleteModal';
 import { useGetAffectedBehaviorGroupsByEndpoint } from '../../../services/Notifications/GetAffectedBehaviorGroupsByEndpoint';
@@ -13,9 +14,21 @@ interface IntegrationDeleteModalPageProps extends OuiaProps {
   integration: UserIntegration;
 }
 
+const messages = defineMessages({
+  failedToRemoveTitle: {
+    id: 'integrations.delete.failedToRemoveTitle',
+    defaultMessage: 'Failed to remove Integration',
+  },
+  failedToRemoveBody: {
+    id: 'integrations.delete.failedToRemoveBody',
+    defaultMessage: 'There was an error trying to remove the Integration. Please try again.',
+  },
+});
+
 export const IntegrationDeleteModalPage: React.FunctionComponent<
   IntegrationDeleteModalPageProps
 > = (props) => {
+  const intl = useIntl();
   const deleteIntegrationMutation = useDeleteIntegration();
   const getBehaviorGroupsQuery = useGetAffectedBehaviorGroupsByEndpoint();
   const [hasError, setError] = React.useState(false);
@@ -41,8 +54,8 @@ export const IntegrationDeleteModalPage: React.FunctionComponent<
   const error = React.useMemo<ActionModalError | undefined>(() => {
     if (hasError) {
       return {
-        title: 'Failed to remove Integration',
-        description: <p>There was an error trying to remove the Integration. Please try again.</p>,
+        title: intl.formatMessage(messages.failedToRemoveTitle),
+        description: <p>{intl.formatMessage(messages.failedToRemoveBody)}</p>,
       };
     }
 

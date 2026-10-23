@@ -2,6 +2,7 @@ import { render, screen, waitForElementToBeRemoved, within } from '@testing-libr
 import userEvent from '@testing-library/user-event';
 import { fn } from 'jest-mock';
 import * as React from 'react';
+import { IntlProvider } from 'react-intl';
 import { MemoryRouter, useLocation } from 'react-router-dom';
 
 import { waitForAsyncEvents } from '../../../../../test/TestUtils';
@@ -44,11 +45,13 @@ const InternalWrapper: React.FunctionComponent<any> = ({ getLocation, children }
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const Wrapper: React.FunctionComponent<any> = ({ value, children, getLocation }) => {
   return (
-    <MemoryRouter>
-      <InternalWrapper getLocation={getLocation}>
-        <RecipientContextProvider value={value}>{children}</RecipientContextProvider>
-      </InternalWrapper>
-    </MemoryRouter>
+    <IntlProvider locale="en">
+      <MemoryRouter>
+        <InternalWrapper getLocation={getLocation}>
+          <RecipientContextProvider value={value}>{children}</RecipientContextProvider>
+        </InternalWrapper>
+      </MemoryRouter>
+    </IntlProvider>
   );
 };
 

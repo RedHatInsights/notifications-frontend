@@ -1,9 +1,38 @@
 import { ExpandableSection, List, ListItem, Skeleton } from '@patternfly/react-core';
 import * as React from 'react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import { UserIntegration } from '../../types/Integration';
 import { BehaviorGroup } from '../../types/Notification';
 import { DeleteModal, DeleteModalProps } from '../../utils/insights-common-typescript';
+
+const messages = defineMessages({
+  noBehaviorGroupsBody: {
+    id: 'integrations.deleteModal.noBehaviorGroupsBody',
+    defaultMessage: 'Deleting integration {name} does not affect any behavior group.',
+  },
+  behaviorGroupsBody: {
+    id: 'integrations.deleteModal.behaviorGroupsBody',
+    defaultMessage:
+      'Delete integration {name} affects {count, plural, one {# behavior group} other {# behavior groups}}. The end point associated with this integration will not receive notifications for the following events.',
+  },
+  viewBehaviorGroups: {
+    id: 'integrations.deleteModal.viewBehaviorGroups',
+    defaultMessage: 'View {count, plural, one {# behavior group} other {# behavior groups}}',
+  },
+  behaviorGroupEntry: {
+    id: 'integrations.deleteModal.behaviorGroupEntry',
+    defaultMessage: '{bundle}: {name}',
+  },
+  title: {
+    id: 'integrations.deleteModal.title',
+    defaultMessage: 'Delete integration',
+  },
+  actionButtonTitle: {
+    id: 'integrations.deleteModal.actionButtonTitle',
+    defaultMessage: 'Delete',
+  },
+});
 
 type UsedProps = 'isOpen' | 'title' | 'content' | 'onDelete';
 
@@ -16,6 +45,7 @@ interface IntegrationDeleteModalProps extends Omit<DeleteModalProps, UsedProps> 
 export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteModalProps> = (
   props
 ) => {
+  const intl = useIntl();
   const onDeleteInternal = React.useCallback(() => {
     const integration = props.integration;
     const onDelete = props.onDelete;
@@ -36,28 +66,40 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
     } else if (props.behaviorGroups.length === 0) {
       return (
         <span data-testid="removing-integration-without-notifications">
-          Deleting integration <strong>{props.integration?.name}</strong> does not affect any
-          behavior group.
+          <FormattedMessage
+            {...messages.noBehaviorGroupsBody}
+            values={{ name: <strong>{props.integration?.name}</strong> }}
+          />
         </span>
       );
     } else {
-      const behaviorGroupText =
-        props.behaviorGroups.length !== 1 ? 'behavior groups' : 'behavior group';
       return (
         <span
           data-testid={`removing-integration-with-notifications-${props.behaviorGroups.length}`}
         >
-          Delete integration <strong>{props.integration?.name}</strong> affects{' '}
-          {props.behaviorGroups.length} {behaviorGroupText}. The end point associated with this
-          integration will not recieve notifications for the following events.
+          <FormattedMessage
+            {...messages.behaviorGroupsBody}
+            values={{
+              name: <strong>{props.integration?.name}</strong>,
+              count: props.behaviorGroups.length,
+            }}
+          />
           {props.behaviorGroups.length > 0 && (
             <ExpandableSection
-              toggleText={`View ${props.behaviorGroups.length} ${behaviorGroupText}`}
+              toggleText={intl.formatMessage(messages.viewBehaviorGroups, {
+                count: props.behaviorGroups.length,
+              })}
             >
               <List>
                 {props.behaviorGroups.map((behaviorGroup) => (
                   <ListItem key={behaviorGroup.id}>
-                    {behaviorGroup.bundleName}: {behaviorGroup.displayName}
+                    <FormattedMessage
+                      {...messages.behaviorGroupEntry}
+                      values={{
+                        bundle: behaviorGroup.bundleName,
+                        name: behaviorGroup.displayName,
+                      }}
+                    />
                   </ListItem>
                 ))}
               </List>
@@ -66,7 +108,7 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
         </span>
       );
     }
-  }, [props.behaviorGroups, props.integration]);
+  }, [props.behaviorGroups, props.integration, intl]);
 
   if (!props.integration) {
     return null;
@@ -76,13 +118,13 @@ export const IntegrationDeleteModal: React.FunctionComponent<IntegrationDeleteMo
     <DeleteModal
       isOpen={true}
       isDeleting={props.isDeleting}
-      title={'Delete integration'}
+      title={intl.formatMessage(messages.title)}
       content={content}
       onClose={props.onClose}
       onDelete={onDeleteInternal}
       error={props.error}
       titleIconVariant="warning"
-      actionButtonTitle="Delete"
+      actionButtonTitle={intl.formatMessage(messages.actionButtonTitle)}
     />
   );
 };

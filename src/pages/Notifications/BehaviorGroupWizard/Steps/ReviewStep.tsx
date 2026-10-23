@@ -11,6 +11,7 @@ import {
 } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { BehaviorGroupActionsSummary } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupActionsSummary';
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
@@ -18,23 +19,55 @@ import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType } from '../../../../types/Notification';
 import { Form } from '../../../../utils/insights-common-typescript';
 
-const title = 'Review';
+const messages = defineMessages({
+  review: {
+    id: 'behaviorGroup.wizard.review.review',
+    defaultMessage: 'Review',
+  },
+  finish: {
+    id: 'behaviorGroup.wizard.review.finish',
+    defaultMessage: 'Finish',
+  },
+  eventType: {
+    id: 'behaviorGroup.wizard.review.eventType',
+    defaultMessage: 'Event type',
+  },
+  application: {
+    id: 'behaviorGroup.wizard.review.application',
+    defaultMessage: 'Application',
+  },
+  name: {
+    id: 'behaviorGroup.wizard.review.name',
+    defaultMessage: 'Name',
+  },
+  actionsAndRecipients: {
+    id: 'behaviorGroup.wizard.review.actionsAndRecipients',
+    defaultMessage: 'Actions and recipients',
+  },
+  associateEventTypes: {
+    id: 'behaviorGroup.wizard.review.associateEventTypes',
+    defaultMessage: 'Associate event types',
+  },
+});
 
 interface EventTypeReviewTableProps {
   events: ReadonlyArray<EventType>;
 }
 
 const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = (props) => {
+  const intl = useIntl();
   return (
     <Grid>
       <GridItem span={6}>
         <Content>
-          <Content component={ContentVariants.h6}>Event type</Content>
+          <Content component={ContentVariants.h6}>{intl.formatMessage(messages.eventType)}</Content>
         </Content>
       </GridItem>
       <GridItem span={6}>
         <Content>
-          <Content component={ContentVariants.h6}>Application</Content>
+          <Content component={ContentVariants.h6}>
+            {intl.formatMessage(messages.application)}
+          </Content>
         </Content>
       </GridItem>
       {props.events.map((event) => (
@@ -49,25 +82,30 @@ const EventTypeTable: React.FunctionComponent<EventTypeReviewTableProps> = (prop
 
 const ReviewStep: React.FunctionComponent = () => {
   const { values } = useFormikContext<CreateBehaviorGroup>();
+  const intl = useIntl();
 
   return (
     <Form ouiaId="review-step">
       <Title headingLevel="h2" size="xl">
-        {title}
+        {intl.formatMessage(messages.review)}
       </Title>
       <DescriptionList isHorizontal>
         <DescriptionListGroup>
-          <DescriptionListTerm>Name</DescriptionListTerm>
+          <DescriptionListTerm>{intl.formatMessage(messages.name)}</DescriptionListTerm>
           <DescriptionListDescription> {values.displayName}</DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm> Actions and recipients</DescriptionListTerm>
+          <DescriptionListTerm>
+            {intl.formatMessage(messages.actionsAndRecipients)}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             <BehaviorGroupActionsSummary actions={values.actions} />
           </DescriptionListDescription>
         </DescriptionListGroup>
         <DescriptionListGroup>
-          <DescriptionListTerm>Associate event types</DescriptionListTerm>
+          <DescriptionListTerm>
+            {intl.formatMessage(messages.associateEventTypes)}
+          </DescriptionListTerm>
           <DescriptionListDescription>
             <EventTypeTable events={values.events} />
           </DescriptionListDescription>
@@ -78,7 +116,7 @@ const ReviewStep: React.FunctionComponent = () => {
 };
 
 export const createReviewStep: IntegrationWizardStep = () => ({
-  name: title,
+  name: messages.review.defaultMessage as string,
   component: <ReviewStep />,
-  nextButtonText: 'Finish',
+  nextButtonText: messages.finish.defaultMessage as string,
 });

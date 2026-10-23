@@ -1,0 +1,1567 @@
+{
+  "adminAccessRequired": {
+    "defaultMessage": "Admin-access required",
+    "description": "Admin access required tooltip"
+  },
+  "app.disableExperimentalFeatures": {
+    "defaultMessage": "Disable experimental features"
+  },
+  "associatedEventTypesTabTitle": {
+    "defaultMessage": "Associated event types",
+    "description": "associated events tab title"
+  },
+  "behaviorGroup.actionsSummary.action": {
+    "defaultMessage": "Action"
+  },
+  "behaviorGroup.actionsSummary.recipient": {
+    "defaultMessage": "Recipient"
+  },
+  "behaviorGroup.card.actionsAria": {
+    "defaultMessage": "Actions"
+  },
+  "behaviorGroup.card.systemRequired": {
+    "defaultMessage": "System required behavior group"
+  },
+  "behaviorGroup.card.systemRequiredDetail": {
+    "defaultMessage": "This group is system generated and can not be edited, deleted, or removed from being applied to an event"
+  },
+  "behaviorGroup.delete.eventsFailBody": {
+    "defaultMessage": "Failed to load associated events for group {name}. Please try again."
+  },
+  "behaviorGroup.delete.eventsFailTitle": {
+    "defaultMessage": "Associated events failed to load"
+  },
+  "behaviorGroup.delete.failBody": {
+    "defaultMessage": "Failed to delete group {name}. Please try again."
+  },
+  "behaviorGroup.delete.failTitle": {
+    "defaultMessage": "Behavior group failed to be deleted"
+  },
+  "behaviorGroup.delete.successBody": {
+    "defaultMessage": "Group {name} deleted successfully."
+  },
+  "behaviorGroup.delete.successTitle": {
+    "defaultMessage": "Behavior group deleted"
+  },
+  "behaviorGroup.deleteModal.acknowledge": {
+    "defaultMessage": "I acknowledge that this action cannot be undone"
+  },
+  "behaviorGroup.deleteModal.cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "behaviorGroup.deleteModal.close": {
+    "defaultMessage": "Close"
+  },
+  "behaviorGroup.deleteModal.conflictBody": {
+    "defaultMessage": "You will no longer be able to assign {name} to events, and existing associations to events listed below will be removed."
+  },
+  "behaviorGroup.deleteModal.deleteTitle": {
+    "defaultMessage": "Delete behavior group"
+  },
+  "behaviorGroup.deleteModal.noConflictBody": {
+    "defaultMessage": "Action and recipient pairings assigned in {name} will be lost. You will no longer be able to assign this behavior group to events."
+  },
+  "behaviorGroup.deleteModal.viewEvents": {
+    "defaultMessage": "View {count, plural, one {# event} other {# events}}"
+  },
+  "behaviorGroup.edit.createFail": {
+    "defaultMessage": "Failed to create group {name}. Please try again."
+  },
+  "behaviorGroup.edit.createFailTitle": {
+    "defaultMessage": "Behavior group failed to be created"
+  },
+  "behaviorGroup.edit.createSuccess": {
+    "defaultMessage": "Group {name} created successfully."
+  },
+  "behaviorGroup.edit.createSuccessTitle": {
+    "defaultMessage": "New behavior group created"
+  },
+  "behaviorGroup.edit.saveFail": {
+    "defaultMessage": "Failed to save group {name}. Please try again."
+  },
+  "behaviorGroup.edit.saveFailTitle": {
+    "defaultMessage": "Behavior group failed to save"
+  },
+  "behaviorGroup.edit.saveSuccess": {
+    "defaultMessage": "Group {name} was saved successfully."
+  },
+  "behaviorGroup.edit.saveSuccessTitle": {
+    "defaultMessage": "Behavior group saved"
+  },
+  "behaviorGroup.formActionsTable.addAction": {
+    "defaultMessage": "Add action"
+  },
+  "behaviorGroup.notificationRows.savingBehavior": {
+    "defaultMessage": "Saving behavior"
+  },
+  "behaviorGroup.notificationRows.savingBehaviorError": {
+    "defaultMessage": "There was an error saving the behavior of {eventType}."
+  },
+  "behaviorGroup.recipientForm.selectRecipients": {
+    "defaultMessage": "Select recipients..."
+  },
+  "behaviorGroup.wizard.actionAndRecipients.description": {
+    "defaultMessage": "Select action and recipient pairs to assign to your notification events."
+  },
+  "behaviorGroup.wizard.createFailBody": {
+    "defaultMessage": "Failed to create group {name}. Please try again."
+  },
+  "behaviorGroup.wizard.createFailDuplicateBody": {
+    "defaultMessage": "A behavior group with display name {name} already exists."
+  },
+  "behaviorGroup.wizard.createFailTitle": {
+    "defaultMessage": "Behavior group failed to be created"
+  },
+  "behaviorGroup.wizard.createSuccessBody": {
+    "defaultMessage": "Group {name} created successfully."
+  },
+  "behaviorGroup.wizard.createSuccessTitle": {
+    "defaultMessage": "New behavior group created"
+  },
+  "behaviorGroup.wizard.footer.back": {
+    "defaultMessage": "Back"
+  },
+  "behaviorGroup.wizard.footer.cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "behaviorGroup.wizard.footer.next": {
+    "defaultMessage": "Next"
+  },
+  "behaviorGroup.wizard.review.actionsAndRecipients": {
+    "defaultMessage": "Actions and recipients"
+  },
+  "behaviorGroup.wizard.review.application": {
+    "defaultMessage": "Application"
+  },
+  "behaviorGroup.wizard.review.associateEventTypes": {
+    "defaultMessage": "Associate event types"
+  },
+  "behaviorGroup.wizard.review.eventType": {
+    "defaultMessage": "Event type"
+  },
+  "behaviorGroup.wizard.review.finish": {
+    "defaultMessage": "Finish"
+  },
+  "behaviorGroup.wizard.review.name": {
+    "defaultMessage": "Name"
+  },
+  "behaviorGroup.wizard.review.review": {
+    "defaultMessage": "Review"
+  },
+  "behaviorGroup.wizard.saveFailBody": {
+    "defaultMessage": "Failed to save group {name}. Please try again."
+  },
+  "behaviorGroup.wizard.saveFailTitle": {
+    "defaultMessage": "Behavior group failed to save"
+  },
+  "behaviorGroup.wizard.saveSuccessBody": {
+    "defaultMessage": "Group {name} was saved successfully."
+  },
+  "behaviorGroup.wizard.saveSuccessTitle": {
+    "defaultMessage": "Behavior group saved"
+  },
+  "behaviorGroups.section.adminRoleTooltip": {
+    "defaultMessage": "You need the Notifications administrator role to perform this action"
+  },
+  "behaviorGroups.section.createNewGroup": {
+    "defaultMessage": "Create new group"
+  },
+  "behaviorGroups.section.errorLoading": {
+    "defaultMessage": "Error loading behavior groups"
+  },
+  "behaviorGroups.section.intro": {
+    "defaultMessage": "{behaviorGroups} are made up of action/recipient pairings that allow you to configure which notification actions different users will be able to receive. Once you have created a behavior group, you can assign it to an event using the Events table below."
+  },
+  "behaviorGroups.section.lockingNote": {
+    "defaultMessage": "You may also prevent users from changing assigned actions by locking action/recipient pairings when creating or editing behavior groups."
+  },
+  "behaviorGroups.section.noPermissionsTooltip": {
+    "defaultMessage": "You do not have permissions to perform this action. Contact your org admin for more information"
+  },
+  "behaviorGroups.section.searchByName": {
+    "defaultMessage": "Search by name"
+  },
+  "behaviorGroups.unauthorized.body": {
+    "defaultMessage": "Contact your organization administrator to request the necessary permissions."
+  },
+  "behaviorGroups.unauthorized.title": {
+    "defaultMessage": "You do not have access to behavior groups"
+  },
+  "configureEvents.unauthorized.body": {
+    "defaultMessage": "Contact your organization administrator to request the necessary permissions."
+  },
+  "configureEvents.unauthorized.title": {
+    "defaultMessage": "You do not have access to configure events"
+  },
+  "date": {
+    "defaultMessage": "Date",
+    "description": "Date label"
+  },
+  "dateFilter.to": {
+    "defaultMessage": "to"
+  },
+  "drawerSubtitle": {
+    "defaultMessage": "Showing up to {count} most recent notifications.",
+    "description": "Subtitle below the notifications drawer header"
+  },
+  "enabled": {
+    "defaultMessage": "Enabled",
+    "description": "is enabled"
+  },
+  "endPointUrl": {
+    "defaultMessage": "Endpoint URL",
+    "description": "endpoint url"
+  },
+  "event": {
+    "defaultMessage": "Event",
+    "description": "Event label"
+  },
+  "eventLog.actionPopover.action": {
+    "defaultMessage": "Action"
+  },
+  "eventLog.actionPopover.failedCount": {
+    "defaultMessage": "{count} failed"
+  },
+  "eventLog.actionPopover.recipients": {
+    "defaultMessage": "Recipients"
+  },
+  "eventLog.actionPopover.status": {
+    "defaultMessage": "Status"
+  },
+  "eventLog.actionsHelp.title": {
+    "defaultMessage": "Action status meaning"
+  },
+  "eventLog.table.actionTaken": {
+    "defaultMessage": "Action taken"
+  },
+  "eventLog.table.applicationBundle": {
+    "defaultMessage": "{application} - {bundle}"
+  },
+  "eventLog.table.dateAndTime": {
+    "defaultMessage": "Date and time"
+  },
+  "eventLog.table.eventType": {
+    "defaultMessage": "Event type"
+  },
+  "eventLog.table.noActions": {
+    "defaultMessage": "No actions"
+  },
+  "eventLog.table.service": {
+    "defaultMessage": "Service"
+  },
+  "eventLog.table.severity": {
+    "defaultMessage": "Severity"
+  },
+  "eventLog.toolbar.drawer": {
+    "defaultMessage": "Drawer"
+  },
+  "eventLog.toolbar.email": {
+    "defaultMessage": "Email"
+  },
+  "eventLog.toolbar.failure": {
+    "defaultMessage": "Failure"
+  },
+  "eventLog.toolbar.integration": {
+    "defaultMessage": "Integration"
+  },
+  "eventLog.toolbar.processing": {
+    "defaultMessage": "Processing"
+  },
+  "eventLog.toolbar.sent": {
+    "defaultMessage": "Sent"
+  },
+  "eventLog.toolbar.success": {
+    "defaultMessage": "Success"
+  },
+  "eventLog.toolbar.warning": {
+    "defaultMessage": "Warning"
+  },
+  "eventLog.unauthorized.body": {
+    "defaultMessage": "Contact your organization administrator to request the necessary permissions."
+  },
+  "eventLog.unauthorized.title": {
+    "defaultMessage": "You do not have access to the event log"
+  },
+  "eventLogFilteredAlertBody": {
+    "defaultMessage": "You are only seeing event instances that you have been given access to see. If you need to see all events for your entire organization, contact your org admin.",
+    "description": "Alert body shown to non-admin users explaining how to see all events"
+  },
+  "eventLogFilteredAlertTitle": {
+    "defaultMessage": "Events are being filtered out due to your privileges",
+    "description": "Alert title shown to non-admin users whose events are filtered by privileges"
+  },
+  "eventLogOnlyImpactingMe": {
+    "defaultMessage": "Only show events impacting me",
+    "description": "Event log checkbox label to filter events impacting the current user"
+  },
+  "eventLogOrgAdminRequired": {
+    "defaultMessage": "Org admin access required to view all organization events",
+    "description": "Tooltip shown when org admin access is required to view all organization events"
+  },
+  "infoNotificationSrTitle": {
+    "defaultMessage": "Info notification:",
+    "description": "Screen reader title for a notification item"
+  },
+  "integrationDetailsTabTitle": {
+    "defaultMessage": "Integration details",
+    "description": "integration tab title"
+  },
+  "integrationKey": {
+    "defaultMessage": "Integration Key",
+    "description": "integration key"
+  },
+  "integrationType": {
+    "defaultMessage": "Integration type",
+    "description": "integration type"
+  },
+  "integrationdropdownEdit": {
+    "defaultMessage": "Edit",
+    "description": "integrations drawer dropdown edit action"
+  },
+  "integrationdropdownEditDescription": {
+    "defaultMessage": "Edit this integration",
+    "description": "integrations drawer dropdown edit action description"
+  },
+  "integrationdropdownPause": {
+    "defaultMessage": "Pause",
+    "description": "integrations drawer dropdown pause action"
+  },
+  "integrationdropdownRemove": {
+    "defaultMessage": "Remove",
+    "description": "integrations drawer dropdown remove action"
+  },
+  "integrationdropdownTestDescription": {
+    "defaultMessage": "Execute test command for this integration",
+    "description": "integrations drawer dropdown test action description"
+  },
+  "integrations": {
+    "defaultMessage": "Integrations",
+    "description": "Application name"
+  },
+  "integrations.camelExtrasForm.enableSslVerification": {
+    "defaultMessage": "Enable SSL verification"
+  },
+  "integrations.camelExtrasForm.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.camelExtrasForm.secretToken": {
+    "defaultMessage": "Secret token"
+  },
+  "integrations.camelForm.basicAuth": {
+    "defaultMessage": "Basic auth"
+  },
+  "integrations.camelForm.enableSslVerification": {
+    "defaultMessage": "Enable SSL verification"
+  },
+  "integrations.camelForm.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.camelForm.extras": {
+    "defaultMessage": "Extras"
+  },
+  "integrations.camelForm.password": {
+    "defaultMessage": "Password"
+  },
+  "integrations.camelForm.secretToken": {
+    "defaultMessage": "Secret token"
+  },
+  "integrations.camelForm.secretTokenHelper": {
+    "defaultMessage": "The defined secret token is sent as a \"X-Insight-Token\" header on the request."
+  },
+  "integrations.camelForm.user": {
+    "defaultMessage": "User"
+  },
+  "integrations.connectionAlert.lastAttempts": {
+    "defaultMessage": "Last attempts:"
+  },
+  "integrations.connectionFailed.description": {
+    "defaultMessage": "This connection has failed the most recent connection attempts."
+  },
+  "integrations.connectionFailed.title": {
+    "defaultMessage": "Failed connection"
+  },
+  "integrations.create.failedToCreateBody": {
+    "defaultMessage": "There was an error trying to create the Integration. Please try again."
+  },
+  "integrations.create.failedToCreateTitle": {
+    "defaultMessage": "Failed to create Integration"
+  },
+  "integrations.create.failedToUpdateBody": {
+    "defaultMessage": "There was an error trying to update the Integration. Please try again."
+  },
+  "integrations.create.failedToUpdateTitle": {
+    "defaultMessage": "Integration failed to update"
+  },
+  "integrations.delete.failedToRemoveBody": {
+    "defaultMessage": "There was an error trying to remove the Integration. Please try again."
+  },
+  "integrations.delete.failedToRemoveTitle": {
+    "defaultMessage": "Failed to remove Integration"
+  },
+  "integrations.deleteModal.actionButtonTitle": {
+    "defaultMessage": "Delete"
+  },
+  "integrations.deleteModal.behaviorGroupEntry": {
+    "defaultMessage": "{bundle}: {name}"
+  },
+  "integrations.deleteModal.behaviorGroupsBody": {
+    "defaultMessage": "Delete integration {name} affects {count, plural, one {# behavior group} other {# behavior groups}}. The end point associated with this integration will not receive notifications for the following events."
+  },
+  "integrations.deleteModal.noBehaviorGroupsBody": {
+    "defaultMessage": "Deleting integration {name} does not affect any behavior group."
+  },
+  "integrations.deleteModal.title": {
+    "defaultMessage": "Delete integration"
+  },
+  "integrations.deleteModal.viewBehaviorGroups": {
+    "defaultMessage": "View {count, plural, one {# behavior group} other {# behavior groups}}"
+  },
+  "integrations.detailsContent.enabled": {
+    "defaultMessage": "Enabled"
+  },
+  "integrations.detailsContent.endPointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.detailsContent.integrationKey": {
+    "defaultMessage": "Integration Key"
+  },
+  "integrations.detailsContent.none": {
+    "defaultMessage": "None"
+  },
+  "integrations.detailsContent.secretToken": {
+    "defaultMessage": "Secret token"
+  },
+  "integrations.detailsContent.severity": {
+    "defaultMessage": "Severity"
+  },
+  "integrations.detailsContent.sslVerification": {
+    "defaultMessage": "SSL Verification"
+  },
+  "integrations.dopeBox.configureApplications": {
+    "defaultMessage": "Configure applications"
+  },
+  "integrations.dopeBox.configureApplicationsBody": {
+    "defaultMessage": "To prepare for integration with the Hybrid Cloud Console, you must configure incoming webhooks in your third-party applications."
+  },
+  "integrations.dopeBox.configureEda": {
+    "defaultMessage": "Configure Event-Driven Ansible"
+  },
+  "integrations.dopeBox.configureGoogleChat": {
+    "defaultMessage": "Configure Google Chat"
+  },
+  "integrations.dopeBox.configureNotificationsPortal": {
+    "defaultMessage": "Configure notifications portal"
+  },
+  "integrations.dopeBox.configureNotificationsPortalBody": {
+    "defaultMessage": "You can configure the Hybrid Cloud Console to send event notifications to all users on a new or existing channel in Slack, Google Chat, or Microsoft Teams."
+  },
+  "integrations.dopeBox.configurePagerDuty": {
+    "defaultMessage": "Configure PagerDuty"
+  },
+  "integrations.dopeBox.configureServiceNow": {
+    "defaultMessage": "Configure ServiceNow"
+  },
+  "integrations.dopeBox.configureSlack": {
+    "defaultMessage": "Configure Slack"
+  },
+  "integrations.dopeBox.configureSplunk": {
+    "defaultMessage": "Configure Splunk"
+  },
+  "integrations.dopeBox.configureTeams": {
+    "defaultMessage": "Configure Microsoft Teams"
+  },
+  "integrations.dopeBox.configureUserAccess": {
+    "defaultMessage": "Configure user access"
+  },
+  "integrations.dopeBox.configureUserAccessBody": {
+    "defaultMessage": "To configure notifications and integration settings, you must be a member of a group with the Notifications administrator role. This group must be configured in User Access by an Organization Administrator."
+  },
+  "integrations.dopeBox.gettingStarted": {
+    "defaultMessage": "Getting Started"
+  },
+  "integrations.dopeBox.learnMore": {
+    "defaultMessage": "Learn more"
+  },
+  "integrations.dopeBox.nextSteps": {
+    "defaultMessage": "Next Steps"
+  },
+  "integrations.dopeBox.toggleText": {
+    "defaultMessage": "Making use of Integrations"
+  },
+  "integrations.emptyState.addIntegration": {
+    "defaultMessage": "Add integration"
+  },
+  "integrations.emptyState.cardContainerAria": {
+    "defaultMessage": "Card container"
+  },
+  "integrations.emptyState.configureApplications": {
+    "defaultMessage": "Configure applications"
+  },
+  "integrations.emptyState.configureApplicationsBody": {
+    "defaultMessage": "To prepare for integration with the Hybrid Cloud Console, you must configure incoming webhooks in your third-party applications."
+  },
+  "integrations.emptyState.createBehaviorGroups": {
+    "defaultMessage": "Create behavior groups"
+  },
+  "integrations.emptyState.createBehaviorGroupsBody": {
+    "defaultMessage": "A behavior group defines which notifications will be sent to external services when a specific event is received by the notifications service. You can link events from any Hybrid Cloud Console service to your behavior group."
+  },
+  "integrations.emptyState.learnMore": {
+    "defaultMessage": "Learn more"
+  },
+  "integrations.emptyState.noIntegrations": {
+    "defaultMessage": "No integrations yet"
+  },
+  "integrations.emptyState.whyIntegrate": {
+    "defaultMessage": "Why integrate?"
+  },
+  "integrations.emptyState.whyIntegrateBody": {
+    "defaultMessage": "Integrating third-party applications expands the scope of notifications beyond emails and messages, so that you can view and manage Hybrid Cloud Console events from your preferred platform dashboard."
+  },
+  "integrations.eventDetails.editIntegration": {
+    "defaultMessage": "Edit integration"
+  },
+  "integrations.eventDetails.eventTypesAria": {
+    "defaultMessage": "Event types"
+  },
+  "integrations.eventDetails.noEvents": {
+    "defaultMessage": "There are no Events assigned to this integration."
+  },
+  "integrations.eventTypes.bulkSelectAria": {
+    "defaultMessage": "Event types bulk select"
+  },
+  "integrations.eventTypes.description": {
+    "defaultMessage": "Select event types you would like to assign this behavior group to."
+  },
+  "integrations.eventTypes.eventTypeColumn": {
+    "defaultMessage": "Event type"
+  },
+  "integrations.eventTypes.eventTypeDescriptionAria": {
+    "defaultMessage": "Event type description"
+  },
+  "integrations.eventTypes.eventTypeFilterAria": {
+    "defaultMessage": "Filter by event type"
+  },
+  "integrations.eventTypes.eventTypeFilterPlaceholder": {
+    "defaultMessage": "Filter by event type"
+  },
+  "integrations.eventTypes.eventTypeFilterTitle": {
+    "defaultMessage": "Event type"
+  },
+  "integrations.eventTypes.filtersAria": {
+    "defaultMessage": "Event types filters"
+  },
+  "integrations.eventTypes.footerAria": {
+    "defaultMessage": "Event types footer"
+  },
+  "integrations.eventTypes.footerPaginationAria": {
+    "defaultMessage": "Event types footer pagination"
+  },
+  "integrations.eventTypes.rowExpansionSr": {
+    "defaultMessage": "Row expansion"
+  },
+  "integrations.eventTypes.rowSelectionSr": {
+    "defaultMessage": "Row selection"
+  },
+  "integrations.eventTypes.serviceColumn": {
+    "defaultMessage": "Service"
+  },
+  "integrations.eventTypes.serviceFilterAria": {
+    "defaultMessage": "Filter by event Service"
+  },
+  "integrations.eventTypes.serviceFilterPlaceholder": {
+    "defaultMessage": "Filter by service"
+  },
+  "integrations.eventTypes.serviceFilterTitle": {
+    "defaultMessage": "Service"
+  },
+  "integrations.eventTypes.severityColumn": {
+    "defaultMessage": "Severity"
+  },
+  "integrations.eventTypes.tableAria": {
+    "defaultMessage": "Event types table"
+  },
+  "integrations.eventTypes.tableHeadAria": {
+    "defaultMessage": "Event types table head"
+  },
+  "integrations.eventTypes.title": {
+    "defaultMessage": "Associate event types"
+  },
+  "integrations.eventTypes.toolbarAria": {
+    "defaultMessage": "Events type top toolbar"
+  },
+  "integrations.eventTypes.topPaginationAria": {
+    "defaultMessage": "Event types top pagination"
+  },
+  "integrations.expandedContent.authenticationType": {
+    "defaultMessage": "Authentication type"
+  },
+  "integrations.expandedContent.disabled": {
+    "defaultMessage": "Disabled"
+  },
+  "integrations.expandedContent.enabled": {
+    "defaultMessage": "Enabled"
+  },
+  "integrations.expandedContent.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.expandedContent.none": {
+    "defaultMessage": "None"
+  },
+  "integrations.expandedContent.secretToken": {
+    "defaultMessage": "Secret token"
+  },
+  "integrations.expandedContent.sslVerification": {
+    "defaultMessage": "SSL verification"
+  },
+  "integrations.form.integrationName": {
+    "defaultMessage": "Integration name"
+  },
+  "integrations.form.type": {
+    "defaultMessage": "Type"
+  },
+  "integrations.googleChatExpanded.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.googleChatForm.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.httpForm.enableSslVerification": {
+    "defaultMessage": "Enable SSL verification"
+  },
+  "integrations.httpForm.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.httpForm.secretToken": {
+    "defaultMessage": "Secret token"
+  },
+  "integrations.httpForm.secretTokenHelper": {
+    "defaultMessage": "The defined secret token is sent as a \"X-Insight-Token\" header on the request."
+  },
+  "integrations.list.viewEventLog": {
+    "defaultMessage": "View event log"
+  },
+  "integrations.pagerDutyExpanded.integrationKey": {
+    "defaultMessage": "Integration Key"
+  },
+  "integrations.pagerDutyExpanded.none": {
+    "defaultMessage": "None"
+  },
+  "integrations.pagerDutyExpanded.secretToken": {
+    "defaultMessage": "Secret token"
+  },
+  "integrations.pagerDutyExpanded.severity": {
+    "defaultMessage": "Severity"
+  },
+  "integrations.pagerduty.severity.critical": {
+    "defaultMessage": "Critical",
+    "description": "Critical option for PagerDuty alert severity"
+  },
+  "integrations.pagerduty.severity.error": {
+    "defaultMessage": "Error",
+    "description": "Error option for PagerDuty alert severity"
+  },
+  "integrations.pagerduty.severity.helperText": {
+    "defaultMessage": "Severity of the alert created in PagerDuty when this integration is used.",
+    "description": "Helper text for the PagerDuty alert severity select field"
+  },
+  "integrations.pagerduty.severity.info": {
+    "defaultMessage": "Info",
+    "description": "Info option for PagerDuty alert severity"
+  },
+  "integrations.pagerduty.severity.label": {
+    "defaultMessage": "Alert severity",
+    "description": "Label for the PagerDuty alert severity select field"
+  },
+  "integrations.pagerduty.severity.warning": {
+    "defaultMessage": "Warning",
+    "description": "Warning option for PagerDuty alert severity"
+  },
+  "integrations.selectableTable.selectProductFamily": {
+    "defaultMessage": "Select product family"
+  },
+  "integrations.selectableTable.selectProductFamilyBody": {
+    "defaultMessage": "Before you can assign events to integration you have to select from which bundle events should be assignable."
+  },
+  "integrations.slackExpanded.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.slackForm.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.splunk.configInProgress": {
+    "defaultMessage": "Configuration in progress"
+  },
+  "integrations.splunk.goToDocs": {
+    "defaultMessage": "Go to documentation"
+  },
+  "integrations.splunk.nextReview": {
+    "defaultMessage": "Next: Review"
+  },
+  "integrations.splunk.openTicket": {
+    "defaultMessage": "Open a Red Hat Support ticket"
+  },
+  "integrations.splunk.runConfiguration": {
+    "defaultMessage": "Run Configuration"
+  },
+  "integrations.splunk.setupFailed.title": {
+    "defaultMessage": "There was a problem processing the request. Please try again. If the problem persists, contact Red Hat support by opening the ticket."
+  },
+  "integrations.splunk.tokenLabel": {
+    "defaultMessage": "Splunk HEC Token"
+  },
+  "integrations.splunk.tokenValidationError": {
+    "defaultMessage": "Invalid HEC token. Example: 123e4567-e89b-12d3-a456-426614174000"
+  },
+  "integrations.splunk.urlLabel": {
+    "defaultMessage": "Splunk HEC URL"
+  },
+  "integrations.splunk.urlPopover.aria": {
+    "defaultMessage": "More info for name field"
+  },
+  "integrations.splunk.urlPopover.body": {
+    "defaultMessage": "For Splunk Enterprise the port is by default 8088. For Splunk Cloud Platform see {link}."
+  },
+  "integrations.splunk.urlPopover.header": {
+    "defaultMessage": "The server {hostname} and {port} of your splunk HTTP Event Collector"
+  },
+  "integrations.splunk.urlPopover.link": {
+    "defaultMessage": "documentation"
+  },
+  "integrations.splunk.urlValidationError": {
+    "defaultMessage": "Invalid URL. Example: https://hostname:8088"
+  },
+  "integrations.splunkSetup.finished.failureBody": {
+    "defaultMessage": "There was a problem processing the request. Please try again. If the problem persists, contact Red Hat support by opening the ticket."
+  },
+  "integrations.splunkSetup.finished.failureTitle": {
+    "defaultMessage": "Configuration failed"
+  },
+  "integrations.splunkSetup.finished.goBackToSplunk": {
+    "defaultMessage": "go back to Splunk application"
+  },
+  "integrations.splunkSetup.finished.goToDocumentation": {
+    "defaultMessage": "Go to documentation"
+  },
+  "integrations.splunkSetup.finished.openTicket": {
+    "defaultMessage": "Open a Red Hat Support ticket"
+  },
+  "integrations.splunkSetup.finished.successBody": {
+    "defaultMessage": "Splunk integration in Insights was completed. To confirm these changes, {goBackToSplunk}."
+  },
+  "integrations.splunkSetup.finished.successTitle": {
+    "defaultMessage": "Splunk integration in Insights completed"
+  },
+  "integrations.splunkSetupPage.description": {
+    "defaultMessage": "To finish the Splunk configuration, follow the instructions to start the automation process."
+  },
+  "integrations.splunkSetupPage.helpAria": {
+    "defaultMessage": "Help description"
+  },
+  "integrations.splunkSetupPage.helpPopover.body": {
+    "defaultMessage": "Configure the integration between your Splunk instance and Red Hat Insights to allow you to receive events from Insights."
+  },
+  "integrations.splunkSetupPage.learnMore": {
+    "defaultMessage": "Learn more"
+  },
+  "integrations.splunkSetupPage.step1.aria": {
+    "defaultMessage": "completed Splunk app step (step 1)"
+  },
+  "integrations.splunkSetupPage.step1.description": {
+    "defaultMessage": "Create Index and HEC"
+  },
+  "integrations.splunkSetupPage.step1.title": {
+    "defaultMessage": "Step 1"
+  },
+  "integrations.splunkSetupPage.step2.aria": {
+    "defaultMessage": "setup step (step 2)"
+  },
+  "integrations.splunkSetupPage.step2.description": {
+    "defaultMessage": "Configure Splunk integration in Insights"
+  },
+  "integrations.splunkSetupPage.step2.title": {
+    "defaultMessage": "Step 2"
+  },
+  "integrations.splunkSetupPage.step3.aria": {
+    "defaultMessage": "review step (step 3)"
+  },
+  "integrations.splunkSetupPage.step3.description": {
+    "defaultMessage": "Review"
+  },
+  "integrations.splunkSetupPage.step3.title": {
+    "defaultMessage": "Step 3"
+  },
+  "integrations.splunkSetupPage.title": {
+    "defaultMessage": "Red Hat Insights integration for Splunk"
+  },
+  "integrations.status.creationFailure": {
+    "defaultMessage": "Creation failure"
+  },
+  "integrations.status.errorLoadingStatus": {
+    "defaultMessage": "Error loading status"
+  },
+  "integrations.status.eventFailure": {
+    "defaultMessage": "Event failure"
+  },
+  "integrations.status.failedConnection": {
+    "defaultMessage": "Failed connection"
+  },
+  "integrations.status.popoverAria": {
+    "defaultMessage": "Connection status details"
+  },
+  "integrations.status.processing": {
+    "defaultMessage": "Processing"
+  },
+  "integrations.status.ready": {
+    "defaultMessage": "Ready"
+  },
+  "integrations.status.success": {
+    "defaultMessage": "Success"
+  },
+  "integrations.table.connectionStatusMeanings": {
+    "defaultMessage": "Last connection attempt status meanings"
+  },
+  "integrations.table.enabledAria": {
+    "defaultMessage": "Enabled"
+  },
+  "integrations.teamsExpanded.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.teamsForm.endpointUrl": {
+    "defaultMessage": "Endpoint URL"
+  },
+  "integrations.test.cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "integrations.test.description": {
+    "defaultMessage": "You can specify a custom message for the notification's payload. If you don't, a default message will be sent."
+  },
+  "integrations.test.eventLogLink": {
+    "defaultMessage": "event log"
+  },
+  "integrations.test.inputAria": {
+    "defaultMessage": "Test notification input"
+  },
+  "integrations.test.placeholder": {
+    "defaultMessage": "Congratulations! The integration was successfully tested!"
+  },
+  "integrations.test.send": {
+    "defaultMessage": "Send"
+  },
+  "integrations.test.statusFallback": {
+    "defaultMessage": "Status: {status} - {statusText}"
+  },
+  "integrations.test.successBody": {
+    "defaultMessage": "Your test to integration {type} was successful. To view payload response check {link}."
+  },
+  "integrations.test.testFailedTitle": {
+    "defaultMessage": "Test to integration {type} failed"
+  },
+  "integrations.test.title": {
+    "defaultMessage": "Integration test"
+  },
+  "integrations.toolbar.disabledOption": {
+    "defaultMessage": "Disabled"
+  },
+  "integrations.toolbar.enabled": {
+    "defaultMessage": "Enabled"
+  },
+  "integrations.toolbar.enabledOption": {
+    "defaultMessage": "Enabled"
+  },
+  "integrations.toolbar.exportCsv": {
+    "defaultMessage": "Export as CSV"
+  },
+  "integrations.toolbar.exportJson": {
+    "defaultMessage": "Export as JSON"
+  },
+  "integrations.toolbar.filterByEnabled": {
+    "defaultMessage": "Filter by enabled"
+  },
+  "integrations.toolbar.filterByName": {
+    "defaultMessage": "Filter by name"
+  },
+  "integrations.toolbar.name": {
+    "defaultMessage": "Name"
+  },
+  "integrations.typeForm.serviceNowSecretTokenDescription": {
+    "defaultMessage": "Password of a ServiceNow integration user."
+  },
+  "integrations.typeForm.splunkSecretTokenDescription": {
+    "defaultMessage": "The defined secret token is sent as a Splunk's HTTP Event Collector token."
+  },
+  "integrations.typeForm.splunkSecretTokenLabel": {
+    "defaultMessage": "Splunk HEC token"
+  },
+  "integrations.unauthorizedState.alertLink": {
+    "defaultMessage": "Learn about requesting access via the Virtual Assistant"
+  },
+  "integrations.unauthorizedState.alertParagraph": {
+    "defaultMessage": "You do not have the permissions for integration management. Contact your organization admin if you need these permissions updated."
+  },
+  "integrations.unauthorizedState.alertTitle": {
+    "defaultMessage": "Need to create an integration?"
+  },
+  "integrations.unauthorizedState.description": {
+    "defaultMessage": "You need read permissions to view integrations. Contact your organization administrator to request access."
+  },
+  "integrations.unauthorizedState.heading": {
+    "defaultMessage": "No integrations available"
+  },
+  "integrations.userAccessGroups.adminDefaultGroupDescription": {
+    "defaultMessage": "This is a system default group for admin access. All organization administrators are automatically included in this group.",
+    "description": "Description for admin default groups in popover"
+  },
+  "integrations.userAccessGroups.allOrgAdmins": {
+    "defaultMessage": "All org admins",
+    "description": "Label for admin default groups user count"
+  },
+  "integrations.userAccessGroups.allUsers": {
+    "defaultMessage": "All",
+    "description": "Label for platform default groups user count"
+  },
+  "integrations.userAccessGroups.countParens": {
+    "defaultMessage": "({count})",
+    "description": "User count shown in parentheses"
+  },
+  "integrations.userAccessGroups.customDefaultSelectedBody": {
+    "defaultMessage": "The custom default access group includes all users in your organization. Additional access group selections are not necessary.",
+    "description": "Alert body when a custom default group is selected"
+  },
+  "integrations.userAccessGroups.customDefaultSelectedTitle": {
+    "defaultMessage": "Custom default access group selected",
+    "description": "Alert title when a custom default group is selected"
+  },
+  "integrations.userAccessGroups.filterPlaceholder": {
+    "defaultMessage": "Filter by group name...",
+    "description": "Placeholder text for group name filter"
+  },
+  "integrations.userAccessGroups.groupNameFilter": {
+    "defaultMessage": "Group name",
+    "description": "Title for group name filter"
+  },
+  "integrations.userAccessGroups.groupPopoverAria": {
+    "defaultMessage": "User access group details",
+    "description": "Aria label for the user group info popover"
+  },
+  "integrations.userAccessGroups.loadingUsers": {
+    "defaultMessage": "Loading users...",
+    "description": "Loading message when fetching group users"
+  },
+  "integrations.userAccessGroups.nameColumn": {
+    "defaultMessage": "Name",
+    "description": "Name column label in User Access Groups table"
+  },
+  "integrations.userAccessGroups.noGroups": {
+    "defaultMessage": "No User Access Groups",
+    "description": "Title when no groups are available"
+  },
+  "integrations.userAccessGroups.noGroupsAvailableMessage": {
+    "defaultMessage": "No User Access Groups are available. Contact your administrator to set up access groups.",
+    "description": "Message when no groups are available"
+  },
+  "integrations.userAccessGroups.noMatchingGroups": {
+    "defaultMessage": "No matching User Access Groups",
+    "description": "Title when no groups match search criteria"
+  },
+  "integrations.userAccessGroups.noMatchingGroupsMessage": {
+    "defaultMessage": "No User Access Groups match the current search criteria. Try adjusting your search term.",
+    "description": "Message when no groups match search criteria"
+  },
+  "integrations.userAccessGroups.noUsersAssigned": {
+    "defaultMessage": "This group currently has no users assigned.",
+    "description": "Message when no users are assigned to a group"
+  },
+  "integrations.userAccessGroups.noUsersFound": {
+    "defaultMessage": "No users found",
+    "description": "Title when no users are found in a group"
+  },
+  "integrations.userAccessGroups.platformDefaultGroupDescription": {
+    "defaultMessage": "This is a custom default access group created by your organization. Members are managed separately.",
+    "description": "Description for platform default groups in popover"
+  },
+  "integrations.userAccessGroups.removeGroup": {
+    "defaultMessage": "Remove {groupName}",
+    "description": "Aria label for removing a selected group"
+  },
+  "integrations.userAccessGroups.selectGroup": {
+    "defaultMessage": "Select {groupName}",
+    "description": "Aria label for selecting a group"
+  },
+  "integrations.userAccessGroups.selectedGroups": {
+    "defaultMessage": "Selected groups",
+    "description": "Label for selected groups"
+  },
+  "integrations.userAccessGroups.tableLabel": {
+    "defaultMessage": "User Access Groups",
+    "description": "Aria label for the User Access Groups table"
+  },
+  "integrations.userAccessGroups.userPlural": {
+    "defaultMessage": "users",
+    "description": "Plural form of user"
+  },
+  "integrations.userAccessGroups.userSingular": {
+    "defaultMessage": "user",
+    "description": "Singular form of user"
+  },
+  "integrations.userAccessGroups.usersColumn": {
+    "defaultMessage": "Users",
+    "description": "Users column label in User Access Groups table"
+  },
+  "integrations.userAccessGroups.usersCountWithoutPermission": {
+    "defaultMessage": "{count} {count, plural, one {user} other {users}}",
+    "description": "User count display when rbac:principal:read permission is denied"
+  },
+  "integrations.userAccessGroups.usersDrawerTitle": {
+    "defaultMessage": "Users",
+    "description": "Title for the users drawer"
+  },
+  "integrations.userAccessGroups.viewUsers": {
+    "defaultMessage": "View",
+    "description": "Button text to view users in a group"
+  },
+  "integrationsEmptyStateTitle": {
+    "defaultMessage": "No integrations found",
+    "description": "Integrations Empty State title"
+  },
+  "integrationsTableEmptyStateBody": {
+    "defaultMessage": "No integrations match the filter criteria. Remove all filters or clear all filters to show integrations.",
+    "description": "Integrations Empty State body"
+  },
+  "lastConnectionAttempt": {
+    "defaultMessage": "Last connection attempt",
+    "description": "last connection attempt"
+  },
+  "manageEventConfiguration": {
+    "defaultMessage": "Configure events",
+    "description": "Configure events menu item"
+  },
+  "manageEvents": {
+    "defaultMessage": "Manage events",
+    "description": "Manage events button label"
+  },
+  "manageMyEventNotifications": {
+    "defaultMessage": "Manage my notification preferences",
+    "description": "Manage my notification preferences menu item"
+  },
+  "markAsRead": {
+    "defaultMessage": "Mark as read",
+    "description": "Mark notification as read"
+  },
+  "markAsUnread": {
+    "defaultMessage": "Mark as unread",
+    "description": "Mark notification as unread"
+  },
+  "markSelectedAsRead": {
+    "defaultMessage": "Mark selected ({count}) as read",
+    "description": "Mark selected notifications as read"
+  },
+  "markSelectedAsUnread": {
+    "defaultMessage": "Mark selected ({count}) as unread",
+    "description": "Mark selected notifications as unread"
+  },
+  "modals.defaultCancel": {
+    "defaultMessage": "Cancel"
+  },
+  "modals.defaultDelete": {
+    "defaultMessage": "Delete"
+  },
+  "modals.defaultSave": {
+    "defaultMessage": "Save"
+  },
+  "noFiredEventsDescription": {
+    "defaultMessage": "Either you have not set up any events on the Hybrid Cloud Console or no have been fired yet.",
+    "description": "No fired events description"
+  },
+  "noFiredEventsTitle": {
+    "defaultMessage": "No fired events",
+    "description": "No fired events title"
+  },
+  "notificationActionsAria": {
+    "defaultMessage": "Notification actions dropdown",
+    "description": "Aria label for the notification actions dropdown"
+  },
+  "notifications": {
+    "defaultMessage": "Notifications",
+    "description": "Application name"
+  },
+  "notifications.actionComponent.errorLoading": {
+    "defaultMessage": "Error loading actions"
+  },
+  "notifications.actionComponent.noActions": {
+    "defaultMessage": "No actions."
+  },
+  "notifications.actionComponent.usersNotNotified": {
+    "defaultMessage": "Users will not be notified."
+  },
+  "notifications.actionTypeahead.createIntegrationLink": {
+    "defaultMessage": "Integrations"
+  },
+  "notifications.actionTypeahead.goToSettings": {
+    "defaultMessage": "Go to Settings > {link} to create one."
+  },
+  "notifications.actionTypeahead.noIntegration": {
+    "defaultMessage": "You have no integration configured."
+  },
+  "notifications.actionTypeahead.selectAction": {
+    "defaultMessage": "Select action"
+  },
+  "notifications.actionTypeahead.selectActionAria": {
+    "defaultMessage": "Select action"
+  },
+  "notifications.behaviorGroup.defaultBehaviorTooltip": {
+    "defaultMessage": "{displayName} behavior is attached to this event and cannot be changed. Add additional behavior groups to assign different actions or recipients.",
+    "description": "Tooltip for default behavior groups that cannot be changed"
+  },
+  "notifications.behaviorGroup.loading": {
+    "defaultMessage": "Loading",
+    "description": "Loading state message"
+  },
+  "notifications.behaviorGroup.mute": {
+    "defaultMessage": "Mute",
+    "description": "Label for muted notification state"
+  },
+  "notifications.behaviorGroup.noBehaviorGroups": {
+    "defaultMessage": "You have no behavior groups. Create a new group by clicking on the 'Create new group' button above.",
+    "description": "Message when no behavior groups exist"
+  },
+  "notifications.behaviorGroup.selectBehaviorGroup": {
+    "defaultMessage": "Select behavior group",
+    "description": "Placeholder text for behavior group selection"
+  },
+  "notifications.behaviorGroupTable.configuration": {
+    "defaultMessage": "Configuration"
+  },
+  "notifications.behaviorGroupTable.eventType": {
+    "defaultMessage": "Event Type"
+  },
+  "notifications.behaviorGroupTable.service": {
+    "defaultMessage": "Service"
+  },
+  "notifications.behaviorGroupTable.tableAria": {
+    "defaultMessage": "Notifications"
+  },
+  "notifications.bundlePage.configurationTab": {
+    "defaultMessage": "Configuration"
+  },
+  "notifications.bundlePage.legacySubtitle": {
+    "defaultMessage": "Configure which event notifications different users within your organization are entitled to receive."
+  },
+  "notifications.bundlePage.nonAdminSubtitle": {
+    "defaultMessage": "View how notifications are configured by your organization admin. Contact your organization admin if you need access to edit these configurations. To manage your own personal notification settings, go to {link}."
+  },
+  "notifications.bundlePage.notificationPreferences": {
+    "defaultMessage": "Notification Preferences"
+  },
+  "notifications.bundlePage.orgAdminSubtitle": {
+    "defaultMessage": "Configure which event notifications different users within your organization are entitled to receive. To manage your own personal notification settings, go to {link}."
+  },
+  "notifications.bundlePage.settingsTab": {
+    "defaultMessage": "Settings"
+  },
+  "notifications.bundlePage.tab.behaviorGroups": {
+    "defaultMessage": "Behavior Groups"
+  },
+  "notifications.bundlePage.tab.configuration": {
+    "defaultMessage": "Configuration"
+  },
+  "notifications.emptyTable.noMatch": {
+    "defaultMessage": "No notifications match your filter choices above. Try removing or changing the filters to see results."
+  },
+  "notifications.emptyTable.noResults": {
+    "defaultMessage": "No results found"
+  },
+  "notifications.overview.about.content": {
+    "defaultMessage": "Notifications are a way for users to be alerted of important events that occur in the Hybrid Cloud Console. You can receive notifications through email and third-party integrations, such as Slack or ServiceNow."
+  },
+  "notifications.overview.about.heading": {
+    "defaultMessage": "About Notifications"
+  },
+  "notifications.overview.getStarted.eventLog.body": {
+    "defaultMessage": "See all the events affecting your organization and view details around the events fired."
+  },
+  "notifications.overview.getStarted.eventLog.button": {
+    "defaultMessage": "View Event log"
+  },
+  "notifications.overview.getStarted.eventLog.title": {
+    "defaultMessage": "Monitor all fired events with the Event log"
+  },
+  "notifications.overview.getStarted.manageOwn.body": {
+    "defaultMessage": "This service allows you to opt-in and out of receiving notifications. Your Organization Administrator has configured which notifications you can or can not receive in their Settings."
+  },
+  "notifications.overview.getStarted.manageOwn.button": {
+    "defaultMessage": "Go to Notification Preferences"
+  },
+  "notifications.overview.getStarted.manageOwn.title": {
+    "defaultMessage": "Manage your own notifications with Notification Preferences"
+  },
+  "notifications.overview.getStarted.title": {
+    "defaultMessage": "Get started with Notifications on the Hybrid Cloud Console"
+  },
+  "notifications.overview.manageEvents.body": {
+    "defaultMessage": "Control which notifications different users within your organization can receive by creating behavior groups and associating them with specific events. Users can then select the event notifications they want to receive and how to be notified in their {link}."
+  },
+  "notifications.overview.manageEvents.configureEventsButton": {
+    "defaultMessage": "Configure events"
+  },
+  "notifications.overview.manageEvents.notificationPreferencesLink": {
+    "defaultMessage": "Notification Preferences"
+  },
+  "notifications.overview.manageEvents.title": {
+    "defaultMessage": "Manage events for your organization"
+  },
+  "notifications.overview.pageDescription": {
+    "defaultMessage": "Receive notifications about events that occur in your console services. You can choose to receive notifications by email, in third-party applications, or from a combination of these methods."
+  },
+  "notifications.overview.pageTitle": {
+    "defaultMessage": "Notifications"
+  },
+  "notifications.overview.recommendedContent.aria": {
+    "defaultMessage": "Recommended content"
+  },
+  "notifications.overview.recommendedContent.beginQuickStart": {
+    "defaultMessage": "Begin Quick start"
+  },
+  "notifications.overview.recommendedContent.configuringIntegrations": {
+    "defaultMessage": "Configuring Integrations"
+  },
+  "notifications.overview.recommendedContent.configuringIntegrationsServices": {
+    "defaultMessage": "Configuring integrations for Red Hat services"
+  },
+  "notifications.overview.recommendedContent.configuringNotifications": {
+    "defaultMessage": "Configuring Notifications"
+  },
+  "notifications.overview.recommendedContent.configuringNotificationsIntegrations": {
+    "defaultMessage": "Configuring notifications and integrations"
+  },
+  "notifications.overview.recommendedContent.documentation": {
+    "defaultMessage": "Documentation"
+  },
+  "notifications.overview.recommendedContent.quickStart": {
+    "defaultMessage": "Quick start"
+  },
+  "notifications.overview.recommendedContent.restrictingAccess": {
+    "defaultMessage": "Restricting access to a service to a team"
+  },
+  "notifications.overview.recommendedContent.title": {
+    "defaultMessage": "Recommended content"
+  },
+  "notifications.overview.recommendedContent.viewAll": {
+    "defaultMessage": "View all Settings Learning Resources"
+  },
+  "notifications.overview.recommendedContent.viewDocumentation": {
+    "defaultMessage": "View documentation"
+  },
+  "notifications.overview.supportingFeatures.aria": {
+    "defaultMessage": "Supporting features list"
+  },
+  "notifications.overview.supportingFeatures.behaviorGroups.content": {
+    "defaultMessage": "Configure which notifications different users in your organization can receive, and how to notify groups of users when selected events occur."
+  },
+  "notifications.overview.supportingFeatures.behaviorGroups.heading": {
+    "defaultMessage": "Create behavior groups to easily notify the right users"
+  },
+  "notifications.overview.supportingFeatures.behaviorGroups.link": {
+    "defaultMessage": "Create new behavior group"
+  },
+  "notifications.overview.supportingFeatures.errata.content": {
+    "defaultMessage": "Configure notifications for product advisories that affect your purchased subscriptions. Managing these notifications can be done in your {link}."
+  },
+  "notifications.overview.supportingFeatures.errata.heading": {
+    "defaultMessage": "Manage errata for your Subscriptions"
+  },
+  "notifications.overview.supportingFeatures.errata.link": {
+    "defaultMessage": "Manage subscriptions errata"
+  },
+  "notifications.overview.supportingFeatures.errata.prefsLink": {
+    "defaultMessage": "Notifications preferences"
+  },
+  "notifications.overview.supportingFeatures.eventLog.content": {
+    "defaultMessage": "See all the events occurring in your organization and view details about the triggered events."
+  },
+  "notifications.overview.supportingFeatures.eventLog.heading": {
+    "defaultMessage": "Monitor all fired events with the Event log"
+  },
+  "notifications.overview.supportingFeatures.eventLog.link": {
+    "defaultMessage": "View Event log"
+  },
+  "notifications.overview.supportingFeatures.integrations.content": {
+    "defaultMessage": "The notifications and integrations services work together to transmit messages to third-party applications, such as instant messaging platforms and external ticketing systems, when events occur. Integrations include Splunk, Slack, ServiceNow, {link}."
+  },
+  "notifications.overview.supportingFeatures.integrations.heading": {
+    "defaultMessage": "Set up Integrations to customize your notifications"
+  },
+  "notifications.overview.supportingFeatures.integrations.link": {
+    "defaultMessage": "Set up Integrations"
+  },
+  "notifications.overview.supportingFeatures.integrations.moreLink": {
+    "defaultMessage": "and more"
+  },
+  "notifications.overview.supportingFeatures.prefs.content": {
+    "defaultMessage": "Select the events you want to be notified about, and how to receive notifications. Your Organization Administrator has configured which notifications you can or can’t receive in their Settings."
+  },
+  "notifications.overview.supportingFeatures.prefs.heading": {
+    "defaultMessage": "Manage your own notifications with Notification Preferences"
+  },
+  "notifications.overview.supportingFeatures.prefs.link": {
+    "defaultMessage": "Go to Notification Preferences"
+  },
+  "notifications.overview.supportingFeatures.title": {
+    "defaultMessage": "Supporting features"
+  },
+  "notifications.recipient.forcedNotifications": {
+    "defaultMessage": "You may still receive forced notifications for this service"
+  },
+  "notifications.recipient.integrationDisabled": {
+    "defaultMessage": "This integration has been disabled. This action will not fire until it is enabled."
+  },
+  "notifications.recipient.userAccessGroups": {
+    "defaultMessage": "User Access Groups:"
+  },
+  "notifications.recipient.users": {
+    "defaultMessage": "Users:"
+  },
+  "notifications.recipientTypeahead.alreadyAdded": {
+    "defaultMessage": "This integration has already been added"
+  },
+  "notifications.recipientTypeahead.choose": {
+    "defaultMessage": "Choose {type}"
+  },
+  "notifications.status.failure": {
+    "defaultMessage": "Failure"
+  },
+  "notifications.status.processing": {
+    "defaultMessage": "Processing"
+  },
+  "notifications.status.sent": {
+    "defaultMessage": "Sent"
+  },
+  "notifications.status.success": {
+    "defaultMessage": "Success"
+  },
+  "notifications.status.unknown": {
+    "defaultMessage": "Unknown"
+  },
+  "notifications.status.warning": {
+    "defaultMessage": "Warning"
+  },
+  "notifications.threshold.decreaseThreshold": {
+    "defaultMessage": "Decrease threshold",
+    "description": "Aria label for decrease threshold button"
+  },
+  "notifications.threshold.increaseThreshold": {
+    "defaultMessage": "Increase threshold",
+    "description": "Aria label for increase threshold button"
+  },
+  "notifications.threshold.ofUsageThreshold": {
+    "defaultMessage": "of usage threshold",
+    "description": "Label suffix for threshold percentage display"
+  },
+  "notifications.threshold.usageThreshold": {
+    "defaultMessage": "Usage threshold",
+    "description": "Label for usage threshold input"
+  },
+  "notifications.threshold.usageThresholdPercentage": {
+    "defaultMessage": "Usage threshold percentage",
+    "description": "Aria label for usage threshold percentage input"
+  },
+  "notifications.thresholdConfig.thresholdValue": {
+    "defaultMessage": "{threshold} %"
+  },
+  "notifications.timeConfig.actionSettings": {
+    "defaultMessage": "Action settings"
+  },
+  "notifications.timeConfig.cancel": {
+    "defaultMessage": "Cancel"
+  },
+  "notifications.timeConfig.contactOrgAdmin": {
+    "defaultMessage": "Contact your Organization Administrator to edit time settings."
+  },
+  "notifications.timeConfig.customTime": {
+    "defaultMessage": "Custom time"
+  },
+  "notifications.timeConfig.dailyDigest": {
+    "defaultMessage": "Daily digest email receipt"
+  },
+  "notifications.timeConfig.defaultTime": {
+    "defaultMessage": "Default time"
+  },
+  "notifications.timeConfig.defaultTimeValue": {
+    "defaultMessage": "00:00 UTC"
+  },
+  "notifications.timeConfig.digestSchedule": {
+    "defaultMessage": "Any daily digest emails you’ve opted into will be sent at {time} UTC."
+  },
+  "notifications.timeConfig.editTimeSettings": {
+    "defaultMessage": "Edit time settings."
+  },
+  "notifications.timeConfig.loading": {
+    "defaultMessage": "Loading"
+  },
+  "notifications.timeConfig.save": {
+    "defaultMessage": "Save"
+  },
+  "notifications.timeConfig.saveFailedTitle": {
+    "defaultMessage": "Failed to save action settings"
+  },
+  "notifications.timeConfig.savedTitle": {
+    "defaultMessage": "Action settings saved"
+  },
+  "notifications.timeConfig.scheduleHelper": {
+    "defaultMessage": "Schedule the time at which to send your account’s daily digest email. All times will be converted to UTC after saving."
+  },
+  "notifications.timeConfig.timeLabel": {
+    "defaultMessage": "Time"
+  },
+  "notifications.timeConfig.timeZoneLabel": {
+    "defaultMessage": "Time zone"
+  },
+  "notifications.timeConfig.universalTime": {
+    "defaultMessage": "(UTC-00:00) Universal Time"
+  },
+  "notificationsDrawer.bell.notifications": {
+    "defaultMessage": "Notifications"
+  },
+  "notificationsDrawer.dropdowns.actionsDropdownAria": {
+    "defaultMessage": "Notifications actions dropdown"
+  },
+  "notificationsDrawer.dropdowns.notificationsFilterAria": {
+    "defaultMessage": "Notifications filter"
+  },
+  "notificationsDrawer.dropdowns.resetFilters": {
+    "defaultMessage": "Reset filters"
+  },
+  "notificationsDrawer.dropdowns.showNotificationsFor": {
+    "defaultMessage": "Show notifications for..."
+  },
+  "notificationsDrawer.empty.checkPreferences": {
+    "defaultMessage": "Check your Notification Preferences"
+  },
+  "notificationsDrawer.empty.checkingPreferences": {
+    "defaultMessage": "checking your notification preferences"
+  },
+  "notificationsDrawer.empty.contactAdmin": {
+    "defaultMessage": "Contact your organization administrator"
+  },
+  "notificationsDrawer.empty.contactAdminVAMessage": {
+    "defaultMessage": "Contact my org admin."
+  },
+  "notificationsDrawer.empty.noNotifications": {
+    "defaultMessage": "No notifications found"
+  },
+  "notificationsDrawer.empty.noNotificationsForYou": {
+    "defaultMessage": "There are currently no notifications for you."
+  },
+  "notificationsDrawer.empty.notificationConfiguration": {
+    "defaultMessage": "notification configuration"
+  },
+  "notificationsDrawer.empty.tryChecking": {
+    "defaultMessage": "Try {preferencesLink} and managing the {configurationLink} for your organization."
+  },
+  "notificationsDrawer.empty.viewEventLog": {
+    "defaultMessage": "View the Event log to see all fired events"
+  },
+  "notificationsLog.emptyState.clearFilters": {
+    "defaultMessage": "Clear all filters"
+  },
+  "notificationsLog.emptyState.clearFiltersBody": {
+    "defaultMessage": "Clear all filters and try again."
+  },
+  "notificationsLog.emptyState.noResults": {
+    "defaultMessage": "No results found"
+  },
+  "notificationsLog.table.eventType": {
+    "defaultMessage": "Event type"
+  },
+  "notificationsLog.table.service": {
+    "defaultMessage": "Service"
+  },
+  "notificationsLog.table.timestamp": {
+    "defaultMessage": "Timestamp"
+  },
+  "notificationsLog.toolbar.event": {
+    "defaultMessage": "Event"
+  },
+  "notificationsTitle": {
+    "defaultMessage": "Notifications",
+    "description": "Title of the notifications drawer header"
+  },
+  "overview.dataListItem.actionsAria": {
+    "defaultMessage": "Actions"
+  },
+  "overview.dataListItem.detailedExplanationAria": {
+    "defaultMessage": "{heading} - Detailed Explanation"
+  },
+  "pauseDescription": {
+    "defaultMessage": "Temporarily disable data collection",
+    "description": "integrations drawer dropdown pause action description"
+  },
+  "readOnlyEmailTooltip": {
+    "defaultMessage": "This email integration is managed by your organization administrator and cannot be modified.",
+    "description": "Tooltip for read-only system email integrations"
+  },
+  "removeDescription": {
+    "defaultMessage": "Permanently delete this integration and all collected data",
+    "description": "integrations drawer dropdown remove action description"
+  },
+  "resumeDescription": {
+    "defaultMessage": "Enable data collection",
+    "description": "integrations drawer dropdown resume action description"
+  },
+  "selectAll": {
+    "defaultMessage": "Select all ({count})",
+    "description": "Bulk select option to select every notification"
+  },
+  "selectNone": {
+    "defaultMessage": "Select none (0)",
+    "description": "Bulk select option to clear the selection"
+  },
+  "service": {
+    "defaultMessage": "Service",
+    "description": "Service label"
+  },
+  "severity": {
+    "defaultMessage": "Severity",
+    "description": "severity"
+  },
+  "sslVerification": {
+    "defaultMessage": "SSL Verification",
+    "description": "ssl verification"
+  },
+  "status.degradedConnection": {
+    "defaultMessage": "Degraded connection"
+  },
+  "tableHelp.meaning": {
+    "defaultMessage": "Meaning"
+  },
+  "tableHelp.status": {
+    "defaultMessage": "Status"
+  },
+  "viewAll": {
+    "defaultMessage": "View all",
+    "description": "Link to the event log from the notifications drawer subtitle"
+  },
+  "viewEventLog": {
+    "defaultMessage": "View event log",
+    "description": "View event log menu item"
+  },
+  "viewInEventLog": {
+    "defaultMessage": "View in event log",
+    "description": "View in event log menu item"
+  },
+  "widgets.events.footerAria": {
+    "defaultMessage": "Events widget footer"
+  },
+  "widgets.events.footerPaginationAria": {
+    "defaultMessage": "Events widget footer pagination"
+  },
+  "widgets.events.tableAria": {
+    "defaultMessage": "Events widget table"
+  },
+  "wizard.integrations.nameTaken": {
+    "defaultMessage": "That name is taken. Try another."
+  },
+  "wizard.validating": {
+    "defaultMessage": "Validating"
+  }
+}

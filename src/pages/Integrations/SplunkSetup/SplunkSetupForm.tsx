@@ -21,11 +21,78 @@ import {
 import { CheckCircleIcon, ExclamationCircleIcon, HelpIcon } from '@patternfly/react-icons';
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { string } from 'yup';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import { DOCUMENTATION_URL, OPEN_CASE_URL, SPLUNK_CLOUD_HEC_DOC } from './Constants';
 import { useSplunkSetup } from './useSplunkSetup';
 import { useNotification } from '../../../utils/AlertUtils';
 import { extractErrorMessage } from '../../../utils/ErrorUtils';
+
+// Rich-text values for popover (eslint-safe: JS strings not checked in jsx-only mode)
+
+const BOLD_HOSTNAME = <b>hostname/IP Address</b>;
+const BOLD_PORT = <b>port</b>;
+
+const messages = defineMessages({
+  urlLabel: {
+    id: 'integrations.splunk.urlLabel',
+    defaultMessage: 'Splunk HEC URL',
+  },
+  urlPopoverHeader: {
+    id: 'integrations.splunk.urlPopover.header',
+    defaultMessage: 'The server {hostname} and {port} of your splunk HTTP Event Collector',
+  },
+  urlPopoverBody: {
+    id: 'integrations.splunk.urlPopover.body',
+    defaultMessage:
+      'For Splunk Enterprise the port is by default 8088. For Splunk Cloud Platform see {link}.',
+  },
+  urlPopoverLink: {
+    id: 'integrations.splunk.urlPopover.link',
+    defaultMessage: 'documentation',
+  },
+  urlPopoverAria: {
+    id: 'integrations.splunk.urlPopover.aria',
+    defaultMessage: 'More info for name field',
+  },
+  urlValidationError: {
+    id: 'integrations.splunk.urlValidationError',
+    defaultMessage: 'Invalid URL. Example: https://hostname:8088',
+  },
+  tokenLabel: {
+    id: 'integrations.splunk.tokenLabel',
+    defaultMessage: 'Splunk HEC Token',
+  },
+  tokenValidationError: {
+    id: 'integrations.splunk.tokenValidationError',
+    defaultMessage: 'Invalid HEC token. Example: 123e4567-e89b-12d3-a456-426614174000',
+  },
+  configInProgress: {
+    id: 'integrations.splunk.configInProgress',
+    defaultMessage: 'Configuration in progress',
+  },
+  nextReview: {
+    id: 'integrations.splunk.nextReview',
+    defaultMessage: 'Next: Review',
+  },
+  runConfiguration: {
+    id: 'integrations.splunk.runConfiguration',
+    defaultMessage: 'Run Configuration',
+  },
+  setupFailedTitle: {
+    id: 'integrations.splunk.setupFailed.title',
+    defaultMessage:
+      'There was a problem processing the request. Please try again. If the problem persists, contact Red Hat support by opening the ticket.',
+  },
+  openTicket: {
+    id: 'integrations.splunk.openTicket',
+    defaultMessage: 'Open a Red Hat Support ticket',
+  },
+  goToDocs: {
+    id: 'integrations.splunk.goToDocs',
+    defaultMessage: 'Go to documentation',
+  },
+});
 
 interface SplunkSetupFormProps {
   setStep: Dispatch<SetStateAction<number>>;
@@ -138,6 +205,8 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
     onProgress('\nDONE!', 'pf-v6-u-success-color-200');
   };
 
+  const intl = useIntl();
+
   const onFinish = () => {
     setStep((prevStep) => prevStep + 1);
   };
@@ -147,30 +216,38 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
       <GridItem span={6}>
         <Form className="pf-v6-u-mr-md">
           <FormGroup
-            label="Splunk HEC URL"
+            label={intl.formatMessage(messages.urlLabel)}
             labelHelp={
               <Popover
                 headerContent={
                   <div>
-                    The server <b>hostname/IP Address</b> and <b>port</b> of your splunk HTTP Event
-                    Collector
+                    <FormattedMessage
+                      {...messages.urlPopoverHeader}
+                      values={{
+                        hostname: BOLD_HOSTNAME,
+                        port: BOLD_PORT,
+                      }}
+                    />
                   </div>
                 }
                 bodyContent={
                   <div>
-                    For Splunk Enterprise the port is by default 8088.
-                    <br />
-                    For Splunk Cloud Platform see{' '}
-                    <a target="_blank" rel="noreferrer" href={SPLUNK_CLOUD_HEC_DOC}>
-                      documentation
-                    </a>
-                    .
+                    <FormattedMessage
+                      {...messages.urlPopoverBody}
+                      values={{
+                        link: (
+                          <a target="_blank" rel="noreferrer" href={SPLUNK_CLOUD_HEC_DOC}>
+                            {intl.formatMessage(messages.urlPopoverLink)}
+                          </a>
+                        ),
+                      }}
+                    />
                   </div>
                 }
               >
                 <button
                   type="button"
-                  aria-label="More info for name field"
+                  aria-label={intl.formatMessage(messages.urlPopoverAria)}
                   onClick={(e) => e.preventDefault()}
                   aria-describedby="splunk-server-hostname"
                   className="pf-c-form__group-label-help"
@@ -196,13 +273,17 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               <FormHelperText>
                 <HelperText>
                   <HelperTextItem variant="error">
-                    Invalid URL. Example: https://hostname:8088
+                    {intl.formatMessage(messages.urlValidationError)}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
             )}
           </FormGroup>
-          <FormGroup label="Splunk HEC Token" fieldId="splunk-hec-token" isRequired>
+          <FormGroup
+            label={intl.formatMessage(messages.tokenLabel)}
+            fieldId="splunk-hec-token"
+            isRequired
+          >
             <TextInput
               isRequired
               type="text"
@@ -217,7 +298,7 @@ export const SplunkSetupForm: React.FunctionComponent<SplunkSetupFormProps> = ({
               <FormHelperText>
                 <HelperText>
                   <HelperTextItem variant="error">
-                    Invalid HEC token. Example: 123e4567-e89b-12d3-a456-426614174000
+                    {intl.formatMessage(messages.tokenValidationError)}
                   </HelperTextItem>
                 </HelperText>
               </FormHelperText>
@@ -253,22 +334,24 @@ const SplunkAutomationButton = ({
   stepVariant,
   isDisabled,
 }) => {
+  const intl = useIntl();
   if (stepIsInProgress) {
     return (
       <Button variant="primary" isLoading={true}>
-        Configuration in progress
+        <FormattedMessage {...messages.configInProgress} />
       </Button>
     );
   } else if (stepVariant === 'success' || stepVariant === 'danger') {
     return (
       <Button variant="primary" onClick={onFinish}>
-        {stepVariant === 'success' ? <CheckCircleIcon /> : <ExclamationCircleIcon />} Next: Review
+        {stepVariant === 'success' ? <CheckCircleIcon /> : <ExclamationCircleIcon />}{' '}
+        {intl.formatMessage(messages.nextReview)}
       </Button>
     );
   } else {
     return (
       <Button variant="primary" isDisabled={isDisabled} onClick={onStart}>
-        Run Configuration
+        <FormattedMessage {...messages.runConfiguration} />
       </Button>
     );
   }
@@ -277,18 +360,17 @@ const SplunkAutomationButton = ({
 const SplunkSetupFailedToast = () => (
   <>
     <p className="pf-v6-u-mb-md">
-      There was a problem processing the request. Please try again. If the problem persists, contact
-      Red Hat support by opening the ticket.
+      <FormattedMessage {...messages.setupFailedTitle} />
     </p>
     <List variant={ListVariant.inline}>
       <ListItem>
         <a target="_blank" rel="noopener noreferrer" href={OPEN_CASE_URL}>
-          Open a Red Hat Support ticket
+          <FormattedMessage {...messages.openTicket} />
         </a>
       </ListItem>
       <ListItem>
         <a target="_blank" rel="noopener noreferrer" href={DOCUMENTATION_URL}>
-          Go to documentation
+          <FormattedMessage {...messages.goToDocs} />
         </a>
       </ListItem>
     </List>

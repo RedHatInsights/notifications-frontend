@@ -1,5 +1,6 @@
 import { assertNever } from 'assert-never';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { IntegrationType, UserIntegrationType, isCamelType } from '../../../types/Integration';
 import { IntegrationTypeCamelExtrasForm } from './IntegrationTypeCamelExtrasForm';
 import { IntegrationTypeCamelForm } from './IntegrationTypeCamelForm';
@@ -9,18 +10,35 @@ import { IntegrationTypeSlackForm } from './IntegrationTypeSlackForm';
 import { IntegrationTypeTeamsForm } from './IntegrationTypeTeamsForm';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 
+const messages = defineMessages({
+  splunkSecretTokenDescription: {
+    id: 'integrations.typeForm.splunkSecretTokenDescription',
+    defaultMessage: "The defined secret token is sent as a Splunk's HTTP Event Collector token.",
+  },
+  splunkSecretTokenLabel: {
+    id: 'integrations.typeForm.splunkSecretTokenLabel',
+    defaultMessage: 'Splunk HEC token',
+  },
+  serviceNowSecretTokenDescription: {
+    id: 'integrations.typeForm.serviceNowSecretTokenDescription',
+    defaultMessage: 'Password of a ServiceNow integration user.',
+  },
+});
+
 export interface IntegrationTypeForm extends OuiaProps {
   type: UserIntegrationType;
 }
 
 export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> = (props) => {
+  const intl = useIntl();
+
   if (isCamelType(props.type)) {
     switch (props.type) {
       case UserIntegrationType.SPLUNK:
         return (
           <IntegrationTypeCamelExtrasForm
-            secretTokenDescription="The defined secret token is sent as a Splunk's HTTP Event Collector token."
-            secretTokenLabel="Splunk HEC token"
+            secretTokenDescription={intl.formatMessage(messages.splunkSecretTokenDescription)}
+            secretTokenLabel={intl.formatMessage(messages.splunkSecretTokenLabel)}
             secretTokenRequired={true}
             {...props}
           />
@@ -28,7 +46,7 @@ export const IntegrationTypeForm: React.FunctionComponent<IntegrationTypeForm> =
       case UserIntegrationType.SERVICE_NOW:
         return (
           <IntegrationTypeCamelExtrasForm
-            secretTokenDescription="Password of a ServiceNow integration user."
+            secretTokenDescription={intl.formatMessage(messages.serviceNowSecretTokenDescription)}
             {...props}
           />
         );

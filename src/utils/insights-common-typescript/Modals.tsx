@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import { Alert, AlertVariant } from '@patternfly/react-core/dist/dynamic/components/Alert';
 import { Button, ButtonVariant } from '@patternfly/react-core/dist/dynamic/components/Button';
 import {
@@ -32,7 +33,23 @@ export interface ActionModalProps extends Pick<ModalProps, 'variant' | 'titleIco
   cancelButtonVariant?: ButtonVariant;
 }
 
+const messages = defineMessages({
+  cancel: {
+    id: 'modals.defaultCancel',
+    defaultMessage: 'Cancel',
+  },
+  delete: {
+    id: 'modals.defaultDelete',
+    defaultMessage: 'Delete',
+  },
+  save: {
+    id: 'modals.defaultSave',
+    defaultMessage: 'Save',
+  },
+});
+
 export const ActionModal: React.FunctionComponent<ActionModalProps> = (props) => {
+  const intl = useIntl();
   const close = React.useCallback(() => {
     const onClose = props.onClose;
     onClose(false);
@@ -72,7 +89,7 @@ export const ActionModal: React.FunctionComponent<ActionModalProps> = (props) =>
         isDisabled={props.isPerformingAction}
         onClick={close}
       >
-        {props.cancelButtonTitle ?? 'Cancel'}
+        {props.cancelButtonTitle ?? intl.formatMessage(messages.cancel)}
       </Button>
     );
 
@@ -117,10 +134,11 @@ export type DeleteModalProps = Omit<SemiPartial<ActionModalProps, InheritedProps
 };
 
 export const DeleteModal: React.FunctionComponent<DeleteModalProps> = (props) => {
+  const intl = useIntl();
   return (
     <ActionModal
       {...props}
-      actionButtonTitle={props.actionButtonTitle ?? 'Delete'}
+      actionButtonTitle={props.actionButtonTitle ?? intl.formatMessage(messages.delete)}
       actionButtonVariant={props.actionButtonVariant ?? ButtonVariant.danger}
       titleIconVariant={props.titleIconVariant ?? 'warning'}
       isPerformingAction={props.isDeleting}
@@ -146,12 +164,13 @@ export type SaveModalProps = Omit<SemiPartial<ActionModalProps, InheritedProps>,
 };
 
 export const SaveModal: React.FunctionComponent<SaveModalProps> = (props) => {
+  const intl = useIntl();
   return (
     <ActionModal
       {...props}
       isPerformingAction={props.isSaving}
       onAction={props.onSave}
-      actionButtonTitle={props.actionButtonTitle ?? 'Save'}
+      actionButtonTitle={props.actionButtonTitle ?? intl.formatMessage(messages.save)}
       actionButtonVariant={props.actionButtonVariant ?? ButtonVariant.primary}
     />
   );

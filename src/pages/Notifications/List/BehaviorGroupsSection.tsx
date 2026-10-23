@@ -13,6 +13,7 @@ import {
 } from '@patternfly/react-core';
 
 import * as React from 'react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
 import { BehaviorGroupCardList } from '../../../components/Notifications/BehaviorGroup/BehaviorGroupCardList';
@@ -25,6 +26,44 @@ import { BehaviorGroupWizardPage } from '../BehaviorGroupWizard/BehaviorGroupWiz
 import { DeleteBehaviorGroupPage } from '../Form/DeleteBehaviorGroupPage';
 import { BehaviorGroupContent } from './useBehaviorGroupContent';
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
+
+const messages = defineMessages({
+  createNewGroup: {
+    id: 'behaviorGroups.section.createNewGroup',
+    defaultMessage: 'Create new group',
+  },
+  adminRoleTooltip: {
+    id: 'behaviorGroups.section.adminRoleTooltip',
+    defaultMessage: 'You need the Notifications administrator role to perform this action',
+  },
+  noPermissionsTooltip: {
+    id: 'behaviorGroups.section.noPermissionsTooltip',
+    defaultMessage:
+      'You do not have permissions to perform this action. Contact your org admin for more information',
+  },
+  intro: {
+    id: 'behaviorGroups.section.intro',
+    defaultMessage:
+      '{behaviorGroups} are made up of action/recipient pairings that allow you to configure which notification actions different users will be able to receive. Once you have created a behavior group, you can assign it to an event using the Events table below.',
+  },
+  lockingNote: {
+    id: 'behaviorGroups.section.lockingNote',
+    defaultMessage:
+      'You may also prevent users from changing assigned actions by locking action/recipient pairings when creating or editing behavior groups.',
+  },
+  searchByName: {
+    id: 'behaviorGroups.section.searchByName',
+    defaultMessage: 'Search by name',
+  },
+  errorLoading: {
+    id: 'behaviorGroups.section.errorLoading',
+    defaultMessage: 'Error loading behavior groups',
+  },
+});
+
+const TRUE = 'true';
+const FALSE = 'false';
+const BOLD_BEHAVIOR_GROUPS = <b>Behavior groups</b>;
 
 interface BehaviorGroupSectionProps {
   bundle: Facet;
@@ -41,6 +80,7 @@ const BehaviorGroupAddButton: React.FunctionComponent<BehaviorGroupAddButtonProp
   const { isDisabled, ...buttonProps } = props;
   const [isOrgAdmin, setIsOrgAdmin] = React.useState<boolean | undefined>();
   const { auth } = useChrome();
+  const intl = useIntl();
 
   React.useEffect(() => {
     const getUserInfo = () =>
@@ -55,16 +95,16 @@ const BehaviorGroupAddButton: React.FunctionComponent<BehaviorGroupAddButtonProp
       {...buttonProps}
       isDisabled={isDisabled}
       variant={ButtonVariant.primary}
-      aria-disabled={isDisabled ? 'true' : 'false'}
+      aria-disabled={isDisabled ? TRUE : FALSE}
     >
-      Create new group
+      {intl.formatMessage(messages.createNewGroup)}
     </Button>
   );
 
   if (isDisabled) {
     const content = isOrgAdmin
-      ? 'You need the Notifications administrator role to perform this action'
-      : 'You do not have permissions to perform this action. Contact your org admin for more information';
+      ? intl.formatMessage(messages.adminRoleTooltip)
+      : intl.formatMessage(messages.noPermissionsTooltip);
     return <Tooltip content={content}>{button}</Tooltip>;
   }
 
@@ -76,6 +116,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
 ) => {
   const [filter, setFilter] = React.useState<string>('');
   const { rbac } = useAppContext();
+  const intl = useIntl();
 
   const filteredBehaviors = React.useMemo(() => {
     if (!props.behaviorGroupContent.isLoading && !props.behaviorGroupContent.hasError) {
@@ -160,14 +201,13 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
           <SplitItem>
             <Content>
               <Content component={ContentVariants.p}>
-                <b>Behavior groups</b> are made up of action/recipient pairings that allow you to
-                configure which notification actions different users will be able to receive. Once
-                you&apos;ve created a behavior group, you can assign it to an event using the Events
-                table below.
-                <br></br>
+                <FormattedMessage
+                  {...messages.intro}
+                  values={{ behaviorGroups: BOLD_BEHAVIOR_GROUPS }}
+                />
+                <br />
                 <Content component={ContentVariants.p}>
-                  You may also prevent users from changing assigned actions by locking
-                  action/recipient pairings when creating or editing behavior groups.
+                  {intl.formatMessage(messages.lockingNote)}
                 </Content>
               </Content>
             </Content>
@@ -182,8 +222,8 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                   onChange={(_e, val) => setFilter(val)}
                   onClear={onClearFilter}
                   type="text"
-                  aria-label="Search by name"
-                  placeholder="Search by name"
+                  aria-label={intl.formatMessage(messages.searchByName)}
+                  placeholder={intl.formatMessage(messages.searchByName)}
                   isDisabled={props.behaviorGroupContent.isLoading}
                 />
               </SplitItem>
@@ -206,7 +246,7 @@ export const BehaviorGroupsSection: React.FunctionComponent<BehaviorGroupSection
                 {props.behaviorGroupContent.isLoading ? (
                   <BehaviorGroupCardList />
                 ) : props.behaviorGroupContent.hasError ? (
-                  <div>Error loading behavior groups</div>
+                  <div>{intl.formatMessage(messages.errorLoading)}</div>
                 ) : (
                   <BehaviorGroupCardList
                     onEdit={rbac.canWriteNotifications ? onEdit : undefined}

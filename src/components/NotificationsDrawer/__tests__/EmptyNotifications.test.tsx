@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+import { IntlProvider } from 'react-intl';
 import { MemoryRouter } from 'react-router-dom';
 
 import { EmptyNotifications, EmptyNotificationsVAButton } from '../EmptyNotifications';
@@ -35,9 +36,11 @@ jest.mock('@unleash/proxy-client-react', () => ({
 const renderComponent = (props: { isOrgAdmin?: boolean }) => {
   const onLinkClick = jest.fn();
   const view = render(
-    <MemoryRouter>
-      <EmptyNotifications onLinkClick={onLinkClick} isOrgAdmin={props.isOrgAdmin} />
-    </MemoryRouter>
+    <IntlProvider locale="en">
+      <MemoryRouter>
+        <EmptyNotifications onLinkClick={onLinkClick} isOrgAdmin={props.isOrgAdmin} />
+      </MemoryRouter>
+    </IntlProvider>
   );
   return { ...view, onLinkClick };
 };
@@ -45,9 +48,11 @@ const renderComponent = (props: { isOrgAdmin?: boolean }) => {
 const renderVAButton = () => {
   const onLinkClick = jest.fn();
   const view = render(
-    <MemoryRouter>
-      <EmptyNotificationsVAButton onLinkClick={onLinkClick} />
-    </MemoryRouter>
+    <IntlProvider locale="en">
+      <MemoryRouter>
+        <EmptyNotificationsVAButton onLinkClick={onLinkClick} />
+      </MemoryRouter>
+    </IntlProvider>
   );
   return { ...view, onLinkClick };
 };

@@ -220,4 +220,29 @@ export default defineMessages({
     defaultMessage:
       'This email integration is managed by your organization administrator and cannot be modified.',
   },
+  notificationsTitle: {
+    id: 'notificationsTitle',
+    description: 'Title of the notifications drawer header',
+    defaultMessage: 'Notifications',
+  },
+  selectNone: {
+    id: 'selectNone',
+    description: 'Bulk select option to clear the selection',
+    defaultMessage: 'Select none (0)',
+  },
+  selectAll: {
+    id: 'selectAll',
+    description: 'Bulk select option to select every notification',
+    defaultMessage: 'Select all ({count})',
+  },
+  infoNotificationSrTitle: {
+    id: 'infoNotificationSrTitle',
+    description: 'Screen reader title for a notification item',
+    defaultMessage: 'Info notification:',
+  },
+  notificationActionsAria: {
+    id: 'notificationActionsAria',
+    description: 'Aria label for the notification actions dropdown',
+    defaultMessage: 'Notification actions dropdown',
+  },
 });

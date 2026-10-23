@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { TableHelpPopover } from '../../TableHelpPopover/TableHelpPopover';
 import {
@@ -8,6 +9,13 @@ import {
   NotificationStatusSuccess,
   NotificationStatusWarning,
 } from '../NotificationStatus';
+
+const messages = defineMessages({
+  title: {
+    id: 'eventLog.actionsHelp.title',
+    defaultMessage: 'Action status meaning',
+  },
+});
 
 const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
   [
@@ -32,8 +40,11 @@ const tableData: ReadonlyArray<[React.ReactNode, React.ReactNode]> = [
   ],
 ];
 
-export const ActionsHelpPopover: React.FunctionComponent<React.PropsWithChildren> = (props) => (
-  <TableHelpPopover title="Action status meaning" tableBody={tableData}>
-    <>{props.children}</>
-  </TableHelpPopover>
-);
+export const ActionsHelpPopover: React.FunctionComponent<React.PropsWithChildren> = (props) => {
+  const intl = useIntl();
+  return (
+    <TableHelpPopover title={intl.formatMessage(messages.title)} tableBody={tableData}>
+      <>{props.children}</>
+    </TableHelpPopover>
+  );
+};

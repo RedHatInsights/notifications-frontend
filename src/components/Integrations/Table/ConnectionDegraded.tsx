@@ -4,6 +4,8 @@ import * as React from 'react';
 import { IntegrationConnectionAttempt } from '../../../types/Integration';
 import { ConnectionAlert } from './ConnectionAlert';
 
+const CONNECTION_DEGRADED = 'Connection is degraded';
+
 interface ConnectionDegradedProps {
   attempts: Array<IntegrationConnectionAttempt>;
 }
@@ -25,7 +27,7 @@ export const ConnectionDegraded: React.FunctionComponent<ConnectionDegradedProps
       attempts={props.attempts}
       alertVariant={AlertVariant.warning}
       description={description}
-      title="Connection is degraded"
+      title={CONNECTION_DEGRADED}
     />
   );
 };

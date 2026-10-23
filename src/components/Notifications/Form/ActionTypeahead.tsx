@@ -1,3 +1,4 @@
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import {
   MenuToggle,
   MenuToggleElement,
@@ -18,6 +19,32 @@ import { getOuiaProps } from '../../../utils/getOuiaProps';
 import { useRecipientContext } from '../RecipientContext';
 import { ActionOption } from './ActionOption';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
+const OUIA_ID = 'ActionTypeahead';
+const TRUE = 'true';
+const FALSE = 'false';
+
+const messages = defineMessages({
+  noIntegration: {
+    id: 'notifications.actionTypeahead.noIntegration',
+    defaultMessage: 'You have no integration configured.',
+  },
+  goToSettings: {
+    id: 'notifications.actionTypeahead.goToSettings',
+    defaultMessage: 'Go to Settings > {link} to create one.',
+  },
+  createIntegrationLink: {
+    id: 'notifications.actionTypeahead.createIntegrationLink',
+    defaultMessage: 'Integrations',
+  },
+  selectActionAria: {
+    id: 'notifications.actionTypeahead.selectActionAria',
+    defaultMessage: 'Select action',
+  },
+  selectAction: {
+    id: 'notifications.actionTypeahead.selectAction',
+    defaultMessage: 'Select action',
+  },
+});
 
 const getSelectOptions = (
   availableNotificationTypes: ReadonlyArray<NotificationType>,
@@ -47,24 +74,36 @@ type NoIntegrationConfigured = {
   testNoIntegrationRenderWithoutRelAndTarget?: boolean;
 };
 
-const NoIntegrationConfigured: React.FunctionComponent<NoIntegrationConfigured> = (props) => (
-  <>
-    <div>You have no integration configured.</div>
-    {props.Comp && <props.Comp />}
-    <div>
-      Go to Settings {'>'}{' '}
-      <Link
-        style={{ pointerEvents: 'all' }}
-        rel={props.testNoIntegrationRenderWithoutRelAndTarget ? undefined : 'noopener noreferrer'}
-        target={props.testNoIntegrationRenderWithoutRelAndTarget ? undefined : '_blank'}
-        to={linkTo.integrations()}
-      >
-        Integrations
-      </Link>{' '}
-      to configure.
-    </div>
-  </>
-);
+const NoIntegrationConfigured: React.FunctionComponent<NoIntegrationConfigured> = (props) => {
+  const intl = useIntl();
+  return (
+    <>
+      <div>{intl.formatMessage(messages.noIntegration)}</div>
+      {props.Comp && <props.Comp />}
+      <div>
+        <FormattedMessage
+          {...messages.goToSettings}
+          values={{
+            link: (
+              <Link
+                style={{ pointerEvents: 'all' }}
+                rel={
+                  props.testNoIntegrationRenderWithoutRelAndTarget
+                    ? undefined
+                    : 'noopener noreferrer'
+                }
+                target={props.testNoIntegrationRenderWithoutRelAndTarget ? undefined : '_blank'}
+                to={linkTo.integrations()}
+              >
+                <FormattedMessage {...messages.createIntegrationLink} />
+              </Link>
+            ),
+          }}
+        />
+      </div>
+    </>
+  );
+};
 
 export interface ActionTypeaheadProps extends OuiaProps {
   selectedNotifications: ReadonlyArray<NotificationType>;
@@ -75,6 +114,7 @@ export interface ActionTypeaheadProps extends OuiaProps {
 }
 
 export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (props) => {
+  const intl = useIntl();
   const [isOpen, setOpen] = React.useState(false);
   const { getIntegrations } = useRecipientContext();
   const [hasIntegrations, setHasIntegrations] = React.useState<
@@ -143,7 +183,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
           isUserIntegrationType(o.integrationType) && !hasIntegrations[o.integrationType];
         return (
           <SelectOption
-            aria-disabled={isDisabled ? 'true' : 'false'}
+            aria-disabled={isDisabled ? TRUE : FALSE}
             isDisabled={isDisabled}
             key={o.toString()}
             value={o}
@@ -171,9 +211,9 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
   ]);
 
   return (
-    <div {...getOuiaProps('ActionTypeahead', props)}>
+    <div {...getOuiaProps(OUIA_ID, props)}>
       <Select
-        aria-label="Select action"
+        aria-label={intl.formatMessage(messages.selectActionAria)}
         selected={selectedOption}
         onSelect={onSelect}
         onOpenChange={(isOpen) => setOpen(isOpen)}
@@ -185,7 +225,7 @@ export const ActionTypeahead: React.FunctionComponent<ActionTypeaheadProps> = (p
             isExpanded={isOpen}
             isDisabled={props.isDisabled}
           >
-            {selectedOption ? selectedOption.toString() : 'Select action'}
+            {selectedOption ? selectedOption.toString() : intl.formatMessage(messages.selectAction)}
           </MenuToggle>
         )}
       >

@@ -23,7 +23,7 @@ import SkeletonTable from '@redhat-cloud-services/frontend-components/SkeletonTa
 import { assertNever } from 'assert-never';
 import { important } from 'csx';
 import * as React from 'react';
-import { useIntl } from 'react-intl';
+import { IntlShape, defineMessages, useIntl } from 'react-intl';
 import { style } from 'typestyle';
 
 import Config from '../../config/Config';
@@ -48,6 +48,17 @@ import { IntegrationStatus, StatusUnknown } from './Table/IntegrationStatus';
 import { LastConnectionHelpTable } from './Table/LastConnectionHelpTable';
 import { OuiaProps } from '@redhat-cloud-services/frontend-components/Ouia/Ouia';
 import { Direction, Sort, UseSortReturn } from '../../utils/insights-common-typescript';
+
+const localMessages = defineMessages({
+  enabledAria: {
+    id: 'integrations.table.enabledAria',
+    defaultMessage: 'Enabled',
+  },
+  connectionStatusMeanings: {
+    id: 'integrations.table.connectionStatusMeanings',
+    defaultMessage: 'Last connection attempt status meanings',
+  },
+});
 
 export type OnEnable = (integration: IntegrationRow, index: number, isChecked: boolean) => void;
 
@@ -101,7 +112,8 @@ const isReadOnlyEmail = (integration: IntegrationRow) =>
 const toTableRows = (
   integrations: Array<IntegrationRow>,
   onEnable?: OnEnable,
-  readOnlyEmailTooltip?: string
+  readOnlyEmailTooltip?: string,
+  intl?: IntlShape
 ): IRow[] => {
   return integrations.reduce((rows, integration, idx) => {
     rows.push({
@@ -152,7 +164,7 @@ const toTableRows = (
               ) : (
                 <Switch
                   id={`table-row-switch-id-${integration.id}`}
-                  aria-label="Enabled"
+                  aria-label={intl?.formatMessage(localMessages.enabledAria)}
                   isChecked={integration.isEnabled}
                   onChange={(_e, isChecked) => onEnable && onEnable(integration, idx, isChecked)}
                   isDisabled={!onEnable || isReadOnlyEmail(integration)}
@@ -188,7 +200,7 @@ const toTableRows = (
   }, [] as Array<IRow>);
 };
 
-const columns: Array<ICell> = [
+const buildColumns = (intl: IntlShape): Array<ICell> => [
   {
     title: Messages.components.integrations.table.columns.name,
     cellFormatters: [expandable],
@@ -207,7 +219,9 @@ const columns: Array<ICell> = [
           hasAutoWidth: true,
           headerContent: (
             <Content>
-              <Content component="h6">Last connection attempt status meanings</Content>
+              <Content component="h6">
+                {intl.formatMessage(localMessages.connectionStatusMeanings)}
+              </Content>
             </Content>
           ),
         },
@@ -316,11 +330,14 @@ export const IntegrationsTable: React.FunctionComponent<IntegrationsTableProps> 
     };
   }, [props.sortBy]);
 
+  const columns = React.useMemo(() => buildColumns(intl), [intl]);
+
   const rows = React.useMemo(() => {
     return toTableRows(
       props.integrations,
       props.onEnable,
-      intl.formatMessage(messages.readOnlyEmailTooltip)
+      intl.formatMessage(messages.readOnlyEmailTooltip),
+      intl
     );
   }, [props.integrations, props.onEnable, intl]);
 

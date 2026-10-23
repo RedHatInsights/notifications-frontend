@@ -23,6 +23,7 @@ import {
 import DateFormat from '@redhat-cloud-services/frontend-components/DateFormat';
 import assertNever from 'assert-never';
 import * as React from 'react';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import { style } from 'typestyle';
 
 import Config from '../../../config/Config';
@@ -37,6 +38,37 @@ import {
 import { EmptyStateSearch } from '../../EmptyStateSearch';
 import { ActionsHelpPopover } from './ActionsHelpPopover';
 import { EventLogActionPopoverContent } from './EventLogActionPopoverContent';
+
+const messages = defineMessages({
+  eventType: {
+    id: 'eventLog.table.eventType',
+    defaultMessage: 'Event type',
+  },
+  service: {
+    id: 'eventLog.table.service',
+    defaultMessage: 'Service',
+  },
+  severity: {
+    id: 'eventLog.table.severity',
+    defaultMessage: 'Severity',
+  },
+  actionTaken: {
+    id: 'eventLog.table.actionTaken',
+    defaultMessage: 'Action taken',
+  },
+  dateAndTime: {
+    id: 'eventLog.table.dateAndTime',
+    defaultMessage: 'Date and time',
+  },
+  noActions: {
+    id: 'eventLog.table.noActions',
+    defaultMessage: 'No actions',
+  },
+  applicationBundle: {
+    id: 'eventLog.table.applicationBundle',
+    defaultMessage: '{application} - {bundle}',
+  },
+});
 
 export type SortDirection = 'asc' | 'desc';
 
@@ -103,6 +135,8 @@ export const toLabelProps = (
 };
 
 export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props) => {
+  const intl = useIntl();
+
   const onSort = React.useCallback(
     (
       _event: React.MouseEvent,
@@ -164,7 +198,10 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         <Tr key={e.id}>
           <Td>{e.event}</Td>
           <Td>
-            {e.application} - {e.bundle}
+            <FormattedMessage
+              {...messages.applicationBundle}
+              values={{ application: e.application, bundle: e.bundle }}
+            />
           </Td>
           {showSeverity && (
             <Td>
@@ -193,7 +230,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
                 ))}
               </LabelGroup>
             ) : (
-              'No actions'
+              intl.formatMessage(messages.noActions)
             )}
           </Td>
           <Td>
@@ -202,7 +239,7 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
         </Tr>
       ));
     }
-  }, [props.events, props.loading, props.showSeverity]);
+  }, [props.events, props.loading, props.showSeverity, intl]);
 
   if (rows.length === 0) {
     return (
@@ -218,18 +255,26 @@ export const EventLogTable: React.FunctionComponent<EventLogTableProps> = (props
     <TableComposable isStickyHeader={true}>
       <Thead>
         <Tr>
-          <Th sort={sortOptions[EventLogTableColumns.EVENT]}>Event type</Th>
-          <Th sort={sortOptions[EventLogTableColumns.SERVICE]}>Service</Th>
+          <Th sort={sortOptions[EventLogTableColumns.EVENT]}>
+            {intl.formatMessage(messages.eventType)}
+          </Th>
+          <Th sort={sortOptions[EventLogTableColumns.SERVICE]}>
+            {intl.formatMessage(messages.service)}
+          </Th>
           {props.showSeverity && (
-            <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>Severity</Th>
+            <Th sort={sortOptions[EventLogTableColumns.SEVERITY]}>
+              {intl.formatMessage(messages.severity)}
+            </Th>
           )}
           <Th>
-            Action taken{' '}
+            {intl.formatMessage(messages.actionTaken)}{' '}
             <ActionsHelpPopover>
               <Button icon={<HelpIcon />} variant={ButtonVariant.plain} />
             </ActionsHelpPopover>
           </Th>
-          <Th sort={sortOptions[EventLogTableColumns.DATE]}>Date and time</Th>
+          <Th sort={sortOptions[EventLogTableColumns.DATE]}>
+            {intl.formatMessage(messages.dateAndTime)}
+          </Th>
         </Tr>
       </Thead>
       <Tbody>{rows}</Tbody>

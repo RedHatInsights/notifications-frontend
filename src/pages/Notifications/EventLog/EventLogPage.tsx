@@ -9,7 +9,7 @@ import {
 import { LockIcon } from '@patternfly/react-icons';
 import { useFlag } from '@unleash/proxy-client-react';
 import * as React from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { useAppContext } from '../../../app/AppContext';
 import { ButtonLink } from '../../../components/ButtonLink';
@@ -33,6 +33,17 @@ import { EventPeriod } from '../../../types/Event';
 import { useEventLogFilter } from './useEventLogFilter';
 import { useFilterBuilder } from './useFilterBuilder';
 import { Direction, Sort } from '../../../utils/insights-common-typescript';
+
+const localMessages = defineMessages({
+  unauthorizedTitle: {
+    id: 'eventLog.unauthorized.title',
+    defaultMessage: 'You do not have access to the event log',
+  },
+  unauthorizedBody: {
+    id: 'eventLog.unauthorized.body',
+    defaultMessage: 'Contact your organization administrator to request the necessary permissions.',
+  },
+});
 
 const RETENTION_DAYS = 14;
 
@@ -148,18 +159,9 @@ export const EventLogPage: React.FunctionComponent = () => {
             <EmptyState
               headingLevel="h2"
               icon={LockIcon}
-              titleText={intl.formatMessage({
-                id: 'eventLog.unauthorized.title',
-                defaultMessage: 'You do not have access to the event log',
-              })}
+              titleText={intl.formatMessage(localMessages.unauthorizedTitle)}
             >
-              <EmptyStateBody>
-                {intl.formatMessage({
-                  id: 'eventLog.unauthorized.body',
-                  defaultMessage:
-                    'Contact your organization administrator to request the necessary permissions.',
-                })}
-              </EmptyStateBody>
+              <EmptyStateBody>{intl.formatMessage(localMessages.unauthorizedBody)}</EmptyStateBody>
             </EmptyState>
           </CardBody>
         </Card>

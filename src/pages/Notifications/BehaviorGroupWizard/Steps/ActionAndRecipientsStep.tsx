@@ -1,6 +1,7 @@
 import { Content, Title } from '@patternfly/react-core';
 import { useFormikContext } from 'formik';
 import * as React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import * as Yup from 'yup';
 
 import { EditBehaviorGroupForm } from '../../../../components/Notifications/BehaviorGroup/BehaviorGroupForm';
@@ -9,9 +10,17 @@ import { ActionsArray } from '../../../../schemas/Integrations/Notifications';
 import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { Form } from '../../../../utils/insights-common-typescript';
 
+const messages = defineMessages({
+  description: {
+    id: 'behaviorGroup.wizard.actionAndRecipients.description',
+    defaultMessage: 'Select action and recipient pairs to assign to your notification events.',
+  },
+});
+
 const title = 'Actions and recipients';
 
 const ActionAndRecipientsStep: React.FunctionComponent = () => {
+  const intl = useIntl();
   const { values } = useFormikContext<CreateBehaviorGroup>();
 
   return (
@@ -21,9 +30,7 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
           {title}
         </Title>
         <Content className="pf-v6-u-pt-sm">
-          <Content component="p">
-            Select action and recipient pairs to assign to your notification events.
-          </Content>
+          <Content component="p">{intl.formatMessage(messages.description)}</Content>
         </Content>
         <EditBehaviorGroupForm behaviorGroup={values} />
       </div>

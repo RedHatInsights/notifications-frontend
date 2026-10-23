@@ -170,4 +170,27 @@ export default defineMessages({
     description: 'User count display when rbac:principal:read permission is denied',
     defaultMessage: '{count} {count, plural, one {user} other {users}}',
   },
+
+  // Data view polish
+  groupPopoverAria: {
+    id: 'integrations.userAccessGroups.groupPopoverAria',
+    description: 'Aria label for the user group info popover',
+    defaultMessage: 'User access group details',
+  },
+  countParens: {
+    id: 'integrations.userAccessGroups.countParens',
+    description: 'User count shown in parentheses',
+    defaultMessage: '({count})',
+  },
+  customDefaultSelectedTitle: {
+    id: 'integrations.userAccessGroups.customDefaultSelectedTitle',
+    description: 'Alert title when a custom default group is selected',
+    defaultMessage: 'Custom default access group selected',
+  },
+  customDefaultSelectedBody: {
+    id: 'integrations.userAccessGroups.customDefaultSelectedBody',
+    description: 'Alert body when a custom default group is selected',
+    defaultMessage:
+      'The custom default access group includes all users in your organization. Additional access group selections are not necessary.',
+  },
 });

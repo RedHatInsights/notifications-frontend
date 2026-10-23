@@ -41,7 +41,9 @@ interface BehaviorGroupChip {
   onSelect?: BehaviorGroupCellProps['onSelect'];
 }
 
-const CommaSeparator: React.FunctionComponent = () => <span>, </span>;
+const COMMA = ', ';
+
+const CommaSeparator: React.FunctionComponent = () => <span>{COMMA}</span>;
 
 const BehaviorGroupChip: React.FunctionComponent<BehaviorGroupChip> = (props) => {
   const unlink = React.useCallback(() => {
@@ -208,7 +210,7 @@ export const BehaviorGroupCell: React.FunctionComponent<BehaviorGroupCellProps> 
   }, [sortedSelected, intl]);
 
   if (!props.isEditMode) {
-    return <TableText wrapModifier="truncate"> {readonlyText} </TableText>;
+    return <TableText wrapModifier="truncate">{readonlyText}</TableText>;
   }
 
   return (
