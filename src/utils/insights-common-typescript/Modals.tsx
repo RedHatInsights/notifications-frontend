@@ -95,6 +95,7 @@ export const ActionModal: React.FunctionComponent<ActionModalProps> = (props) =>
 
     return actionContent;
   }, [
+    intl,
     props.actionButtonVariant,
     props.actionButtonTitle,
     props.actionButtonDisabled,

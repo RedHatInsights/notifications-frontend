@@ -115,7 +115,7 @@ export const EditBehaviorGroupPage: React.FunctionComponent<EditBehaviorGroupPag
 
       return result.status;
     },
-    [saving.save, addDangerNotification, addSuccessNotification]
+    [saving.save, addDangerNotification, addSuccessNotification, intl]
   );
 
   return (

@@ -115,8 +115,14 @@ const ReviewStep: React.FunctionComponent = () => {
   );
 };
 
-export const createReviewStep: IntegrationWizardStep = () => ({
-  name: messages.review.defaultMessage as string,
-  component: <ReviewStep />,
-  nextButtonText: messages.finish.defaultMessage as string,
-});
+export const useReviewStep: IntegrationWizardStep = () => {
+  const intl = useIntl();
+  return React.useMemo(
+    () => ({
+      name: intl.formatMessage(messages.review),
+      component: <ReviewStep />,
+      nextButtonText: intl.formatMessage(messages.finish),
+    }),
+    [intl]
+  );
+};

@@ -269,7 +269,7 @@ export const TimeConfigComponent: React.FunctionComponent = () => {
     }
 
     setIsModalOpen(false);
-  }, [addDangerNotification, addSuccessNotification, timeSelect]);
+  }, [addDangerNotification, addSuccessNotification, timeSelect, intl]);
 
   const isLoading = timeSelect === null || timePref === null;
 

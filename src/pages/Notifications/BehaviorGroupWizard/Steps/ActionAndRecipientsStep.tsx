@@ -17,7 +17,12 @@ const messages = defineMessages({
   },
 });
 
-const title = 'Actions and recipients';
+const titleMessages = {
+  title: {
+    id: 'behaviorGroup.wizard.actionAndRecipients.title',
+    defaultMessage: 'Actions and recipients',
+  },
+} as const;
 
 const ActionAndRecipientsStep: React.FunctionComponent = () => {
   const intl = useIntl();
@@ -27,7 +32,7 @@ const ActionAndRecipientsStep: React.FunctionComponent = () => {
     <Form>
       <div>
         <Title headingLevel="h4" size="xl">
-          {title}
+          {intl.formatMessage(titleMessages.title)}
         </Title>
         <Content className="pf-v6-u-pt-sm">
           <Content component="p">{intl.formatMessage(messages.description)}</Content>
@@ -43,12 +48,13 @@ const schema = Yup.object({
 });
 
 export const useActionAndRecipientStep: IntegrationWizardStep = () => {
+  const intl = useIntl();
   return React.useMemo(
     () => ({
-      name: title,
+      name: intl.formatMessage(titleMessages.title),
       component: <ActionAndRecipientsStep />,
       schema,
     }),
-    []
+    [intl]
   );
 };

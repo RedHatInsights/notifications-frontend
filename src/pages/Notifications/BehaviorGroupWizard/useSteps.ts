@@ -8,7 +8,7 @@ import {
   useAssociateEventTypesStep,
 } from './Steps/AssociateEventTypesStep';
 import { useBasicInformationStep } from './Steps/BasicInformationStep';
-import { createReviewStep } from './Steps/ReviewStep';
+import { useReviewStep } from './Steps/ReviewStep';
 
 export const useSteps = (
   associateEventTypeStep: AssociateEventTypesStepProps,
@@ -19,6 +19,7 @@ export const useSteps = (
   const basicInformationStep = useBasicInformationStep();
   const associateEventTypesStep = useAssociateEventTypesStep(associateEventTypeStep);
   const actionAndRecipientStep = useActionAndRecipientStep();
+  const reviewStep = useReviewStep();
 
   const [maxStep, setMaxStep] = useState<number>(0);
   const [invalidSteps, setInvalidSteps] = useState<Set<number>>(() => new Set<number>());
@@ -43,21 +44,19 @@ export const useSteps = (
     invalidSteps.size === 0 ? maxStep : Math.min(...Array.from(invalidSteps));
 
   return useMemo(() => {
-    return [
-      basicInformationStep,
-      actionAndRecipientStep,
-      associateEventTypesStep,
-      createReviewStep(),
-    ].map((step, index) => ({
-      ...step,
-      id: index,
-      canJumpTo: !isSaving && index <= lastAvailableStep,
-      hideCancelButton: false,
-      enableNext: isValid,
-    }));
+    return [basicInformationStep, actionAndRecipientStep, associateEventTypesStep, reviewStep].map(
+      (step, index) => ({
+        ...step,
+        id: index,
+        canJumpTo: !isSaving && index <= lastAvailableStep,
+        hideCancelButton: false,
+        enableNext: isValid,
+      })
+    );
   }, [
     basicInformationStep,
     actionAndRecipientStep,
+    reviewStep,
     isValid,
     lastAvailableStep,
     isSaving,
