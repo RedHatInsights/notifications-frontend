@@ -111,7 +111,7 @@ const SelectableTable = (props) => {
   const intl = useIntl();
   const [allBundles, setAllBundles] = useState<Facet[] | undefined>();
   const { getState } = useFormApi();
-  const { input } = useFieldApi<Record<string, unknown>>(props);
+  const { input } = useFieldApi(props);
   const [loaded, setLoaded] = useState<boolean>(false);
   let value: readonly EventType[] = [];
   const productFamily = getState().values[props.bundleFieldName];

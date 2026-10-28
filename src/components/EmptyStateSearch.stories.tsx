@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { EmptyStateSearch } from './EmptyStateSearch';
 import { EmptyStateVariant } from '@patternfly/react-core';
 import { CubesIcon } from '@patternfly/react-icons';

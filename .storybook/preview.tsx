@@ -91,6 +91,10 @@ const preview: Preview = {
             'integrations:endpoints:read',
             'integrations:endpoints:write',
           ]}
+          orgOptedIn={parameters.orgOptedIn}
+          tenantPermissions={parameters.tenantPermissions}
+          workspacePermissions={parameters.workspacePermissions}
+          defaultWorkspace={parameters.defaultWorkspace}
         >
           <FeatureFlagsProvider value={featureFlags}>
             <ClientWrapper>

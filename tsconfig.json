@@ -10,7 +10,7 @@
     "pretty": true,
     "skipLibCheck": true,
     "strict": true,
-    "moduleResolution": "node",
+    "moduleResolution": "bundler",
     "esModuleInterop": true,
     "noImplicitAny": false,
     "sourceMap": true,
