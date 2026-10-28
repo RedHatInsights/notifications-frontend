@@ -1,17 +1,12 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { FormRenderer } from '@data-driven-forms/react-form-renderer';
 import componentMapper from '@data-driven-forms/pf4-component-mapper/component-mapper';
 import { IntlProvider } from 'react-intl';
 import { Client, ClientContextProvider } from 'react-fetching-library';
-import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import UserAccessGroupsDataView from './UserAccessGroupsDataView';
 import { RbacGroupContextProvider } from '../../../../app/rbac/RbacGroupContextProvider';
 import { KesselRbacAccessProvider } from '../../../../app/rbac/KesselRbacAccessProvider';
-import {
-  kesselRbacGrantedHandlers,
-  kesselRbacNoRbacHandlers,
-} from '../../../../app/rbac/msw/kesselRbacStoryHandlers';
 import { HttpResponse, http } from 'msw';
 import messagesData from '../../../../../locales/data.json';
 
@@ -112,24 +107,22 @@ const TestWrapper: React.FC<WrapperProps> = ({ initialValues = {}, children }) =
   };
 
   return (
-    <AccessCheck.Provider baseUrl="http://localhost:8002" apiPath="/api/kessel/v1beta2">
-      <KesselRbacAccessProvider>
-        <IntlProvider locale="en" messages={messages}>
-          <ClientContextProvider client={mockClient}>
-            <RbacGroupContextProvider>
-              <FormRenderer
-                schema={schema}
-                componentMapper={customMapper}
-                onSubmit={(values) => console.log('Form submitted:', values)}
-                onCancel={() => console.log('Form cancelled')}
-                initialValues={initialValues}
-              />
-              {children}
-            </RbacGroupContextProvider>
-          </ClientContextProvider>
-        </IntlProvider>
-      </KesselRbacAccessProvider>
-    </AccessCheck.Provider>
+    <KesselRbacAccessProvider>
+      <IntlProvider locale="en" messages={messages}>
+        <ClientContextProvider client={mockClient}>
+          <RbacGroupContextProvider>
+            <FormRenderer
+              schema={schema}
+              componentMapper={customMapper}
+              onSubmit={(values) => console.log('Form submitted:', values)}
+              onCancel={() => console.log('Form cancelled')}
+              initialValues={initialValues}
+            />
+            {children}
+          </RbacGroupContextProvider>
+        </ClientContextProvider>
+      </IntlProvider>
+    </KesselRbacAccessProvider>
   );
 };
 
@@ -158,7 +151,9 @@ type Story = StoryObj<typeof UserAccessGroupsDataView>;
 export const Default: Story = {
   parameters: {
     msw: {
-      handlers: [...kesselRbacGrantedHandlers, rbacGroupsHandler, rbacPrincipalsHandler],
+      handlers: [rbacGroupsHandler, rbacPrincipalsHandler],
+      orgOptedIn: true,
+      tenantPermissions: { rbac_groups_read: true, rbac_principal_read: true },
     },
   },
   render: () => <TestWrapper />,
@@ -171,7 +166,9 @@ export const Default: Story = {
 export const PermissionDenied: Story = {
   parameters: {
     msw: {
-      handlers: [...kesselRbacNoRbacHandlers, rbacGroupsHandler, rbacPrincipalsHandler],
+      handlers: [rbacGroupsHandler, rbacPrincipalsHandler],
+      orgOptedIn: true,
+      tenantPermissions: { rbac_groups_read: false, rbac_principal_read: false },
     },
   },
   render: () => <TestWrapper />,
@@ -183,7 +180,9 @@ export const PermissionDenied: Story = {
 export const WithSelection: Story = {
   parameters: {
     msw: {
-      handlers: [...kesselRbacGrantedHandlers, rbacGroupsHandler, rbacPrincipalsHandler],
+      handlers: [rbacGroupsHandler, rbacPrincipalsHandler],
+      orgOptedIn: true,
+      tenantPermissions: { rbac_groups_read: true, rbac_principal_read: true },
     },
   },
   render: () => (
@@ -199,8 +198,9 @@ export const WithSelection: Story = {
 export const EmptyState: Story = {
   parameters: {
     msw: {
+      orgOptedIn: true,
+      tenantPermissions: { rbac_groups_read: true, rbac_principal_read: true },
       handlers: [
-        ...kesselRbacGrantedHandlers,
         http.get('/api/rbac/v1/groups/', () => {
           return HttpResponse.json({
             meta: { count: 0 },
