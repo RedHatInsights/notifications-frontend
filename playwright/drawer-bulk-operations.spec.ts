@@ -227,8 +227,15 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
     expect(count, 'Test account must have at least one notification').toBeGreaterThan(0);
 
     // Ensure all are read first
-    await drawerHelpers.bulkSelectAll(page);
-    await drawerHelpers.markSelectedAsRead(page);
+    if ((await drawerHelpers.getReadUnreadCounts(page)).unread > 0) {
+      await drawerHelpers.bulkSelectAll(page);
+      await drawerHelpers.markSelectedAsRead(page);
+      await expect
+        .poll(() => drawerHelpers.getSelectedCount(page), {
+          timeout: TIMEOUTS.ELEMENT_APPEAR,
+        })
+        .toBe(0);
+    }
     await expect
       .poll(() => drawerHelpers.getReadUnreadCounts(page).then((c) => c.read), {
         timeout: TIMEOUTS.ELEMENT_APPEAR,
@@ -305,8 +312,8 @@ test.describe('Notifications Drawer — Bulk Operations', () => {
       await drawerHelpers.resetFilters(page);
 
       const restoredItems = drawerHelpers.notificationItems(page);
+      await expect(restoredItems).toHaveCount(totalCount, { timeout: TIMEOUTS.TABLE_LOAD });
       const restoredCount = await restoredItems.count();
-      expect(restoredCount).toBe(totalCount);
 
       console.log(
         `Filter + selection workflow: ${totalCount} total → ${filteredCount} filtered → ${restoredCount} restored`
