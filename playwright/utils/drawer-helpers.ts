@@ -83,8 +83,6 @@ export const drawerHelpers = {
     await filterToggle.click();
     const resetBtn = page.getByText('Reset filters');
     await resetBtn.click();
-    // Close the dropdown (it doesn't auto-close on reset)
-    await filterToggle.click();
     await expect(page.locator('#notifications-filter-dropdown')).not.toBeVisible({
       timeout: TIMEOUTS.QUICK_CHECK,
     });

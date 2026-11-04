@@ -1,5 +1,5 @@
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { Toolbar, ToolbarContent } from '@patternfly/react-core/dist/dynamic/components/Toolbar';
 import DrawerBell from './DrawerBell';
 import { DrawerSingleton } from './DrawerSingleton';

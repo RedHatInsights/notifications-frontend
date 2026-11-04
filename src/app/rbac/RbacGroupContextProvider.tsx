@@ -10,6 +10,14 @@ import { useKesselRbacAccess } from './KesselRbacAccessContext';
 const SYNC_INTERVAL = 2 * 60 * 1000;
 const LIMIT = 100;
 
+/**
+ * v1 orgs: fetch groups and let the RBAC API enforce access (pre-Kessel behavior).
+ * v2 orgs: gate on the Kessel `rbac_groups_read` relation check.
+ * Pending detection: keep the gate closed so we don't fetch before knowing the org version.
+ */
+const resolveCanReadRbacGroups = (isOrgV2: boolean | undefined, kesselAllowed: boolean): boolean =>
+  isOrgV2 === false ? true : isOrgV2 === true ? kesselAllowed : false;
+
 const getPage = async (
   query: ReturnType<typeof useClient>['query'],
   offset: number
@@ -47,8 +55,8 @@ export const RbacGroupContextProvider: React.FunctionComponent<React.PropsWithCh
   props
 ) => {
   const { query } = useClient();
-  const { permissions, isLoading: isLoadingPermissions } = useKesselRbacAccess();
-  const { canReadRbacGroups } = permissions;
+  const { permissions, isLoading: isLoadingPermissions, isOrgV2 } = useKesselRbacAccess();
+  const canReadRbacGroups = resolveCanReadRbacGroups(isOrgV2, permissions.canReadRbacGroups);
 
   const [isLoading, setLoading] = useState(true);
   const [rbacGroups, setRbacGroups] = useState<ReadonlyArray<RbacGroup>>([]);

@@ -187,7 +187,7 @@ export const FormSelect: React.FunctionComponent<FormSelectProps> = (props) => {
   );
 };
 
-interface FormProps extends OuiaProps, PFFormProps {}
+interface FormProps extends OuiaProps, Omit<PFFormProps, keyof OuiaProps> {}
 
 const preventDefaultHandler = (e: React.FormEvent) => e.preventDefault();
 

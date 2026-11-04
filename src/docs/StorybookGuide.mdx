@@ -47,7 +47,7 @@ src/
 
 ```typescript
 import React from 'react';
-import type { Meta, StoryObj } from '@storybook/react-webpack5';
+import type { Meta, StoryObj } from '@storybook/react-vite';
 import { MyComponent } from './MyComponent';
 
 const meta: Meta<typeof MyComponent> = {
@@ -242,7 +242,7 @@ export const WithErrorState: Story = {
 - **Interactive states** - Hover, focus, active
 
 ### TypeScript
-- **Use proper types** from `@storybook/react-webpack5`
+- **Use proper types** from `@storybook/react-vite`
 - **Type your Story** with `StoryObj<typeof Component>`
 - **Use `fn()` from `storybook/test`** for action callbacks
 

@@ -1,5 +1,4 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import { useFlag } from '@unleash/proxy-client-react';
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 
@@ -19,11 +18,9 @@ export const useApp = (): Partial<AppContext> => {
   const [isOrgAdmin, setOrgAdmin] = useState<boolean>(false);
   const [userLoaded, setUserLoaded] = useState<boolean>(false);
 
-  // Get Kessel v2 permissions
+  // Get org V2 detection and Kessel v2 permissions
   const kesselRbacContext = useKesselRbacAccess();
-  const { permissions: kesselPermissions, isLoading: isKesselLoading } = kesselRbacContext;
-
-  const isKesselEnabled = useFlag('platform.chrome.kessel');
+  const { permissions: kesselPermissions, isLoading: isKesselLoading, isOrgV2 } = kesselRbacContext;
 
   useEffect(() => {
     const appId = chrome.getApp();
@@ -80,7 +77,7 @@ export const useApp = (): Partial<AppContext> => {
   // Fetch v1 RBAC only for v1 orgs. All notifications/integrations permissions are
   // fully migrated to Kessel v2, so v2 orgs don't need the v1 endpoint.
   useEffect(() => {
-    if (userLoaded && !isKesselEnabled) {
+    if (userLoaded && isOrgV2 === false) {
       fetchRBAC(`${Config.notifications.subAppId},${Config.integrations.subAppId}`)
         .then((rbac) => {
           setV1Rbac(rbac);
@@ -89,10 +86,15 @@ export const useApp = (): Partial<AppContext> => {
           setV1Rbac(new Rbac({}));
         });
     }
-  }, [userLoaded, isKesselEnabled]);
+  }, [userLoaded, isOrgV2]);
 
   const rbac = React.useMemo(() => {
-    if (isKesselEnabled) {
+    if (isOrgV2 === undefined) {
+      // Org v1/v2 detection pending
+      return undefined;
+    }
+
+    if (isOrgV2) {
       if (isKesselLoading) {
         return undefined;
       }
@@ -118,7 +120,7 @@ export const useApp = (): Partial<AppContext> => {
         canReadEvents: v1Rbac.hasPermission('notifications', 'events', 'read'),
       };
     }
-  }, [isKesselEnabled, isKesselLoading, kesselPermissions, v1Rbac]);
+  }, [isOrgV2, isKesselLoading, kesselPermissions, v1Rbac]);
 
   return {
     rbac,

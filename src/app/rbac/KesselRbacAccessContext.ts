@@ -6,6 +6,14 @@ import { createContext, useContext } from 'react';
  */
 export interface KesselRbacAccessContextValue {
   /**
+   * Whether the current org is onboarded to RBAC v2 (Kessel), from
+   * `GET /api/rbac/v1/tenant/opt-in/` via Chrome's `isKesselOrgOnboarded`.
+   * `undefined` while detection is pending. On the v1 path (`false`) the
+   * Kessel chain does not run and consumers must use their v1 fallbacks.
+   */
+  isOrgV2: boolean | undefined;
+
+  /**
    * Default workspace ID from /api/rbac/v2/workspaces/?type=default
    */
   workspaceId: string | undefined;
