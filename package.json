@@ -183,7 +183,8 @@
     "chromatic": "chromatic --exit-zero-on-changes",
     "prepare": "husky",
     "lint:translations": "npm run translations:extract && git diff --exit-code locales/translation-template.json",
-    "test:storybook": "vitest run --project=storybook"
+    "test:storybook": "vitest run --project=storybook",
+    "translations:validate": "i18n-pipeline validate-ci --mode error --config .github/i18n/catalog-validation.json"
   },
   "msw": {
     "workerDirectory": [
