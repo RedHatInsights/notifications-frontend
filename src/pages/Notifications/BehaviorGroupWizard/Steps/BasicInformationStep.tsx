@@ -1,5 +1,6 @@
 import { Title } from '@patternfly/react-core';
 import * as React from 'react';
+import { defineMessages } from 'react-intl';
 import * as Yup from 'yup';
 
 import { IntegrationWizardStep } from '../../../../components/Notifications/BehaviorGroup/Wizard/ExtendedWizardStep';
@@ -7,12 +8,12 @@ import { Form, FormTextInput } from '../../../../utils/insights-common-typescrip
 
 const BEHAVIOR_GROUP_NAME = 'Behavior group name';
 
-const titleMessages = {
+const titleMessages = defineMessages({
   title: {
     id: 'behaviorGroup.wizard.basicInformation.title',
     defaultMessage: 'Name',
   },
-} as const;
+});
 
 const BasicInformationStep: React.FunctionComponent = () => {
   const intl = useIntl();

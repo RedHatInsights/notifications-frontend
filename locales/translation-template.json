@@ -103,6 +103,15 @@
   "behaviorGroup.wizard.actionAndRecipients.description": {
     "defaultMessage": "Select action and recipient pairs to assign to your notification events."
   },
+  "behaviorGroup.wizard.actionAndRecipients.title": {
+    "defaultMessage": "Actions and recipients"
+  },
+  "behaviorGroup.wizard.associateEventTypes.title": {
+    "defaultMessage": "Associate event types"
+  },
+  "behaviorGroup.wizard.basicInformation.title": {
+    "defaultMessage": "Name"
+  },
   "behaviorGroup.wizard.createFailBody": {
     "defaultMessage": "Failed to create group {name}. Please try again."
   },
