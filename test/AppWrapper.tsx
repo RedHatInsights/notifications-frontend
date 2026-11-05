@@ -1,5 +1,5 @@
 import useChrome from '@redhat-cloud-services/frontend-components/useChrome';
-import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
+import { IntlProvider } from 'react-intl';
 import { FlagProvider, UnleashClient } from '@unleash/proxy-client-react';
 import { AccessCheck } from '@project-kessel/react-kessel-access-check';
 import fetchMock from 'fetch-mock';
@@ -11,7 +11,7 @@ import { MemoryRouterProps, useLocation } from 'react-router';
 import { Routes as DomRoutes, Route, RouteProps, MemoryRouter as Router } from 'react-router-dom';
 import { DeepPartial } from 'ts-essentials';
 
-import messages from '../locales/data.json';
+import messages from '../locales/en.json';
 import { AppContext } from '../src/app/AppContext';
 import { KesselRbacAccessProvider } from '../src/app/rbac/KesselRbacAccessProvider';
 import { getNotificationsRegistry } from '../src/store/Store';
@@ -126,7 +126,7 @@ export const AppWrapper: React.FunctionComponent<Config> = (props) => {
 
   const store = getNotificationsRegistry().getStore();
   return (
-    <IntlProvider locale={navigator.language} messages={messages}>
+    <IntlProvider locale="en" messages={messages}>
       <FlagProvider unleashClient={unleashClient}>
         <AccessCheck.Provider baseUrl="http://localhost" apiPath="/api/kessel/v1beta2">
           <KesselRbacAccessProvider>

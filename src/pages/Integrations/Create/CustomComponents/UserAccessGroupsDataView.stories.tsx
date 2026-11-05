@@ -8,9 +8,9 @@ import UserAccessGroupsDataView from './UserAccessGroupsDataView';
 import { RbacGroupContextProvider } from '../../../../app/rbac/RbacGroupContextProvider';
 import { KesselRbacAccessProvider } from '../../../../app/rbac/KesselRbacAccessProvider';
 import { HttpResponse, http } from 'msw';
-import messagesData from '../../../../../locales/data.json';
+import messagesData from '../../../../../locales/en.json';
 
-const messages = messagesData['en-US'];
+const messages = messagesData;
 
 const mockGroups = [
   {
