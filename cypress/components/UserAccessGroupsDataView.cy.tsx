@@ -5,7 +5,7 @@ import { componentMapper } from '@data-driven-forms/pf4-component-mapper';
 import { IntlProvider } from 'react-intl';
 import { RbacGroupContextProvider } from '../../src/app/rbac/RbacGroupContextProvider';
 import { ClientContextProvider } from 'react-fetching-library';
-import messages from '../../locales/data.json';
+import messages from '../../locales/en.json';
 
 const mockGroups = [
   {

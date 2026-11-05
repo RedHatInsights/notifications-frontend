@@ -7,7 +7,8 @@ on:
       - .github/i18n/**
       - locales/**
       - messages/**
-      - src/**/*.{ts,tsx}
+      - src/**/*.ts
+      - src/**/*.tsx
       - package.json
       - package-lock.json
 
