@@ -1,10 +1,10 @@
 import { ouiaSelectors } from '@redhat-cloud-services/frontend-components-testing';
-import IntlProvider from '@redhat-cloud-services/frontend-components-translations/Provider';
+import { IntlProvider } from 'react-intl';
 import { act, render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import * as React from 'react';
 
-import messages from '../../../locales/data.json';
+import messages from '../../../locales/en.json';
 import {
   appWrapperCleanup,
   appWrapperSetup,
@@ -91,7 +91,7 @@ describe('src/app/App', () => {
     });
     (fetchRBAC as jest.Mock).mockImplementation(() => promise);
     render(
-      <IntlProvider locale={navigator.language} messages={messages}>
+      <IntlProvider locale="en" messages={messages}>
         <App />
       </IntlProvider>,
       {
@@ -129,7 +129,7 @@ describe('src/app/App', () => {
     });
     (fetchRBAC as jest.Mock).mockImplementation(() => Promise.resolve(rbac));
     render(
-      <IntlProvider locale={navigator.language} messages={messages}>
+      <IntlProvider locale="en" messages={messages}>
         <App />
       </IntlProvider>,
       {
@@ -166,7 +166,7 @@ describe('src/app/App', () => {
     });
 
     render(
-      <IntlProvider locale={navigator.language} messages={messages}>
+      <IntlProvider locale="en" messages={messages}>
         <App />
       </IntlProvider>,
       {

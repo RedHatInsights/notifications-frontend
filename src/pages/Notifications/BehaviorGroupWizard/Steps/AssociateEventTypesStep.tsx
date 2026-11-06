@@ -1,4 +1,4 @@
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { useFormikContext } from 'formik';
 import produce from 'immer';
 import * as React from 'react';
@@ -8,12 +8,12 @@ import { CreateBehaviorGroup } from '../../../../types/CreateBehaviorGroup';
 import { EventType, Facet } from '../../../../types/Notification';
 import EventTypes from '../../../../components/Integrations/EventTypes';
 
-const titleMessages = {
+const titleMessages = defineMessages({
   title: {
     id: 'behaviorGroup.wizard.associateEventTypes.title',
     defaultMessage: 'Associate event types',
   },
-} as const;
+});
 
 export interface AssociateEventTypesStepProps {
   applications: ReadonlyArray<Facet>;

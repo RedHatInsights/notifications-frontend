@@ -13,7 +13,7 @@ import {
   StorybookMockProvider,
   FeatureFlagsProvider,
 } from '@redhat-cloud-services/hcc-storybook-hub';
-import messages from '../locales/data.json';
+import messages from '../locales/en.json';
 import { AppContext } from '../src/app/AppContext';
 import { ServerStatus } from '../src/types/Server';
 
@@ -99,10 +99,7 @@ const preview: Preview = {
           <FeatureFlagsProvider value={featureFlags}>
             <ClientWrapper>
               <AppContext.Provider value={appContextValue}>
-                <IntlProvider
-                  locale="en"
-                  messages={(messages as Record<string, Record<string, string>>)['en-US']}
-                >
+                <IntlProvider locale="en" messages={messages as Record<string, string>}>
                   <MemoryRouter>
                     <Fragment>
                       <NotificationsProvider>

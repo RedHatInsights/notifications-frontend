@@ -47,6 +47,7 @@ spec:
         #!/bin/bash
         set -ex
         npm run lint
+        npm run lint:translations
         # TypeScript type-check to catch compilation errors
         npx tsc --noEmit
         npm test -- --runInBand --no-cache

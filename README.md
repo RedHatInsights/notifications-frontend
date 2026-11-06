@@ -121,6 +121,29 @@ Set environment variables:
 - `API_BASE_URL`: Backend API endpoint
 - `NODE_ENV`: Environment (development/production)
 
+## Local i18n validation
+
+The locale-validation workflow builds the i18n CLI, but `npm ci` in this repository does not
+install it. Until `@redhat-cloud-services/i18n-pipeline` is published, build the exact tooling
+revision pinned by `.github/workflows/locale-validation.yml` (currently
+`7228d32f08872f97c8de8d255b5690e77f484f1f`):
+
+```bash
+git clone https://github.com/RedHatInsights/i18n-tooling.git
+cd i18n-tooling
+git checkout 7228d32f08872f97c8de8d255b5690e77f484f1f
+npm ci
+npm run build
+```
+
+Then, from this repository, add that checkout's CLI to `PATH` for the validation command:
+
+```bash
+PATH="/path/to/i18n-tooling/node_modules/.bin:$PATH" npm run translations:validate
+```
+
+This CLI currently requires Node.js 22.14 or newer. If the workflow pin changes, use the new SHA in both the checkout and this instruction.
+
 ## Deploying
 
 Deployments come from the `.travis/custom_release.sh` file. Push to certain branches to deploy to certain environments:

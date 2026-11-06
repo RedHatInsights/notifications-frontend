@@ -17,12 +17,12 @@ const messages = defineMessages({
   },
 });
 
-const titleMessages = {
+const titleMessages = defineMessages({
   title: {
     id: 'behaviorGroup.wizard.actionAndRecipients.title',
     defaultMessage: 'Actions and recipients',
   },
-} as const;
+});
 
 const ActionAndRecipientsStep: React.FunctionComponent = () => {
   const intl = useIntl();
