@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "key": "3b358050f9150972179eee4285ba24e223a4834de322d6c4dfe25dab87025d9e",
-  "phase": "importing",
+  "phase": "ready",
   "repository": "RedHatInsights/notifications-frontend",
   "baseRef": "master",
   "sourceCommit": "0cd0ed837570dd8fa7490024cb015e5ee08198ff",
@@ -47,99 +47,187 @@
   "jobs": [
     {
       "uid": "t5b0f5PABagUoODPPDjcj7",
+      "innerId": "37",
       "status": "NEW",
       "providers": [],
+      "sourceLang": "en_us",
       "targetLang": "zh_cn",
       "workflowLevel": 1,
       "workflowStep": {
         "name": "Translation",
         "id": "225677",
-        "uid": "Vm1j1nqsDSxM343cSZb17g",
         "order": 10,
-        "lqaEnabled": true
+        "workflowLevel": 1
       },
       "filename": "notifications-frontend.ui.en.json",
       "fullFilename": "notifications-frontend.ui.en.json",
       "dateDue": null,
-      "dateCreated": "2026-11-09T05:24:29+0000",
+      "wordsCount": 2469,
+      "beginIndex": 0,
+      "endIndex": 493,
+      "isParentJobSplit": false,
       "updateSourceDate": null,
-      "imported": false,
-      "jobAssignedEmailTemplate": null,
-      "notificationIntervalInMinutes": 0,
+      "updateTargetDate": null,
+      "dateCreated": "2026-11-09T05:24:29+0000",
+      "jobReference": {
+        "uid": "A9T0kOAvz5RP0kttZfd7P1",
+        "filename": "notifications-frontend.ui.en.json",
+        "fullFilename": "notifications-frontend.ui.en.json"
+      },
+      "project": {
+        "name": "hcc-ui",
+        "uid": "LFsYhKphLpXQ0WWa47VZ19"
+      },
+      "lastWorkflowLevel": 1,
+      "workUnit": null,
+      "importStatus": {
+        "status": "OK",
+        "errorMessage": null
+      },
+      "imported": true,
       "continuous": false,
-      "sourceFileUid": "YEPoW3mwfwGidVcO1tWdm2"
+      "continuousJobInfo": null,
+      "originalFileDirectory": "",
+      "allWorkflowStepsSplit": true,
+      "serverTaskId": "p3xFEcS8dVt3p5Lq_dc12"
     },
     {
       "uid": "HykPSYrxfwEdct0pG96mU5",
+      "innerId": "38",
       "status": "NEW",
       "providers": [],
+      "sourceLang": "en_us",
       "targetLang": "fr",
       "workflowLevel": 1,
       "workflowStep": {
         "name": "Translation",
         "id": "225677",
-        "uid": "Vm1j1nqsDSxM343cSZb17g",
         "order": 10,
-        "lqaEnabled": true
+        "workflowLevel": 1
       },
       "filename": "notifications-frontend.ui.en.json",
       "fullFilename": "notifications-frontend.ui.en.json",
       "dateDue": null,
-      "dateCreated": "2026-11-09T05:24:29+0000",
+      "wordsCount": 2481,
+      "beginIndex": 0,
+      "endIndex": 493,
+      "isParentJobSplit": false,
       "updateSourceDate": null,
-      "imported": false,
-      "jobAssignedEmailTemplate": null,
-      "notificationIntervalInMinutes": 0,
+      "updateTargetDate": null,
+      "dateCreated": "2026-11-09T05:24:29+0000",
+      "jobReference": {
+        "uid": "NzwU02wnFOiG5OjKjLmiL4",
+        "filename": "notifications-frontend.ui.en.json",
+        "fullFilename": "notifications-frontend.ui.en.json"
+      },
+      "project": {
+        "name": "hcc-ui",
+        "uid": "LFsYhKphLpXQ0WWa47VZ19"
+      },
+      "lastWorkflowLevel": 1,
+      "workUnit": null,
+      "importStatus": {
+        "status": "OK",
+        "errorMessage": null
+      },
+      "imported": true,
       "continuous": false,
-      "sourceFileUid": "YEPoW3mwfwGidVcO1tWdm2"
+      "continuousJobInfo": null,
+      "originalFileDirectory": "",
+      "allWorkflowStepsSplit": true,
+      "serverTaskId": "deF1hz3sM15dAlYG1_dc12"
     },
     {
       "uid": "pFJHsSYVIerJ4dTbvGU7F2",
+      "innerId": "39",
       "status": "NEW",
       "providers": [],
+      "sourceLang": "en_us",
       "targetLang": "ko",
       "workflowLevel": 1,
       "workflowStep": {
         "name": "Translation",
         "id": "225677",
-        "uid": "Vm1j1nqsDSxM343cSZb17g",
         "order": 10,
-        "lqaEnabled": true
+        "workflowLevel": 1
       },
       "filename": "notifications-frontend.ui.en.json",
       "fullFilename": "notifications-frontend.ui.en.json",
       "dateDue": null,
-      "dateCreated": "2026-11-09T05:24:29+0000",
+      "wordsCount": 2469,
+      "beginIndex": 0,
+      "endIndex": 493,
+      "isParentJobSplit": false,
       "updateSourceDate": null,
-      "imported": false,
-      "jobAssignedEmailTemplate": null,
-      "notificationIntervalInMinutes": 0,
+      "updateTargetDate": null,
+      "dateCreated": "2026-11-09T05:24:29+0000",
+      "jobReference": {
+        "uid": "iUPtoWK2LfHV7Jeb0CnHP6",
+        "filename": "notifications-frontend.ui.en.json",
+        "fullFilename": "notifications-frontend.ui.en.json"
+      },
+      "project": {
+        "name": "hcc-ui",
+        "uid": "LFsYhKphLpXQ0WWa47VZ19"
+      },
+      "lastWorkflowLevel": 1,
+      "workUnit": null,
+      "importStatus": {
+        "status": "OK",
+        "errorMessage": null
+      },
+      "imported": true,
       "continuous": false,
-      "sourceFileUid": "YEPoW3mwfwGidVcO1tWdm2"
+      "continuousJobInfo": null,
+      "originalFileDirectory": "",
+      "allWorkflowStepsSplit": true,
+      "serverTaskId": "wiZF6aSMFIo3p5Lq_dc12"
     },
     {
       "uid": "kdniN8wATJp30aY8PVq0lc",
+      "innerId": "40",
       "status": "NEW",
       "providers": [],
+      "sourceLang": "en_us",
       "targetLang": "ja",
       "workflowLevel": 1,
       "workflowStep": {
         "name": "Translation",
         "id": "225677",
-        "uid": "Vm1j1nqsDSxM343cSZb17g",
         "order": 10,
-        "lqaEnabled": true
+        "workflowLevel": 1
       },
       "filename": "notifications-frontend.ui.en.json",
       "fullFilename": "notifications-frontend.ui.en.json",
       "dateDue": null,
-      "dateCreated": "2026-11-09T05:24:29+0000",
+      "wordsCount": 2469,
+      "beginIndex": 0,
+      "endIndex": 493,
+      "isParentJobSplit": false,
       "updateSourceDate": null,
-      "imported": false,
-      "jobAssignedEmailTemplate": null,
-      "notificationIntervalInMinutes": 0,
+      "updateTargetDate": null,
+      "dateCreated": "2026-11-09T05:24:29+0000",
+      "jobReference": {
+        "uid": "Bh0EuOZ6TgMjaiTwqC0EV0",
+        "filename": "notifications-frontend.ui.en.json",
+        "fullFilename": "notifications-frontend.ui.en.json"
+      },
+      "project": {
+        "name": "hcc-ui",
+        "uid": "LFsYhKphLpXQ0WWa47VZ19"
+      },
+      "lastWorkflowLevel": 1,
+      "workUnit": null,
+      "importStatus": {
+        "status": "OK",
+        "errorMessage": null
+      },
+      "imported": true,
       "continuous": false,
-      "sourceFileUid": "YEPoW3mwfwGidVcO1tWdm2"
+      "continuousJobInfo": null,
+      "originalFileDirectory": "",
+      "allWorkflowStepsSplit": true,
+      "serverTaskId": "NgF1hz3sM15dAlYG1_dc11"
     }
   ],
   "warningCount": 0,
