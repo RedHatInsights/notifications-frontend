@@ -327,7 +327,10 @@
       ]
     },
     "zh_cn": {
-      "phase": "exporting"
+      "phase": "exporting",
+      "toolingCommitShas": [
+        "b90731becdd73c8230638b2c4ee8ada26568a3c8"
+      ]
     }
   },
   "importAsyncRequestId": "1911299678"
