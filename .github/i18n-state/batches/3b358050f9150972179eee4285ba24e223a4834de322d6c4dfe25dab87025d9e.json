@@ -327,10 +327,18 @@
       ]
     },
     "zh_cn": {
-      "phase": "exporting",
+      "phase": "pr-created",
       "toolingCommitShas": [
         "b90731becdd73c8230638b2c4ee8ada26568a3c8"
-      ]
+      ],
+      "validationErrors": [],
+      "validationWarnings": [],
+      "pullRequestBodyDigest": "5fce2f363fed4594cc9dac67b89b6d72d71e88e006709782257aeab4ea199788",
+      "pullRequestUrl": "https://github.com/RedHatInsights/notifications-frontend/pull/1088",
+      "pullRequestBranch": "i18n/phrase-3b358050f9150972-zh-CN",
+      "pullRequestBatchKey": "3b358050f9150972179eee4285ba24e223a4834de322d6c4dfe25dab87025d9e",
+      "pullRequestAssigneesPending": true,
+      "toolingCommitSha": "b90731becdd73c8230638b2c4ee8ada26568a3c8"
     }
   },
   "importAsyncRequestId": "1911299678"
