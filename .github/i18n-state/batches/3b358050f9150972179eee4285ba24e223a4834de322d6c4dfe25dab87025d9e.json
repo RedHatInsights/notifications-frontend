@@ -305,10 +305,24 @@
       "phase": "pending"
     },
     "ko": {
-      "phase": "exporting",
+      "phase": "pr-created",
       "toolingCommitShas": [
         "8881a7d8d46e07fb237ef83c50c58a612b25ff03"
-      ]
+      ],
+      "validationErrors": [],
+      "validationWarnings": [
+        "\"markSelectedAsRead\": particle \"을\" follows a runtime value, but its form depends on whether that value ends in a consonant. Use a combined form such as \"을(를)\", \"이(가)\", \"은(는)\", \"(으)로\", or rephrase.",
+        "\"markSelectedAsUnread\": particle \"을\" follows a runtime value, but its form depends on whether that value ends in a consonant. Use a combined form such as \"을(를)\", \"이(가)\", \"은(는)\", \"(으)로\", or rephrase.",
+        "\"notifications.actionTypeahead.goToSettings\": particle \"로\" follows a runtime value, but its form depends on whether that value ends in a consonant. Use a combined form such as \"을(를)\", \"이(가)\", \"은(는)\", \"(으)로\", or rephrase.",
+        "\"notifications.bundlePage.nonAdminSubtitle\": particle \"로\" follows a runtime value, but its form depends on whether that value ends in a consonant. Use a combined form such as \"을(를)\", \"이(가)\", \"은(는)\", \"(으)로\", or rephrase.",
+        "\"notifications.bundlePage.orgAdminSubtitle\": particle \"로\" follows a runtime value, but its form depends on whether that value ends in a consonant. Use a combined form such as \"을(를)\", \"이(가)\", \"은(는)\", \"(으)로\", or rephrase."
+      ],
+      "pullRequestBodyDigest": "b041231549709861f353f9ed080b58129d2f1e23584ebc073aaf66933bfa7214",
+      "pullRequestUrl": "https://github.com/RedHatInsights/notifications-frontend/pull/1087",
+      "pullRequestBranch": "i18n/phrase-3b358050f9150972-ko",
+      "pullRequestBatchKey": "3b358050f9150972179eee4285ba24e223a4834de322d6c4dfe25dab87025d9e",
+      "pullRequestAssigneesPending": true,
+      "toolingCommitSha": "8881a7d8d46e07fb237ef83c50c58a612b25ff03"
     },
     "zh_cn": {
       "phase": "pending"
