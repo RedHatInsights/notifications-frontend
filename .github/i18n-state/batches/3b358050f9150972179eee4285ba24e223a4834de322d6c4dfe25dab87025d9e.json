@@ -321,8 +321,10 @@
       "pullRequestUrl": "https://github.com/RedHatInsights/notifications-frontend/pull/1087",
       "pullRequestBranch": "i18n/phrase-3b358050f9150972-ko",
       "pullRequestBatchKey": "3b358050f9150972179eee4285ba24e223a4834de322d6c4dfe25dab87025d9e",
-      "pullRequestAssigneesPending": true,
-      "toolingCommitSha": "8881a7d8d46e07fb237ef83c50c58a612b25ff03"
+      "toolingCommitSha": "8881a7d8d46e07fb237ef83c50c58a612b25ff03",
+      "pullRequestAssignees": [
+        "riccardo-forina"
+      ]
     },
     "zh_cn": {
       "phase": "pending"
