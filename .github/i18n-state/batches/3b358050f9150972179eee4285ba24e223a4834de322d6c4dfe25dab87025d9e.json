@@ -277,10 +277,27 @@
   "warningCount": 0,
   "locales": {
     "fr": {
-      "phase": "exporting",
+      "phase": "pr-created",
       "toolingCommitShas": [
         "8985f20eeb65188c6abe18ce8b8a40e35c9c555d"
-      ]
+      ],
+      "validationErrors": [
+        "\"behaviorGroup.deleteModal.viewEvents\": the source \"other\" branch of plural {count} shows the count, but the translation's does not. Use # where the number belongs."
+      ],
+      "validationWarnings": [
+        "\"behaviorGroup.deleteModal.viewEvents\": the source \"one\" branch of plural {count} shows the count, but the translation's does not. Use # where the number belongs.",
+        "\"integrations.camelForm.secretTokenHelper\": a regular space precedes : ; ! ? or » (or follows «), so the line can break before the punctuation. Use a non-breaking space (U+00A0, or narrow U+202F).",
+        "\"integrations.connectionAlert.lastAttempts\": a regular space precedes : ; ! ? or » (or follows «), so the line can break before the punctuation. Use a non-breaking space (U+00A0, or narrow U+202F).",
+        "\"integrations.emptyState.whyIntegrate\": a regular space precedes : ; ! ? or » (or follows «), so the line can break before the punctuation. Use a non-breaking space (U+00A0, or narrow U+202F).",
+        "\"integrations.httpForm.secretTokenHelper\": a regular space precedes : ; ! ? or » (or follows «), so the line can break before the punctuation. Use a non-breaking space (U+00A0, or narrow U+202F).",
+        "\"integrations.test.placeholder\": a regular space precedes : ; ! ? or » (or follows «), so the line can break before the punctuation. Use a non-breaking space (U+00A0, or narrow U+202F)."
+      ],
+      "pullRequestBodyDigest": "cb7e39178fd7b925ab1e3ccd3139fd9deb33c09cdc81a3ad74817962276ce6c6",
+      "pullRequestUrl": "https://github.com/RedHatInsights/notifications-frontend/pull/1086",
+      "pullRequestBranch": "i18n/phrase-3b358050f9150972-fr",
+      "pullRequestBatchKey": "3b358050f9150972179eee4285ba24e223a4834de322d6c4dfe25dab87025d9e",
+      "pullRequestAssigneesPending": true,
+      "toolingCommitSha": "8985f20eeb65188c6abe18ce8b8a40e35c9c555d"
     },
     "ja": {
       "phase": "pending"
