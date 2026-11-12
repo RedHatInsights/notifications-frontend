@@ -105,7 +105,7 @@
     "karma-webpack": "5.0.1",
     "npm-run-all2": "5.0.2",
     "openapi2typescript-cli": "0.7.1",
-    "postcss": "8.5.16",
+    "postcss": "8.5.23",
     "prop-types": "15.8.1",
     "react-test-renderer": "18.3.1",
     "stylelint": "14.16.1",
