@@ -126,7 +126,7 @@
     "msw-storybook-addon": "^2.0.6",
     "npm-run-all2": "5.0.0",
     "openapi2typescript-cli": "0.7.0",
-    "postcss": "8.3.3",
+    "postcss": "8.5.23",
     "prop-types": "^15.8.1",
     "react-test-renderer": "18.2.0",
     "remark-gfm": "^4.0.1",
