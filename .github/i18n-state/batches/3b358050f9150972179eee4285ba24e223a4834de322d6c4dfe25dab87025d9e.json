@@ -279,7 +279,8 @@
     "fr": {
       "phase": "pr-created",
       "toolingCommitShas": [
-        "8985f20eeb65188c6abe18ce8b8a40e35c9c555d"
+        "8985f20eeb65188c6abe18ce8b8a40e35c9c555d",
+        "8f6cf8270fd5c755cf1b48b60708cbb46963bcc7"
       ],
       "validationErrors": [
         "\"behaviorGroup.deleteModal.viewEvents\": the source \"other\" branch of plural {count} shows the count, but the translation's does not. Use # where the number belongs."
